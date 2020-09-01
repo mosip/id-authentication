@@ -33,7 +33,6 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.interceptor.IdaTransactionInterceptor;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
@@ -72,7 +71,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class,
 		BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class,BioProviderImpl_V_0_9.class,
-		DemoNormalizerImpl.class, IdaTransactionInterceptor.class,
+		DemoNormalizerImpl.class,
 		IdAuthSecurityManager.class, RestRequestFactory.class, RestHelperImpl.class, AuthtypeStatusImpl.class,
 		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,
 		CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class,

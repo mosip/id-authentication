@@ -37,6 +37,6 @@ public interface AuthtypeStatusService {
 	 */
 	public List<AuthtypeStatus> fetchAuthtypeStatus(String individualId, String individualIdType) throws IdAuthenticationBusinessException;
 	
-	public List<AuthtypeStatus> fetchAuthtypeStatus(String uin) throws IdAuthenticationBusinessException;
+	public List<AuthtypeStatus> fetchAuthtypeStatus(String token) throws IdAuthenticationBusinessException;
 
 }

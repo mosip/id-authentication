@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -40,9 +39,6 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	@Autowired
 	private IdService<AutnTxn> idService;
 	
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-
 	/** The authtxn repo. */
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
@@ -77,7 +73,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		String individualId = authtxnrequestdto.getIndividualId();
 		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
-			String uin = idService.getUin(idResDTO);
+			String token = idService.getToken(idResDTO);
 
 			Integer pageStart = authtxnrequestdto.getPageStart();
 			Integer pageFetch = authtxnrequestdto.getPageFetch();
@@ -98,11 +94,9 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 			}
 			
 			
-			String hashedUin = securityManager.hash(uin);
-			
 			PageRequest pageRequest = getPageRequest(pageStart, pageFetch, fetchAllRecords);
 			
-			autnTxnList = authtxnRepo.findByUin(hashedUin, pageRequest);
+			autnTxnList = authtxnRepo.findByToken(token, pageRequest);
 			return fetchAuthResponse(autnTxnList);
 		}
 		

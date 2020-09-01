@@ -48,7 +48,6 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
-import io.mosip.authentication.otp.service.controller.OTPController;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**

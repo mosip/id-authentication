@@ -61,6 +61,7 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -969,13 +970,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
-		map.put("FACE__8", new SimpleEntry<>("face", identityList));
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FACE__8", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FACE", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
@@ -1079,13 +1074,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-		bioIdentity.put("documents.individualBiometrics", identityList);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
-		map.put("FACE__8", new SimpleEntry<>("face", null));
-		Map<String, String> cbeffValueMap = new HashMap<String, String>();
-		cbeffValueMap.put("FACE__8", value);
-		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenReturn(cbeffValueMap);
+		bioIdentity.put("FACE", identityList);
 		Mockito.when(bioMatcherUtil.match(Mockito.anyMap(), Mockito.anyMap(), Mockito.anyMap())).thenReturn(90D);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());

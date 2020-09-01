@@ -1,13 +1,12 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -35,10 +33,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.idrepository.core.dto.BaseRequestResponseDTO;
-import io.mosip.idrepository.core.dto.DocumentsDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -52,8 +47,11 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class IdServiceImpl implements IdService<AutnTxn> {
 
-	/** The Constant INDIVIDUAL_BIOMETRICS. */
-	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
+	private static final String TOKEN = "TOKEN";
+
+	private static final String BIOMETRICS = "biometrics";
+
+	private static final String DEMOGRAPHICS = "demographics";
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdServiceImpl.class);
@@ -130,20 +128,21 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			}
 		}
 		
-		else if(idvIdType.equals(IdType.USER_ID.getType())) {
-			
-				 try {
-					 String regId = idRepoManager.getRIDByUID(idvId);
-					 if(null!=regId) {
-							idResDTO=idRepoManager.getIdByRID(regId, isBio);
-						}
-					} catch (IdAuthenticationBusinessException e) {
-						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-						throw e;
-					}
-	            } 
+		else if (idvIdType.equals(IdType.USER_ID.getType())) {
+
+			try {
+				String regId = idRepoManager.getRIDByUID(idvId);
+				if (null != regId) {
+					idResDTO = idRepoManager.getIdByRID(regId, isBio);
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+						e.getErrorText());
+				throw e;
+			}
+		} 
 		return idResDTO;
-		}
+	}
 
 		
 	
@@ -170,12 +169,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
 		return idResponseDTO.entrySet().stream()
-				.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
 				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
-					if (entry.getKey().equals("identity") && entry.getValue() instanceof Map) {
+					if ((entry.getKey().equals(DEMOGRAPHICS) || entry.getKey().equals(BIOMETRICS)) && entry.getValue() instanceof Map) {
 						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
-					} else if (entry.getKey().equals("documents") && entry.getValue() instanceof List) {
-						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
 					}
 					return Stream.empty();
 				}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
@@ -204,21 +200,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
 	}
 
-	/**
-	 * Fetch document values for Individual's.
-	 *
-	 * @param value the value
-	 * @return the document values
-	 */
-	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
-		return value.stream().filter(map -> INDIVIDUAL_BIOMETRICS.equals(map.get("category")))
-				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("value"))
-				.<Entry<String, String>>map(
-						entry -> new SimpleEntry<>("documents." + INDIVIDUAL_BIOMETRICS, (String) entry.getValue()))
-				.collect(Collectors.toMap(Entry<String, String>::getKey, Entry<String, String>::getValue));
-
-	}
-	
 	/**
 	 * Gets the demo data.
 	 *
@@ -267,25 +248,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.orElse(new byte[0]);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public String getUin(Map<String, Object> idResDTO) {
-		return Optional.of(getDemoData(idResDTO))
-				.map(bytes -> {
-					try {
-						return (Map<String, Object>)mapper.readValue(bytes, Map.class);
-					} catch (IOException e) {
-						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-								"getUin", e.getMessage());
-						return null;
-					}
-				})
-				.map(map -> map.get(IdAuthCommonConstants.UIN_CAPS))
-				.filter(Objects::nonNull)
-				.map(String::valueOf)
-				.orElse("");
-	}
-	
 	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
 		return getIdentity(id, isBio, IdType.UIN);
 	}
@@ -301,6 +263,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
 		
 		String hashedId = securityManager.hash(id);
@@ -340,17 +303,13 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				throw new IdAuthenticationBusinessException(errorConstant);
 			}
 
-			ResponseWrapper<BaseRequestResponseDTO> responseWrapper = new ResponseWrapper<>();
-			BaseRequestResponseDTO response = new BaseRequestResponseDTO();
-			response.setIdentity(mapper.readValue(securityManager.decryptWithAES(id, entity.getDemographicData()), Object.class));
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+			responseMap.put(DEMOGRAPHICS, securityManager.zkDecrypt(id, mapper.readValue(entity.getDemographicData(), Map.class)));
 			if (entity.getBiometricData() != null) {
-				DocumentsDTO document = new DocumentsDTO("individualBiometrics",
-						CryptoUtil.encodeBase64(securityManager.decryptWithAES(id, entity.getBiometricData())));
-				response.setDocuments(Collections.singletonList(document));
+				responseMap.put(BIOMETRICS, securityManager.zkDecrypt(id, mapper.readValue(entity.getBiometricData(), Map.class)));
 			}
-			responseWrapper.setResponse(response);
-			return mapper.convertValue(responseWrapper, new TypeReference<Map<String, Object>>() {
-			});
+			responseMap.put(TOKEN, entity.getToken());
+			return responseMap;
 		} catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
 					ExceptionUtils.getStackTrace(e));
@@ -381,6 +340,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	@Override
+	public String getToken(Map<String, Object> idResDTO) {
+		return (String) idResDTO.get(TOKEN);
 	}
 
 }

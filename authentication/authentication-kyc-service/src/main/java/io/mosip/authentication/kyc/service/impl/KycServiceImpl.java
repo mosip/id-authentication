@@ -56,7 +56,7 @@ public class KycServiceImpl implements KycService {
 	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@Override
-	public KycResponseDTO retrieveKycInfo(String uin, List<String> allowedkycAttributes, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		if (Objects.nonNull(identityInfo)) {

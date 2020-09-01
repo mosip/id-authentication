@@ -56,13 +56,13 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 
 	private static final String TRANSACTION_LIMIT = "transaction_limit";
 
-	private static final String BIO_KEY = "BIO_KEY";
+	private static final String BIO_KEY = "bioEncryptedRandomKey";
 
-	private static final String BIO_KEY_INDEX = "BIO_KEY_INDEX";
+	private static final String BIO_KEY_INDEX = "bioRankomKeyIndex";
 
-	private static final String DEMO_KEY = "DEMO_KEY";
+	private static final String DEMO_KEY = "demoEncryptedRandomKey";
 
-	private static final String DEMO_KEY_INDEX = "DEMO_KEY_INDEX";
+	private static final String DEMO_KEY_INDEX = "demoRankomKeyIndex";
 
 	private static final String SALT = "SALT";
 

@@ -34,7 +34,6 @@ import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.interceptor.IdaTransactionInterceptor;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.internal.service.integration.RestHelperImpl;
@@ -72,7 +71,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class, 
 		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
 		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,
-		IdaTransactionInterceptor.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
+		InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 		IdChangeEventHandlerServiceImpl.class,SignatureServiceImpl.class})
