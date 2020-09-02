@@ -16,8 +16,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
-import io.mosip.idrepository.core.dto.EventDTO;
-import io.mosip.idrepository.core.dto.EventsDTO;
+import io.mosip.idrepository.core.dto.IDAEventDTO;
+import io.mosip.idrepository.core.dto.IDAEventsDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 
@@ -33,18 +33,19 @@ public class InternalUpdateAuthTypeController {
 	private static Logger logger = IdaLogger.getLogger(InternalUpdateAuthTypeController.class);
 
 	@Autowired
-	private UpdateAuthtypeStatusService updateAuthtypeStatusService;
+	private UpdateAuthtypeStatusService authtypeStatusService;
 
 	@Autowired
 	private AuditHelper auditHelper;
 
 	@PostMapping(value = "/callback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/callback", topic = "http://websubpubtopic.com")
-	public void updateAuthtypeStatus(EventsDTO events) throws IdAuthenticationAppException, IDDataValidationException {
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/callback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	public void updateAuthtypeStatus(IDAEventsDTO events)
+			throws IdAuthenticationAppException, IDDataValidationException {
 		try {
-			List<EventDTO> eventsList = events.getEvents();
-			for (EventDTO event : eventsList) {
-				updateAuthtypeStatusService.updateAuthtypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
+			List<IDAEventDTO> eventsList = events.getEvents();
+			for (IDAEventDTO event : eventsList) {
+				authtypeStatusService.updateAuthTypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
 
 				auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
 						event.getTokenId(), IdType.UIN, "internal auth type status update status : " + true);

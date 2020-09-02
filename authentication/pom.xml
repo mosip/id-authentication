@@ -99,8 +99,8 @@
 		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 				<!-- Maven Plugins -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven.swagger.version>2.9.2</maven.swagger.version>
@@ -250,10 +250,6 @@
 							<goal>sign</goal>
 						  </goals>
 						  <configuration>
-                					<gpgArguments>
-                    						<arg>--pinentry-mode</arg>
-                    						<arg>loopback</arg>
-                					</gpgArguments>
             					  </configuration>
 					</execution>
 				  </executions>
@@ -358,18 +354,6 @@
 				<!-- <format>json</format> -->
 			</configuration>
 			</plugin>
-			<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${maven.surefire.plugin.version}</version>
-					<configuration>
-						<skipTests>${skipTests}</skipTests>
-						<skip>false</skip>
-						<argLine>
-							--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
-						</argLine>
-					</configuration>
-				</plugin>
 		</plugins>
 	</build>
 
