@@ -33,7 +33,7 @@ public class IdentityEntity {
 	private String id;
 	
 	@NotNull
-	@Column(name = "token")
+	@Column(name = "token_id")
 	private String token;
 	
 	/** The demographic data. */
