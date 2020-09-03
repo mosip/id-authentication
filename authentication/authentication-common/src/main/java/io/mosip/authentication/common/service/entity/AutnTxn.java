@@ -91,7 +91,8 @@ public class AutnTxn {
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
 	
-	@Column(name = "token")
+	@NotNull
+	@Column(name = "token_id")
 	private String token;
 	
 	@Column(name = "requested_entity_type")
