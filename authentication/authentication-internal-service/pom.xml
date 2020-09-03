@@ -14,6 +14,7 @@
 	<name>authentication-internal-service</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -85,11 +86,11 @@
 	  		<artifactId>lombok</artifactId>
 	  		<version>${lombok.version}</version>
   		</dependency>
-  		<dependency>
-		   	<groupId>io.mosip.kernel</groupId>
-		   	<artifactId>kernel-websubclient-api</artifactId>
-		   	<version>${kernel-websubclient-api.version}</version>
-	   </dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
