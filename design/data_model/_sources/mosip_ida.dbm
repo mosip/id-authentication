@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,69" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -88,13 +88,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Reference Id: Reference ID for any cross reference purpose relevant for tracking, for ex., user id, uin, vid, prereg id, rid etc.]]></comment>
 	</column>
-	<column name="uin">
-		<type name="character varying" length="500"/>
-		<comment><![CDATA[UIN: UIN of an individual which is validated by system after the authentication is successful. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is encrypted. This field is mainly used to get the list of authentication requests of an individual.]]></comment>
-	</column>
-	<column name="uin_hash">
+	<column name="token_id" not-null="true">
 		<type name="character varying" length="128"/>
-		<comment><![CDATA[UIN Hash: Hash value of the UIN which was authenticated, this will have value if the UIN is a valid UIN. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is hashed. This field is mainly used to get the list of authentication requests of an individual.]]></comment>
+		<comment><![CDATA[Token ID : Token ID generated in reference with UIN/VID]]></comment>
 	</column>
 	<column name="requested_entity_type">
 		<type name="character varying" length="64"/>
@@ -158,71 +154,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<table name="token_seed">
-	<schema name="ida"/>
-	<role name="sysadmin"/>
-	<comment><![CDATA[Token ID Seed: Stores a random number that will be used as seed in the algorithm to generate a token ID. This seed value is encrypted/hashed and used along with a counter in the algorithm to generate a unique random number. Only one seed value would be available for the generation of token ID and this will never change.]]></comment>
-	<position x="920" y="100"/>
-	<column name="seed_no" not-null="true">
-		<type name="character varying" length="32"/>
-		<comment><![CDATA[Seed Number: Seed number is the random number generated which will be used as seed in the algorithm to generate token ID.]]></comment>
-	</column>
-	<column name="cr_by" not-null="true">
-		<type name="character varying" length="256"/>
-		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
-	</column>
-	<column name="cr_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
-	</column>
-	<column name="is_deleted">
-		<type name="boolean" length="0"/>
-		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
-	</column>
-	<column name="del_dtimes">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
-	</column>
-	<constraint name="pk_tknsd" type="pk-constr" table="ida.token_seed">
-		<columns names="seed_no" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<table name="token_seq">
-	<schema name="ida"/>
-	<role name="sysadmin"/>
-	<comment><![CDATA[Token ID Sequence: Stores sequence numbers that are used in the algorithm to generate token. Stores a incremental sequence number that will be used as salt in the algorithm to generate a token ID. This salt value is encrypted/hashed and used along with a seed number in the algorithm to generate a unique random number.]]></comment>
-	<position x="920" y="260"/>
-	<column name="seq_no" not-null="true">
-		<type name="character varying" length="32"/>
-		<comment><![CDATA[Sequence Number: Sequence number is the number generated which is used in the algorithm to generate token ID.]]></comment>
-	</column>
-	<column name="cr_by" not-null="true">
-		<type name="character varying" length="256"/>
-		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
-	</column>
-	<column name="cr_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
-	</column>
-	<column name="is_deleted">
-		<type name="boolean" length="0"/>
-		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
-	</column>
-	<column name="del_dtimes">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
-	</column>
-	<constraint name="pk_tknseq" type="pk-constr" table="ida.token_seq">
-		<columns names="seq_no" ref-type="src-columns"/>
-	</constraint>
-</table>
-
 <table name="uin_hash_salt">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.]]></comment>
-	<position x="80" y="520"/>
+	<position x="100" y="440"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Unique id generated for the salts that is used to hash the uin field.]]></comment>
@@ -252,52 +188,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="uin_encrypt_salt">
-	<schema name="ida"/>
-	<role name="sysadmin"/>
-	<comment><![CDATA[UIN Encript Salt: Stores the salt used to encrypt an uin of an individual in the encryption algorithm.]]></comment>
-	<position x="320" y="400"/>
-	<column name="id" not-null="true">
-		<type name="bigint" length="0"/>
-		<comment><![CDATA[Id: Unique id generated for the salts that is used to encrypt the uin field.]]></comment>
-	</column>
-	<column name="salt" not-null="true">
-		<type name="character varying" length="36"/>
-		<comment><![CDATA[Salt: Random generated number used as salt to encrypt the uin field.]]></comment>
-	</column>
-	<column name="cr_by" not-null="true">
-		<type name="character varying" length="256"/>
-		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
-	</column>
-	<column name="cr_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
-	</column>
-	<column name="upd_by">
-		<type name="character varying" length="256"/>
-		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
-	</column>
-	<column name="upd_dtimes">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
-	</column>
-	<constraint name="pk_uines" type="pk-constr" table="ida.uin_encrypt_salt">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
 <table name="uin_auth_lock" alias="uinal">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
 	<position x="460" y="60"/>
-	<column name="uin" not-null="true">
-		<type name="character varying" length="500"/>
-		<comment><![CDATA[Unique Identification Number: Unique Identification Number of an individual for which an authentication type is locked.]]></comment>
-	</column>
-	<column name="uin_hash" not-null="true">
+	<column name="token_id" not-null="true">
 		<type name="character varying" length="128"/>
-		<comment><![CDATA[Unique Identification Number Hash: Unique Identification Number Hash value of an individual for which an authentication type is locked.]]></comment>
+		<comment><![CDATA[Token ID: ID generated with reference to UIN/VID.]]></comment>
 	</column>
 	<column name="auth_type_code" not-null="true">
 		<type name="character varying" length="36"/>
@@ -348,10 +246,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
 	<constraint name="pk_uinal" type="pk-constr" table="ida.uin_auth_lock">
-		<columns names="uin,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
-	</constraint>
-	<constraint name="uk_uinal" type="uq-constr" table="ida.uin_auth_lock">
-		<columns names="uin_hash,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
+		<columns names="token_id,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -359,7 +254,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.]]></comment>
-	<position x="620" y="360"/>
+	<position x="900" y="80"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
@@ -421,7 +316,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Store: In MOSIP, data related to an individual in stored in encrypted form. This table is to manage all the keys(private and public keys) used. ]]></comment>
-	<position x="440" y="580"/>
+	<position x="900" y="300"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: ID is a unique identifier (UUID) used for managing encryption keys]]></comment>
@@ -435,7 +330,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Private Key: Private key]]></comment>
 	</column>
 	<column name="certificate_data" not-null="true">
-		<type name="character varying" length="1500"/>
+		<type name="character varying" length="2500"/>
 		<comment><![CDATA[Certificate Data:]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
@@ -471,7 +366,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Policy Defination: Policy related to encryption key management is defined here. For eg. Expiry duration of a key generated.]]></comment>
-	<position x="700" y="580"/>
+	<position x="880" y="500"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
@@ -517,7 +412,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.]]></comment>
-	<position x="1000" y="580"/>
+	<position x="880" y="700"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
@@ -567,10 +462,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.]]></comment>
-	<position x="60" y="680"/>
+	<position x="80" y="640"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[ID: ID of an identity cache, This can be UIN or VID of an individuals for whom the authentication request is beeing made. Hash value is stored.]]></comment>
+	</column>
+	<column name="token_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Token ID : Token ID generated in reference to UIN/VID]]></comment>
 	</column>
 	<column name="demo_data" not-null="true">
 		<type name="bytea" length="36"/>
@@ -621,7 +520,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.]]></comment>
-	<position x="360" y="800"/>
+	<position x="460" y="680"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Id of an encryption key alias]]></comment>
@@ -651,6 +550,72 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
 	<constraint name="pk_dekstr_id" type="pk-constr" table="ida.data_encrypt_keystore">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="otp_transaction" alias="uinal">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.]]></comment>
+	<position x="460" y="340"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
+	</column>
+	<column name="ref_id" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference ID: Reference ID is a reference information received from OTP requester which can be used while validating the OTP. AM: please give examples of ref_id]]></comment>
+	</column>
+	<column name="otp_hash" not-null="true">
+		<type name="character varying" length="512"/>
+		<comment><![CDATA[OTP Hash: Hash of id, ref_id and otp which is generated based on the configuration setup and sent to the requester application / module.]]></comment>
+	</column>
+	<column name="generated_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Generated Date Time: Date and Time when the OTP was generated]]></comment>
+	</column>
+	<column name="expiry_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Expiry Date Time: Date Time when the OTP will be expired]]></comment>
+	</column>
+	<column name="validation_retry_count">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Validation Retry Count: Validation retry counts of this OTP request. If the validation retry crosses the threshold limit, then the OTP will be de-activated.]]></comment>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the OTP whether it is active or expired. AM: please enumerate the status types. They are only a few, not infinite]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_otpt_id" type="pk-constr" table="ida.otp_transaction">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -701,16 +666,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </permission>
 <permission>
 	<object name="ida.uin_hash_salt" type="table"/>
-	<roles names="idauser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
-</permission>
-<permission>
-	<object name="ida.uin_encrypt_salt" type="table"/>
-	<roles names="sysadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="ida.uin_encrypt_salt" type="table"/>
 	<roles names="idauser"/>
 	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
 </permission>
