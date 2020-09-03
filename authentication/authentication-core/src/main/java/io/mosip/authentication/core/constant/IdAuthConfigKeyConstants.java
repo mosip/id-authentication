@@ -115,12 +115,9 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
-	public static final String ID_REPO_WEBSUB_HUB_URL = "id-repo-websub-hub-url";
 	public static final String IDA_WEBSUB_SECRET = "ida-websub-secret";
-
-	public static final String IDA_WEBSUB_HUB_URL = "ida-websub-hub-url";
+	public static final String IDA_WEBSUB_HUB_URL = "ida-websub-subscriber-hub-url";
 	public static final String IDA_WEBSUB_CALLBACK_URL = "ida-websub-callback-url";
-	public static final String IDREPO_WEBSUB_SECRET = "idrepo-websub-secret";
 
 
 
