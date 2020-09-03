@@ -110,7 +110,7 @@ public class IdRepoNotificationHandlerController {
 	@PostMapping(path = "/notify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "${ida-websub-secret}",callback = "/notify",topic = "*/CREDENTIAL_ISSUED")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/notify",topic = "*/CREDENTIAL_ISSUED")
 	public ResponseWrapper<?> handleEvents(@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		DataValidationUtil.validate(e);
 		handleEvents(eventModel);
