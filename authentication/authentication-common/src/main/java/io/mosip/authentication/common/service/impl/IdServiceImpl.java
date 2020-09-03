@@ -170,8 +170,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			throws IdAuthenticationBusinessException {
 		return idResponseDTO.entrySet().stream()
 				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
-					if ((entry.getKey().equals(DEMOGRAPHICS) || entry.getKey().equals(BIOMETRICS)) && entry.getValue() instanceof Map) {
+					if ((entry.getKey().equals(DEMOGRAPHICS)) && entry.getValue() instanceof Map) {
 						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
+					} else if(entry.getKey().equals(BIOMETRICS)) {
+						return ((Map<String, Object>) entry.getValue()).entrySet().stream()
+								.flatMap(entry1 -> ((Map<String, Object>) entry1.getValue()).entrySet().stream());
 					}
 					return Stream.empty();
 				}).collect(Collectors.toMap(t -> t.getKey(), entry -> {

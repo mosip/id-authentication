@@ -28,6 +28,7 @@ public class AuthtypeLock {
 
 	@Id
 	@NotNull
+	@Column(name = "token_id")
 	private String token;
 
 	@Id
