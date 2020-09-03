@@ -120,7 +120,6 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_WEBSUB_HUB_URL = "ida-websub-hub-url";
 	public static final String IDA_WEBSUB_CALLBACK_URL = "ida-websub-callback-url";
-	public static final String IDREPO_WEBSUB_SECRET = "idrepo-websub-secret";
 
 
 

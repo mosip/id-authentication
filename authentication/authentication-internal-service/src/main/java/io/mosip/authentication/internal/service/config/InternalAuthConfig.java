@@ -33,7 +33,7 @@ public class InternalAuthConfig extends IdAuthConfig {
 	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CALLBACK_URL +"}")
 	private String callbackURL;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDREPO_WEBSUB_SECRET +"}")
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
 	private String secret;
 	
 	@Autowired
