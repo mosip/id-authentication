@@ -1,7 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.ID_REPO_WEBSUB_HUB_URL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +59,7 @@ public class IdRepoNotificationHandlerController {
 	@Autowired
 	SubscriptionClient<SubscriptionChangeRequest,UnsubscriptionRequest, SubscriptionChangeResponse> sb; 
 			
-	@Value("${" + ID_REPO_WEBSUB_HUB_URL + "}")
+	@Value("${" + IDA_WEBSUB_HUB_URL + "}")
 	private String webSubHubUrl;
 	
 	
