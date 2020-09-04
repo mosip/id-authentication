@@ -2,7 +2,9 @@ package io.mosip.authentication.kyc.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
@@ -46,6 +48,8 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
+import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
@@ -73,7 +77,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, PartnerServiceImpl.class, TokenIDGeneratorServiceImpl.class,
-		TokenIDGenerator.class, PartnerServiceManager.class,ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class })
+		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class,KeyStoreImpl.class, KeymanagerDBHelper.class })
+@ComponentScan(basePackages={ "io.mosip.authentication.kyc.service.*"})
+@EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class KycAuthenticationApplication {
 
 	/**
