@@ -109,7 +109,7 @@ jobs:
     - name: Publish to github package
       run: |
         chmod +x ./deploy.sh
-        ./deploy authentication $GITHUB_WORKSPACE/settings1.xml .*
+        ./deploy.sh authentication $GITHUB_WORKSPACE/settings1.xml .*
  #       cd authentication && mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
       env:
         GPG_TTY: $(tty)
