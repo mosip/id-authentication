@@ -33,10 +33,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Autowired
 	private Environment environment;
 
-	/** The interceptor. */
-	@Autowired
-	private Interceptor interceptor;
-
 	/**
 	 * Initialize.
 	 */
@@ -45,20 +41,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		IdType.initializeAliases(environment);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#jpaProperties(
-	 * )
-	 */
-	@Override
-	public Map<String, Object> jpaProperties() {
-		Map<String, Object> jpaProperties = super.jpaProperties();
-		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
-		return jpaProperties;
-	}
-	
 	/**
 	 * Rest template.
 	 *
