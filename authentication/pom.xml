@@ -34,7 +34,7 @@
 			<organizationUrl>https://github.com/mosip/id-authentication</organizationUrl>
 		</developer>
 	</developers>
-
+<!--
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -44,8 +44,13 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-	</distributionManagement>
-
+	</distributionManagement>-->
+	<distributionManagement>
+               <repository>
+                       <id>github</id>
+                       <url>https://maven.pkg.github.com/mosip/commons</url>
+               </repository> 
+        </distributionManagement> 
 	<repositories>
 		<repository>
 		  <id>ossrh</id>
