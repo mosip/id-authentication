@@ -100,19 +100,27 @@ jobs:
         cd authentication
         mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
         
-    - name: Publish the maven package
+    - name: setting up github release 
+      run: echo "<settings>  <activeProfiles>    <activeProfile>github</activeProfile>  </activeProfiles>  <profiles>    <profile>      <id>github</id>      <repositories>        <repository>          <id>central</id>          <url>https://repo1.maven.org/maven2</url>          <releases><enabled>true</enabled></releases>          <snapshots><enabled>true</enabled></snapshots>        </repository>        <repository>          <id>github</id>          <name>GitHub mosip Apache Maven Packages</name>     	  <url>https://maven.pkg.github.com/mosip/id-authentication</url>        </repository>      </repositories>    </profile>  </profiles>  <servers>    <server>      <id>github</id>      <username>johnpsmindtree</username>      <password>$GITHUB_TOKEN</password>    </server>  </servers></settings>" > $GITHUB_WORKSPACE/settings1.xml
+      env:
+       GITHUB_TOKEN: ${{ secrets.DEPLOYTOKEN }}
+       
+
+    - name: Publish to github package
       run: |
         chmod +x ./deploy.sh
-        cd authentication && mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
+        ./deploy authentication $GITHUB_WORKSPACE/settings1.xml .*
+ #       cd authentication && mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
       env:
         GPG_TTY: $(tty)
-    - name: Analyze with SonarCloud
-      run: |
-        cd authentication
-        mvn -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.PROJECT_KEY }} -Dsonar.organization=${{ secrets.ORG_KEY }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    
+        GITHUB_TOKEN: ${{secrets.ACCESS_TOKEN}}
+ #   - name: Analyze with SonarCloud
+ #     run: |
+  #      cd authentication
+  #      mvn -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.PROJECT_KEY }} -Dsonar.organization=${{ secrets.ORG_KEY }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+   #   env:
+   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    
   docker-authentication-otp-service:
     needs: build
 
