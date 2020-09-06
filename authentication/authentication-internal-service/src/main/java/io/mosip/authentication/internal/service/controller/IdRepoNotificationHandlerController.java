@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -86,8 +87,10 @@ public class IdRepoNotificationHandlerController {
 		partnerIds.forEach(partnerId -> {
 			
 			Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+				final String baseUrl = 
+						ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-				subscriptionRequest.setCallbackURL("/notify");
+		        subscriptionRequest.setCallbackURL(baseUrl + "/notify");
 				subscriptionRequest.setHubURL(webSubHubUrl);
 				subscriptionRequest.setSecret(webSubSecret);
 				subscriptionRequest.setTopic(partnerId + "/" + eventType.toString());
