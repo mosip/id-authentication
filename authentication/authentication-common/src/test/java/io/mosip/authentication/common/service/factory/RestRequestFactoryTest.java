@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.factory;
 
-import static org.junit.Assert.assertEquals;	
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,8 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.factory.AuditRequestFactory;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -63,6 +63,9 @@ public class RestRequestFactoryTest {
 	/** The audit factory. */
 	@InjectMocks
 	AuditRequestFactory auditFactory;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	/**
 	 * Before.
@@ -71,6 +74,8 @@ public class RestRequestFactoryTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.setField(restFactory, "mapper", mapper);
+		
 	}
 
 	/**

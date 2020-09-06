@@ -62,6 +62,7 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
+		ReflectionTestUtils.setField(restRequestFactory, "mapper", mapper);
 	}
 
 	@Test

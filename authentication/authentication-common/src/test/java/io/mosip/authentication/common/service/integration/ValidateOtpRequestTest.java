@@ -24,6 +24,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
@@ -64,10 +66,14 @@ public class ValidateOtpRequestTest {
 
 	@InjectMocks
 	PinDTO pindto;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restfactory, "env", env);
+		ReflectionTestUtils.setField(restfactory, "mapper", mapper);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
 	}
