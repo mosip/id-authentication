@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -63,6 +65,8 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(restRequestFactory, "mapper", mapper);
+		PowerMockito.mockStatic(RestHelper.class);
+		Mockito.when(RestHelper.getAuthToken()).thenReturn(Optional.of("token"));
 	}
 
 	@Test
