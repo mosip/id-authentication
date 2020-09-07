@@ -1,11 +1,14 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +16,7 @@ import java.util.stream.Stream;
 
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
@@ -72,6 +76,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	@Value("${" + IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
+	private String zkEncryptedCredAttribs;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -307,9 +314,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			}
 
 			Map<String, Object> responseMap = new LinkedHashMap<>();
-			responseMap.put(DEMOGRAPHICS, securityManager.zkDecrypt(id, mapper.readValue(entity.getDemographicData(), Map.class)));
+			
+			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
+			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
 			if (entity.getBiometricData() != null) {
-				responseMap.put(BIOMETRICS, securityManager.zkDecrypt(id, mapper.readValue(entity.getBiometricData(), Map.class)));
+				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
+				responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
 			}
 			responseMap.put(TOKEN, entity.getToken());
 			return responseMap;
@@ -318,6 +328,37 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	/**
+	 * Decrypt the attributes as per configuration.
+	 * @param id
+	 * @param dataMap
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private Map<String, String> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
+		List<String> zkEncryptedAttributes = getZkEncryptedAttributes();
+		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet().stream().collect(Collectors.partitioningBy(entry -> zkEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+				Collectors.toMap(Entry::getKey, Entry::getValue)));
+		Map<String, String> dataToDecrypt = partitionedMap.get(true);
+		Map<String, String> plainData = partitionedMap.get(false);
+		Map<String, String> decryptedData = securityManager.zkDecrypt(id, dataToDecrypt);
+		Map<String, String> finalData = new LinkedHashMap<>();
+		finalData.putAll(plainData);
+		finalData.putAll(decryptedData);
+		return finalData;
+	}
+	
+	/**
+	 * Get the list of attributes to encrypt from config. Returns empty if no config is there
+	 * @return
+	 */
+	private List<String> getZkEncryptedAttributes() {
+		return Optional.ofNullable(zkEncryptedCredAttribs).stream()
+				.flatMap(str -> Stream.of(str.split(",")))
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toList());
 	}
 	
 	/**
