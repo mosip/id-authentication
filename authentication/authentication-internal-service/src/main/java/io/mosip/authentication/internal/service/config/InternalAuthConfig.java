@@ -61,10 +61,13 @@ public class InternalAuthConfig extends IdAuthConfig {
 			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
 			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(secret);
-			subscriptionRequest.setTopic(IDAEventType.AUTH_TYPE_STATUS_UPDATE.name());
+			String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
+			subscriptionRequest.setTopic(topic);
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
 			subscribe.subscribe(subscriptionRequest);
 		} catch (Exception e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+			throw e;
 		}
 	}
 

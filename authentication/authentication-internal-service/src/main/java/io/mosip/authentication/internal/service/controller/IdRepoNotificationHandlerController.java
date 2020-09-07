@@ -103,10 +103,13 @@ public class IdRepoNotificationHandlerController {
 							subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
 							subscriptionRequest.setHubURL(hubURL);
 							subscriptionRequest.setSecret(secret);
-							subscriptionRequest.setTopic(partnerId + "/" + eventType.toString());
+							String topic = partnerId + "/" + eventType.toString();
+							subscriptionRequest.setTopic(topic);
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
 							subscribe.subscribe(subscriptionRequest);
 						} catch (Exception e) {
-							logger.error(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+							throw e;
 						}
 					});
 					
