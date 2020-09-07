@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
@@ -30,6 +31,7 @@ import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
@@ -62,6 +64,9 @@ public class IdRepoNotificationHandlerController {
 	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
 	private String hubURL;
 	
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL +"}")
+	private String publisherUrl;
+	
 	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
 	private String authTypeCallbackURL;
 	
@@ -77,6 +82,9 @@ public class IdRepoNotificationHandlerController {
 	@Autowired
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
 	
+	@Autowired
+	private PublisherClient<String, EventModel, HttpHeaders> publisher; 
+
 	/**
 	 * Inits the binder.
 	 *
@@ -89,30 +97,42 @@ public class IdRepoNotificationHandlerController {
 	
 	@PostConstruct
 	public void postConstrcut() {
-		subscribeForCredentialIssueanceEvents();
+		List<String> partnerIds = partnerServiceManager.getPartnerIds();
+		tryRegisterTopicCredentialIssueanceEvents(partnerIds);
+		subscribeForCredentialIssueanceEvents(partnerIds);
 	}
 	
-	private void subscribeForCredentialIssueanceEvents() {
-		List<String> partnerIds = partnerServiceManager.getPartnerIds();
-				
+	private void tryRegisterTopicCredentialIssueanceEvents(List<String> partnerIds) {
+		partnerIds.forEach(partnerId -> {
+			
+			Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+				String topic = partnerId + "/" + eventType.toString();
+				try {
+					publisher.registerTopic(topic, publisherUrl);
+				} catch (Exception e) {
+					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
+				}
+			});
+			
+		});
+	}
+
+	private void subscribeForCredentialIssueanceEvents(List<String> partnerIds) {
 				partnerIds.forEach(partnerId -> {
 					
 					Arrays.stream(IDAEventType.values()).forEach(eventType -> {
-						//FIXME temporarily enabling credential event only
-						if(eventType == IDAEventType.CREDENTIAL_ISSUED) {
+						String topic = partnerId + "/" + eventType.toString();
 						try {
 							SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 							subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
 							subscriptionRequest.setHubURL(hubURL);
 							subscriptionRequest.setSecret(secret);
-							String topic = partnerId + "/" + eventType.toString();
 							subscriptionRequest.setTopic(topic);
 							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
 							subscribe.subscribe(subscriptionRequest);
 						} catch (Exception e) {
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 							throw e;
-						}
 						}
 					});
 					
