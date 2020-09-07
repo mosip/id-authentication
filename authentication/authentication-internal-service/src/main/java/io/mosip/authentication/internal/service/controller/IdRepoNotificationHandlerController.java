@@ -98,6 +98,8 @@ public class IdRepoNotificationHandlerController {
 				partnerIds.forEach(partnerId -> {
 					
 					Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+						//FIXME temporarily enabling credential event only
+						if(eventType == IDAEventType.CREDENTIAL_ISSUED) {
 						try {
 							SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 							subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
@@ -110,6 +112,7 @@ public class IdRepoNotificationHandlerController {
 						} catch (Exception e) {
 							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
 							throw e;
+						}
 						}
 					});
 					
