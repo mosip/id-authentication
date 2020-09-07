@@ -38,8 +38,8 @@ public class InternalUpdateAuthTypeController {
 	@Autowired
 	private AuditHelper auditHelper;
 
-	@PostMapping(value = "/callback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/callback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	@PostMapping(value = "/authTypeCallback", consumes = "application/json")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
 	public void updateAuthtypeStatus(IDAEventsDTO events)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {

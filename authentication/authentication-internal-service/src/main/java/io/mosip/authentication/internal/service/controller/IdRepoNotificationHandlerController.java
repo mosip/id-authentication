@@ -1,8 +1,5 @@
 package io.mosip.authentication.internal.service.controller;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,14 +18,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.authentication.internal.service.validator.IdEventNotificationValidator;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
@@ -48,6 +49,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoNotificationHandlerController {
 	
+	private static Logger logger = IdaLogger.getLogger(IdRepoNotificationHandlerController.class);
+	
 	/** The id change event handler service. */
 	@Autowired
 	private IdChangeEventHandlerService idChangeEventHandlerService;
@@ -56,19 +59,24 @@ public class IdRepoNotificationHandlerController {
 	@Autowired
 	private IdEventNotificationValidator validator;
 	
-	@Autowired
-	SubscriptionClient<SubscriptionChangeRequest,UnsubscriptionRequest, SubscriptionChangeResponse> sb; 
-			
-	@Value("${" + IDA_WEBSUB_HUB_URL + "}")
-	private String webSubHubUrl;
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
+	private String hubURL;
 	
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
+	private String authTypeCallbackURL;
 	
-	@Value("${" + IDA_WEBSUB_SECRET + "}")
-	private String webSubSecret;
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
+	private String credentialIssueCallbackURL;
+	
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
+	private String secret;
 	
 	@Autowired
 	private PartnerServiceManager partnerServiceManager;
-
+	
+	@Autowired
+	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
+	
 	/**
 	 * Inits the binder.
 	 *
@@ -80,24 +88,34 @@ public class IdRepoNotificationHandlerController {
 	}
 	
 	@PostConstruct
-	public void postConstruct() {
-		List<String> partnerIds = partnerServiceManager.getPartnerIds();
-		
-		partnerIds.forEach(partnerId -> {
-			
-			Arrays.stream(IDAEventType.values()).forEach(eventType -> {
-				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-				subscriptionRequest.setCallbackURL("/notify");
-				subscriptionRequest.setHubURL(webSubHubUrl);
-				subscriptionRequest.setSecret(webSubSecret);
-				subscriptionRequest.setTopic(partnerId + "/" + eventType.toString());
-				sb.subscribe(subscriptionRequest);
-			});
-			
-		});
-		//TODO Unsubscribe
+	public void postConstrcut() {
+		subscribeForCredentialIssueanceEvents();
 	}
-
+	
+	private void subscribeForCredentialIssueanceEvents() {
+		List<String> partnerIds = partnerServiceManager.getPartnerIds();
+				
+				partnerIds.forEach(partnerId -> {
+					
+					Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+						try {
+							SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+							subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
+							subscriptionRequest.setHubURL(hubURL);
+							subscriptionRequest.setSecret(secret);
+							String topic = partnerId + "/" + eventType.toString();
+							subscriptionRequest.setTopic(topic);
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
+							subscribe.subscribe(subscriptionRequest);
+						} catch (Exception e) {
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+							throw e;
+						}
+					});
+					
+				});
+	}
+	
 	/**
 	 * Handle events end point.
 	 *
@@ -107,10 +125,10 @@ public class IdRepoNotificationHandlerController {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'RESIDENT', 'ID_AUTHENTICATION')")
-	@PostMapping(path = "/notify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/credentialIssueanceCallback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/notify",topic = "*/CREDENTIAL_ISSUED")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/credentialIssueanceCallback",topic = "*/CREDENTIAL_ISSUED")
 	public ResponseWrapper<?> handleEvents(@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		DataValidationUtil.validate(e);
 		handleEvents(eventModel);
