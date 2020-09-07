@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -15,7 +14,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -75,11 +73,8 @@ public class ValidateOtpRequestTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restfactory, "env", env);
-		ReflectionTestUtils.setField(restfactory, "mapper", mapper);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
-		PowerMockito.mockStatic(RestHelper.class);
-		Mockito.when(RestHelper.getAuthToken()).thenReturn(Optional.of("token"));
 	}
 
 	/**

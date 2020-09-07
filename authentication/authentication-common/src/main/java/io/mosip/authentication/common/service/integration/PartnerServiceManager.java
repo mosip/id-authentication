@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -27,7 +28,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -50,6 +50,7 @@ public class PartnerServiceManager {
 	private RestRequestFactory restRequestFactory;
 
 	@Autowired
+	@Qualifier("external")
 	private RestHelper restHelper;
 
 	@Autowired
@@ -157,7 +158,7 @@ public class PartnerServiceManager {
 			Object response = responseWrapperMap.get("response");
 			if(response instanceof Map) {
 				Map<String, Object> responseMap = (Map<String, Object>) response;
-				Object partners = responseWrapperMap.get("partners");
+				Object partners = responseMap.get("partners");
 				if(partners instanceof List) {
 					List<Map<String, Object>> partnersList = (List<Map<String, Object>>) partners;
 					List<String> partnerIds = partnersList.stream()

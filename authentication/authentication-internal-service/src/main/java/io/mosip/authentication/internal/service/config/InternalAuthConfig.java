@@ -11,8 +11,11 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IDAEventType;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
@@ -27,11 +30,16 @@ import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
 @Configuration
 public class InternalAuthConfig extends IdAuthConfig {
 	
+	private static Logger logger = IdaLogger.getLogger(InternalAuthConfig.class);
+	
 	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
 	private String hubURL;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CALLBACK_URL +"}")
-	private String callbackURL;
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
+	private String authTypeCallbackURL;
+	
+	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
+	private String credentialIssueCallbackURL;
 	
 	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
 	private String secret;
@@ -44,12 +52,20 @@ public class InternalAuthConfig extends IdAuthConfig {
 	
 	@PostConstruct
 	public void init() {
-		SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-		subscriptionRequest.setCallbackURL(callbackURL);
-		subscriptionRequest.setHubURL(hubURL);
-		subscriptionRequest.setSecret(secret);
-		subscriptionRequest.setTopic(IDAEventType.AUTH_TYPE_STATUS_UPDATE.name());
-		subscribe.subscribe(subscriptionRequest);
+		subscribeForAuthTypeEvents();
+	}
+
+	private void subscribeForAuthTypeEvents() {
+		try {
+			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
+			subscriptionRequest.setHubURL(hubURL);
+			subscriptionRequest.setSecret(secret);
+			subscriptionRequest.setTopic(IDAEventType.AUTH_TYPE_STATUS_UPDATE.name());
+			subscribe.subscribe(subscriptionRequest);
+		} catch (Exception e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), e.getMessage());
+		}
 	}
 
 

@@ -1,11 +1,8 @@
 package io.mosip.authentication.common.service.factory;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLASS_REST_HELPER;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
@@ -14,18 +11,11 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -34,7 +24,6 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -49,9 +38,6 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 public class RestRequestFactory {
-	
-	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
-
 
     private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 
@@ -62,9 +48,6 @@ public class RestRequestFactory {
     /** The env. */
     @Autowired
     private Environment env;
-    
-    @Autowired
-	private ObjectMapper mapper;
 
     /** The logger. */
     private static Logger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
@@ -140,11 +123,6 @@ public class RestRequestFactory {
 	try {
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(IdAuthConfigKeyConstants.REST_HEADERS_MEDIA_TYPE))));
-	    Optional<String> authToken = RestHelper.getAuthToken();
-		if(authToken.isEmpty()) {
-			Optional<String> newAuthToken = generateAuthToken();
-			newAuthToken.ifPresent(token -> headers.add("Cookie", token));
-		}
 	    return headers;
 	} catch (InvalidMediaTypeException e) {
 	    mosipLogger.error(IdAuthCommonConstants.SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
@@ -155,35 +133,6 @@ public class RestRequestFactory {
 			    serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 	}
     }
-    
-    private Optional<String> generateAuthToken() {
-		ObjectNode requestBody = mapper.createObjectNode();
-		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));
-		requestBody.put("secretKey", env.getProperty("auth-token-generator.rest.secretKey"));
-		requestBody.put("appId", env.getProperty("auth-token-generator.rest.appId"));
-		RequestWrapper<ObjectNode> request = new RequestWrapper<>();
-		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
-		request.setRequest(requestBody);
-		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri")).post()
-				.syncBody(request).exchange().block();
-		if (response.statusCode() == HttpStatus.OK) {
-			ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-			if (responseBody != null && responseBody.get("response").get("status").asText().equalsIgnoreCase("success")) {
-				ResponseCookie responseCookie = response.cookies().get("Authorization").get(0);
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
-						"Auth token generated successfully and set");
-				return Optional.of(responseCookie.getValue());
-			} else {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
-						"Auth token generation failed: " + response);
-			}
-		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
-					"AuthResponse : status-" + response.statusCode() + " :\n"
-							+ response.toEntity(String.class).block().getBody());
-		}
-		return Optional.empty();
-	}
 
     /**
      * Construct params.

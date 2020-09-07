@@ -20,6 +20,7 @@ import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,7 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
+@Qualifier("external")
 @NoArgsConstructor
 public class RestHelperImpl implements RestHelper {
 
