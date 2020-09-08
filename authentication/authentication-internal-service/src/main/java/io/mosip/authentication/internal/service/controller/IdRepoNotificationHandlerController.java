@@ -108,7 +108,9 @@ public class IdRepoNotificationHandlerController {
 			Arrays.stream(IDAEventType.values()).forEach(eventType -> {
 				String topic = partnerId + "/" + eventType.toString();
 				try {
+					logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
 					publisher.registerTopic(topic, publisherUrl);
+					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
 				} catch (Exception e) {
 					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 				}
@@ -128,8 +130,9 @@ public class IdRepoNotificationHandlerController {
 							subscriptionRequest.setHubURL(hubURL);
 							subscriptionRequest.setSecret(secret);
 							subscriptionRequest.setTopic(topic);
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
+							logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
 							subscribe.subscribe(subscriptionRequest);
+							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
 						} catch (Exception e) {
 							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 							throw e;
@@ -153,6 +156,7 @@ public class IdRepoNotificationHandlerController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/credentialIssueanceCallback",topic = "*/CREDENTIAL_ISSUED")
 	public ResponseWrapper<?> handleEvents(@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback");
 		DataValidationUtil.validate(e);
 		handleEvents(eventModel);
 		return new ResponseWrapper<>();
