@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,7 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -95,11 +97,19 @@ public class IdRepoNotificationHandlerController {
 		binder.addValidators(validator);
 	}
 	
-	@PostConstruct
-	public void postConstrcut() {
+	//@PostConstruct
+	public void init() {
 		List<String> partnerIds = partnerServiceManager.getPartnerIds();
 		tryRegisterTopicCredentialIssueanceEvents(partnerIds);
 		subscribeForCredentialIssueanceEvents(partnerIds);
+	}
+	
+	@PostMapping(value = "/initCredEventSubsriptions")
+	public ResponseEntity<?> initSubsriptions()
+			throws IdAuthenticationAppException, IDDataValidationException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Inside initializing subscriptions api");
+		init();
+		return ResponseEntity.ok().build();
 	}
 	
 	private void tryRegisterTopicCredentialIssueanceEvents(List<String> partnerIds) {
@@ -112,7 +122,7 @@ public class IdRepoNotificationHandlerController {
 					publisher.registerTopic(topic, publisherUrl);
 					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
 				} catch (Exception e) {
-					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
+					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
 				}
 			});
 			
