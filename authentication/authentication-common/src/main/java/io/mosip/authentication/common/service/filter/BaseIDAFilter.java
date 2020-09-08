@@ -480,11 +480,7 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
 			requestWrapper.resetInputStream();
-			responseMap.put(VERSION,
-					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
-			requestWrapper.resetInputStream();
-			responseMap.put(IdAuthCommonConstants.ID,
-					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
+			addIdAndVersionToRespons(requestWrapper, responseMap);
 			if (responseMap.containsKey(ERRORS)) {
 				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List
 						? (List<AuthError>) responseMap.get(ERRORS)
@@ -503,6 +499,14 @@ public abstract class BaseIDAFilter implements Filter {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	protected void addIdAndVersionToRespons(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> responseMap) {
+		responseMap.put(VERSION,
+				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
+		requestWrapper.resetInputStream();
+		responseMap.put(IdAuthCommonConstants.ID,
+				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
 	}
 
 	/**

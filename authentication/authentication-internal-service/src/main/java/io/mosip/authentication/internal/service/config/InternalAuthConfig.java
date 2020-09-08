@@ -68,7 +68,9 @@ public class InternalAuthConfig extends IdAuthConfig {
 	private void tryRegisterTopicForAuthEvents() {
 		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Trying to register topic: " + topic);
 			publisher.registerTopic(topic, publisherUrl);	
+			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Registered topic: " + topic);
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 		}
@@ -82,8 +84,9 @@ public class InternalAuthConfig extends IdAuthConfig {
 			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(secret);
 			subscriptionRequest.setTopic(topic);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to register topic: " + topic);
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to subscribe to topic: " + topic);
 			subscribe.subscribe(subscriptionRequest);
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Subscribed to topic: " + topic);
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 			throw e;
