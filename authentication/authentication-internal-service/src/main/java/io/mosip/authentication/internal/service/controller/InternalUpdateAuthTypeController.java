@@ -3,7 +3,9 @@ package io.mosip.authentication.internal.service.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -37,6 +39,17 @@ public class InternalUpdateAuthTypeController {
 
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	@GetMapping(value = "/authTypeCallback")
+	public String updateAuthtypeStatusIntentVerifier(
+			@RequestParam(name = "hub.mode", required = false) String mode,
+			@RequestParam(name = "hub.topic", required = false) String topic,
+			@RequestParam(name = "hub.challenge", required = false) String challenge,
+			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
+			)
+			throws IdAuthenticationAppException, IDDataValidationException {
+		return challenge;
+	}
 
 	@PostMapping(value = "/authTypeCallback", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
