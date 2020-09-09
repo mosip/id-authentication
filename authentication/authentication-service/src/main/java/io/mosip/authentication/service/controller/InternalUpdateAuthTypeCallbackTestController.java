@@ -71,23 +71,23 @@ public class InternalUpdateAuthTypeCallbackTestController {
 		subscribeForAuthTypeEvents();
 	}
 	
-	@GetMapping(value = "/authTypeCallback")
-	public ResponseEntity<String> updateAuthtypeStatusIntentVerifier(
-			@RequestParam(name = "intentMode", required = false) String intentMode,
-			@RequestParam(name = "hub.mode", required = false) String mode,
-			@RequestParam(name = "hub.topic", required = false) String topic,
-			@RequestParam(name = "hub.challenge", required = false) String challenge,
-			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
-			)
-			throws IdAuthenticationAppException, IDDataValidationException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatusIntentVerifier", "", "inside Intent verifier of credentialIssueanceCallback \n "
-				+ "intentMode: " + intentMode + "\n"
-				+ "mode: " + mode + "\n"
-				+ "topic: " + topic + "\n"
-				+ "challenge: " + challenge + "\n"
-				+ "lease_seconds: " + leaseSecs);
-		return ResponseEntity.ok().body(challenge == null ? "" : challenge);
-	}
+//	@GetMapping(value = "/authTypeCallback")
+//	public ResponseEntity<String> updateAuthtypeStatusIntentVerifier(
+//			@RequestParam(name = "intentMode", required = false) String intentMode,
+//			@RequestParam(name = "hub.mode", required = false) String mode,
+//			@RequestParam(name = "hub.topic", required = false) String topic,
+//			@RequestParam(name = "hub.challenge", required = false) String challenge,
+//			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
+//			)
+//			throws IdAuthenticationAppException, IDDataValidationException {
+//		logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatusIntentVerifier", "", "inside Intent verifier of credentialIssueanceCallback \n "
+//				+ "intentMode: " + intentMode + "\n"
+//				+ "mode: " + mode + "\n"
+//				+ "topic: " + topic + "\n"
+//				+ "challenge: " + challenge + "\n"
+//				+ "lease_seconds: " + leaseSecs);
+//		return ResponseEntity.ok().body(challenge == null ? "" : challenge);
+//	}
 	
 	private void tryRegisterTopicForAuthEvents() {
 		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
@@ -128,7 +128,7 @@ public class InternalUpdateAuthTypeCallbackTestController {
 	}
 	
 	@PostMapping(value = "/authTypeCallback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "O/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/auth/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
 	public void updateAuthtypeStatus(IDAEventsDTO events)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatus", "", "Inside authTypeCallback");
