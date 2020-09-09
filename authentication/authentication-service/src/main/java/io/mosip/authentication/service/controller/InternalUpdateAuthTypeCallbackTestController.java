@@ -86,8 +86,7 @@ public class InternalUpdateAuthTypeCallbackTestController {
 		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-			final String baseUrl = 
-					ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+			String baseUrl = "https://dev.mosip.net/idauthentication/v1/auth/";
 			String callbackUrl = baseUrl+"/authTypeCallback";
 			subscriptionRequest.setCallbackURL(callbackUrl);
 			subscriptionRequest.setHubURL(hubURL);
@@ -100,24 +99,6 @@ public class InternalUpdateAuthTypeCallbackTestController {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 			throw e;
 		}
-	}
-	
-	@GetMapping(value = "/authTypeCallback")
-	public ResponseEntity<String> updateAuthtypeStatusIntentVerifier(
-			@RequestParam(name = "intentMode", required = false) String intentMode,
-			@RequestParam(name = "hub.mode", required = false) String mode,
-			@RequestParam(name = "hub.topic", required = false) String topic,
-			@RequestParam(name = "hub.challenge", required = false) String challenge,
-			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
-			)
-			throws IdAuthenticationAppException, IDDataValidationException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatusIntentVerifier", "", "inside Intent verifier of credentialIssueanceCallback \n "
-				+ "intentMode: " + intentMode + "\n"
-				+ "mode: " + mode + "\n"
-				+ "topic: " + topic + "\n"
-				+ "challenge: " + challenge + "\n"
-				+ "lease_seconds: " + leaseSecs);
-		return ResponseEntity.ok().body(challenge == null ? "" : challenge);
 	}
 	
 	@PostMapping(value = "/initAuthTypeEventSubsriptions")
