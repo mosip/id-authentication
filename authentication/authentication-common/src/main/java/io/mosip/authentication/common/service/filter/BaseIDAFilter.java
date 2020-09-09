@@ -474,11 +474,12 @@ public abstract class BaseIDAFilter implements Filter {
 	@SuppressWarnings("unchecked")
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper,
 			Temporal requestTime) throws IdAuthenticationAppException {
+		String respStr = responseWrapper.toString();
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			Map<String, Object> responseMap = setResponseParams(requestBody,
-					getResponseBody(responseWrapper.toString()));
+					getResponseBody(respStr));
 			requestWrapper.resetInputStream();
 			addIdAndVersionToRespons(requestWrapper, responseMap);
 			if (responseMap.containsKey(ERRORS)) {
@@ -498,7 +499,8 @@ public abstract class BaseIDAFilter implements Filter {
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			//throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			return respStr;
 		}
 	}
 
