@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -98,6 +100,22 @@ public class InternalUpdateAuthTypeCallbackTestController {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 			throw e;
 		}
+	}
+	
+	@GetMapping(value = "/authTypeCallback")
+	public ResponseEntity<String> updateAuthtypeStatusIntentVerifier(
+			@RequestParam(name = "hub.mode", required = true) String mode,
+			@RequestParam(name = "hub.topic", required = true) String topic,
+			@RequestParam(name = "hub.challenge", required = true) String challenge,
+			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
+			)
+			throws IdAuthenticationAppException, IDDataValidationException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatusIntentVerifier", "", "inside Intent verifier of credentialIssueanceCallback \n "
+				+ "mode: " + mode + "\n"
+				+ "topic: " + topic + "\n"
+				+ "challenge: " + challenge + "\n"
+				+ "lease_seconds: " + leaseSecs);
+		return ResponseEntity.ok().body(challenge);
 	}
 	
 	@PostMapping(value = "/initAuthTypeEventSubsriptions")
