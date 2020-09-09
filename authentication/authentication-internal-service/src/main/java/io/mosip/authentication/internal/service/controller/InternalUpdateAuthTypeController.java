@@ -113,7 +113,7 @@ public class InternalUpdateAuthTypeController {
 	}
 	
 	@PostMapping(value = "/authTypeCallback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
 	public void updateAuthtypeStatus(IDAEventsDTO events)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {

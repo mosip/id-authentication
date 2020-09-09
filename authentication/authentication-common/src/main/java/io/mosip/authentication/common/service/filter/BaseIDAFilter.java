@@ -231,28 +231,28 @@ public abstract class BaseIDAFilter implements Filter {
 		requestWrapper.resetInputStream();
 		responseMap.replace(VERSION,
 				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
-
-		try {
-			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-					keyManager.signResponse(mapper.writeValueAsString(responseMap)));
-		} catch (IdAuthenticationAppException e) {
-			if (responseMap.containsKey(IdAuthCommonConstants.ERRORS)
-					&& responseMap.get(IdAuthCommonConstants.ERRORS) instanceof List) {
-				List<Object> errors = (List<Object>) responseMap.get(IdAuthCommonConstants.ERRORS);
-				boolean hasUnableToProcessError = errors.stream().filter(obj -> obj instanceof Map)
-						.map(obj -> (Map<String, Object>) obj)
-						.anyMatch(map -> map.containsKey(IdAuthCommonConstants.ERROR_CODE)
-								&& map.get(IdAuthCommonConstants.ERROR_CODE)
-										.equals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode()));
-
-				if (!hasUnableToProcessError) {
-					AuthError authError = new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-					String errStr = mapper.writeValueAsString(authError);
-					errors.add(mapper.readValue(errStr.getBytes(), Map.class));
-				}
-			}
-		}
+//FIXME commented signing for testing
+//		try {
+//			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
+//					keyManager.signResponse(mapper.writeValueAsString(responseMap)));
+//		} catch (IdAuthenticationAppException e) {
+//			if (responseMap.containsKey(IdAuthCommonConstants.ERRORS)
+//					&& responseMap.get(IdAuthCommonConstants.ERRORS) instanceof List) {
+//				List<Object> errors = (List<Object>) responseMap.get(IdAuthCommonConstants.ERRORS);
+//				boolean hasUnableToProcessError = errors.stream().filter(obj -> obj instanceof Map)
+//						.map(obj -> (Map<String, Object>) obj)
+//						.anyMatch(map -> map.containsKey(IdAuthCommonConstants.ERROR_CODE)
+//								&& map.get(IdAuthCommonConstants.ERROR_CODE)
+//										.equals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode()));
+//
+//				if (!hasUnableToProcessError) {
+//					AuthError authError = new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+//							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+//					String errStr = mapper.writeValueAsString(authError);
+//					errors.add(mapper.readValue(errStr.getBytes(), Map.class));
+//				}
+//			}
+//		}
 
 		String responseAsString = mapper.writeValueAsString(responseMap);
 		response.getWriter().write(responseAsString);
