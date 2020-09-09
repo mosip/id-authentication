@@ -23,6 +23,8 @@ public class BioIdentityInfoDTO {
 	/** The Value for sessionKey */
 	private String sessionKey;
 	
+	private String apiSpec;
+	
 	/** The Value for signature */
 	private String thumbprint;
 }
