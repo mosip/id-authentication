@@ -490,8 +490,9 @@ public abstract class BaseIDAFilter implements Filter {
 				}
 			}
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
-			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-					keyManager.signResponse(responseAsString));
+			//FIXME commented for testing
+//			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
+//					keyManager.signResponse(responseAsString));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
 			return responseAsString;
