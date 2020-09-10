@@ -1,13 +1,13 @@
 package io.mosip.authentication.internal.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,48 +17,36 @@ import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
-import io.mosip.authentication.internal.service.validator.IdEventNotificationValidator;
+import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
+import io.mosip.authentication.internal.service.validator.CredentialIssueEventValidator;
 import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.websub.spi.PublisherClient;
-import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
-import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code IdRepoNotificationHandlerController} used to handle the
+ * The {@code CredentialIssueanceCallbackController} used to handle the
  * notification events posted by ID Repo module.
  *
  * @author Loganathan Sekar
  */
 @RestController
-public class IdRepoNotificationHandlerController {
+public class CredentialIssueanceCallbackController {
 	
-	private static Logger logger = IdaLogger.getLogger(IdRepoNotificationHandlerController.class);
+	private static Logger logger = IdaLogger.getLogger(CredentialIssueanceCallbackController.class);
 	
 	/** The id change event handler service. */
 	@Autowired
-	private IdChangeEventHandlerService idChangeEventHandlerService;
+	private CredentialStoreService credentialStoreService;
 
 	/** The validator. */
 	@Autowired
-	private IdEventNotificationValidator validator;
+	private CredentialIssueEventValidator validator;
 	
-	
-	@Autowired
-	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
-	
-	@Autowired
-	private PublisherClient<String, EventModel, HttpHeaders> publisher; 
-
 	/**
 	 * Inits the binder.
 	 *
@@ -80,12 +68,12 @@ public class IdRepoNotificationHandlerController {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'RESIDENT', 'ID_AUTHENTICATION')")
-	@PostMapping(path = "/callback/credentialIssueanceCallback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/callback/{partnerId}/credentialIssueanceCallback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/*/credentialIssueanceCallback",topic = "*/CREDENTIAL_ISSUED")
-	public ResponseWrapper<?> handleEvents(@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback");
+	public ResponseWrapper<?> handleEvents(@PathVariable("partnerId") String partnerId, @Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		DataValidationUtil.validate(e);
 		handleEvents(eventModel);
 		return new ResponseWrapper<>();
@@ -99,7 +87,7 @@ public class IdRepoNotificationHandlerController {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void handleEvents(EventModel events) throws IdAuthenticationBusinessException {
-		idChangeEventHandlerService.handleIdEvent(events);
+		credentialStoreService.handleIdEvent(events);
 	}
 
 }

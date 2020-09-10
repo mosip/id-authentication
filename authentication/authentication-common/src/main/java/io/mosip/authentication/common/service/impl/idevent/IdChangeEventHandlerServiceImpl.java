@@ -32,7 +32,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
+import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.Event;
 import io.mosip.idrepository.core.dto.EventModel;
@@ -46,7 +46,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Loganathan Sekar
  */
 @Service
-public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
+public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	
 	private static final String TOKEN = "TOKEN";
 
@@ -120,7 +120,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	private ObjectMapper objectMapper;
 	
 	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
+	 * @see io.mosip.authentication.core.spi.idevent.service.CredentialStoreService#handleIdEvent(java.util.List)
 	 */
 	@Override
 	public void handleIdEvent(EventModel event) throws IdAuthenticationBusinessException {

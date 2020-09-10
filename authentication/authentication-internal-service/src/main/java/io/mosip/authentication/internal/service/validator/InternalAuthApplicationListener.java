@@ -1,5 +1,12 @@
 package io.mosip.authentication.internal.service.validator;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
@@ -28,21 +34,26 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(InternalAuthApplicationListener.class);
+	
+	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
+	@Value("${"+ IDA_WEBSUB_HUB_URL +"}")
 	private String hubURL;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL +"}")
+	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
+	@Value("${"+ IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
 	private String authTypeCallbackURL;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
+	@Value("${"+ IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
 	private String credentialIssueCallbackURL;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
-	private String secret;
+	@Value("${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}")
+	private String autypeCallbackSecret;
+	
+	@Value("${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}")
+	private String credIssueCallbacksecret;
 	
 	@Autowired
 	private PartnerServiceManager partnerServiceManager;
@@ -70,7 +81,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
 			subscriptionRequest.setHubURL(hubURL);
-			subscriptionRequest.setSecret(secret);
+			subscriptionRequest.setSecret(autypeCallbackSecret);
 			subscriptionRequest.setTopic(topic);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to subscribe to topic: " + topic + " callback-url: " + authTypeCallbackURL);
 			subscribe.subscribe(subscriptionRequest);
@@ -103,7 +114,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 		private void tryRegisterTopicCredentialIssueanceEvents(List<String> partnerIds) {
 			partnerIds.forEach(partnerId -> {
 				
-				Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+				Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
 					String topic = partnerId + "/" + eventType.toString();
 					try {
 						logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
@@ -120,13 +131,13 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 		private void subscribeForCredentialIssueanceEvents(List<String> partnerIds) {
 					partnerIds.forEach(partnerId -> {
 						
-						Arrays.stream(IDAEventType.values()).forEach(eventType -> {
+						Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
 							String topic = partnerId + "/" + eventType.toString();
 							try {
 								SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 								subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
 								subscriptionRequest.setHubURL(hubURL);
-								subscriptionRequest.setSecret(secret);
+								subscriptionRequest.setSecret(credIssueCallbacksecret);
 								subscriptionRequest.setTopic(topic);
 								logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
 								subscribe.subscribe(subscriptionRequest);
