@@ -5,8 +5,9 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,124 +15,114 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDTO;
-import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDTO;
-import io.mosip.authentication.common.service.integration.dto.PublicKeyResponseDto;
-import io.mosip.authentication.common.service.integration.dto.TimestampRequestDTO;
-import io.mosip.authentication.common.service.integration.dto.ValidatorResponseDTO;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.dto.SignatureStatusDto;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.internal.service.manager.KeyServiceManager;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseFilter;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.keymanagerservice.dto.CSRGenerateRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.KeyPairGenerateRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.KeyPairGenerateResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
+import io.mosip.kernel.keymanagerservice.dto.UploadCertificateRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.UploadCertificateResponseDto;
+import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
 /**
- * Key manager controller
- * @author Nagarjuna
+ * This class provides controller methods for Key manager.
+ * 
+ * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
+ * @since 1.0.0
  *
  */
-
+@CrossOrigin
 @RestController
+@Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
-	@Autowired
-	private Environment env;
-	
+	@Value("${mosip.sign.refid:SIGN}")
+	private String certificateSignRefID;
+
+	/** The sign applicationid. */
+	@Value("${mosip.sign.applicationid:KERNEL}")
+	private String signApplicationid;
+
 	/**
 	 * Instance for KeymanagerService
 	 */
 	@Autowired
-	KeyServiceManager keymanagerService;
-	
+	KeymanagerService keymanagerService;
+
 	/**
-	 * Request mapping to get Public Key
+	 * Generate Master Key for the provided APP ID.
 	 * 
-	 * @param applicationId Application id of the application requesting publicKey
-	 * @param timeStamp     Timestamp of the request
-	 * @param referenceId   Reference id of the application requesting publicKey
-	 * @return {@link PublicKeyResponse} instance
-	 * @throws IdAuthenticationBusinessException 
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
-	@GetMapping(value = "/publickey/{applicationId}")
-	public PublicKeyResponseDto getPublicKey(
-			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
-			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) throws IdAuthenticationBusinessException {
-		PublicKeyResponseDto responseDto = new PublicKeyResponseDto();
-		PublicKeyResponse<String> response = null;
-		if (applicationId.equalsIgnoreCase(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_APPID)) && referenceId.isPresent()
-				&& referenceId.get().equals(env.getProperty(IdAuthConfigKeyConstants.IDA_SIGN_REFID))) {
-			response = keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId);
-		} else {
-			response = keymanagerService.getPublicKey(applicationId, timestamp, referenceId);
-		}
-		responseDto.setResponse(response);
-		return responseDto;
-	}
-	
-	/**
-	 * Controller for Encrypt the data
-	 * 
-	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
-	 * @return {@link CryptomanagerResponseDto} encrypted Data
-	 * @throws IdAuthenticationBusinessException 
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
-	@PostMapping(value = "/encrypt", produces = "application/json")
-	public CryptomanagerResponseDTO encrypt(
-			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO requestDto) throws IdAuthenticationBusinessException {
-		CryptomanagerResponseDTO responseDto = new CryptomanagerResponseDTO();
-		responseDto.setResponse(keymanagerService.encrypt(requestDto.getRequest().getData(),requestDto.getRequest().getReferenceId(),requestDto.getRequest().getAad(),requestDto.getRequest().getSalt()));
-		return responseDto;
-	}
-	
-	/**
-	 * Controller for Decrypt the data
-	 * 
-	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
-	 * @return {@link CryptomanagerResponseDto} decrypted Data
-	 * @throws IdAuthenticationBusinessException 
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")		
-	@PostMapping(value = "/decrypt", produces = "application/json")
-	public CryptomanagerResponseDTO decrypt(
-			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid CryptomanagerRequestDTO cryptomanagerRequestDto) throws IdAuthenticationBusinessException {
-		CryptomanagerResponseDTO responseDto = new CryptomanagerResponseDTO();
-		responseDto.setResponse(keymanagerService.decrypt(cryptomanagerRequestDto.getRequest()));
-		return responseDto;
-	}
-	
-	/**
-	 * Controller for verifying the jwsSignature the data
-	 * 
-	 * @param cryptomanagerRequestDto {@link CryptomanagerRequestDto} request
-	 * @return {@link CryptomanagerResponseDto} decrypted Data
-	 * @throws IdAuthenticationBusinessException 
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
-	@PostMapping(value = "/verify", produces = "application/json")
-	public SignatureStatusDto verify(
-			@ApiParam("data to verify") @RequestBody @Valid String jwsSignature) throws IdAuthenticationBusinessException {
-		return keymanagerService.verifySignature(jwsSignature);
-	}
-	
-	/**
-	 * Controller for validating the signature
-	 * @param timestampRequestDto
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT','ID_AUTHENTICATION')")	
-	@PostMapping(value = "/validate")
-	public ValidatorResponseDTO validate(
-			@RequestBody @Valid TimestampRequestDTO timestampRequestDto) throws IdAuthenticationBusinessException {
-		ValidatorResponseDTO responseDto = new ValidatorResponseDTO();
-		responseDto.setResponse(keymanagerService.validateSinature(timestampRequestDto.getRequest()));
-		return responseDto;
+	 * @param objectType 			   response Object Type. Support types are Certificate/CSR. Path Parameter.
+	 * @param keyPairGenRequestDto     {@link KeyPairGenerateRequestDto} request
+	 * @return {@link KeyPairGenerateResponseDto} instance
+	*/
+	//t@PreAuthorize("hasAnyRole('KEY_MAKER')")
+	@ResponseFilter
+	@PostMapping(value = "/generateMasterKey/{objectType}")
+	public ResponseWrapper<KeyPairGenerateResponseDto> generateMasterKey(
+			@ApiParam("Response Type Certificate/CSR") @PathVariable("objectType") String objectType,
+			@RequestBody @Valid RequestWrapper<KeyPairGenerateRequestDto> keyPairGenRequestDto) {
+
+		ResponseWrapper<KeyPairGenerateResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.generateMasterKey(objectType, keyPairGenRequestDto.getRequest()));
+		return response;
 	}
 
+	/**
+	 * Request to get Certificate for the Provided APP ID & REF ID.
+	 * 
+	 * @param applicationId Application id of the application requesting Certificate
+	 * @param referenceId   Reference id of the application requesting Certificate. Blank in case of Master Key.
+	 * @return {@link KeyPairGenerateResponseDto} instance
+	*/
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN','RESIDENT')")
+	@ResponseFilter
+	@GetMapping(value = "/getCertificate")
+	public ResponseWrapper<KeyPairGenerateResponseDto> getCertificate(
+		@ApiParam("Id of application") @RequestParam("applicationId") String applicationId,
+		@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+
+		ResponseWrapper<KeyPairGenerateResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.getCertificate(applicationId, referenceId));
+		return response;
+	}
+
+	/**
+	 * Request to Generate CSR for the provided APP ID & REF ID along with other certificate params.
+	 * 
+	 * @param csrGenRequestDto     {@link CSRGenerateRequestDto} request
+	 * @return {@link KeyPairGenerateResponseDto} instance
+	*/
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN','RESIDENT')")
+	@ResponseFilter
+	@PostMapping(value = "/generateCSR")
+	public ResponseWrapper<KeyPairGenerateResponseDto> generateCSR(
+		@RequestBody @Valid RequestWrapper<CSRGenerateRequestDto> csrGenRequestDto) {
+
+		ResponseWrapper<KeyPairGenerateResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.generateCSR(csrGenRequestDto.getRequest()));
+		return response;
+	}
+
+	/**
+	 * Update signed certificate for the provided APP ID & REF ID.
+	 * 
+	 * @param uploadCertRequestDto     {@link UploadCertificateRequestDto} request
+	 * @return {@link UploadCertificateResponseDto} instance
+	*/
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN','RESIDENT')")
+	@ResponseFilter
+	@PostMapping(value = "/uploadCertificate")
+	public ResponseWrapper<UploadCertificateResponseDto> uploadCertificate(
+		@RequestBody @Valid RequestWrapper<UploadCertificateRequestDto> uploadCertRequestDto) {
+
+		ResponseWrapper<UploadCertificateResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.uploadCertificate(uploadCertRequestDto.getRequest()));
+		return response;
+	}
 }

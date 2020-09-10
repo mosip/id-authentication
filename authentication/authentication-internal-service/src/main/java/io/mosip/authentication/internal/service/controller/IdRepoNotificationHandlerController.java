@@ -1,15 +1,8 @@
 package io.mosip.authentication.internal.service.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -19,17 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.authentication.internal.service.validator.IdEventNotificationValidator;
-import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -63,23 +52,6 @@ public class IdRepoNotificationHandlerController {
 	@Autowired
 	private IdEventNotificationValidator validator;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
-	private String hubURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL +"}")
-	private String publisherUrl;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
-	private String authTypeCallbackURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
-	private String credentialIssueCallbackURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
-	private String secret;
-	
-	@Autowired
-	private PartnerServiceManager partnerServiceManager;
 	
 	@Autowired
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
@@ -97,60 +69,7 @@ public class IdRepoNotificationHandlerController {
 		binder.addValidators(validator);
 	}
 	
-	//@PostConstruct
-	public void init() {
-		List<String> partnerIds = partnerServiceManager.getPartnerIds();
-		tryRegisterTopicCredentialIssueanceEvents(partnerIds);
-		subscribeForCredentialIssueanceEvents(partnerIds);
-	}
 	
-	@PostMapping(value = "/initCredEventSubsriptions")
-	public ResponseEntity<?> initSubsriptions()
-			throws IdAuthenticationAppException, IDDataValidationException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Inside initializing subscriptions api");
-		init();
-		return ResponseEntity.ok().build();
-	}
-	
-	private void tryRegisterTopicCredentialIssueanceEvents(List<String> partnerIds) {
-		partnerIds.forEach(partnerId -> {
-			
-			Arrays.stream(IDAEventType.values()).forEach(eventType -> {
-				String topic = partnerId + "/" + eventType.toString();
-				try {
-					logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
-					publisher.registerTopic(topic, publisherUrl);
-					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
-				} catch (Exception e) {
-					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
-				}
-			});
-			
-		});
-	}
-
-	private void subscribeForCredentialIssueanceEvents(List<String> partnerIds) {
-				partnerIds.forEach(partnerId -> {
-					
-					Arrays.stream(IDAEventType.values()).forEach(eventType -> {
-						String topic = partnerId + "/" + eventType.toString();
-						try {
-							SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-							subscriptionRequest.setCallbackURL(credentialIssueCallbackURL);
-							subscriptionRequest.setHubURL(hubURL);
-							subscriptionRequest.setSecret(secret);
-							subscriptionRequest.setTopic(topic);
-							logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
-							subscribe.subscribe(subscriptionRequest);
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
-						} catch (Exception e) {
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
-							throw e;
-						}
-					});
-					
-				});
-	}
 	
 	/**
 	 * Handle events end point.
@@ -161,10 +80,10 @@ public class IdRepoNotificationHandlerController {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'RESIDENT', 'ID_AUTHENTICATION')")
-	@PostMapping(path = "/credentialIssueanceCallback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/callback/credentialIssueanceCallback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/credentialIssueanceCallback",topic = "*/CREDENTIAL_ISSUED")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/*/credentialIssueanceCallback",topic = "*/CREDENTIAL_ISSUED")
 	public ResponseWrapper<?> handleEvents(@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback");
 		DataValidationUtil.validate(e);
