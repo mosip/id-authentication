@@ -73,7 +73,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 
-	@Value("${subscriptions-delay-on-startup:30000}")
+	@Value("${subscriptions-delay-on-startup:60000}")
 	private int taskSubsctiptionDelay; 
 	
 	private void tryRegisterTopicForAuthEvents() {
@@ -106,7 +106,6 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		taskSubsctiptionDelay = 30000;
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
 		taskScheduler.schedule(
 				  this::initSubsriptions,
