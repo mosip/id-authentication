@@ -12,7 +12,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class IdEventNotificationValidatorTest {
+public class CredentialIssueEventValidatorTest {
 	
 //	/** The uin validator. */
 //	@Mock
@@ -26,7 +26,7 @@ public class IdEventNotificationValidatorTest {
 //	Environment env;
 //	
 //	@InjectMocks
-//	IdEventNotificationValidator validator;
+//	CredentialIssueEventValidator validator;
 //
 //	@Before
 //	public void setUp() throws Exception {
@@ -35,14 +35,14 @@ public class IdEventNotificationValidatorTest {
 //		ReflectionTestUtils.setField(validator, "vidValidator", vidValidator);
 //	}
 //
-//	private IdEventNotificationValidator createTestSubject() {
+//	private CredentialIssueEventValidator createTestSubject() {
 //		return validator;
 //	}
 //
 //	
 //	@Test
 //	public void testValidateMissingRequest() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
 //		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
 //		Errors errors =  new BeanPropertyBindingResult(requestWrapper, "RequestWrapper");
@@ -56,7 +56,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateNullEventsList() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
 //		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
 //		EventsDTO eventsDto = new EventsDTO();
@@ -73,7 +73,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEmptyEventsList() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
 //		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
 //		EventsDTO eventsDto = new EventsDTO();
@@ -95,7 +95,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateValidReq() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -122,7 +122,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEventNoUinVid() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -143,7 +143,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEventInvalidUin() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -165,7 +165,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEventInvalidVid() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -187,7 +187,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEventInvalidTranasctionLimit() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -210,7 +210,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testValidateEventValid() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -235,7 +235,7 @@ public class IdEventNotificationValidatorTest {
 //
 //	@Test
 //	public void testValidateEvents() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -260,7 +260,7 @@ public class IdEventNotificationValidatorTest {
 //
 //	@Test
 //	public void testValidateRequestWrapperMissingId() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -287,7 +287,7 @@ public class IdEventNotificationValidatorTest {
 //	@Ignore
 //	@Test
 //	public void testValidateRequestWrapperMissingRequestTime() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -315,7 +315,7 @@ public class IdEventNotificationValidatorTest {
 //	@Ignore
 //	@Test
 //	public void testValidateRequestWrapperFutureRequestTime() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -343,7 +343,7 @@ public class IdEventNotificationValidatorTest {
 //
 //	@Test
 //	public void testSupports() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		Class<?> clazz = RequestWrapper.class;
 //		boolean result;
 //
@@ -355,7 +355,7 @@ public class IdEventNotificationValidatorTest {
 //	
 //	@Test
 //	public void testSupportsInvalidClass() throws Exception {
-//		IdEventNotificationValidator testSubject;
+//		CredentialIssueEventValidator testSubject;
 //		Class<?> clazz = AuthRequestDTO.class;
 //		boolean result;
 //

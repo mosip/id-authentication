@@ -92,7 +92,7 @@
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
+		<kernel-auth-adapter.version>1.2.0-SNAPSHOT</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>

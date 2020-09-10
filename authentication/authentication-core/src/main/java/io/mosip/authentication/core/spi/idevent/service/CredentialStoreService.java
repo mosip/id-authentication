@@ -8,7 +8,7 @@ import io.mosip.idrepository.core.dto.EventModel;
  *
  * @author Loganathan Sekar
  */
-public interface IdChangeEventHandlerService {
+public interface CredentialStoreService {
 	
 	/**
 	 * Handle id event.
