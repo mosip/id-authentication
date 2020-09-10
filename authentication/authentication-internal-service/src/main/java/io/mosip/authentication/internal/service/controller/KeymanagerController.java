@@ -53,6 +53,33 @@ public class KeymanagerController {
 	 */
 	@Autowired
 	KeymanagerService keymanagerService;
+	
+	/**
+	 * Request mapping to get Public Key
+	 * Use getCertificate to get the certificate.
+	 * @param applicationId Application id of the application requesting publicKey
+	 * @param timeStamp     Timestamp of the request
+	 * @param referenceId   Reference id of the application requesting publicKey
+	 * @return {@link PublicKeyResponse} instance
+	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','ID_AUTHENTICATION','TEST','PRE_REGISTRATION_ADMIN','RESIDENT')")
+	@ResponseFilter
+	@GetMapping(value = "/publickey/{applicationId}")
+	@Deprecated
+	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+
+		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
+		if (applicationId.equalsIgnoreCase(signApplicationid) && referenceId.isPresent()
+				&& referenceId.get().equals(certificateSignRefID)) {
+			response.setResponse(keymanagerService.getSignPublicKey(applicationId, timestamp, referenceId));
+		} else {
+			response.setResponse(keymanagerService.getPublicKey(applicationId, timestamp, referenceId));
+		}
+		return response;
+	}
 
 	/**
 	 * Generate Master Key for the provided APP ID.
