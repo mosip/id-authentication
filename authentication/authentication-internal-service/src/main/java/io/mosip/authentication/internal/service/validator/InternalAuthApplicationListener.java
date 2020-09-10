@@ -9,6 +9,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -63,10 +65,16 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	private PublisherClient<String, EventModel, HttpHeaders> publisher; 
 	
 	@Autowired
-	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
+	private SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
+	
+	@Autowired
+	private ThreadPoolTaskScheduler taskScheduler;
 
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
-	private String authPartherId; 
+	private String authPartherId;
+
+	@Value("${subsctiption-delay:30000}")
+	private int taskSubsctiptionDelay; 
 	
 	private void tryRegisterTopicForAuthEvents() {
 		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
@@ -98,6 +106,17 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		taskSubsctiptionDelay = 30000;
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
+		taskScheduler.schedule(
+				  this::initSubsriptions,
+				  new Date(System.currentTimeMillis() + taskSubsctiptionDelay)
+				);
+		
+	}
+
+	private void initSubsriptions() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing subscribptions..");
 		initAuthTypeEvent();	
 		initCredentialIssueanceEvent();
 	}
