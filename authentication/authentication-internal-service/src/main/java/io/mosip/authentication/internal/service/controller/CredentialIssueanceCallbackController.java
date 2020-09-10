@@ -2,14 +2,17 @@ package io.mosip.authentication.internal.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -55,6 +58,40 @@ public class CredentialIssueanceCallbackController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
+	}
+	
+	/**
+	 * Temporary intent verifier to support path params in callback
+	 * 
+	 * @param partnerId
+	 * @param eventType
+	 * @param intentMode
+	 * @param mode
+	 * @param topic
+	 * @param challenge
+	 * @param leaseSecs
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	@GetMapping(path = "/callback/idchange/{partnerId}/{eventType}")
+	@ApiOperation(value = "Event Notification Callback Intent Verifier API", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	public ResponseEntity<String> handleEvents(@PathVariable("partnerId") String partnerId, 
+			@PathVariable("eventType") String eventType,
+			@RequestParam(name = "intentMode", required = false) String intentMode,
+			@RequestParam(name = "hub.mode", required = false) String mode,
+			@RequestParam(name = "hub.topic", required = false) String topic,
+			@RequestParam(name = "hub.challenge", required = false) String challenge,
+			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
+			) throws IdAuthenticationBusinessException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside intent verification callback for partnerId: " + partnerId 
+				+ " \neventType: " + eventType + "\n "
+				+ "intentMode: " + intentMode + "\n"
+				+ "mode: " + mode + "\n"
+				+ "topic: " + topic + "\n"
+				+ "challenge: " + challenge + "\n"
+				+ "lease_seconds: " + leaseSecs);
+		return ResponseEntity.ok().body(challenge == null ? "" : challenge);
 	}
 	
 	

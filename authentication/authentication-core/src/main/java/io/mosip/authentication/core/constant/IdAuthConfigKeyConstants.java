@@ -125,7 +125,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
-
+	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup";
 
 	
 }
