@@ -73,7 +73,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 
-	@Value("${subsctiption-delay:30000}")
+	@Value("${subscriptions-delay-on-startup:30000}")
 	private int taskSubsctiptionDelay; 
 	
 	private void tryRegisterTopicForAuthEvents() {
