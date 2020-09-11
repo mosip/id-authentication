@@ -85,8 +85,6 @@
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-keygenerator-bouncycastle.version>1.0.6</kernel-keygenerator-bouncycastle.version>
-		<kernel-crypto-jce.version>1.0.6</kernel-crypto-jce.version>
 		<kernel-logger-logback.version>1.0.6</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
