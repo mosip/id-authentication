@@ -16,8 +16,8 @@ DROP TABLE IF EXISTS ida.uin_encrypt_salt;
 DROP TABLE IF EXISTS ida.token_seed;
 DROP TABLE IF EXISTS ida.token_seq;
 
-ALTER TABLE ida.key_store ALTER COLUMN private_key character varying(2500) NOT NULL;
-ALTER TABLE ida.key_store ALTER COLUMN certificate_data character varying(2500) NOT NULL;
+ALTER TABLE ida.key_store ALTER COLUMN private_key TYPE character varying(2500);
+ALTER TABLE ida.key_store ALTER COLUMN certificate_data TYPE character varying(2500);
 
 DROP TABLE IF EXISTS ida.uin_auth_lock;
 DROP TABLE IF EXISTS ida.otp_transaction;
