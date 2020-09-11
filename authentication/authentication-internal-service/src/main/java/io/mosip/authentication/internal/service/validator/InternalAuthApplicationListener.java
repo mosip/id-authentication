@@ -6,7 +6,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -73,7 +74,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 
-	@Value("${subscriptions-delay-on-startup:30000}")
+	@Value("${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}")
 	private int taskSubsctiptionDelay; 
 	
 	private void tryRegisterTopicForAuthEvents() {
