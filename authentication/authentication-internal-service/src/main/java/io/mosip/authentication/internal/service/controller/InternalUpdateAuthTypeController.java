@@ -50,20 +50,20 @@ public class InternalUpdateAuthTypeController {
 	
 	@PostMapping(value = "/callback/authTypeCallback", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/callback/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
-	public void updateAuthtypeStatus(IDAEventsDTO events)
+	public void updateAuthtypeStatus(IDAEventDTO event)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {
-			List<IDAEventDTO> eventsList = events.getEvents();
-			for (IDAEventDTO event : eventsList) {
+//			List<IDAEventDTO> eventsList = events.getEvents();
+//			for (IDAEventDTO event : eventsList) {
 				authtypeStatusService.updateAuthTypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
 
 				auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
 						event.getTokenId(), IdType.UIN, "internal auth type status update status : " + true);
-			}
+//			}
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
-					events.getEvents().get(0).getTokenId(), IdType.UIN, e);
+//			auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
+//					events.getEvents().get(0).getTokenId(), IdType.UIN, e);
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 

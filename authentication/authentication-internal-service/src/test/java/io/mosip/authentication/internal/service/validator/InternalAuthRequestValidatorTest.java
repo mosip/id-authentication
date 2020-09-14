@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -214,6 +215,7 @@ public class InternalAuthRequestValidatorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testValidInternalAuthRequestValidator2() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -307,6 +309,7 @@ public class InternalAuthRequestValidatorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testValidInternalAuthRequestValidator() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
