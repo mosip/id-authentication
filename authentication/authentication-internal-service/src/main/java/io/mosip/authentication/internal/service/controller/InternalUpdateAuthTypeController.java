@@ -3,9 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,14 +11,12 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
-import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.idrepository.core.dto.IDAEventDTO;
 import io.mosip.idrepository.core.dto.IDAEventsDTO;
@@ -49,71 +45,11 @@ public class InternalUpdateAuthTypeController {
 	@Autowired
 	private AuditHelper auditHelper;
 	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL +"}")
-	private String hubURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL +"}")
-	private String publisherUrl;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
-	private String authTypeCallbackURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
-	private String credentialIssueCallbackURL;
-	
-	@Value("${"+ IdAuthConfigKeyConstants.IDA_WEBSUB_SECRET +"}")
-	private String secret;
-	
-	@Autowired
-	private PublisherClient<String, EventModel, HttpHeaders> publisher; 
-	
 	@Autowired
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
 	
-	//@PostConstruct
-	public void init() {
-		tryRegisterTopicForAuthEvents();
-		subscribeForAuthTypeEvents();
-	}
-
-	private void tryRegisterTopicForAuthEvents() {
-		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
-		try {
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Trying to register topic: " + topic);
-			publisher.registerTopic(topic, publisherUrl);	
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Registered topic: " + topic);
-		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
-		}
-	}
-
-	private void subscribeForAuthTypeEvents() {
-		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
-		try {
-			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
-			subscriptionRequest.setHubURL(hubURL);
-			subscriptionRequest.setSecret(secret);
-			subscriptionRequest.setTopic(topic);
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to subscribe to topic: " + topic);
-			subscribe.subscribe(subscriptionRequest);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Subscribed to topic: " + topic);
-		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
-			throw e;
-		}
-	}
-	
-	@PostMapping(value = "/initAuthTypeEventSubsriptions")
-	public ResponseEntity<?> initSubsriptions()
-			throws IdAuthenticationAppException, IDDataValidationException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Inside initializing subscriptions api");
-		init();
-		return ResponseEntity.ok().build();
-	}
-	
-	@PostMapping(value = "/authTypeCallback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	@PostMapping(value = "/callback/authTypeCallback", consumes = "application/json")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/callback/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
 	public void updateAuthtypeStatus(IDAEventsDTO events)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {

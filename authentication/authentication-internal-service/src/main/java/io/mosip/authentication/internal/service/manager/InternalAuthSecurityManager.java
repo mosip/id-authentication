@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+import io.mosip.kernel.auth.defaultadapter.model.AuthUserDetails;
 
 /**
  * 

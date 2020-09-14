@@ -91,16 +91,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
-			<version>${kernel-keygenerator-bouncycastle.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-jce</artifactId>
-			<version>${kernel-crypto-jce.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idgenerator-tokenid</artifactId>
 			<version>${kernel-idgenerator-tokenid.version}</version>
 			<exclusions>
