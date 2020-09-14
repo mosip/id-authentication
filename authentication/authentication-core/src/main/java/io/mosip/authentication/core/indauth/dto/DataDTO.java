@@ -43,7 +43,7 @@ public class DataDTO {
 	/** The Value for version */
 	private String version;
 	
-	private String domainUri;
+	private String domainURI;
 	
 	private Float requestedScore;
 	

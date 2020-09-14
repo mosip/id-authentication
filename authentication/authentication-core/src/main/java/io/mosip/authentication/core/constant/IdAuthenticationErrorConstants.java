@@ -57,6 +57,7 @@ public enum IdAuthenticationErrorConstants {
 	FAILED_TO_FETCH_KEY("IDA-MLC-021", "Failed to fetch key from HSM"),
 	UIN_DEACTIVATED_BLOCKED("IDA-MLC-022", "UIN is deactivated/blocked"),
 	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
+	INPUT_MISMATCH("IDA-MLC-024", "%s of request is not matching with %s of biometrics"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",

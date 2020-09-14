@@ -150,11 +150,13 @@ public abstract class BaseIDAFilter implements Filter {
 		};
 		try {
 			if (StringUtils.isEmpty(((HttpServletRequest) request).getHeader("Authorization"))) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"Missing authorization header");
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 								"Header - Authorization"));
-			}
+			} 
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
 				chain.doFilter(requestWrapper, responseWrapper);
