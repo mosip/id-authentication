@@ -1296,7 +1296,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_DOES_NOT_EXIST, null)));
@@ -1325,7 +1325,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_REVOKED_OR_RETIRED, null)));
@@ -1354,7 +1354,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_NOT_EXIST, null)));
@@ -1383,7 +1383,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_INACTIVE, null)));
@@ -1412,7 +1412,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_DOES_NOT_EXIST, null)));
 		when(restHelper.requestSync(Mockito.any()))
@@ -1439,7 +1439,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_INACTIVE_STATE, null)));
 		when(restHelper.requestSync(Mockito.any()))
@@ -1466,7 +1466,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.SW_ID_VERIFICATION_FAILED, null)));
@@ -1495,7 +1495,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(Collections
 				.singletonList(new ServiceError(IdAuthCommonConstants.FIELD_VALIDATION_FAILED, "Error on field type")));
@@ -1523,7 +1523,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		ResponseWrapper<String> response = new ResponseWrapper<>();
 		response.setErrors(
 				Collections.singletonList(new ServiceError(IdAuthCommonConstants.KER_DECRYPTION_FAILURE, null)));
@@ -1551,7 +1551,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, null));
 		try {
@@ -1576,7 +1576,7 @@ public class BioAuthServiceTest {
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setPurpose("AUTH");
 		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null, null, null));
+				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException());
 		try {

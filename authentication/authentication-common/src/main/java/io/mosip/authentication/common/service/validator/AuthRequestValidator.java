@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.validator;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 
 import java.util.List;
 import java.util.Objects;
@@ -112,45 +113,53 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
 		if (Objects.isNull(authRequestDto.getDomainUri())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "request domainURI is null");
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							"domainURI"));
+					IdAuthCommonConstants.VALIDATE, "request domainUri is null");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "domainUri"));
 		}
-		if (authRequestDto.getRequest().getBiometrics().stream().anyMatch(bio -> Objects.isNull(bio.getDomainUri()))) {
+		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
+						.anyMatch(bio -> Objects.isNull(bio.getData().getDomainUri()))) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "bio domainURI is null");
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					IdAuthCommonConstants.VALIDATE, "bio domainUri is null");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							"biometrics/domainURI"));
+							"biometrics/domainUri"));
 		}
 		if (Objects.isNull(authRequestDto.getEnv())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "request env is null");
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "env"));
 		}
-		if (authRequestDto.getRequest().getBiometrics().stream().anyMatch(bio -> Objects.isNull(bio.getEnv()))) {
+		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
+						.anyMatch(bio -> Objects.isNull(bio.getData().getEnv()))) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "bio env is null");
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 							"biometrics/env"));
 		}
 		if (!errors.hasErrors()) {
-			if (authRequestDto.getRequest().getBiometrics().stream()
-					.allMatch(bio -> bio.getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
+			if (Objects.nonNull(authRequestDto.getRequest())
+					&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+					&& authRequestDto.getRequest().getBiometrics().stream()
+							.filter(bio -> Objects.nonNull(bio.getData())).allMatch(
+									bio -> bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "request domainURI is no matching against bio domainURI");
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainURI",
-								"domainURI"));
+						IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String.format(
+						IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
 			}
-			if (authRequestDto.getRequest().getBiometrics().stream()
-					.allMatch(bio -> bio.getEnv().contentEquals(authRequestDto.getEnv()))) {
+			if (Objects.nonNull(authRequestDto.getRequest())
+					&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+					&& authRequestDto.getRequest().getBiometrics().stream()
+							.filter(bio -> Objects.nonNull(bio.getData()))
+							.allMatch(bio -> bio.getData().getEnv().contentEquals(authRequestDto.getEnv()))) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "request env is no matching against bio env");
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "env", "env"));
 			}
 		}

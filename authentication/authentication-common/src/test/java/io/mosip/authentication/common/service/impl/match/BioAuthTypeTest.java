@@ -45,13 +45,13 @@ public class BioAuthTypeTest {
 		
 		DataDTO data = new DataDTO();
 		data.setBioType(bioType);
-		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null, null, null);
+		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 		biometrics.add(bioIdentity);
 		
 		if(!single) {
 			data = new DataDTO();
 			data.setBioType(bioType);
-			bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null, null, null);
+			bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 			biometrics.add(bioIdentity);
 		}
 		
@@ -119,12 +119,12 @@ public class BioAuthTypeTest {
 		
 		DataDTO data = new DataDTO();
 		data.setBioType("Finger");
-		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null, null, null);
+		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 		biometrics.add(bioIdentity);
 		
 		data = new DataDTO();
 		data.setBioType("Iris");
-		bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null, null, null);
+		bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 			biometrics.add(bioIdentity);
 		
 		request.setBiometrics(biometrics);
