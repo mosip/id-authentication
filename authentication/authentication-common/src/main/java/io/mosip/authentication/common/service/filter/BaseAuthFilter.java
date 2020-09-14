@@ -152,7 +152,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		if (StringUtils.isEmpty(signature)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature"));
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature - header"));
 		} else if(!verifySignature(signature)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
@@ -161,7 +161,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		if (StringUtils.isEmpty(consentToken)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "consent token Auth is empty or null");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Authorization"));
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Authorization - header"));
 		}
 //		try {
 //			requestWrapper.resetInputStream();
