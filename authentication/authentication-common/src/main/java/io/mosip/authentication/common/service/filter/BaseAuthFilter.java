@@ -23,6 +23,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 /**
@@ -147,18 +148,31 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		String signature = requestWrapper.getHeader("Authorization");// FIXME header name
-		try {
-			requestWrapper.resetInputStream();
-			if (!validateRequestSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
-			}
-
-		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
+		String signature = requestWrapper.getHeader("signature");
+		if (StringUtils.isEmpty(signature)) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature"));
+		} else if(!verifySignature(signature)) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
 		}
+		String consentToken = requestWrapper.getHeader("Authorization");
+		if (StringUtils.isEmpty(consentToken)) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "consent token Auth is empty or null");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Authorization"));
+		}
+//		try {
+//			requestWrapper.resetInputStream();
+//			if (!validateRequestSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
+//				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
+//				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+//			}
+//		} catch (IOException e) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
+//		}
 	}
 
 	/**

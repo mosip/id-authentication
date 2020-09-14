@@ -110,14 +110,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
-		if (Objects.isNull(authRequestDto.getDomainURI())) {
+		if (Objects.isNull(authRequestDto.getDomainUri())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "request domainURI is null");
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 							"domainURI"));
 		}
-		if (authRequestDto.getRequest().getBiometrics().stream().anyMatch(bio -> Objects.isNull(bio.getDomainURI()))) {
+		if (authRequestDto.getRequest().getBiometrics().stream().anyMatch(bio -> Objects.isNull(bio.getDomainUri()))) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "bio domainURI is null");
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -139,7 +139,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 		if (!errors.hasErrors()) {
 			if (authRequestDto.getRequest().getBiometrics().stream()
-					.allMatch(bio -> bio.getDomainURI().contentEquals(authRequestDto.getDomainURI()))) {
+					.allMatch(bio -> bio.getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "request domainURI is no matching against bio domainURI");
 				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
