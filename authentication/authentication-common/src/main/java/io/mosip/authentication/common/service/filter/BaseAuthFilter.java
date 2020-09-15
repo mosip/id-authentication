@@ -148,15 +148,15 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		String signature = requestWrapper.getHeader("signature");
-		if (StringUtils.isEmpty(signature)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature - header"));
-		} else if(!verifySignature(signature)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
-		}
+//		String signature = requestWrapper.getHeader("signature");
+//		if (StringUtils.isEmpty(signature)) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+//					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature - header"));
+//		} else if(!verifySignature(signature)) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+//		}
 		String consentToken = requestWrapper.getHeader("Authorization");
 		if (StringUtils.isEmpty(consentToken)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "consent token Auth is empty or null");
