@@ -61,42 +61,6 @@ public class CredentialIssueanceCallbackController {
 	}
 	
 	/**
-	 * Temporary intent verifier to support path params in callback
-	 * 
-	 * @param partnerId
-	 * @param eventType
-	 * @param intentMode
-	 * @param mode
-	 * @param topic
-	 * @param challenge
-	 * @param leaseSecs
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	@GetMapping(path = "/callback/idchange/{eventType}/{partnerId}")
-	@ApiOperation(value = "Event Notification Callback Intent Verifier API", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	public ResponseEntity<String> handleEvents(@PathVariable("partnerId") String partnerId, 
-			@PathVariable("eventType") String eventType,
-			@RequestParam(name = "intentMode", required = false) String intentMode,
-			@RequestParam(name = "hub.mode", required = false) String mode,
-			@RequestParam(name = "hub.topic", required = false) String topic,
-			@RequestParam(name = "hub.challenge", required = false) String challenge,
-			@RequestParam(name = "hub.lease_seconds", required = false) String leaseSecs
-			) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside intent verification callback for partnerId: " + partnerId 
-				+ " \neventType: " + eventType + "\n "
-				+ "intentMode: " + intentMode + "\n"
-				+ "mode: " + mode + "\n"
-				+ "topic: " + topic + "\n"
-				+ "challenge: " + challenge + "\n"
-				+ "lease_seconds: " + leaseSecs);
-		return ResponseEntity.ok().body(challenge == null ? "" : challenge);
-	}
-	
-	
-	
-	/**
 	 * Handle events end point.
 	 *
 	 * @param notificationEventsDto the notification events dto
@@ -107,7 +71,7 @@ public class CredentialIssueanceCallbackController {
 	@PostMapping(path = "/callback/idchange/credential_issued/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/credential_issued/{partnerId}",topic = "${ida-auth-partner-id}/CREDENTIAL_ISSUED")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/credential_issued/{partnerId}",topic = "${ida-topic-credential-issued}")
 	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
@@ -125,7 +89,7 @@ public class CredentialIssueanceCallbackController {
 	@PostMapping(path = "/callback/idchange/remove_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/remove_id/{partnerId}",topic = "${ida-auth-partner-id}/REMOVE_ID")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/remove_id/{partnerId}",topic = "${ida-topic-remove-id}")
 	public ResponseWrapper<?> handleRemoveIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleRemoveIdEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
@@ -143,7 +107,7 @@ public class CredentialIssueanceCallbackController {
 	@PostMapping(path = "/callback/idchange/deactivate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/deactivate_id/{partnerId}",topic = "${ida-auth-partner-id}/DEACTIVATE_ID")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/deactivate_id/{partnerId}",topic = "${ida-topic-deactivate-id}")
 	public ResponseWrapper<?> handleDeactivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
@@ -161,7 +125,7 @@ public class CredentialIssueanceCallbackController {
 	@PostMapping(path = "/callback/idchange/activate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Event Notification Callback API", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/activate_id/{partnerId}",topic = "${ida-auth-partner-id}/ACTIVATE_ID")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2",callback = "/idauthentication/v1/internal/callback/idchange/activate_id/{partnerId}",topic = "${ida-topic-activate-id}")
 	public ResponseWrapper<?> handleActivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);

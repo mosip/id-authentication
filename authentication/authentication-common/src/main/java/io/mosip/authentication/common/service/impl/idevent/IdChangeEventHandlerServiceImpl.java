@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.entity.UinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
@@ -31,7 +30,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.Event;
@@ -68,7 +66,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 
 	private static final String MODULO = "MODULO";
 
-	private static final String ID_HASH = "ID_HASH";
+	private static final String ID_HASH = "id_hash";
 
 	/**
 	 * The Interface ConsumerWithBusinessException.
@@ -92,10 +90,6 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdChangeEventHandlerServiceImpl.class);
 	
-	/** The id repo manager. */
-	@Autowired
-	private IdRepoManager idRepoManager;
-	
 	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
@@ -103,10 +97,6 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	/** The identity cache repo. */
 	@Autowired
 	private IdentityCacheRepository identityCacheRepo;
-	
-	/** The mapper. */
-	@Autowired
-	private IdService<?> idService;
 	
 	/** The audit helper. */
 	@Autowired
@@ -200,15 +190,17 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	 */
 	private ConsumerWithBusinessException<EventModel, Void> getFunctionForEventType(String eventTopic) {
 		
-		if (IDAEventType.CREDENTIAL_ISSUED.toString().equals(eventTopic)) {
+		if (eventTopic.toLowerCase().contains(IDAEventType.CREDENTIAL_ISSUED.toString().toLowerCase())) {
 			return this::handleCredentialIssued;
-		} else if (IDAEventType.REMOVE_ID.toString().equals(eventTopic)) {
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.REMOVE_ID.toString().toLowerCase())) {
 			return this::handleRemoveId;
-		} else if (IDAEventType.DEACTIVATE_ID.toString().equals(eventTopic)) {
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.DEACTIVATE_ID.toString().toLowerCase())) {
 			return this::handleDeactivateId;
-		} else if (IDAEventType.ACTIVATE_ID.toString().equals(eventTopic)) {
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.ACTIVATE_ID.toString().toLowerCase())) {
 			return this::handleActicateId;
 		} else {
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"getFunctionForEventType", "Topic cannot be handled: " + eventTopic);
 			return list -> {return;};
 		}
 	}
@@ -316,7 +308,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 		updateIdentityMetadata(eventModel);
 	}
 
-	private void updateIdentityMetadata(EventModel eventModel) {
+	private void updateIdentityMetadata(EventModel eventModel) throws IdAuthenticationBusinessException {
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
@@ -336,6 +328,9 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			identityEntity.setTransactionLimit(transactionLimitInt);
 			
 			identityCacheRepo.save(identityEntity);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_HASH));
 		}
 	}
 	
