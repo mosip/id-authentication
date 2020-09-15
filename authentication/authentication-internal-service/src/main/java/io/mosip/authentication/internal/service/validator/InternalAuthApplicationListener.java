@@ -9,6 +9,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
