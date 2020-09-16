@@ -54,7 +54,7 @@ public enum RestServicesConstants {
 	
 	PARTNER_SERVICE("ida-pmp-partners"),
 	
-	DATA_SHARE_GET("ida-pmp-partners");
+	DATA_SHARE_GET("data-share-get");
 
 	/** The service name. */
 	private final String serviceName;

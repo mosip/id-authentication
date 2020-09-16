@@ -89,18 +89,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-tokenid</artifactId>
-			<version>${kernel-idgenerator-tokenid.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-config</artifactId>
-				</exclusion>
-			</exclusions>
-			<classifier>lib</classifier>
-		</dependency>
 		<!-- Commons Lang -->
 			<dependency>
                     <groupId>javax.xml.parsers</groupId>

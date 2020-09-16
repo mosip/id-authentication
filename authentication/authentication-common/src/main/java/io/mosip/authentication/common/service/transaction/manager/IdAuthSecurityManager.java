@@ -182,10 +182,11 @@ public class IdAuthSecurityManager {
 	}
 	
 	public void reEncryptAndStoreRandomKey(String index, String key) {
-		if(!repo.existsById(index)) {
+		Integer indexInt = Integer.valueOf(index);
+		if(repo.findKeyById(indexInt) == null) {
 			String reEncryptedKey = reEncryptRandomKey(key);
 			DataEncryptKeystore randomKeyEntity = new DataEncryptKeystore();
-			randomKeyEntity.setId(Integer.valueOf(index));
+			randomKeyEntity.setId(indexInt);
 			randomKeyEntity.setKey(reEncryptedKey);
 			randomKeyEntity.setCrBy("IDA");
 			randomKeyEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());

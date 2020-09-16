@@ -102,8 +102,10 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	@Autowired
 	private AuditHelper auditHelper;
 	
+	@Autowired
 	private DataShareManager dataShareManager;
 	
+	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Autowired
@@ -220,8 +222,13 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 				
 				saveSalt(modulo, salt);
 				
-				securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
-				securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
+				if(demoKeyIndex != null && demoKey != null) {
+					securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
+				}
+				
+				if(bioKeyIndex != null && bioKey != null) {
+					securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
+				}
 				
 				String idHash = (String) additionalData.get(ID_HASH);
 				String transactionLimit = (String) additionalData.get(TRANSACTION_LIMIT);
