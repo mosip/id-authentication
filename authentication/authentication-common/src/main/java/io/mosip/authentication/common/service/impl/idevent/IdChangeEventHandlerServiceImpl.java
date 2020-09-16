@@ -221,7 +221,8 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 				
 				saveSalt(modulo, salt);
 				
-				if(demoKeyIndex != null && demoKey != null) {
+				//FIXME condition to skip if block for testing
+				if("0".equals("1") && demoKeyIndex != null && demoKey != null) {
 					securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
 				}
 				
