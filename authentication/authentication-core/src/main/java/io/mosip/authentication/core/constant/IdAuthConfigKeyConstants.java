@@ -126,6 +126,7 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup";
+	public static final String DATA_SHARE_GET_DECRYPT_REF_ID = "data-share-get-decrypt-ref-id";
 
 	
 }

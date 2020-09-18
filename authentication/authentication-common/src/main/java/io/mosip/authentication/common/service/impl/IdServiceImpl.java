@@ -50,6 +50,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class IdServiceImpl implements IdService<AutnTxn> {
+	
+	/** The Constant INDIVIDUAL_BIOMETRICS. */
+	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
 	private static final String TOKEN = "TOKEN";
 
@@ -179,9 +182,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
 					if ((entry.getKey().equals(DEMOGRAPHICS)) && entry.getValue() instanceof Map) {
 						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
-					} else if(entry.getKey().equals(BIOMETRICS)) {
-						return ((Map<String, Object>) entry.getValue()).entrySet().stream()
-								.flatMap(entry1 -> ((Map<String, Object>) entry1.getValue()).entrySet().stream());
+					} else if(entry.getKey().equals(INDIVIDUAL_BIOMETRICS)) {
+						return Stream.of(entry);
 					}
 					return Stream.empty();
 				}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
