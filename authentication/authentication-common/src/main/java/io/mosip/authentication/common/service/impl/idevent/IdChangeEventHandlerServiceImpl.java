@@ -50,7 +50,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 
 	private static final String IDA = "IDA";
 
-	private static final String EXPIRY_TIME = "expiry_time";
+	private static final String EXPIRY_TIME = "expiry_timestamp";
 
 	private static final String TRANSACTION_LIMIT = "transaction_limit";
 
@@ -270,18 +270,15 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			
 			identityEntity.setDemographicData(demoBytes);
 			identityEntity.setBiometricData(bioBytes);
+			identityCacheRepo.save(identityEntity);
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 		}
 	}
 
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
-		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors.partitioningBy(entry -> {
-			String key = entry.getKey();
-			return key.equalsIgnoreCase(SingleType.FACE.name()) ||
-					key.equalsIgnoreCase(SingleType.IRIS.name()) ||
-					key.equalsIgnoreCase(SingleType.FINGER.name());
-		}));
+		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
+				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS)));
 		
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		Map<String, Object> bioData = bioOrDemoData.get(true).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
