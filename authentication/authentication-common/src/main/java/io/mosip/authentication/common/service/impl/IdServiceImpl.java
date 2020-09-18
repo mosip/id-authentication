@@ -176,14 +176,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
 		return idResponseDTO.entrySet().stream()
-				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
-					if ((entry.getKey().equals(DEMOGRAPHICS)) && entry.getValue() instanceof Map) {
-						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
-					} else if(entry.getKey().equals(IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS)) {
-						return Stream.of(entry);
-					}
-					return Stream.empty();
-				}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
+				.filter(entry -> entry.getValue() instanceof Map)
+				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
+				.collect(Collectors.toMap(t -> t.getKey(), entry -> {
 					Object val = entry.getValue();
 					if (val instanceof List) {
 						List<Map> arrayList = (List) val;
@@ -337,8 +332,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private Map<String, String> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-		List<String> zkEncryptedAttributes = getZkEncryptedAttributes();
-		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet().stream().collect(Collectors.partitioningBy(entry -> zkEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+		List<String> zkEncryptedAttributes = getZkEncryptedAttributes()
+				.stream().map(String::toLowerCase).collect(Collectors.toList());
+		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
+				.stream()
+				.collect(Collectors.partitioningBy(entry -> 
+							zkEncryptedAttributes.contains(entry.getKey().toLowerCase()),
 				Collectors.toMap(Entry::getKey, Entry::getValue)));
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);

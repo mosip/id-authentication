@@ -145,8 +145,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (Objects.nonNull(authRequestDto.getRequest())
 					&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 					&& authRequestDto.getRequest().getBiometrics().stream()
-							.filter(bio -> Objects.nonNull(bio.getData())).allMatch(
-									bio -> bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
+							.filter(bio -> Objects.nonNull(bio.getData())).anyMatch(
+									bio -> !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String.format(
@@ -156,7 +156,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 					&& authRequestDto.getRequest().getBiometrics().stream()
 							.filter(bio -> Objects.nonNull(bio.getData()))
-							.allMatch(bio -> bio.getData().getEnv().contentEquals(authRequestDto.getEnv()))) {
+							.anyMatch(bio -> !bio.getData().getEnv().contentEquals(authRequestDto.getEnv()))) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "request env is no matching against bio env");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),

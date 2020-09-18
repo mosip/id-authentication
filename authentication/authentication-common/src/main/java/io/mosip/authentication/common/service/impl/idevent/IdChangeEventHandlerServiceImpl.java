@@ -34,7 +34,6 @@ import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.Event;
 import io.mosip.idrepository.core.dto.EventModel;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 

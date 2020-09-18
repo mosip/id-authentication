@@ -196,6 +196,7 @@ public class IdAuthSecurityManager {
 
 	public Map<String, String> zkDecrypt(String id, Map<String, String> encryptedAttributes) throws IdAuthenticationBusinessException {
 		ZKCryptoRequestDto cryptoRequestDto = new ZKCryptoRequestDto();
+		cryptoRequestDto.setId(id);
 		List<CryptoDataDto> zkDataAttributes = encryptedAttributes.entrySet()
 														.stream()
 														.map(entry -> new CryptoDataDto(entry.getKey(), entry.getValue()))
