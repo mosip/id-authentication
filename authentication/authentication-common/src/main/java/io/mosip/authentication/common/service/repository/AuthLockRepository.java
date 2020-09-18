@@ -30,16 +30,16 @@ public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer
 			"            from " + 
 			"                ida.uin_auth_lock      " + 
 			"            where " + 
-			"                token = :token " + 
+			"                token_id = :token_id " + 
 			"            group by " + 
-			"                token, " + 
+			"                token_id, " + 
 			"                auth_type_code  " + 
 			"        ) tm  " + 
 			"            on t.auth_type_code = tm.auth_type_code  " + 
 			"            and t.cr_dtimes = tm.crd  " + 
 			"    where " + 
-			"        t.token = :token", 
+			"        t.token_id = :token_id", 
 			nativeQuery = true)
-	public List<Object[]> findByToken(@Param("token") String token);
+	public List<Object[]> findByToken(@Param("token_id") String tokenId);
 
 }	
