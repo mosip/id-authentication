@@ -331,7 +331,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private Map<String, String> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
+	private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
 		List<String> zkEncryptedAttributes = getZkEncryptedAttributes()
 				.stream().map(String::toLowerCase).collect(Collectors.toList());
 		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
@@ -342,10 +342,25 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);
 		Map<String, String> decryptedData = securityManager.zkDecrypt(id, dataToDecrypt);
-		Map<String, String> finalData = new LinkedHashMap<>();
-		finalData.putAll(plainData);
-		finalData.putAll(decryptedData);
-		return finalData;
+		Map<String, String> finalDataStr = new LinkedHashMap<>();
+		finalDataStr.putAll(plainData);
+		finalDataStr.putAll(decryptedData);
+		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(), 
+								entry -> {
+									String val = entry.getValue();
+									if(val.trim().startsWith("[") || val.trim().startsWith("{")) {
+										try {
+											return mapper.readValue(val.getBytes(), Object.class);
+										} catch (IOException e) {
+											logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
+													ExceptionUtils.getStackTrace(e));
+											return val;
+										}
+									} else {
+										return val;
+									}
+								}
+								));
 	}
 	
 	/**
