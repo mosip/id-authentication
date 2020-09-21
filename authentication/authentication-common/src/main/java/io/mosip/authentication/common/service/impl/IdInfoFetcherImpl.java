@@ -220,7 +220,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 					null);
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()), e);
 		}
 		return bdbBasedOnType.entrySet().stream()
 				.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
