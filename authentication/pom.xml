@@ -85,7 +85,7 @@
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.0.6</kernel-logger-logback.version>
+		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
@@ -181,11 +181,6 @@
 			<artifactId>javassist</artifactId>
 			<version>3.27.0-GA</version>
 		</dependency>
-		<dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.9</version>
-        </dependency>
 	</dependencies>
 
 	<build>
