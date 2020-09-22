@@ -292,6 +292,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				entity.setDemographicData((byte[]) data[1]);
 				entity.setExpiryTimestamp(Objects.nonNull(data[2]) ? LocalDateTime.parse(String.valueOf(data[2])) : null);
 				entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
+				entity.setToken(String.valueOf(data[4]));
 			}
 			
 			if (Objects.nonNull(entity.getExpiryTimestamp())
