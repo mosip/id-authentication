@@ -29,10 +29,6 @@
 					<groupId>org.springframework.cloud</groupId>
 					<artifactId>spring-cloud-starter-sleuth</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-starter-config</artifactId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -59,12 +55,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
 			<version>${kernel-pinvalidator.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-starter-config</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.idrepository</groupId>
@@ -84,10 +74,6 @@
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-test</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-starter-config</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
