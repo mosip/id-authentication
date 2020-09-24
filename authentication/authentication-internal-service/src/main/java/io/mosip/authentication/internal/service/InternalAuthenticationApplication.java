@@ -59,6 +59,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
+import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 
 /**
@@ -82,7 +83,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 		IdChangeEventHandlerServiceImpl.class,SignatureServiceImpl.class, 
 		KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, 
-		PartnerServiceManager.class, DataShareManager.class})
+		PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class})
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.defaultadapter.*" })
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class InternalAuthenticationApplication {
