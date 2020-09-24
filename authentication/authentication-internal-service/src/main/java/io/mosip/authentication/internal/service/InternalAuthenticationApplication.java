@@ -41,6 +41,7 @@ import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
+import io.mosip.idrepository.core.util.TokenIDGenerator;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
@@ -82,7 +83,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 		IdChangeEventHandlerServiceImpl.class,SignatureServiceImpl.class, 
 		KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, 
-		PartnerServiceManager.class, DataShareManager.class})
+		PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class})
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.defaultadapter.*" })
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class InternalAuthenticationApplication {

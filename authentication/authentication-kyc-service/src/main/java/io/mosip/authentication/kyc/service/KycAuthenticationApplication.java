@@ -77,7 +77,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, PartnerServiceImpl.class, TokenIDGeneratorServiceImpl.class,
-		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class,KeyStoreImpl.class, KeymanagerDBHelper.class })
+		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class,KeyStoreImpl.class, KeymanagerDBHelper.class,
+		TokenIDGenerator.class})
 @ComponentScan(basePackages={ "io.mosip.authentication.kyc.service.*"})
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class KycAuthenticationApplication {

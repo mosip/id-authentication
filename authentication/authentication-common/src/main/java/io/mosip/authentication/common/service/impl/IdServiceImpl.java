@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UIN_CAPS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
 import java.io.IOException;
@@ -21,7 +24,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -37,9 +39,9 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.idrepository.core.util.TokenIDGenerator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -79,6 +81,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	
 	@Value("${" + IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
 	private String zkEncryptedCredAttribs;
+	
+	@Autowired
+	private TokenIDGenerator tokenIDGenerator;
+	
+	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
+	private String authPartherId;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -140,7 +148,17 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			try {
 				String regId = idRepoManager.getRIDByUID(idvId);
 				if (null != regId) {
-					idResDTO = idRepoManager.getIdByRID(regId, isBio);
+					Map<String, Object> idResponseDTO = idRepoManager.getIdByRID(regId, isBio);
+					Map<String, Object> demoData = getDemoData(idResponseDTO);
+					demoData.remove(INDIVIDUAL_BIOMETRICS);
+					Map<String, Object> bioData = getBioData(idResponseDTO);
+					idResDTO = new LinkedHashMap<>();
+					idResDTO.put(DEMOGRAPHICS, demoData);
+					idResDTO.put(BIOMETRICS, bioData);
+					String uin = (String) demoData.get(UIN_CAPS);
+					String token = tokenIDGenerator.generateTokenID(uin, authPartherId);
+					idResDTO.put(TOKEN, token);
+
 				}
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
@@ -150,9 +168,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		} 
 		return idResDTO;
 	}
-
-		
-	
 
 	/**
 	 * Store entry in Auth_txn table for all authentications.
@@ -211,21 +226,13 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @return the demo data
 	 */
 	@SuppressWarnings("unchecked")
-	public byte[] getDemoData(Map<String, Object> identity) {
-		return Optional.ofNullable(identity.get("response"))
+	public Map<String, Object> getDemoData(Map<String, Object> identity) {
+		 return Optional.ofNullable(identity.get("response"))
 								.filter(obj -> obj instanceof Map)
 								.map(obj -> ((Map<String, Object>)obj).get("identity"))
 								.filter(obj -> obj instanceof Map)
-								.map(obj -> {
-									try {
-										return mapper.writeValueAsBytes(obj);
-									} catch (JsonProcessingException e) {
-										logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-												"handleCreateUinEvent", e.getMessage());
-									}
-									return new byte[0];
-								})
-								.orElse(new byte[0]);
+								.map(obj -> (Map<String, Object>) obj)
+								.orElseGet(Collections::emptyMap);
 	}
 	
 	/**
@@ -235,7 +242,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @return the bio data
 	 */
 	@SuppressWarnings("unchecked")
-	public byte[] getBioData(Map<String, Object> identity) {
+	public Map<String, Object> getBioData(Map<String, Object> identity) {
 		return Optional.ofNullable(identity.get("response"))
 								.filter(obj -> obj instanceof Map)
 								.map(obj -> ((Map<String, Object>)obj).get("documents"))
@@ -244,12 +251,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 										((List<Map<String, Object>>)obj)
 											.stream()
 											.filter(map -> map.containsKey("category") 
-															&& map.get("category").toString().equalsIgnoreCase("individualBiometrics")
+															&& map.get("category").toString().equalsIgnoreCase(INDIVIDUAL_BIOMETRICS)
 															&& map.containsKey("value"))
 											.map(map -> (String)map.get("value"))
 											.findAny())
-								.map(CryptoUtil::decodeBase64)
-								.orElse(new byte[0]);
+								.map(encodedBioCbeff -> Map.<String, Object>of(INDIVIDUAL_BIOMETRICS, encodedBioCbeff))
+								.orElseGet(Collections::emptyMap);
 	}
 
 	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
