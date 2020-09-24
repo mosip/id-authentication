@@ -6,16 +6,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.kernel.auth.defaultadapter.model.AuthUserDetails;
 
 /**
  * This interface is used to for send/receive HTTP
@@ -58,15 +54,4 @@ public interface RestHelper {
 		}
 	}
 	
-	public static Optional<String> getAuthToken() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null) {
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if (principal instanceof AuthUserDetails) {
-				return Optional.of(AUTHORIZATION + ((AuthUserDetails) principal).getToken());
-			}
-		}
-		return Optional.empty();
-	}
-
 }
