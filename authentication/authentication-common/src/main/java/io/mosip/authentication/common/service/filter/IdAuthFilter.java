@@ -206,11 +206,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			Object bioValue = data.get(BIO_VALUE);
 			
-			String jwsSignature = (String)data.get(DIGITAL_ID);
+			Object jwsSignatureObj = data.get(DIGITAL_ID);
 
-			if(StringUtils.isNotEmpty(jwsSignature) ) {
-				verifyDigitalIdSignature(jwsSignature);
-				data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+			if(jwsSignatureObj instanceof String) {
+				String jwsSignature = (String)jwsSignatureObj;
+				if(StringUtils.isNotEmpty(jwsSignature) ) {
+					verifyDigitalIdSignature(jwsSignature);
+					data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+				}
 			}
 			
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;

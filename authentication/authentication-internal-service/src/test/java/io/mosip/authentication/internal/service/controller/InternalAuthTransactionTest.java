@@ -86,7 +86,7 @@ public class InternalAuthTransactionTest {
 	private AuditHelper auditHelper;
 
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.invokeMethod(internalAuthTxnController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);

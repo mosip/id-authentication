@@ -13,6 +13,7 @@ import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -39,6 +40,8 @@ import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
  */
 @Component
 public class IdAuthSecurityManager {
+
+	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
 
 	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
 	private String configPath;
@@ -222,10 +225,15 @@ public class IdAuthSecurityManager {
 		return signatureService.sign(request).getData();
 	}
 
-	public String hash(String id) {
+	public String hash(String id) throws IdAuthenticationBusinessException {
 		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
 		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
-		return HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+		if(hashSaltValue  != null) {
+			return HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), SALT_FOR_THE_GIVEN_ID));
+		}
 	}
 }

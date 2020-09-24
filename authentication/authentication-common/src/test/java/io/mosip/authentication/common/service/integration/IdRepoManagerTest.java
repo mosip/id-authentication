@@ -89,7 +89,7 @@ public class IdRepoManagerTest {
 	private IdAuthSecurityManager securityManager;
 	
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(idRepomanager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(idRepomanager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(idRepomanager, "environment", environment);
