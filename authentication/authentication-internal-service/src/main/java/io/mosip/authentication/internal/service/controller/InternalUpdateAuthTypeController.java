@@ -43,8 +43,8 @@ public class InternalUpdateAuthTypeController {
 	@Autowired
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
 	
-	@PostMapping(value = "/callback/authTypeCallback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/callback/authTypeCallback", topic = "AUTH_TYPE_STATUS_UPDATE")
+	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
+	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/callback/authTypeCallback/{partnerId}", topic = "${ida-topic-auth-type-status-updated}")
 	public void updateAuthtypeStatus(@RequestBody IDAEventDTO event)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {

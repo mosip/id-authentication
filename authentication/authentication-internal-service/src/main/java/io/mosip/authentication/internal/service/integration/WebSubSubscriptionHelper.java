@@ -9,7 +9,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,8 +63,8 @@ public class WebSubSubscriptionHelper {
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 	
-	private void tryRegisterTopicForAuthEvents() {
-		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
+	private void tryRegisterTopicForAuthEvents(String topicPrefix) {
+		String topic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Trying to register topic: " + topic);
 			publisher.registerTopic(topic, publisherUrl);	
@@ -75,11 +74,11 @@ public class WebSubSubscriptionHelper {
 		}
 	}
 
-	private void subscribeForAuthTypeEvents() {
-		String topic = IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
+	private void subscribeForAuthTypeEvents(String topicPrefix) {
+		String topic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
+			subscriptionRequest.setCallbackURL(authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId));
 			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(autypeCallbackSecret);
 			subscriptionRequest.setTopic(topic);
@@ -94,61 +93,55 @@ public class WebSubSubscriptionHelper {
 	
 	public void initSubsriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing subscribptions..");
-		initAuthTypeEvent();	
-		initCredentialIssueanceEvent();
+		String topicPrefix = authPartherId + "/";
+		initAuthTypeEvent(topicPrefix);	
+		initCredentialIssueanceEvent(topicPrefix);
 	}
 
-	private void initAuthTypeEvent() {
-		tryRegisterTopicForAuthEvents();
-		subscribeForAuthTypeEvents();
+	private void initAuthTypeEvent(String topicPrefix) {
+		tryRegisterTopicForAuthEvents(topicPrefix);
+		subscribeForAuthTypeEvents(topicPrefix);
 	}
 
-	private void initCredentialIssueanceEvent() {
-		List<String> partnerIds = List.of(authPartherId);
-		tryRegisterTopicCredentialIssueanceEvents(partnerIds);
-		subscribeForCredentialIssueanceEvents(partnerIds);
+	private void initCredentialIssueanceEvent(String topicPrefix) {
+		tryRegisterTopicCredentialIssueanceEvents(topicPrefix);
+		subscribeForCredentialIssueanceEvents(topicPrefix);
 	}
 
-	private void tryRegisterTopicCredentialIssueanceEvents(List<String> partnerIds) {
-		partnerIds.forEach(partnerId -> {
-			
-			Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
-				String topic = partnerId + "/" + eventType.toString();
-				try {
-					logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
-					publisher.registerTopic(topic, publisherUrl);
-					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
-				} catch (Exception e) {
-					logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
-				}
-			});
-			
+	private void tryRegisterTopicCredentialIssueanceEvents(String topicPrefix) {
+		Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
+			String topic = topicPrefix + eventType.toString();
+			try {
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
+				publisher.registerTopic(topic, publisherUrl);
+				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
+			} catch (Exception e) {
+				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
+			}
 		});
+			
 	}
 
-	private void subscribeForCredentialIssueanceEvents(List<String> partnerIds) {
-				partnerIds.forEach(partnerId -> {
+	private void subscribeForCredentialIssueanceEvents(String topicPrefix) {
+		Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
+			String topic = topicPrefix + eventType.toString();
+			try {
+				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+				String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId)
+														.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
+				subscriptionRequest.setCallbackURL(callbackURL);
+				subscriptionRequest.setHubURL(hubURL);
+				subscriptionRequest.setSecret(credIssueCallbacksecret);
+				subscriptionRequest.setTopic(topic);
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
+				subscribe.subscribe(subscriptionRequest);
+				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
+			} catch (Exception e) {
+				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
+				throw e;
+			}
+		});
 					
-					Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
-						String topic = partnerId + "/" + eventType.toString();
-						try {
-							SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-							String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, partnerId)
-																	.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
-							subscriptionRequest.setCallbackURL(callbackURL);
-							subscriptionRequest.setHubURL(hubURL);
-							subscriptionRequest.setSecret(credIssueCallbacksecret);
-							subscriptionRequest.setTopic(topic);
-							logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
-							subscribe.subscribe(subscriptionRequest);
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
-						} catch (Exception e) {
-							logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
-							throw e;
-						}
-					});
-					
-				});
 	}
 
 }
