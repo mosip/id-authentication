@@ -31,6 +31,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -489,11 +490,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if(policies != null) {		
 				List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 				List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
-				List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired)
+				List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes)
+								.stream().flatMap(Collection::stream)
+								.filter(KYCAttributes::isRequired)
 						.map(KYCAttributes::getAttributeName).collect(Collectors.toList());
-				if (allowedTypeList == null) {
-					allowedTypeList = Collections.emptyList();
-				}
 				requestBody.put("allowedKycAttributes", allowedTypeList);
 				checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 				List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)
