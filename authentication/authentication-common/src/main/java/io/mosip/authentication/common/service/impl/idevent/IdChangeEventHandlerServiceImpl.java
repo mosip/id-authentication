@@ -230,7 +230,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 				}
 				
 				String idHash = (String) additionalData.get(ID_HASH);
-				String transactionLimit = (String) additionalData.get(TRANSACTION_LIMIT);
+				Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 				String expiryTime = (String) additionalData.get(EXPIRY_TIME);
 				String token  = (String) additionalData.get(TOKEN);
 				Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class);
@@ -242,7 +242,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 		}
 	}
 
-	private void storeIdentityEntity(String idHash, String token, String transactionLimit, String expiryTime,
+	private void storeIdentityEntity(String idHash, String token, Integer transactionLimit, String expiryTime,
 			Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
 		Map<String, Object>[] demoBioData =  splitDemoBioData(credentialData);
 		try {
@@ -264,8 +264,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			}
 			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);
-			Integer transactionLimitInt = transactionLimit == null ? null : Integer.parseInt(transactionLimit);
-			identityEntity.setTransactionLimit(transactionLimitInt);
+			identityEntity.setTransactionLimit(transactionLimit);
 			
 			identityEntity.setDemographicData(demoBytes);
 			identityEntity.setBiometricData(bioBytes);
@@ -317,7 +316,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 		String idHash = (String) additionalData.get(ID_HASH);
 		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
 		
-		String transactionLimit = (String) additionalData.get(TRANSACTION_LIMIT);
+		Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 		String expiryTime = (String) additionalData.get(EXPIRY_TIME);
 		
 		if(identityEntityOpt.isPresent()) {
@@ -327,8 +326,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			
 			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);
-			Integer transactionLimitInt = transactionLimit == null ? null : Integer.parseInt(transactionLimit);
-			identityEntity.setTransactionLimit(transactionLimitInt);
+			identityEntity.setTransactionLimit(transactionLimit);
 			
 			identityCacheRepo.save(identityEntity);
 		} else {
