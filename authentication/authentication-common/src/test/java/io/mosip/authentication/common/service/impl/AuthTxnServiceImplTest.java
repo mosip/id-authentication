@@ -54,7 +54,7 @@ public class AuthTxnServiceImplTest {
 	private UinHashSaltRepo uinHashSaltRepo;
 
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(authTxnServiceImpl, "authtxnRepo", authtxnRepo);
 		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 	}

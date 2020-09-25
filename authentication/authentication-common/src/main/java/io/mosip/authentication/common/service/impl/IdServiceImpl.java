@@ -277,7 +277,15 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
 		
-		String hashedId = securityManager.hash(id);
+		String hashedId;
+		try {
+			hashedId = securityManager.hash(id);
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+							idType.getType()));
+		}
 		
 		try {
 			IdentityEntity entity = null;
