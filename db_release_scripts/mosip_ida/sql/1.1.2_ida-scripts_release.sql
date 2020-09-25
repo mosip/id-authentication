@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------------------------------
 -- Database Name	: mosip_ida
--- Release Version 	: 1.2
+-- Release Version 	: 1.1.2
 -- Purpose    		: Database Alter scripts for the release for ID Authentication DB.       
 -- Create By   		: Sadanandegowda DM
 -- Created Date		: Sep-2020
