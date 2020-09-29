@@ -112,9 +112,9 @@ public class BioAuthServiceImpl implements BioAuthService {
 					"throw new IdAuthenticationBusinessException - SERVER_ERROR - bioIdentity is null or empty");
 			throw new IdAuthenticationBusinessException(SERVER_ERROR);
 		} else {
-			if (isAuth) {
-				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
-			}
+//			if (isAuth) {
+//				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
+//			}
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);
