@@ -178,11 +178,15 @@ public class OTPServiceImpl implements OTPService {
 			String secLang = getLanguagecode(LanguageType.SECONDARY_LANG);
 			String namePri = getName(priLang, idInfo);
 			String nameSec = getName(secLang, idInfo);
+			String email = getEmail(idInfo);
+			String phoneNumber = getPhoneNumber(idInfo);
 			Map<String, String> valueMap = new HashMap<>();
 			valueMap.put(IdAuthCommonConstants.PRIMARY_LANG, priLang);
 			valueMap.put(IdAuthCommonConstants.SECONDAY_LANG, secLang);
 			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
+			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
+			valueMap.put(IdAuthCommonConstants.EMAIL, email);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, userIdTypeForSendOtp, valueMap);
 
 			if (isOtpGenerated) {
@@ -192,8 +196,6 @@ public class OTPServiceImpl implements OTPService {
 				String responseTime = formatDate(new Date(),
 						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
-				String email = getEmail(idInfo);
-				String phoneNumber = getPhoneNumber(idInfo);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
 				List<String> otpChannels = otpRequestDto.getOtpChannel();
 				for (String channel : otpChannels) {
