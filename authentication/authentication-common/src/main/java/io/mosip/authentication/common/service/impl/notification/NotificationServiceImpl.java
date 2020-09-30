@@ -153,7 +153,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	private void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
+	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
 			String notificationProperty) throws IdAuthenticationBusinessException {
 		String notificationtypeconfig = notificationProperty;
 		String notificationMobileNo = phoneNumber;
