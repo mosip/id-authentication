@@ -492,7 +492,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 				List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
 				List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes)
 								.stream().flatMap(Collection::stream)
-								.filter(KYCAttributes::isRequired)
 						.map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 				requestBody.put("allowedKycAttributes", allowedTypeList);
 				checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
