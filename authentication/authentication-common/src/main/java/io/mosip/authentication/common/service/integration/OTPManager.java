@@ -128,7 +128,7 @@ public class OTPManager {
 				.collect(Collectors.joining("|"));
 
 		notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
-				IdAuthCommonConstants.PHONE_NUMBER, SenderType.OTP, notificationProperty);
+				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty);
 
 		return true;
 	}
