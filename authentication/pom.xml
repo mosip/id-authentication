@@ -137,6 +137,7 @@
 
 		<io.micrometer.prometheus.version>1.4.2</io.micrometer.prometheus.version>
 
+		<objenesis.version>3.1</objenesis.version>
 	</properties>
 
 	<dependencies>

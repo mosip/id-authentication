@@ -254,4 +254,8 @@ public final class IdAuthCommonConstants {
 	public static final String VERIFY = "verify";
 	
 	public static final String VALIDATESIGN = "validate";
+
+	public static final String PHONE_NUMBER = "phone";
+
+	public static final String EMAIL = "email";
 }
