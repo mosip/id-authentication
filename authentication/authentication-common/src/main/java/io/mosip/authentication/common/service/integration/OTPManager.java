@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.integration;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -112,15 +111,28 @@ public class OTPManager {
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
-		OtpTransaction txn = new OtpTransaction();
-		txn.setId(UUID.randomUUID().toString());
-		txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
-		txn.setOtpHash(otpHash);
-		txn.setCrBy(securityManager.getUser());
-		txn.setCrDtimes(LocalDateTime.now());
-		txn.setExpiryDtimes(LocalDateTime.now().plusSeconds(
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
-		otpRepo.save(txn);
+		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+			OtpTransaction otpTxn = otpRepo.findByRefIdAndStatusCode(
+					securityManager.hash(otpRequestDTO.getIndividualId()), IdAuthCommonConstants.ACTIVE_STATUS);
+			otpTxn.setOtpHash(otpHash);
+			otpTxn.setUpdBy(securityManager.getUser());
+			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpTxn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			otpRepo.save(otpTxn);
+		} else {
+			OtpTransaction txn = new OtpTransaction();
+			txn.setId(UUID.randomUUID().toString());
+			txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
+			txn.setOtpHash(otpHash);
+			txn.setCrBy(securityManager.getUser());
+			txn.setCrDtimes(DateUtils.getUTCCurrentDateTime());
+			txn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			otpRepo.save(txn);
+		}
 		String notificationProperty = null;
 		notificationProperty = otpRequestDTO
 				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
@@ -137,7 +149,7 @@ public class OTPManager {
 		try {
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
 			RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
-			reqWrapper.setRequesttime(LocalDateTime.now());
+			reqWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
 			reqWrapper.setRequest(otpGenerateRequestDto);
 			RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					reqWrapper, ResponseWrapper.class);
@@ -231,8 +243,10 @@ public class OTPManager {
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		String otpHash = HMACUtils.digestAsPlainText(
 				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
-		if (otpRepo.existsByOtpHash(otpHash)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHash(otpHash);
+		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+			otpRepo.save(otpTxn);
 			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
 				return true;
 			} else {

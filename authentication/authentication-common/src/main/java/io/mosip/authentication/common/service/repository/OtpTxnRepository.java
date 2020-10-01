@@ -5,7 +5,9 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 
 public interface OtpTxnRepository extends BaseRepository<OtpTransaction, String> {
 	
-	Boolean existsByOtpHash(String otpHash);
+	Boolean existsByOtpHashAndStatusCode(String otpHash, String statusCode);
 	
-	OtpTransaction findByOtpHash(String otpHash);
+	OtpTransaction findByOtpHashAndStatusCode(String otpHash, String statusCode);
+	
+	OtpTransaction findByRefIdAndStatusCode(String refId, String statusCode);
 }
