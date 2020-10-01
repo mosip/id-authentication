@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.MaskUtil;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
  * The Class MaskUtilTest.
@@ -16,17 +17,19 @@ public class MaskUtilTest {
 
     /**
      * Test mask email.
+     * @throws IdAuthenticationBusinessException 
      */
     @Test
-    public void testMaskEmail() {
+    public void testMaskEmail() throws IdAuthenticationBusinessException {
 	assertEquals("XXaXXhXXh@mail.com", MaskUtil.maskEmail("umamahesh@mail.com"));
     }
 
     /**
      * Test mask mobile number.
+     * @throws IdAuthenticationBusinessException 
      */
     @Test
-    public void testMaskMobileNumber() {
+    public void testMaskMobileNumber() throws IdAuthenticationBusinessException {
 	assertEquals("XXXXXX7890", MaskUtil.maskMobile("1234567890"));
     }
     
