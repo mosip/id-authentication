@@ -47,6 +47,7 @@ import io.mosip.kernel.core.util.HMACUtils;
  * 
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
+ * @author Manoj SP
  */
 @Component
 public class OTPManager {
