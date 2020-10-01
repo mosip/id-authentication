@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,7 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Ignore
 public class OtpMatchingStrategyTest {
 
 	@InjectMocks
