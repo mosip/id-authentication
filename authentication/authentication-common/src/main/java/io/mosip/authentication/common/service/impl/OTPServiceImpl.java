@@ -280,7 +280,7 @@ public class OTPServiceImpl implements OTPService {
 		return isOtpFlooded;
 	}
 
-	private void processChannel(String value, String phone, String email, MaskedResponseDTO maskedResponseDTO) {
+	private void processChannel(String value, String phone, String email, MaskedResponseDTO maskedResponseDTO) throws IdAuthenticationBusinessException {
 		if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
 			maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
 		} else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {

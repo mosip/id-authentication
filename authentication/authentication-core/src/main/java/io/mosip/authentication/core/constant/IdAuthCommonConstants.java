@@ -208,6 +208,9 @@ public final class IdAuthCommonConstants {
 	/** The Constant ACTIVE_STATUS. */
 	public static final String ACTIVE_STATUS = "active";
 
+	/** The Constant USED_STATUS. */
+	public static final String USED_STATUS = "used";
+
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";
 

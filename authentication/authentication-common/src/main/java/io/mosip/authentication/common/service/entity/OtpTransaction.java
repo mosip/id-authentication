@@ -10,6 +10,10 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @NoArgsConstructor
 @Data
 @Table(name = "otp_transaction", schema = "ida")
