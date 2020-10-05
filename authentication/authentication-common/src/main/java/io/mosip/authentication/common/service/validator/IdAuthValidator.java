@@ -9,11 +9,14 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSA
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,6 +64,7 @@ public abstract class IdAuthValidator implements Validator {
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
 
 	private static final String CONSENT_OBTAINED = "consentObtained";
+
 	/** The uin validator. */
 	@Autowired
 	private UinValidatorImpl uinValidator;
@@ -178,7 +182,9 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 
-		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
+		Date plusAdjustmentTime = getCurrentTimePlusAdjutsmentTime();
+
+		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, plusAdjustmentTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			Long reqDateMaxTimeLong = env
 					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
@@ -187,6 +193,21 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { reqDateMaxTimeLong },
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
+	}
+
+	private Date getCurrentTimePlusAdjutsmentTime() {
+		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusMinutes);
+	}
+	
+	private Date getAdjustmentTime(LocalDateTime originalLdt, BiFunction<LocalDateTime, Long, LocalDateTime> adjustmentFunc) {
+		long adjustmentMins = getRequestTimeAdjustmentMins();
+		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentMins);
+		Date plusAdjustmentTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+		return plusAdjustmentTime;
+	}
+
+	private Long getRequestTimeAdjustmentMins() {
+		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS);
 	}
 	
 	/**
@@ -205,7 +226,8 @@ public abstract class IdAuthValidator implements Validator {
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Long reqDateMaxTimeLong = env
 					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong, ChronoUnit.MINUTES);
+			Long adjustmentMins = getRequestTimeAdjustmentMins();
+			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong + adjustmentMins, ChronoUnit.MINUTES);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						VALIDATE_REQUEST_TIMED_OUT,

@@ -39,6 +39,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES = "authrequest.received-time-adjustment.minutes";
 	public static final String OTP_CONTEXT = "ida.otp.context";
 	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";
