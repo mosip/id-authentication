@@ -261,4 +261,7 @@ public final class IdAuthCommonConstants {
 	public static final String PHONE_NUMBER = "phone";
 
 	public static final String EMAIL = "email";
+	
+	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+
 }
