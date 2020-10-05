@@ -80,7 +80,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class,
 		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class,
 		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class })
-@ComponentScan({ "io.mosip.authentication.service.*"})
+@ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config"})
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class IdAuthenticationApplication {
 
