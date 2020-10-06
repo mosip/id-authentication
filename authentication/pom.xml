@@ -182,6 +182,13 @@
 			<artifactId>javassist</artifactId>
 			<version>3.27.0-GA</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${kernel-logger-logback.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
