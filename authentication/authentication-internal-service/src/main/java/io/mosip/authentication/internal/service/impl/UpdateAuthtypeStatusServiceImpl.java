@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,13 +63,12 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 			authType = authType + "-" + authtypeStatus.getAuthSubType();
 		}
 		authtypeLock.setAuthtypecode(authType);
-		authtypeLock.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-		String strUTCDate = DateUtils.getCurrentDateTimeString();
-		authtypeLock.setLockrequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-		authtypeLock.setLockstartDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+		LocalDateTime currentDtime = DateUtils.getUTCCurrentDateTime();
+		authtypeLock.setLockrequestDTtimes(currentDtime);
+		authtypeLock.setLockstartDTtimes(currentDtime);
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-		authtypeLock.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		authtypeLock.setCrDTimes(currentDtime);
 		authtypeLock.setLangCode(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 		return authtypeLock;
 	}
