@@ -3,8 +3,12 @@
  */
 package io.mosip.authentication.common.service.facade;
 
+import static io.mosip.authentication.core.constant.AuthTokenType.PARTNER;
+import static io.mosip.authentication.core.constant.AuthTokenType.POLICY;
+import static io.mosip.authentication.core.constant.AuthTokenType.POLICY_GROUP;
+import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-import static io.mosip.authentication.core.constant.AuthTokenType.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +45,8 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.partner.dto.Policies;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
@@ -159,8 +165,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = idService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, idvid, uin) : null;
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, authTokenId,
+			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, idvid, token) : null;
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} finally {
@@ -182,19 +188,28 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String idvid, String uin)
+	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String idvid, String token)
 			throws IdAuthenticationBusinessException {
-		String authTokenType = partnerService.getPolicyForPartner(partnerId).getPolicies().getAuthTokenType();
-		if (Objects.isNull(authTokenType) || authTokenType.contentEquals(RANDOM.getType())) {
-			return new String(securityManager.encryptWithAES(idvid, authRequestDTO.getTransactionID().getBytes()));
-		} else if (authTokenType.contentEquals(PARTNER.getType())) {
-			return tokenIdManager.generateTokenId(uin, partnerId);
-		} else if (authTokenType.contentEquals(POLICY.getType())) {
-			return tokenIdManager.generateTokenId(uin, partnerService.getPolicyForPartner(partnerId).getPolicyId());
-		} else if (authTokenType.contentEquals(POLICY_GROUP.getType())) {
-			// TODO: update with Policy Group
+		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId);
+		Optional<String> policyId = policyForPartner.map(PolicyDTO::getPolicyId);
+		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
+		if (authTokenTypeOpt.isPresent()) {
+			String authTokenType = authTokenTypeOpt.get();
+			if (authTokenType.contentEquals(RANDOM.getType())) {
+				return createRandomToken(authRequestDTO.getTransactionID());
+			} else if (authTokenType.equalsIgnoreCase(PARTNER.getType())) {
+				return tokenIdManager.generateTokenId(token, partnerId);
+			} else if (policyId.isPresent() && authTokenType.equalsIgnoreCase(POLICY.getType())) {
+				return tokenIdManager.generateTokenId(token, policyId.get());
+			} else if (authTokenType.equalsIgnoreCase(POLICY_GROUP.getType())) {
+				// TODO: update with Policy Group
+			}
 		}
-		return null;
+		return createRandomToken(authRequestDTO.getTransactionID());
+	}
+
+	private String createRandomToken(String transactionId) throws IdAuthenticationBusinessException {
+		return securityManager.createRandomToken(transactionId.getBytes());
 	}
 
 	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String token) throws IdAuthenticationBusinessException {

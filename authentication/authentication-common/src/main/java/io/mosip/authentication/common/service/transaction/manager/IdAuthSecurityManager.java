@@ -1,8 +1,11 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +22,16 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
 import io.mosip.kernel.signature.dto.SignRequestDto;
 import io.mosip.kernel.signature.service.SignatureService;
+import io.mosip.kernel.zkcryptoservice.constant.ZKCryptoManagerConstants;
 import io.mosip.kernel.zkcryptoservice.dto.CryptoDataDto;
 import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoRequestDto;
@@ -41,7 +47,7 @@ import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 public class IdAuthSecurityManager {
 
 	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
-
+	
 	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
 	private String configPath;
 
@@ -92,6 +98,12 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private ZKCryptoManagerService zkCryptoManagerService;
+	
+	@Autowired
+	private CryptoCore cryptoCore;
+	
+	@Autowired
+	KeyGenerator keyGenerator;
 
 	/**
 	 * Gets the user.
@@ -210,6 +222,19 @@ public class IdAuthSecurityManager {
 							.collect(Collectors.toMap(CryptoDataDto::getIdentifier, CryptoDataDto::getValue));
 		
 	}
+	
+	public String createRandomToken(byte[] dataToEncrypt) throws IdAuthenticationBusinessException {
+		SecretKey key = keyGenerator.getSymmetricKey();
+		SecureRandom sRandom = new SecureRandom();
+		byte[] nonce = new byte[ZKCryptoManagerConstants.GCM_NONCE_LENGTH];
+		byte[] aad = new byte[ZKCryptoManagerConstants.GCM_AAD_LENGTH];
+
+		sRandom.nextBytes(nonce);
+		sRandom.nextBytes(aad);
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
+		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
+	}
+	
 	
 	/**
 	 * Sign.

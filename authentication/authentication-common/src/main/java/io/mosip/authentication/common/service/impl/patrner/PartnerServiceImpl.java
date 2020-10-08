@@ -49,16 +49,22 @@ public class PartnerServiceImpl implements PartnerService {
 
 	@Override
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
-		PartnerPolicyResponseDTO response;
-			response = partnerServiceManager.validateAndGetPolicy(partnerId, partner_api_key, misp_license_key);			
-		partnerServiceResponseMap.putIfAbsent(response.getPartnerId(), response);		
-		return response;
+		if (partnerServiceResponseMap.containsKey(partnerId)) {
+			return partnerServiceResponseMap.get(partnerId);
+		} else {
+			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceManager.validateAndGetPolicy(partnerId, partner_api_key, misp_license_key);
+			partnerServiceResponseMap.put(partnerId, partnerPolicyResponseDTO);
+			return partnerPolicyResponseDTO;
+		}
 	}
 
 
 	@Override
-	public PolicyDTO getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<PolicyDTO> getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException {
+		if(partnerServiceResponseMap.containsKey(partnerId)) {
+			return Optional.ofNullable(partnerServiceResponseMap.get(partnerId))
+					.map(PartnerPolicyResponseDTO::getPolicy);
+		}
+		return Optional.empty();
 	}
 }

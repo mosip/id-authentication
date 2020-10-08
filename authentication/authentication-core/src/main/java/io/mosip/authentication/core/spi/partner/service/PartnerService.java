@@ -21,5 +21,5 @@ public interface PartnerService {
 	
 	PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException;
 	
-	PolicyDTO getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException;
+	 Optional<PolicyDTO> getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException;
 }

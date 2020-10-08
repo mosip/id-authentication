@@ -283,7 +283,7 @@ public class AuthTransactionBuilder {
 	 */
 	@Override
 	public String toString() {
-		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", uin=" + uin + ", requestType="
+		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
 				+ requestType + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
 

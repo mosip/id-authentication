@@ -144,7 +144,7 @@ public class OTPServiceImpl implements OTPService {
 			boolean authTokenRequired = !isInternal
 					&& env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, boolean.class, false);
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
-			saveTxn(otpRequestDto, token, staticTokenId, status, partnerId, isInternal);
+			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal);
 		}
 	}
 
