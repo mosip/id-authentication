@@ -52,6 +52,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Ignore
 public class OTPManagerTest {
 
 	@Mock

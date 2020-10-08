@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.11-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 	</parent>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<artifactId>authentication-service</artifactId>
-	<version>1.0.11-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>authentication-service</name>
@@ -67,6 +67,11 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idvalidator-vid</artifactId>
 			<version>${kernel-idvalidator-vid.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<version>${kernel-idgenerator-tokenid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -127,9 +132,9 @@
 			<version>${io.micrometer.prometheus.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.mock.sdk</groupId>
-			<artifactId>mock-sdk</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.filter;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -25,12 +26,12 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,7 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -85,6 +87,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
+	private static final String TRANSACTION_ID = "transactionId";
 	protected PartnerService partnerService;
 	
 	@Override
@@ -204,18 +207,23 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			Object bioValue = data.get(BIO_VALUE);
 			
-			String jwsSignature = (String)data.get(DIGITAL_ID);
+			Object jwsSignatureObj = data.get(DIGITAL_ID);
 
-			if(StringUtils.isNotEmpty(jwsSignature) ) {
-				verifyDigitalIdSignature(jwsSignature);
-				data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+			if(jwsSignatureObj instanceof String) {
+				String jwsSignature = (String)jwsSignatureObj;
+				if(StringUtils.isNotEmpty(jwsSignature) ) {
+					verifyDigitalIdSignature(jwsSignature);
+					data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+				}
 			}
 			
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
-			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
+			String transactionId = String.valueOf(data.get(TRANSACTION_ID));
+			byte[] xorBytes = BytesUtil.getXOR(timestamp, transactionId);
+			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
 			String salt = CryptoUtil.encodeBase64(saltLastBytes);
-			byte[] aadLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
+			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
 			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
 			String decryptedData = keyManager.kernelDecrypt(combinedData, getBioRefId(), aad, salt);
@@ -271,18 +279,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 				env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
 		return CryptoUtil.encodeBase64(
 				combineByteArray);
-	}
-
-	/**
-	 * Gets the last bytes.
-	 *
-	 * @param timestamp the timestamp
-	 * @param lastBytesNum the last bytes num
-	 * @return the last bytes
-	 */
-	private byte[] getLastBytes(String timestamp, int lastBytesNum) {
-		assert(timestamp.length() >= lastBytesNum);
-		return timestamp.substring(timestamp.length() - lastBytesNum).getBytes();
 	}
 
 	/**
@@ -494,11 +490,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if(policies != null) {		
 				List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 				List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
-				List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired)
+				List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes)
+								.stream().flatMap(Collection::stream)
 						.map(KYCAttributes::getAttributeName).collect(Collectors.toList());
-				if (allowedTypeList == null) {
-					allowedTypeList = Collections.emptyList();
-				}
 				requestBody.put("allowedKycAttributes", allowedTypeList);
 				checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 				List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)

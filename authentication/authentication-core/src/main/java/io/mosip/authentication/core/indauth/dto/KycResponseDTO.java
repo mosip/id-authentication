@@ -20,6 +20,8 @@ public class KycResponseDTO {
 
 	/** The Variable to hold value of auth Token */
 	private String authToken;
+	
+	private String thumbprint;
 
 	/** The Variable to hold value of identity */
 	private Map<String, ? extends Object> identity;

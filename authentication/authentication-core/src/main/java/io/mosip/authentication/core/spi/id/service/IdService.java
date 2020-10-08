@@ -78,7 +78,7 @@ public interface IdService<T> {
 	 * @param identity the identity
 	 * @return the demo data
 	 */
-	byte[] getDemoData(Map<String, Object> identity);
+	Map<String, Object> getDemoData(Map<String, Object> identity);
 	
 	/**
 	 * Gets the bio data.
@@ -86,15 +86,15 @@ public interface IdService<T> {
 	 * @param identity the identity
 	 * @return the bio data
 	 */
-	byte[] getBioData(Map<String, Object> identity);
+	Map<String, Object> getBioData(Map<String, Object> identity);
 
 	/**
-	 * Gets the uin.
+	 * Gets the token .
 	 *
 	 * @param idResDTO the id res DTO
-	 * @return the uin
+	 * @return the token
 	 */
-	String getUin(Map<String, Object> idResDTO);
+	String getToken(Map<String, Object> idResDTO);
 
 	/**
 	 * Update VID status.

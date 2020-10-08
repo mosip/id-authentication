@@ -91,11 +91,9 @@ public class AutnTxn {
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
 	
-	@Column(name = "uin")
-	private String uin;
-	
-	@Column(name = "uin_hash")
-	private String uinHash;
+	@NotNull
+	@Column(name = "token_id")
+	private String token;
 	
 	@Column(name = "requested_entity_type")
 	private String entitytype;
@@ -132,8 +130,8 @@ public class AutnTxn {
 	 * @param refId
 	 * @param uinHash
 	 */
-	public AutnTxn(String uinHash, String refIdType) {
-		this.uinHash = uinHash;
+	public AutnTxn(String token, String refIdType) {
+		this.token = token;
 		this.refIdType = refIdType; 
 	}
 	

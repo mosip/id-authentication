@@ -136,6 +136,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getRequestURL()).thenReturn(sbf);
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
+		Mockito.when(requestWrapper.getHeader("signature")).thenReturn(signature);
 		Mockito.when(cryptoCore.verifySignature(signature)).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 	}

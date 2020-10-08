@@ -17,19 +17,6 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 @Configuration
 public class IdAuthConfig extends HibernateDaoConfig {
 	
-	/** The interceptor. */
-	@Autowired
-	private Interceptor interceptor;
-
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig#jpaProperties()
-	 */
-	@Override
-	public Map<String, Object> jpaProperties() {
-		Map<String, Object> jpaProperties = super.jpaProperties();
-		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
-		return jpaProperties;
-	}
 	
 	
 }

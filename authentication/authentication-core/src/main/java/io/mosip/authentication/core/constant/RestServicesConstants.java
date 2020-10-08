@@ -50,7 +50,11 @@ public enum RestServicesConstants {
 	
 	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
 	
-	ID_PMP_SERVICE("id-pmp-service");
+	ID_PMP_SERVICE("id-pmp-service"),
+	
+	PARTNER_SERVICE("ida-pmp-partners"),
+	
+	DATA_SHARE_GET("data-share-get");
 
 	/** The service name. */
 	private final String serviceName;

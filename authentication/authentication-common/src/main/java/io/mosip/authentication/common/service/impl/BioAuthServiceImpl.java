@@ -104,7 +104,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String token,
 			Map<String, List<IdentityInfoDTO>> bioIdentity, String partnerId, boolean isAuth) throws IdAuthenticationBusinessException {
 		if (bioIdentity == null || bioIdentity.isEmpty()) {
 			logger.error(SESSION_ID, this.getClass().getName(), 
@@ -112,9 +112,11 @@ public class BioAuthServiceImpl implements BioAuthService {
 					"throw new IdAuthenticationBusinessException - SERVER_ERROR - bioIdentity is null or empty");
 			throw new IdAuthenticationBusinessException(SERVER_ERROR);
 		} else {
-			if (isAuth) {
-				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
-			}
+			// TODO disabled temporarily. will be enabled after implementation of validation
+			// based on black-listed device code
+//			if (isAuth) {
+//				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
+//			}
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);

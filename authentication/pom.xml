@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.11-SNAPSHOT</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -48,15 +48,15 @@
 
 	<repositories>
 		<repository>
-		  <id>ossrh</id>
-		  <name>Central Repository</name>
-		  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		  <layout>default</layout>
-		  <snapshots>
-			<enabled>true</enabled>
-		  </snapshots>
+			<id>ossrh</id>
+			<name>Central Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
-	</repositories> 
+	</repositories>
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-common</module>
@@ -64,40 +64,38 @@
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
-		<module>authentication-keys-generator</module>
 	</modules>
 
 	<properties>
-		<!--FIXME Temporarily disabling to avoid build error-->
+		<!--FIXME Temporarily disabling to avoid build error -->
 		<sonar.skip>true</sonar.skip>
-		
+
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
-		<kernel-core.version>1.2.0-SNAPSHOT</kernel-core.version>
-		<kernel-keymanager-service.version>1.2.0-SNAPSHOT</kernel-keymanager-service.version>
+		<kernel.parent.version>1.1.2-SNAPSHOT</kernel.parent.version>
+		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
+		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>1.0.6</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>1.0.6</kernel-idvalidator-vid.version>
-		<kernel-idobjectvalidator.version>1.0.9</kernel-idobjectvalidator.version>
+		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-keygenerator-bouncycastle.version>1.0.6</kernel-keygenerator-bouncycastle.version>
-		<kernel-crypto-jce.version>1.0.6</kernel-crypto-jce.version>
-		<kernel-logger-logback.version>1.0.6</kernel-logger-logback.version>
+		<kernel-logger-logback.version>1.1.2-SNAPSHOT</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.0.9</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>0.9</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>0.9.1-SNAPSHOT</kernel-biosdk-provider.version>
-		<id-repository-core.version>1.0.9</id-repository-core.version>
+		<kernel-auth-adapter.version>1.1.2-SNAPSHOT</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.1.2-SNAPSHOT</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.1.2-SNAPSHOT</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.1.2-SNAPSHOT</kernel-websubclient-api.version>
+		<id-repository-core.version>1.1.2-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-				<!-- Maven Plugins -->
+		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
@@ -107,10 +105,11 @@
 		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
 		<powermock.version>2.0.0</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-		
+
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.23.4</mockito.version>
+		<byte-buddy.version>1.9.3</byte-buddy.version>
 
 		<!-- Lombok -->
 		<lombok.version>1.18.8</lombok.version>
@@ -135,9 +134,10 @@
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-		
+
 		<io.micrometer.prometheus.version>1.4.2</io.micrometer.prometheus.version>
 
+		<objenesis.version>3.1</objenesis.version>
 	</properties>
 
 	<dependencies>
@@ -173,16 +173,22 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>javax.xml.bind</groupId>
-		    <artifactId>jaxb-api</artifactId>
-		    <version>2.3.1</version>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.javassist</groupId>
-		    <artifactId>javassist</artifactId>
-		    <version>3.27.0-GA</version>
-		</dependency> 
-		
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.27.0-GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
+			<version>${kernel-logger-logback.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -202,16 +208,16 @@
 				<version>3.2.0</version>
 				<executions>
 					<execution>
-					 	<id>attach-javadocs</id>
-					  	<goals>
+						<id>attach-javadocs</id>
+						<goals>
 							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-                         <doclint>none</doclint>
-                 </configuration>
-             </plugin>
+					<doclint>none</doclint>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -223,40 +229,40 @@
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-		 	<plugin>
-				  <groupId>org.apache.maven.plugins</groupId>
-				  <artifactId>maven-source-plugin</artifactId>
-				  <version>2.2.1</version>
-				  <executions>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
 					<execution>
 						<id>attach-sources</id>
-					  	<goals>
+						<goals>
 							<goal>jar-no-fork</goal>
-					  	</goals>
+						</goals>
 					</execution>
-				  </executions>
+				</executions>
 			</plugin>
-		
-	                <plugin>
-				  <groupId>org.apache.maven.plugins</groupId>
-				  <artifactId>maven-gpg-plugin</artifactId>
-				  <version>1.5</version>
-				  <executions>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
 					<execution>
-						  <id>sign-artifacts</id>
-						  <phase>verify</phase>
-						  <goals>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
 							<goal>sign</goal>
-						  </goals>
-						  <configuration>
-                					<gpgArguments>
-                    						<arg>--pinentry-mode</arg>
-                    						<arg>loopback</arg>
-                					</gpgArguments>
-            					  </configuration>
+						</goals>
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
 					</execution>
-				  </executions>
-        		</plugin>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -289,14 +295,14 @@
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>${maven.sonar.version}</version>
-					<executions>
-						<execution>
-							<phase>verify</phase>
-							<goals>
-								<goal>sonar</goal>
-							</goals>
-						</execution>
-					</executions>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>sonar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -333,42 +339,42 @@
 				</configuration>
 			</plugin>
 			<plugin>
-    			<groupId>pl.project13.maven</groupId>
-			<artifactId>git-commit-id-plugin</artifactId>
-			<version>3.0.1</version>
-			<executions>
-        			<execution>
-			        	<id>get-the-git-infos</id>
-					<goals>
-						<goal>revision</goal>
-            				</goals>
-            				<phase>validate</phase>
- 				</execution>
- 			</executions>
- 			<configuration>
-				<generateGitPropertiesFile>true</generateGitPropertiesFile>
-				<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-                    		<includeOnlyProperties>
-                        		<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
-                        		<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
-                    		</includeOnlyProperties>
-                    		<commitIdGenerationMode>full</commitIdGenerationMode>
- 				<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-				<!-- <format>json</format> -->
-			</configuration>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+					<includeOnlyProperties>
+						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+					</includeOnlyProperties>
+					<commitIdGenerationMode>full</commitIdGenerationMode>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+					<!-- <format>json</format> -->
+				</configuration>
 			</plugin>
 			<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${maven.surefire.plugin.version}</version>
-					<configuration>
-						<skipTests>${skipTests}</skipTests>
-						<skip>false</skip>
-						<argLine>
-							--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
-						</argLine>
-					</configuration>
-				</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+					<skip>false</skip>
+					<argLine>
+						--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+					</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

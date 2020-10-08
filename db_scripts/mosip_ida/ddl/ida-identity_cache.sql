@@ -8,13 +8,13 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- Sep-2020             Sadanandegowda DM    Added token_id
 -- ------------------------------------------------------------------------------------------
-
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
 CREATE TABLE ida.identity_cache(
 	id character varying(256) NOT NULL,
+	token_id character varying(128) NOT NULL,
 	demo_data bytea NOT NULL,
 	bio_data bytea NOT NULL,
 	expiry_timestamp timestamp,
@@ -29,9 +29,11 @@ CREATE TABLE ida.identity_cache(
 
 );
 -- ddl-end --
-COMMENT ON TABLE ida.identity_cache IS 'Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication';
+COMMENT ON TABLE ida.identity_cache IS 'Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.';
 -- ddl-end --
 COMMENT ON COLUMN ida.identity_cache.id IS 'ID: ID of an identity cache, This can be UIN or VID of an individuals for whom the authentication request is beeing made. Hash value is stored.';
+-- ddl-end --
+COMMENT ON COLUMN ida.identity_cache.token_id IS 'Token ID : Token ID generated in reference to UIN/VID';
 -- ddl-end --
 COMMENT ON COLUMN ida.identity_cache.demo_data IS 'Demo Data: Demographic data of an individuals which is cached to use during authentication request.';
 -- ddl-end --

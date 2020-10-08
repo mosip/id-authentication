@@ -99,11 +99,11 @@ public class IdAuthSecurityManagerTest {
 		authSecurityManager.decrypt("Hello", "20190101", null, null);
 	}
 
-	@Test
-	public void testSign() throws IdAuthenticationBusinessException {
-		when(keyManager.sign(Mockito.any())).thenReturn(new SignatureResponseDto("abcd"));
-		String sign = authSecurityManager.sign("req");
-		assertEquals("abcd", sign);
-	}
+//	@Test
+//	public void testSign() throws IdAuthenticationBusinessException {
+//		when(keyManager.sign(Mockito.any())).thenReturn(new SignatureResponseDto("abcd"));
+//		String sign = authSecurityManager.sign("req");
+//		assertEquals("abcd", sign);
+//	}
 
 }

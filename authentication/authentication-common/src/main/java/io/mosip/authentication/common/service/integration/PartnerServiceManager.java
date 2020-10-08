@@ -1,12 +1,15 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -20,10 +23,12 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -35,14 +40,17 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class PartnerServiceManager {
+	
+	private static final String PARNER_ACTIVE_STATUS = "Active";
 
 	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
+	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
 	@Autowired
+	@Qualifier("external")
 	private RestHelper restHelper;
 
 	@Autowired
@@ -142,5 +150,27 @@ public class PartnerServiceManager {
 			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
+	}
+	
+	public List<String> getPartnerIds() {
+		try {
+			Map<String, Object> responseWrapperMap = restHelper.requestSync(restRequestFactory.buildRequest(RestServicesConstants.PARTNER_SERVICE, null, Map.class));
+			Object response = responseWrapperMap.get("response");
+			if(response instanceof Map) {
+				Map<String, Object> responseMap = (Map<String, Object>) response;
+				Object partners = responseMap.get("partners");
+				if(partners instanceof List) {
+					List<Map<String, Object>> partnersList = (List<Map<String, Object>>) partners;
+					List<String> partnerIds = partnersList.stream()
+								.filter(partner -> PARNER_ACTIVE_STATUS.equalsIgnoreCase((String)partner.get("status")))
+								.map(partner -> (String)partner.get("partnerID"))
+								.collect(Collectors.toList());
+					return partnerIds;
+				}
+			}
+		} catch (RestServiceException | IDDataValidationException e) {
+			logger.error(IdRepoSecurityManager.getUser(), this.getClass().getSimpleName(), "getPartnerIds", e.getMessage());
+		}
+		return Collections.emptyList();
 	}
 }

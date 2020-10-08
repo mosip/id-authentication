@@ -28,11 +28,8 @@ public class AuthtypeLock {
 
 	@Id
 	@NotNull
-	private String uin;
-
-	@NotNull
-	@Column(name = "uin_hash")
-	private String hashedUin;
+	@Column(name = "token_id")
+	private String token;
 
 	@Id
 	@NotNull
@@ -88,7 +85,7 @@ public class AuthtypeLock {
 		
 		private static final long serialVersionUID = 1L;
 		
-		private String uin;
+		private String token;
 		
 		private String authtypecode;
 		

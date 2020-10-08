@@ -55,10 +55,10 @@ public class PartnerServiceImpl implements PartnerService {
 		return response;
 	}
 
+
 	@Override
 	public PolicyDTO getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

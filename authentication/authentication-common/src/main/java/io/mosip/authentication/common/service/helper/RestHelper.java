@@ -19,6 +19,8 @@ import io.mosip.authentication.core.exception.RestServiceException;
  * @author Sanjay Murali
  */
 public interface RestHelper {
+	
+	public static final String AUTHORIZATION = "Authorization=";
 
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
@@ -51,5 +53,5 @@ public interface RestHelper {
 			return false;
 		}
 	}
-
+	
 }

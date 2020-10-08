@@ -5,9 +5,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.11-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 	</parent>
-	<version>1.0.11-SNAPSHOT</version>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
@@ -22,12 +22,7 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel-core.version}</version>
 		</dependency>
-		<!-- Kernel Logback Impl -->
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
-		</dependency>
+
 
 		<!-- Commons Codec -->
 		<dependency>
@@ -65,6 +60,10 @@
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-auth-adapter</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
