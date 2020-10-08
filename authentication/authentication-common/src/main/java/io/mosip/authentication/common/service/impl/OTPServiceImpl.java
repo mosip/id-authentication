@@ -141,10 +141,10 @@ public class OTPServiceImpl implements OTPService {
 	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token)
 			throws IdAuthenticationBusinessException {
 		if (token != null) {
-			boolean staticTokenRequired = !isInternal
-					&& env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, boolean.class, false);
-			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
-			saveTxn(otpRequestDto, token, staticTokenId, status, partnerId, isInternal);
+			boolean authTokenRequired = !isInternal
+					&& env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, boolean.class, false);
+			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
+			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal);
 		}
 	}
 
@@ -219,18 +219,18 @@ public class OTPServiceImpl implements OTPService {
 	 *
 	 * @param otpRequestDto the otp request dto
 	 * @param token           the uin
-	 * @param staticTokenId the static token id
+	 * @param authTokenId the auth token id
 	 * @param status        the status
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String staticTokenId, boolean status, String partnerId, boolean isInternal)
+	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String authTokenId, boolean status, String partnerId, boolean isInternal)
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
 				.withOtpRequest(otpRequestDto)
 				.withRequestType(RequestType.OTP_REQUEST)
-				.withStaticToken(staticTokenId)
+				.withAuthToken(authTokenId)
 				.withStatus(status)
 				.withToken(token)
 				.withPartner(partner)

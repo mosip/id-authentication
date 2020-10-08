@@ -14,7 +14,7 @@ import io.mosip.kernel.tokenidgenerator.service.TokenIDGeneratorService;
 
 /**
  * This Class will call an rest api which accepts uin, partnerId and will return
- * StaticTokenId.
+ * authTokenId.
  * 
  * @author Prem Kumar
  *

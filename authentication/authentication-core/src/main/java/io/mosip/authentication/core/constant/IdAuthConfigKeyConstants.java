@@ -32,7 +32,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String PARTNER_KEY = "partner.";
 	public static final String MOSIP_IDENTITY_VID = "mosip.identity.vid";
 	public static final String MOSIP_VID_VALIDITY_HOURS = "ida.vid.validity.hours";
-	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
+	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
