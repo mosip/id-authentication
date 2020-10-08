@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,11 @@ public class IdAuthSecurityManager {
 	private CryptoCore cryptoCore;
 	
 	@Autowired
-	KeyGenerator keyGenerator;
+	private KeyGenerator keyGenerator;
 
+	@Value("${mosip.kernel.tokenid.length}")
+	private int tokenIDLength;
+	
 	/**
 	 * Gets the user.
 	 *
@@ -232,7 +236,8 @@ public class IdAuthSecurityManager {
 		sRandom.nextBytes(nonce);
 		sRandom.nextBytes(aad);
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
-		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
+		String hash = HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
+		return  new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
 	}
 	
 	
