@@ -33,7 +33,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
 		taskScheduler.schedule(
 				  this::initSubsriptions,
 				  new Date(System.currentTimeMillis() + taskSubsctiptionDelay)
@@ -42,7 +42,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	}
 	
 	private void initSubsriptions() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions",  "", "Initializing subscribptions..");
+		logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions",  this.getClass().getSimpleName(), "Initializing subscribptions..");
 		webSubSubscriptionHelper.initSubsriptions();
 	}
 
