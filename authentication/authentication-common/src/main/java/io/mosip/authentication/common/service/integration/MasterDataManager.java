@@ -272,8 +272,12 @@ public class MasterDataManager {
 			if (lang.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG))
 					|| lang.equals(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG))) {
 				finalTemplate = (String) valueMap.get(templateName);
-				finalTemplate = finalTemplate.replace(NAME_PLACEHOLDER, NAME_PLACEHOLDER + "_" + lang);
-				template.append(finalTemplate);
+				if(finalTemplate != null) {
+					finalTemplate = finalTemplate.replace(NAME_PLACEHOLDER, NAME_PLACEHOLDER + "_" + lang);
+					template.append(finalTemplate);
+				} else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() + " - template not found: " + templateName);
+				}
 			}
 			if (iterator.hasNext()) {
 				template.append("\n\n");

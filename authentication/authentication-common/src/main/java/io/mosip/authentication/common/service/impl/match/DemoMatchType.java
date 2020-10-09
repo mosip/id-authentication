@@ -259,7 +259,11 @@ public enum DemoMatchType implements MatchType {
 		DemoMatchType[] values = DemoMatchType.values();
 		Optional<DemoMatchType> demoMatchType = Stream.of(values).filter(
 				matchType ->  matchType.getIdMapping().getSubIdMappings().isEmpty()
-						&& matchType.getIdMapping().getMappingFunction().apply(cfg, matchType).contains(propName)
+						&& matchType
+						.getIdMapping()
+						.getMappingFunction()
+						.apply(cfg, matchType)
+						.contains(propName)
 				)
 		.findFirst();
 		if(demoMatchType.isPresent()) {
