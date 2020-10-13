@@ -1,6 +1,6 @@
 package io.mosip.authentication.core.util;
 
-import org.bouncycastle.util.Arrays;
+import java.util.Arrays;
 
 public final class BytesUtil {
 
