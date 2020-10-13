@@ -69,7 +69,7 @@ public class AutnTxn {
 	
 
 	@Column(name = "static_tkn_id")
-	private String staticTknId;
+	private String authTknId;
 
 	@NotNull
 	@Column(name = "cr_by")

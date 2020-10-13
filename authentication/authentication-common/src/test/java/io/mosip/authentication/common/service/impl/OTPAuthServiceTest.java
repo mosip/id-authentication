@@ -52,6 +52,7 @@ import reactor.ipc.netty.http.HttpResources;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@Ignore
 public class OTPAuthServiceTest {
 
 	@InjectMocks

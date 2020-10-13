@@ -1,53 +1,53 @@
 package io.mosip.authentication.common.service.integration;
 
-import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.mosip.authentication.common.service.entity.OtpTransaction;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
-import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.common.service.integration.dto.OtpGenerateRequestDto;
+import io.mosip.authentication.common.service.repository.OtpTxnRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
+import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
  * 
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
+ * @author Manoj SP
  */
 @Component
 public class OTPManager {
@@ -59,26 +59,11 @@ public class OTPManager {
 	/** The Constant DATE. */
 	private static final String DATE = "date";
 
-	/** The Constant RESPONSE. */
-	private static final String RESPONSE = "response";
-
-	/** The Constant STATUS. */
-	private static final String STATUS = "status";
-
 	/** The Constant VALIDATION_UNSUCCESSFUL. */
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
 	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
-
-	/** The Constant STATUS_SUCCESS. */
-	private static final String STATUS_SUCCESS = "success";
-
-	/** The Constant STATUS_FAILURE. */
-	private static final String STATUS_FAILURE = "failure";
-	
-	/** The Constant Message. */
-	private static final String MESSAGE = "message";
 
 	/** The Constant USER_BLOCKED. */
 	private static final String USER_BLOCKED = "USER_BLOCKED";
@@ -94,6 +79,15 @@ public class OTPManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	@Autowired
+	private IdAuthSecurityManager securityManager;
+
+	@Autowired
+	private OtpTxnRepository otpRepo;
+
+	@Autowired
+	private NotificationService notificationService;
+
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
@@ -102,101 +96,80 @@ public class OTPManager {
 	 * time-out.
 	 *
 	 * @param otpRequestDTO the otp request DTO
-	 * @param uin the uin
-	 * @param valueMap the value map
+	 * @param uin           the uin
+	 * @param valueMap      the value map
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	@SuppressWarnings("unchecked")
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String userIdForSendOtp, String userIdTypeForSendOtp, Map<String, String> valueMap)
-			throws IdAuthenticationBusinessException {
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		RestRequestDTO restRequestDTO = null;
-		String response = null;
-		String message = null;
-		boolean isOtpGenerated = false;
-		try {
-			String appId = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_APPID);
-			String context = environment.getProperty(IdAuthConfigKeyConstants.OTP_CONTEXT);
-			otpGeneratorRequestDto.setAppId(appId);
-			otpGeneratorRequestDto.setContext(context);
-			otpGeneratorRequestDto.setUserId(userIdForSendOtp);
-			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, userIdForSendOtp, valueMap);
-			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
-			otpGeneratorRequestDto.setUseridtype(userIdTypeForSendOtp);
-			List<String> otpChannel = new ArrayList<>();
-			for (String channel : otpRequestDTO.getOtpChannel()) {
-				NotificationType.getNotificationTypeForChannel(channel).ifPresent(type -> otpChannel.add(type.getApiChannel().toLowerCase()));
-			}
-			otpGeneratorRequestDto.setOtpChannel(otpChannel);
-			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
-					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
-			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
-			response = (String) ((Map<String, Object>) otpGeneratorResponsetDto.getResponse()).get(STATUS);
-			message = (String) ((Map<String, Object>) otpGeneratorResponsetDto.getResponse()).get(MESSAGE);
-			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
-					"otpGeneratorResponsetDto " + response);
-			if (response != null) {
-				if (response.equalsIgnoreCase(STATUS_SUCCESS)) {
-					isOtpGenerated = true;
-				} else if (response.equalsIgnoreCase(STATUS_FAILURE) && message.equalsIgnoreCase(USER_BLOCKED)) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
-				}
-			}
-		} catch (RestServiceException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			Optional<Object> responseBody = e.getResponseBody();
-			if (responseBody.isPresent()) {
-				handleOtpErrorResponse(responseBody.get(), e);
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String userIdForSendOtp, String userIdTypeForSendOtp,
+			Map<String, String> valueMap) throws IdAuthenticationBusinessException {
 
-			} else {
-				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
-				// try again
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-			}
+		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, userIdForSendOtp, valueMap);
+		String otp = generateOTP(otpRequestDTO.getIndividualId());
+		otpTemplateValues.put("otp", otp);
+		String otpHash = HMACUtils.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
+				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
+				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
+		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+			OtpTransaction otpTxn = otpRepo.findByRefIdAndStatusCode(
+					securityManager.hash(otpRequestDTO.getIndividualId()), IdAuthCommonConstants.ACTIVE_STATUS);
+			otpTxn.setOtpHash(otpHash);
+			otpTxn.setUpdBy(securityManager.getUser());
+			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpTxn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			otpRepo.save(otpTxn);
+		} else {
+			OtpTransaction txn = new OtpTransaction();
+			txn.setId(UUID.randomUUID().toString());
+			txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
+			txn.setOtpHash(otpHash);
+			txn.setCrBy(securityManager.getUser());
+			txn.setCrDtimes(DateUtils.getUTCCurrentDateTime());
+			txn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			otpRepo.save(txn);
 		}
-		return isOtpGenerated;
+		String notificationProperty = null;
+		notificationProperty = otpRequestDTO
+				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
+						.stream().map(type -> type.getName()).collect(Collectors.joining()))
+				.collect(Collectors.joining("|"));
+
+		notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
+				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty);
+
+		return true;
 	}
 
-	/**
-	 * Handle otp error response.
-	 *
-	 * @param responseBody the response body
-	 * @param e 
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	@SuppressWarnings("unchecked")
-	private void handleOtpErrorResponse(Object responseBody, Exception e) throws IdAuthenticationBusinessException {
-		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody;
-		List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
-		if (errorList != null && !errorList.isEmpty()) {
-			if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-					.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.PHONE.name()), e);
-			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-					.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.EMAIL.name()), e);
-			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-					.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name()), e);
+	private String generateOTP(String uin) throws IdAuthUncheckedException {
+		try {
+			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
+			RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
+			reqWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+			reqWrapper.setRequest(otpGenerateRequestDto);
+			RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
+					reqWrapper, ResponseWrapper.class);
+			ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
+			if (response != null && response.getResponse().get("status").equals(USER_BLOCKED)) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 			}
+			return response.getResponse().get("otp");
+		} catch (IDDataValidationException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+					e.getMessage());
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		} catch (RestServiceException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorCode(),
+					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorMessage());
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 	}
 
@@ -268,117 +241,24 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		boolean isValidOtp = false;
-		try {
-			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
-					null, Map.class);
-			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-			params.add("key", otpKey);
-			params.add("otp", pinValue);
-			restreqdto.setParams(params);
-			Map<String, Object> otpvalidateresponsedto = restHelper.requestSync(restreqdto);
-			isValidOtp = Optional.ofNullable((Map<String, Object>) otpvalidateresponsedto.get(RESPONSE))
-					.filter(res -> res.containsKey(STATUS)).map(res -> String.valueOf(res.get(STATUS)))
-					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
-			if (!isValidOtp) {
-				handleErrorStatus(null, otpvalidateresponsedto);
-			}
-		} catch (RestServiceException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
-
-			Optional<Object> responseBody = e.getResponseBody();
-			if (responseBody.isPresent()) {
-				Map<String, Object> res = (Map<String, Object>) responseBody.get();
-				handleErrorStatus(e, res);
-			}
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "Inside validateOtp", null);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		}
-		return isValidOtp;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void handleErrorStatus(RestServiceException e, Map<String, Object> res)
-			throws IdAuthenticationBusinessException {
-		Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
-		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(MESSAGE)
-				: null;
-		if (status instanceof String && message instanceof String) {
-			if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {
-				throwOtpException((String) message);
+		String otpHash = HMACUtils.digestAsPlainText(
+				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
+		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+			otpRepo.save(otpTxn);
+			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+				return true;
 			} else {
-				throwKeyNotFound(e);
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 			}
-		} else if (e != null) {
-			throwKeyNotFound(e);
-		}
-	}
-
-	/**
-	 * Throws KeyNotFound Exception when otp key is Invalid
-	 * 
-	 * @param e
-	 * @throws IdAuthenticationBusinessException
-	 */
-	private void throwKeyNotFound(RestServiceException e) throws IdAuthenticationBusinessException {
-		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
-		// Do not throw server error for OTP not generated, throw invalid OTP error
-		// instead
-		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-				e.getErrorText());
-		if (errorCode.filter(code -> code.equalsIgnoreCase(IdAuthCommonConstants.KER_OTP_KEY_NOT_EXISTS_CODE))
-				.isPresent()) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-		}
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-	}
-
-	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
-		if (message.equalsIgnoreCase(USER_BLOCKED)) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
-		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
-		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+		} else {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), VALIDATION_UNSUCCESSFUL);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-		} else {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorCode(),
-					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 	}
-
-	/**
-	 * Gets the error code.
-	 *
-	 * @param resBody the res body
-	 * @return the error code
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Optional<String> getErrorCode(String resBody) {
-		return Optional.of(resBody).map(str -> {
-			ObjectMapper mapper = new ObjectMapper();
-			Map<String, Object> res = null;
-			try {
-				res = mapper.readValue(str, Map.class);
-			} catch (IOException e) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						"Error parsing response body", null);
-			}
-			return res;
-		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()
-				.filter(obj1 -> obj1 instanceof Map).map(map1 -> (((Map) map1).get("errorCode"))).findAny())
-				.map(String::valueOf);
-	}
-
 }

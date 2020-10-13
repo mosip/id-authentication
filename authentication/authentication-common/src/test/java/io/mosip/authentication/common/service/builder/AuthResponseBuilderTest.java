@@ -140,9 +140,9 @@ public class AuthResponseBuilderTest {
 	}
 
 	@Test
-	public void TestSetStaticToken() {
+	public void TestSetAuthToken() {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
-		authResponseBuilder.setStaticTokenId("TEST123");
+		authResponseBuilder.setAuthTokenId("TEST123");
 	}
 
 	@Test

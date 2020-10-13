@@ -76,7 +76,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 	  TokenIDGeneratorServiceImpl.class,TokenIDGenerator.class,PartnerServiceManager.class, 
 	  SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class})
-@ComponentScan(basePackages={ "io.mosip.authentication.otp.service.*"})
+@ComponentScan(basePackages={ "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config"})
 @EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
 public class OtpApplication {
 

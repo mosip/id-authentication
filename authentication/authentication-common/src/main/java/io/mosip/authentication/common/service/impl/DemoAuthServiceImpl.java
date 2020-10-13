@@ -68,7 +68,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @see io.mosip.authentication.core.spi.indauth.service.DemoAuthService#
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String token,
 			Map<String, List<IdentityInfoDTO>> demoEntity, String partnerId) throws IdAuthenticationBusinessException {
 
 		if (demoEntity == null || demoEntity.isEmpty()) {

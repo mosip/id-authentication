@@ -59,6 +59,12 @@
 		    <version>${mockito.version}</version>
 		    <scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>${objenesis.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>

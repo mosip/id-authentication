@@ -188,5 +188,11 @@
 			<artifactId>kernel-biometrics-api</artifactId>
 			<version>${kernel-biometrics-api.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>${objenesis.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

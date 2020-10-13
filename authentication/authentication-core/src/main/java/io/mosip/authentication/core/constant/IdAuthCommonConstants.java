@@ -208,6 +208,9 @@ public final class IdAuthCommonConstants {
 	/** The Constant ACTIVE_STATUS. */
 	public static final String ACTIVE_STATUS = "active";
 
+	/** The Constant USED_STATUS. */
+	public static final String USED_STATUS = "used";
+
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";
 
@@ -254,4 +257,11 @@ public final class IdAuthCommonConstants {
 	public static final String VERIFY = "verify";
 	
 	public static final String VALIDATESIGN = "validate";
+
+	public static final String PHONE_NUMBER = "phone";
+
+	public static final String EMAIL = "email";
+	
+	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+
 }

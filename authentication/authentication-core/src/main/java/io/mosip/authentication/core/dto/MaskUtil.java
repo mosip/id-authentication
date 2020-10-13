@@ -2,6 +2,9 @@ package io.mosip.authentication.core.dto;
 
 import java.util.stream.IntStream;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -39,8 +42,14 @@ public class MaskUtil {
 	 *
 	 * @param email the email
 	 * @return the string
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	public static String maskEmail(String email) {
+	public static String maskEmail(String email) throws IdAuthenticationBusinessException {
+		if (StringUtils.isEmpty(email)) {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "email"));
+		}
 		StringBuilder maskedEmail = new StringBuilder(email);
 		IntStream.range(1, StringUtils.split(email, '@')[0].length() + 1).filter(i -> i % 3 != 0)
 				.forEach(i -> maskedEmail.setCharAt(i - 1, 'X'));
@@ -52,8 +61,14 @@ public class MaskUtil {
 	 *
 	 * @param mobileNumber the mobile number
 	 * @return the string
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	public static String maskMobile(String mobileNumber) {
+	public static String maskMobile(String mobileNumber) throws IdAuthenticationBusinessException {
+		if (StringUtils.isEmpty(mobileNumber)) {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "mobileNumber"));
+		}
 		StringBuilder maskedMobile = new StringBuilder(mobileNumber);
 		IntStream.range(0, (maskedMobile.length() / 2) + 1).forEach(i -> maskedMobile.setCharAt(i, 'X'));
 		return maskedMobile.toString();

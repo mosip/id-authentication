@@ -71,8 +71,8 @@ public class AuthTransactionBuilder {
 	/** The request type. */
 	private RequestType requestType;
 
-	/** The static token id. */
-	private String staticTokenId;
+	/** The auth token id. */
+	private String authTokenId;
 
 	/** The is status. */
 	private boolean isStatus;
@@ -133,14 +133,14 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
-	 * Set the static token.
+	 * Set the auth token.
 	 *
-	 * @param staticTokenId
-	 *            the static token id
+	 * @param authTokenId
+	 *            the auth token id
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
-	public AuthTransactionBuilder withStaticToken(String staticTokenId) {
-		this.staticTokenId = staticTokenId;
+	public AuthTransactionBuilder withAuthToken(String authTokenId) {
+		this.authTokenId = authTokenId;
 		return this;
 	}
 
@@ -209,7 +209,7 @@ public class AuthTransactionBuilder {
 				autnTxn.setToken(token);
 				autnTxn.setId(id);
 				autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-				autnTxn.setStaticTknId(staticTokenId);
+				autnTxn.setAuthTknId(authTokenId);
 				autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 				String strUTCDate = DateUtils.getUTCTimeFromDate(
 						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
@@ -284,7 +284,7 @@ public class AuthTransactionBuilder {
 	@Override
 	public String toString() {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
-				+ requestType + ", staticTokenId=" + staticTokenId + ", isStatus=" + isStatus + "]";
+				+ requestType + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
 
 }
