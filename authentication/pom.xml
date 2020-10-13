@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -76,7 +76,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.1.2-SNAPSHOT</kernel.parent.version>
+		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
@@ -85,15 +85,15 @@
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.1.2-SNAPSHOT</kernel-logger-logback.version>
+		<kernel-logger-logback.version>1.2.0-SNAPSHOT</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
 		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.1.2-SNAPSHOT</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.1.2-SNAPSHOT</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.1.2-SNAPSHOT</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.1.2-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.2-SNAPSHOT</id-repository-core.version>
+		<kernel-auth-adapter.version>1.2.0-SNAPSHOT</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.2.0-SNAPSHOT</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.2.0-SNAPSHOT</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
+		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
