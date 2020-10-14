@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.kernel.core.authmanager.authadapter.model.AuthUserDetails;
+import io.mosip.idrepository.core.dto.AuthUserDetails;
 
 /**
  * 
@@ -24,6 +24,7 @@ public class InternalAuthSecurityManager extends IdAuthSecurityManager {
 	 */
 	@Override
 	public String getUser() {
+		//TODO use kernel core AuthUserDetail class, as the class in idrepo core is to be removed 
 		if (Objects.nonNull(SecurityContextHolder.getContext())
 				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())
 				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
