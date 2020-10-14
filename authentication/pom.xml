@@ -76,7 +76,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.1.2-SNAPSHOT</kernel.parent.version>
+		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
