@@ -24,6 +24,7 @@ public class InternalAuthSecurityManager extends IdAuthSecurityManager {
 	 */
 	@Override
 	public String getUser() {
+		//TODO use kernel core AuthUserDetail class, as the class in idrepo core is to be removed 
 		if (Objects.nonNull(SecurityContextHolder.getContext())
 				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())
 				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
