@@ -76,7 +76,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.2.0-SNAPSHOT</kernel.parent.version>
+		<kernel.parent.version>1.1.2-SNAPSHOT</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
@@ -93,7 +93,7 @@
 		<kernel-biometrics-api.version>1.2.0-SNAPSHOT</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.2.0-SNAPSHOT</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>1.2.0-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.2-SNAPSHOT</id-repository-core.version>
+		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
