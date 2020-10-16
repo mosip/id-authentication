@@ -256,9 +256,7 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 			}
 		} else {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), VALIDATION_UNSUCCESSFUL);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+			return false;
 		}
 	}
 }
