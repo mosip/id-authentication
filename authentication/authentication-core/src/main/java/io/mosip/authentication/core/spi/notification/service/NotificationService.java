@@ -17,7 +17,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
  *
  */
 public interface NotificationService {
-	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
+	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException;
 	
 	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,

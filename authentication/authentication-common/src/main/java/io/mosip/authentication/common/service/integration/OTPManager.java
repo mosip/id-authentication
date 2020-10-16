@@ -59,9 +59,6 @@ public class OTPManager {
 	/** The Constant DATE. */
 	private static final String DATE = "date";
 
-	/** The Constant VALIDATION_UNSUCCESSFUL. */
-	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
-
 	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
 
@@ -102,10 +99,10 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String userIdForSendOtp, String userIdTypeForSendOtp,
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType,
 			Map<String, String> valueMap) throws IdAuthenticationBusinessException {
 
-		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, userIdForSendOtp, valueMap);
+		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		otpTemplateValues.put("otp", otp);
 		String otpHash = HMACUtils.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
@@ -177,7 +174,7 @@ public class OTPManager {
 	 * Send Otp Notification
 	 * 
 	 */
-	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin,
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String idvid, String idvidType,
 			Map<String, String> valueMap) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
@@ -189,9 +186,10 @@ public class OTPManager {
 		Map<String, Object> values = new HashMap<>();
 		String charCount = environment.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
 		if (charCount != null) {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
+			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
 		}
-		values.put("uin", maskedUin);
+		values.put("idvid", maskedUin);
+		values.put("idvidType", idvidType);
 		Integer timeInSeconds = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
 				Integer.class);
 		int timeInMinutes = (timeInSeconds % 3600) / 60;
@@ -256,9 +254,7 @@ public class OTPManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 			}
 		} else {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), VALIDATION_UNSUCCESSFUL);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+			return false;
 		}
 	}
 }
