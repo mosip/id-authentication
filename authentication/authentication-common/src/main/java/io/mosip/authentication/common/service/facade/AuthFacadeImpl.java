@@ -180,8 +180,8 @@ public class AuthFacadeImpl implements AuthFacade {
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
-		if (idInfo != null && token != null) {
-			notificationService.sendAuthNotification(authRequestDTO, token, authResponseDTO, idInfo, isAuth);
+		if (idInfo != null && idvid != null) {
+			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isAuth);
 		}
 
 		return authResponseDTO;

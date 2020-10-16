@@ -53,8 +53,6 @@ public class NotificationServiceImpl implements NotificationService {
 	private static final String AUTH_TYPE = "authType";
 	/** The Constant NAME. */
 	private static final String NAME = "name";
-	/** The Constant UIN2. */
-	private static final String UIN2 = "uin";
 	/** The Constant TIME. */
 	private static final String TIME = "time";
 	/** The Constant DATE. */
@@ -77,7 +75,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private NotificationManager notificationManager;
 
-	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
+	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		Map<String, Object> values = new HashMap<>();
@@ -107,9 +105,11 @@ public class NotificationServiceImpl implements NotificationService {
 		String maskedUin = "";
 		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
 		if (charCount != null && !charCount.isEmpty()) {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
+			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
 		}
-		values.put(UIN2, maskedUin);
+		values.put("idvid", maskedUin);
+		String idvidType = authRequestDTO.getIndividualIdType();
+		values.put("idvidType", idvidType);
 
 		// TODO add for all auth types
 		String authTypeStr = Stream
