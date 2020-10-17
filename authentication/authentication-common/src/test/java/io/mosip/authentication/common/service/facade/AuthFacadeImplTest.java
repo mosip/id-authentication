@@ -319,7 +319,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());
-		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
+		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456", "12345");
 
 	}
 

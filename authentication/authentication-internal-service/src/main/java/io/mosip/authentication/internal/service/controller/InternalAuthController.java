@@ -57,6 +57,7 @@ public class InternalAuthController {
 	private Logger mosipLogger = IdaLogger.getLogger(InternalAuthController.class);
 
 	public static final String DEFAULT_PARTNER_ID = "INTERNAL";
+	public static final String DEFAULT_PARTNER_API_KEY = "INTERNAL_API_KEY";
 
 	/**
 	 * Inits the binder.
@@ -88,7 +89,7 @@ public class InternalAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, DEFAULT_PARTNER_ID);
+			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, DEFAULT_PARTNER_ID, DEFAULT_PARTNER_API_KEY);
 		} catch (IDDataValidationException e1) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
 					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());

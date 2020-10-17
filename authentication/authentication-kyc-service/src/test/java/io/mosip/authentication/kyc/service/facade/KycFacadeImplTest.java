@@ -238,8 +238,8 @@ public class KycFacadeImplTest {
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		String partnerId = "123456";
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, partnerId, true)).thenReturn(authStatusInfo);
-		authFacadeImpl.authenticateIndividual(authRequestDTO, true, partnerId);
-		kycFacade.authenticateIndividual(authRequestDTO, true, partnerId);
+		authFacadeImpl.authenticateIndividual(authRequestDTO, true, partnerId, "12345");
+		kycFacade.authenticateIndividual(authRequestDTO, true, partnerId, "12345");
 	}
 	
 	
