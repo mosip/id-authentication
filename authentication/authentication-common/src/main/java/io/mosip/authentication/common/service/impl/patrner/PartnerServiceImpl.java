@@ -27,42 +27,46 @@ public class PartnerServiceImpl implements PartnerService {
 	@Autowired(required = false)
 	private PartnerServiceManager partnerServiceManager;
 	
-	ConcurrentHashMap<String,PartnerPolicyResponseDTO> partnerServiceResponseMap = new ConcurrentHashMap<String, PartnerPolicyResponseDTO>();
+	ConcurrentHashMap<PartnerDTO,PartnerPolicyResponseDTO> partnerServiceResponseMap = new ConcurrentHashMap<>();
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.partner.service.PartnerService#getPartner(java.lang.String)
 	 */
 	public Optional<PartnerDTO> getPartner(String partnerId) throws IdAuthenticationBusinessException {
-		
-		if(partnerServiceResponseMap.containsKey(partnerId)) {
-			PartnerPolicyResponseDTO partnerPolicyDTO = partnerServiceResponseMap.get(partnerId);
-			PartnerDTO partnerDTO = new PartnerDTO();
-			partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
-			partnerDTO.setPartnerName(partnerPolicyDTO.getPartnerName());
-			partnerDTO.setPolicyId(partnerPolicyDTO.getPolicyId());
-			partnerDTO.setStatus("Active");
-			return Optional.of(partnerDTO);
-		}
-		
-		return Optional.empty();
+		return partnerServiceResponseMap.keySet()
+				.stream()
+				.filter(partner -> partner.getPartnerId().equals(partnerId))
+				.findAny();
+	}
+
+	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
+		PartnerDTO partnerDTO = new PartnerDTO();
+		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
+		partnerDTO.setPartnerApiKey(partnerApiKey);
+		partnerDTO.setPartnerName(partnerPolicyDTO.getPartnerName());
+		partnerDTO.setPolicyId(partnerPolicyDTO.getPolicyId());
+		partnerDTO.setStatus("Active");
+		return partnerDTO;
 	}	
 
 	@Override
-	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
-		if (partnerServiceResponseMap.containsKey(partnerId)) {
-			return partnerServiceResponseMap.get(partnerId);
+	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey) throws IdAuthenticationBusinessException {
+		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
+		if (partnerServiceResponseMap.containsKey(key)) {
+			return partnerServiceResponseMap.get(key);
 		} else {
-			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceManager.validateAndGetPolicy(partnerId, partner_api_key, misp_license_key);
-			partnerServiceResponseMap.put(partnerId, partnerPolicyResponseDTO);
+			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceManager.validateAndGetPolicy(partnerId, partnerApiKey, mispLicenseKey);
+			partnerServiceResponseMap.put(createPartnerDTO(partnerPolicyResponseDTO, partnerApiKey), partnerPolicyResponseDTO);
 			return partnerPolicyResponseDTO;
 		}
 	}
 
 
 	@Override
-	public Optional<PolicyDTO> getPolicyForPartner(String partnerId) throws IdAuthenticationBusinessException {
-		if(partnerServiceResponseMap.containsKey(partnerId)) {
-			return Optional.ofNullable(partnerServiceResponseMap.get(partnerId))
+	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey) throws IdAuthenticationBusinessException {
+		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
+		if(partnerServiceResponseMap.containsKey(key)) {
+			return Optional.ofNullable(partnerServiceResponseMap.get(key))
 					.map(PartnerPolicyResponseDTO::getPolicy);
 		}
 		return Optional.empty();
