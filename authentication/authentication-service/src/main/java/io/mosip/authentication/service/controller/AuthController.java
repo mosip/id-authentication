@@ -83,7 +83,7 @@ public class AuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
-			@PathVariable("API-Key") String apiKey)
+			@PathVariable("API-Key") String partnerApiKey)
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponsedto = null;
 		try {
@@ -94,7 +94,7 @@ public class AuthController {
 				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 			}
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId);
+			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey);
 			// Note: Auditing of success or failure status of each authentication (but not
 			// the exception) is handled in respective authentication invocations in the facade
 		} catch (IDDataValidationException e) {

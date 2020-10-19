@@ -100,9 +100,9 @@ public class KycFacadeImpl implements KycFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		return authFacade.authenticateIndividual(authRequest, request, partnerId);
+		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey);
 
 	}
 

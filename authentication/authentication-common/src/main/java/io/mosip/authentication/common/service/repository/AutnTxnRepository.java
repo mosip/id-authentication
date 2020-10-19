@@ -44,8 +44,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @return the int
 	 */
 	@Query("Select count(1) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
-			+ "requestDTtimes >= :oneMinuteBeforeTime and refId=:refId")
+			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
-			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("refId") String refId);
+			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
 }

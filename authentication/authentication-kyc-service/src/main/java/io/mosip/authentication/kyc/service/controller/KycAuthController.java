@@ -85,7 +85,7 @@ public class KycAuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK,@PathVariable("eKYC-Partner-ID") String partnerId,
-			@PathVariable("API-Key") String apiKey)
+			@PathVariable("API-Key") String partnerApiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -97,7 +97,7 @@ public class KycAuthController {
 				kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
 			}
 			DataValidationUtil.validate(errors);
-			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId);
+			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
 			if (authResponseDTO != null) {
 				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}

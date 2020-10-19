@@ -141,7 +141,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
@@ -165,7 +165,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = idService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, idvid, token) : null;
+			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
@@ -180,18 +180,17 @@ public class AuthFacadeImpl implements AuthFacade {
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
-		if (idInfo != null && token != null) {
-			notificationService.sendAuthNotification(authRequestDTO, token, authResponseDTO, idInfo, isAuth);
+		if (idInfo != null && idvid != null) {
+			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isAuth);
 		}
 
 		return authResponseDTO;
 
 	}
 
-	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String idvid, String token)
+	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid, String token)
 			throws IdAuthenticationBusinessException {
-		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId);
-		Optional<String> policyId = policyForPartner.map(PolicyDTO::getPolicyId);
+		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey);
 		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
 		if (authTokenTypeOpt.isPresent()) {
 			String authTokenType = authTokenTypeOpt.get();
@@ -199,8 +198,11 @@ public class AuthFacadeImpl implements AuthFacade {
 				return createRandomToken(authRequestDTO.getTransactionID());
 			} else if (authTokenType.equalsIgnoreCase(PARTNER.getType())) {
 				return tokenIdManager.generateTokenId(token, partnerId);
-			} else if (policyId.isPresent() && authTokenType.equalsIgnoreCase(POLICY.getType())) {
-				return tokenIdManager.generateTokenId(token, policyId.get());
+			} else if(authTokenType.equalsIgnoreCase(POLICY.getType())){
+				Optional<String> policyId = policyForPartner.map(PolicyDTO::getPolicyId);
+				if (policyId.isPresent()) {
+					return tokenIdManager.generateTokenId(token, policyId.get());
+				}
 			} else if (authTokenType.equalsIgnoreCase(POLICY_GROUP.getType())) {
 				// TODO: update with Policy Group
 			}

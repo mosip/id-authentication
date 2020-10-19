@@ -48,7 +48,6 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -148,30 +147,15 @@ public class OTPServiceImpl implements OTPService {
 		}
 	}
 
-	private OtpResponseDTO doGenerateOTP(OtpRequestDTO otpRequestDto, String partnerId, boolean isInternal, String uin, Object individualIdType, Map<String, Object> idResDTO)
+	private OtpResponseDTO doGenerateOTP(OtpRequestDTO otpRequestDto, String partnerId, boolean isInternal, String token, String individualIdType, Map<String, Object> idResDTO)
 			throws IdAuthenticationBusinessException, IDDataValidationException {
 		String individualId = otpRequestDto.getIndividualId();
-		String hashedIndividualId = HMACUtils.digestAsPlainText(HMACUtils.generateHash(individualId.getBytes()));
 		String requestTime = otpRequestDto.getRequestTime();
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		
-		if (isOtpFlooded(hashedIndividualId, requestTime)) {
+		if (isOtpFlooded(token, requestTime)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			String userIdForSendOtp = uin;
-			String userIdTypeForSendOtp = IdType.UIN.getType();
-			if(userIdForSendOtp.isEmpty()) {
-				if (individualIdType.equals(IdType.USER_ID.getType())) {
-					userIdForSendOtp = individualId;
-					userIdTypeForSendOtp = IdType.USER_ID.getType();
-				} else {
-					//This condition will not happen mostly, due to prior request validation.
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-							this.getClass().getName(), "OTP Generation failed - idvid missing");
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
-				}
-			}
-			
 			String transactionId = otpRequestDto.getTransactionID();
 			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 			String priLang = getLanguagecode(LanguageType.PRIMARY_LANG);
@@ -187,7 +171,7 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
-			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, userIdForSendOtp, userIdTypeForSendOtp, valueMap);
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap);
 
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
@@ -257,7 +241,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private boolean isOtpFlooded(String individualId, String requestTime) throws IdAuthenticationBusinessException {
+	private boolean isOtpFlooded(String token, String requestTime) throws IdAuthenticationBusinessException {
 		boolean isOtpFlooded = false;
 		LocalDateTime reqTime;
 		try {
@@ -274,7 +258,7 @@ public class OTPServiceImpl implements OTPService {
 		int addMinutes = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_DURATION));
 		LocalDateTime addMinutesInOtpRequestDTimes = reqTime.minus(addMinutes, ChronoUnit.MINUTES);
 		int maxCount = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_MAX_COUNT));
-		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, individualId) > maxCount) {
+		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, token) > maxCount) {
 			isOtpFlooded = true;
 		}
 		return isOtpFlooded;
