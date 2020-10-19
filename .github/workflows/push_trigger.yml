@@ -103,7 +103,7 @@ jobs:
         
     - name: Publish the maven package
       run: |
-        mvn deploy -DskipTests -DaltDeploymentRepository=ossrh::default::${{ secrets.MAVEN_REPO_URL }} -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
+        cd authentication && mvn deploy -DskipTests -DaltDeploymentRepository=ossrh::default::${{ secrets.MAVEN_REPO_URL }} -s $GITHUB_WORKSPACE/settings.xml -f pom.xml
       env:
         GPG_TTY: $(tty)
     - name: Analyze with SonarCloud
