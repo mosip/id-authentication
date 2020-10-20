@@ -389,7 +389,7 @@
 					<skipTests>${skipTests}</skipTests>
 					<skip>false</skip>
 					<argLine>
-						--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
 					</argLine>
 				</configuration>
 			</plugin>
