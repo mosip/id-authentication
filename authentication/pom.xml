@@ -310,19 +310,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>${maven.sonar.version}</version>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>sonar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven.jar.plugin.version}</version>
@@ -389,7 +376,7 @@
 					<skipTests>${skipTests}</skipTests>
 					<skip>false</skip>
 					<argLine>
-						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
 					</argLine>
 				</configuration>
 			</plugin>
@@ -405,5 +392,28 @@
 		<sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0</sonar.projectVersion> 
 		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
 		</properties> </profile> </profiles> -->
+		
+		<profiles>
+			<profile>
+				<id>sonar</id>
+				<build>
+					<plugins>
+						<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>${maven.sonar.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					</plugins>
+				</build>
+			</profile>
+		</profiles>
 
 </project>
