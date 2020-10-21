@@ -428,7 +428,6 @@ public class AuthRequestValidatorTest {
 	@Test
 	@Ignore
 	public void testValidRequest() throws IdAuthenticationBusinessException {
-		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(Boolean.TRUE);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
@@ -500,7 +499,6 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInValidRequest2() throws IdAuthenticationBusinessException {
-		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");

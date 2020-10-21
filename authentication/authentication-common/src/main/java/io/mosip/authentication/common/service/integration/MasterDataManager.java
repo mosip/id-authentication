@@ -44,12 +44,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Component
 public class MasterDataManager {
 
-	/** The Constant GENDER_NAME. */
-	private static final String GENDER_NAME = "genderName";
-
-	/** The Constant GENDER_TYPE. */
-	private static final String GENDER_TYPE = "genderType";
-
 	/** The Constant TITLE_NAME. */
 	private static final String TITLE_NAME = "titleName";
 
@@ -157,8 +151,6 @@ public class MasterDataManager {
 			throws IDDataValidationException, RestServiceException, IOException {
 		try {
 			switch (type) {
-				case GENDER_TYPE_SERVICE:
-					return getMasterDataFromConfig("master.data.genders");
 				case TITLE_SERVICE:
 					return getMasterDataFromConfig("maste.data.titles");
 				case ID_MASTERDATA_TEMPLATE_SERVICE:
@@ -296,16 +288,6 @@ public class MasterDataManager {
 	 */
 	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
 		return fetchMasterdataList(RestServicesConstants.TITLE_SERVICE, TITLE_LIST, CODE, TITLE_NAME);
-	}
-
-	/**
-	 * To fetch gender type.
-	 *
-	 * @return the map
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
-		return fetchMasterdataList(RestServicesConstants.GENDER_TYPE_SERVICE, GENDER_TYPE, CODE, GENDER_NAME);
 	}
 
 	/**
