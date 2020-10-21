@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.controller;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -57,6 +59,9 @@ public class AuthController {
 	
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 
 
 	/**
@@ -87,6 +92,9 @@ public class AuthController {
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponsedto = null;
 		try {
+			String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
+					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).name();
+			authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
 			if(Optional.of(authrequestdto)
 					.map(AuthRequestDTO::getRequestedAuth)
 					.filter(AuthTypeDTO::isBio)

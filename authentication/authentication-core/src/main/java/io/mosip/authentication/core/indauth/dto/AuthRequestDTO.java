@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,6 +37,7 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	
 
 	/** The value for individualIdType*/
+	@JsonIgnore
 	private String individualIdType;
 	
 	/** The value for requestHMAC*/

@@ -28,8 +28,8 @@ public class AuthTxnValidator extends InternalAuthRequestValidator {
 	public void validate(Object target, Errors errors) {
 		if (Objects.nonNull(target)) {
 			AutnTxnRequestDto autnTxnDto = (AutnTxnRequestDto) target;
-			validateIdvId(autnTxnDto.getIndividualId(), autnTxnDto.getIndividualIdType(), errors,
-					IdAuthCommonConstants.IDV_ID);
+//			validateIdvId(autnTxnDto.getIndividualId(), autnTxnDto.getIndividualIdType(), errors,
+//					IdAuthCommonConstants.IDV_ID);
 		}
 
 	}

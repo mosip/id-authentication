@@ -90,10 +90,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
-				String individualId = authRequestDto.getIndividualId();
-				String individualIdType = authRequestDto.getIndividualIdType();
-
-				validateIdvId(individualId, individualIdType, errors);
 
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);

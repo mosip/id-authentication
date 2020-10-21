@@ -25,6 +25,8 @@ public enum IdType {
 	UIN("UIN"), 
 	/** The vid. */
 	VID("VID"),
+	/** The rid. */
+	RID("RegistrationId"),
 	/** The user id. */
 	USER_ID("USERID");
 

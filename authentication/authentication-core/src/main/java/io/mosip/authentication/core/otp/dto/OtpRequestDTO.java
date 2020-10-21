@@ -2,6 +2,8 @@ package io.mosip.authentication.core.otp.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 /**
@@ -30,6 +32,7 @@ public class OtpRequestDTO {
 	private String individualId;
 
 	/** Variable to hold partnerID */
+	@JsonIgnore
 	private String individualIdType;
 
 	private List<String> otpChannel;
