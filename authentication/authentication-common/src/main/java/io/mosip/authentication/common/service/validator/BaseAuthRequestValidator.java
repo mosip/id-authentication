@@ -26,11 +26,9 @@ import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
-import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BaseAuthRequestDTO;
@@ -90,10 +88,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The pin validator. */
 	@Autowired
 	private PinValidatorImpl pinValidator;
-
-	/** The master Data Manager. */
-	@Autowired
-	private MasterDataManager masterDataManager;
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -766,10 +760,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			checkAge(authRequest, errors);
 		}
 
-		if (isMatchtypeEnabled(DemoMatchType.GENDER)) {
-			checkGender(authRequest, errors);
-		}
-
 		if (isAuthtypeEnabled(DemoAuthType.ADDRESS, DemoAuthType.FULL_ADDRESS)) {
 			validateAdAndFullAd(availableAuthTypeInfos, errors);
 		}
@@ -816,62 +806,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
 					new Object[] { Category.DEMO.getType() },
 					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
-		}
-	}
-
-	/**
-	 * Check gender.
-	 *
-	 * @param authRequest
-	 *            the auth request
-	 * @param errors
-	 *            the errors
-	 */
-	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER.getIdentityInfoList(authRequest.getRequest());
-		if (genderList != null && !genderList.isEmpty()) {
-			Map<String, List<String>> fetchGenderType = null;
-			try {
-				fetchGenderType = masterDataManager.fetchGenderType();
-			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "Master Data util failed to load - Gender Type");
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "gender" },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			}
-			if (null != fetchGenderType) {
-				checkGender(errors, genderList, fetchGenderType);
-			}
-		}
-	}
-
-	/**
-	 * Check gender.
-	 *
-	 * @param errors
-	 *            the errors
-	 * @param genderList
-	 *            the gender list
-	 * @param fetchGenderType
-	 *            the fetch gender type
-	 */
-	private void checkGender(Errors errors, List<IdentityInfoDTO> genderList,
-			Map<String, List<String>> fetchGenderType) {
-		for (IdentityInfoDTO identityInfoDTO : genderList) {
-			String language = identityInfoDTO.getLanguage() != null ? identityInfoDTO.getLanguage()
-					: env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
-			List<String> genderTypeList = fetchGenderType.get(language);
-			if (null != genderTypeList && !genderTypeList.contains(identityInfoDTO.getValue())) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "Demographic data – Gender(pi) did not match");
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "gender" },
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-			}
-
 		}
 	}
 

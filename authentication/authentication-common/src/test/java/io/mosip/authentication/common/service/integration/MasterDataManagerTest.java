@@ -32,7 +32,6 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 
@@ -79,19 +78,10 @@ public class MasterDataManagerTest {
 	}
 	
 	@Test
-	public void testGenderType() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
-		RestRequestDTO buildRequest  = new RestRequestDTO();
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getGender());
-		Map<String, List<String>> fetchGenderType = masterDataManager.fetchGenderType();
-		assertNotNull(fetchGenderType);
-	}
-	
-	@Test
 	public void testTemplateForTypeCode() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException, JsonMappingException, IOException {
 		RestRequestDTO buildRequest  = new RestRequestDTO();
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.GENDER_TYPE_SERVICE, null, Map.class)).thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getGender());
+		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class)).thenReturn(buildRequest);
+		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getTitles());
 
 		Map<String, String> params = new HashMap<>();
 		params.put("templateTypeCode", "auth-sms");
