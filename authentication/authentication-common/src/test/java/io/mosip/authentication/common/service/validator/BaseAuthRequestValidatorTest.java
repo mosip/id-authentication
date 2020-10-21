@@ -41,7 +41,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -102,9 +101,6 @@ public class BaseAuthRequestValidatorTest {
 	/** The error. */
 	Errors error;
 
-	@Mock
-	private MasterDataManager masterDataManager;
-
 	public void setValidation(Map<String, String> validation) {
 		this.validation = validation;
 	}
@@ -119,8 +115,6 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(AuthRequestValidator, "masterDataManager", masterDataManager);
-
 	}
 
 	@Test
