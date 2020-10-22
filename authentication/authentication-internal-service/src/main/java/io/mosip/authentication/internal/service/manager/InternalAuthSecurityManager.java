@@ -32,7 +32,7 @@ public class InternalAuthSecurityManager extends IdAuthSecurityManager {
 			return ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 					.getUserId();
 		} else {
-			return null;
+			return "";
 		}
 	}
 	

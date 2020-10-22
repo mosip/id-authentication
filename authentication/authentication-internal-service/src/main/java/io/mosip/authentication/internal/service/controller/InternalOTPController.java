@@ -83,6 +83,7 @@ public class InternalOTPController {
 		try {
 			String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 					: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).name();
+			otpRequestDto.setIndividualIdType(idType);
 			otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 			DataValidationUtil.validate(errors);
 			otpResponseDTO = otpService.generateOtp(otpRequestDto, IdAuthCommonConstants.INTERNAL);

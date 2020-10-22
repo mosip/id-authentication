@@ -97,6 +97,7 @@ public class InternalAuthController {
 		try {
 			String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).name();
+			authRequestDTO.setIndividualIdType(idType);
 			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, e);
 			DataValidationUtil.validate(e);
 			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, DEFAULT_PARTNER_ID, DEFAULT_PARTNER_API_KEY);
