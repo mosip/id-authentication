@@ -93,7 +93,7 @@ public class InternalAuthTxnController {
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
-	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
+	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@RequestParam("IDType") String individualIdType,
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
