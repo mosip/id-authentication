@@ -36,9 +36,12 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -1221,5 +1224,405 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 	}
+	
+	@Test
+	public void testNoErrorForDomainUriEnvOptional() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setOtp(true);
+		RequestDTO request = new RequestDTO();
+		request.setOtp("111111");
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+	
+	@Test
+	public void testErrorForDomainUriInBioData() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setDomainUri("localhost");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForDomainUriMissingInAuthReq() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setDomainUri("localhost");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForDomainUriNotMatchingBetweenReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setDomainUri("localhost1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setDomainUri("localhost2");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testNoErrorForDomainUriNullOnBothReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		//authRequestDTO.setDomainUri("localhost1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		//data.setDomainUri("localhost2");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+	
+	@Test
+	public void testNoErrorForDomainUriMatchesOnBothReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setDomainUri("localhost");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setDomainUri("localhost");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+	
+	
+	@Test
+	public void testErrorForEnvInBioData() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setEnv("Staging");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForEnvMissingInAuthReq() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setEnv("Staging");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForEnvNotMatchingBetweenReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setEnv("Staging1");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setEnv("Staging2");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+	}
+	
+	@Test
+	public void testNoErrorForEnvNullOnBothReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		//authRequestDTO.setEnv("Staging");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		//data.setEnv("Staging");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+	
+	@Test
+	public void testNoErrorForEnvMatchesOnBothReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setEnv("Staging");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setBio(true);
+		RequestDTO request = new RequestDTO();
+		
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setEnv("Staging");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+		
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+
 
 }
