@@ -19,9 +19,6 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 public class IdTypeUtil {
 
 	@Autowired(required = false)
-	private RidValidator<String> ridValidator;
-
-	@Autowired(required = false)
 	private UinValidator<String> uinValidator;
 
 	@Autowired(required = false)
@@ -31,17 +28,6 @@ public class IdTypeUtil {
 		try {
 			if (Objects.nonNull(uinValidator))
 				return uinValidator.validateId(uin);
-			else
-				return false;
-		} catch (InvalidIDException e) {
-			return false;
-		}
-	}
-
-	public boolean validateRid(String registrationId) {
-		try {
-			if (Objects.nonNull(ridValidator))
-				return ridValidator.validateId(registrationId);
 			else
 				return false;
 		} catch (InvalidIDException e) {
@@ -65,8 +51,6 @@ public class IdTypeUtil {
 			return IdType.UIN;
 		if (this.validateVid(id))
 			return IdType.VID;
-		if (this.validateRid(id))
-			return IdType.RID;
 		return IdType.USER_ID;
 	}
 }
