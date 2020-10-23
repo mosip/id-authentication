@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service.manager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetUserWrongPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -49,6 +51,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetUserNullPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -62,6 +65,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetUserNullAuthentication() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -71,6 +75,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetUserNullContext() throws IdAuthenticationBusinessException, RestServiceException {
 		assertNull(authSecurityManager.getUser());
 	}
