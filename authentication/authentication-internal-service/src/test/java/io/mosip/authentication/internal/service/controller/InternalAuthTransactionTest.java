@@ -37,6 +37,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -84,6 +85,9 @@ public class InternalAuthTransactionTest {
 	
 	@Mock
 	private AuditHelper auditHelper;
+	
+	@InjectMocks
+	private IdTypeUtil idTypeUtil;
 
 	@Before
 	public void before() throws IdAuthenticationBusinessException {
@@ -94,6 +98,7 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "auditHelper", auditHelper);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
+		ReflectionTestUtils.setField(internalAuthTxnController, "idTypeUtil", idTypeUtil);
 		when(securityManager.hash(Mockito.any())).thenReturn("1234");
 
 	}

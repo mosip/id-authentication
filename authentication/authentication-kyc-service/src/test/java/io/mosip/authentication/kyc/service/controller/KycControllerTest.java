@@ -4,6 +4,7 @@
 package io.mosip.authentication.kyc.service.controller;
 
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +51,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
@@ -83,6 +85,9 @@ public class KycControllerTest {
 
 	@Mock
 	private KycFacadeImpl kycFacade;
+	
+	@Mock
+	private IdTypeUtil idTypeUtil;
 
 	@InjectMocks
 	private KycAuthController kycAuthController;
@@ -99,6 +104,9 @@ public class KycControllerTest {
 	/** The Kyc Service */
 	@Mock
 	private KycServiceImpl kycService;
+	
+	@Mock
+	private KycAuthRequestValidator kycReqValidator;
 
 	@Before
 	public void before() {
@@ -106,8 +114,10 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
+		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoFetcher", idInfoFetcherImpl);
+		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 
 	}
 
