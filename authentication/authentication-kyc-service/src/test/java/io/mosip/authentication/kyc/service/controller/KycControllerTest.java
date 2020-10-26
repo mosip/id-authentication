@@ -104,6 +104,9 @@ public class KycControllerTest {
 	/** The Kyc Service */
 	@Mock
 	private KycServiceImpl kycService;
+	
+	@Mock
+	private KycAuthRequestValidator kycReqValidator;
 
 	@Before
 	public void before() {
@@ -111,6 +114,7 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
+		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoFetcher", idInfoFetcherImpl);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
