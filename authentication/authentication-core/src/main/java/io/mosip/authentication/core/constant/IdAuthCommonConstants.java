@@ -262,8 +262,6 @@ public final class IdAuthCommonConstants {
 
 	public static final String EMAIL = "email";
 	
-	public static final String CREDENTIAL_SUBJECT = "credentialSubject";
-	
 	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
 
 }
