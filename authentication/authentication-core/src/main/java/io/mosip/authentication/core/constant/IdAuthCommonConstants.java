@@ -8,6 +8,23 @@ package io.mosip.authentication.core.constant;
  */
 public final class IdAuthCommonConstants {
 
+	public static final String DEVICE_PURPOSE_AUTH = "AUTH";
+
+	public static final String DIGITAL_ID_PREFIX = "digitalId/";
+
+	public static final String DEVICE_PROVIDER_ID = "deviceProviderId";
+
+	public static final String DP_ID = "dpId";
+
+	public static final String DEVICE_PROVIDER = "deviceProvider";
+
+	public static final String DP = "dp";
+
+	public static final String PURPOSE = "purpose";
+
+	/** The Constant INDIVIDUAL_BIOMETRICS. */
+	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
+
 	private IdAuthCommonConstants() {
 
 	}
@@ -121,6 +138,8 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
 	
 	public static final String DIGITAL_ID = "digitalId";
+	
+	public static final String DIGITAL_ID_TYPE = "digitalId/type";
 
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
 	public static final int DEFAULT_AAD_LAST_BYTES_NUM = 16;
@@ -162,6 +181,8 @@ public final class IdAuthCommonConstants {
 	
 	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
 	
+	public static final String BIO_DIGITALID_INPUT_PARAM_TYPE = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID_TYPE;
+	
 	
 	/** The Constant EKYC. */
 	public static final String EKYC = "ekyc";
@@ -186,6 +207,9 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant ACTIVE_STATUS. */
 	public static final String ACTIVE_STATUS = "active";
+
+	/** The Constant USED_STATUS. */
+	public static final String USED_STATUS = "used";
 
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";
@@ -222,7 +246,7 @@ public final class IdAuthCommonConstants {
 	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	public static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 	
-	public static final String NOTIFY = "notify";
+	public static final String CALLBACK = "credentialIssueanceCallback";
 	
 	public static final String PUBLICKEY = "publickey";
 	
@@ -233,5 +257,11 @@ public final class IdAuthCommonConstants {
 	public static final String VERIFY = "verify";
 	
 	public static final String VALIDATESIGN = "validate";
-}
 
+	public static final String PHONE_NUMBER = "phone";
+
+	public static final String EMAIL = "email";
+	
+	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+
+}

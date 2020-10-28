@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.1.2</version>
 	</parent>
-	<version>1.0.9</version>
+	<version>1.1.2</version>
 	<artifactId>authentication-kyc-service</artifactId>
 	<name>authentication-kyc-service</name>
 	<properties>
@@ -49,16 +49,6 @@
 			<version>${kernel-cbeffutil-api.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-bioapi-provider</artifactId>
-			<version>${kernel-bioapi-provider.version}</version>
-		</dependency>
-		<dependency>
-			<artifactId>mock-sdk</artifactId>
-			<groupId>io.mosip.mock.sdk</groupId>
-			<version>${mock-sdk-version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-core</artifactId>
 			<version>${io.micrometer.prometheus.version}</version>
@@ -67,6 +57,18 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<version>${io.micrometer.prometheus.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <version>${mockito.version}</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>${objenesis.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	

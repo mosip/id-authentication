@@ -5,9 +5,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.1.2</version>
 	</parent>
-	<version>1.0.9</version>
+	<version>1.1.2</version>
 
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
@@ -22,18 +22,7 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel-core.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${commons.lang.version}</version>
-		</dependency>
 
-		<!-- Kernel Logback Impl -->
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
-		</dependency>
 
 		<!-- Commons Codec -->
 		<dependency>
@@ -41,6 +30,13 @@
 			<artifactId>commons-codec</artifactId>
 			<version>${commons.codec.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons.lang.version}</version>
+		</dependency>
+
+		
 
 		<!-- Spring boot -->
 		<dependency>
@@ -64,6 +60,10 @@
 				<exclusion>
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-auth-adapter</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

@@ -7,13 +7,14 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.1.2</version>
 	</parent>
-	<version>1.0.9</version>
+	<version>1.1.2</version>
 	<artifactId>authentication-internal-service</artifactId>
 	<name>authentication-internal-service</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<kernel-websubclient-api.version>1.1.2</kernel-websubclient-api.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -48,16 +49,6 @@
 			<version>${kernel-auth-adapter.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-bioapi-provider</artifactId>
-			<version>${kernel-bioapi-provider.version}</version>
-		</dependency>
-		<dependency>
-			<artifactId>mock-sdk</artifactId>
-			<groupId>io.mosip.mock.sdk</groupId>
-			<version>${mock-sdk-version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${maven.swagger.version}</version>
@@ -90,6 +81,16 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<version>${io.micrometer.prometheus.version}</version>
 		</dependency>
+		<dependency>
+	  		<groupId>org.projectlombok</groupId>
+	  		<artifactId>lombok</artifactId>
+	  		<version>${lombok.version}</version>
+  		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -110,6 +111,15 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

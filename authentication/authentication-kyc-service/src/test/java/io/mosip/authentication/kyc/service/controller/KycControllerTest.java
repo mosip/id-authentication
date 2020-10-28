@@ -121,7 +121,7 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
-		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789");
+		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789", "12345");
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456","12345");
 	}
 
@@ -183,14 +183,14 @@ public class KycControllerTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setStaticToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycAuthResponseDTO);
@@ -240,7 +240,7 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycResponseDTO.setStaticToken("2345678");
+		kycResponseDTO.setAuthToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -256,14 +256,14 @@ public class KycControllerTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
-		res.setStaticToken("234567890");
+		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+		Mockito.when(kycFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));

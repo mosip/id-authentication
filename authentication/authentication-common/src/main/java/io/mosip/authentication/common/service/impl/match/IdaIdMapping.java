@@ -124,14 +124,14 @@ public enum IdaIdMapping implements IdMapping {
 
 	private IdaIdMapping(String idname, Function<MappingConfig, List<String>> mappingFunction) {
 		this.idname = idname;
-		this.mappingFunction = (cfg, matchType) -> mappingFunction.apply(cfg);
+		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((cfg, matchType) -> mappingFunction.apply(cfg));
 		this.subIdMappings = Collections.emptySet();
 	}
 
 	private IdaIdMapping(String idname, String type) {
 		this.idname = idname;
 		this.type = type;
-		this.mappingFunction = (mappingConfig, matchType) -> getCbeffMapping(matchType);
+		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((mappingConfig, matchType) -> getCbeffMapping(matchType));
 		this.subIdMappings = Collections.emptySet();
 	}
 
@@ -139,7 +139,7 @@ public enum IdaIdMapping implements IdMapping {
 		this.idname = idname;
 		this.subIdMappings = subIdMappings;
 		this.type = type;
-		this.mappingFunction = (mappingConfig, matchType) -> {
+		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((mappingConfig, matchType) -> {
 			if (matchType instanceof BioMatchType) {
 				List<String> collection = Stream.of(((BioMatchType) matchType).getMatchTypesForSubIdMappings(subIdMappings))
 						.flatMap(subMatchType -> subMatchType.getIdMapping().getMappingFunction()
@@ -148,6 +148,17 @@ public enum IdaIdMapping implements IdMapping {
 				return collection;
 			} else {
 				return Collections.emptyList();
+			}
+		});
+	}
+	
+	private BiFunction<MappingConfig, MatchType, List<String>> wrapFunctionToReturnEmptyListForNull(BiFunction<MappingConfig, MatchType, List<String>> func) {
+		return (cfg, matchType) -> {
+			List<String> retVal = func.apply(cfg, matchType);
+			if(retVal == null) {
+				return Collections.emptyList();
+			} else {
+				return retVal;
 			}
 		};
 	}

@@ -16,6 +16,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -46,6 +48,8 @@ import reactor.core.publisher.Mono;
  * @author Sanjay Murali
  */
 @Component
+@Qualifier("internal")
+@Primary
 @NoArgsConstructor
 public class RestHelperImpl implements RestHelper{
 

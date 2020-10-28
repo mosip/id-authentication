@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -23,6 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
@@ -42,6 +45,7 @@ import io.mosip.authentication.core.indauth.dto.PinDTO;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Ignore
 public class ValidateOtpRequestTest {
 
 	@InjectMocks
@@ -64,6 +68,9 @@ public class ValidateOtpRequestTest {
 
 	@InjectMocks
 	PinDTO pindto;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	@Before
 	public void before() {

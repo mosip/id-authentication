@@ -1,7 +1,9 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -24,13 +26,12 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -69,6 +69,7 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -86,6 +87,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
+	private static final String TRANSACTION_ID = "transactionId";
 	protected PartnerService partnerService;
 	
 	@Override
@@ -115,7 +117,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (null != requestBody.get(REQUEST)) {
 				requestBody.replace(REQUEST,
 						decode((String) requestBody.get(REQUEST)));
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null == requestBody.get(REQUEST_HMAC)) {
 					throwMissingInputParameter(REQUEST_HMAC);
 				} else {
@@ -127,21 +128,24 @@ public class IdAuthFilter extends BaseAuthFilter {
 											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
 											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
 									fetchReferenceId());
-					validateRequestHMAC(reqHMAC, mapper.writeValueAsString(request));
+					Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId(), 
+							requestData -> validateRequestHMAC(reqHMAC, requestData));
 
-				}
-				//If biometrics is present validate and decipher it.
-				if(request.get(BIOMETRICS) != null) {
-					validateBioDataInRequest(request);
-					decipherBioData(request);
+					//If biometrics is present validate and decipher it.
+					if(request.get(BIOMETRICS) != null) {
+						validateBioDataInRequest(request);
+						decipherBioData(request);
+					}
+					
+					
+					requestBody.replace(REQUEST, request);
+					
 				}
 				
-				
-				requestBody.replace(REQUEST, request);
 			}
 			
 			return requestBody;
-		} catch (ClassCastException | JsonProcessingException e) {
+		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -203,18 +207,23 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			Object bioValue = data.get(BIO_VALUE);
 			
-			String jwsSignature = (String)data.get(DIGITAL_ID);
+			Object jwsSignatureObj = data.get(DIGITAL_ID);
 
-			if(StringUtils.isNotEmpty(jwsSignature) ) {
-				verifyDigitalIdSignature(jwsSignature);
-				data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+			if(jwsSignatureObj instanceof String) {
+				String jwsSignature = (String)jwsSignatureObj;
+				if(StringUtils.isNotEmpty(jwsSignature) ) {
+					verifyDigitalIdSignature(jwsSignature);
+					data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
+				}
 			}
 			
 			Object sessionKey = Objects.nonNull(map.get(SESSION_KEY)) ? map.get(SESSION_KEY) : null;
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
-			byte[] saltLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
+			String transactionId = String.valueOf(data.get(TRANSACTION_ID));
+			byte[] xorBytes = BytesUtil.getXOR(timestamp, transactionId);
+			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
 			String salt = CryptoUtil.encodeBase64(saltLastBytes);
-			byte[] aadLastBytes = getLastBytes(timestamp, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
+			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
 			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
 			String decryptedData = keyManager.kernelDecrypt(combinedData, getBioRefId(), aad, salt);
@@ -270,18 +279,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 				env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
 		return CryptoUtil.encodeBase64(
 				combineByteArray);
-	}
-
-	/**
-	 * Gets the last bytes.
-	 *
-	 * @param timestamp the timestamp
-	 * @param lastBytesNum the last bytes num
-	 * @return the last bytes
-	 */
-	private byte[] getLastBytes(String timestamp, int lastBytesNum) {
-		assert(timestamp.length() >= lastBytesNum);
-		return timestamp.substring(timestamp.length() - lastBytesNum).getBytes();
 	}
 
 	/**
@@ -493,11 +490,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if(policies != null) {		
 				List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
 				List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
-				List<String> allowedTypeList = allowedKycAttributes.stream().filter(KYCAttributes::isRequired)
+				List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes)
+								.stream().flatMap(Collection::stream)
 						.map(KYCAttributes::getAttributeName).collect(Collectors.toList());
-				if (allowedTypeList == null) {
-					allowedTypeList = Collections.emptyList();
-				}
 				requestBody.put("allowedKycAttributes", allowedTypeList);
 				checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 				List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)
@@ -579,10 +574,27 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (noBioTypeIndex.isPresent()) {
 			throwMissingInputParameter(String.format(BIO_TYPE_INPUT_PARAM, noBioTypeIndex.getAsInt()));
 		}
+		
+		OptionalInt nodeviceTypeIndex = IntStream.range(0, listBioInfo.size())
+										.filter(i -> {
+											BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
+											return Objects.nonNull(bioIdInfoDto.getData())
+													&& StringUtils.isEmpty(bioIdInfoDto.getData().getDigitalId().getType());
+										}).findFirst();
+			
+		if (nodeviceTypeIndex.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_DIGITALID_INPUT_PARAM_TYPE, nodeviceTypeIndex.getAsInt()));
+		}
 
 		List<String> bioTypeList = listBioInfo.stream()
 									.map(s -> s.getData().getBioType())
 									.collect(Collectors.toList());
+		
+		
+		List<String> deviceTypeList = listBioInfo.stream()
+				.map(s -> s.getData().getDigitalId().getType())
+				.collect(Collectors.toList());
+		
 		if (bioTypeList.isEmpty()) {
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
@@ -590,7 +602,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "bio"));
 			}
 		} else {
-			checkAllowedAuthTypeForBio(authPolicies, bioTypeList);
+			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, deviceTypeList);
 		}
 	}
 
@@ -604,7 +616,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 */
-	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
+	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList, List<String> deviceTypeList)
 			throws IdAuthenticationAppException {
 		String bioAuthType;
 		for (String bioType : bioTypeList) {
@@ -617,6 +629,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 			} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
 				bioType = SingleType.IRIS.value();
 			}
+
+			if(!isDeviceTypeBioTypeSame(bioType,deviceTypeList)) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.DEVICE_TYPE_BIO_TYPE_NOT_MATCH.getErrorMessage());
+			}
+			
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
 				if (!BioAuthType.getSingleBioAuthTypeForType(bioAuthType).isPresent()) {
 					throw new IdAuthenticationAppException(
@@ -632,6 +651,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bioType
+	 * @param subTypeList
+	 * @return
+	 */
+	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {		
+		return deviceTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
+	}
+	
 	/**
 	 * Check mandatory auth type based on policy.
 	 *

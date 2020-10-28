@@ -27,7 +27,7 @@ public interface KycService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public KycResponseDTO retrieveKycInfo(String uin, List<String> eKycTypeAttributes, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(List<String> eKycTypeAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException;
 
 }

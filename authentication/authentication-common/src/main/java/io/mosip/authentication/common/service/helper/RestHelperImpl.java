@@ -20,6 +20,7 @@ import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -59,6 +61,7 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
+@Qualifier("external")
 @NoArgsConstructor
 public class RestHelperImpl implements RestHelper {
 
@@ -236,7 +239,9 @@ public class RestHelperImpl implements RestHelper {
 	}
 
 	private String getAuthToken() {
-		if (EmptyCheckUtils.isNullEmpty(authToken)) {
+		if (EmptyCheckUtils.isNullEmpty(authToken) || !TokenHandlerUtil.isValidBearerToken(authToken,
+				env.getProperty("auth-token-generator.rest.issuerUrl"),
+				env.getProperty("auth-token-generator.rest.clientId"))) {
 			generateAuthToken();
 			return authToken;
 		} else {
@@ -269,27 +274,6 @@ public class RestHelperImpl implements RestHelper {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, GENERATE_AUTH_TOKEN,
 					"AuthResponse : status-" + response.statusCode() + " :\n"
 							+ response.toEntity(String.class).block().getBody());
-		}
-	}
-
-	private boolean checkAuthTokenExpired() {
-		ClientResponse response = WebClient.create(env.getProperty("auth-token-validator.rest.uri")).post()
-				.cookie("Authorization", getAuthToken()).exchange().block();
-		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-		String responseStr = responseBody.toString();
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
-				responseStr);
-		List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseStr);
-		if (Objects.nonNull(errorList) && !errorList.isEmpty()
-				&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
-			authToken = null;
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
-					"Auth token expired. setting authToken as null to regenerate.");
-			return true;
-		} else {
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
-					"Auth token is valid.");
-			return false;
 		}
 	}
 
@@ -341,7 +325,8 @@ public class RestHelperImpl implements RestHelper {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
-				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1 && checkAuthTokenExpired()) {
+				if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED) && retry <= 1) {
+					authToken = null;
 					retry++;
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "METHOD_HANDLE_STATUS_ERROR",
 							"token expired" + " - retry++");

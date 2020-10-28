@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -29,7 +30,6 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
@@ -52,9 +52,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
 	
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
@@ -69,6 +66,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
+	
+	@Autowired
+	private Environment env;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -124,9 +124,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
 			throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
-		String key = Optional.ofNullable(uin).orElseThrow(
-				() -> new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
-		map.put("value", key);
+		map.put("value", authReq.getIndividualId() + env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER)
+				+ authReq.getTransactionID());
 		return map;
 	}
 
@@ -178,9 +177,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *             the id authentication business exception
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String uin, String idType) throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId, String token, String idType) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
-		String hashedUin = securityManager.hash(uin);
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {
@@ -189,7 +187,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 		} else {
 			if (idType.equals(authTxn.get().getRefIdType())) {
-				if (!authTxn.get().getUinHash().equalsIgnoreCase(hashedUin)) {
+				if (!authTxn.get().getToken().equalsIgnoreCase(token)) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
 							"OTP id mismatch");
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);

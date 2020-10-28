@@ -57,6 +57,7 @@ public enum IdAuthenticationErrorConstants {
 	FAILED_TO_FETCH_KEY("IDA-MLC-021", "Failed to fetch key from HSM"),
 	UIN_DEACTIVATED_BLOCKED("IDA-MLC-022", "UIN is deactivated/blocked"),
 	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
+	INPUT_MISMATCH("IDA-MLC-024", "%s of request is not matching with %s of biometrics"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
@@ -129,7 +130,8 @@ public enum IdAuthenticationErrorConstants {
 	// Device verification validation
 	DEVICE_VERIFICATION_FAILED("IDA-DPM-001", "Device is not registered with MOSIP"),
 	MDS_VERIFICATION_FAILED("IDA-DPM-002", "MDS is not registered with MOSIP"),
-
+	DEVICE_TYPE_BIO_TYPE_NOT_MATCH("IDA-DPM-004","Device Type and Biometric Type do not match"),
+	
 	//Partner and Misp validations
 	PARTNER_NOT_ACTIVE("PMS_PMP_016","Partner is not active."),
 	PARTNER_NOT_MAPPED_TO_POLICY("PMS_PMP_017","Partner is not mapped to any policy."),

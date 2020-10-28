@@ -170,7 +170,6 @@ public class DemoAuthServiceTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
@@ -275,7 +274,6 @@ public class DemoAuthServiceTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
@@ -461,7 +459,6 @@ public class DemoAuthServiceTest {
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
-		dataDTOFinger.setDeviceProviderID("1234567890");
 		fingerValue.setData(dataDTOFinger);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);

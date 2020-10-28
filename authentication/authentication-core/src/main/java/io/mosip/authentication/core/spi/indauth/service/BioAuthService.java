@@ -30,7 +30,7 @@ public interface BioAuthService extends AuthService {
 	 * @return the auth status info
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String token,
 			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId, boolean isAuth)
 			throws IdAuthenticationBusinessException;
 
@@ -38,8 +38,8 @@ public interface BioAuthService extends AuthService {
 	 * @see io.mosip.authentication.core.spi.indauth.service.AuthService#authenticate(io.mosip.authentication.core.indauth.dto.AuthRequestDTO, java.lang.String, java.util.Map, java.lang.String)
 	 */
 	@Override
-	public default AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String uin,
+	public default AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String token,
 			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
-		return this.authenticate(authRequestDTO, uin, idInfo, partnerId, true);
+		return this.authenticate(authRequestDTO, token, idInfo, partnerId, true);
 	}
 }

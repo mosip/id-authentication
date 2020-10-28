@@ -18,4 +18,12 @@ public class BaseAuthRequestDTO {
 	/** The value for version*/
 	private String version;
 	
+	private String specVersion;
+	
+	private String thumbprint;
+	
+	private String domainUri;
+	
+	private String env;
+	
 }

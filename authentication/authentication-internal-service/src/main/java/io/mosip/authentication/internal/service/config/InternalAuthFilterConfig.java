@@ -1,7 +1,6 @@
 package io.mosip.authentication.internal.service.config;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUTH_TRANSACTIONS;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.NOTIFY;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
-import io.mosip.authentication.common.service.filter.InternalEventNotificationFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
 import io.mosip.authentication.internal.service.filter.InternalAuthFilter;
 
@@ -73,11 +71,11 @@ public class InternalAuthFilterConfig {
 		return authTypeStatusBean;
 	}
 	
-	@Bean
-	public FilterRegistrationBean<InternalEventNotificationFilter> getDefaultEventNotificationHandlerFilter() {
-		FilterRegistrationBean<InternalEventNotificationFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new InternalEventNotificationFilter());
-		registrationBean.addUrlPatterns("/" + NOTIFY);
-		return registrationBean;
-	}
+//	@Bean
+//	public FilterRegistrationBean<InternalEventNotificationFilter> getDefaultEventNotificationHandlerFilter() {
+//		FilterRegistrationBean<InternalEventNotificationFilter> registrationBean = new FilterRegistrationBean<>();
+//		registrationBean.setFilter(new InternalEventNotificationFilter());
+//		registrationBean.addUrlPatterns("/" + "credentialIssueanceCallback");
+//		return registrationBean;
+//	}
 }

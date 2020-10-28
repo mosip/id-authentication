@@ -100,7 +100,7 @@ public class DefaultInternalFilter extends IdAuthFilter {
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
 							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_UPDATE;
-					}  else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.NOTIFY)
+					}  else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.CALLBACK)
 							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
 						id = attribute + IdAuthConfigKeyConstants.EVENT_NOTIFY;
 					}

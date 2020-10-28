@@ -116,7 +116,7 @@ public class InternalAuthControllerTest {
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
 		authResponseDTO.setErrors(new ArrayList<>());
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		authController.authenticate(authReqestsDTO, error);
 	}
@@ -134,7 +134,7 @@ public class InternalAuthControllerTest {
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
 
@@ -154,7 +154,7 @@ public class InternalAuthControllerTest {
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 //		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
 //				.thenReturn(new AuthResponseDTO());
@@ -168,7 +168,7 @@ public class InternalAuthControllerTest {
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		authReqestDTO.setRequestedAuth(requestedAuth);
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
+		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID, InternalAuthController.DEFAULT_PARTNER_API_KEY))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		authController.authenticate(authReqestDTO, error);
 	}
@@ -180,7 +180,7 @@ public class InternalAuthControllerTest {
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		authReqestDTO.setRequestedAuth(requestedAuth);
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
+		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID, InternalAuthController.DEFAULT_PARTNER_API_KEY))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error);
 	}
@@ -198,7 +198,7 @@ public class InternalAuthControllerTest {
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
@@ -215,7 +215,7 @@ public class InternalAuthControllerTest {
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
 		authResponseDTO.setErrors(new ArrayList<>());
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
@@ -236,7 +236,7 @@ public class InternalAuthControllerTest {
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
 		authResponseDTO.setErrors(new ArrayList<>());
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		authController.authenticate(authRequestDTO, error);
 	}
@@ -255,7 +255,6 @@ public class InternalAuthControllerTest {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setDeviceProviderID("provider001");
 		dataDTO.setBioValue(value);
 		bioIdentityInfoDTO.setData(dataDTO);
 		bioIdentityList.add(bioIdentityInfoDTO);
@@ -264,7 +263,6 @@ public class InternalAuthControllerTest {
 		DataDTO irisdata = new DataDTO();
 		irisdata.setBioType("Iris");
 		irisdata.setBioSubType("LEFT");
-		irisdata.setDeviceProviderID("provider001");
 		irisdata.setBioValue(value);
 		IrisDto.setData(irisdata);
 		bioIdentityList.add(IrisDto);
@@ -272,7 +270,6 @@ public class InternalAuthControllerTest {
 		BioIdentityInfoDTO faceDto = new BioIdentityInfoDTO();
 		DataDTO facedata = new DataDTO();
 		facedata.setBioType("Face");
-		facedata.setDeviceProviderID("provider001");
 		facedata.setBioValue(value);
 		faceDto.setData(facedata);
 		bioIdentityList.add(faceDto);
@@ -283,7 +280,7 @@ public class InternalAuthControllerTest {
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
 		authResponseDTO.setResponse(response);
-		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(authResponseDTO);
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
