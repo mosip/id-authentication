@@ -32,6 +32,10 @@ public class IdentityEntity {
 	@Column(name = "id")
 	private String id;
 	
+	@NotNull
+	@Column(name = "token_id")
+	private String token;
+	
 	/** The demographic data. */
 	@NotNull
 	@Column(name = "demo_data")

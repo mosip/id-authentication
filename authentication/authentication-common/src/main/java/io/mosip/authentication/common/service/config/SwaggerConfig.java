@@ -95,7 +95,8 @@ public class SwaggerConfig {
 			}
 		}
 		ParameterBuilder aParameterBuilder = new ParameterBuilder();
-		aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").build();
+		aParameterBuilder.name("Authorization").modelRef(new ModelRef("Authorization")).parameterType("header").build();
+		aParameterBuilder.name("signature").modelRef(new ModelRef("signature")).parameterType("header").build();
 		List<Parameter> aParameters = new ArrayList<>();
 		aParameters.add(aParameterBuilder.build());
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())

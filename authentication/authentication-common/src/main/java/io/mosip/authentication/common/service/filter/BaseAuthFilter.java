@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 /**
@@ -146,18 +148,31 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		String signature = requestWrapper.getHeader("Authorization");// FIXME header name
-		try {
-			requestWrapper.resetInputStream();
-			if (!validateRequestSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
-			}
-
-		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
+//		String signature = requestWrapper.getHeader("signature");
+//		if (StringUtils.isEmpty(signature)) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+//					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature - header"));
+//		} else if(!verifySignature(signature)) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+//		}
+		String consentToken = requestWrapper.getHeader("Authorization");
+		if (StringUtils.isEmpty(consentToken)) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "consent token Auth is empty or null");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Authorization - header"));
 		}
+//		try {
+//			requestWrapper.resetInputStream();
+//			if (!validateRequestSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
+//				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
+//				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+//			}
+//		} catch (IOException e) {
+//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
+//		}
 	}
 
 	/**
@@ -244,11 +259,11 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * requestHMAC received in the request body.
 	 *
 	 * @param requestHMAC the requestHMAC received in the request body
-	 * @param generatedHMAC the generated HMAC computed once the request is decoded and deciphered
+	 * @param reqest the generated HMAC computed once the request is decoded and deciphered
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected void validateRequestHMAC(String requestHMAC, String generatedHMAC) throws IdAuthenticationAppException {
-		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(generatedHMAC.getBytes())))) {
+	protected void validateRequestHMAC(String requestHMAC, String reqest) throws IdAuthenticationAppException {
+		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(reqest.getBytes(StandardCharsets.UTF_8))))) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
 		}
 	}

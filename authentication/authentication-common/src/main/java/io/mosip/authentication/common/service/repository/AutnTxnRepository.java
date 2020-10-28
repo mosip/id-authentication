@@ -27,12 +27,12 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
-	@Query(value = "Select new AutnTxn(uinHash, refIdType) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
+	@Query(value = "Select new AutnTxn(token, refIdType) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 
-	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, entityName ) from AutnTxn where uinHash=:uinHash ORDER BY crDTimes DESC")
-	public List<AutnTxn> findByUin(@Param("uinHash") String uinHash, Pageable pagaeable);
+	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, entityName ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
+	public List<AutnTxn> findByToken(@Param("token") String token, Pageable pagaeable);
 
 	/**
 	 * Obtain the number of count of request_dTtimes for particular UIN(uniqueId)
@@ -44,8 +44,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @return the int
 	 */
 	@Query("Select count(1) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
-			+ "requestDTtimes >= :oneMinuteBeforeTime and refId=:refId")
+			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
-			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("refId") String refId);
+			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
 }

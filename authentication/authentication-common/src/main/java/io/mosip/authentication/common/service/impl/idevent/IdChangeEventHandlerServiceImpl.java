@@ -1,15 +1,10 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -17,10 +12,15 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.entity.UinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
+import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -28,12 +28,12 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
-import io.mosip.idrepository.core.constant.EventType;
-import io.mosip.idrepository.core.dto.EventDTO;
+import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
+import io.mosip.idrepository.core.constant.IDAEventType;
+import io.mosip.idrepository.core.dto.Event;
+import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -43,8 +43,30 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Loganathan Sekar
  */
 @Service
-public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerService {
+public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 	
+	private static final String TOKEN = "TOKEN";
+
+	private static final String IDA = "IDA";
+
+	private static final String EXPIRY_TIME = "expiry_timestamp";
+
+	private static final String TRANSACTION_LIMIT = "transaction_limit";
+
+	private static final String BIO_KEY = "bioEncryptedRandomKey";
+
+	private static final String BIO_KEY_INDEX = "bioRankomKeyIndex";
+
+	private static final String DEMO_KEY = "demoEncryptedRandomKey";
+
+	private static final String DEMO_KEY_INDEX = "demoRankomKeyIndex";
+
+	private static final String SALT = "SALT";
+
+	private static final String MODULO = "MODULO";
+
+	private static final String ID_HASH = "id_hash";
+
 	/**
 	 * The Interface ConsumerWithBusinessException.
 	 *
@@ -63,42 +85,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		void apply(T t) throws IdAuthenticationBusinessException;
 	}
 
-	/**
-	 * The Enum IdChangeProperties.
-	 */
-	private enum IdChangeProperties {
-		
-		/** The update id data. */
-		UPDATE_ID_DATA, 
-		
-		/** The update with local id data. */
-		UPDATE_WITH_LOCAL_ID_DATA, 
-		
-		/** The prepare uin entities. */
-		PREPARE_UIN_ENTITIES, 
-		
-		/** The prepare vid entities. */
-		PREPARE_VID_ENTITIES,
-		
-		/** The find existing uin entities. */
-		FIND_EXISTING_UIN_ENTITIES, 
-		
-		/** The find existing vid entities. */
-		FIND_EXISTING_VID_ENTITIES, 
-		
-		/** The update existing uin attributes. */
-		UPDATE_EXISTING_UIN_ATTRIBUTES,
-		
-		/** The update existing vid attributes. */
-		UPDATE_EXISTING_VID_ATTRIBUTES
-	}
 	
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdChangeEventHandlerServiceImpl.class);
-	
-	/** The id repo manager. */
-	@Autowired
-	private IdRepoManager idRepoManager;
 	
 	/** The security manager. */
 	@Autowired
@@ -108,21 +97,26 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	@Autowired
 	private IdentityCacheRepository identityCacheRepo;
 	
-	/** The mapper. */
-	@Autowired
-	private IdService<?> idService;
-	
 	/** The audit helper. */
 	@Autowired
 	private AuditHelper auditHelper;
-
+	
+	@Autowired
+	private DataShareManager dataShareManager;
+	
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
+	 * @see io.mosip.authentication.core.spi.idevent.service.CredentialStoreService#handleIdEvent(java.util.List)
 	 */
 	@Override
-	public void handleIdEvent(List<EventDTO> events) throws IdAuthenticationBusinessException {
+	public void handleIdEvent(EventModel event) throws IdAuthenticationBusinessException {
 		try {
-			doHandleEvents(events);
+			doHandleEvent(event);
 		} catch (IdAuthenticationBusinessException e) {
 			throw e;
 		} catch (Exception e) {
@@ -139,36 +133,17 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Transactional
-	private void doHandleEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
-		Map<EventType, List<EventDTO>> eventsByType = events.stream()
-				.collect(Collectors.groupingBy(EventDTO::getEventType));
-		for (EventType eventType : EventType.values()) {
-			if(eventsByType.containsKey(eventType)) {
-				List<EventDTO> eventsList = eventsByType.get(eventType);
-				try {
-					getFunctionForEventType(eventType)
-						.apply(eventsList);
-					auditEvents(events, null);
-				} catch (IdAuthenticationBusinessException e) {
-					auditEvents(events, e);
-					throw e;
-				}
-			}
+	private void doHandleEvent(EventModel eventModel) throws IdAuthenticationBusinessException {
+		try {
+			getFunctionForEventType(eventModel.getTopic())
+				.apply(eventModel);
+			auditEvent(eventModel, null);
+		} catch (IdAuthenticationBusinessException e) {
+			auditEvent(eventModel, e);
+			throw e;
 		}
 	}
 
-	/**
-	 * Audit events.
-	 *
-	 * @param events the events
-	 * @param e the e
-	 * @throws IDDataValidationException the ID data validation exception
-	 */
-	private void auditEvents(List<EventDTO> events, IdAuthenticationBusinessException e) throws IDDataValidationException {
-		for (EventDTO eventDTO : events) {
-			auditEvent(eventDTO, e);
-		}
-	}
 
 	/**
 	 * Audit event.
@@ -177,52 +152,16 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param e the e
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	private void auditEvent(EventDTO event, IdAuthenticationBusinessException e) throws IDDataValidationException {
+	private void auditEvent(EventModel event, IdAuthenticationBusinessException e) throws IDDataValidationException {
+		String topic = event.getTopic();
 		if(e == null) {
-			String message = event.getEventType() + " : Success";
-			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(event.getEventType()), getIdFunctionForEventType(event.getEventType()).apply(event), getIdTypeForEventType(event.getEventType()), message);
+			String message = topic + " : Success";
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), "id", "idType", message);
 		} else {
-			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(event.getEventType()), getIdFunctionForEventType(event.getEventType()).apply(event), getIdTypeForEventType(event.getEventType()), e);
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), "id", "idType", e);
 		}
 	}
 
-	/**
-	 * Gets the id type for event type.
-	 *
-	 * @param eventType the event type
-	 * @return the id type for event type
-	 */
-	private IdType getIdTypeForEventType(EventType eventType) {
-		switch (eventType) {
-		case CREATE_UIN:
-		case UPDATE_UIN:
-			return IdType.UIN;
-		case CREATE_VID:
-		case UPDATE_VID:
-			return  IdType.VID;
-		default:
-			return IdType.DEFAULT_ID_TYPE;
-		}
-	}
-
-	/**
-	 * Gets the id function for event type.
-	 *
-	 * @param eventType the event type
-	 * @return the id function for event type
-	 */
-	private Function<EventDTO, String> getIdFunctionForEventType(EventType eventType) {
-		switch (eventType) {
-		case CREATE_UIN:
-		case UPDATE_UIN:
-			return EventDTO::getUin;
-		case CREATE_VID:
-		case UPDATE_VID:
-			return EventDTO::getVid;
-		default:
-			return EventDTO::getUin;
-		}
-	}
 
 	/**
 	 * Gets the audit event.
@@ -230,18 +169,17 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param eventType the event type
 	 * @return the audit event
 	 */
-	private AuditEvents getAuditEvent(EventType eventType) {
-		switch (eventType) {
-		case CREATE_UIN:
-			return AuditEvents.CREATE_UIN_EVENT;
-		case UPDATE_UIN:
-			return AuditEvents.UPDATE_UIN_EVENT;
-		case CREATE_VID:
-			return AuditEvents.CREATE_VID_EVENT;
-		case UPDATE_VID:
-			return AuditEvents.UPDATE_VID_EVENT;
-		default:
-			return AuditEvents.UPDATE_UIN_EVENT;
+	private AuditEvents getAuditEvent(String eventTopic) {
+		if (IDAEventType.CREDENTIAL_ISSUED.toString().equals(eventTopic)) {
+			return AuditEvents.CREDENTIAL_ISSUED_EVENT;
+		} else if (IDAEventType.REMOVE_ID.toString().equals(eventTopic)) {
+			return AuditEvents.REMOVE_ID_EVENT;
+		} else if (IDAEventType.DEACTIVATE_ID.toString().equals(eventTopic)) {
+			return AuditEvents.DEACTIVATE_ID_EVENT;
+		} else if (IDAEventType.ACTIVATE_ID.toString().equals(eventTopic)) {
+			return AuditEvents.ACTIVATE_ID_EVENT;
+		} else {
+			return AuditEvents.ACTIVATE_ID_EVENT;
 		}
 	}
 
@@ -251,401 +189,154 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @param eventType the event type
 	 * @return the function for event type
 	 */
-	private ConsumerWithBusinessException<List<EventDTO>, Boolean> getFunctionForEventType(EventType eventType) {
-		switch (eventType) {
-		case CREATE_UIN:
-			return this::handleCreateUinEvents;
-		case UPDATE_UIN:
-			return this::handleUpdateUinEvents;
-		case CREATE_VID:
-			return this::handleCreateVidEvents;
-		case UPDATE_VID:
-			return this::handleUpdateVidEvents;
-		default:
+	private ConsumerWithBusinessException<EventModel, Void> getFunctionForEventType(String eventTopic) {
+		
+		if (eventTopic.toLowerCase().contains(IDAEventType.CREDENTIAL_ISSUED.toString().toLowerCase())) {
+			return this::handleCredentialIssued;
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.REMOVE_ID.toString().toLowerCase())) {
+			return this::handleRemoveId;
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.DEACTIVATE_ID.toString().toLowerCase())) {
+			return this::handleDeactivateId;
+		} else if (eventTopic.toLowerCase().contains(IDAEventType.ACTIVATE_ID.toString().toLowerCase())) {
+			return this::handleActicateId;
+		} else {
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"getFunctionForEventType", "Topic cannot be handled: " + eventTopic);
 			return list -> {return;};
 		}
 	}
 
-	/**
-	 * Handle create uin events.
-	 *
-	 * @param events the events
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void handleCreateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
-		EnumSet<IdChangeProperties> properties = EnumSet.of(
-				IdChangeProperties.UPDATE_ID_DATA, 
-				IdChangeProperties.PREPARE_UIN_ENTITIES 
-				);
-		
-		String logMethodName = "handleCreateUinEvents";
-		updateEntitiesForEvents(logMethodName, 
-				events, 
-				properties);
-	}
-	
-	/**
-	 * Handle update uin events.
-	 *
-	 * @param events the events
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void handleUpdateUinEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
-
-		EnumSet<IdChangeProperties> properties = EnumSet.of(
-				IdChangeProperties.PREPARE_UIN_ENTITIES, 
-				IdChangeProperties.FIND_EXISTING_UIN_ENTITIES, 
-				IdChangeProperties.UPDATE_EXISTING_UIN_ATTRIBUTES
-				);
-		
-		boolean deactivated = events.stream().anyMatch(event -> event.getExpiryTimestamp() != null
-				&& event.getExpiryTimestamp().isBefore(getCurrentUTCLocalTime()));
-		
-		if(!deactivated) {
-			properties.add(IdChangeProperties.UPDATE_ID_DATA);
-		}
-		
-		String logMethodName = "handleUpdateUinEvents";
-		updateEntitiesForEvents(logMethodName, 
-				events, 
-				properties);
-	}
-
-	/**
-	 * Handle create vid events.
-	 *
-	 * @param events the events
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void handleCreateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
-		EnumSet<IdChangeProperties> properties = EnumSet.of(
-				IdChangeProperties.UPDATE_ID_DATA, 
-				IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA, 
-				IdChangeProperties.PREPARE_VID_ENTITIES
-				);
-		
-		String logMethodName = "handleCreateVidEvents";
-		updateEntitiesForEvents(logMethodName, 
-				events, 
-				properties);
-	}
-
-	/**
-	 * Handle update vid events.
-	 *
-	 * @param events the events
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void handleUpdateVidEvents(List<EventDTO> events) throws IdAuthenticationBusinessException {
-		EnumSet<IdChangeProperties> properties = EnumSet.of(
-				IdChangeProperties.PREPARE_VID_ENTITIES,
-				IdChangeProperties.FIND_EXISTING_VID_ENTITIES,
-				IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES
-				);
-		
-		String logMethodName = "handleUpdateVidEvents";
-		updateEntitiesForEvents(logMethodName, 
-				events, 
-				properties);
-	}
-
-	/**
-	 * Update entities for events.
-	 *
-	 * @param logMethodName the log method name
-	 * @param events the events
-	 * @param properties the properties
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void updateEntitiesForEvents(String logMethodName, 
-			List<EventDTO> events, 
-			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
-		try {
-			updateEntitiesForEvents(events, properties);
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					logMethodName, e.getMessage());
-			throw e;
-		}
-	}
-
-	/**
-	 * Update entities for events.
-	 *
-	 * @param events the events
-	 * @param properties the properties
-	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void updateEntitiesForEvents(List<EventDTO> events, 
-			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
-		Map<String, List<EventDTO>> eventsByUin = 
-				events.stream()
-					  .collect(
-							Collectors.groupingBy(event ->
-										Optional.ofNullable(event.getUin()).orElse("")));
-		for(Entry<String, List<EventDTO>> entry : eventsByUin.entrySet()) {
-			Optional<String> uinOpt = Optional.ofNullable(entry.getKey()); //UIN may be null
-			List<EventDTO> uinEvents = entry.getValue();
-			Map<String, IdentityEntity> entities = prepareEntities(uinEvents, properties);
-			
-			//For VID update, if UIN is associated with the event, update VID entries with local UIN data
-			if(properties.contains(IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES)) {
-				if(uinOpt.isPresent()) {
-					properties.add(IdChangeProperties.UPDATE_ID_DATA);
-					properties.add(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA);
-				}
-			}
-			
-			saveIdEntityByUinData(uinOpt, entities, properties);
-		}
-	}
-
-	/**
-	 * Prepare entities.
-	 *
-	 * @param events the events
-	 * @param properties the properties
-	 * @return the list
-	 */
-	private Map<String, IdentityEntity> prepareEntities(List<EventDTO> events, 
-			EnumSet<IdChangeProperties> properties) {
-		Map<String, IdentityEntity> entities = new LinkedHashMap<>();
-		if(properties.contains(IdChangeProperties.PREPARE_UIN_ENTITIES)) {
-			entities.putAll(
-					prepareEntitiesById(
-							EventDTO::getUin, 
-							events, 
-							properties.contains(IdChangeProperties.FIND_EXISTING_UIN_ENTITIES), 
-							properties.contains(IdChangeProperties.UPDATE_EXISTING_UIN_ATTRIBUTES)));
-		}
-		if(properties.contains(IdChangeProperties.PREPARE_VID_ENTITIES)) {
-			entities.putAll(
-					prepareEntitiesById(
-							EventDTO::getVid, 
-							events, 
-							properties.contains(IdChangeProperties.FIND_EXISTING_VID_ENTITIES), 
-							properties.contains(IdChangeProperties.UPDATE_EXISTING_VID_ATTRIBUTES)));
-		}
-		return entities;
-	}
-
-	/**
-	 * Prepare entities by id.
-	 *
-	 * @param idFunction the id function
-	 * @param events the events
-	 * @param findExistingIdEntities the find existing id entities
-	 * @param updateExistingIdAttributes the update existing id attributes
-	 * @return the list
-	 */
-	private Map<String, IdentityEntity> prepareEntitiesById(
-			Function<EventDTO, String> idFunction,
-			List<EventDTO> events, 
-			boolean findExistingIdEntities,
-			boolean updateExistingIdAttributes) {
-		Map<String, IdentityEntity> idEntities = new LinkedHashMap<>();
-		List<EventDTO> idEvents = getEventsByIdNonNull(idFunction, events);
-		List<EventDTO> nonExistingIdEvents;
-		if(findExistingIdEntities) {
-			idEntities.putAll(prepareExistingEntitiesForEventsById(idEvents, idFunction, updateExistingIdAttributes));
-			nonExistingIdEvents = findRemainingEventsExcludingEntities(idEvents, idEntities.values(), idFunction);
-		} else {
-			nonExistingIdEvents = idEvents;
-		}
-		idEntities.putAll(createDistictEntitiesForEventsById(idFunction, nonExistingIdEvents));
-		return idEntities;
-	}
-
-	/**
-	 * Gets the events by id non null.
-	 *
-	 * @param idFunction the id function
-	 * @param events the events
-	 * @return the events by id non null
-	 */
-	private List<EventDTO> getEventsByIdNonNull(Function<EventDTO, String> idFunction, List<EventDTO> events) {
-		return events.stream().filter(event -> idFunction.apply(event) != null).collect(Collectors.toList());
-	}
-
-	/**
-	 * Find remaining events excluding entities.
-	 *
-	 * @param events the events
-	 * @param entities the entities
-	 * @param idFunction the id function
-	 * @return the list
-	 */
-	private List<EventDTO> findRemainingEventsExcludingEntities(List<EventDTO> events, Collection<IdentityEntity> entities,
-			Function<EventDTO, String> idFunction) {
-		return events.stream().filter(event -> {
-				String id = idFunction.apply(event);
-				String uinHash = getHash(id);
-				return entities.stream().noneMatch(entity -> entity.getId().equals(uinHash));
-			}).collect(Collectors.toList());
-	}
-
-	/**
-	 * Gets the hash.
-	 *
-	 * @param id the id
-	 * @return the hash
-	 */
-	private String getHash(String id) {
-		return securityManager.hash(id);
-	}
-
-	/**
-	 * Prepare existing entities for events by id.
-	 *
-	 * @param idEvents the id events
-	 * @param idFunction the id function
-	 * @param updateIdAttributes the update id attributes
-	 * @return the list
-	 */
-	private Map<String, IdentityEntity> prepareExistingEntitiesForEventsById(List<EventDTO> idEvents, 
-			Function<EventDTO, String> idFunction, 
-			boolean updateIdAttributes) {
-		Map<String, EventDTO> eventById = idEvents.stream()
-									.collect(Collectors.toMap(idFunction::apply, Function.identity()));
-		Map<String, String> idsByIdHash = eventById.keySet()
-								.stream()
-								.filter(Objects::nonNull)
-								.collect(Collectors.toMap(this::getHash, Function.identity()));
-		
-		List<IdentityEntity> existingEntities = findEntitiesByIds(idsByIdHash.keySet().stream().collect(Collectors.toList()));
-		if(updateIdAttributes) {
-			existingEntities.forEach(entity -> {
-				String idHash = entity.getId();
-				String id = idsByIdHash.get(idHash);
-				EventDTO eventDTO = eventById.get(id);
-				entity.setExpiryTimestamp(eventDTO.getExpiryTimestamp());
-				entity.setTransactionLimit(eventDTO.getTransactionLimit());
+	private void handleCredentialIssued(EventModel eventModel) throws IdAuthenticationBusinessException {
+		Event event = eventModel.getEvent();
+		String dataShareUri = event.getDataShareUri();
+		if(dataShareUri != null) {
+			try {
+				Map<String, Object> additionalData = event.getData();
+				String modulo = (String) additionalData.get(MODULO);
+				String salt = (String) additionalData.get(SALT);
+				String demoKeyIndex = (String) additionalData.get(DEMO_KEY_INDEX);
+				String demoKey = (String) additionalData.get(DEMO_KEY);
+				String bioKeyIndex = (String) additionalData.get(BIO_KEY_INDEX);
+				String bioKey = (String) additionalData.get(BIO_KEY);
 				
-				entity.setUpdBy("ida");
-				entity.setUpdDTimes(getCurrentUTCLocalTime());
-			});
-		}
-		return existingEntities.stream()
-				.collect(Collectors.toMap(entity -> idsByIdHash.get(entity.getId()), Function.identity()));
-	}
-
-	/**
-	 * Gets the current UTC local time.
-	 *
-	 * @return the current UTC local time
-	 */
-	private LocalDateTime getCurrentUTCLocalTime() {
-		return DateUtils.getUTCCurrentDateTime();
-	}
-	
-	/**
-	 * Find entities by ids.
-	 *
-	 * @param ids the ids
-	 * @return the list
-	 */
-	private List<IdentityEntity> findEntitiesByIds(List<String> ids) {
-		return identityCacheRepo.findAllById(ids);
-	}
-
-	/**
-	 * Creates the distict entities for events by id.
-	 *
-	 * @param idFunction the id function
-	 * @param uinEvents the uin events
-	 * @return the list
-	 */
-	private Map<String, IdentityEntity> createDistictEntitiesForEventsById(Function<EventDTO, String> idFunction, List<EventDTO> uinEvents) {
-		return uinEvents.stream()
-						.filter(event -> idFunction.apply(event) != null)
-						.collect(Collectors.toMap(
-								event -> idFunction.apply(event), 
-								event -> mapEventToNewEntity(event, idFunction)));
-	}
-	
-	/**
-	 * Map event to new entity.
-	 *
-	 * @param event the event
-	 * @param idFunction the id function
-	 * @return the optional
-	 */
-	private IdentityEntity mapEventToNewEntity(EventDTO event, Function<EventDTO, String> idFunction) {
-		String id = idFunction.apply(event);
-		Objects.requireNonNull(id);
-		IdentityEntity identityEntity = new IdentityEntity();
-		identityEntity.setId(getHash(id));
-		identityEntity.setExpiryTimestamp(event.getExpiryTimestamp());
-		identityEntity.setTransactionLimit(event.getTransactionLimit());
-		identityEntity.setCrBy("ida");
-		identityEntity.setCrDTimes(getCurrentUTCLocalTime());
-		return identityEntity;
-	}
-
-	/**
-	 * Save id entity by uin data.
-	 *
-	 * @param uinOpt the uin opt
-	 * @param entities the entities
-	 * @param properties the properties
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void saveIdEntityByUinData(Optional<String> uinOpt, 
-			Map<String, IdentityEntity> entities,
-			EnumSet<IdChangeProperties> properties) throws IdAuthenticationBusinessException {
-		Optional<byte[]> demoData;
-		Optional<byte[]> bioData;
-		if(properties.contains(IdChangeProperties.UPDATE_ID_DATA) && 
-				uinOpt.filter(str -> !str.isEmpty()).isPresent()) {
-			String uin = uinOpt.get();
-			if(properties.contains(IdChangeProperties.UPDATE_WITH_LOCAL_ID_DATA)) {
-				Optional<IdentityEntity> entityOpt = identityCacheRepo.findById(getHash(uin));
-				if(entityOpt.isPresent()) {
-					IdentityEntity entity = entityOpt.get();
-					demoData = Optional.of(securityManager.decryptWithAES(uin, entity.getDemographicData()));
-					bioData = Optional.of(securityManager.decryptWithAES(uin, entity.getBiometricData()));
-				} else {
-					demoData = Optional.empty();
-					bioData = Optional.empty();
+				saveSalt(modulo, salt);
+				
+				if(demoKeyIndex != null && demoKey != null) {
+					securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
 				}
-			} else {
-				Map<String, Object> identity = idRepoManager.getIdentity(uin, true);
-				demoData = Optional.of(idService.getDemoData(identity));
-				bioData = Optional.of(idService.getBioData(identity));
+				
+				if(bioKeyIndex != null && bioKey != null) {
+					securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
+				}
+				
+				String idHash = (String) additionalData.get(ID_HASH);
+				Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
+				String expiryTime = (String) additionalData.get(EXPIRY_TIME);
+				String token  = (String) additionalData.get(TOKEN);
+				Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class);
+				storeIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
+				
+			} catch (RestServiceException | IDDataValidationException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 			}
-		} else {
-			demoData = Optional.empty();
-			bioData = Optional.empty();
 		}
-		saveIdEntity(entities, demoData, bioData);
 	}
 
-	/**
-	 * Save id entity.
-	 *
-	 * @param entities the entities
-	 * @param demoData the demo data
-	 * @param bioData the bio data
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void saveIdEntity(Map<String, IdentityEntity> entities,Optional<byte[]> demoData, Optional<byte[]> bioData) throws IdAuthenticationBusinessException {
-		for(Entry<String, IdentityEntity> entry: entities.entrySet()){
-			String id = entry.getKey();
-			IdentityEntity entity = entry.getValue();
-			if(demoData.isPresent()) {
-				entity.setDemographicData(securityManager.encryptWithAES(id, demoData.get()));
+	private void storeIdentityEntity(String idHash, String token, Integer transactionLimit, String expiryTime,
+			Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
+		Map<String, Object>[] demoBioData =  splitDemoBioData(credentialData);
+		try {
+			byte [] demoBytes = objectMapper.writeValueAsBytes(demoBioData[0]);
+			byte [] bioBytes = objectMapper.writeValueAsBytes(demoBioData[1]);
+			
+			IdentityEntity identityEntity = new IdentityEntity();
+			Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
+			if(identityEntityOpt.isPresent()) {
+				identityEntity = identityEntityOpt.get();
+				identityEntity.setUpdBy(IDA);
+				identityEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			} else {
+				identityEntity = new IdentityEntity();
+				identityEntity.setCrBy(IDA);
+				identityEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+				identityEntity.setId(idHash);
+				identityEntity.setToken(token);
 			}
-			if(bioData.isPresent()) {
-				entity.setBiometricData(securityManager.encryptWithAES(id, bioData.get()));
-			}
+			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
+			identityEntity.setExpiryTimestamp(expiryTimestamp);
+			identityEntity.setTransactionLimit(transactionLimit);
+			
+			identityEntity.setDemographicData(demoBytes);
+			identityEntity.setBiometricData(bioBytes);
+			identityCacheRepo.save(identityEntity);
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 		}
-		identityCacheRepo.saveAll(entities.values());
+	}
+
+	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
+		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
+				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS)));
+		
+		Map<String, Object> demoData = bioOrDemoData.get(false).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		Map<String, Object> bioData = bioOrDemoData.get(true).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		
+		return new Map[] {demoData, bioData};
+	}
+
+	private void saveSalt(String modulo, String salt) {
+		Long saltModulo = Long.valueOf(modulo);
+		if(!uinHashSaltRepo.existsById(saltModulo)) {
+			UinHashSalt saltEntity = new UinHashSalt();
+			saltEntity.setId(saltModulo);
+			saltEntity.setSalt(salt);
+			saltEntity.setCreatedBy(IDA);
+			saltEntity.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
+			uinHashSaltRepo.save(saltEntity);
+		}
+	}
+	
+	private void handleRemoveId(EventModel eventModel) throws IdAuthenticationBusinessException {
+		Event event = eventModel.getEvent();
+		Map<String, Object> additionalData = event.getData();
+		String idHash = (String) additionalData.get(ID_HASH);
+		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
+		if(identityEntityOpt.isPresent()) {
+			identityCacheRepo.delete(identityEntityOpt.get());
+		}
+	}
+	
+	private void handleDeactivateId(EventModel eventModel) throws IdAuthenticationBusinessException {
+		updateIdentityMetadata(eventModel);
+	}
+
+	private void updateIdentityMetadata(EventModel eventModel) throws IdAuthenticationBusinessException {
+		Event event = eventModel.getEvent();
+		Map<String, Object> additionalData = event.getData();
+		String idHash = (String) additionalData.get(ID_HASH);
+		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
+		
+		Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
+		String expiryTime = (String) additionalData.get(EXPIRY_TIME);
+		
+		if(identityEntityOpt.isPresent()) {
+			IdentityEntity identityEntity = identityEntityOpt.get();
+			identityEntity.setUpdBy(IDA);
+			identityEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			
+			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
+			identityEntity.setExpiryTimestamp(expiryTimestamp);
+			identityEntity.setTransactionLimit(transactionLimit);
+			
+			identityCacheRepo.save(identityEntity);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_HASH));
+		}
+	}
+	
+	private void handleActicateId(EventModel eventModel) throws IdAuthenticationBusinessException {
+		updateIdentityMetadata(eventModel);
 	}
 
 }

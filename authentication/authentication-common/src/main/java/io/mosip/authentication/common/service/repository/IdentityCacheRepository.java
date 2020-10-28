@@ -18,7 +18,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface IdentityCacheRepository extends BaseRepository<IdentityEntity, String> {
 
-	@Query("SELECT i.id, i.demographicData, i.expiryTimestamp, i.transactionLimit, i.crBy, i.crDTimes, "
+	@Query("SELECT i.id, i.demographicData, i.expiryTimestamp, i.transactionLimit, i.token, i.crBy, i.crDTimes, "
 			+ "i.updBy, i.updDTimes, i.isDeleted, i.delDTimes FROM IdentityEntity i where i.id = :id")
 	List<Object[]> findDemoDataById(@Param("id") String id);
 }

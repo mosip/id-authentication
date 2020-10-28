@@ -32,13 +32,14 @@ public final class IdAuthConfigKeyConstants {
 	public static final String PARTNER_KEY = "partner.";
 	public static final String MOSIP_IDENTITY_VID = "mosip.identity.vid";
 	public static final String MOSIP_VID_VALIDITY_HOURS = "ida.vid.validity.hours";
-	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
+	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES = "authrequest.received-time-adjustment.minutes";
 	public static final String OTP_CONTEXT = "ida.otp.context";
 	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";
@@ -115,5 +116,18 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
+	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
+	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
+	public static final String IDA_WEBSUB_HUB_URL = "ida-websub-subscriber-hub-url";
+	public static final String IDA_WEBSUB_PUBLISHER_URL = "ida-websub-publisher-url";
+	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
+	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
+	
+	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
 
+	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
+	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup";
+	public static final String DATA_SHARE_GET_DECRYPT_REF_ID = "data-share-get-decrypt-ref-id";
+
+	
 }

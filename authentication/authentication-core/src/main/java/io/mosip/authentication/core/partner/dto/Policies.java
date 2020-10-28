@@ -16,5 +16,7 @@ public class Policies {
 	
 	/** The list of KYC attributes. */
 	private List<KYCAttributes> allowedKycAttributes;
+	
+	private String authTokenType;
 }
 

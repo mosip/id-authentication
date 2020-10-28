@@ -21,6 +21,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.indauth.match.ConsumerWithException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
@@ -67,17 +68,20 @@ public class KeyManager {
 	 *            the mapper
 	 * @param refId
 	 *            the ref id
+	 * @param reqHMAC 
+	 * @param dataValidator 
 	 * @return the map
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId)
+	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId, ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId);
+			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId, dataValidator);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
 					e.getMessage());
@@ -94,18 +98,26 @@ public class KeyManager {
 	 * @param encryptedRequest            the encrypted request
 	 * @param encryptedSessionKey            the encrypted session key
 	 * @param refId the ref id
+	 * @param reqHMAC 
 	 * @return the map
 	 * @throws IdAuthenticationAppException             the id authentication app exception
 	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey,
-			String refId) throws IdAuthenticationAppException, IOException {
-		return mapper
-				.readValue(kernelDecryptAndDecode(
+			String refId, ConsumerWithException<String, IdAuthenticationAppException> dataValidator) throws IdAuthenticationAppException, IOException {
+		String decryptedAndDecodedData = kernelDecryptAndDecode(
 						CryptoUtil.encodeBase64(
 								CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)),
-						refId), Map.class);
+						refId);
+
+		if(dataValidator != null) {
+			dataValidator.accept(decryptedAndDecodedData);
+		}
+			
+		return mapper
+				.readValue(decryptedAndDecodedData, Map.class);
 	}
 	
 	/**
@@ -187,7 +199,7 @@ public class KeyManager {
 		if (Objects.nonNull(identity)) {
 			try {
 				String encodedData = CryptoUtil
-						.encodeBase64(toJsonString(identity, mapper).getBytes());
+						.encodeBase64(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
 				return CryptoUtil
 						.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {

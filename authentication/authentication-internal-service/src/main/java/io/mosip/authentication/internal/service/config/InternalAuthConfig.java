@@ -3,8 +3,10 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.INTERNAL_ALLOWED_AUTH_TYPE;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -20,7 +22,7 @@ public class InternalAuthConfig extends IdAuthConfig {
 	
 	@Autowired
 	protected Environment environment;
-
+	
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFingerAuthEnabled()
@@ -44,5 +46,15 @@ public class InternalAuthConfig extends IdAuthConfig {
 	protected boolean isIrisAuthEnabled() {
 		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
+	
+	@Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
+        ThreadPoolTaskScheduler threadPoolTaskScheduler
+          = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(5);
+        threadPoolTaskScheduler.setThreadNamePrefix(
+          "ThreadPoolTaskScheduler");
+        return threadPoolTaskScheduler;
+    }
 
 }
