@@ -239,6 +239,10 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			} catch (RestServiceException | IDDataValidationException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
+							+ ": Data Share URI is not proivded in the event");
 		}
 	}
 
