@@ -62,7 +62,7 @@ public class MasterDataHelper {
 	}
 
 	@Cacheable("masterdata")
-	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
+	public Map<String, Map<String, String>> getMasterDataTitles() throws IdAuthenticationBusinessException {
 		try {
 			return restHelper
 					.requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));

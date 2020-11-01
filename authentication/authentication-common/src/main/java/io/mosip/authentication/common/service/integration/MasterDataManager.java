@@ -219,8 +219,7 @@ public class MasterDataManager {
 	 */
 	private Map<String, List<String>> fetchMasterdataList(RestServicesConstants type, String masterDataName,
 			String keyAttribute, String valueAttribute) throws IdAuthenticationBusinessException {
-		Map<String, Map<String, String>> fetchMasterData = fetchMasterData(type, null, masterDataName, keyAttribute,
-				valueAttribute);
+		Map<String, Map<String, String>> fetchMasterData = masterDataHelper.getMasterDataTitles();
 		if (fetchMasterData != null && !fetchMasterData.isEmpty()) {
 			return fetchMasterData.entrySet().stream()
 					.collect(Collectors.toMap(Entry<String, Map<String, String>>::getKey,
