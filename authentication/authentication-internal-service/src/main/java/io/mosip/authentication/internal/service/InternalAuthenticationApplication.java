@@ -15,6 +15,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.helper.MasterDataHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
@@ -76,25 +77,23 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class,
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class, 
-		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
-		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,
-		InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
+		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class,
+		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
+		OTPRequestValidator.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
-		IdChangeEventHandlerServiceImpl.class,SignatureServiceImpl.class, 
-		KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, 
-		PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class, IdTypeUtil.class })
+		IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class,
+		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
+		IdTypeUtil.class, MasterDataHelper.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.defaultadapter.*",
 		"io.mosip.kernel.core.logger.config" })
-@EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
+@EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {
 
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(InternalAuthenticationApplication.class, args);

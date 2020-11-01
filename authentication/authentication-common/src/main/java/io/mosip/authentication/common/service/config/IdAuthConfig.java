@@ -3,11 +3,9 @@ package io.mosip.authentication.common.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
 
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
