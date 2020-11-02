@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;

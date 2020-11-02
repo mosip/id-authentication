@@ -3,7 +3,6 @@ package io.mosip.authentication.core.dto;
 import java.util.stream.IntStream;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.util.StringUtils;
 

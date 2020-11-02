@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 

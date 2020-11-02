@@ -152,6 +152,7 @@ public class PartnerServiceManager {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<String> getPartnerIds() {
 		try {
 			Map<String, Object> responseWrapperMap = restHelper.requestSync(restRequestFactory.buildRequest(RestServicesConstants.PARTNER_SERVICE, null, Map.class));

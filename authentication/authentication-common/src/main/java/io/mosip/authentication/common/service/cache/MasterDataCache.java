@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.cache;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
