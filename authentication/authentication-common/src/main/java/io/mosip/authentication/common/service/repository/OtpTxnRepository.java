@@ -13,5 +13,4 @@ public interface OtpTxnRepository extends BaseRepository<OtpTransaction, String>
 	
 	OtpTransaction findByOtpHashAndStatusCode(String otpHash, String statusCode);
 	
-	OtpTransaction findByRefIdAndStatusCode(String refId, String statusCode);
 }
