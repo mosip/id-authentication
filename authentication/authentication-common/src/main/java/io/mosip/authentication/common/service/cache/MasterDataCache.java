@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.cache;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -63,7 +64,7 @@ public class MasterDataCache {
 	}
 
 	@Cacheable("masterdata")
-	public Map<String, Map<String, String>> getMasterDataTitles() throws IdAuthenticationBusinessException {
+	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
 		try {
 			return restHelper
 					.requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));

@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.integration;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jayway.jsonpath.JsonPath;
+
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -24,34 +27,30 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-/*
+/**
  * MasterDataManager
  * 
  * @author Dinesh Karuppiah.T
+ * @author Manoj SP
  */
 @Component
 public class MasterDataManager {
 
-	/** The Constant TITLE_NAME. */
-	private static final String TITLE_NAME = "titleName";
+	private static final String TITLE_NAME_JSON_PATH = "$.response.titleList[?(@.langCode=='%s')].titleName";
 
-	/** The Constant CODE. */
-	private static final String CODE = "code";
+	private static final String LANG_CODE_JSON_PATH = "$.response.titleList.*.langCode";
 
-	/** The Constant TITLE_LIST. */
-	private static final String TITLE_LIST = "titleList";
+	private static final String LANG_CODE = "langCode";
+
+	private static final String TEMPLATE_TYPE_CODE = "templateTypeCode";
+
+	private static final String RESPONSE = "response";
 
 	/** The Constant IS_ACTIVE. */
 	private static final String IS_ACTIVE = "isActive";
 
-	/** The Constant LANG_CODE. */
-	private static final String LANG_CODE = "langCode";
-
 	/** The Constant FILE_TEXT. */
 	private static final String FILE_TEXT = "fileText";
-
-	/** The Constant TEMPLATE_TYPE_CODE. */
-	private static final String TEMPLATE_TYPE_CODE = "templateTypeCode";
 
 	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
@@ -66,7 +65,7 @@ public class MasterDataManager {
 	 * IdTemplate Manager Logger
 	 */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
-	
+
 	@Autowired
 	private MasterDataCache masterDataHelper;
 
@@ -87,11 +86,11 @@ public class MasterDataManager {
 			String masterDataListName, String keyAttribute, String valueAttribute)
 			throws IdAuthenticationBusinessException {
 		try {
-			Map<String, Object> response = masterDataHelper.getMasterDataTemplate(params.get("templateTypeCode"));
+			Map<String, Object> response = masterDataHelper.getMasterDataTemplate(params.get(TEMPLATE_TYPE_CODE));
 
 			Map<String, List<Map<String, Object>>> fetchResponse;
-			if (response.get("response") instanceof Map) {
-				fetchResponse = (Map<String, List<Map<String, Object>>>) response.get("response");
+			if (response.get(RESPONSE) instanceof Map) {
+				fetchResponse = (Map<String, List<Map<String, Object>>>) response.get(RESPONSE);
 			} else {
 				fetchResponse = Collections.emptyMap();
 			}
@@ -99,8 +98,8 @@ public class MasterDataManager {
 			Map<String, Map<String, String>> masterDataMap = new HashMap<>();
 			for (Map<String, Object> map : masterDataList) {
 				String langCode = String.valueOf(map.get(LANG_CODE));
-				if (!params.containsKey("langCode")
-						|| (params.containsKey("langCode") && langCode.contentEquals(params.get("langCode")))) {
+				if (!params.containsKey(LANG_CODE)
+						|| (params.containsKey(LANG_CODE) && langCode.contentEquals(params.get(LANG_CODE)))) {
 					String key = String.valueOf(map.get(keyAttribute));
 					String value = String.valueOf(map.get(valueAttribute));
 					Object isActiveObj = map.get(IS_ACTIVE);
@@ -131,8 +130,8 @@ public class MasterDataManager {
 	 */
 	public String fetchTemplate(String langCode, String templateName) throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
-		params.put("langCode", langCode);
-		params.put("templateTypeCode", templateName);
+		params.put(LANG_CODE, langCode);
+		params.put(TEMPLATE_TYPE_CODE, templateName);
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, params, TEMPLATES, TEMPLATE_TYPE_CODE, FILE_TEXT);
 		return Optional.ofNullable(masterData.get(langCode)).map(map -> map.get(templateName)).orElse("");
@@ -150,7 +149,7 @@ public class MasterDataManager {
 		Map<String, String> params = new HashMap<>();
 		String finalTemplate = "";
 		StringBuilder template = new StringBuilder();
-		params.put("templateTypeCode", templateName);
+		params.put(TEMPLATE_TYPE_CODE, templateName);
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
@@ -202,31 +201,14 @@ public class MasterDataManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
-		return fetchMasterdataList(RestServicesConstants.TITLE_SERVICE, TITLE_LIST, CODE, TITLE_NAME);
-	}
-
-	/**
-	 * To fetch Master Data.
-	 *
-	 * @param type           the type
-	 * @param masterDataName the master data name
-	 * @param keyAttribute   the key attribute
-	 * @param valueAttribute the value attribute
-	 * @return the map
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	private Map<String, List<String>> fetchMasterdataList(RestServicesConstants type, String masterDataName,
-			String keyAttribute, String valueAttribute) throws IdAuthenticationBusinessException {
-		Map<String, Map<String, String>> fetchMasterData = masterDataHelper.getMasterDataTitles();
-		if (fetchMasterData != null && !fetchMasterData.isEmpty()) {
-			return fetchMasterData.entrySet().stream()
-					.collect(Collectors.toMap(Entry<String, Map<String, String>>::getKey,
-							(Entry<String, Map<String, String>> entry) -> entry.getValue().values().stream()
-									.collect(Collectors.toList())));
-		}
-		return Collections.emptyMap();
+		Map<String, Object> fetchMasterData = masterDataHelper.getMasterDataTitles();
+		List<String> langCodes = ((List<String>) JsonPath.compile(LANG_CODE_JSON_PATH).read(fetchMasterData));
+		langCodes = langCodes.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+		return langCodes.stream().map(langCode -> new AbstractMap.SimpleEntry<String, List<String>>(langCode,
+				(List<String>) JsonPath.compile(String.format(TITLE_NAME_JSON_PATH, langCode)).read(fetchMasterData)))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 
 }
