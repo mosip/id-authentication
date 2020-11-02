@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.MasterDataHelper;
+import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -68,7 +68,7 @@ public class MasterDataManager {
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
 	
 	@Autowired
-	private MasterDataHelper masterDataHelper;
+	private MasterDataCache masterDataHelper;
 
 	/**
 	 * Fetch master data.

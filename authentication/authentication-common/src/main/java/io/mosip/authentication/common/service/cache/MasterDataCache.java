@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.helper;
+package io.mosip.authentication.common.service.cache;
 
 import java.util.Map;
 
@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -27,12 +28,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  */
 @Component
-public class MasterDataHelper {
+public class MasterDataCache {
 
 	/**
 	 * IdTemplate Manager Logger
 	 */
-	private static Logger logger = IdaLogger.getLogger(MasterDataHelper.class);
+	private static Logger logger = IdaLogger.getLogger(MasterDataCache.class);
 
 	/**
 	 * The Rest request factory
