@@ -67,7 +67,7 @@ public class MasterDataManager {
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
 
 	@Autowired
-	private MasterDataCache masterDataHelper;
+	private MasterDataCache masterDataCache;
 
 	/**
 	 * Fetch master data.
@@ -86,7 +86,7 @@ public class MasterDataManager {
 			String masterDataListName, String keyAttribute, String valueAttribute)
 			throws IdAuthenticationBusinessException {
 		try {
-			Map<String, Object> response = masterDataHelper.getMasterDataTemplate(params.get(TEMPLATE_TYPE_CODE));
+			Map<String, Object> response = masterDataCache.getMasterDataTemplate(params.get(TEMPLATE_TYPE_CODE));
 
 			Map<String, List<Map<String, Object>>> fetchResponse;
 			if (response.get(RESPONSE) instanceof Map) {
@@ -203,7 +203,7 @@ public class MasterDataManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
-		Map<String, Object> fetchMasterData = masterDataHelper.getMasterDataTitles();
+		Map<String, Object> fetchMasterData = masterDataCache.getMasterDataTitles();
 		List<String> langCodes = ((List<String>) JsonPath.compile(LANG_CODE_JSON_PATH).read(fetchMasterData));
 		langCodes = langCodes.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
 		return langCodes.stream().map(langCode -> new AbstractMap.SimpleEntry<String, List<String>>(langCode,

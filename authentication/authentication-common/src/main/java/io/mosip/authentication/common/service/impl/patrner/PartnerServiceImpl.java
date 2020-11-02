@@ -26,7 +26,7 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 public class PartnerServiceImpl implements PartnerService {
 
 	@Autowired
-	private PartnerServiceCache partnerServiceHelper;
+	private PartnerServiceCache partnerServiceCache;
 	
 	@Autowired
 	private CacheManager cacheManager;
@@ -60,7 +60,7 @@ public class PartnerServiceImpl implements PartnerService {
 //		if (partnerServiceResponseMap.containsKey(key)) {
 //			return partnerServiceResponseMap.get(key);
 //		} else {
-			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceHelper.getPartnerPolicy(key, mispLicenseKey);
+			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey);
 //			partnerServiceResponseMap.put(createPartnerDTO(partnerPolicyResponseDTO, partnerApiKey), partnerPolicyResponseDTO);
 			return partnerPolicyResponseDTO;
 //		}
@@ -71,7 +71,7 @@ public class PartnerServiceImpl implements PartnerService {
 			throws IdAuthenticationBusinessException {
 		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
 //		if (partnerServiceResponseMap.containsKey(key)) {
-			return Optional.ofNullable(partnerServiceHelper.getPartnerPolicy(key, null)).map(PartnerPolicyResponseDTO::getPolicy);
+			return Optional.ofNullable(partnerServiceCache.getPartnerPolicy(key, null)).map(PartnerPolicyResponseDTO::getPolicy);
 //		}
 //		return Optional.empty();
 	}

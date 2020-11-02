@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.filter;
 
-
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 import static org.junit.Assert.assertEquals;
 
@@ -36,6 +35,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -48,6 +48,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
@@ -64,7 +65,9 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
  * The Class IdAuthFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class,
+		PartnerServiceManager.class, RestRequestFactory.class, RestHelper.class, RestHelperImpl.class,
+		PartnerServiceCache.class, ConcurrentMapCacheManager.class })
 @WebMvcTest
 @AutoConfigureMockMvc
 public class IdAuthFilterTest {
@@ -103,7 +106,7 @@ public class IdAuthFilterTest {
 	 * Test set txn id.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws ServletException the servlet exception
+	 * @throws ServletException             the servlet exception
 	 */
 	@Test
 	public void testSetTxnId() throws IdAuthenticationAppException, ServletException {
@@ -116,10 +119,11 @@ public class IdAuthFilterTest {
 	 * Test decoded request.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws ServletException the servlet exception
-	 * @throws JsonParseException the json parse exception
-	 * @throws JsonMappingException the json mapping exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ServletException             the servlet exception
+	 * @throws JsonParseException           the json parse exception
+	 * @throws JsonMappingException         the json mapping exception
+	 * @throws IOException                  Signals that an I/O exception has
+	 *                                      occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -136,7 +140,8 @@ public class IdAuthFilterTest {
 		String dicipheredreq = "{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}";
 		Mockito.when(keyManager.requestData(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new ObjectMapper().readValue(dicipheredreq.getBytes(), Map.class));
-		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any())).thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
+		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any()))
+				.thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
 		Map<String, Object> decipherRequest = filter.decipherRequest(requestBody);
 		decipherRequest.remove("requestHMAC");
 		decipherRequest.remove("requestSessionKey");
@@ -147,9 +152,10 @@ public class IdAuthFilterTest {
 	 * Test in valid decoded request.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws JsonParseException the json parse exception
-	 * @throws JsonMappingException the json mapping exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JsonParseException           the json parse exception
+	 * @throws JsonMappingException         the json mapping exception
+	 * @throws IOException                  Signals that an I/O exception has
+	 *                                      occurred.
 	 */
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testInValidDecodedRequest()
@@ -164,7 +170,7 @@ public class IdAuthFilterTest {
 	 * Test encoded response.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws ServletException the servlet exception
+	 * @throws ServletException             the servlet exception
 	 */
 	@Test
 	public void testEncodedResponse() throws IdAuthenticationAppException, ServletException {
@@ -189,7 +195,7 @@ public class IdAuthFilterTest {
 	public void testSign() throws IdAuthenticationAppException {
 		assertEquals(true, filter.validateRequestSignature("something", "something".getBytes()));
 	}
-	
+
 	/**
 	 * Valid partner id test.
 	 *
@@ -198,8 +204,6 @@ public class IdAuthFilterTest {
 	public void validPartnerIdTest() throws IdAuthenticationAppException {
 		ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "1873299273");
 	}
-
-		
 
 	/**
 	 * Mandatory auth policy test OTP check.
@@ -221,8 +225,7 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor92834787293(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
-		}
-		catch (IdAuthenticationAppException e) {
+		} catch (IdAuthenticationAppException e) {
 			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
 		}
 	}
@@ -245,8 +248,7 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor92834787293(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
-		}
-		catch (IdAuthenticationAppException e) {
+		} catch (IdAuthenticationAppException e) {
 			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
 		}
 	}
@@ -269,8 +271,7 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
-		}
-		catch (IdAuthenticationAppException e) {
+		} catch (IdAuthenticationAppException e) {
 			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
 		}
 	}
@@ -292,14 +293,13 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
-		}
-		catch (IdAuthenticationAppException e) {
+		} catch (IdAuthenticationAppException e) {
 			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
 		}
 	}
 
 	/**
-	 * Allowed auth policy  test OTP check.
+	 * Allowed auth policy test OTP check.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -315,10 +315,9 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983252(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
+		} catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
 		}
-		 catch (IdAuthenticationAppException e) {
-				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
-			}
 	}
 
 	/**
@@ -338,10 +337,9 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
+		} catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
 		}
-		 catch (IdAuthenticationAppException e) {
-				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
-			}
 	}
 
 	/**
@@ -351,7 +349,7 @@ public class IdAuthFilterTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {		
+	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": true\r\n"
@@ -361,11 +359,10 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983754(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
+		} catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
 		}
-		 catch (IdAuthenticationAppException e) {
-				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
-			}
-		
+
 	}
 
 	/**
@@ -384,10 +381,9 @@ public class IdAuthFilterTest {
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0123456(), requestBodyMap);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
+		} catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
 		}
-		 catch (IdAuthenticationAppException e) {
-				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
-			}
 	}
 
 	/**
@@ -397,7 +393,7 @@ public class IdAuthFilterTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(expected = IdAuthenticationAppException.class)
-	public void validateDecipheredRequestTest() throws IdAuthenticationAppException{
+	public void validateDecipheredRequestTest() throws IdAuthenticationAppException {
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				new HttpServletRequest() {
 
@@ -847,12 +843,11 @@ public class IdAuthFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return polictDto;
-		
+
 	}
-	
-	
+
 	private PolicyDTO getPolicyFor0983222() {
 		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp\", \"mandatory\": true }, { \"authType\": \"pin\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
 		String policyId = "92834787293";
@@ -873,10 +868,10 @@ public class IdAuthFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return polictDto;		
+
+		return polictDto;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -901,10 +896,10 @@ public class IdAuthFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return polictDto;		
+
+		return polictDto;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -929,10 +924,10 @@ public class IdAuthFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return polictDto;		
+
+		return polictDto;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -957,7 +952,7 @@ public class IdAuthFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return polictDto;		
+
+		return polictDto;
 	}
 }
