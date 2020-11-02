@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.helper.RestHelper;
@@ -38,29 +40,29 @@ import io.mosip.kernel.crypto.jce.core.CryptoCore;
  * The Class OTPFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { IdAuthFilter.class, CryptoCore.class, PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
-@WebMvcTest 
+@ContextConfiguration(classes = { IdAuthFilter.class, CryptoCore.class, PartnerServiceImpl.class,
+		PartnerServiceManager.class, RestRequestFactory.class, RestHelper.class, RestHelperImpl.class,
+		PartnerServiceCache.class, ConcurrentMapCacheManager.class })
+@WebMvcTest
 public class OTPFilterTest {
 
 	/** The filter. */
 	OTPFilter filter = new OTPFilter();
-	
-	
+
 	/** The environment. */
 	@Autowired
 	private Environment environment;
-	
+
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	private CryptoCore cryptoCore;
-	
+
 	@Autowired
 	PartnerService partnerService;
-	
-	
+
 	/**
 	 * Before.
 	 */
@@ -73,23 +75,21 @@ public class OTPFilterTest {
 
 	}
 
-
-	
 	/**
 	 * Test OTP request not allowed as per policy.
 	 */
 	@Test
 	public void testOTPRequestNotAllowed() {
-		String errorMessage="IDA-MPA-005 --> OTP Request Usage not allowed as per policy";
-		Map<String,Object> reqMap=new HashMap<>();
-	try {	
-		ReflectionTestUtils.invokeMethod(filter, "checkAllowedAuthTypeBasedOnPolicy", getPolicyFor9903348702934(),reqMap);
+		String errorMessage = "IDA-MPA-005 --> OTP Request Usage not allowed as per policy";
+		Map<String, Object> reqMap = new HashMap<>();
+		try {
+			ReflectionTestUtils.invokeMethod(filter, "checkAllowedAuthTypeBasedOnPolicy", getPolicyFor9903348702934(),
+					reqMap);
+		} catch (UndeclaredThrowableException ex) {
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
+		}
 	}
-	catch(UndeclaredThrowableException ex) {
-		    assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
-	}
-	}
-	
+
 	private PolicyDTO getPolicyFor9903348702934() {
 		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp\", \"mandatory\": false }, { \"authType\": \"pin\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
 		String policyId = "9903348702934";
@@ -110,7 +110,7 @@ public class OTPFilterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return polictDto;		
+
+		return polictDto;
 	}
 }
