@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -86,5 +87,10 @@ public class MasterDataCache {
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+	
+	@CacheEvict(value="masterdata", allEntries=true)
+	public void clearMasterDataCache() {
+		
 	}
 }

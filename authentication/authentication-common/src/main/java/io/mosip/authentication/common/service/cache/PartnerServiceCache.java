@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,11 @@ public class PartnerServiceCache {
 			throws IdAuthenticationBusinessException {
 		return partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
 				mispLicenseKey);
+	}
+	
+	@CacheEvict(value="partner", allEntries=true)
+	public void clearPartnerServiceCache() {
+		
 	}
 
 }
