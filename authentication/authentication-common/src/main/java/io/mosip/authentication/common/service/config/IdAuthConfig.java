@@ -2,21 +2,30 @@ package io.mosip.authentication.common.service.config;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -26,10 +35,21 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  *
  */
 public abstract class IdAuthConfig extends HibernateDaoConfig {
+	
+	private static Logger logger = IdaLogger.getLogger(IdAuthConfig.class);
 
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private MasterDataCache masterDataCache;
+	
+	@Autowired
+	private PartnerServiceCache partnerServiceCache;
+	
+	@Value("${cache-ttl-days:0")
+	private int cacheTTL;
 
 	/**
 	 * Initialize.
@@ -37,6 +57,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@PostConstruct
 	public void initialize() {
 		IdType.initializeAliases(environment);
+		ScheduleCacheEviction();
 	}
 
 	/**
@@ -73,6 +94,25 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.addBasenames("errormessages", "actionmessages");
 		return source;
+	}
+
+	@Bean
+	public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+		threadPoolTaskScheduler.setPoolSize(5);
+		threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
+		return threadPoolTaskScheduler;
+	}
+	
+	private void ScheduleCacheEviction() {
+		if (cacheTTL > 0) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
+					"Scheduling cache eviction every " + cacheTTL + " day(s)");
+			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,
+					Instant.now().plusSeconds(cacheTTL), Duration.ofSeconds(cacheTTL));
+			threadPoolTaskScheduler().scheduleAtFixedRate(partnerServiceCache::clearPartnerServiceCache,
+					Instant.now().plusSeconds(cacheTTL), Duration.ofSeconds(cacheTTL));
+		}
 	}
 
 	/**

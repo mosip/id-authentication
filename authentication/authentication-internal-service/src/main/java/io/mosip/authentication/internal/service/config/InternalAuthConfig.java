@@ -60,12 +60,4 @@ public class InternalAuthConfig extends IdAuthConfig {
 		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
 
-	@Bean
-	public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
-		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
-		threadPoolTaskScheduler.setPoolSize(5);
-		threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
-		return threadPoolTaskScheduler;
-	}
-
 }
