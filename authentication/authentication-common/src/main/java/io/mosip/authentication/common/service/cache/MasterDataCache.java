@@ -31,9 +31,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class MasterDataCache {
 
-	/**
-	 * IdTemplate Manager Logger
-	 */
 	private static Logger logger = IdaLogger.getLogger(MasterDataCache.class);
 
 	/**
@@ -91,6 +88,7 @@ public class MasterDataCache {
 	
 	@CacheEvict(value="masterdata", allEntries=true)
 	public void clearMasterDataCache() {
-		
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
+				"masterdata cache cleared");
 	}
 }

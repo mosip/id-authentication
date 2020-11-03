@@ -6,9 +6,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Manoj SP
@@ -16,6 +19,8 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
  */
 @Component
 public class PartnerServiceCache {
+
+	private static Logger logger = IdaLogger.getLogger(PartnerServiceCache.class);
 
 	@Autowired(required = false)
 	private PartnerServiceManager partnerServiceManager;
@@ -29,7 +34,8 @@ public class PartnerServiceCache {
 	
 	@CacheEvict(value="partner", allEntries=true)
 	public void clearPartnerServiceCache() {
-		
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearPartnerServiceCache",
+				"partner cache cleared");
 	}
 
 }

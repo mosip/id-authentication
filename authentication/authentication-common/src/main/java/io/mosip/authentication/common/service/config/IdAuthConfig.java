@@ -26,6 +26,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -35,21 +36,24 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  *
  */
 public abstract class IdAuthConfig extends HibernateDaoConfig {
-	
+
 	private static Logger logger = IdaLogger.getLogger(IdAuthConfig.class);
 
 	/** The environment. */
 	@Autowired
 	private Environment environment;
-	
+
 	@Autowired
 	private MasterDataCache masterDataCache;
-	
+
 	@Autowired
 	private PartnerServiceCache partnerServiceCache;
-	
-	@Value("${cache-ttl-days:0")
-	private int cacheTTL;
+
+	@Value("${ida-cache-ttl-in-days:0")
+	public int cacheTTL;
+
+	@Value("${spring.cache.type:simple}")
+	public String cacheType;
 
 	/**
 	 * Initialize.
@@ -103,9 +107,9 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
 		return threadPoolTaskScheduler;
 	}
-	
+
 	private void ScheduleCacheEviction() {
-		if (cacheTTL > 0) {
+		if (cacheTTL > 0 && !StringUtils.equalsIgnoreCase(cacheType, "none")) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
 					"Scheduling cache eviction every " + cacheTTL + " day(s)");
 			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,

@@ -57,32 +57,14 @@ public class PartnerServiceImpl implements PartnerService {
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey)
 			throws IdAuthenticationBusinessException {
 		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
-//		if (partnerServiceResponseMap.containsKey(key)) {
-//			return partnerServiceResponseMap.get(key);
-//		} else {
-			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey);
-//			partnerServiceResponseMap.put(createPartnerDTO(partnerPolicyResponseDTO, partnerApiKey), partnerPolicyResponseDTO);
-			return partnerPolicyResponseDTO;
-//		}
+		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey);
+		return partnerPolicyResponseDTO;
 	}
 
 	@Override
 	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException {
 		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
-//		if (partnerServiceResponseMap.containsKey(key)) {
 			return Optional.ofNullable(partnerServiceCache.getPartnerPolicy(key, null)).map(PartnerPolicyResponseDTO::getPolicy);
-//		}
-//		return Optional.empty();
 	}
-
-//	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
-//		PartnerDTO partnerDTO = new PartnerDTO();
-//		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
-//		partnerDTO.setPartnerApiKey(partnerApiKey);
-//		partnerDTO.setPartnerName(partnerPolicyDTO.getPartnerName());
-//		partnerDTO.setPolicyId(partnerPolicyDTO.getPolicyId());
-//		partnerDTO.setStatus("Active");
-//		return partnerDTO;
-//	}
 }
