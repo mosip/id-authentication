@@ -37,21 +37,26 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  */
 public abstract class IdAuthConfig extends HibernateDaoConfig {
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdAuthConfig.class);
 
 	/** The environment. */
 	@Autowired
 	private Environment environment;
 
+	/** The master data cache. */
 	@Autowired
 	private MasterDataCache masterDataCache;
 
+	/** The partner service cache. */
 	@Autowired
 	private PartnerServiceCache partnerServiceCache;
 
+	/** The cache TTL. */
 	@Value("${ida-cache-ttl-in-days:0")
 	public int cacheTTL;
 
+	/** The cache type. */
 	@Value("${spring.cache.type:simple}")
 	public String cacheType;
 
@@ -100,6 +105,11 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		return source;
 	}
 
+	/**
+	 * Thread pool task scheduler.
+	 *
+	 * @return the thread pool task scheduler
+	 */
 	@Bean
 	public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
 		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
@@ -108,6 +118,12 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		return threadPoolTaskScheduler;
 	}
 
+	/**
+	 * Schedule cache eviction.
+	 * 
+	 * ida-cache-ttl-in-days property is used to schedule cache eviction in days.
+	 * spring.cache.type is used to disable/enable cache.
+	 */
 	private void ScheduleCacheEviction() {
 		if (cacheTTL > 0 && !StringUtils.equalsIgnoreCase(cacheType, "none")) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",

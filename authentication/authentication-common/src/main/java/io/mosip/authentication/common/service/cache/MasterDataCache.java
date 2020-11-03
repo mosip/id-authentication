@@ -25,30 +25,34 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * @author Manoj SP
+ * The Class MasterDataCache.
  *
+ * @author Manoj SP
  */
 @Component
 public class MasterDataCache {
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataCache.class);
 
-	/**
-	 * The Rest request factory
-	 */
+	/** The Rest request factory. */
 	@Autowired
 	private RestRequestFactory restFactory;
 
+	/** The environment. */
 	@Autowired
 	private Environment environment;
 
-	/**
-	 * The Rest Helper
-	 */
+	/** The Rest Helper. */
 	@Autowired
 	@Qualifier("external")
 	private RestHelper restHelper;
 
+	/**
+	 * Load master data.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@PostConstruct
 	public void loadMasterData() throws IdAuthenticationBusinessException {
 		getMasterDataTitles();
@@ -60,6 +64,12 @@ public class MasterDataCache {
 		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE));
 	}
 
+	/**
+	 * Gets the master data titles.
+	 *
+	 * @return the master data titles
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@Cacheable("masterdata")
 	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
 		try {
@@ -72,6 +82,13 @@ public class MasterDataCache {
 		}
 	}
 
+	/**
+	 * Gets the master data template.
+	 *
+	 * @param template the template
+	 * @return the master data template
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@Cacheable("masterdata")
 	public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
 		try {
@@ -86,6 +103,9 @@ public class MasterDataCache {
 		}
 	}
 	
+	/**
+	 * Clear master data cache.
+	 */
 	@CacheEvict(value="masterdata", allEntries=true)
 	public void clearMasterDataCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",

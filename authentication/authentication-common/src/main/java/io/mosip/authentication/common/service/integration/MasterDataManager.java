@@ -28,22 +28,27 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * MasterDataManager
- * 
+ * MasterDataManager.
+ *
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
  */
 @Component
 public class MasterDataManager {
 
+	/** The Constant TITLE_NAME_JSON_PATH. */
 	private static final String TITLE_NAME_JSON_PATH = "$.response.titleList[?(@.langCode=='%s')].titleName";
 
+	/** The Constant LANG_CODE_JSON_PATH. */
 	private static final String LANG_CODE_JSON_PATH = "$.response.titleList.*.langCode";
 
+	/** The Constant LANG_CODE. */
 	private static final String LANG_CODE = "langCode";
 
+	/** The Constant TEMPLATE_TYPE_CODE. */
 	private static final String TEMPLATE_TYPE_CODE = "templateTypeCode";
 
+	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
 
 	/** The Constant IS_ACTIVE. */
@@ -58,19 +63,19 @@ public class MasterDataManager {
 	/** The Constant NAME_PLACEHOLDER. */
 	private static final String NAME_PLACEHOLDER = "$name";
 
+	/** The id info fetcher. */
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
-	/**
-	 * IdTemplate Manager Logger
-	 */
+	/** IdTemplate Manager Logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
 
+	/** The master data cache. */
 	@Autowired
 	private MasterDataCache masterDataCache;
 
 	/**
-	 * Fetch master data.
+	 * Fetch master data for provided languages.
 	 *
 	 * @param type               the type
 	 * @param params             the params
@@ -138,7 +143,7 @@ public class MasterDataManager {
 	}
 
 	/**
-	 * To fetch template from master data manager.
+	 * To fetch template from master data manager for all languages.
 	 *
 	 * @param templateName the template name
 	 * @return the string

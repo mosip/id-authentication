@@ -14,17 +14,28 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * @author Manoj SP
+ * The Class PartnerServiceCache.
  *
+ * @author Manoj SP
  */
 @Component
 public class PartnerServiceCache {
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(PartnerServiceCache.class);
 
+	/** The partner service manager. */
 	@Autowired(required = false)
 	private PartnerServiceManager partnerServiceManager;
 
+	/**
+	 * Gets the partner policy.
+	 *
+	 * @param partner the partner
+	 * @param mispLicenseKey the misp license key
+	 * @return the partner policy
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@Cacheable(cacheNames = "partner", key = "#partner")
 	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner, String mispLicenseKey)
 			throws IdAuthenticationBusinessException {
@@ -32,6 +43,9 @@ public class PartnerServiceCache {
 				mispLicenseKey);
 	}
 	
+	/**
+	 * Clear partner service cache.
+	 */
 	@CacheEvict(value="partner", allEntries=true)
 	public void clearPartnerServiceCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearPartnerServiceCache",
