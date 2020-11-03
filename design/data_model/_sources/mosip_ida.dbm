@@ -108,6 +108,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Static Token Id : This is a static token id assigned for each authentication request. Static token id is combination of TSPID + UIN generated for any TSP or Individuls and sent back in response. End user can use this id while authenticating themselves. ]]></comment>
 	</column>
+	<column name="request_signature">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Request Signature: Request body information stored with signed]]></comment>
+	</column>
+	<column name="response_signature">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Response Signature: Response body stored with signed]]></comment>
+	</column>
 	<column name="cr_by" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
