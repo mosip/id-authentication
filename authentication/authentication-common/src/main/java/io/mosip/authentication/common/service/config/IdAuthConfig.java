@@ -4,6 +4,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOS
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
@@ -129,9 +130,9 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
 					"Scheduling cache eviction every " + cacheTTL + " day(s)");
 			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,
-					Instant.now().plusSeconds(cacheTTL), Duration.ofSeconds(cacheTTL));
+					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofSeconds(cacheTTL));
 			threadPoolTaskScheduler().scheduleAtFixedRate(partnerServiceCache::clearPartnerServiceCache,
-					Instant.now().plusSeconds(cacheTTL), Duration.ofSeconds(cacheTTL));
+					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofSeconds(cacheTTL));
 		}
 	}
 
