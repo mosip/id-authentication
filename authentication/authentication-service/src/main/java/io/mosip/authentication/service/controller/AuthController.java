@@ -93,7 +93,7 @@ public class AuthController {
 		AuthResponseDTO authResponsedto = null;
 		try {
 			String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
-					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).name();
+					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
 			authrequestdto.setIndividualIdType(idType);
 			authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
 			if(Optional.of(authrequestdto)

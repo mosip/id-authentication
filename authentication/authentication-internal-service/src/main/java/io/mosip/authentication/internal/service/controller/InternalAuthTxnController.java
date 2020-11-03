@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,12 +103,12 @@ public class InternalAuthTxnController {
 		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
 		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
 		authtxnrequestdto.setIndividualId(individualId);
-		authtxnrequestdto.setIndividualIdType(idTypeUtil.getIdType(individualId).name());
+		authtxnrequestdto.setIndividualIdType(
+				Objects.isNull(individualIdType) ? idTypeUtil.getIdType(individualId).getType() : individualIdType);
 		authtxnrequestdto.setPageStart(pageStart);
 		authtxnrequestdto.setPageFetch(pageFetch);
 		
 		try {
-			
 			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
 			authTxnValidator.validate(authtxnrequestdto, errors);
 			DataValidationUtil.validate(errors);
