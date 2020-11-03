@@ -96,7 +96,7 @@ public class InternalAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		try {
 			String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
-					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).name();
+					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 			authRequestDTO.setIndividualIdType(idType);
 			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, e);
 			DataValidationUtil.validate(e);
