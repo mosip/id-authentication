@@ -110,8 +110,7 @@ public class OTPManager {
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
 		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(
-					securityManager.hash(otpRequestDTO.getIndividualId()), IdAuthCommonConstants.ACTIVE_STATUS);
+			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
