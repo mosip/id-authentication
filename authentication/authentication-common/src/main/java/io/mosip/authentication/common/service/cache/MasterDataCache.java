@@ -2,12 +2,12 @@ package io.mosip.authentication.common.service.cache;
 
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +19,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -30,7 +31,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Component
-public class MasterDataCache {
+public class MasterDataCache implements ApplicationListener<ApplicationReadyEvent>{
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataCache.class);
@@ -53,7 +54,8 @@ public class MasterDataCache {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostConstruct
+	// Invoking this in post construct does not work due to time-out issue happening
+	// with webclient while invoking from post constuct.
 	public void loadMasterData() throws IdAuthenticationBusinessException {
 		getMasterDataTitles();
 		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_CONTENT_TEMPLATE));
@@ -110,5 +112,14 @@ public class MasterDataCache {
 	public void clearMasterDataCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
 				"masterdata cache cleared");
+	}
+
+	@Override
+	public void onApplicationEvent(ApplicationReadyEvent event) {
+		try {
+			loadMasterData();
+		} catch (IdAuthenticationBusinessException e) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+		}		
 	}
 }
