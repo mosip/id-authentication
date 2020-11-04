@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,8 @@ public class InternalAuthTxnController {
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
-	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@RequestParam("IDType") String individualIdType,
+	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(
+			@RequestParam(name = "IDType", required = false) String individualIdType,
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
@@ -101,12 +103,12 @@ public class InternalAuthTxnController {
 		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
 		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
 		authtxnrequestdto.setIndividualId(individualId);
-		authtxnrequestdto.setIndividualIdType(idTypeUtil.getIdType(individualId).name());
+		authtxnrequestdto.setIndividualIdType(
+				Objects.isNull(individualIdType) ? idTypeUtil.getIdType(individualId).getType() : individualIdType);
 		authtxnrequestdto.setPageStart(pageStart);
 		authtxnrequestdto.setPageFetch(pageFetch);
 		
 		try {
-			
 			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
 			authTxnValidator.validate(authtxnrequestdto, errors);
 			DataValidationUtil.validate(errors);

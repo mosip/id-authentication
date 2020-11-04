@@ -96,7 +96,7 @@ public class KycAuthController {
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
 			String idType = Objects.nonNull(kycAuthRequestDTO.getIndividualIdType()) ? kycAuthRequestDTO.getIndividualIdType()
-					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).name();
+					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
 			kycAuthRequestDTO.setIndividualIdType(idType);
 			kycReqValidator.validateIdvId(kycAuthRequestDTO.getIndividualId(), idType, errors);
 			if(Optional.of(kycAuthRequestDTO)
