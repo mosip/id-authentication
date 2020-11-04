@@ -187,6 +187,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
 			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationBaseException ex)
 			throws IOException {

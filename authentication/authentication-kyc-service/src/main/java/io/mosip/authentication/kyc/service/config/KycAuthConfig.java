@@ -3,6 +3,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.EKY
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
@@ -15,6 +16,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
  * @author Manoj SP
  */
 @Configuration
+@EnableCaching
 public class KycAuthConfig extends IdAuthConfig {
 	
 	@Autowired

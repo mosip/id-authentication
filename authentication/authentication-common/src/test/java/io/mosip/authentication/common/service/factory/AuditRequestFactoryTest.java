@@ -20,8 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.factory.AuditRequestFactory;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;

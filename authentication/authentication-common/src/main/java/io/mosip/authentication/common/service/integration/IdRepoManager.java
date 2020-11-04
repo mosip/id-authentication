@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.integration;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KER_USER_ID_NOTEXIST_ERRORCODE;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +35,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class IdRepoManager {
 
-	private static final String ERRORMESSAGE = "message";
-
 	private static final String ERROR_CODE = "errorCode";
 
 	private static final String ERRORS = "errors";
-
-	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
-			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
-
-	private static final String DEACTIVATEDUIN = "DEACTIVATED UIN";
 
 	/**
 	 * The Rest Helper

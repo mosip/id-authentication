@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -79,7 +81,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
 		PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
-		KeymanagerDBHelper.class, IdTypeUtil.class })
+		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {
