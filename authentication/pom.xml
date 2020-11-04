@@ -107,7 +107,7 @@
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
 		<!-- Test & Logging -->
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<mockito.version>2.23.4</mockito.version>
 		<byte-buddy.version>1.9.3</byte-buddy.version>
 
