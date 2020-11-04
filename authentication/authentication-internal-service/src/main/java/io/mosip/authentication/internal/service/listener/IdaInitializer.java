@@ -27,13 +27,13 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 
 	private static Logger logger = IdaLogger.getLogger(IdaInitializer.class);
 
-	@Value("${websub-resubscription-retry-count:3}")
+	@Value("${ida-websub-resubscription-retry-count:3}")
 	private int retryCount;
 
 	/**
 	 * Default is Zero which will disable the scheduling.
 	 */
-	@Value("${websub-resubscription-delay-secs:0}")
+	@Value("${ida-websub-resubscription-delay-secs:0}")
 	private int reSubscriptionDelaySecs;
 
 	@Autowired
