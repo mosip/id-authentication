@@ -54,7 +54,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	private PartnerServiceCache partnerServiceCache;
 
 	/** The cache TTL. */
-	@Value("${ida-cache-ttl-in-days:0")
+	@Value("${ida-cache-ttl-in-days:0}")
 	public int cacheTTL;
 
 	/** The cache type. */
