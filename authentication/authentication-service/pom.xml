@@ -21,6 +21,18 @@
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
 			<version>${authentication-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>
+						spring-boot-starter-security
+					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-test</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
