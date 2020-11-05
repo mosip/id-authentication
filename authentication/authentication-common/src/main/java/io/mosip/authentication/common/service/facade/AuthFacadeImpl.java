@@ -194,7 +194,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
 		if (authTokenTypeOpt.isPresent()) {
 			String authTokenType = authTokenTypeOpt.get();
-			if (authTokenType.contentEquals(RANDOM.getType())) {
+			if (authTokenType.equalsIgnoreCase(RANDOM.getType())) {
 				return createRandomToken(authRequestDTO.getTransactionID());
 			} else if (authTokenType.equalsIgnoreCase(PARTNER.getType())) {
 				return tokenIdManager.generateTokenId(token, partnerId);
