@@ -50,11 +50,14 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 	}
 
 	private void scheduleRetrySubscriptions() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
-				"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
 		if (reSubscriptionDelaySecs > 0) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
+					"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
 			taskScheduler.scheduleAtFixedRate(this::retrySubscriptions,
 					Instant.now().plusSeconds(reSubscriptionDelaySecs), Duration.ofSeconds(reSubscriptionDelaySecs));
+		} else {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
+					"Scheduling for re-subscription disabled as the re-subsctription delay value is: " + reSubscriptionDelaySecs);
 		}
 	}
 
