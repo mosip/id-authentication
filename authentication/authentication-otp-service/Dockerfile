@@ -9,7 +9,9 @@ ARG active_profile
 # can be passed during Docker build as build time environment for config server URL 
 ARG spring_config_url
 
-ARG softhsm_client_zip=client.zip
+# can be passed during Docker build as build time environment for hsm client zip file path
+ARG client_zip_path
+
 # can be passed during Docker build as build time environment for glowroot 
 ARG is_glowroot
 
@@ -31,7 +33,8 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
-ENV softhsm_client_zip_env=${softhsm_client_zip}
+# environment variable to pass hsm client zip file path, at docker runtime
+ENV zip_file_path=${client_zip_path}
 
 ENV work_dir_env=/
 
