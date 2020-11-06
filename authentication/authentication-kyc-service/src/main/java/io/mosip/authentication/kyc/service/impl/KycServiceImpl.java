@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,14 +16,19 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The implementation of Kyc Authentication service which retrieves the identity
@@ -33,8 +39,9 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 
 @Service
 public class KycServiceImpl implements KycService {
-
 	
+	/** The mosipLogger. */
+	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
 
 	/** The env. */
 	@Autowired
@@ -60,28 +67,28 @@ public class KycServiceImpl implements KycService {
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		if (Objects.nonNull(identityInfo)) {
-			Map<String, String> idEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
+			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 					null);
 			List<IdentityInfoDTO> bioValue = null;
-			String face = Objects.nonNull(idEntityInfoMap) ? idEntityInfoMap.get(CbeffDocType.FACE.getType().value()) : null;
-			if (Objects.nonNull(idEntityInfoMap)) {
+			String face = Objects.nonNull(faceEntityInfoMap) ? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()) : null;
+			if (Objects.nonNull(faceEntityInfoMap)) {
 				bioValue = new ArrayList<>();
 				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 				identityInfoDTO.setValue(face);
 				bioValue.add(identityInfoDTO);
+				identityInfo.put(IdAuthCommonConstants.PHOTO, bioValue);
 			}
-			identityInfo.put("photo", bioValue);
-			Map<String, Object> filteredIdentityInfo = constructIdentityInfo(allowedkycAttributes, identityInfo,
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes, identityInfo,
 					secLangCode);
 			if (Objects.nonNull(filteredIdentityInfo)) {
-				constructIdentityInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo);
+				setKycInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo);
 			}
 		}
 		return kycResponseDTO;
 	}
 
 	/**
-	 * Construct identity info.
+	 * Set KYC info based on the ID Names (from ID Mapping). FACE is also included if required.
 	 *
 	 * @param allowedkycAttributes the allowedkyc attributes
 	 * @param kycResponseDTO the kyc response DTO
@@ -89,25 +96,39 @@ public class KycServiceImpl implements KycService {
 	 * @param face the face
 	 * @param filteredIdentityInfo the filtered identity info
 	 */
-	private void constructIdentityInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
-			List<IdentityInfoDTO> bioValue, String face, Map<String, Object> filteredIdentityInfo) {
-		Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
-				.filter(entry -> entry.getKey() != null)
-				.map(entry -> new SimpleEntry<>(
-						IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
-						entry.getValue()))
-				.filter(entry -> !entry.getKey().isEmpty())
+	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
+			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
+		// Getting allowed demographic data - key will be the ID Name (from ID Mapping),
+		// value will be the ID Entity value from ID Name
+		Map<String, Object> idMappingIdentityInfo = Stream.of(DemoMatchType.values())
+				.map(demoMatchType -> new SimpleEntry<>(demoMatchType.getIdMapping().getIdname(),
+						getEntityForMatchType(demoMatchType, filteredIdentityInfo)))
+				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+		//Set null value to the idnames which don't have entry in filtered Identity Info map
 		for (String kycAttribute : allowedkycAttributes) {
 			String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
 			if (!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
 				idMappingIdentityInfo.put(idname, null);
 			}
 		}
-		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey("photo")) {
+		
+		// Setting face biometrics as photo
+		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey(IdAuthCommonConstants.PHOTO)) {
 			idMappingIdentityInfo.put(CbeffDocType.FACE.getType().value(), Objects.nonNull(bioValue) ? face : null);
 		}
 		kycResponseDTO.setIdentity(idMappingIdentityInfo);
+	}
+	
+	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
+		try {
+			return idInfoHelper.getEntityInfoAsString(matchType, filteredIdentityInfo);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "constructIdentityInfo",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -119,10 +140,10 @@ public class KycServiceImpl implements KycService {
 	 *                       information detail in secondary language
 	 * @return the map returns filtered information defined as per policy
 	 */
-	private Map<String, Object> constructIdentityInfo(List<String> allowedKycType,
+	private Map<String, List<IdentityInfoDTO>> filterIdentityInfo(List<String> allowedKycType,
 			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
-		Map<String, Object> identityInfos = null;
+		Map<String, List<IdentityInfoDTO>> identityInfos = null;
 		if (Objects.nonNull(allowedKycType)) {
 			identityInfo = identity.entrySet().stream().filter(id -> allowedKycType.contains(id.getKey()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

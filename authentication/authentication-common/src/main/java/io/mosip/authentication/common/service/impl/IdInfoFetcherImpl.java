@@ -239,13 +239,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 *            the name
 	 * @param languageForMatchType
 	 *            the language for match type
-	 * @param demoInfo
-	 *            the demo info
+	 * @param identityInfo
+	 *            the identity info
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValue(String name, String languageForMatchType,
-			Map<String, List<IdentityInfoDTO>> demoInfo) {
-		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
+			Map<String, List<IdentityInfoDTO>> identityInfo) {
+		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name);
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
 					.filter(idinfo -> checkLanguageType(languageForMatchType, idinfo.getLanguage()))
