@@ -11,8 +11,7 @@ ARG spring_config_url
 
 ARG bio_sdk_folder=mock/0.9
 
-# can be passed during Docker build as build time environment for hsm client zip file path
-ARG client_zip_path
+ARG softhsm_client_zip=client.zip
 
 # can be passed during Docker build as build time environment for glowroot 
 ARG is_glowroot
@@ -40,8 +39,7 @@ ENV iam_adapter_url_env=${iam_adapter_url}
 
 ENV bio_sdk_folder_env=${bio_sdk_folder}
 
-# environment variable to pass hsm client zip file path, at docker runtime
-ENV zip_file_path=${client_zip_path}
+ENV softhsm_client_zip_env=${softhsm_client_zip}
 
 ENV work_dir_env=/
 
