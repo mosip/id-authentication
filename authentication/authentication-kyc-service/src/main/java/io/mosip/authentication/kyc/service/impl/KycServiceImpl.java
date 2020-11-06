@@ -125,8 +125,8 @@ public class KycServiceImpl implements KycService {
 		try {
 			return idInfoHelper.getEntityInfoAsString(matchType, filteredIdentityInfo);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "constructIdentityInfo",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());e.printStackTrace();
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 		}
 		return null;
 	}
