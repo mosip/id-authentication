@@ -130,9 +130,9 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
 					"Scheduling cache eviction every " + cacheTTL + " day(s)");
 			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,
-					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofSeconds(cacheTTL));
+					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofDays(cacheTTL));
 			threadPoolTaskScheduler().scheduleAtFixedRate(partnerServiceCache::clearPartnerServiceCache,
-					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofSeconds(cacheTTL));
+					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofDays(cacheTTL));
 		}
 	}
 
