@@ -25,6 +25,8 @@ public final class IdAuthCommonConstants {
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
+	public static final String PHOTO = "photo";
+
 	private IdAuthCommonConstants() {
 
 	}
