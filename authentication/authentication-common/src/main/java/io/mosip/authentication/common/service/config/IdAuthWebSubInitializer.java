@@ -25,7 +25,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * Also if configured, this listener schedules re-subscription of topics which is done as a
  * work-around for the bug: MOSIP-9496. By default the
  * ida-websub-resubscription-delay-secs value is set to 0 that disables this
- * workaround. To enable this that property should be assigned with a positive
+ * workaround. To enable this, that property should be assigned with a positive
  * number like 1 * 60 * 60 = 3600 for one hour.
  * 
  * @author Loganathan Sekar

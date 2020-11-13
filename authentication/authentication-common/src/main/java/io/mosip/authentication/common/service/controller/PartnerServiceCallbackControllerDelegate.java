@@ -1,32 +1,27 @@
 package io.mosip.authentication.common.service.controller;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET;
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.EventModel;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 
-@RestController
-public class PartnerServiceCallbackController {
-
-	private static Logger logger = IdaLogger.getLogger(PartnerServiceCallbackController.class);
+/**
+ * The callback delegate for handling partner service update
+ * 
+ * @author Manoj SP
+ *
+ */
+@Component
+public class PartnerServiceCallbackControllerDelegate {
 
 	@Autowired
 	private PartnerServiceManager partnerManager;
 
-	@PostMapping(value = "/callback/partnerServiceCallback", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnerServiceCallback", topic = "${ida-topic-partner-service-update}")
-	public void updateAuthtypeStatus(@RequestBody EventModel eventModel) {
+	public void updatePartnerInfo(@RequestBody EventModel eventModel) {
 		Map<String, Object> data = eventModel.getEvent().getData();
 		if (data.containsKey("partnerId") && data.get("partnerId") instanceof String) {
 			partnerManager.evictPartnerBasedOnPartnerId((String) data.get("partnerId"));

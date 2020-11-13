@@ -12,7 +12,7 @@ import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
-import io.mosip.authentication.common.service.controller.PartnerServiceCallbackController;
+import io.mosip.authentication.common.service.controller.PartnerServiceCallbackControllerDelegate;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
@@ -83,7 +83,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class,
 		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class,
-		PartnerServiceCallbackController.class, IdAuthWebSubInitializer.class })
+		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {
