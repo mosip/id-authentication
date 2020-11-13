@@ -1,7 +1,10 @@
-package io.mosip.authentication.internal.service.listener;
+package io.mosip.authentication.common.service.config;
+
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,25 +13,30 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.internal.service.integration.WebSubSubscriptionHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The initializer to schedule subscription of topics which is done as a a
+ * 
+ * Subscribes to the topics on the application startup. (some configured delay is applied for the application to be ready for the intent verification by the websub hub to work)
+ *
+ * Also if configured, this listener schedules re-subscription of topics which is done as a
  * work-around for the bug: MOSIP-9496. By default the
  * ida-websub-resubscription-delay-secs value is set to 0 that disables this
- * workaround. To enable this that property should be assigned with a positive
+ * workaround. To enable this, that property should be assigned with a positive
  * number like 1 * 60 * 60 = 3600 for one hour.
  * 
  * @author Loganathan Sekar
+ * @author Manoj SP
  *
  */
+ 
 @Component
-public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent> {
-
-	private static Logger logger = IdaLogger.getLogger(IdaInitializer.class);
+public class IdAuthWebSubInitializer implements ApplicationListener<ApplicationReadyEvent>{
+	
+	private static Logger logger = IdaLogger.getLogger(IdAuthWebSubInitializer.class);
 
 	@Value("${ida-websub-resubscription-retry-count:3}")
 	private int retryCount;
@@ -40,13 +48,23 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 	private int reSubscriptionDelaySecs;
 
 	@Autowired
-	private WebSubSubscriptionHelper webSubSubscriptionHelper;
+	protected WebSubSubscriptionHelper webSubSubscriptionHelper;
 
 	@Autowired
 	private ThreadPoolTaskScheduler taskScheduler;
-
+	
+	
+	@Value("${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}")
+	private int taskSubsctiptionDelay;
+	
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
+		taskScheduler.schedule(
+				  this::initSubsriptions,
+				  new Date(System.currentTimeMillis() + taskSubsctiptionDelay)
+				);
+		
 		if (reSubscriptionDelaySecs > 0) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "onApplicationEvent",
 					"Work around for web-sub notification issue after some time.");
@@ -56,8 +74,9 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 					"Scheduling for re-subscription is Disabled as the re-subsctription delay value is: "
 							+ reSubscriptionDelaySecs);
 		}
+		
 	}
-
+	
 	private void scheduleRetrySubscriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
 				"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
@@ -79,7 +98,7 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 	private boolean initSubsriptions() {
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initializing subscribptions..");
-			webSubSubscriptionHelper.initSubsriptions();
+			doInitSubscriptions();
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initialized subscribptions.");
 			return true;
 		} catch (Exception e) {
@@ -87,6 +106,10 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 					"Initializing subscribptions failed: " + e.getMessage());
 			return false;
 		}
+	}
+
+	protected void doInitSubscriptions() {
+		webSubSubscriptionHelper.initAuthSubsriptions();
 	}
 
 }

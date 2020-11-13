@@ -10,7 +10,9 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.config.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
+import io.mosip.authentication.common.service.controller.PartnerServiceCallbackControllerDelegate;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
@@ -18,6 +20,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
+import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
@@ -79,7 +82,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 		TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class,
 		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class,
-		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class })
+		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class,
+		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {

@@ -119,10 +119,12 @@ public final class IdAuthConfigKeyConstants {
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
+	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET = "ida-websub-partner-service-callback-secret";
 	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
 	public static final String IDA_WEBSUB_HUB_URL = IdRepoConstants.WEB_SUB_HUB_URL;
 	public static final String IDA_WEBSUB_PUBLISHER_URL = IdRepoConstants.WEB_SUB_PUBLISH_URL;
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
+	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
 	
 	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";

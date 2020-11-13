@@ -6,8 +6,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.internal.service.integration.WebSubSubscriptionHelper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -24,7 +24,7 @@ public class WebSubController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request processed successfully"),
 			@ApiResponse(code = 400, message = "Error processing request") })
 	public ResponseEntity<?> initSubscriptions() {
-		webSubSubscriptionHelper.initSubsriptions();
+		webSubSubscriptionHelper.initInternalAuthSubsriptions();
 		return ResponseEntity.ok().build();
 	}
 

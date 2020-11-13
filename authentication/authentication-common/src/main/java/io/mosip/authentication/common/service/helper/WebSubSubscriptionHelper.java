@@ -1,8 +1,10 @@
-package io.mosip.authentication.internal.service.integration;
+package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
@@ -42,6 +44,9 @@ public class WebSubSubscriptionHelper {
 	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
+	@Value("${"+ IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL +"}")
+	private String partnerServiceCallbackURL;
+	
 	@Value("${"+ IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
 	private String authTypeCallbackURL;
 	
@@ -51,8 +56,14 @@ public class WebSubSubscriptionHelper {
 	@Value("${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}")
 	private String autypeCallbackSecret;
 	
+	@Value("${"+ IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET +"}")
+	private String partnerServiceCallbackSecret;
+	
 	@Value("${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}")
 	private String credIssueCallbacksecret;
+	
+	@Value("${ida-topic-partner-service-update}")
+	private String partnerServiceTopic;
 	
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
@@ -62,6 +73,18 @@ public class WebSubSubscriptionHelper {
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
+	
+	public void initInternalAuthSubsriptions() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing Internal Auth subscribptions..");
+		String topicPrefix = authPartherId + "/";
+		initAuthTypeEvent(topicPrefix);	
+		initCredentialIssueanceEvent(topicPrefix);
+	}
+	
+	public void initAuthSubsriptions() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing Auth subscriptions..");
+		subscribeForPartnerServiceEvents();
+	}
 	
 	private void tryRegisterTopicForAuthEvents(String topicPrefix) {
 		String topic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
@@ -89,13 +112,6 @@ public class WebSubSubscriptionHelper {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 			throw e;
 		}
-	}
-	
-	public void initSubsriptions() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing subscribptions..");
-		String topicPrefix = authPartherId + "/";
-		initAuthTypeEvent(topicPrefix);	
-		initCredentialIssueanceEvent(topicPrefix);
 	}
 
 	private void initAuthTypeEvent(String topicPrefix) {
@@ -142,6 +158,26 @@ public class WebSubSubscriptionHelper {
 			}
 		});
 					
+	}
+	
+	private void subscribeForPartnerServiceEvents() {
+		try {
+			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+			subscriptionRequest.setCallbackURL(partnerServiceCallbackURL);
+			subscriptionRequest.setHubURL(hubURL);
+			subscriptionRequest.setSecret(partnerServiceCallbackSecret);
+			subscriptionRequest.setTopic(partnerServiceTopic);
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
+					"Trying to subscribe to topic: " + partnerServiceTopic + " callback-url: "
+							+ partnerServiceCallbackURL);
+			subscribe.subscribe(subscriptionRequest);
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
+					"Subscribed to topic: " + partnerServiceTopic);
+		} catch (Exception e) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", e.getClass().toString(),
+					"Error subscribing topic: " + partnerServiceTopic + "\n" + e.getMessage());
+			throw e;
+		}
 	}
 
 }

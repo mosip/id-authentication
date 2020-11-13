@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.partner.dto;
 
+import java.util.Objects;
+
 /**
  * Partner DTO
  * 
@@ -10,6 +12,7 @@ public class PartnerDTO {
 	
 	private String partnerId;
 	private String partnerApiKey;
+	private String mispLicenseKey;
 	private String partnerName;
 	private String policyId;
 	private String status;
@@ -17,10 +20,11 @@ public class PartnerDTO {
 	public PartnerDTO() {
 	}
 	
-	public PartnerDTO(String partnerId, String partnerApiKey) {
+	public PartnerDTO(String partnerId, String partnerApiKey, String mispLicenseKey) {
 		super();
 		this.partnerId = partnerId;
 		this.partnerApiKey = partnerApiKey;
+		this.mispLicenseKey = mispLicenseKey;
 	}
 
 
@@ -28,41 +32,54 @@ public class PartnerDTO {
 	public String getPartnerId() {
 		return partnerId;
 	}
+
 	public void setPartnerId(String partnerId) {
 		this.partnerId = partnerId;
 	}
+
 	public String getPartnerApiKey() {
 		return partnerApiKey;
 	}
+
 	public void setPartnerApiKey(String partnerApiKey) {
 		this.partnerApiKey = partnerApiKey;
 	}
+
 	public String getPartnerName() {
 		return partnerName;
 	}
+
 	public void setPartnerName(String partnerName) {
 		this.partnerName = partnerName;
 	}
+
 	public String getPolicyId() {
 		return policyId;
 	}
+
 	public void setPolicyId(String policyId) {
 		this.policyId = policyId;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
 
+	public String getMispLicenseKey() {
+		return mispLicenseKey;
+	}
+
+	public void setMispLicenseKey(String mispLicenseKey) {
+		this.mispLicenseKey = mispLicenseKey;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((partnerApiKey == null) ? 0 : partnerApiKey.hashCode());
-		result = prime * result + ((partnerId == null) ? 0 : partnerId.hashCode());
-		return result;
+		return Objects.hash(mispLicenseKey, partnerApiKey, partnerId);
 	}
 
 	@Override
@@ -74,24 +91,18 @@ public class PartnerDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		PartnerDTO other = (PartnerDTO) obj;
-		if (partnerApiKey == null) {
-			if (other.partnerApiKey != null)
-				return false;
-		} else if (!partnerApiKey.equals(other.partnerApiKey))
-			return false;
-		if (partnerId == null) {
-			if (other.partnerId != null)
-				return false;
-		} else if (!partnerId.equals(other.partnerId))
-			return false;
-		return true;
+		return Objects.equals(mispLicenseKey, other.mispLicenseKey)
+				&& Objects.equals(partnerApiKey, other.partnerApiKey) && Objects.equals(partnerId, other.partnerId);
 	}
 
 	@Override
 	public String toString() {
-		return "PartnerDTO [partnerId=" + partnerId + ", partnerApiKey=" + partnerApiKey + ", partnerName="
-				+ partnerName + ", policyId=" + policyId + ", status=" + status + "]";
+		return "PartnerDTO [partnerId=" + partnerId + ", partnerApiKey=" + partnerApiKey + ", mispLicenseKey="
+				+ mispLicenseKey + ", partnerName=" + partnerName + ", policyId=" + policyId + ", status=" + status
+				+ "]";
 	}
+
+	
 	
 	
 	

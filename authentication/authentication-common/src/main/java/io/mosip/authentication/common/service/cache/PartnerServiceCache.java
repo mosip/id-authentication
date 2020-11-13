@@ -31,22 +31,26 @@ public class PartnerServiceCache {
 	/**
 	 * Gets the partner policy.
 	 *
-	 * @param partner the partner
+	 * @param partner        the partner
 	 * @param mispLicenseKey the misp license key
 	 * @return the partner policy
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	@Cacheable(cacheNames = "partner", key = "#partner")
-	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner, String mispLicenseKey)
-			throws IdAuthenticationBusinessException {
+	@Cacheable(cacheNames = "partner")
+	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner) throws IdAuthenticationBusinessException {
 		return partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
-				mispLicenseKey);
+				partner.getMispLicenseKey());
 	}
-	
+
+	@CacheEvict(cacheNames = "partner")
+	public void evictPartnerPolicy(PartnerDTO partner) {
+	}
+
 	/**
 	 * Clear partner service cache.
 	 */
-	@CacheEvict(value="partner", allEntries=true)
+	@CacheEvict(value = "partner", allEntries = true)
 	public void clearPartnerServiceCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearPartnerServiceCache",
 				"partner cache cleared");
