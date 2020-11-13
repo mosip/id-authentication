@@ -150,8 +150,8 @@ public class PartnerServiceManager {
 				.getCache("partner").getNativeCache();
 		partnerCacheMap.keySet().stream().filter(
 				partnerKey -> partnerKey.getPartnerId().contentEquals(Objects.nonNull(partnerId) ? partnerId : "")
-						|| partnerKey.getPartnerId().contentEquals(Objects.nonNull(partnerApiKey) ? partnerApiKey : "")
-						|| partnerKey.getPartnerId()
+						|| partnerKey.getPartnerApiKey().contentEquals(Objects.nonNull(partnerApiKey) ? partnerApiKey : "")
+						|| partnerKey.getMispLicenseKey()
 								.contentEquals(Objects.nonNull(mispLicenseKey) ? mispLicenseKey : ""))
 				.forEach(partnerServiceCache::evictPartnerPolicy);
 	}
