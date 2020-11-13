@@ -22,7 +22,5 @@ unzip $FILE_NAME
 echo "Attempting to install"
 cd ./$DIR_NAME && ./install.sh
 echo "Installation complete"
-
 cd $work_dir_env
-
 exec "$@"
