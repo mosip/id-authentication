@@ -10,6 +10,7 @@ public class PartnerDTO {
 	
 	private String partnerId;
 	private String partnerApiKey;
+	private String mispLicenseKey;
 	private String partnerName;
 	private String policyId;
 	private String status;
@@ -17,10 +18,11 @@ public class PartnerDTO {
 	public PartnerDTO() {
 	}
 	
-	public PartnerDTO(String partnerId, String partnerApiKey) {
+	public PartnerDTO(String partnerId, String partnerApiKey, String mispLicenseKey) {
 		super();
 		this.partnerId = partnerId;
 		this.partnerApiKey = partnerApiKey;
+		this.mispLicenseKey = mispLicenseKey;
 	}
 
 
@@ -54,6 +56,14 @@ public class PartnerDTO {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getMispLicenseKey() {
+		return mispLicenseKey;
+	}
+
+	public void setMispLicenseKey(String mispLicenseKey) {
+		this.mispLicenseKey = mispLicenseKey;
 	}
 
 	@Override

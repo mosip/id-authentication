@@ -27,7 +27,7 @@ public class PartnerServiceImpl implements PartnerService {
 
 	@Autowired
 	private PartnerServiceCache partnerServiceCache;
-	
+
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -56,15 +56,15 @@ public class PartnerServiceImpl implements PartnerService {
 	@Override
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey)
 			throws IdAuthenticationBusinessException {
-		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
-		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey);
+		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey, mispLicenseKey);
+		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key);
 		return partnerPolicyResponseDTO;
 	}
 
 	@Override
 	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException {
-		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey);
-			return Optional.ofNullable(partnerServiceCache.getPartnerPolicy(key, null)).map(PartnerPolicyResponseDTO::getPolicy);
+		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey, null);
+		return Optional.ofNullable(partnerServiceCache.getPartnerPolicy(key)).map(PartnerPolicyResponseDTO::getPolicy);
 	}
 }

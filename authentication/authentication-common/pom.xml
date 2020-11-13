@@ -186,5 +186,10 @@
 			<version>${objenesis.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
+		</dependency>
 	</dependencies>
 </project>

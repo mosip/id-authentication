@@ -11,9 +11,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.internal.service.integration.WebSubSubscriptionHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
@@ -43,7 +43,7 @@ public class InternalAuthApplicationListener implements ApplicationListener<Appl
 	
 	private void initSubsriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions",  this.getClass().getSimpleName(), "Initializing subscribptions..");
-		webSubSubscriptionHelper.initSubsriptions();
+		webSubSubscriptionHelper.initInternalAuthSubsriptions();
 	}
 
 }

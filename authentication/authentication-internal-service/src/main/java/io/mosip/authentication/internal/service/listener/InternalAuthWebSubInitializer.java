@@ -10,9 +10,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.internal.service.integration.WebSubSubscriptionHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -26,9 +26,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  */
 @Component
-public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent> {
+public class InternalAuthWebSubInitializer implements ApplicationListener<ApplicationReadyEvent> {
 
-	private static Logger logger = IdaLogger.getLogger(IdaInitializer.class);
+	private static Logger logger = IdaLogger.getLogger(InternalAuthWebSubInitializer.class);
 
 	@Value("${ida-websub-resubscription-retry-count:3}")
 	private int retryCount;
@@ -79,7 +79,7 @@ public class IdaInitializer implements ApplicationListener<ApplicationReadyEvent
 	private boolean initSubsriptions() {
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initializing subscribptions..");
-			webSubSubscriptionHelper.initSubsriptions();
+			webSubSubscriptionHelper.initInternalAuthSubsriptions();
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initialized subscribptions.");
 			return true;
 		} catch (Exception e) {
