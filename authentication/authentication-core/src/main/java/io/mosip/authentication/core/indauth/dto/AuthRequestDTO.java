@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
+import java.util.Map;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,6 +48,6 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	/** The value for requestSessionKey*/
 	private String requestSessionKey;
 	
-	
+	private Map<String, Object> metadata;
 
 }
