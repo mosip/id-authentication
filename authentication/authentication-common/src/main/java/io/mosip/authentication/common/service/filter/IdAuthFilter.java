@@ -65,6 +65,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -306,8 +307,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 		String partnerApiKey = partnerLkMap.get(API_KEY);
 
 		if (partnerId != null && licenseKey != null) {
-			PartnerPolicyResponseDTO partnerServiceResponse =  getPartnerPolicyInfo(partnerId,partnerApiKey,licenseKey);
+			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey,
+					licenseKey);
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
+			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse);
 		}
 	}
 
@@ -317,6 +320,24 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (IdAuthenticationBusinessException e) {
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);		
 		}		
+	}
+
+	private void addMetadata(Map<String, Object> requestBody, String partnerId, String partnerApiKey,
+			PartnerPolicyResponseDTO partnerServiceResponse) {
+		Map<String, Object> metadata = new HashMap<>();
+		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
+		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		requestBody.put("metadata", metadata);
+	}
+	
+	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
+		PartnerDTO partnerDTO = new PartnerDTO();
+		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
+		partnerDTO.setPartnerApiKey(partnerApiKey);
+		partnerDTO.setPartnerName(partnerPolicyDTO.getPartnerName());
+		partnerDTO.setPolicyId(partnerPolicyDTO.getPolicyId());
+		partnerDTO.setStatus("Active");
+		return partnerDTO;
 	}
 
 	/**

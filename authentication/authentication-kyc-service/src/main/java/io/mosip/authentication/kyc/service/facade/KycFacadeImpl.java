@@ -150,7 +150,7 @@ public class KycFacadeImpl implements KycFacade {
 		if (token != null) {
 			Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
-			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId);
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
 
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
 					.withRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)

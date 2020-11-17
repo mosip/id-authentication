@@ -213,6 +213,7 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
+		ReflectionTestUtils.setField(partnerService, "mapper", mapper);
 
 	}
 
@@ -277,6 +278,7 @@ public class AuthFacadeImplTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		Map<String, Object> idRepo = new HashMap<>();
 		String uin = "274390482564";
 		idRepo.put("uin", uin);
@@ -431,6 +433,7 @@ public class AuthFacadeImplTest {
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, "1242", Collections.emptyMap(), "123456"))
 				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(true).build());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -673,6 +676,7 @@ public class AuthFacadeImplTest {
 		String pin = null;
 		RequestDTO request = new RequestDTO();
 		authRequestDTO.setIndividualId("5134256294");
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
 		Map<String, Object> idRepo = new HashMap<>();
@@ -721,6 +725,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setIndividualId("5134256294");
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
@@ -757,6 +762,7 @@ public class AuthFacadeImplTest {
 		String uin = "794138547620";
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -804,6 +810,7 @@ public class AuthFacadeImplTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
@@ -834,6 +841,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(otpAuthService.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN));
