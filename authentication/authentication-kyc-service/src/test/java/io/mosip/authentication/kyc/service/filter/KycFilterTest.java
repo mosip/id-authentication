@@ -68,37 +68,6 @@ public class KycFilterTest {
 		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
 	}
 
-	@Test
-	public void testValidEncipherRequest()
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException,
-			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
-		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
-		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
-		Map<String, Object> readValue = mapper.readValue(
-				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
-		encodeMethod.setAccessible(true);
-		encodeMethod.invoke(kycAuthFilter, readValue);
-
-	}
-
-	@Test
-	public void testInValidEncodedRequest() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
-		encodeMethod.setAccessible(true);
-		Map<String, Object> map = new HashMap<>();
-		map.put("response", "sdfsdfjhds");
-		try {
-			encodeMethod.invoke(kycAuthFilter, map);
-		} catch (InvocationTargetException e) {
-			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationAppException.class));
-		}
-
-	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
@@ -205,21 +174,6 @@ public class KycFilterTest {
 
 	}
 
-	@Test
-	public void testValidEncipherRequest2()
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException,
-			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
-		PublicKey pkey = null;
-		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
-		Map<String, Object> readValue = mapper.readValue(
-				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method encodeMethod = KycAuthFilter.class.getDeclaredMethod("encipherResponse", Map.class);
-		encodeMethod.setAccessible(true);
-		encodeMethod.invoke(kycAuthFilter, readValue);
-	}
-	
 	@Test
 	public void checkAllowedAuthTypeBasedOnPolicyTest() {
 		AuthPolicy authPolicy = new AuthPolicy();
