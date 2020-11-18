@@ -55,8 +55,8 @@ public class PartnerServiceImplTest {
 	
 	@Test
 	public void testVallidateAndGetPolicy() throws IdAuthenticationBusinessException {
-		Mockito.when(partnerServiceCache.getPartnerPolicy(Mockito.any(), Mockito.any())).thenReturn(getPolicyData());
-		partnerService.validateAndGetPolicy("partner_id", "partner_api_key", "misp_license_key");
+		Mockito.when(partnerServiceCache.getPartnerPolicy(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(getPolicyData());
+		partnerService.validateAndGetPolicy("partner_id", "partner_api_key", "misp_license_key", false);
 	}
 	
 //	@Test

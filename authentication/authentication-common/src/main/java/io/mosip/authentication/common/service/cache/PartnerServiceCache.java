@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -37,10 +38,18 @@ public class PartnerServiceCache {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Cacheable(cacheNames = "partner", key = "#partner")
-	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner, String mispLicenseKey)
+	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner, String mispLicenseKey, boolean certificateNeeded)
 			throws IdAuthenticationBusinessException {
-		return partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
-				mispLicenseKey);
+		PartnerPolicyResponseDTO validateAndGetPolicy = partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
+						mispLicenseKey);
+		if(certificateNeeded) {
+			String partnerCertificate = partnerServiceManager.getPartnerCertificate(partner.getPartnerId());
+			if(partnerCertificate == null) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE);
+			}
+			validateAndGetPolicy.setPartnerCertificate(partnerCertificate);
+		}
+		return validateAndGetPolicy;
 	}
 	
 	/**

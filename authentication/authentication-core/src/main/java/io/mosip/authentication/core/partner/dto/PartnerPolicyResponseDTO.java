@@ -1,4 +1,6 @@
 package io.mosip.authentication.core.partner.dto;
+import java.security.cert.X509Certificate;
+
 import lombok.Data;
 
 /**
@@ -22,5 +24,8 @@ public class PartnerPolicyResponseDTO {
 	private String partnerId;
 	
 	private String partnerName;
+	
+	private String partnerCertificate;
+
 }
 

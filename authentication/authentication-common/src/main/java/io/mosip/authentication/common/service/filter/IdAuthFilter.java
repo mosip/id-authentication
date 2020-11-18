@@ -308,25 +308,32 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 		if (partnerId != null && licenseKey != null) {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey,
-					licenseKey);
+					licenseKey, isPartnerCertificateNeeded());
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
-			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse);
+			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse, partnerServiceResponse.getPartnerCertificate());
 		}
 	}
 
-	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey) throws IdAuthenticationAppException {
+	protected boolean isPartnerCertificateNeeded() {
+		return false;
+	}
+
+	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey, boolean certificateNeeded) throws IdAuthenticationAppException {
 		try {
-			return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey);
+			return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey, certificateNeeded);
 		} catch (IdAuthenticationBusinessException e) {
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);		
 		}		
 	}
 
 	private void addMetadata(Map<String, Object> requestBody, String partnerId, String partnerApiKey,
-			PartnerPolicyResponseDTO partnerServiceResponse) {
+			PartnerPolicyResponseDTO partnerServiceResponse, String partnerCertificate) {
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
 		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		if(partnerCertificate != null) {
+			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
+		}
 		requestBody.put("metadata", metadata);
 	}
 	
