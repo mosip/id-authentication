@@ -20,7 +20,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -33,7 +32,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 @RunWith(SpringRunner.class)
@@ -49,8 +47,6 @@ public class KycFilterTest {
 	@Autowired
 	ObjectMapper mapper;
 
-	@Mock
-	KeyManager keyManager;
 
 	byte[] key = { 48, -126, 1, 34, 48, 13, 6, 9, 42, -122, 72, -122, -9, 13, 1, 1, 1, 5, 0, 3, -126, 1, 15, 0, 48,
 			-126, 1, 10, 2, -126, 1, 1, 0, -56, 41, -49, 92, 30, -78, 87, 22, -103, -23, -14, 106, -89, 84, -73, 51,
@@ -70,7 +66,6 @@ public class KycFilterTest {
 	public void before() {
 		ReflectionTestUtils.setField(kycAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
-		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
 	}
 
 	@Test
@@ -78,7 +73,6 @@ public class KycFilterTest {
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException,
 			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
-		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		Map<String, Object> readValue = mapper.readValue(
 				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
@@ -168,7 +162,6 @@ public class KycFilterTest {
 			InvocationTargetException, IOException, NoSuchMethodException, SecurityException, NoSuchFieldException,
 			InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
-		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		/*
 		 * Class<KycAuthFilter> myClass = (Class<KycAuthFilter>)
@@ -217,7 +210,6 @@ public class KycFilterTest {
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException,
 			NoSuchMethodException, SecurityException, InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = null;
-		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		Map<String, Object> readValue = mapper.readValue(
 				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:28.141+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:03:27.697+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":\"1234567890\",\"ttl\":\"24\",\"ver\":\"1.0\"}",
