@@ -18,11 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -36,8 +34,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 @RunWith(SpringRunner.class)
@@ -248,18 +244,18 @@ public class KycFilterTest {
 		}
 	}
 	
-	@Test
-	public void testEncipherResponse() {
-		Map<String,Object> resMap=new HashMap<>();
-		resMap.put(IdAuthCommonConstants.RESPONSE, new HashMap<>());
-		try {
-			Mockito.when(keyManager.encryptData(Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-			kycAuthFilter.encipherResponse(resMap);
-		} catch (IdAuthenticationAppException e) {
-			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorCode(), e.getErrorCode());
-			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorMessage(), e.getErrorText());
-		}
-		
-	}
+//	@Test
+//	public void testEncipherResponse() {
+//		Map<String,Object> resMap=new HashMap<>();
+//		resMap.put(IdAuthCommonConstants.RESPONSE, new HashMap<>());
+//		try {
+//			Mockito.when(keyManager.encryptData(Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+//			kycAuthFilter.encipherResponse(resMap);
+//		} catch (IdAuthenticationAppException e) {
+//			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorCode(), e.getErrorCode());
+//			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorMessage(), e.getErrorText());
+//		}
+//		
+//	}
 
 }

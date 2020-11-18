@@ -31,6 +31,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -107,7 +110,10 @@ public class KycControllerTest {
 	
 	@Mock
 	private KycAuthRequestValidator kycReqValidator;
-
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
@@ -137,7 +143,7 @@ public class KycControllerTest {
 
 	@Test
 	public void processKycSuccess()
-			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException, JsonProcessingException {
 
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
@@ -189,7 +195,7 @@ public class KycControllerTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
@@ -212,7 +218,7 @@ public class KycControllerTest {
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void processKycFailure()
-			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException, JsonProcessingException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
@@ -262,7 +268,7 @@ public class KycControllerTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);

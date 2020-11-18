@@ -52,6 +52,8 @@ public enum RestServicesConstants {
 	
 	PARTNER_SERVICE("ida-pmp-partners"),
 	
+	PARTNER_GET_CERT_SERVICE("id-pmp-service.get-certificate"),
+	
 	DATA_SHARE_GET("data-share-get");
 
 	/** The service name. */

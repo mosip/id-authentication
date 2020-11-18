@@ -11,7 +11,9 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWI
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
@@ -287,9 +289,10 @@ public class RestHelperImpl implements RestHelper {
 	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
 		try {
 			String responseBodyAsString = mapper.writeValueAsString(response);
-			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
+			List<ServiceError> errorList = getErrorList(responseBodyAsString);
 			if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())
 					&& !errorList.get(0).getErrorCode().startsWith(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
@@ -299,6 +302,7 @@ public class RestHelperImpl implements RestHelper {
 						mapper.readValue(responseBodyAsString.getBytes(), responseType));
 			} else if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())
 					&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				retry++;
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
@@ -311,6 +315,23 @@ public class RestHelperImpl implements RestHelper {
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	private List<ServiceError> getErrorList(String responseBodyAsString) {
+		try {
+			Map<String, Object> responseMap = mapper.readValue(responseBodyAsString.getBytes(), Map.class);
+			Object errors = responseMap.get("errors");
+			if(errors instanceof Map) {
+				Map<String, Object> errorMap = (Map<String, Object>) errors;
+				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
+			}
+		} catch (IOException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			return Collections.emptyList();
+		}
+		
+		return ExceptionUtils.getServiceErrorList(responseBodyAsString);
 	}
 
 	/**

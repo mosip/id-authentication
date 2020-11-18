@@ -318,10 +318,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		switch (requestReceived) {
 		case "kyc":
 			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-			KycResponseDTO kycResponseDTO = new KycResponseDTO();
+			//KycResponseDTO kycResponseDTO = new KycResponseDTO();
 			kycAuthResponseDTO.setErrors(errors);
 			kycAuthResponseDTO.setResponseTime(responseTime);
-			kycAuthResponseDTO.setResponse(kycResponseDTO);
+			//kycAuthResponseDTO.setResponse(kycResponseDTO);
 			return kycAuthResponseDTO;
 		case "otp":
 			OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
