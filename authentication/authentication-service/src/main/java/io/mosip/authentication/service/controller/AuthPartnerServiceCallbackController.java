@@ -26,9 +26,9 @@ public class AuthPartnerServiceCallbackController {
 	 *
 	 * @param eventModel the event model
 	 */
-	@PostMapping(value = "/callback/partnerServiceCallback", consumes = "application/json")
+	@PostMapping(value = "/callback/partnermanagement/misp_updated", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnerServiceCallback", topic = "${ida-topic-partner-service-update}")
+			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/misp_updated", topic = "${ida-topic-pmp-misp-updated}")
 	public void updatePartnerInfo(@RequestBody EventModel eventModel) {
 		controllerDelegate.updatePartnerInfo(eventModel);
 	}
