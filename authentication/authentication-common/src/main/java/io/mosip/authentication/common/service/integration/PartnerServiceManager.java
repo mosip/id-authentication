@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.integration;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWING_REST_SERVICE_EXCEPTION;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -32,7 +31,6 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -61,11 +59,6 @@ public class PartnerServiceManager {
 	@Autowired
 	protected ObjectMapper mapper;
 	
-	private static final String ERRORS = "errors";
-
-	private static final String ERRORCODE = "errorCode";
-
-	@SuppressWarnings("unchecked")
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest;
@@ -118,20 +111,7 @@ public class PartnerServiceManager {
 	}
 	
 	private List<ServiceError> getErrorList(String responseBodyAsString) {
-		try {
-			Map<String, Object> responseMap = mapper.readValue(responseBodyAsString.getBytes(), Map.class);
-			Object errors = responseMap.get("errors");
-			if(errors instanceof Map) {
-				Map<String, Object> errorMap = (Map<String, Object>) errors;
-				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
-			}
-		} catch (IOException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
-			return Collections.emptyList();
-		}
-		
-		return ExceptionUtils.getServiceErrorList(responseBodyAsString);
+		return RestHelperImpl.getErrorList(responseBodyAsString, mapper);
 	}
 	
 	/**

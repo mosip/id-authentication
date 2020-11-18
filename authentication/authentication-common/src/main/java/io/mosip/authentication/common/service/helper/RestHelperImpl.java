@@ -289,7 +289,7 @@ public class RestHelperImpl implements RestHelper {
 	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
 		try {
 			String responseBodyAsString = mapper.writeValueAsString(response);
-			List<ServiceError> errorList = getErrorList(responseBodyAsString);
+			List<ServiceError> errorList = getErrorList(responseBodyAsString, mapper);
 			if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
 					&& Objects.nonNull(errorList.get(0).getErrorCode())
@@ -317,7 +317,7 @@ public class RestHelperImpl implements RestHelper {
 		}
 	}
 
-	private List<ServiceError> getErrorList(String responseBodyAsString) {
+	public static List<ServiceError> getErrorList(String responseBodyAsString, ObjectMapper mapper) {
 		try {
 			Map<String, Object> responseMap = mapper.readValue(responseBodyAsString.getBytes(), Map.class);
 			Object errors = responseMap.get("errors");
