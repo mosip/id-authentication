@@ -3,21 +3,24 @@ package io.mosip.authentication.common.service.helper;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.idrepository.core.dto.EventModel;
@@ -62,9 +65,6 @@ public class WebSubSubscriptionHelper {
 	@Value("${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}")
 	private String credIssueCallbacksecret;
 	
-	@Value("${ida-topic-partner-service-update}")
-	private String partnerServiceTopic;
-	
 	@Autowired
 	private PublisherClient<String, EventModel, HttpHeaders> publisher;
 	
@@ -73,6 +73,9 @@ public class WebSubSubscriptionHelper {
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
+	
+	@Autowired
+	private Environment env;
 	
 	public void initInternalAuthSubsriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing Internal Auth subscribptions..");
@@ -83,6 +86,11 @@ public class WebSubSubscriptionHelper {
 	
 	public void initAuthSubsriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  "", "Initializing Auth subscriptions..");
+		initPartnerServiceEvents();
+	}
+
+	private void initPartnerServiceEvents() {
+		tryRegisterTopicPartnerServiceEvents();
 		subscribeForPartnerServiceEvents();
 	}
 	
@@ -137,6 +145,20 @@ public class WebSubSubscriptionHelper {
 		});
 			
 	}
+	
+	private void tryRegisterTopicPartnerServiceEvents() {
+		Arrays.stream(PartnerEventTypes.values()).forEach(eventType -> {
+			String topic = env.getProperty(eventType.getTopicPropertyName());
+			try {
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents", "", "Trying to register topic: " + topic);
+				publisher.registerTopic(topic, publisherUrl);
+				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents", "", "Registered topic: " + topic);
+			} catch (Exception e) {
+				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
+			}
+		});
+			
+	}
 
 	private void subscribeForCredentialIssueanceEvents(String topicPrefix) {
 		Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
@@ -161,23 +183,27 @@ public class WebSubSubscriptionHelper {
 	}
 	
 	private void subscribeForPartnerServiceEvents() {
-		try {
-			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-			subscriptionRequest.setCallbackURL(partnerServiceCallbackURL);
-			subscriptionRequest.setHubURL(hubURL);
-			subscriptionRequest.setSecret(partnerServiceCallbackSecret);
-			subscriptionRequest.setTopic(partnerServiceTopic);
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
-					"Trying to subscribe to topic: " + partnerServiceTopic + " callback-url: "
-							+ partnerServiceCallbackURL);
-			subscribe.subscribe(subscriptionRequest);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
-					"Subscribed to topic: " + partnerServiceTopic);
-		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", e.getClass().toString(),
-					"Error subscribing topic: " + partnerServiceTopic + "\n" + e.getMessage());
-			throw e;
-		}
+		Stream.of(PartnerEventTypes.values()).forEach(partnerEventType -> {
+			String topic = env.getProperty(partnerEventType.getTopicPropertyName());
+			try {
+				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+				subscriptionRequest.setCallbackURL(partnerServiceCallbackURL.replace(EVENT_TYPE_PLACEHOLDER, partnerEventType.getName()));
+				subscriptionRequest.setHubURL(hubURL);
+				subscriptionRequest.setSecret(partnerServiceCallbackSecret);
+				subscriptionRequest.setTopic(topic);
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
+						"Trying to subscribe to topic: " + topic + " callback-url: "
+								+ partnerServiceCallbackURL);
+				subscribe.subscribe(subscriptionRequest);
+				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
+						"Subscribed to topic: " + topic);
+			} catch (Exception e) {
+				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", e.getClass().toString(),
+						"Error subscribing topic: " + topic + "\n" + e.getMessage());
+				throw e;
+			}
+		});
+		
 	}
 
 }

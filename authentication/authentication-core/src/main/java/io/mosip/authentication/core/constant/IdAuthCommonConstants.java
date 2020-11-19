@@ -267,5 +267,10 @@ public final class IdAuthCommonConstants {
 	public static final String CREDENTIAL_SUBJECT = "credentialSubject";
 	
 	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+	
+	public static final String MISP_UPDATED_EVENT_NAME = "misp_updated";
+	public static final String PARTNER_UPDATED_EVENT_NAME = "partner_updated";
+	public static final String PARTNER_API_KEY_UPDATED_EVENT_NAME = "partner_api_key_updated";
+	public static final String POLICY_UPDATED_EVENT_NAME = "policy_updated";
 
 }
