@@ -210,7 +210,7 @@ public class OTPServiceImpl implements OTPService {
 	 */
 	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String authTokenId, boolean status, String partnerId, boolean isInternal)
 			throws IdAuthenticationBusinessException {
-		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
+		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
 				.withOtpRequest(otpRequestDto)
 				.withRequestType(RequestType.OTP_REQUEST)

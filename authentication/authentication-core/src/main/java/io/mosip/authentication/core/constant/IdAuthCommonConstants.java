@@ -27,6 +27,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String PHOTO = "photo";
 
+	public static final String PARTNER_CERTIFICATE = "PARTNER_CERTIFICATE";
+
 	private IdAuthCommonConstants() {
 
 	}

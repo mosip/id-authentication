@@ -16,6 +16,6 @@ import lombok.EqualsAndHashCode;
 public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
-	private KycResponseDTO response;
+	private String response;
 
 }
