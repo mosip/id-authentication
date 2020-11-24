@@ -16,6 +16,7 @@ public class PartnerDTO {
 	private String partnerName;
 	private String policyId;
 	private String status;
+	private String certificateData;
 	
 	public PartnerDTO() {
 	}
@@ -81,6 +82,16 @@ public class PartnerDTO {
 	public int hashCode() {
 		return Objects.hash(mispLicenseKey, partnerApiKey, partnerId);
 	}
+	
+	public String getCertificateData() {
+		return certificateData;
+	}
+
+	public void setCertificateData(String certificateData) {
+		this.certificateData = certificateData;
+	}
+
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,9 +112,5 @@ public class PartnerDTO {
 				+ mispLicenseKey + ", partnerName=" + partnerName + ", policyId=" + policyId + ", status=" + status
 				+ "]";
 	}
-
-	
-	
-	
 	
 }

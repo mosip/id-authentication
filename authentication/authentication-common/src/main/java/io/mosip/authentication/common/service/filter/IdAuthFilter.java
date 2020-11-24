@@ -310,7 +310,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey,
 					licenseKey, isPartnerCertificateNeeded());
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
-			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse, partnerServiceResponse.getPartnerCertificate());
+			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse, partnerServiceResponse.getCertificateData());
 		}
 	}
 

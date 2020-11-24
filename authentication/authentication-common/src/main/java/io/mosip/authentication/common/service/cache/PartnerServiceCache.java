@@ -40,16 +40,8 @@ public class PartnerServiceCache {
 	@Cacheable(cacheNames = "partner", key = "#partner")
 	public PartnerPolicyResponseDTO getPartnerPolicy(PartnerDTO partner, String mispLicenseKey, boolean certificateNeeded)
 			throws IdAuthenticationBusinessException {
-		PartnerPolicyResponseDTO validateAndGetPolicy = partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
-						mispLicenseKey);
-		if(certificateNeeded) {
-			String partnerCertificate = partnerServiceManager.getPartnerCertificate(partner.getPartnerId());
-			if(partnerCertificate == null) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE);
-			}
-			validateAndGetPolicy.setPartnerCertificate(partnerCertificate);
-		}
-		return validateAndGetPolicy;
+		return partnerServiceManager.validateAndGetPolicy(partner.getPartnerId(), partner.getPartnerApiKey(),
+						mispLicenseKey, certificateNeeded);
 	}
 
 	@CacheEvict(cacheNames = "partner")
