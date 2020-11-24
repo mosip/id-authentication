@@ -190,7 +190,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid, String token)
 			throws IdAuthenticationBusinessException {
-		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey);
+		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
 		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
 		if (authTokenTypeOpt.isPresent()) {
 			String authTokenType = authTokenTypeOpt.get();
@@ -584,7 +584,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private AutnTxn createAuthTxn(AuthRequestDTO authRequestDTO, String token, boolean isStatus, String authTokenId,
 			RequestType requestType, boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
-		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId);
+		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
 
 		return AuthTransactionBuilder.newInstance()
 				.withToken(token)

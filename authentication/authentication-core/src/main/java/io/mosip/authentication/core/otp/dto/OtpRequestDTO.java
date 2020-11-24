@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.otp.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -33,5 +34,7 @@ public class OtpRequestDTO {
 	private String individualIdType;
 
 	private List<String> otpChannel;
+	
+	private Map<String, Object> metadata;
 
 }

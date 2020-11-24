@@ -1,13 +1,16 @@
 package io.mosip.authentication.common.service.impl.patrner;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.cache.PartnerServiceCache;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -27,9 +30,9 @@ public class PartnerServiceImpl implements PartnerService {
 
 	@Autowired
 	private PartnerServiceCache partnerServiceCache;
-
+	
 	@Autowired
-	private CacheManager cacheManager;
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
@@ -38,33 +41,44 @@ public class PartnerServiceImpl implements PartnerService {
 	 * io.mosip.authentication.core.spi.partner.service.PartnerService#getPartner(
 	 * java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
-	public Optional<PartnerDTO> getPartner(String partnerId) throws IdAuthenticationBusinessException {
-		Map<PartnerDTO, PartnerPolicyResponseDTO> partnerCacheMap = (Map<PartnerDTO, PartnerPolicyResponseDTO>) cacheManager
-				.getCache("partner").getNativeCache();
-		Optional<PartnerDTO> partnerDTO = partnerCacheMap.keySet().stream()
-				.filter(partner -> partner.getPartnerId().equals(partnerId)).findAny();
-		partnerDTO.ifPresent(partner -> {
-			PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerCacheMap.get(partner);
-			partner.setPartnerName(partnerPolicyResponseDTO.getPartnerName());
-			partner.setPolicyId(partnerPolicyResponseDTO.getPolicyId());
-			partner.setStatus("Active");
-		});
-		return partnerDTO;
+	@Override
+	public Optional<PartnerDTO> getPartner(String partnerId, Map<String, Object> metadata)
+			throws IdAuthenticationBusinessException {
+		return Optional.ofNullable(mapper.convertValue(metadata.get(partnerId), PartnerDTO.class));
 	}
 
 	@Override
-	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey)
+	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey, boolean certificateNeeded)
 			throws IdAuthenticationBusinessException {
 		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey, mispLicenseKey);
-		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key);
+		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey, certificateNeeded);
+		
+		if(isExpired(partnerPolicyResponseDTO.getMispExpiresOn())) {
+			partnerServiceCache.evictPartnerPolicy(key);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_EXPIRED);
+		}
+		
+		if(isExpired(partnerPolicyResponseDTO.getApiKeyExpiresOn())) {
+			partnerServiceCache.evictPartnerPolicy(key);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_API_KEY_EXPIRED);
+		}
+		
+		if(isExpired(partnerPolicyResponseDTO.getPolicyExpiresOn())) {
+			partnerServiceCache.evictPartnerPolicy(key);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.POLICY_EXPIRED);
+		}
+		
 		return partnerPolicyResponseDTO;
 	}
 
+	private boolean isExpired(LocalDateTime mispExpiresOn) {
+		return mispExpiresOn.isBefore(LocalDateTime.now());
+	}
+
 	@Override
-	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey)
+	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey, Map<String, Object> metadata)
 			throws IdAuthenticationBusinessException {
-		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey, null);
-		return Optional.ofNullable(partnerServiceCache.getPartnerPolicy(key)).map(PartnerPolicyResponseDTO::getPolicy);
+		String key = partnerId + partnerApiKey;
+		return Optional.ofNullable(mapper.convertValue(metadata.get(key), PolicyDTO.class));
 	}
 }

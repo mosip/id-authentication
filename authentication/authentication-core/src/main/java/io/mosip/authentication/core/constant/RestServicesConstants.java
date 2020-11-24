@@ -50,8 +50,6 @@ public enum RestServicesConstants {
 	
 	ID_PMP_SERVICE("id-pmp-service"),
 	
-	PARTNER_SERVICE("ida-pmp-partners"),
-	
 	DATA_SHARE_GET("data-share-get");
 
 	/** The service name. */

@@ -1,13 +1,11 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,32 +20,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.idrepository.core.security.IdRepoSecurityManager;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * This class Partner Service Manager connects to partner service to validate
- * and get the policy file for a given partnerID, partner api key and misp
- * license key.
+ * This class Partner Service Manager connects to partner service to validate and 
+ * get the policy file for a given partnerID, partner api key and misp license key.
  * 
  * @author Nagarjuna
  *
  */
 @Component
 public class PartnerServiceManager {
-
-	private static final String PARNER_ACTIVE_STATUS = "Active";
-
+	
 	/** The logger. */
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
@@ -60,57 +55,33 @@ public class PartnerServiceManager {
 
 	@Autowired
 	protected ObjectMapper mapper;
-
-	private static final String ERRORS = "errors";
-
-	private static final String ERRORCODE = "errorCode";
-
+	
 	@Autowired
 	private PartnerServiceCache partnerServiceCache;
-
+	
 	@Autowired
 	private CacheManager cacheManager;
-
-	@SuppressWarnings("unchecked")
-	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key,
-			String misp_license_key) throws IdAuthenticationBusinessException {
+	
+	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key, boolean certificateNeeded) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest;
-		PartnerPolicyResponseDTO response = null;
+		PartnerPolicyResponseDTO response = null;	
 
-		try {
-			Map<String, String> params = new HashMap<>();
+		try {			
+			Map<String, String> pathParams = new HashMap<>();
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_PMP_SERVICE, null, Map.class);
-			params.put("partnerId", partnerId);
-			params.put("partner_api_key", partner_api_key);
-			params.put("misp_license_key", misp_license_key);
+			pathParams.put("partnerId", partnerId);
+			pathParams.put("partner_api_key", partner_api_key);
+			pathParams.put("misp_license_key", misp_license_key);
 
-			buildRequest.setPathVariables(params);
+			buildRequest.setPathVariables(pathParams);
+			Map<String, String> queryParams = new HashMap<>();
+			queryParams.put("needPartnerCert", String.valueOf(certificateNeeded));
+
 			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
-			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),
-					PartnerPolicyResponseDTO.class);
-		} catch (RestServiceException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			Optional<Object> responseBody = ((RestServiceException) e).getResponseBody();
-			if (responseBody.isPresent()) {
-				Map<String, Object> partnerService = (Map<String, Object>) responseBody.get();
-				if (partnerService.containsKey(ERRORS)) {
-					List<Map<String, Object>> partnerServiceErrorList = (List<Map<String, Object>>) partnerService
-							.get(ERRORS);
-					if (!partnerServiceErrorList.isEmpty()) {
-						throw getMatchingErrorCodes(partnerServiceErrorList.get(0).get(ERRORCODE).toString(), e);
-					}
-				} else {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-				}
-			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-			}
+			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),PartnerPolicyResponseDTO.class);			
+		}catch (RestServiceException e) {			
+			handleRestServiceException(e);			
 		} catch (JsonParseException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} catch (JsonMappingException e) {
@@ -156,84 +127,78 @@ public class PartnerServiceManager {
 				.forEach(partnerServiceCache::evictPartnerPolicy);
 	}
 
+	private void handleRestServiceException(RestServiceException e) throws IdAuthenticationBusinessException {
+		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+				e.getErrorText());
+		Optional<String> responseBodyAsStringOpt = e.getResponseBodyAsString();
+		if(responseBodyAsStringOpt.isPresent()) {
+			String responseBodyAsString = responseBodyAsStringOpt.get();
+			List<ServiceError> errorList = getErrorList(responseBodyAsString);
+			if (Objects.nonNull(errorList)
+					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())) {
+				throw getMatchingErrorCodes(errorList.get(0).getErrorCode(), e);
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+		}
+		
+	}
+	
+	private List<ServiceError> getErrorList(String responseBodyAsString) {
+		return RestHelperImpl.getErrorList(responseBodyAsString, mapper);
+	}
+	
 	/**
 	 * This method will throw ida exceptions corresponding to pmp
-	 * 
 	 * @param erroCode
 	 * @param e
 	 * @return
 	 */
-	private IdAuthenticationBusinessException getMatchingErrorCodes(String erroCode, RestServiceException e) {
-		switch (erroCode) {
+	private IdAuthenticationBusinessException getMatchingErrorCodes(String erroCode,RestServiceException e) {
+		switch(erroCode) {
 		case "PMS_PMP_020":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(), e);
+			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(),e);
 		case "PMS_PMP_021":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
-					IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(), e);
+			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+						IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(),e);
 		case "PMS_PMP_025":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
-					IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
+					IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(),e);
 		case "PMS_PMP_016":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(),e);
 		case "PMS_PMP_013":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
 		case "PMS_PMP_017":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(),e);
 		case "PMS_PMP_023":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
 		case "PMS_PMP_019":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage(),e);
 		case "PMS_PMP_018":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(), e);
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
 		case "PMS_PMP_024":
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(), e);
-
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
+		case "PMS_PRT_108":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE,e);
+		case "PMS_PMP_052":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE,e);
 		default:
-			return new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public List<String> getPartnerIds() {
-		try {
-			Map<String, Object> responseWrapperMap = restHelper.requestSync(
-					restRequestFactory.buildRequest(RestServicesConstants.PARTNER_SERVICE, null, Map.class));
-			Object response = responseWrapperMap.get("response");
-			if (response instanceof Map) {
-				Map<String, Object> responseMap = (Map<String, Object>) response;
-				Object partners = responseMap.get("partners");
-				if (partners instanceof List) {
-					List<Map<String, Object>> partnersList = (List<Map<String, Object>>) partners;
-					List<String> partnerIds = partnersList.stream()
-							.filter(partner -> PARNER_ACTIVE_STATUS.equalsIgnoreCase((String) partner.get("status")))
-							.map(partner -> (String) partner.get("partnerID")).collect(Collectors.toList());
-					return partnerIds;
-				}
-			}
-		} catch (RestServiceException | IDDataValidationException e) {
-			logger.error(IdRepoSecurityManager.getUser(), this.getClass().getSimpleName(), "getPartnerIds",
-					e.getMessage());
-		}
-		return Collections.emptyList();
-	}
+	
 }

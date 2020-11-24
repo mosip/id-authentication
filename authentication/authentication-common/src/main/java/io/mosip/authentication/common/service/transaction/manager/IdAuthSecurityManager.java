@@ -1,7 +1,12 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -108,6 +113,10 @@ public class IdAuthSecurityManager {
 
 	@Value("${mosip.kernel.tokenid.length}")
 	private int tokenIDLength;
+	
+	/** KeySplitter. */
+	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
+	private String keySplitter;
 	
 	/**
 	 * Gets the user.
@@ -265,4 +274,45 @@ public class IdAuthSecurityManager {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), SALT_FOR_THE_GIVEN_ID));
 		}
 	}
+	
+	private X509Certificate getX509Certificate(String partnerCertificate) throws IdAuthenticationBusinessException {
+		try {
+			String certificate = IdAuthSecurityManager.trimBeginEnd(partnerCertificate);
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			X509Certificate x509cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(java.util.Base64.getDecoder().decode(certificate)));
+			return x509cert;
+		} catch (CertificateException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}		
+	}
+	
+	public String encryptData(byte[] data, String partnerCertificate)
+			throws IdAuthenticationBusinessException {
+			X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
+			PublicKey publicKey = x509Certificate.getPublicKey();	
+			byte[] encryptedData = encrypt(publicKey, data);
+			return CryptoUtil.encodeBase64(encryptedData);
+	}
+	
+	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
+		SecretKey secretKey = keyGenerator.getSymmetricKey();
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, dataToEncrypt, null);
+		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey,secretKey.getEncoded());
+		return combineDataToEncrypt(encryptedData, encryptedSymmetricKey);
+	}
+	
+	public byte[] combineDataToEncrypt(byte[] encryptedData, byte[ ] encryptedSymmetricKey) {
+		return CryptoUtil.combineByteArray(
+						encryptedData, 
+						encryptedSymmetricKey, 
+						keySplitter);
+	}
+
+	public static String trimBeginEnd(String pKey) {
+		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("\\s", "");
+		return pKey;
+	}
+	
 }
