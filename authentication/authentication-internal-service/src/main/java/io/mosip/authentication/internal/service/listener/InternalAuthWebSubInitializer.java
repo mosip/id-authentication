@@ -9,7 +9,6 @@ public class InternalAuthWebSubInitializer extends IdAuthWebSubInitializer{
 	
 
 	protected void doInitSubscriptions() {
-		super.doInitSubscriptions();
 		webSubSubscriptionHelper.initInternalAuthSubsriptions();
 	}
 
