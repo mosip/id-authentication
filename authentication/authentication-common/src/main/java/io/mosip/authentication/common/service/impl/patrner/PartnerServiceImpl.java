@@ -58,21 +58,16 @@ public class PartnerServiceImpl implements PartnerService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_EXPIRED);
 		}
 		
-		if(isExpired(partnerPolicyResponseDTO.getApiKeyExpiresOn())) {
+		if(isExpired(partnerPolicyResponseDTO.getApiKeyExpiresOn()) || isExpired(partnerPolicyResponseDTO.getPolicyExpiresOn())) {
 			partnerServiceCache.evictPartnerPolicy(key);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_API_KEY_EXPIRED);
-		}
-		
-		if(isExpired(partnerPolicyResponseDTO.getPolicyExpiresOn())) {
-			partnerServiceCache.evictPartnerPolicy(key);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.POLICY_EXPIRED);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID);
 		}
 		
 		return partnerPolicyResponseDTO;
 	}
 
-	private boolean isExpired(LocalDateTime mispExpiresOn) {
-		return mispExpiresOn.isBefore(LocalDateTime.now());
+	private boolean isExpired(LocalDateTime expiryDateTime) {
+		return LocalDateTime.now().isAfter(expiryDateTime);
 	}
 
 	@Override
