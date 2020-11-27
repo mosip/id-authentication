@@ -398,7 +398,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				statusInfo = bioValidationStatus;
 
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				saveAndAuditBioAuthTxn(authRequestDTO, authRequestDTO.getIndividualId(), idType, isStatus, authTokenId,
+				saveAndAuditBioAuthTxn(authRequestDTO, token, idType, isStatus, authTokenId,
 						!isAuth, partnerId);
 			} finally {
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
