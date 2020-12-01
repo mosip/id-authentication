@@ -24,6 +24,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class PartnerServiceCallbackControllerDelegate {
 	
+	private static final String POLICY_ID = "policyId";
+
+	private static final String MISP_LICENSE_KEY = "mispLicenseKey";
+
+	private static final String API_KEY = "apiKey";
+
+	private static final String PARTNER_ID = "partnerId";
+
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
 	@Autowired
@@ -44,17 +52,17 @@ public class PartnerServiceCallbackControllerDelegate {
 		}
 
 		Map<String, Object> data = eventModel.getEvent().getData();
-		if (data.containsKey("partnerId") && data.get("partnerId") instanceof String) {
-			partnerManager.evictPartnerBasedOnPartnerId((String) data.get("partnerId"));
+		if (data.containsKey(PARTNER_ID) && data.get(PARTNER_ID) instanceof String) {
+			partnerManager.evictPartnerBasedOnPartnerId((String) data.get(PARTNER_ID));
 		}
-		if (data.containsKey("partnerApiKey") && data.get("partnerApiKey") instanceof String) {
-			partnerManager.evictPartnerBasedOnPartnerApiKey((String) data.get("partnerApiKey"));
+		if (data.containsKey(API_KEY) && data.get(API_KEY) instanceof String) {
+			partnerManager.evictPartnerBasedOnPartnerApiKey((String) data.get(API_KEY));
 		}
-		if (data.containsKey("mispLicenseKey") && data.get("mispLicenseKey") instanceof String) {
-			partnerManager.evictPartnerBasedOnMispLicenseKey((String) data.get("mispLicenseKey"));
+		if (data.containsKey(MISP_LICENSE_KEY) && data.get(MISP_LICENSE_KEY) instanceof String) {
+			partnerManager.evictPartnerBasedOnMispLicenseKey((String) data.get(MISP_LICENSE_KEY));
 		}
-		if (data.containsKey("policyId") && data.get("policyId") instanceof String) {
-			partnerManager.evictPartnerBasedOnPolicyId((String) data.get("policyId"));
+		if (data.containsKey(POLICY_ID) && data.get(POLICY_ID) instanceof String) {
+			partnerManager.evictPartnerBasedOnPolicyId((String) data.get(POLICY_ID));
 		}
 	}
 }
