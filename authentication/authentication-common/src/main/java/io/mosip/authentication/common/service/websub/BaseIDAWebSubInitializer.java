@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.config;
+package io.mosip.authentication.common.service.websub;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
@@ -34,9 +34,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
  
 @Component
-public class IdAuthWebSubInitializer implements ApplicationListener<ApplicationReadyEvent>{
+public abstract class BaseIDAWebSubInitializer implements ApplicationListener<ApplicationReadyEvent>{
 	
-	private static Logger logger = IdaLogger.getLogger(IdAuthWebSubInitializer.class);
+	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
 	@Value("${ida-websub-resubscription-retry-count:3}")
 	private int retryCount;
@@ -108,8 +108,6 @@ public class IdAuthWebSubInitializer implements ApplicationListener<ApplicationR
 		}
 	}
 
-	protected void doInitSubscriptions() {
-		webSubSubscriptionHelper.initAuthSubsriptions();
-	}
+	protected abstract void doInitSubscriptions();
 
 }
