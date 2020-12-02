@@ -43,6 +43,9 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
+import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
+import io.mosip.authentication.common.service.websub.impl.MasterDataServiceEventSubscriber;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
@@ -88,7 +91,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
 		IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class,
 		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
-		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class })
+		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class, MasterDataServiceEventSubscriber.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.defaultadapter.*",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

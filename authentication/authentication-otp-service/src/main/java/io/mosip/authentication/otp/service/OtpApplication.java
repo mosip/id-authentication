@@ -10,7 +10,6 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.config.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.controller.PartnerServiceCallbackControllerDelegate;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -43,6 +42,9 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
+import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
+import io.mosip.authentication.common.service.websub.impl.MasterDataServiceEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsSubscriber;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -85,7 +87,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class,
 		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubSubscriptionHelper.class,
-		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class })
+		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class, MasterDataServiceEventSubscriber.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {
