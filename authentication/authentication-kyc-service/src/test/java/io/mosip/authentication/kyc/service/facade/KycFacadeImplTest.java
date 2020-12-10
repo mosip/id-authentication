@@ -293,8 +293,8 @@ public class KycFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
+		kycResponseDTO.setIdentity(mapper.writeValueAsString(idInfo));
+		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res=new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);

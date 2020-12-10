@@ -70,13 +70,12 @@ public class PartnerServiceManager {
 		try {			
 			Map<String, String> pathParams = new HashMap<>();
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_PMP_SERVICE, null, Map.class);
-			pathParams.put("partnerId", partnerId);
+			pathParams.put("partner_id", partnerId);
 			pathParams.put("partner_api_key", partner_api_key);
 			pathParams.put("misp_license_key", misp_license_key);
+			pathParams.put("need_partner_cert", String.valueOf(certificateNeeded));
 
 			buildRequest.setPathVariables(pathParams);
-			Map<String, String> queryParams = new HashMap<>();
-			queryParams.put("needPartnerCert", String.valueOf(certificateNeeded));
 
 			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
 			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),PartnerPolicyResponseDTO.class);			

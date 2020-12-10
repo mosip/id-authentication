@@ -45,9 +45,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
-	/** The public key. */
-	protected PublicKey publicKey;
-	
 	@Autowired
 	private CryptoCore cryptoCore;
 	

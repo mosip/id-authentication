@@ -1,7 +1,10 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
@@ -36,6 +39,10 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 public class AuthTransactionBuilder {
 
+	public static final String REQ_TYPE_MSG_DELIM = ";";
+	
+	public static final String REQ_TYPE_DELIM = ",";
+
 	private static final String SERVICE_ACCOUNT = "service-account-";
 
 	/**
@@ -69,7 +76,7 @@ public class AuthTransactionBuilder {
 	private String token;
 
 	/** The request type. */
-	private RequestType requestType;
+	private Set<RequestType> requestTypes = new LinkedHashSet<>(6);
 
 	/** The auth token id. */
 	private String authTokenId;
@@ -127,8 +134,8 @@ public class AuthTransactionBuilder {
 	 *            the request type
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
-	public AuthTransactionBuilder withRequestType(RequestType requestType) {
-		this.requestType = requestType;
+	public AuthTransactionBuilder addRequestType(RequestType requestType) {
+		requestTypes.add(requestType);
 		return this;
 	}
 
@@ -198,10 +205,11 @@ public class AuthTransactionBuilder {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
-			if (requestType != null) {
+			if (!requestTypes.isEmpty()) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
-				String comment = isStatus ? requestType.getMessage() + " Success"
-						: requestType.getMessage() + " Failed";
+				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage).collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
+				String comment = isStatus ? requestTypeMessages + " Success"
+						: requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
 				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
 				autnTxn.setRefIdType(idvIdType);
@@ -215,7 +223,8 @@ public class AuthTransactionBuilder {
 						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 				autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
-				autnTxn.setAuthTypeCode(requestType.getRequestType());
+				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType).collect(Collectors.joining(REQ_TYPE_DELIM));
+				autnTxn.setAuthTypeCode(authTypeCodes);
 				autnTxn.setRequestTrnId(txnID);
 				autnTxn.setStatusCode(status);
 				autnTxn.setStatusComment(comment);
@@ -285,7 +294,7 @@ public class AuthTransactionBuilder {
 	@Override
 	public String toString() {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
-				+ requestType + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
+				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
 
 }
