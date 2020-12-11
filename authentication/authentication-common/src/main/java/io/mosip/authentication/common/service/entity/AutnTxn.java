@@ -104,6 +104,12 @@ public class AutnTxn {
 	@Column(name = "requested_entity_name")
 	private String entityName;
 	
+	@Column(name = "request_signature")
+	private String requestSignature;
+	
+	@Column(name = "response_signature")
+	private String responseSignature;
+	
 	/**
 	 * The constructor used in retrieval of the specific fields.
 	 * @param requestTrnId
@@ -114,14 +120,19 @@ public class AutnTxn {
 	 * @param refId
 	 * @param entityName
 	 */
-	public AutnTxn(String requestTrnId, LocalDateTime requestDTtimes, String authTypeCode, String statusCode, String statusComment, String refId, String entityName) {
+	public AutnTxn(String requestTrnId, LocalDateTime requestDTtimes, String authTypeCode, String statusCode,
+			String statusComment, String refId, String refIdType, String entityName, String requestSignature,
+			String responseSignature) {
 		this.requestTrnId = requestTrnId;
 		this.requestDTtimes = requestDTtimes; 
 		this.authTypeCode = authTypeCode; 
 		this.statusCode = statusCode; 
 		this.statusComment = statusComment; 
-		this.refId = refId; 
+		this.refId = refId;
+		this.refIdType = refIdType; 
 		this.entityName = entityName;
+		this.requestSignature = requestSignature;
+		this.responseSignature = responseSignature;
 	}
 	
 	/**

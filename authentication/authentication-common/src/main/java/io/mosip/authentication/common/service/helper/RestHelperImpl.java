@@ -219,13 +219,17 @@ public class RestHelperImpl implements RestHelper {
 		}
 
 		method = webClient.method(request.getHttpMethod());
-		if (request.getParams() != null && request.getPathVariables() == null) {
-			uri = method.uri(builder -> builder.queryParams(request.getParams()).build());
-		} else if (request.getParams() == null && request.getPathVariables() != null) {
-			uri = method.uri(builder -> builder.build(request.getPathVariables()));
-		} else {
-			uri = method.uri(builder -> builder.build());
-		}
+		uri = method.uri(builder -> {
+			if(request.getParams() != null) {
+				builder.queryParams(request.getParams());
+			}
+			
+			if(request.getPathVariables() != null) {
+				return builder.build(request.getPathVariables());
+			} else {
+				return builder.build();
+			}
+		});
 
 		uri.cookie("Authorization", getAuthToken());
 

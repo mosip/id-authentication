@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SIGNATURE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -39,6 +42,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -49,6 +53,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -97,6 +102,8 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The key manager. */
 	protected KeyManager keyManager;
 
+	protected IdService<AutnTxn> idService;
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseIDAFilter.class);
 
@@ -112,6 +119,7 @@ public abstract class BaseIDAFilter implements Filter {
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
 		keyManager = context.getBean(KeyManager.class);
+		idService = context.getBean(IdService.class);
 	}
 
 	/*
@@ -477,8 +485,10 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-			Map<String, Object> responseMap = setResponseParams(requestBody,
-					getResponseBody(respStr));
+			
+			Map<String, Object> responseBody = getResponseBody(respStr);
+			Map<String, Object> metadata = (Map<String, Object>) responseBody.get(METADATA);
+			Map<String, Object> responseMap = setResponseParams(requestBody, responseBody);
 			requestWrapper.resetInputStream();
 			addIdAndVersionToRespons(requestWrapper, responseMap);
 			if (responseMap.containsKey(ERRORS)) {
@@ -489,9 +499,15 @@ public abstract class BaseIDAFilter implements Filter {
 					responseMap.put(ERRORS, null);
 				}
 			}
-			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
+			Map<String, Object> finalResponse = transformResponse(responseMap);
+			String requestSignature = requestWrapper.getHeader(SIGNATURE);
+			
+			String responseAsString = mapper.writeValueAsString(finalResponse);
+			String responseSignature = keyManager.signResponse(responseAsString);
+			storeAuthTransaction(metadata, requestSignature, responseSignature);
+			
 			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-					keyManager.signResponse(responseAsString));
+					responseSignature);
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
 			return responseAsString;
@@ -499,6 +515,24 @@ public abstract class BaseIDAFilter implements Filter {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			//throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			return respStr;
+		}
+	}
+
+	private void storeAuthTransaction(Map<String, Object> metadata, String requestSignature,
+			String responseSignature) throws IdAuthenticationAppException {
+		if(metadata != null) {
+			Object authTxnObj = metadata.get(AutnTxn.class.getSimpleName());
+			if(authTxnObj != null) {
+				AutnTxn autnTxn = mapper.convertValue(authTxnObj, AutnTxn.class);
+				autnTxn.setRequestSignature(requestSignature);
+				autnTxn.setResponseSignature(responseSignature);
+				try {
+					idService.saveAutnTxn(autnTxn);
+				} catch (IdAuthenticationBusinessException e) {
+					mosipLogger.error("sessionId", BASE_IDA_FILTER, "storeAuthTransaction", "\n" + ExceptionUtils.getStackTrace(e));
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+				}
+			}
 		}
 	}
 
@@ -533,7 +567,8 @@ public abstract class BaseIDAFilter implements Filter {
 			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME)
 					: DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 			responseBody.remove("responsetime");// Handled for forbidden error scenario
-			responseBody.remove("metadata");// Handled for forbidden error scenario
+			responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
+											// attached for auth transaction
 			responseBody.put(RES_TIME,
 					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),

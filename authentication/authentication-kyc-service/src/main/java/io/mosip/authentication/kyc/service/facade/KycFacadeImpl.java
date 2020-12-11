@@ -19,9 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -99,9 +96,6 @@ public class KycFacadeImpl implements KycFacade {
 	@Autowired
 	private PartnerService partnerService;
 	
-	@Autowired
-	private ObjectMapper mapper;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -129,6 +123,7 @@ public class KycFacadeImpl implements KycFacade {
 			String partnerId) throws IdAuthenticationBusinessException {
 		boolean status;
 		String token = null;
+		KycAuthResponseDTO kycAuthResponseDTO = null;
 		try {
 			String idvId = kycAuthRequestDTO.getIndividualId();
 			String idvIdtype = IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
@@ -138,9 +133,9 @@ public class KycFacadeImpl implements KycFacade {
 
 			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
 					idResDTO, token);
-			KycAuthResponseDTO kycAuthResponseDTO = kycAuthResponse.getKey();
+			kycAuthResponseDTO = kycAuthResponse.getKey();
 			status = kycAuthResponse.getValue();
-			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token);
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO);
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
 					kycAuthRequestDTO.getIndividualId(),
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
@@ -148,7 +143,7 @@ public class KycFacadeImpl implements KycFacade {
 			return kycAuthResponseDTO;
 		} catch (IdAuthenticationBusinessException e) {
 			status = false;
-			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token);
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO);
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
 					kycAuthRequestDTO.getIndividualId(),
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
@@ -156,18 +151,32 @@ public class KycFacadeImpl implements KycFacade {
 		}
 	}
 
-	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String token)
+	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String token, AuthResponseDTO authResponseDTO, KycAuthResponseDTO kycAuthResponseDTO)
 			throws IdAuthenticationBusinessException {
 		if (token != null) {
 			Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
 
-			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
-					.withRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
-					.withInternal(false).withPartner(partner).withToken(token)
-					.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
-			idService.saveAutnTxn(authTxn);
+			if(kycAuthResponseDTO != null && authResponseDTO != null) {
+				Object authTxnObj = authResponseDTO.getMetadata().get(AutnTxn.class.getSimpleName());
+				if(authTxnObj instanceof AutnTxn) {
+					AutnTxn autnTxn = (AutnTxn) authTxnObj;
+					autnTxn.setAuthTypeCode(RequestType.KYC_AUTH_REQUEST.getRequestType() +
+							AuthTransactionBuilder.REQ_TYPE_DELIM +  autnTxn.getAuthTypeCode());
+					autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() +
+							AuthTransactionBuilder.REQ_TYPE_MSG_DELIM +  autnTxn.getStatusComment());
+
+					kycAuthResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
+				}
+			} else {
+				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
+						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
+						.withInternal(false).withPartner(partner).withToken(token)
+						.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
+				idService.saveAutnTxn(authTxn);
+			}
+			
 		}
 	}
 
@@ -199,7 +208,11 @@ public class KycFacadeImpl implements KycFacade {
 				response.setKycStatus(authResponse.isAuthStatus());
 				response.setAuthToken(authResponse.getAuthToken());
 				
-				kycAuthResponseDTO.setResponse(encryptKycResponse(response,(String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE)));
+				if(Objects.nonNull(response.getIdentity())) {
+					response.setIdentity(encryptKycResponse(response.getIdentity(),(String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE)));
+				}
+				
+				kycAuthResponseDTO.setResponse(response);
 				kycAuthResponseDTO.setId(authResponseDTO.getId());
 				kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
 				kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
@@ -212,10 +225,10 @@ public class KycFacadeImpl implements KycFacade {
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
 	}
 
-	private String encryptKycResponse(KycResponseDTO response, String partnerCertificate) throws IdAuthenticationBusinessException {
+	private String encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {
 		try {
-			return securityManager.encryptData(mapper.writeValueAsBytes(response), partnerCertificate);
-		} catch (IdAuthenticationBusinessException | JsonProcessingException e) {
+			return securityManager.encryptData(identity.getBytes(), partnerCertificate);
+		} catch (IdAuthenticationBusinessException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}

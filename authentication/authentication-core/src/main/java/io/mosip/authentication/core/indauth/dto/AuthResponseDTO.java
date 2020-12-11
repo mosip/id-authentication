@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
+import java.util.Map;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,4 +21,7 @@ public class AuthResponseDTO extends BaseAuthResponseDTO {
 
 	/** The Variable to hold response */
 	private ResponseDTO response;
+	
+	private Map<String, Object> metadata;
+
 }

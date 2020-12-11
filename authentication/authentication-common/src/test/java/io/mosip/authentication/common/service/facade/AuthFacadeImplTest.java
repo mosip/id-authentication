@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -374,7 +375,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
-				authRequestDTO, idInfo, "1233", true, "247334310780728918141754192454591343", "123456");
+				authRequestDTO, idInfo, "1233", true, "247334310780728918141754192454591343", "123456", AuthTransactionBuilder.newInstance());
 
 		assertTrue(authStatusList.stream().noneMatch(status -> status.isStatus()));
 	}
@@ -446,7 +447,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
-				authRequestDTO, idInfo, "1242", true, "247334310780728918141754192454591343", "123456");
+				authRequestDTO, idInfo, "1242", true, "247334310780728918141754192454591343", "123456", AuthTransactionBuilder.newInstance());
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
 	}
 
@@ -479,7 +480,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
-				authRequestDTO, idInfo, "1242", false, "247334310780728918141754192454591343", "123456");
+				authRequestDTO, idInfo, "1242", false, "247334310780728918141754192454591343", "123456", AuthTransactionBuilder.newInstance());
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
 	}
 
@@ -702,7 +703,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456", AuthTransactionBuilder.newInstance());
 
 	}
 
@@ -749,7 +750,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456", AuthTransactionBuilder.newInstance());
 
 	}
 
@@ -798,7 +799,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
-				IdType.UIN, "247334310780728918141754192454591343", true, "123456");
+				IdType.UIN, "247334310780728918141754192454591343", true, "123456", AuthTransactionBuilder.newInstance());
 
 	}
 
@@ -821,7 +822,7 @@ public class AuthFacadeImplTest {
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		try {
 			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
-					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456", AuthTransactionBuilder.newInstance());
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -850,7 +851,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		try {
 			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
-					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
+					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456", AuthTransactionBuilder.newInstance());
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

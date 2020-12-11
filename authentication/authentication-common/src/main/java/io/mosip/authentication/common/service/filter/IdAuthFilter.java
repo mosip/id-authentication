@@ -1,5 +1,4 @@
 package io.mosip.authentication.common.service.filter;
-
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
@@ -14,10 +13,10 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_AAD_LAST_BYTES_NUM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_SALT_LAST_BYTES_NUM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EKYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISPLICENSE_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
@@ -334,7 +333,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if(partnerCertificate != null) {
 			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
 		}
-		requestBody.put("metadata", metadata);
+		requestBody.put(METADATA, metadata);
 	}
 	
 	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
@@ -436,8 +435,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws UnsupportedEncodingException 
 	 */
 	private String validateHash(String data, String inputHashDigest, String previousHash) throws IdAuthenticationAppException, UnsupportedEncodingException {
-	
-		
 		String currentHash =digest(getHash(CryptoUtil.decodeBase64(data)));
 		String concatenatedHash = previousHash + currentHash;
 		byte[] finalHash = getHash(concatenatedHash);
@@ -769,7 +766,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_IDS + EKYC)))
+						.filter(id -> id.equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_ID + KYC)))
 						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));

@@ -67,7 +67,7 @@ public class PartnerServiceImpl implements PartnerService {
 	}
 
 	private boolean isExpired(LocalDateTime expiryDateTime) {
-		return LocalDateTime.now().isAfter(expiryDateTime);
+		return expiryDateTime == null || LocalDateTime.now().isAfter(expiryDateTime);
 	}
 
 	@Override

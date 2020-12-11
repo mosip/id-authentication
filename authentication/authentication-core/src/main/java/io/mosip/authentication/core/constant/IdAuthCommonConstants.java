@@ -189,7 +189,7 @@ public final class IdAuthCommonConstants {
 	
 	
 	/** The Constant EKYC. */
-	public static final String EKYC = "ekyc";
+	public static final String KYC = "kyc";
 
 	/** The Constant REQUEST_HMAC. */
 	public static final String REQUEST_HMAC = "requestHMAC";
@@ -217,9 +217,6 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";
-
-	/** The Constant KYC. */
-	public static final String KYC = "kyc";
 
 	/** The Constant SESSION_KEY. */
 	public static final String REQUEST_SESSION_KEY = "requestSessionKey";
@@ -274,5 +271,10 @@ public final class IdAuthCommonConstants {
 	public static final String PARTNER_UPDATED_EVENT_NAME = "partner_updated";
 	public static final String PARTNER_API_KEY_UPDATED_EVENT_NAME = "partner_api_key_updated";
 	public static final String POLICY_UPDATED_EVENT_NAME = "policy_updated";
+	
+	public static final String METADATA = "metadata";
+	
+	public static final String SIGNATURE = "signature";
+
 
 }

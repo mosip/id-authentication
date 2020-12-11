@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.indauth.dto;
 
-import java.util.Map;
-
 import lombok.Data;
 
 /**
@@ -24,5 +22,5 @@ public class KycResponseDTO {
 	private String thumbprint;
 
 	/** The Variable to hold value of identity */
-	private Map<String, ? extends Object> identity;
+	private String identity;
 }

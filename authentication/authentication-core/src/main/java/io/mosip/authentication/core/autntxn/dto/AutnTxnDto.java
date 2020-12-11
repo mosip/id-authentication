@@ -14,5 +14,6 @@ public class AutnTxnDto {
 	String statusComment;
 	String referenceIdType;
 	String entityName;
-
+	String requestSignature;
+	String responseSignature;
 }
