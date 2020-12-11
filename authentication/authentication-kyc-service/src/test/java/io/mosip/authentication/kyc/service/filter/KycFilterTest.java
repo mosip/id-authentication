@@ -131,7 +131,6 @@ public class KycFilterTest {
 			InvocationTargetException, IOException, NoSuchMethodException, SecurityException, NoSuchFieldException,
 			InvalidKeySpecException, NoSuchAlgorithmException {
 		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
-		ReflectionTestUtils.setField(kycAuthFilter, "publicKey", pkey);
 		/*
 		 * Class<KycAuthFilter> myClass = (Class<KycAuthFilter>)
 		 * kycAuthFilter.getClass(); Field field =
