@@ -29,7 +29,8 @@ public enum IdAuthenticationErrorConstants {
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
 	OTP_AUTH_IDTYPE_MISMATCH("IDA-OTA-010", "Input Identity Type does not match Identity Type of OTP Request"),
-	
+	PARTNER_ID_MISMATCH("IDA-OTA-011", "Input Partner-ID does not match Partner-ID of OTP Request"),
+
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
 			"Please send the request within %s minutes"),
