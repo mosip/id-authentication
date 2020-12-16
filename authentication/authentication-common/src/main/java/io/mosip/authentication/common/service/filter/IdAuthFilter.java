@@ -29,6 +29,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,7 +73,7 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -87,6 +88,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 	
+	private static final String THUMBPRINT = "thumbprint";
 	private static final String TRANSACTION_ID = "transactionId";
 	protected PartnerService partnerService;
 	
@@ -122,12 +124,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 				} else {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
-					String reqHMAC = keyManager
-							.kernelDecryptAndDecode(
-									CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
-											(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
-											env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER))),
-									fetchReferenceId());
+					String requestToDecrypt = CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(
+							(byte[]) requestBody.get(REQUEST_HMAC), (byte[]) encryptedSessionkey,
+							env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER)));
+					String reqHMAC = keyManager.kernelDecryptAndDecode(isThumbprintValidationRequired()
+							? requestBody.getOrDefault(THUMBPRINT, "") + requestToDecrypt
+							: requestToDecrypt, fetchReferenceId());
 					Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId(), 
 							requestData -> validateRequestHMAC(reqHMAC, requestData));
 
@@ -245,8 +247,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return
 	 * @throws IdAuthenticationAppException
 	 */
-	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException{
-		if(!super.verifySignature(jwsSignature)){
+	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
+		if (!super.verifySignature(jwsSignature, null)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
@@ -400,8 +402,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
-	private String digest(byte[] hash) {
-		return HMACUtils.digestAsPlainText(hash);
+	private String digest(byte[] hash) throws IdAuthenticationAppException {
+		try {
+			return HMACUtils2.digestAsPlainText(hash);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 
 	/**
@@ -410,8 +416,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param string the string
 	 * @return the hash
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private byte[] getHash(String string) throws UnsupportedEncodingException {
+	private byte[] getHash(String string) throws UnsupportedEncodingException, IdAuthenticationAppException {
 		return getHash(string.getBytes(UTF_8));
 	}
 	
@@ -420,9 +427,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @param bytes the bytes
 	 * @return the hash
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private byte[] getHash(byte[] bytes) {
-		return HMACUtils.generateHash(bytes);
+	private byte[] getHash(byte[] bytes) throws IdAuthenticationAppException {
+		try {
+			return HMACUtils2.generateHash(bytes);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 
 	/**
@@ -831,6 +843,26 @@ public class IdAuthFilter extends BaseAuthFilter {
 			}
 		}
 		return params;
+	}
+
+	@Override
+	protected boolean isSigningRequired() {
+		return env.getProperty("mosip.ida.auth.signing-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isSignatureVerificationRequired() {
+		return env.getProperty("mosip.ida.auth.signature-verification-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isTrustValidationRequired() {
+		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);
 	}
 
 }

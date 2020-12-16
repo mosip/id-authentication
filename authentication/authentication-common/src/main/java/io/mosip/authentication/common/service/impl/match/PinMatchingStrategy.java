@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -11,7 +12,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 
 /**
  * The Enum PinMatchingStrategy - used to compare and
@@ -24,8 +25,13 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String hashPin = HMACUtils.digestAsPlainText(HMACUtils.generateHash(((String) reqInfo).getBytes()));
-			return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
+			String hashPin;
+			try {
+				hashPin = HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(((String) reqInfo).getBytes()));
+				return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
+			} catch (NoSuchAlgorithmException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
 		} else {
 			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_MISMATCH);

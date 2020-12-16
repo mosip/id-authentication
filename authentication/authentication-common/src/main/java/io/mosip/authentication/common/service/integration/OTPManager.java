@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.integration;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +41,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -99,47 +100,53 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType,
-			Map<String, String> valueMap) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap)
+			throws IdAuthenticationBusinessException {
 
-		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
-		String otp = generateOTP(otpRequestDTO.getIndividualId());
-		otpTemplateValues.put("otp", otp);
-		String otpHash = HMACUtils.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
-				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
-				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
+		try {
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
+			String otp = generateOTP(otpRequestDTO.getIndividualId());
+			otpTemplateValues.put("otp", otp);
+			String otpHash;
+			otpHash = HMACUtils2.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
+					+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
+					+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
-		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-			otpTxn.setOtpHash(otpHash);
-			otpTxn.setUpdBy(securityManager.getUser());
-			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-			otpTxn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
-					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
-			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-			otpRepo.save(otpTxn);
-		} else {
-			OtpTransaction txn = new OtpTransaction();
-			txn.setId(UUID.randomUUID().toString());
-			txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
-			txn.setOtpHash(otpHash);
-			txn.setCrBy(securityManager.getUser());
-			txn.setCrDtimes(DateUtils.getUTCCurrentDateTime());
-			txn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
-					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
-			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-			otpRepo.save(txn);
+			if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+				OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash,
+						IdAuthCommonConstants.ACTIVE_STATUS);
+				otpTxn.setOtpHash(otpHash);
+				otpTxn.setUpdBy(securityManager.getUser());
+				otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+				otpTxn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+						environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+				otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+				otpRepo.save(otpTxn);
+			} else {
+				OtpTransaction txn = new OtpTransaction();
+				txn.setId(UUID.randomUUID().toString());
+				txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
+				txn.setOtpHash(otpHash);
+				txn.setCrBy(securityManager.getUser());
+				txn.setCrDtimes(DateUtils.getUTCCurrentDateTime());
+				txn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+						environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+				txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+				otpRepo.save(txn);
+			}
+			String notificationProperty = null;
+			notificationProperty = otpRequestDTO.getOtpChannel().stream()
+					.map(channel -> NotificationType.getNotificationTypeForChannel(channel).stream()
+							.map(type -> type.getName()).collect(Collectors.joining()))
+					.collect(Collectors.joining("|"));
+
+			notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
+					valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty);
+
+			return true;
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-		String notificationProperty = null;
-		notificationProperty = otpRequestDTO
-				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
-						.stream().map(type -> type.getName()).collect(Collectors.joining()))
-				.collect(Collectors.joining("|"));
-
-		notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
-				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty);
-
-		return true;
 	}
 
 	private String generateOTP(String uin) throws IdAuthUncheckedException {
@@ -239,21 +246,27 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		String otpHash = HMACUtils.digestAsPlainText(
-				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
-		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-			otpRepo.save(otpTxn);
-			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-				return true;
+		try {
+			String otpHash;
+			otpHash = HMACUtils2.digestAsPlainText(
+					(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
+			if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
+				OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash,
+						IdAuthCommonConstants.ACTIVE_STATUS);
+				otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+				otpRepo.save(otpTxn);
+				if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+					return true;
+				} else {
+					logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+				}
 			} else {
-				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+				return false;
 			}
-		} else {
-			return false;
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 }

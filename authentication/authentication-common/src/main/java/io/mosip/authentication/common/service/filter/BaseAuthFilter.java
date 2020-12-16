@@ -2,7 +2,7 @@ package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.PublicKey;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -21,9 +22,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -46,14 +46,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
 	@Autowired
-	private CryptoCore cryptoCore;
+	private IdAuthSecurityManager securityManager;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		cryptoCore = context.getBean(CryptoCore.class);
+		securityManager = context.getBean(IdAuthSecurityManager.class);
 	}
 
 	/*
@@ -98,7 +98,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 	
 	protected void verifyJwsData(String jwsSignature) throws IdAuthenticationAppException {
-		if(!verifySignature(jwsSignature)) {
+		if(!verifySignature(jwsSignature, null)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
@@ -112,13 +112,17 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return jws;
 	}
 
-	protected boolean verifySignature(String jwsSignature) {
-		try {
-			return cryptoCore.verifySignature(jwsSignature);
-		} catch (Exception e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER, "Invalid JWS data: " + e.getMessage());
-			return false;
+	protected boolean verifySignature(String jwsSignature, byte[] requestAsByte) {
+		if (isSignatureVerificationRequired()) {
+			try {
+				return securityManager.verifySignature(jwsSignature, requestAsByte, isTrustValidationRequired());
+			} catch (Exception e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER,
+						"Invalid JWS data: " + e.getMessage());
+				return false;
+			}
 		}
+		return true;
 	}
 
 	/**
@@ -182,12 +186,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		boolean isSigned = false;
-		if(verifySignature(signature)) {
-			//TODO Compare signature payload with request
-			isSigned = true;
-		}
-		return isSigned;
+		return verifySignature(signature, requestAsByte);
 	}
 
 	/**
@@ -259,8 +258,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateRequestHMAC(String requestHMAC, String reqest) throws IdAuthenticationAppException {
-		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(reqest.getBytes(StandardCharsets.UTF_8))))) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
+		try {
+			if (!requestHMAC.equals(HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(reqest.getBytes(StandardCharsets.UTF_8))))) {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
+			}
+		} catch (IdAuthenticationAppException | NoSuchAlgorithmException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 }

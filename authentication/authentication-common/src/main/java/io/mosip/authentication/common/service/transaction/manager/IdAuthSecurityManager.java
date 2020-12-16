@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.transaction.manager;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -27,7 +28,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -35,7 +36,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
-import io.mosip.kernel.signature.dto.SignRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
 import io.mosip.kernel.signature.service.SignatureService;
 import io.mosip.kernel.zkcryptoservice.constant.ZKCryptoManagerConstants;
 import io.mosip.kernel.zkcryptoservice.dto.CryptoDataDto;
@@ -245,8 +247,13 @@ public class IdAuthSecurityManager {
 		sRandom.nextBytes(nonce);
 		sRandom.nextBytes(aad);
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
-		String hash = HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
-		return  new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
+		String hash;
+		try {
+			hash = HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(encryptedData));
+			return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 	
 	
@@ -259,8 +266,23 @@ public class IdAuthSecurityManager {
 	 */
 	public String sign(String data) {
 		// TODO: check whether any exception will be thrown
-		SignRequestDto request = new SignRequestDto(data);
-		return signatureService.sign(request).getData();
+		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
+		request.setApplicationId(signApplicationid);
+		request.setDataToSign(data);
+		request.setIncludeCertHash(true);
+		request.setIncludeCertificate(true);
+		request.setIncludePayload(false);
+		request.setReferenceId(signRefid);
+		return signatureService.jwtSign(request).getJwtSignedData();
+	}
+	
+	public boolean verifySignature(String signature, byte[] requestAsByte, boolean isTrustValidationRequired) {
+		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
+		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
+		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
+		jwtSignatureVerifyRequestDto.setJwtSignatureData(CryptoUtil.encodeBase64(requestAsByte));
+		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
+		return signatureService.jwtVerify(jwtSignatureVerifyRequestDto).isSignatureValid();
 	}
 
 	public String hash(String id) throws IdAuthenticationBusinessException {
@@ -268,7 +290,11 @@ public class IdAuthSecurityManager {
 		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if(hashSaltValue  != null) {
-			return HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+			try {
+				return HMACUtils2.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+			} catch (NoSuchAlgorithmException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), SALT_FOR_THE_GIVEN_ID));

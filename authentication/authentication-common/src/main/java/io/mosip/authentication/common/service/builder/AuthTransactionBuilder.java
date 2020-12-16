@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.builder;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -28,7 +29,7 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
@@ -211,7 +212,7 @@ public class AuthTransactionBuilder {
 				String comment = isStatus ? requestTypeMessages + " Success"
 						: requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
+				autnTxn.setRefId(HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(idvId.getBytes())));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(token, env);
 				autnTxn.setToken(token);
@@ -263,7 +264,7 @@ public class AuthTransactionBuilder {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
-		} catch (ParseException e) {
+		} catch (ParseException | NoSuchAlgorithmException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
 					e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

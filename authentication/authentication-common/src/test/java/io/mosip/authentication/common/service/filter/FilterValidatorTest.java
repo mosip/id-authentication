@@ -55,6 +55,30 @@ public class FilterValidatorTest {
 		protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 				throws IdAuthenticationAppException {
 		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -62,6 +86,30 @@ public class FilterValidatorTest {
 		@Override
 		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
+		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	};
 
