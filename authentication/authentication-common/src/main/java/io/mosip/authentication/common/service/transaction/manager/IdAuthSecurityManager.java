@@ -249,7 +249,7 @@ public class IdAuthSecurityManager {
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
 		String hash;
 		try {
-			hash = HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(encryptedData));
+			hash = HMACUtils2.digestAsPlainText(encryptedData);
 			return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
 		} catch (NoSuchAlgorithmException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -276,12 +276,13 @@ public class IdAuthSecurityManager {
 		return signatureService.jwtSign(request).getJwtSignedData();
 	}
 	
-	public boolean verifySignature(String signature, byte[] requestAsByte, boolean isTrustValidationRequired) {
+	public boolean verifySignature(String signature, String domain, boolean isTrustValidationRequired) {
 		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
-		jwtSignatureVerifyRequestDto.setJwtSignatureData(CryptoUtil.encodeBase64(requestAsByte));
+		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
+		jwtSignatureVerifyRequestDto.setDomain(domain);
 		return signatureService.jwtVerify(jwtSignatureVerifyRequestDto).isSignatureValid();
 	}
 

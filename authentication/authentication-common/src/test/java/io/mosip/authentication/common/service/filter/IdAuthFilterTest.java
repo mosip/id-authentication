@@ -56,7 +56,6 @@ import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
@@ -184,16 +183,6 @@ public class IdAuthFilterTest {
 		responseBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		assertEquals(requestBody.toString(), filter.encipherResponse(responseBody).toString());
-	}
-
-	/**
-	 * Test sign.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@Test
-	public void testSign() throws IdAuthenticationAppException {
-		assertEquals(true, filter.validateRequestSignature("something", "something".getBytes()));
 	}
 
 	/**

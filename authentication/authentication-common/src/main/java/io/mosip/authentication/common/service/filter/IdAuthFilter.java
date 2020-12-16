@@ -55,6 +55,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -248,7 +249,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 */
 	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
-		if (!super.verifySignature(jwsSignature, null)) {
+		if (!super.verifySignature(jwsSignature, DomainType.DIGITAL_ID.getType())) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
@@ -500,18 +501,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 				.map(obj -> (String) obj);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.
-	 * lang.String, byte[])
-	 */
-	@Override
-	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		return true;
-	}
-	
 	/**
 	 * Check allowed auth type based on policy.
 	 *

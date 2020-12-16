@@ -212,7 +212,7 @@ public class AuthTransactionBuilder {
 				String comment = isStatus ? requestTypeMessages + " Success"
 						: requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(idvId.getBytes())));
+				autnTxn.setRefId(HMACUtils2.digestAsPlainText(idvId.getBytes()));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(token, env);
 				autnTxn.setToken(token);

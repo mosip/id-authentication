@@ -27,7 +27,7 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String hashPin;
 			try {
-				hashPin = HMACUtils2.digestAsPlainText(HMACUtils2.generateHash(((String) reqInfo).getBytes()));
+				hashPin = HMACUtils2.digestAsPlainText(((String) reqInfo).getBytes());
 				return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
 			} catch (NoSuchAlgorithmException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
