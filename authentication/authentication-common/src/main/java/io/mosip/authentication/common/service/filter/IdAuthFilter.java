@@ -249,7 +249,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException
 	 */
 	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
-		if (!super.verifySignature(jwsSignature, DomainType.DIGITAL_ID.getType())) {
+		if (!super.verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}

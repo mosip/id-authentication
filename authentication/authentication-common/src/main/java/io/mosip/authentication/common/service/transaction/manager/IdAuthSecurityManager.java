@@ -2,6 +2,8 @@ package io.mosip.authentication.common.service.transaction.manager;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -268,7 +271,7 @@ public class IdAuthSecurityManager {
 		// TODO: check whether any exception will be thrown
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
 		request.setApplicationId(signApplicationid);
-		request.setDataToSign(data);
+		request.setDataToSign(CryptoUtil.encodeBase64(data.getBytes()));
 		request.setIncludeCertHash(true);
 		request.setIncludeCertificate(true);
 		request.setIncludePayload(false);
@@ -276,10 +279,11 @@ public class IdAuthSecurityManager {
 		return signatureService.jwtSign(request).getJwtSignedData();
 	}
 	
-	public boolean verifySignature(String signature, String domain, boolean isTrustValidationRequired) {
+	public boolean verifySignature(String signature, String domain, String requestData, boolean isTrustValidationRequired) {
 		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
+		jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64(requestData.getBytes()));
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
 		jwtSignatureVerifyRequestDto.setDomain(domain);

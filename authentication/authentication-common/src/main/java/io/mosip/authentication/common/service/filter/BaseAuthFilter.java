@@ -1,14 +1,17 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -99,7 +102,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	protected void verifyJwsData(String jwsSignature) throws IdAuthenticationAppException {
-		if (!verifySignature(jwsSignature, DomainType.JWT_DATA.getType())) {
+		if (!verifySignature(jwsSignature, null, DomainType.JWT_DATA.getType())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
@@ -113,10 +116,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return jws;
 	}
 
-	protected boolean verifySignature(String jwsSignature, String domain) {
+	protected boolean verifySignature(String jwsSignature, String requestData, String domain) {
 		if (isSignatureVerificationRequired()) {
 			try {
-				return securityManager.verifySignature(jwsSignature, domain, isTrustValidationRequired());
+				return securityManager.verifySignature(jwsSignature, domain, requestData, isTrustValidationRequired());
 			} catch (Exception e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER,
 						"Invalid JWS data: " + e.getMessage());
@@ -164,19 +167,26 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	private void validateSignature(String signature, ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		if (isSignatureVerificationRequired()) {
-			if (StringUtils.isEmpty(signature)) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-						"signature is empty or null");
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-								"signature - header"));
-			} else if (!verifySignature(signature, DomainType.AUTH.getType())) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-						"signature JWS failed");
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+		try {
+			if (isSignatureVerificationRequired()) {
+				if (StringUtils.isEmpty(signature)) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+							"signature is empty or null");
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+									"signature - header"));
+				} else if (!verifySignature(signature,
+						requestWrapper.getReader().lines().collect(Collectors.joining("\n")),
+						DomainType.AUTH.getType())) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+							"signature JWS failed");
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+				}
+				requestWrapper.resetInputStream();
 			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
