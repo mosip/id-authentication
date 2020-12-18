@@ -10,6 +10,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -269,7 +270,9 @@ public class IdAuthSecurityManager {
 		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
-		jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64(requestData.getBytes()));
+		if (Objects.nonNull(requestData)) {
+			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64(requestData.getBytes()));
+		}
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
 		jwtSignatureVerifyRequestDto.setDomain(domain);
@@ -336,7 +339,7 @@ public class IdAuthSecurityManager {
 
 	public static String generateHashAndDigestAsPlainText(byte[] data) {
 		try {
-			return DatatypeConverter.printHexBinary(HMACUtils2.generateHash(data)).toUpperCase();
+			return HMACUtils2.digestAsPlainText(data);
 		} catch (NoSuchAlgorithmException e) {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}

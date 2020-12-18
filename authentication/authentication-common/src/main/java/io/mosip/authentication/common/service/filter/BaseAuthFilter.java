@@ -1,14 +1,15 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -173,7 +174,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 							String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 									"signature - header"));
 				} else if (!verifySignature(signature,
-						requestWrapper.getReader().lines().collect(Collectors.joining("\n")),
+						IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()),
 						DomainType.AUTH.getType())) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 							"signature JWS failed");
