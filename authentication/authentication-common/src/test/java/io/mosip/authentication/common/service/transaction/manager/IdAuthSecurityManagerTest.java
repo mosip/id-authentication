@@ -83,20 +83,20 @@ public class IdAuthSecurityManagerTest {
 	public void testDecrypt() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.decrypt(Mockito.any()))
 				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
-		byte[] decrypt = authSecurityManager.decrypt("Hello", "20190101", null, null);
+		byte[] decrypt = authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 		assertEquals("abcd", new String(decrypt));
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testDecryptNoUniqueAliasException() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
-		authSecurityManager.decrypt("Hello", "20190101", null, null);
+		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testDecryptException() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
-		authSecurityManager.decrypt("Hello", "20190101", null, null);
+		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 	}
 
 //	@Test
