@@ -94,7 +94,7 @@ public class PinAuthServiceImplTest {
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		StaticPin stat = new StaticPin(null, null, false, null, null, null, null, false, null);
-		stat.setPin(IdAuthSecurityManager.digestAsPlainText(("12345").getBytes()));
+		stat.setPin(IdAuthSecurityManager.generateHashAndDigestAsPlainText(("12345").getBytes()));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",

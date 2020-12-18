@@ -25,7 +25,7 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String hashPin;
-				hashPin = IdAuthSecurityManager.digestAsPlainText(((String) reqInfo).getBytes());
+				hashPin = IdAuthSecurityManager.generateHashAndDigestAsPlainText(((String) reqInfo).getBytes());
 				return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
 		} else {
 			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);

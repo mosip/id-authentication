@@ -210,7 +210,7 @@ public class AuthTransactionBuilder {
 				String comment = isStatus ? requestTypeMessages + " Success"
 						: requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(IdAuthSecurityManager.digestAsPlainText(idvId.getBytes()));
+				autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(token, env);
 				autnTxn.setToken(token);

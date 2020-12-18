@@ -373,7 +373,7 @@ public class OTPAuthServiceTest {
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("TXN00001");
-		autntxn.setRefId(IdAuthSecurityManager.digestAsPlainText("123456".getBytes()));
+		autntxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText("123456".getBytes()));
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -241,7 +242,7 @@ public class IdAuthSecurityManager {
 		sRandom.nextBytes(aad);
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
 		String hash;
-		hash = IdAuthSecurityManager.digestAsPlainText(encryptedData);
+		hash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(encryptedData);
 		return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
 	}
 
@@ -331,5 +332,13 @@ public class IdAuthSecurityManager {
 
 	public static String digestAsPlainText(byte[] data) {
 		return DatatypeConverter.printHexBinary(data).toUpperCase();
+	}
+
+	public static String generateHashAndDigestAsPlainText(byte[] data) {
+		try {
+			return DatatypeConverter.printHexBinary(HMACUtils2.generateHash(data)).toUpperCase();
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 }
