@@ -53,7 +53,6 @@ import reactor.ipc.netty.http.HttpResources;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@Ignore
 public class OTPAuthServiceTest {
 
 	@InjectMocks
@@ -86,6 +85,7 @@ public class OTPAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 	}
 
@@ -140,6 +140,7 @@ public class OTPAuthServiceTest {
 		authtxn.setId("test");
 		authtxn.setToken("123456");
 		authtxn.setRefIdType("UIN");
+		authtxn.setEntityId("PARTNER1");
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
@@ -147,7 +148,7 @@ public class OTPAuthServiceTest {
 				.thenReturn(autntxnList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456",
-				Collections.emptyMap(), "1234567890");
+				Collections.emptyMap(), "PARTNER1");
 		assertNotNull(authStatusInfo);
 	}
 
@@ -198,12 +199,13 @@ public class OTPAuthServiceTest {
 		autTxn.setRequestTrnId("1234567890");
 		autTxn.setToken("123456");
 		autTxn.setRefIdType("UIN");
+		autTxn.setEntityId("PARTNER1");
 		autntxnList.add(autTxn);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER1"));
 	}
 
 	/**
@@ -218,13 +220,36 @@ public class OTPAuthServiceTest {
 
 		autntxn.setToken("123456");
 		autntxn.setRefIdType("UIN");
+		autntxn.setEntityId("PARTNER1");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "UIN"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER1"));
+	}
+	
+	/**
+	 * To test the Transaction id with UIN
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void Test_invalidPartnerId() throws IdAuthenticationBusinessException {
+		AutnTxn autntxn = new AutnTxn();
+		autntxn.setRequestTrnId("1234567890");
+
+		autntxn.setToken("123456");
+		autntxn.setRefIdType("UIN");
+		autntxn.setEntityId("PARTNER1");
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		autntxnList.add(autntxn);
+		List<String> valueList = new ArrayList<>();
+		valueList.add("1234567890");
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn(autntxnList);
+		otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER2");
 	}
 
 	@Test(expected = IDDataValidationException.class)
@@ -260,11 +285,6 @@ public class OTPAuthServiceTest {
 		request.setOtp(null);
 		authRequestDTO.setRequest(request);
 		otpauthserviceimpl.authenticate(authRequestDTO, null, null, null);
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestIdValidationFailedException() throws IdAuthenticationBusinessException {
-		otpauthserviceimpl.getOtpKey(null, null, null);
 	}
 
 	/**

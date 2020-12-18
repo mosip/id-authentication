@@ -141,9 +141,10 @@ public class AutnTxn {
 	 * @param refId
 	 * @param uinHash
 	 */
-	public AutnTxn(String token, String refIdType) {
+	public AutnTxn(String token, String refIdType, String entityId) {
 		this.token = token;
-		this.refIdType = refIdType; 
+		this.refIdType = refIdType;
+		this.entityId = entityId; 
 	}
 	
 	
