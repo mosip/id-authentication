@@ -73,7 +73,7 @@ public class KeyManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
-			String thumbprint, boolean isThumbprintEnabled,
+			String thumbprint, Boolean isThumbprintEnabled,
 			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
@@ -107,7 +107,7 @@ public class KeyManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint, byte[] encryptedRequest,
-			byte[] encryptedSessionKey, String refId, boolean isThumbprintEnabled,
+			byte[] encryptedSessionKey, String refId, Boolean isThumbprintEnabled,
 			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException, IOException {
 		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint,
@@ -130,7 +130,7 @@ public class KeyManager {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String kernelDecryptAndDecode(String thumbprint, String data, String refId, boolean isThumbprintEnabled)
+	public String kernelDecryptAndDecode(String thumbprint, String data, String refId, Boolean isThumbprintEnabled)
 			throws IdAuthenticationAppException {
 		return internalKernelDecryptAndDecode(thumbprint, data, refId, null, null, true, isThumbprintEnabled);
 	}
@@ -146,7 +146,7 @@ public class KeyManager {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	public String kernelDecrypt(String thumbprint, String data, String refId, String aad, String salt,
-			boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+			Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		return internalKernelDecryptAndDecode(thumbprint, data, refId, aad, salt, false, isThumbprintEnabled);
 	}
 
@@ -162,7 +162,7 @@ public class KeyManager {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private String internalKernelDecryptAndDecode(String thumbprint, String data, String refId, String aad, String salt,
-			boolean decode, boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		if (isThumbprintEnabled) {
 			data = CryptoUtil.encodeBase64(

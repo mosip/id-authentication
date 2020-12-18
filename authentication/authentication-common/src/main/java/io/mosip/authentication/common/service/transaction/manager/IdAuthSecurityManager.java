@@ -175,7 +175,7 @@ public class IdAuthSecurityManager {
 	 *                                           exception
 	 */
 	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt,
-			boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
+			Boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
@@ -267,7 +267,7 @@ public class IdAuthSecurityManager {
 	}
 
 	public boolean verifySignature(String signature, String domain, String requestData,
-			boolean isTrustValidationRequired) {
+			Boolean isTrustValidationRequired) {
 		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);

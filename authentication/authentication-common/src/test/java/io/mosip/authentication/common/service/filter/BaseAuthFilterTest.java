@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.security.PublicKey;
 import java.util.Map;
 
 import javax.servlet.FilterConfig;
@@ -37,6 +36,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -126,17 +126,16 @@ public class BaseAuthFilterTest {
 
 	@Mock
 	BaseAuthFilter ba = mock(BaseAuthFilter.class);
-	
+
 	@Mock
-	private CryptoCore cryptoCore;
-	
+	private IdAuthSecurityManager securityManager;
 
 	@Before
 	public void setup() {
 		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		ReflectionTestUtils.setField(baseAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseAuthFilter, "keyManager", keyManager);
-		ReflectionTestUtils.setField(baseAuthFilter, "cryptoCore", cryptoCore);
+		ReflectionTestUtils.setField(baseAuthFilter, "securityManager", securityManager);
 	}
 
 	@Test
@@ -161,7 +160,8 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		Mockito.when(requestWrapper.getHeader("signature")).thenReturn(signature);
-		Mockito.when(cryptoCore.verifySignature(signature)).thenReturn(true);
+		Mockito.when(securityManager.verifySignature(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
 		ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 	}
 
@@ -278,13 +278,13 @@ public class BaseAuthFilterTest {
 
 	@Test
 	public void requesthmacTest() throws IdAuthenticationAppException {
-	  try {	
-		baseAuthFilter.validateRequestHMAC("de3eiac3452", "reqData");
-	  }
-	  catch(IdAuthenticationAppException ex) {
-		  assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), ex.getErrorCode());
-		  assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(),ex.getErrorText());
-	  }
+		try {
+			baseAuthFilter.validateRequestHMAC("ED504CDE02EC2E3F9885C06CE5129D68833ADC97C869F21855B4BA4455601B3", "reqData");
+		} catch (IdAuthenticationAppException ex) {
+			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getCause();
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
 	}
 
 	@Test
@@ -461,16 +461,17 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getRequestURL()).thenReturn(sbf);
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
-		Mockito.when(cryptoCore.verifySignature(signature)).thenReturn(true);
-		
+		Mockito.when(securityManager.verifySignature(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
+
 		try {
 			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
 	}
-	
-	private Map<String, Object> createRequestBody(){
+
+	private Map<String, Object> createRequestBody() {
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
 		try {
 			return mapper.readValue(req, new TypeReference<Map<String, Object>>() {
