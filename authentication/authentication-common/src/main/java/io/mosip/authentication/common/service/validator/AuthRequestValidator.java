@@ -37,6 +37,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String DIGITAL_ID = "data/digitalId/";
+
 	private static final int FINGERPRINT_COUNT = 10;
 
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
@@ -224,41 +226,41 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getMake())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/make") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "make") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getModel())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/model") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "model") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getType())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/type") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "type") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDeviceSubType())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/deviceSubType") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "deviceSubType") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDp())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/deviceProvider") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "deviceProvider") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				if (StringUtils.isEmpty(bioData.get(index).getDigitalId().getDpId())) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIO_PATH, index, "digitalId/deviceProviderId") },
+							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "deviceProviderId") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
 				super.validateReqTime(bioData.get(index).getDigitalId().getDateTime(), errors,
-						String.format(BIO_PATH, index, "digitalId/dateTime"));
+						String.format(BIO_PATH, index, DIGITAL_ID + "dateTime"));
 			}
 		});
 	}
