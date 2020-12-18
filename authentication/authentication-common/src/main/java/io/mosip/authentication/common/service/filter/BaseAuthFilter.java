@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,7 +23,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -256,12 +254,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateRequestHMAC(String requestHMAC, String reqest) throws IdAuthenticationAppException {
-		try {
-			if (!requestHMAC.contentEquals(HMACUtils2.digestAsPlainText(reqest.getBytes(StandardCharsets.UTF_8)))) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
-			}
-		} catch (IdAuthenticationAppException | NoSuchAlgorithmException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		if (!requestHMAC
+				.contentEquals(IdAuthSecurityManager.digestAsPlainText(reqest.getBytes(StandardCharsets.UTF_8)))) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
 		}
 	}
 }

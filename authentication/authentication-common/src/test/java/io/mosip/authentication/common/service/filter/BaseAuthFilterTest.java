@@ -281,9 +281,8 @@ public class BaseAuthFilterTest {
 		try {
 			baseAuthFilter.validateRequestHMAC("ED504CDE02EC2E3F9885C06CE5129D68833ADC97C869F21855B4BA4455601B3", "reqData");
 		} catch (IdAuthenticationAppException ex) {
-			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getCause();
-			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
-			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), ex.getErrorText());
 		}
 	}
 

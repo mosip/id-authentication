@@ -266,7 +266,7 @@ public class FilterValidatorTest {
 		try {
 			ReflectionTestUtils.invokeMethod(baseAuthFilter, "validateRequestHMAC", "92834787293", "1234234");
 		} catch (UndeclaredThrowableException ex) {
-			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getUndeclaredThrowable().getCause();
+			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getUndeclaredThrowable();
 			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
 		}

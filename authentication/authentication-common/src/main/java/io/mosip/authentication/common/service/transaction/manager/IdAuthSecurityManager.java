@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -240,12 +241,8 @@ public class IdAuthSecurityManager {
 		sRandom.nextBytes(aad);
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
 		String hash;
-		try {
-			hash = HMACUtils2.digestAsPlainText(encryptedData);
-			return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
-		} catch (NoSuchAlgorithmException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
+		hash = IdAuthSecurityManager.digestAsPlainText(encryptedData);
+		return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
 	}
 
 	/**
@@ -332,4 +329,7 @@ public class IdAuthSecurityManager {
 		return pKey;
 	}
 
+	public static String digestAsPlainText(byte[] data) {
+		return DatatypeConverter.printHexBinary(data).toUpperCase();
+	}
 }
