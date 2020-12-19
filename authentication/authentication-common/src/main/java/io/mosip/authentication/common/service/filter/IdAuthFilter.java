@@ -47,7 +47,6 @@ import java.util.stream.Stream;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
@@ -57,6 +56,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -414,12 +414,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	private String digest(byte[] hash) throws IdAuthenticationAppException {
-		// TODO need to be updated with HMACUtils2
-//		try {
-			return DatatypeConverter.printHexBinary(hash).toUpperCase();
-//		} catch (NoSuchAlgorithmException e) {
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-//		}
+			return IdAuthSecurityManager.digestAsPlainText(hash);
 	}
 
 	/**
