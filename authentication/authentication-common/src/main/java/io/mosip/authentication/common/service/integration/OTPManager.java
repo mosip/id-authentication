@@ -40,7 +40,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -99,13 +98,14 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType,
-			Map<String, String> valueMap) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap)
+			throws IdAuthenticationBusinessException {
 
 		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		otpTemplateValues.put("otp", otp);
-		String otpHash = HMACUtils.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
+		String otpHash;
+		otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
@@ -239,7 +239,8 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		String otpHash = HMACUtils.digestAsPlainText(
+		String otpHash;
+		otpHash = IdAuthSecurityManager.digestAsPlainText(
 				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
 		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
 			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);

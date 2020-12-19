@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.transaction.manager;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -9,9 +10,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,13 +24,14 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -35,7 +39,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
-import io.mosip.kernel.signature.dto.SignRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
 import io.mosip.kernel.signature.service.SignatureService;
 import io.mosip.kernel.zkcryptoservice.constant.ZKCryptoManagerConstants;
 import io.mosip.kernel.zkcryptoservice.dto.CryptoDataDto;
@@ -53,7 +58,7 @@ import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 public class IdAuthSecurityManager {
 
 	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
-	
+
 	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
 	private String configPath;
 
@@ -101,23 +106,23 @@ public class IdAuthSecurityManager {
 
 	@Autowired
 	private DataEncryptKeystoreRepository repo;
-	
+
 	@Autowired
 	private ZKCryptoManagerService zkCryptoManagerService;
-	
+
 	@Autowired
 	private CryptoCore cryptoCore;
-	
+
 	@Autowired
 	private KeyGenerator keyGenerator;
 
 	@Value("${mosip.kernel.tokenid.length}")
 	private int tokenIDLength;
-	
+
 	/** KeySplitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
-	
+
 	/**
 	 * Gets the user.
 	 *
@@ -130,17 +135,13 @@ public class IdAuthSecurityManager {
 	/**
 	 * Encrypt.
 	 *
-	 * @param dataToEncrypt
-	 *            the data to encrypt
-	 * @param refId
-	 *            the ref id
-	 * @param aad
-	 *            the aad
-	 * @param saltToEncrypt
-	 *            the salt to encrypt
+	 * @param dataToEncrypt the data to encrypt
+	 * @param refId         the ref id
+	 * @param aad           the aad
+	 * @param saltToEncrypt the salt to encrypt
 	 * @return the byte[]
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public byte[] encrypt(String dataToEncrypt, String refId, String aad, String saltToEncrypt)
 			throws IdAuthenticationBusinessException {
@@ -168,20 +169,16 @@ public class IdAuthSecurityManager {
 	/**
 	 * Decrypt.
 	 *
-	 * @param dataToDecrypt
-	 *            the data to decrypt
-	 * @param refId
-	 *            the ref id
-	 * @param aad
-	 *            the aad
-	 * @param saltToDecrypt
-	 *            the salt to decrypt
+	 * @param dataToDecrypt the data to decrypt
+	 * @param refId         the ref id
+	 * @param aad           the aad
+	 * @param saltToDecrypt the salt to decrypt
 	 * @return the byte[]
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt)
-			throws IdAuthenticationBusinessException {
+	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt,
+			Boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
@@ -190,6 +187,7 @@ public class IdAuthSecurityManager {
 			request.setReferenceId(refId);
 			request.setAad(aad);
 			request.setSalt(saltToDecrypt);
+			request.setPrependThumbprint(isThumbprintEnabled);
 			return CryptoUtil.decodeBase64(cryptomanagerService.decrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
 			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
@@ -202,15 +200,16 @@ public class IdAuthSecurityManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
 		}
 	}
-	
+
 	public String reEncryptRandomKey(String encryptedKey) {
-		 ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService.zkReEncryptRandomKey(encryptedKey);
-		 return zkReEncryptRandomKeyRespDto.getEncryptedKey();
+		ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService
+				.zkReEncryptRandomKey(encryptedKey);
+		return zkReEncryptRandomKeyRespDto.getEncryptedKey();
 	}
-	
+
 	public void reEncryptAndStoreRandomKey(String index, String key) {
 		Integer indexInt = Integer.valueOf(index);
-		if(repo.findKeyById(indexInt) == null) {
+		if (repo.findKeyById(indexInt) == null) {
 			String reEncryptedKey = reEncryptRandomKey(key);
 			DataEncryptKeystore randomKeyEntity = new DataEncryptKeystore();
 			randomKeyEntity.setId(indexInt);
@@ -221,21 +220,19 @@ public class IdAuthSecurityManager {
 		}
 	}
 
-	public Map<String, String> zkDecrypt(String id, Map<String, String> encryptedAttributes) throws IdAuthenticationBusinessException {
+	public Map<String, String> zkDecrypt(String id, Map<String, String> encryptedAttributes)
+			throws IdAuthenticationBusinessException {
 		ZKCryptoRequestDto cryptoRequestDto = new ZKCryptoRequestDto();
 		cryptoRequestDto.setId(id);
-		List<CryptoDataDto> zkDataAttributes = encryptedAttributes.entrySet()
-														.stream()
-														.map(entry -> new CryptoDataDto(entry.getKey(), entry.getValue()))
-														.collect(Collectors.toList());
+		List<CryptoDataDto> zkDataAttributes = encryptedAttributes.entrySet().stream()
+				.map(entry -> new CryptoDataDto(entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		cryptoRequestDto.setZkDataAttributes(zkDataAttributes);
 		ZKCryptoResponseDto zkDecryptResponse = zkCryptoManagerService.zkDecrypt(cryptoRequestDto);
-		return zkDecryptResponse.getZkDataAttributes()
-							.stream()
-							.collect(Collectors.toMap(CryptoDataDto::getIdentifier, CryptoDataDto::getValue));
-		
+		return zkDecryptResponse.getZkDataAttributes().stream()
+				.collect(Collectors.toMap(CryptoDataDto::getIdentifier, CryptoDataDto::getValue));
+
 	}
-	
+
 	public String createRandomToken(byte[] dataToEncrypt) throws IdAuthenticationBusinessException {
 		SecretKey key = keyGenerator.getSymmetricKey();
 		SecureRandom sRandom = new SecureRandom();
@@ -245,67 +242,88 @@ public class IdAuthSecurityManager {
 		sRandom.nextBytes(nonce);
 		sRandom.nextBytes(aad);
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
-		String hash = HMACUtils.digestAsPlainText(HMACUtils.generateHash(encryptedData));
-		return  new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
+		String hash;
+		hash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(encryptedData);
+		return new BigInteger(hash.getBytes()).toString().substring(0, tokenIDLength);
 	}
-	
-	
+
 	/**
 	 * Sign.
 	 *
-	 * @param data
-	 *            the data
+	 * @param data the data
 	 * @return the string
 	 */
 	public String sign(String data) {
 		// TODO: check whether any exception will be thrown
-		SignRequestDto request = new SignRequestDto(data);
-		return signatureService.sign(request).getData();
+		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
+		request.setApplicationId(signApplicationid);
+		request.setDataToSign(CryptoUtil.encodeBase64(data.getBytes()));
+		request.setIncludeCertHash(true);
+		request.setIncludeCertificate(true);
+		request.setIncludePayload(false);
+		request.setReferenceId(signRefid);
+		return signatureService.jwtSign(request).getJwtSignedData();
+	}
+
+	public boolean verifySignature(String signature, String domain, String requestData,
+			Boolean isTrustValidationRequired) {
+		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
+		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
+		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
+		if (Objects.nonNull(requestData)) {
+			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64(requestData.getBytes()));
+		}
+		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
+		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
+		jwtSignatureVerifyRequestDto.setDomain(domain);
+		return signatureService.jwtVerify(jwtSignatureVerifyRequestDto).isSignatureValid();
 	}
 
 	public String hash(String id) throws IdAuthenticationBusinessException {
 		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
 		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
-		if(hashSaltValue  != null) {
-			return HMACUtils.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+		if (hashSaltValue != null) {
+			try {
+				return HMACUtils2.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+			} catch (NoSuchAlgorithmException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), SALT_FOR_THE_GIVEN_ID));
+					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+							SALT_FOR_THE_GIVEN_ID));
 		}
 	}
-	
+
 	private X509Certificate getX509Certificate(String partnerCertificate) throws IdAuthenticationBusinessException {
 		try {
 			String certificate = IdAuthSecurityManager.trimBeginEnd(partnerCertificate);
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate x509cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(java.util.Base64.getDecoder().decode(certificate)));
+			X509Certificate x509cert = (X509Certificate) cf
+					.generateCertificate(new ByteArrayInputStream(java.util.Base64.getDecoder().decode(certificate)));
 			return x509cert;
 		} catch (CertificateException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}		
+		}
 	}
-	
-	public String encryptData(byte[] data, String partnerCertificate)
-			throws IdAuthenticationBusinessException {
-			X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
-			PublicKey publicKey = x509Certificate.getPublicKey();	
-			byte[] encryptedData = encrypt(publicKey, data);
-			return CryptoUtil.encodeBase64(encryptedData);
+
+	public String encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
+		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
+		PublicKey publicKey = x509Certificate.getPublicKey();
+		byte[] encryptedData = encrypt(publicKey, data);
+		return CryptoUtil.encodeBase64(encryptedData);
 	}
-	
+
 	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
 		SecretKey secretKey = keyGenerator.getSymmetricKey();
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, dataToEncrypt, null);
-		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey,secretKey.getEncoded());
+		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey, secretKey.getEncoded());
 		return combineDataToEncrypt(encryptedData, encryptedSymmetricKey);
 	}
-	
-	public byte[] combineDataToEncrypt(byte[] encryptedData, byte[ ] encryptedSymmetricKey) {
-		return CryptoUtil.combineByteArray(
-						encryptedData, 
-						encryptedSymmetricKey, 
-						keySplitter);
+
+	public byte[] combineDataToEncrypt(byte[] encryptedData, byte[] encryptedSymmetricKey) {
+		return CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter);
 	}
 
 	public static String trimBeginEnd(String pKey) {
@@ -314,5 +332,16 @@ public class IdAuthSecurityManager {
 		pKey = pKey.replaceAll("\\s", "");
 		return pKey;
 	}
-	
+
+	public static String digestAsPlainText(byte[] data) {
+		return DatatypeConverter.printHexBinary(data).toUpperCase();
+	}
+
+	public static String generateHashAndDigestAsPlainText(byte[] data) {
+		try {
+			return HMACUtils2.digestAsPlainText(data);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
 }

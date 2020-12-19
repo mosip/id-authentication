@@ -43,7 +43,7 @@ public class DataShareManager {
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
 		//Decrypt data
-		byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null);
+		byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, false);
 		try {
 			return mapper.readValue(decryptedData, clazz);
 		} catch (IOException e) {

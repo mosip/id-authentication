@@ -28,7 +28,6 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
@@ -211,7 +210,7 @@ public class AuthTransactionBuilder {
 				String comment = isStatus ? requestTypeMessages + " Success"
 						: requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
+				autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(token, env);
 				autnTxn.setToken(token);

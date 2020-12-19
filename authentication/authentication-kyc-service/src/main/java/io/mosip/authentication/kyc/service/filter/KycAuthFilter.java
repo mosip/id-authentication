@@ -122,5 +122,25 @@ public class KycAuthFilter extends IdAuthFilter {
 		}
 		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 	}
+	
+	@Override
+	protected boolean isSigningRequired() {
+		return env.getProperty("mosip.ida.kyc.signing-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isSignatureVerificationRequired() {
+		return env.getProperty("mosip.ida.kyc.signature-verification-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.kyc.thumbprint-validation-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isTrustValidationRequired() {
+		return env.getProperty("mosip.ida.kyc.trust-validation-required", Boolean.class, true);
+	}
 
 }

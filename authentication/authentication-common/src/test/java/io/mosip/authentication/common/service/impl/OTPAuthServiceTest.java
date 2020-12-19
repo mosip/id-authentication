@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HMACUtils2;
 import reactor.ipc.netty.http.HttpResources;
 
 /**
@@ -99,7 +100,7 @@ public class OTPAuthServiceTest {
 	}
 
 	@Test
-	public void TestIDDataValidationException() throws IdAuthenticationBusinessException {
+	public void TestIDDataValidationException() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -109,7 +110,7 @@ public class OTPAuthServiceTest {
 		request.setOtp("123455");
 		authreqdto.setRequest(request);
 		authreqdto.setIndividualId("12345");
-		String uinHash = HMACUtils.digestAsPlainTextWithSalt("12345".getBytes(), "2344".getBytes());
+		String uinHash = HMACUtils2.digestAsPlainTextWithSalt("12345".getBytes(), "2344".getBytes());
 
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(null);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
@@ -187,12 +188,13 @@ public class OTPAuthServiceTest {
 	 * method to test IDDatavalidation Exception for IDA
 	 * 
 	 * @throws IdAuthenticationBusinessException
+	 * @throws NoSuchAlgorithmException 
 	 */
 	@Test
-	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
+	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		AutnTxn autTxn = new AutnTxn();
-		String uinHash = HMACUtils.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes());
+		String uinHash = HMACUtils2.digestAsPlainTextWithSalt("123456".getBytes(), "2344".getBytes());
 
 		autTxn.setRequestTrnId("1234567890");
 		autTxn.setToken("123456");
@@ -364,13 +366,14 @@ public class OTPAuthServiceTest {
 	 * Throw Custom IdAuthenticationBusinessException class
 	 * 
 	 * @throws IdAuthenticationBusinessException
+	 * @throws NoSuchAlgorithmException 
 	 */
 	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
+	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("TXN00001");
-		autntxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash("123456".getBytes())));
+		autntxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText("123456".getBytes()));
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();

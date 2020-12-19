@@ -112,6 +112,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * 
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		WebApplicationContext context = WebApplicationContextUtils
@@ -240,8 +241,10 @@ public abstract class BaseIDAFilter implements Filter {
 		responseMap.replace(VERSION,
 				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 		try {
-			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-					keyManager.signResponse(mapper.writeValueAsString(responseMap)));
+			if (isSigningRequired()) {
+				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
+						keyManager.signResponse(mapper.writeValueAsString(responseMap)));
+			}
 		} catch (IdAuthenticationAppException e) {
 			if (responseMap.containsKey(IdAuthCommonConstants.ERRORS)
 					&& responseMap.get(IdAuthCommonConstants.ERRORS) instanceof List) {
@@ -490,7 +493,7 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> metadata = (Map<String, Object>) responseBody.get(METADATA);
 			Map<String, Object> responseMap = setResponseParams(requestBody, responseBody);
 			requestWrapper.resetInputStream();
-			addIdAndVersionToRespons(requestWrapper, responseMap);
+			addIdAndVersionToResponse(requestWrapper, responseMap);
 			if (responseMap.containsKey(ERRORS)) {
 				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List
 						? (List<AuthError>) responseMap.get(ERRORS)
@@ -503,11 +506,12 @@ public abstract class BaseIDAFilter implements Filter {
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
 			
 			String responseAsString = mapper.writeValueAsString(finalResponse);
-			String responseSignature = keyManager.signResponse(responseAsString);
-			storeAuthTransaction(metadata, requestSignature, responseSignature);
-			
-			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-					responseSignature);
+			if (isSigningRequired()) {
+				String responseSignature = keyManager.signResponse(responseAsString);
+				storeAuthTransaction(metadata, requestSignature, responseSignature);
+
+				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
+			}
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
 			return responseAsString;
@@ -536,7 +540,7 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 	}
 
-	protected void addIdAndVersionToRespons(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> responseMap) {
+	protected void addIdAndVersionToResponse(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> responseMap) {
 		responseMap.put(VERSION,
 				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 		requestWrapper.resetInputStream();
@@ -636,6 +640,14 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected abstract void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException;
+	
+	protected abstract boolean isSigningRequired();
+	
+	protected abstract boolean isSignatureVerificationRequired();
+	
+	protected abstract boolean isThumbprintValidationRequired();
+	
+	protected abstract boolean isTrustValidationRequired();
 
 	/*
 	 * (non-Javadoc)

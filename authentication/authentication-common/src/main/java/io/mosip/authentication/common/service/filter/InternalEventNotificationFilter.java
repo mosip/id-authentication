@@ -20,7 +20,7 @@ public class InternalEventNotificationFilter extends DefaultInternalFilter {
 	}
 	
 	@Override
-	protected void addIdAndVersionToRespons(ResettableStreamHttpServletRequest requestWrapper,
+	protected void addIdAndVersionToResponse(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> responseMap) {
 		// Skip Adding ID and Version to response
 	}
