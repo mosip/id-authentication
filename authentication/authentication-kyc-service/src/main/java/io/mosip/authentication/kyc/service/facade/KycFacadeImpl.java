@@ -106,7 +106,7 @@ public class KycFacadeImpl implements KycFacade {
 	@Override
 	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey);
+		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 
 	}
 
@@ -118,6 +118,7 @@ public class KycFacadeImpl implements KycFacade {
 	 * mosip.authentication.core.indauth.dto.KycAuthRequestDTO,
 	 * io.mosip.authentication.core.indauth.dto.AuthResponseDTO, java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId) throws IdAuthenticationBusinessException {
@@ -125,10 +126,7 @@ public class KycFacadeImpl implements KycFacade {
 		String token = null;
 		KycAuthResponseDTO kycAuthResponseDTO = null;
 		try {
-			String idvId = kycAuthRequestDTO.getIndividualId();
-			String idvIdtype = IdType.getIDTypeStrOrDefault(kycAuthRequestDTO.getIndividualIdType());
-
-			Map<String, Object> idResDTO = idService.processIdType(idvIdtype, idvId, true);
+			Map<String, Object> idResDTO = (Map<String, Object>) authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA);
 			token = idService.getToken(idResDTO);
 
 			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,

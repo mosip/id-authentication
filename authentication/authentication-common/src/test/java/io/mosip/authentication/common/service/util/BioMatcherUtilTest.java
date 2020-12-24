@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -54,6 +55,7 @@ public class BioMatcherUtilTest {
 	@Before
 	public void before() {
 		valueMap.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
+		ReflectionTestUtils.setField(bioMatcherUtil, "bdbProcessedLevel", "Raw");
 	}
 
 	@Test

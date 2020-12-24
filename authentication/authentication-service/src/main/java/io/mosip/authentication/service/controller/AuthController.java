@@ -103,7 +103,7 @@ public class AuthController {
 				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 			}
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey);
+			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 			// Note: Auditing of success or failure status of each authentication (but not
 			// the exception) is handled in respective authentication invocations in the facade
 		} catch (IDDataValidationException e) {

@@ -106,8 +106,11 @@ public class KycAuthController {
 				kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
 			}
 			DataValidationUtil.validate(errors);
+			
 			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
-			if (authResponseDTO != null) {
+			if (authResponseDTO != null && 
+					authResponseDTO.getMetadata() != null && 
+					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null) {
 				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}
 		} catch (IDDataValidationException e) {
