@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.integration.dto;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DATA_SHARE_GET_DECRYPT_REF_ID;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED;
 
 import java.io.IOException;
 
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -38,7 +40,7 @@ public class DataShareManager {
 	@Value("${" + DATA_SHARE_GET_DECRYPT_REF_ID + "}")
 	private String dataShareGetDecryptRefId;
 	
-	@Value("${mosip.ida.auth.thumbprint-validation-required:true}")
+	@Value("${" + IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED + ":true}")
 	private boolean thumbprintValidationRequired;
 	
 	public <R> R downloadObject(String dataShareUrl, Class<R> clazz) throws  RestServiceException, IdAuthenticationBusinessException {

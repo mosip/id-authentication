@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.util;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BDB_DEAULT_PROCESSED_LEVEL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BDB_PROCESSED_LEVEL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -61,7 +65,7 @@ public class BioMatcherUtil {
 	@Autowired
 	private BioAPIFactory bioApiFactory;
 	
-	@Value("${ida-bdb-processed-level:Raw}")
+	@Value("${" + IDA_BDB_PROCESSED_LEVEL + ":" + BDB_DEAULT_PROCESSED_LEVEL + "}")
 	private String bdbProcessedLevel;
 
 	/**
