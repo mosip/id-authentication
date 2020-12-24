@@ -49,7 +49,7 @@ public class AuthtypeStatusImplTest {
 		AuthtypeRequestDto authtypeRequestDto = getAuthTypeRequestDto();
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
 		
@@ -65,7 +65,7 @@ public class AuthtypeStatusImplTest {
 	public void TestvalidfetchAuthtypeStatuswithParam() throws IdAuthenticationBusinessException {
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
 

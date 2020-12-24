@@ -300,7 +300,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idService.getToken(idRepo)).thenReturn(uin);
@@ -327,7 +327,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString()))
 				.thenReturn(new ArrayList<AuthtypeStatus>());
-		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456", "12345");
+		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456", "12345", true);
 
 	}
 
@@ -553,7 +553,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -636,7 +636,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -689,7 +689,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false, true)).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -736,7 +736,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false, true)).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idService.getIdInfo(repoDetails())).thenReturn(idInfo);
@@ -783,7 +783,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false)).thenReturn(idRepo);
+		Mockito.when(idService.processIdType(IdType.UIN.getType(), uin, false, true)).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 
 		Mockito.when(idService.getIdInfo(repoDetails())).thenReturn(idInfo);

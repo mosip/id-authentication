@@ -144,7 +144,7 @@ public class OTPServiceImplTest {
 		Map<String, List<IdentityInfoDTO>> idInfo = getIdInfo();
 		valueMap.put("uin", "426789089018");
 		valueMap.put("response", idInfo);
-		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("426789089018");
@@ -192,7 +192,7 @@ public class OTPServiceImplTest {
 		valueMap.put("uin", "426789089018");
 		valueMap.put("phone", "426789089018");
 		valueMap.put("response", idInfo);
-		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn(individualId);
@@ -208,7 +208,7 @@ public class OTPServiceImplTest {
 		errors.add(serviceError);
 		response.setErrors(errors);
 		
-		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
@@ -248,7 +248,7 @@ public class OTPServiceImplTest {
 		valueMap.put("phone", "426789089018");
 		valueMap.put("response", idInfo);
 		
-		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 		.thenReturn(valueMap);
 		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("2344");
@@ -284,7 +284,7 @@ public class OTPServiceImplTest {
 		mailList.add(identityInfoDTO);
 		idInfo.put("email", mailList);
 		valueMap.put("response", idInfo);
-		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
 		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");

@@ -11,6 +11,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -141,7 +142,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId, String partnerApiKey)
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId, String partnerApiKey, boolean markVidConsumed)
 			throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
@@ -150,10 +151,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				idvIdType + "-" + idvid);
 
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-				authRequestDTO.getRequestedAuth().isBio());
-		if (idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
-			idService.updateVIDstatus(authRequestDTO.getIndividualId());
-		}
+				authRequestDTO.getRequestedAuth().isBio(), markVidConsumed);
+		
 		String token = idService.getToken(idResDTO);
 		validateAuthTypeStatus(authRequestDTO, token);
 		AuthResponseDTO authResponseDTO;
@@ -183,7 +182,15 @@ public class AuthFacadeImpl implements AuthFacade {
 			
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);
-			authResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager)));
+			
+			Map<String, Object> metadata = authResponseDTO.getMetadata();
+			if(metadata == null) {
+				metadata = new HashMap<>();
+				authResponseDTO.setMetadata(metadata);
+			}
+			// This is sent back for the consumption by the caller for example
+			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
+			metadata.put(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
