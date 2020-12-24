@@ -194,7 +194,7 @@ public class IdAuthServiceImplTest {
 				IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 		
-		idServiceImpl.processIdType(idvIdType, idvId, false);
+		idServiceImpl.processIdType(idvIdType, idvId, false, true);
 
 	}
 
@@ -210,7 +210,7 @@ public class IdAuthServiceImplTest {
 
 		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
-		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
+		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true)).thenThrow(idBusinessException);
 
 	}
 
@@ -381,7 +381,7 @@ public class IdAuthServiceImplTest {
 	public void testUpdateVIDStatus() throws RestServiceException, IdAuthenticationBusinessException {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("234433356");
 		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(false);
-		idServiceImpl.updateVIDstatus("234433356");
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", "234433356");
 	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
@@ -389,7 +389,7 @@ public class IdAuthServiceImplTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("234433356");
 		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		Mockito.when(identityRepo.getOne(Mockito.anyString())).thenThrow(new DataAccessException("error") {});
-		idServiceImpl.updateVIDstatus("234433356");
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", "234433356");
 	}
 
 }

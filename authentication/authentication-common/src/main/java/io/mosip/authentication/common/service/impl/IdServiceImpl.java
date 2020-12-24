@@ -111,7 +111,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		return getIdentity(vid, isBio, IdType.VID);
 	}
-
+	
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
@@ -124,7 +124,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
@@ -140,6 +140,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
+			}
+			
+			if(markVidConsumed) {
+				updateVIDstatus(idvId);
 			}
 		}
 		
@@ -398,7 +402,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 */
-	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
+	private void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
 		try {
 			vid = securityManager.hash(vid);
 			// Assumption : If transactionLimit is null, id is considered as Perpetual VID

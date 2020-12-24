@@ -19,6 +19,9 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
  */
 public final class IdAuthConfigKeyConstants {
 
+	public static final String IDA_BDB_PROCESSED_LEVEL = "ida-bdb-processed-level";
+	public static final String IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED = "mosip.ida.datashare.thumbprint-validation-required";
+
 	private IdAuthConfigKeyConstants() {
 
 	}
