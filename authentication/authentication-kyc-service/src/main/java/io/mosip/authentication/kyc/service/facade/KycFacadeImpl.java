@@ -106,7 +106,7 @@ public class KycFacadeImpl implements KycFacade {
 	@Override
 	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey, false);
+		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 
 	}
 
