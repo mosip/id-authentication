@@ -38,17 +38,20 @@ public class DataShareManager {
 	@Value("${" + DATA_SHARE_GET_DECRYPT_REF_ID + "}")
 	private String dataShareGetDecryptRefId;
 	
+	@Value("${mosip.ida.auth.thumbprint-validation-required:true}")
+	private boolean thumbprintValidationRequired;
+	
 	public <R> R downloadObject(String dataShareUrl, Class<R> clazz) throws  RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
 		//Decrypt data
-		byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, false);
+		byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
 		try {
 			return mapper.readValue(decryptedData, clazz);
 		} catch (IOException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-
+	
 }

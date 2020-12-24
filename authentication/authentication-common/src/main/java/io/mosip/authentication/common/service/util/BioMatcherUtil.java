@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -31,6 +32,7 @@ import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
@@ -58,6 +60,9 @@ public class BioMatcherUtil {
 	/** The bio api factory. */
 	@Autowired
 	private BioAPIFactory bioApiFactory;
+	
+	@Value("${ida-bdb-processed-level:Raw}")
+	private String bdbProcessedLevel;
 
 	/**
 	 * Match function.
@@ -258,6 +263,7 @@ public class BioMatcherUtil {
 			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder()
 					.withType(Collections.singletonList(type.getSingleType()))
 					.withSubtype(Arrays.asList(type.getSubTypes()))
+					.withLevel(ProcessedLevelType.fromValue(bdbProcessedLevel))
 					.withFormat(format)
 					.withPurpose(PurposeType.VERIFY).build();
 			String reqInfoStr = (String) info;

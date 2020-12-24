@@ -71,7 +71,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		}
 		
 		String individualId = authtxnrequestdto.getIndividualId();
-		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
+		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false, false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
 			String token = idService.getToken(idResDTO);
 
