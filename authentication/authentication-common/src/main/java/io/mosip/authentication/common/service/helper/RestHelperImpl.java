@@ -110,7 +110,7 @@ public class RestHelperImpl implements RestHelper {
 					response = request(request, getSslContext()).block();
 				}
 			}
-			if(!request.getResponseType().equals(String.class)) {
+			if(!String.class.equals(request.getResponseType())) {
 				checkErrorResponse(response, request.getResponseType());
 				if(response != null && containsError(response.toString())) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
