@@ -84,11 +84,15 @@ public class RestHelperImpl implements RestHelper{
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 				}
-				checkErrorResponse(response, request.getResponseType());
+				if(!request.getResponseType().equals(String.class)) {
+					checkErrorResponse(response, request.getResponseType());
+				}
 				return (T) response;
 			} else {
 				response = request(request).block();
-				checkErrorResponse(response, request.getResponseType());
+				if(!request.getResponseType().equals(String.class)) {
+					checkErrorResponse(response, request.getResponseType());
+				}
 				return (T) response;
 			}
 		} catch (WebClientResponseException e) {
