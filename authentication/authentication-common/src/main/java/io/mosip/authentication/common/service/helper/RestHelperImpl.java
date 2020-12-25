@@ -110,11 +110,13 @@ public class RestHelperImpl implements RestHelper {
 					response = request(request, getSslContext()).block();
 				}
 			}
-			checkErrorResponse(response, request.getResponseType());
-			if(response != null && containsError(response.toString())) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-			}
+			if(!request.getResponseType().equals(String.class)) {
+				checkErrorResponse(response, request.getResponseType());
+				if(response != null && containsError(response.toString())) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+							PREFIX_RESPONSE + response);
+				}
+			}	
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
@@ -373,6 +375,8 @@ public class RestHelperImpl implements RestHelper {
 		} catch (IOException ex) {
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
+		
 
 	}
+	
 }
