@@ -170,7 +170,7 @@ public class InternalAuthControllerTest {
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		authReqestDTO.setRequestedAuth(requestedAuth);
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID, InternalAuthController.DEFAULT_PARTNER_API_KEY, true))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		authController.authenticate(authReqestDTO, error);
 	}
@@ -182,7 +182,7 @@ public class InternalAuthControllerTest {
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		authReqestDTO.setRequestedAuth(requestedAuth);
-		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID, InternalAuthController.DEFAULT_PARTNER_API_KEY, true))
+		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error);
 	}

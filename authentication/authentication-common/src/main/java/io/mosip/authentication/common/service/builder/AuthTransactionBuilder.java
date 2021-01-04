@@ -39,10 +39,8 @@ import io.mosip.kernel.core.util.UUIDUtils;
 public class AuthTransactionBuilder {
 
 	public static final String REQ_TYPE_MSG_DELIM = ";";
-	
-	public static final String REQ_TYPE_DELIM = ",";
 
-	private static final String SERVICE_ACCOUNT = "service-account-";
+	public static final String REQ_TYPE_DELIM = ",";
 
 	/**
 	 * Instantiates a new auth transaction builder.
@@ -93,8 +91,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
@@ -105,8 +102,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * With otp request.
 	 *
-	 * @param otpRequestDTO
-	 *            the otp request DTO
+	 * @param otpRequestDTO the otp request DTO
 	 * @return the auth transaction builder
 	 */
 	public AuthTransactionBuilder withOtpRequest(OtpRequestDTO otpRequestDTO) {
@@ -117,8 +113,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the UIN.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param uin the uin
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withToken(String token) {
@@ -129,8 +124,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the RequestType.
 	 *
-	 * @param requestType
-	 *            the request type
+	 * @param requestType the request type
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder addRequestType(RequestType requestType) {
@@ -141,8 +135,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the auth token.
 	 *
-	 * @param authTokenId
-	 *            the auth token id
+	 * @param authTokenId the auth token id
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withAuthToken(String authTokenId) {
@@ -153,20 +146,19 @@ public class AuthTransactionBuilder {
 	/**
 	 * With status.
 	 *
-	 * @param isStatus
-	 *            the is status
+	 * @param isStatus the is status
 	 * @return the auth transaction builder
 	 */
 	public AuthTransactionBuilder withStatus(boolean isStatus) {
 		this.isStatus = isStatus;
 		return this;
 	}
-	
+
 	public AuthTransactionBuilder withPartner(Optional<PartnerDTO> partnerOptional) {
 		this.partnerOptional = partnerOptional;
 		return this;
 	}
-	
+
 	public AuthTransactionBuilder withInternal(boolean isInternal) {
 		this.isInternal = isInternal;
 		return this;
@@ -175,11 +167,10 @@ public class AuthTransactionBuilder {
 	/**
 	 * Build {@code AutnTxn}.
 	 *
-	 * @param env
-	 *            the env
+	 * @param env the env
 	 * @return the instance of {@code AutnTxn}
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public AutnTxn build(Environment env, UinEncryptSaltRepo uinEncryptSaltRepo, UinHashSaltRepo uinHashSaltRepo,
 			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
@@ -206,9 +197,9 @@ public class AuthTransactionBuilder {
 
 			if (!requestTypes.isEmpty()) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
-				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage).collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
-				String comment = isStatus ? requestTypeMessages + " Success"
-						: requestTypeMessages + " Failed";
+				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
+				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
 				autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 				autnTxn.setRefIdType(idvIdType);
@@ -222,7 +213,8 @@ public class AuthTransactionBuilder {
 						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 				autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
-				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType).collect(Collectors.joining(REQ_TYPE_DELIM));
+				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
+						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
 				autnTxn.setRequestTrnId(txnID);
 				autnTxn.setStatusCode(status);
@@ -230,24 +222,14 @@ public class AuthTransactionBuilder {
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 
-				if(isInternal) {
+				if (isInternal) {
 					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
-					Optional<String> clientId = Optional.ofNullable(securityManager.getUser());
-					if (clientId.isPresent()) {
-						String user = clientId.get();
-						//TODO
-						// Added workaround to trim the user id coming out authentication to avoid
-						// length exceeding than 36 chars for Entity ID value in Auth Transaction table.
-						// Handle this properly.
-						if(user.contains(SERVICE_ACCOUNT)) {
-							user = user.replace(SERVICE_ACCOUNT, "");
-						}
-						autnTxn.setEntityId(user);
-						autnTxn.setEntityName(user);
-					}
+					String user = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT, "");
+					autnTxn.setEntityId(user);
+					autnTxn.setEntityName(user);
 				} else {
 					autnTxn.setEntitytype(TransactionType.PARTNER.getType());
-					if(partnerOptional.isPresent()) {
+					if (partnerOptional.isPresent()) {
 						PartnerDTO partner = partnerOptional.get();
 						autnTxn.setEntityId(partner.getPartnerId());
 						autnTxn.setEntityName(partner.getPartnerName());
@@ -272,10 +254,8 @@ public class AuthTransactionBuilder {
 	/**
 	 * Creates UUID.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param env
-	 *            the env
+	 * @param uin the uin
+	 * @param env the env
 	 * @return the string
 	 */
 	private String createId(String token, PropertyResolver env) {
