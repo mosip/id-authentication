@@ -39,8 +39,10 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
+import io.mosip.kernel.signature.constant.SignatureConstant;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
+import io.mosip.kernel.signature.dto.JWTSignatureVerifyResponseDto;
 import io.mosip.kernel.signature.service.SignatureService;
 import io.mosip.kernel.zkcryptoservice.constant.ZKCryptoManagerConstants;
 import io.mosip.kernel.zkcryptoservice.dto.CryptoDataDto;
@@ -276,7 +278,11 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
 		jwtSignatureVerifyRequestDto.setDomain(domain);
-		return signatureService.jwtVerify(jwtSignatureVerifyRequestDto).isSignatureValid();
+		JWTSignatureVerifyResponseDto jwtResponse = signatureService.jwtVerify(jwtSignatureVerifyRequestDto);
+		return isTrustValidationRequired
+				? jwtResponse.isSignatureValid()
+						&& jwtResponse.getTrustValid().contentEquals(SignatureConstant.TRUST_VALID)
+				: jwtResponse.isSignatureValid();
 	}
 
 	public String hash(String id) throws IdAuthenticationBusinessException {
