@@ -9,6 +9,10 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +38,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration(value = "ida_swagger_config")
 @EnableSwagger2
 public class SwaggerConfig {
+
+	private static final Logger logger = IdaLogger.getLogger(SwaggerConfig.class);
 
 	@Value("${" + IdAuthConfigKeyConstants.APP_ENVIRONMENT_LOCAL+ ":false}")
 	private Boolean localEnv;
@@ -91,7 +97,7 @@ public class SwaggerConfig {
 				}
 				targetSwagger = true;
 			} catch (MalformedURLException e) {
-				System.err.println("SwaggerUrlException: " + e);
+				logger.error(IdAuthCommonConstants.SESSION_ID, "","", ExceptionUtils.getStackTrace(e));
 			}
 		}
 		ParameterBuilder aParameterBuilder = new ParameterBuilder();
