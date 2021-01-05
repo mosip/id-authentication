@@ -282,5 +282,7 @@ public final class IdAuthCommonConstants {
 	
 	public static final String SIGNATURE = "signature";
 
+	public static final String SERVICE_ACCOUNT = "service-account-";
+
 
 }
