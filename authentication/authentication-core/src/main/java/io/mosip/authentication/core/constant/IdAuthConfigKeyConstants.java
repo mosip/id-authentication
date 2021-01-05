@@ -1,10 +1,5 @@
 package io.mosip.authentication.core.constant;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Properties;
 import java.util.function.Predicate;
 
 import org.springframework.core.env.Environment;
@@ -93,6 +88,8 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
+
+	public static final String IDA_WEBSUB_PARTNER_CERT_CALLBACK_SECRET = "ida-websub-partner-certificate-callback-secret";
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET = "ida-websub-partner-service-callback-secret";
 	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
@@ -101,6 +98,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
+	public static final String IDA_WEBSUB_PARTNER_CERT_CALLBACK_URL = "ida-websub-partner-cert-callback-url";
 	
 	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
 
@@ -112,23 +110,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED = "ida-topic-pmp-partner-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
+	public static final String IDA_WEBSUB_PARTNER_CERT_TOPIC = "ida-topic-partner-certificate";
 
-	public static void main(String[] args) throws FileNotFoundException, IOException, IllegalArgumentException, IllegalAccessException {
-		String propFile1 = "D:\\Dev\\git\\mosip-config\\sandbox\\id-authentication-mz.properties";
-		String propFile2 = "D:\\Dev\\git\\mosip-config\\sandbox\\application-mz.properties";
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(propFile1));
-		properties.load(new FileInputStream(propFile2));
-		
-		Field[] fields = IdAuthConfigKeyConstants.class.getFields();
-		//Print the fields not having property in proprties file
-		for(Field field : fields) {
-			if(field.getType().equals(String.class)) {
-				String val = (String) field.get(null);
-				if(!properties.containsKey(val)) {
-					System.out.println(val);
-				}
-			}
-		}
-	}
 }
