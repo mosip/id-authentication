@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -46,6 +47,7 @@ import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.MasterDataServiceEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
@@ -62,9 +64,11 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
+import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
+import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
 import io.mosip.kernel.partnercertservice.helper.PartnerCertManagerDBHelper;
 import io.mosip.kernel.partnercertservice.service.impl.PartnerCertificateManagerServiceImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
@@ -79,7 +83,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = HibernateDaoConfig.class)
+@SpringBootApplication(exclude = { HibernateDaoConfig.class })
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class,
 		RestHelperImpl.class, RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class,
 		MasterDataManager.class, MatchInputBuilder.class, IdRepoManager.class, NotificationManager.class,
@@ -97,7 +101,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class, MasterDataServiceEventSubscriber.class,
-		SignatureController.class, CryptomanagerController.class, KeymanagerController.class })
+		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
+		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
