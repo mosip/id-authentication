@@ -279,6 +279,9 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
 		jwtSignatureVerifyRequestDto.setDomain(domain);
 		JWTSignatureVerifyResponseDto jwtResponse = signatureService.jwtVerify(jwtSignatureVerifyRequestDto);
+		mosipLogger.info(getUser(), ID_AUTH_TRANSACTION_MANAGER, "verifySignature",
+				"SIGNATURE VALID : " + jwtResponse.isSignatureValid() + " - TRUST VALID : "
+						+ jwtResponse.getTrustValid().contentEquals(SignatureConstant.TRUST_VALID));
 		return isTrustValidationRequired
 				? jwtResponse.isSignatureValid()
 						&& jwtResponse.getTrustValid().contentEquals(SignatureConstant.TRUST_VALID)
