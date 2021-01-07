@@ -3,16 +3,18 @@
 #installs the pkcs11 libraries.
 set -e
 
-DEFAULT_ZIP_PATH=artifactory/libs-release-local/biosdk/mock/0.9/biosdk.zip
-[ -z "$biosdk_zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$biosdk_zip_file_path"
+DEFAULT_ZIP_PATH=artifactory/libs-release-local/hsm/client.zip
+[ -z "$zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$zip_file_path"
 
-echo "Download the biosdk from $artifactory_url_env"
+echo "Download the client from $artifactory_url_env"
+echo "Zip File Path: $zip_path"
+
 wget -q --show-progress "$artifactory_url_env/$zip_path"
 echo "Downloaded $artifactory_url_env/$zip_path"
 
 FILE_NAME=${zip_path##*/}
 
-DIR_NAME=biosdk-client
+DIR_NAME=hsm-client
 
 has_parent=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | wc -l)
 if test "$has_parent" -eq 1; then
@@ -31,7 +33,7 @@ else
 fi
 
 echo "Attempting to install"
-cd ./$DIR_NAME && chmod +x install.sh && source ./install.sh
+cd ./$DIR_NAME && chmod +x install.sh && ./install.sh
 echo "Installation complete"
 
 echo "Changing Docker User"

@@ -9,7 +9,8 @@ ARG active_profile
 # can be passed during Docker build as build time environment for config server URL 
 ARG spring_config_url
 
-ARG bio_sdk_folder=mock/0.9
+#ARG bio_sdk_folder=mock/0.9
+ARG biosdk_zip_path
 
 # can be passed during Docker build as build time environment for hsm client zip file path
 ARG client_zip_path
@@ -35,12 +36,34 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
-ENV bio_sdk_folder_env=${bio_sdk_folder}
+#ENV bio_sdk_folder_env=${bio_sdk_folder}
+ENV biosdk_zip_file_path=${biosdk_zip_path}
 
 # environment variable to pass hsm client zip file path, at docker runtime
 ENV zip_file_path=${client_zip_path}
 
-ENV work_dir_env=/
+#ENV work_dir_env=/
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG container_user=mosip
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG container_user_group=mosip
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG container_user_uid=1001
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG container_user_gid=1001
+
+# install packages and create user
+RUN apt-get -y update \
+&& apt-get install -y unzip \
+&& groupadd -g ${container_user_gid} ${container_user_group} \
+&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user}
+
+# set working directory for the user
+WORKDIR /home/${container_user}
 
 ENV current_module_env=authentication-kyc-service
 
@@ -54,11 +77,16 @@ EXPOSE 8091
 
 EXPOSE 9010
 
-ENTRYPOINT [ "/configure_start.sh" ]
+# change permissions of file inside working dir
+RUN chown -R ${container_user}:${container_user} /home/${container_user}
+
+# select container user for all tasks
+#USER ${container_user_uid}:${container_user_gid}
+
+ENTRYPOINT [ "./configure_start.sh" ]
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
-    wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
-    apt-get update && apt-get install -y unzip ; \
+    wget -q --show-progress "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     sed -i "s/<service_name>/${current_module_env}/g" glowroot/glowroot.properties ; \
