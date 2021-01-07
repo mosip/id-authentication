@@ -33,6 +33,7 @@ fi
 echo "Attempting to install"
 cd ./$DIR_NAME && chmod +x install.sh && source ./install.sh
 echo "Installation complete"
+cd ..
 
 echo "Changing Docker User"
 chown -R ${container_user}:${container_user} /home/${container_user}
