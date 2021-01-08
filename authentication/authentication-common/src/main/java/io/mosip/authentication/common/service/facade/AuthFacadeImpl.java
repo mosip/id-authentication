@@ -191,6 +191,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			// This is sent back for the consumption by the caller for example
 			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
 			metadata.put(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			metadata.put(AutnTxn.class.getSimpleName(), authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager));
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
