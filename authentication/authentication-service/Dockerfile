@@ -13,7 +13,8 @@ ARG spring_config_url
 ARG biosdk_zip_path
 
 # can be passed during Docker build as build time environment for hsm client zip file path
-ARG client_zip_path
+#ARG client_zip_path
+ARG hsm_client_zip_path
 
 # can be passed during Docker build as build time environment for glowroot 
 ARG is_glowroot
@@ -40,7 +41,8 @@ ENV artifactory_url_env=${artifactory_url}
 ENV biosdk_zip_file_path=${biosdk_zip_path}
 
 # environment variable to pass hsm client zip file path, at docker runtime
-ENV zip_file_path=${client_zip_path}
+#ENV zip_file_path=${client_zip_path}
+ENV hsm_zip_file_path=${hsm_client_zip_path}
 
 #ENV work_dir_env=/
 
@@ -56,11 +58,22 @@ ARG container_user_uid=1001
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG container_user_gid=1001
 
+ARG hsm_local_dir=hsm-client
+
+ENV hsm_local_dir_name=${hsm_local_dir}
+
+ARG boisdk_local_dir=biosdk-client
+
+ENV biosdk_local_dir_name=${boisdk_local_dir}
+
 # install packages and create user
 RUN apt-get -y update \
 && apt-get install -y unzip \
 && groupadd -g ${container_user_gid} ${container_user_group} \
-&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user}
+&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
+&& adduser ${container_user} sudo \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${boisdk_local_dir}/install.sh" >> /etc/sudoers
 
 # set working directory for the user
 WORKDIR /home/${container_user}
@@ -81,7 +94,7 @@ EXPOSE 9010
 RUN chown -R ${container_user}:${container_user} /home/${container_user}
 
 # select container user for all tasks
-#USER ${container_user_uid}:${container_user_gid}
+USER ${container_user_uid}:${container_user_gid}
 
 ENTRYPOINT [ "./configure_start.sh" ]
 

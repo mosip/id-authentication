@@ -12,7 +12,7 @@ echo "Downloaded $artifactory_url_env/$zip_path"
 
 FILE_NAME=${zip_path##*/}
 
-DIR_NAME=biosdk-client
+DIR_NAME=$biosdk_local_dir_name
 
 has_parent=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | wc -l)
 if test "$has_parent" -eq 1; then
@@ -31,12 +31,8 @@ else
 fi
 
 echo "Attempting to install"
-cd ./$DIR_NAME && chmod +x install.sh && source ./install.sh
+cd ./$DIR_NAME && chmod +x install.sh && sudo source ./install.sh
 echo "Installation complete"
 cd ..
-
-echo "Changing Docker User"
-chown -R ${container_user}:${container_user} /home/${container_user}
-su $container_user
 
 exec "$@"

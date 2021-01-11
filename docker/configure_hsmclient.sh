@@ -4,7 +4,7 @@
 set -e
 
 DEFAULT_ZIP_PATH=artifactory/libs-release-local/hsm/client.zip
-[ -z "$zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$zip_file_path"
+[ -z "$hsm_zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$hsm_zip_file_path"
 
 echo "Download the client from $artifactory_url_env"
 echo "Zip File Path: $zip_path"
@@ -14,7 +14,7 @@ echo "Downloaded $artifactory_url_env/$zip_path"
 
 FILE_NAME=${zip_path##*/}
 
-DIR_NAME=hsm-client
+DIR_NAME=$hsm_local_dir_name
 
 has_parent=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | wc -l)
 if test "$has_parent" -eq 1; then
@@ -33,12 +33,9 @@ else
 fi
 
 echo "Attempting to install"
-cd ./$DIR_NAME && chmod +x install.sh && ./install.sh
+cd ./$DIR_NAME && chmod +x install.sh && sudo ./install.sh
 echo "Installation complete"
 cd ..
 
-echo "Changing Docker User"
-chown -R ${container_user}:${container_user} /home/${container_user}
-su $container_user
 
 exec "$@"
