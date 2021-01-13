@@ -191,58 +191,57 @@ public class AuthTransactionBuilder {
 				txnID = otpRequestDTO.getTransactionID();
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-						"Missing arguments to build for AutnTxn", this.toString());
+						"Missing arguments to build for AutnTxn", "authRequestDTO");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
+			String status = isStatus ? SUCCESS_STATUS : FAILED;
+			AutnTxn autnTxn = new AutnTxn();
+			autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
+			autnTxn.setRefIdType(idvIdType);
+			String id = createId(token, env);
+			autnTxn.setToken(token);
+			autnTxn.setId(id);
+			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			autnTxn.setAuthTknId(authTokenId);
+			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			String strUTCDate = DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
+			autnTxn.setRequestTrnId(txnID);
+			autnTxn.setStatusCode(status);
+			
 			if (!requestTypes.isEmpty()) {
-				String status = isStatus ? SUCCESS_STATUS : FAILED;
-				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
-						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
-				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
-				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
-				autnTxn.setRefIdType(idvIdType);
-				String id = createId(token, env);
-				autnTxn.setToken(token);
-				autnTxn.setId(id);
-				autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-				autnTxn.setAuthTknId(authTokenId);
-				autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-				String strUTCDate = DateUtils.getUTCTimeFromDate(
-						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
-				autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
 				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
-				autnTxn.setRequestTrnId(txnID);
-				autnTxn.setStatusCode(status);
+	
+				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
+				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);
-				// Setting primary code only
-				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+			}
+			
+			// Setting primary code only
+			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 
-				if (isInternal) {
-					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
-					String user = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT, "");
-					autnTxn.setEntityId(user);
-					autnTxn.setEntityName(user);
-				} else {
-					autnTxn.setEntitytype(TransactionType.PARTNER.getType());
-					if (partnerOptional.isPresent()) {
-						PartnerDTO partner = partnerOptional.get();
-						autnTxn.setEntityId(partner.getPartnerId());
-						autnTxn.setEntityName(partner.getPartnerName());
-					}
-
+			if (isInternal) {
+				autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
+				String user = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT, "");
+				autnTxn.setEntityId(user);
+				autnTxn.setEntityName(user);
+			} else {
+				autnTxn.setEntitytype(TransactionType.PARTNER.getType());
+				if (partnerOptional.isPresent()) {
+					PartnerDTO partner = partnerOptional.get();
+					autnTxn.setEntityId(partner.getPartnerId());
+					autnTxn.setEntityName(partner.getPartnerName());
 				}
 
-				return autnTxn;
-			} else {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-						"Missing arguments to build for AutnTxn", this.toString());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
+
+			return autnTxn;
 
 		} catch (ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),

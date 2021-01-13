@@ -29,7 +29,7 @@ public class AuthTransactionBuilderTest {
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest() throws IdAuthenticationBusinessException {
-		ReflectionTestUtils.setField(authTransactionBuilder, "otpRequestDTO", new OtpRequestDTO());
+		ReflectionTestUtils.setField(authTransactionBuilder, "otpRequestDTO", null);
 	authTransactionBuilder.build(env,null,null,null);
 	}
 	
