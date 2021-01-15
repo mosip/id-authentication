@@ -1,8 +1,8 @@
 package io.mosip.authentication.internal.service.controller;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_CERT_EVENT;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_CERT_CALLBACK_SECRET;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_CERT_TOPIC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CA_CERT_EVENT;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_TOPIC;
 
 import java.util.Map;
 
@@ -35,9 +35,9 @@ public class PartnerCACertEventController {
 	@Autowired
 	private PartnerCertificateManagerService partnerCertManager;
 	
-	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_CERT_EVENT, consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_CERT_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/" + PARTNER_CERT_EVENT, topic = "${" + IDA_WEBSUB_PARTNER_CERT_TOPIC + "}")
+	@PostMapping(value = "/callback/partnermanagement/" + CA_CERT_EVENT, consumes = "application/json")
+	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/" + CA_CERT_EVENT, topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
 	public void handleCACertificate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "PartnerCACertEventController", "handleCACertificate", "EVENT RECEIVED");
 		Map<String, Object> data = eventModel.getEvent().getData();
