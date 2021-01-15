@@ -3,16 +3,18 @@
 #installs the pkcs11 libraries.
 set -e
 
-DEFAULT_ZIP_PATH=artifactory/libs-release-local/biosdk/mock/0.9/biosdk.zip
-[ -z "$biosdk_zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$biosdk_zip_file_path"
+DEFAULT_ZIP_PATH=artifactory/libs-release-local/hsm/client.zip
+[ -z "$hsm_zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$hsm_zip_file_path"
 
-echo "Download the biosdk from $artifactory_url_env"
+echo "Download the client from $artifactory_url_env"
+echo "Zip File Path: $zip_path"
+
 wget -q --show-progress "$artifactory_url_env/$zip_path"
 echo "Downloaded $artifactory_url_env/$zip_path"
 
 FILE_NAME=${zip_path##*/}
 
-DIR_NAME=$biosdk_local_dir_name
+DIR_NAME=$hsm_local_dir_name
 
 has_parent=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | wc -l)
 if test "$has_parent" -eq 1; then
@@ -31,8 +33,9 @@ else
 fi
 
 echo "Attempting to install"
-cd ./$DIR_NAME && chmod +x install.sh && sudo source ./install.sh
+cd ./$DIR_NAME && chmod +x install.sh && sudo ./install.sh
 echo "Installation complete"
 cd ..
+
 
 exec "$@"
