@@ -2229,7 +2229,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/make"), error.getFieldErrors().get(0).getArguments()[0]);
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/make"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
 	@Test
@@ -2254,7 +2254,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/model"), error.getFieldErrors().get(0).getArguments()[0]);
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/model"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
 	@Test
@@ -2279,7 +2279,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequest = new AuthRequestDTO();
 		authRequest.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequest, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/type"), error.getFieldErrors().get(0).getArguments()[0]);
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/type"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
 	@Test
@@ -2305,7 +2305,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProvider"),
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/deviceProvider"),
 				error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
@@ -2332,7 +2332,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/deviceProviderId"),
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/deviceProviderId"),
 				error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
@@ -2359,7 +2359,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
 	@Test
@@ -2385,7 +2385,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
-		assertEquals(String.format(BIO_PATH, 0, "digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
+		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
 	private Map<String, List<String>> fetchGenderType() {
