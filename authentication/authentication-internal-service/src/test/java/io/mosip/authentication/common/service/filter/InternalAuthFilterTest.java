@@ -1,3 +1,4 @@
+package io.mosip.authentication.common.service.filter;
 /*package io.mosip.authentication.internal.service.filter;
 
 import static org.junit.Assert.assertEquals;
