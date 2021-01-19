@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
+import io.mosip.authentication.common.service.filter.InternalAuthFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
-import io.mosip.authentication.internal.service.filter.InternalAuthFilter;
 
 /**
  * The configuration for adding filters.
