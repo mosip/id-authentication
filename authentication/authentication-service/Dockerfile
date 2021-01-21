@@ -78,6 +78,8 @@ RUN apt-get -y update \
 # set working directory for the user
 WORKDIR /home/${container_user}
 
+ENV work_dir=/home/${container_user}
+
 ENV current_module_env=authentication-service
 
 ADD configure_start.sh configure_start.sh
