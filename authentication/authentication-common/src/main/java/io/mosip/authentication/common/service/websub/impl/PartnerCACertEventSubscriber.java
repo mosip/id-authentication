@@ -1,8 +1,8 @@
 package io.mosip.authentication.common.service.websub.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_CERT_CALLBACK_SECRET;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_CERT_CALLBACK_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_CERT_TOPIC;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_TOPIC;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,14 +24,14 @@ public class PartnerCACertEventSubscriber extends BaseWebSubEventsSubscriber {
 	private static final Logger logger = IdaLogger.getLogger(PartnerCACertEventSubscriber.class);
 
 	/** The partner service callback URL. */
-	@Value("${" + IDA_WEBSUB_PARTNER_CERT_CALLBACK_URL + "}")
+	@Value("${" + IDA_WEBSUB_CA_CERT_CALLBACK_URL + "}")
 	private String partnerCertCallbackURL;
 
 	/** The partner service callback secret. */
-	@Value("${" + IDA_WEBSUB_PARTNER_CERT_CALLBACK_SECRET + "}")
+	@Value("${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET + "}")
 	private String partnerCertCallbackSecret;
 
-	@Value("${" + IDA_WEBSUB_PARTNER_CERT_TOPIC + "}")
+	@Value("${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
 	private String partnerCertEventTopic;
 
 	/**

@@ -278,7 +278,7 @@ public final class IdAuthCommonConstants {
 
 	public static final String POLICY_UPDATED_EVENT_NAME = "policy_updated";
 
-	public static final String PARTNER_CERT_EVENT = "partner_certificate";
+	public static final String CA_CERT_EVENT = "ca_certificate";
 
 	public static final String METADATA = "metadata";
 

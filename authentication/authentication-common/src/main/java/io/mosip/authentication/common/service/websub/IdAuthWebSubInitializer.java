@@ -3,8 +3,6 @@ package io.mosip.authentication.common.service.websub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.websub.impl.MasterDataServiceEventSubscriber;
-import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsSubscriber;
 
 /**
@@ -23,16 +21,8 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private PartnerServiceEventsSubscriber partnerServiceEventsSubscriber;
 	
-	@Autowired
-	private PartnerCACertEventSubscriber partnerCACertEventSubscriber;
-	
-	@Autowired
-	private MasterDataServiceEventSubscriber masterDataServiceEventSubscriber;
-
 	protected void doInitSubscriptions() {
 		webSubSubscriptionHelper.initSubscriber(partnerServiceEventsSubscriber, this::isCacheEnabled);
-		webSubSubscriptionHelper.initSubscriber(masterDataServiceEventSubscriber, this::isCacheEnabled);
-		webSubSubscriptionHelper.initSubscriber(partnerCACertEventSubscriber);
 	}
 	
 }
