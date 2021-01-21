@@ -9,6 +9,7 @@ wget --no-check-certificate --no-cache --no-cookies $artifactory_url_env/artifac
 
 echo "Installating pre-requisites.."
 source ./configure_biosdk.sh
+cd ~
 source ./configure_hsmclient.sh
 
 echo "Installating pre-requisites completed."
