@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.websub.CacheUpdatingWebsubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
-import io.mosip.authentication.common.service.websub.impl.MasterDataServiceEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
 
 @Component
 public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitializer{
@@ -18,13 +18,13 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	private IdChangeEventsSubscriber idChangeEventSubscriber;
 	
 	@Autowired
-	private MasterDataServiceEventSubscriber masterDataServiceEventSubscriber;
-
+	private PartnerCACertEventSubscriber partnerCACertEventSubscriber;
+	
 	
 	protected void doInitSubscriptions() {
 		webSubSubscriptionHelper.initSubscriber(authTypeStatusEventsSubscriber);
 		webSubSubscriptionHelper.initSubscriber(idChangeEventSubscriber);
-		webSubSubscriptionHelper.initSubscriber(masterDataServiceEventSubscriber, this::isCacheEnabled);
+		webSubSubscriptionHelper.initSubscriber(partnerCACertEventSubscriber);
 	}
 
 }
