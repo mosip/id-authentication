@@ -79,6 +79,7 @@ RUN apt-get -y update \
 # set working directory for the user
 WORKDIR /home/${container_user}
 
+ENV work_dir=/home/${container_user}
 #ENV work_dir_env=/
 
 ENV current_module_env=authentication-internal-service
