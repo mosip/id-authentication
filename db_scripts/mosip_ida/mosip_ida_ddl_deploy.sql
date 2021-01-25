@@ -11,6 +11,14 @@
 \ir ddl/ida-data_encrypt_keystore.sql
 \ir ddl/ida-otp_transaction.sql
 \ir ddl/ida-ca_cert_store.sql
+\ir ddl/ida-credential_event_store.sql
+
+\ir ddl/ida-batch_job_execution.sql
+\ir ddl/ida-batch_job_execution_context.sql
+\ir ddl/ida-batch_job_execution_params.sql
+\ir ddl/ida-batch_job_instance.sql
+\ir ddl/ida-batch_step_execution.sql
+\ir ddl/ida-batch_step_execution_context.sql
 
 \ir ddl/ida-fk.sql
 

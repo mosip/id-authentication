@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,276" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,275" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -703,6 +703,72 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_cacs_id" type="pk-constr" table="ida.ca_cert_store">
 		<columns names="cert_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="credential_event_store" alias="cev">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure]]></comment>
+	<position x="60" y="880"/>
+	<column name="event_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Event ID: Event id of the credential request]]></comment>
+	</column>
+	<column name="event_topic" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Event Topic: Topic of the credential request where message is requested through websub]]></comment>
+	</column>
+	<column name="credential_transaction_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Credential transaction id where credential request details are stored]]></comment>
+	</column>
+	<column name="publisher">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Pusblisher of the messages]]></comment>
+	</column>
+	<column name="published_on_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Date and time of the message published]]></comment>
+	</column>
+	<column name="event_object">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Credential event object details]]></comment>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status of the envent ex: NEW, STORED, FAILED, FAILED_WITH_MAX_RETRIES]]></comment>
+	</column>
+	<column name="retry_count">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Retry count of the credential request event incase of failure]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_ces_id" type="pk-constr" table="ida.credential_event_store">
+		<columns names="event_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
