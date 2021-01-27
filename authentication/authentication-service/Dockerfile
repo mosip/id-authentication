@@ -62,9 +62,9 @@ ARG hsm_local_dir=hsm-client
 
 ENV hsm_local_dir_name=${hsm_local_dir}
 
-ARG boisdk_local_dir=biosdk-client
+ARG biosdk_local_dir=biosdk-client
 
-ENV biosdk_local_dir_name=${boisdk_local_dir}
+ENV biosdk_local_dir_name=${biosdk_local_dir}
 
 # install packages and create user
 RUN apt-get -y update \
@@ -73,12 +73,18 @@ RUN apt-get -y update \
 && useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
 && adduser ${container_user} sudo \
 && echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${boisdk_local_dir}/install.sh" >> /etc/sudoers
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers
 
 # set working directory for the user
 WORKDIR /home/${container_user}
 
 ENV work_dir=/home/${container_user}
+
+ARG loader_path=${work_dir}/additional_jars/
+
+RUN mkdir -p ${loader_path}
+
+ENV loader_path_env=${loader_path}
 
 ENV current_module_env=authentication-service
 
