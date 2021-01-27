@@ -37,5 +37,4 @@ cd ./$DIR_NAME && chmod +x install.sh && sudo ./install.sh
 echo "Installation complete"
 cd $work_dir
 
-
 exec "$@"
