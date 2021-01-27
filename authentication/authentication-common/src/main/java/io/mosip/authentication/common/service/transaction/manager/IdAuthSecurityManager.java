@@ -61,12 +61,6 @@ public class IdAuthSecurityManager {
 
 	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
 
-	@Value("${mosip.kernel.keymanager.softhsm.config-path}")
-	private String configPath;
-
-	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
-	private String aesGCMTransformation;
-
 	@Value("${application.id}")
 	private String applicationId;
 
