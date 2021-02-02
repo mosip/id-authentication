@@ -87,17 +87,18 @@ public class CredentialStoreService {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
-	@Value("${ida.credential.store.max.retry.limit:20}")
+	@Value("${ida.credential.stor.retry.max.limit:20}")
 	private int maxRetryCount;
 	
-	@Value("${ida.credential.store.max.interval.millisecs:60000}")
+	@Value("${ida.credential.store.retry.interval.millisecs:60000}")
 	private int retryInterval;
 	
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
 	
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore) throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
-		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name());
+		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name()) ||
+				credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 		
 		if(alreadyFailed) {
 			skipIfWaitingForRetryInterval(credentialEventStore.getUpdDTimes());

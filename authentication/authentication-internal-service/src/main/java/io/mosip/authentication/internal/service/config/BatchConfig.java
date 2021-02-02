@@ -64,7 +64,7 @@ public class BatchConfig {
 	@Autowired
 	public JobRegistry jobRegistry;
 
-	@Value("${ida.batch.credestore.chunk.size:10}")
+	@Value("${ida.batch.credential.store.chunk.size:10}")
 	private int chunkSize;
 
 	@Autowired
@@ -154,7 +154,9 @@ public class BatchConfig {
 		reader.setRepository(credentialEventRepo);
 		reader.setMethodName("findNewOrFailedEvents");
 		final Map<String, Sort.Direction> sorts = new HashMap<>();
-		    sorts.put("cr_dtimes", Direction.ASC);
+		    sorts.put("status_code", Direction.DESC); // NEW will be first processed than FAILED
+		    sorts.put("retry_count", Direction.ASC); // then try processing Least failed entries first
+		    sorts.put("cr_dtimes", Direction.ASC); // then, try processing old entries
 		reader.setSort(sorts);
 		reader.setPageSize(chunkSize);
 		return reader;
