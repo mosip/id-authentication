@@ -142,6 +142,7 @@ public class CredentialStoreBatchConfig {
 				// Skipping the processing of the event for this exception because it is thrown
 				// when try was tried before the retry interval
 				.skip(RetryingBeforeRetryIntervalException.class)
+				.skipLimit(Integer.MAX_VALUE)
 				.build();
 	}
 

@@ -43,13 +43,9 @@ public class CredentialStoreJobExecutionListener implements JobExecutionListener
 	public void afterJob(JobExecution jobExecution) {
 		if (!jobExecution.getStepExecutions().isEmpty()
 				&& jobExecution.getStepExecutions().iterator().next().getReadCount() > 0) {
-			if (!jobExecution.toString().contains(RetryingBeforeRetryIntervalException.class.getSimpleName())) {
-				logger.error("CredentialStoreJobExecutionListener", "afterJob", "Failed job execution",
-						String.valueOf(jobExecution));
-			} else {
-				logger.debug("CredentialStoreJobExecutionListener", "afterJob", "Skipped job execution",
-						String.valueOf(jobExecution));
-			}
+			String exceptions = String.valueOf(jobExecution.getAllFailureExceptions());
+			logger.error("CredentialStoreJobExecutionListener", "afterJob", "Failed job execution",
+					exceptions);
 		}
 	}
 
