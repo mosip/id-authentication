@@ -115,6 +115,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STORE_JOB_DELAY = "ida.batch.credential.store.job.delay";
 	public static final String CREDENTIAL_STORE_CHUNK_SIZE = "ida.batch.credential.store.chunk.size";
 	public static final String CREDENTIAL_STORE_RETRY_MAX_LIMIT = "ida.credential.store.retry.max.limit";
-	public static final String CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS = "ida.credential.store.retry.interval.millisecs";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.interval.millisecs";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT = "ida.credential.store.retry.backoff.exponential.quotient";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.exponential.max.interval.millisecs";
 
 }

@@ -1,7 +1,9 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_MAX_LIMIT;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -114,12 +116,20 @@ public class CredentialStoreService {
 	private int maxRetryCount;
 
 	/** The retry interval. */
-	@Value("${" + CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS + ":60000}")
-	private int retryInterval;
+	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS + ":60000}")
+	private long retryInterval;
 
 	/** The credential event repo. */
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
+
+	/** The interval exponential multiplier. Default value is 1 - resulting in fixed backoff retry inteval */
+	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT + ":1}")
+	private double intervalExponentialQuotient;
+
+	/** The max exponential retry interval limit millis. Default value is set to 1 hour*/
+	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
+	private long maxExponentialRetryIntervalLimitMillis;
 
 	/**
 	 * Process credential store event.
@@ -137,7 +147,7 @@ public class CredentialStoreService {
 				|| credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 
 		if (alreadyFailed) {
-			skipIfWaitingForRetryInterval(credentialEventStore.getUpdDTimes());
+			skipIfWaitingForRetryInterval(credentialEventStore);
 		}
 
 		try {
@@ -157,12 +167,18 @@ public class CredentialStoreService {
 	/**
 	 * Skip if waiting for retry interval.
 	 *
-	 * @param updDTimes the upd D times
+	 * @param credentialEventStore the upd D times
 	 * @throws RetryingBeforeRetryIntervalException the retrying before retry
 	 *                                              interval exception
 	 */
-	private void skipIfWaitingForRetryInterval(LocalDateTime updDTimes) throws RetryingBeforeRetryIntervalException {
-		if (DateUtils.getUTCCurrentDateTime().isBefore(updDTimes.plus(retryInterval, ChronoUnit.MILLIS))) {
+	private void skipIfWaitingForRetryInterval(CredentialEventStore credentialEventStore) throws RetryingBeforeRetryIntervalException {
+		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialQuotient, credentialEventStore.getRetryCount()));
+		if(backoffIntervalMillis > maxExponentialRetryIntervalLimitMillis) {
+			backoffIntervalMillis = maxExponentialRetryIntervalLimitMillis;
+		}
+		
+		LocalDateTime updateDtimes = credentialEventStore.getUpdDTimes();
+		if (DateUtils.getUTCCurrentDateTime().isBefore(updateDtimes.plus(backoffIntervalMillis, ChronoUnit.MILLIS))) {
 			throw new RetryingBeforeRetryIntervalException();
 		}
 	}
