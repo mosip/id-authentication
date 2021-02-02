@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -172,6 +173,8 @@ public class CredentialStoreService {
 	 *                                              interval exception
 	 */
 	private void skipIfWaitingForRetryInterval(CredentialEventStore credentialEventStore) throws RetryingBeforeRetryIntervalException {
+		Assert.isTrue(intervalExponentialQuotient >= 1, CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT + " property value should be greater than or equal to 1.");
+		
 		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialQuotient, credentialEventStore.getRetryCount()));
 		if(backoffIntervalMillis > maxExponentialRetryIntervalLimitMillis) {
 			backoffIntervalMillis = maxExponentialRetryIntervalLimitMillis;
