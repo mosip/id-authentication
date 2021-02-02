@@ -110,7 +110,11 @@ public class BatchConfig {
 				.reader(credentialEventReader())
 				.processor(asyncItemProcessor())
 				.writer(asyncWriter())
+				// Here Job level retry is not applied, because, event level retry is handled
+				// explicitly by the item processor
 				.faultTolerant()
+				// Skipping the processing of the event for this exception because it is thrown
+				// when try was tried before the retry interval
 				.skip(RetryingBeforeRetryIntervalException.class)
 				.build();
 	}
