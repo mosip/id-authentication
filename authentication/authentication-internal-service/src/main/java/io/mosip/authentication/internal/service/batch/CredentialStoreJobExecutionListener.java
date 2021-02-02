@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.batch;
 
+import java.util.List;
+
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
@@ -43,9 +45,12 @@ public class CredentialStoreJobExecutionListener implements JobExecutionListener
 	public void afterJob(JobExecution jobExecution) {
 		if (!jobExecution.getStepExecutions().isEmpty()
 				&& jobExecution.getStepExecutions().iterator().next().getReadCount() > 0) {
-			String exceptions = String.valueOf(jobExecution.getAllFailureExceptions());
-			logger.error("CredentialStoreJobExecutionListener", "afterJob", "Failed job execution",
-					exceptions);
+			List<Throwable> allFailureExceptions = jobExecution.getAllFailureExceptions();
+			if(allFailureExceptions != null && !allFailureExceptions.isEmpty()) {
+				String exceptions = String.valueOf(allFailureExceptions);
+				logger.error("CredentialStoreJobExecutionListener", "afterJob", "Failed job execution",
+						exceptions);
+			}
 		}
 	}
 
