@@ -251,13 +251,14 @@ public class CredentialStoreService {
 	 */
 	public IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException {
+		
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
+					"Processing credential store event: " + objectMapper.writeValueAsString(credentialEventStore));
+			
 			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);
 			Event event = eventModel.getEvent();
-
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
-					"Processing credential store event: " + eventObjectStr);
 
 			String dataShareUri = event.getDataShareUri();
 			if (dataShareUri != null) {
