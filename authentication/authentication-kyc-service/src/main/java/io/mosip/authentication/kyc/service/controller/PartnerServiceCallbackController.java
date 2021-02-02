@@ -21,6 +21,7 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 
 /**
  * The Class PartnerServiceCallbackController.
+ * @author Loganathan Sekar
  */
 @RestController
 public class PartnerServiceCallbackController {
