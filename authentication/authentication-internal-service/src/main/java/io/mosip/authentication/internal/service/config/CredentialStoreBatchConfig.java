@@ -47,15 +47,24 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * The CredentialStoreBatchConfig - Configuration file for scheduling Batch Job
+ * for credential store.
+ *
+ * @author Loganathan Sekar
+ */
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
-public class BatchConfig {
+public class CredentialStoreBatchConfig {
 	
+	/** The Constant CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING. */
 	private static final String CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING = "1000";
 
-	private static Logger logger = IdaLogger.getLogger(BatchConfig.class);
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(CredentialStoreBatchConfig.class);
 
+	/** The job builder factory. */
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
 
@@ -63,24 +72,36 @@ public class BatchConfig {
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
 	
+	/** The job registry. */
 	@Autowired
 	public JobRegistry jobRegistry;
 
+	/** The chunk size. */
 	@Value("${" + CREDENTIAL_STORE_CHUNK_SIZE + ":10}")
 	private int chunkSize;
 
+	/** The credential event repo. */
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
 	
+	/** The credential store service. */
 	@Autowired
 	private CredentialStoreService credentialStoreService;
 	
+	/** The job. */
 	@Autowired 
 	private Job job;
 	
+	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
 	
+	/**
+	 * Credential store job.
+	 *
+	 * @param listener the listener
+	 * @return the job
+	 */
 	@Bean
 	public Job credentialStoreJob(CredentialStoreJobExecutionListener listener) {
 		Job job = jobBuilderFactory.get("credentialStoreJob")
@@ -97,6 +118,11 @@ public class BatchConfig {
 		return job;
 	}
 
+	/**
+	 * Credential store step.
+	 *
+	 * @return the step
+	 */
 	@Bean
 	public Step credentialStoreStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
@@ -119,10 +145,20 @@ public class BatchConfig {
 				.build();
 	}
 
+	/**
+	 * Item writer.
+	 *
+	 * @return the item writer
+	 */
 	private ItemWriter<IdentityEntity> itemWriter() {
 		return credentialStoreService::storeIdentityEntity;
 	}
 	
+	/**
+	 * Async writer.
+	 *
+	 * @return the async item writer
+	 */
 	@Bean
     public AsyncItemWriter<IdentityEntity> asyncWriter() {
         AsyncItemWriter<IdentityEntity> asyncItemWriter = new AsyncItemWriter<>();
@@ -130,10 +166,20 @@ public class BatchConfig {
         return asyncItemWriter;
     }
 
+	/**
+	 * Item processor.
+	 *
+	 * @return the item processor
+	 */
 	private ItemProcessor<CredentialEventStore, IdentityEntity> itemProcessor() {
 		return credentialStoreService::processCredentialStoreEvent;
 	}
 	
+	/**
+	 * Async item processor.
+	 *
+	 * @return the async item processor
+	 */
 	@Bean
 	public AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor() {
 		AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor = new AsyncItemProcessor<>();
@@ -143,6 +189,11 @@ public class BatchConfig {
 	}
 
 
+	/**
+	 * Task executor.
+	 *
+	 * @return the task executor
+	 */
 	@Bean
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -154,6 +205,11 @@ public class BatchConfig {
         return executor;
     }
 
+	/**
+	 * Credential event reader.
+	 *
+	 * @return the item reader
+	 */
 	@Bean
 	public ItemReader<CredentialEventStore> credentialEventReader() {
 		RepositoryItemReader<CredentialEventStore> reader = new RepositoryItemReader<>();
@@ -168,6 +224,9 @@ public class BatchConfig {
 		return reader;
 	}
 	
+	/**
+	 * Schedule job.
+	 */
 	@Scheduled(fixedDelayString = "${" + CREDENTIAL_STORE_JOB_DELAY + ":" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
 	public void scheduleJob() {
 		try {

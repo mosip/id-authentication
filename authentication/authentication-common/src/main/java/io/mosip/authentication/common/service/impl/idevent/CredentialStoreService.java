@@ -1,4 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
+
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_MAX_LIMIT;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS;
 
@@ -39,113 +40,168 @@ import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
+/**
+ * The CredentialStoreService - the service to store credentials in IDA DB from
+ * the credential issuance event.
+ *
+ * @author Loganathan Sekar
+ */
 @Component
 public class CredentialStoreService {
-	
 
+	/** The Constant BIO_KEY. */
 	private static final String BIO_KEY = "bioEncryptedRandomKey";
 
+	/** The Constant BIO_KEY_INDEX. */
 	private static final String BIO_KEY_INDEX = "bioRankomKeyIndex";
 
+	/** The Constant DEMO_KEY. */
 	private static final String DEMO_KEY = "demoEncryptedRandomKey";
 
+	/** The Constant DEMO_KEY_INDEX. */
 	private static final String DEMO_KEY_INDEX = "demoRankomKeyIndex";
-	
+
+	/** The Constant TOKEN. */
 	private static final String TOKEN = "TOKEN";
 
+	/** The Constant IDA. */
 	private static final String IDA = "IDA";
 
+	/** The Constant EXPIRY_TIME. */
 	private static final String EXPIRY_TIME = "expiry_timestamp";
 
+	/** The Constant TRANSACTION_LIMIT. */
 	private static final String TRANSACTION_LIMIT = "transaction_limit";
 
+	/** The Constant SALT. */
 	private static final String SALT = "SALT";
 
+	/** The Constant MODULO. */
 	private static final String MODULO = "MODULO";
 
+	/** The Constant ID_HASH. */
 	private static final String ID_HASH = "id_hash";
-	
+
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(CredentialStoreService.class);
-	
+
 	/** The identity cache repo. */
 	@Autowired
 	private IdentityCacheRepository identityCacheRepo;
-	
+
 	/** The audit helper. */
 	@Autowired
 	private AuditHelper auditHelper;
-	
+
+	/** The data share manager. */
 	@Autowired
 	private DataShareManager dataShareManager;
-	
+
+	/** The uin hash salt repo. */
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
-	
+
+	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
+	/** The max retry count. */
 	@Value("${" + CREDENTIAL_STORE_RETRY_MAX_LIMIT + ":20}")
 	private int maxRetryCount;
-	
+
+	/** The retry interval. */
 	@Value("${" + CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS + ":60000}")
 	private int retryInterval;
-	
+
+	/** The credential event repo. */
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
-	
-	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore) throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
-		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name()) ||
-				credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
-		
-		if(alreadyFailed) {
+
+	/**
+	 * Process credential store event.
+	 *
+	 * @param credentialEventStore the credential event store
+	 * @return the identity entity
+	 * @throws IdAuthenticationBusinessException    the id authentication business
+	 *                                              exception
+	 * @throws RetryingBeforeRetryIntervalException the retrying before retry
+	 *                                              interval exception
+	 */
+	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
+			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
+		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name())
+				|| credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
+
+		if (alreadyFailed) {
 			skipIfWaitingForRetryInterval(credentialEventStore.getUpdDTimes());
 		}
-		
+
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
-			updateEventProcessingStatus(credentialEventStore, true, alreadyFailed);		
+			updateEventProcessingStatus(credentialEventStore, true, alreadyFailed);
+			//TODO Add audit log for credential store success
 			return entity;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
-			updateEventProcessingStatus(credentialEventStore, false, alreadyFailed);		
+			updateEventProcessingStatus(credentialEventStore, false, alreadyFailed);
+			//TODO Add audit log for credential store failure
 			throw e;
 		}
 	}
-	
+
+	/**
+	 * Skip if waiting for retry interval.
+	 *
+	 * @param updDTimes the upd D times
+	 * @throws RetryingBeforeRetryIntervalException the retrying before retry
+	 *                                              interval exception
+	 */
 	private void skipIfWaitingForRetryInterval(LocalDateTime updDTimes) throws RetryingBeforeRetryIntervalException {
-		if(DateUtils.getUTCCurrentDateTime().isBefore(updDTimes.plus(retryInterval, ChronoUnit.MILLIS))) {
+		if (DateUtils.getUTCCurrentDateTime().isBefore(updDTimes.plus(retryInterval, ChronoUnit.MILLIS))) {
 			throw new RetryingBeforeRetryIntervalException();
 		}
 	}
 
-	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess, boolean alreadyFailed) {
+	/**
+	 * Update event processing status.
+	 *
+	 * @param credentialEventStore the credential event store
+	 * @param isSuccess            the is success
+	 * @param alreadyFailed        the already failed
+	 */
+	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess,
+			boolean alreadyFailed) {
 		credentialEventStore.setUpdBy(IDA);
 		credentialEventStore.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-		
-		if(isSuccess) {
+
+		if (isSuccess) {
 			credentialEventStore.setStatusCode(CredentialStoreStatus.STORED.name());
 		} else {
 			int retryCount = 0;
-			if(alreadyFailed) {
+			if (alreadyFailed) {
 				retryCount = credentialEventStore.getRetryCount() + 1;
 				credentialEventStore.setRetryCount(retryCount);
 			}
-			if(retryCount < maxRetryCount) {
+			if (retryCount < maxRetryCount) {
 				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED.name());
 			} else {
 				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 			}
 		}
-		
+
 		credentialEventRepo.save(credentialEventStore);
 	}
-	
+
+	/**
+	 * Store event model.
+	 *
+	 * @param eventModel the event model
+	 */
 	public void storeEventModel(EventModel eventModel) {
 		CredentialEventStore credentialEvent = new CredentialEventStore();
 		credentialEvent.setCrBy(IDA);
@@ -159,24 +215,33 @@ public class CredentialStoreService {
 		credentialEvent.setRetryCount(0);
 		try {
 			credentialEvent.setEventObject(objectMapper.writeValueAsString(eventModel));
-			credentialEventRepo.save(credentialEvent);		
+			credentialEventRepo.save(credentialEvent);
 		} catch (JsonProcessingException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					"storeEventModel", "error in json processing: " + e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "storeEventModel",
+					"error in json processing: " + e.getMessage());
 		}
 	}
 
-	public IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore) throws IdAuthenticationBusinessException {
+	/**
+	 * Do process credential store event.
+	 *
+	 * @param credentialEventStore the credential event store
+	 * @return the identity entity
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	public IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore)
+			throws IdAuthenticationBusinessException {
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
 			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);
 			Event event = eventModel.getEvent();
-			
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					"processCredentialStoreEvent", "Processing credential store event: " + eventObjectStr);
-			
+
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
+					"Processing credential store event: " + eventObjectStr);
+
 			String dataShareUri = event.getDataShareUri();
-			if(dataShareUri != null) {
+			if (dataShareUri != null) {
 				try {
 					Map<String, Object> additionalData = event.getData();
 					String modulo = (String) additionalData.get(MODULO);
@@ -185,53 +250,66 @@ public class CredentialStoreService {
 					String demoKey = (String) additionalData.get(DEMO_KEY);
 					String bioKeyIndex = (String) additionalData.get(BIO_KEY_INDEX);
 					String bioKey = (String) additionalData.get(BIO_KEY);
-					
+
 					saveSalt(modulo, salt);
-					
-					if(demoKeyIndex != null && demoKey != null) {
+
+					if (demoKeyIndex != null && demoKey != null) {
 						securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
 					}
-					
-					if(bioKeyIndex != null && bioKey != null) {
+
+					if (bioKeyIndex != null && bioKey != null) {
 						securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
 					}
-					
+
 					String idHash = (String) additionalData.get(ID_HASH);
 					Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 					String expiryTime = (String) additionalData.get(EXPIRY_TIME);
-					String token  = (String) additionalData.get(TOKEN);
+					String token = (String) additionalData.get(TOKEN);
 					Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class);
 					return createIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
-					
+
 				} catch (RestServiceException | IDDataValidationException e) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 				}
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
 								+ ": Data Share URI is not proivded in the event");
 			}
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					"retrieveAndStoreCredential", "Error parsing event model: " + eventObjectStr);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "retrieveAndStoreCredential",
+					"Error parsing event model: " + eventObjectStr);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
 							+ ": Error parsing event model: ");
 		}
 	}
 
+	/**
+	 * Creates the identity entity.
+	 *
+	 * @param idHash           the id hash
+	 * @param token            the token
+	 * @param transactionLimit the transaction limit
+	 * @param expiryTime       the expiry time
+	 * @param credentialData   the credential data
+	 * @return the identity entity
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
 	@SuppressWarnings("unchecked")
-	private IdentityEntity createIdentityEntity(String idHash, String token, Integer transactionLimit, String expiryTime,
-			Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
+	private IdentityEntity createIdentityEntity(String idHash, String token, Integer transactionLimit,
+			String expiryTime, Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
 		Map<String, Object>[] demoBioData = splitDemoBioData(
 				(Map<String, Object>) credentialData.get(IdAuthCommonConstants.CREDENTIAL_SUBJECT));
 		try {
-			byte [] demoBytes = objectMapper.writeValueAsBytes(demoBioData[0]);
-			byte [] bioBytes = objectMapper.writeValueAsBytes(demoBioData[1]);
-			
+			byte[] demoBytes = objectMapper.writeValueAsBytes(demoBioData[0]);
+			byte[] bioBytes = objectMapper.writeValueAsBytes(demoBioData[1]);
+
 			IdentityEntity identityEntity = new IdentityEntity();
 			Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
-			if(identityEntityOpt.isPresent()) {
+			if (identityEntityOpt.isPresent()) {
 				identityEntity = identityEntityOpt.get();
 				identityEntity.setUpdBy(IDA);
 				identityEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
@@ -245,32 +323,51 @@ public class CredentialStoreService {
 			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);
 			identityEntity.setTransactionLimit(transactionLimit);
-			
+
 			identityEntity.setDemographicData(demoBytes);
 			identityEntity.setBiometricData(bioBytes);
 			return identityEntity;
 		} catch (ClassCastException | JsonProcessingException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-	
+
+	/**
+	 * Store identity entity.
+	 *
+	 * @param idEntities the id entities
+	 */
 	public void storeIdentityEntity(List<? extends IdentityEntity> idEntities) {
 		identityCacheRepo.saveAll(idEntities);
 	}
 
+	/**
+	 * Split demo bio data.
+	 *
+	 * @param credentialData the credential data
+	 * @return the map[]
+	 */
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
 		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
 				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS)));
-		
-		Map<String, Object> demoData = bioOrDemoData.get(false).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		Map<String, Object> bioData = bioOrDemoData.get(true).stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		
-		return new Map[] {demoData, bioData};
+
+		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		Map<String, Object> bioData = bioOrDemoData.get(true).stream()
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+		return new Map[] { demoData, bioData };
 	}
 
+	/**
+	 * Save salt.
+	 *
+	 * @param modulo the modulo
+	 * @param salt   the salt
+	 */
 	private void saveSalt(String modulo, String salt) {
 		Long saltModulo = Long.valueOf(modulo);
-		if(!uinHashSaltRepo.existsById(saltModulo)) {
+		if (!uinHashSaltRepo.existsById(saltModulo)) {
 			UinHashSalt saltEntity = new UinHashSalt();
 			saltEntity.setId(saltModulo);
 			saltEntity.setSalt(salt);
