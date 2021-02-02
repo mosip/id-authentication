@@ -1,4 +1,6 @@
 package io.mosip.authentication.common.service.impl.idevent;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_MAX_LIMIT;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -87,10 +89,10 @@ public class CredentialStoreService {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
-	@Value("${ida.credential.stor.retry.max.limit:20}")
+	@Value("${" + CREDENTIAL_STORE_RETRY_MAX_LIMIT + ":20}")
 	private int maxRetryCount;
 	
-	@Value("${ida.credential.store.retry.interval.millisecs:60000}")
+	@Value("${" + CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS + ":60000}")
 	private int retryInterval;
 	
 	@Autowired

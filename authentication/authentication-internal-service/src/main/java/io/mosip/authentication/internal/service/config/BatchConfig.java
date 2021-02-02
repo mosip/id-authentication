@@ -1,4 +1,6 @@
 package io.mosip.authentication.internal.service.config;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_JOB_DELAY;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +66,7 @@ public class BatchConfig {
 	@Autowired
 	public JobRegistry jobRegistry;
 
-	@Value("${ida.batch.credential.store.chunk.size:10}")
+	@Value("${" + CREDENTIAL_STORE_CHUNK_SIZE + ":10}")
 	private int chunkSize;
 
 	@Autowired
@@ -162,7 +164,7 @@ public class BatchConfig {
 		return reader;
 	}
 	
-	@Scheduled(fixedDelayString = "${mosip.ida.credential.store.job.delay:" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
+	@Scheduled(fixedDelayString = "${" + CREDENTIAL_STORE_JOB_DELAY + ":" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
 	public void scheduleJob() {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())

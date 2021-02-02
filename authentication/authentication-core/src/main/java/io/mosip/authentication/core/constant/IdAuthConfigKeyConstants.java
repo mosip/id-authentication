@@ -112,4 +112,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";
 
+	public static final String CREDENTIAL_STORE_JOB_DELAY = "mosip.ida.credential.store.job.delay";
+	public static final String CREDENTIAL_STORE_CHUNK_SIZE = "ida.batch.credential.store.chunk.size";
+	public static final String CREDENTIAL_STORE_RETRY_MAX_LIMIT = "ida.credential.store.retry.max.limit";
+	public static final String CREDENTIAL_STORE_RETRY_RETRY_INTERVAL_MILLISECS = "ida.credential.store.retry.interval.millisecs";
+
 }
