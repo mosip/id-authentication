@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Instantiates a new credential event store.
+ * Credential event store entity.
  * @author Loganathan Sekar
  */
 @NoArgsConstructor
