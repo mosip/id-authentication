@@ -2,7 +2,6 @@ package io.mosip.authentication.internal.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -47,7 +46,9 @@ import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
+import io.mosip.authentication.core.config.RetryConfig;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.core.util.RetryUtil;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -101,7 +102,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class,
 		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
-		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class })
+		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class})
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

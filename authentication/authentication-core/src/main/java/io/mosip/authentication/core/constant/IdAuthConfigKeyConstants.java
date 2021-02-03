@@ -111,5 +111,12 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";
+	
+	
+	public static final String IDA_RETRY_SIMPLE_LIMIT = "ida.retry.simple.limit";
+	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS ="ida.retry.exponential.backoff.initial.interval.millisecs";
+	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER = "ida.retry.exponential.backoff.multiplier";
+	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS = "ida.retry.exponential.backoff.max.interval.millisecs";
 
+	
 }

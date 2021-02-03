@@ -43,7 +43,9 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsSubscriber;
+import io.mosip.authentication.core.config.RetryConfig;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.core.util.RetryUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
@@ -88,7 +90,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
 		PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
 		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class })
+		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {

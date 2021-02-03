@@ -27,6 +27,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.util.RetryUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -118,6 +119,9 @@ public class IdAuthSecurityManager {
 	/** KeySplitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
+	
+	@Autowired
+	private RetryUtil retryUtil;
 
 	/**
 	 * Gets the user.
@@ -141,25 +145,27 @@ public class IdAuthSecurityManager {
 	 */
 	public byte[] encrypt(String dataToEncrypt, String refId, String aad, String saltToEncrypt)
 			throws IdAuthenticationBusinessException {
-		try {
-			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
-			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
-			request.setData(dataToEncrypt);
-			request.setReferenceId(refId);
-			request.setAad(aad);
-			request.setSalt(saltToEncrypt);
-			return CryptoUtil.decodeBase64(cryptomanagerService.encrypt(request).getData());
-		} catch (NoUniqueAliasException e) {
-			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
-		} catch (Exception e) {
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
-		}
+		return retryUtil.doWithRetry(() -> {
+			try {
+				CryptomanagerRequestDto request = new CryptomanagerRequestDto();
+				request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+				request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+				request.setData(dataToEncrypt);
+				request.setReferenceId(refId);
+				request.setAad(aad);
+				request.setSalt(saltToEncrypt);
+				return CryptoUtil.decodeBase64(cryptomanagerService.encrypt(request).getData());
+			} catch (NoUniqueAliasException e) {
+				// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
+				mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+						ExceptionUtils.getStackTrace(e));
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
+			} catch (Exception e) {
+				mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+						ExceptionUtils.getStackTrace(e));
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
+			}
+		});
 	}
 
 	/**
@@ -175,32 +181,36 @@ public class IdAuthSecurityManager {
 	 */
 	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt,
 			Boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
-		try {
-			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
-			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
-			request.setData(dataToDecrypt);
-			request.setReferenceId(refId);
-			request.setAad(aad);
-			request.setSalt(saltToDecrypt);
-			request.setPrependThumbprint(isThumbprintEnabled);
-			return CryptoUtil.decodeBase64(cryptomanagerService.decrypt(request).getData());
-		} catch (NoUniqueAliasException e) {
-			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
-		} catch (Exception e) {
-			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
-		}
+		return retryUtil.doWithRetry(() -> {
+			try {
+				CryptomanagerRequestDto request = new CryptomanagerRequestDto();
+				request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+				request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+				request.setData(dataToDecrypt);
+				request.setReferenceId(refId);
+				request.setAad(aad);
+				request.setSalt(saltToDecrypt);
+				request.setPrependThumbprint(isThumbprintEnabled);
+				return CryptoUtil.decodeBase64(cryptomanagerService.decrypt(request).getData());
+			} catch (NoUniqueAliasException e) {
+				// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
+				mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+						ExceptionUtils.getStackTrace(e));
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
+			} catch (Exception e) {
+				mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
+						ExceptionUtils.getStackTrace(e));
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+			}
+		});
 	}
 
 	public String reEncryptRandomKey(String encryptedKey) {
-		ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService
-				.zkReEncryptRandomKey(encryptedKey);
-		return zkReEncryptRandomKeyRespDto.getEncryptedKey();
+		return retryUtil.doWithRetry(() -> {
+			ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService
+					.zkReEncryptRandomKey(encryptedKey);
+			return zkReEncryptRandomKeyRespDto.getEncryptedKey();
+		});
 	}
 
 	public void reEncryptAndStoreRandomKey(String index, String key) {
@@ -218,14 +228,16 @@ public class IdAuthSecurityManager {
 
 	public Map<String, String> zkDecrypt(String id, Map<String, String> encryptedAttributes)
 			throws IdAuthenticationBusinessException {
-		ZKCryptoRequestDto cryptoRequestDto = new ZKCryptoRequestDto();
-		cryptoRequestDto.setId(id);
-		List<CryptoDataDto> zkDataAttributes = encryptedAttributes.entrySet().stream()
-				.map(entry -> new CryptoDataDto(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-		cryptoRequestDto.setZkDataAttributes(zkDataAttributes);
-		ZKCryptoResponseDto zkDecryptResponse = zkCryptoManagerService.zkDecrypt(cryptoRequestDto);
-		return zkDecryptResponse.getZkDataAttributes().stream()
-				.collect(Collectors.toMap(CryptoDataDto::getIdentifier, CryptoDataDto::getValue));
+		return retryUtil.doWithRetry(() -> {
+			ZKCryptoRequestDto cryptoRequestDto = new ZKCryptoRequestDto();
+			cryptoRequestDto.setId(id);
+			List<CryptoDataDto> zkDataAttributes = encryptedAttributes.entrySet().stream()
+					.map(entry -> new CryptoDataDto(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+			cryptoRequestDto.setZkDataAttributes(zkDataAttributes);
+			ZKCryptoResponseDto zkDecryptResponse = zkCryptoManagerService.zkDecrypt(cryptoRequestDto);
+			return zkDecryptResponse.getZkDataAttributes().stream()
+					.collect(Collectors.toMap(CryptoDataDto::getIdentifier, CryptoDataDto::getValue));
+		});
 
 	}
 
@@ -250,15 +262,17 @@ public class IdAuthSecurityManager {
 	 * @return the string
 	 */
 	public String sign(String data) {
-		// TODO: check whether any exception will be thrown
-		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
-		request.setApplicationId(signApplicationid);
-		request.setDataToSign(CryptoUtil.encodeBase64(data.getBytes()));
-		request.setIncludeCertHash(true);
-		request.setIncludeCertificate(true);
-		request.setIncludePayload(false);
-		request.setReferenceId(signRefid);
-		return signatureService.jwtSign(request).getJwtSignedData();
+		return retryUtil.doWithRetry(() -> {
+			// TODO: check whether any exception will be thrown
+			JWTSignatureRequestDto request = new JWTSignatureRequestDto();
+			request.setApplicationId(signApplicationid);
+			request.setDataToSign(CryptoUtil.encodeBase64(data.getBytes()));
+			request.setIncludeCertHash(true);
+			request.setIncludeCertificate(true);
+			request.setIncludePayload(false);
+			request.setReferenceId(signRefid);
+			return signatureService.jwtSign(request).getJwtSignedData();
+		});
 	}
 
 	public boolean verifySignature(String signature, String domain, String requestData,

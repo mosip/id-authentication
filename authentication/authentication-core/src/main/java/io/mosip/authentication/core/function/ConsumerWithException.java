@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.indauth.match;
+package io.mosip.authentication.core.function;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
