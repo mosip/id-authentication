@@ -235,7 +235,7 @@ public class CredentialStoreBatchConfig {
 					.toJobParameters();
 			jobLauncher.run(job, jobParameters);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}
 	}
 	

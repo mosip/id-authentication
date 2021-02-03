@@ -14,6 +14,8 @@ public enum CredentialStoreStatus {
 	/** The failed status. */
 	FAILED,
 	/** The failed with max retries status. */
-	FAILED_WITH_MAX_RETRIES
+	FAILED_WITH_MAX_RETRIES,
+	/** The failed non recoverable. */
+	FAILED_NON_RECOVERABLE
 
 }

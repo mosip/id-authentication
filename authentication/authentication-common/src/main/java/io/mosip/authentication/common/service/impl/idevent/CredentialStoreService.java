@@ -1,7 +1,7 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_MAX_LIMIT;
 
@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -125,8 +127,8 @@ public class CredentialStoreService {
 	private CredentialEventStoreRepository credentialEventRepo;
 
 	/** The interval exponential multiplier. Default value is 1 - resulting in fixed backoff retry inteval */
-	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT + ":1}")
-	private double intervalExponentialQuotient;
+	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER + ":1}")
+	private double intervalExponentialMultiplier;
 
 	/** The max exponential retry interval limit millis. Default value is set to 1 hour*/
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
@@ -144,8 +146,7 @@ public class CredentialStoreService {
 	 */
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
-		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name())
-				|| credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
+		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name());
 
 		if (alreadyFailed) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
@@ -153,14 +154,21 @@ public class CredentialStoreService {
 
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
-			updateEventProcessingStatus(credentialEventStore, true, alreadyFailed);
+			updateEventProcessingStatus(credentialEventStore, true, false, alreadyFailed);
 			//TODO Add audit log for credential store success
 			return entity;
+		} catch (RuntimeException e) {
+			// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
+			updateEventProcessingStatus(credentialEventStore, false, false, alreadyFailed);
+			//TODO Add audit log for credential store success
+			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
-			updateEventProcessingStatus(credentialEventStore, false, alreadyFailed);
-			//TODO Add audit log for credential store failure
+			updateEventProcessingStatus(credentialEventStore, false, true, alreadyFailed);
+			//TODO Add audit log for credential store success
 			throw e;
 		}
 	}
@@ -173,9 +181,9 @@ public class CredentialStoreService {
 	 *                                              interval exception
 	 */
 	private void skipIfWaitingForRetryInterval(CredentialEventStore credentialEventStore) throws RetryingBeforeRetryIntervalException {
-		Assert.isTrue(intervalExponentialQuotient >= 1, CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_QUOTIENT + " property value should be greater than or equal to 1.");
+		Assert.isTrue(intervalExponentialMultiplier >= 1, CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER + " property value should be greater than or equal to 1.");
 		
-		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialQuotient, credentialEventStore.getRetryCount()));
+		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialMultiplier, credentialEventStore.getRetryCount()));
 		if(backoffIntervalMillis > maxExponentialRetryIntervalLimitMillis) {
 			backoffIntervalMillis = maxExponentialRetryIntervalLimitMillis;
 		}
@@ -193,23 +201,32 @@ public class CredentialStoreService {
 	 * @param isSuccess            the is success
 	 * @param alreadyFailed        the already failed
 	 */
-	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess,
+	@Transactional
+	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess, boolean isRecoverableException,
 			boolean alreadyFailed) {
 		credentialEventStore.setUpdBy(IDA);
 		credentialEventStore.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 
 		if (isSuccess) {
 			credentialEventStore.setStatusCode(CredentialStoreStatus.STORED.name());
+			// TODO send websub event success message for the event id
 		} else {
-			int retryCount = 0;
-			if (alreadyFailed) {
-				retryCount = credentialEventStore.getRetryCount() + 1;
-				credentialEventStore.setRetryCount(retryCount);
-			}
-			if (retryCount < maxRetryCount) {
-				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED.name());
+			if (isRecoverableException) {
+				int retryCount = 0;
+				if (alreadyFailed) {
+					retryCount = credentialEventStore.getRetryCount() + 1;
+					credentialEventStore.setRetryCount(retryCount);
+				}
+				if (retryCount < maxRetryCount) {
+					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED.name());
+				} else {
+					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
+					// TODO send websub event failure message for the event id
+				}
 			} else {
-				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
+				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
+				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name());
+				// TODO send websub event failure message for the event id
 			}
 		}
 

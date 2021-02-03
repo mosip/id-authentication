@@ -22,6 +22,7 @@ public interface CredentialEventStoreRepository extends BaseRepository<Credentia
 	 * @param pageable the pageable
 	 * @return the page
 	 */
-	@Query(value = "SELECT * from credential_event_store where status_code in ('NEW', 'FAILED')", nativeQuery = true)
+	@Query(value = "SELECT * from credential_event_store where status_code in ('NEW', 'FAILED')" // then, try processing old entries
+			, nativeQuery = true)
 	Page<CredentialEventStore> findNewOrFailedEvents(Pageable pageable);
 }
