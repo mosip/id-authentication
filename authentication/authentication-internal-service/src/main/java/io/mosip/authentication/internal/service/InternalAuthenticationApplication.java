@@ -47,6 +47,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSu
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
 import io.mosip.authentication.core.config.RetryConfig;
+import io.mosip.authentication.core.config.RetryListenerImpl;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.core.util.RetryUtil;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
@@ -102,7 +103,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class,
 		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
-		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class})
+		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class})
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

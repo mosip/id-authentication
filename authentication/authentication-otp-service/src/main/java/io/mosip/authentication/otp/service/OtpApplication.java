@@ -45,6 +45,7 @@ import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsSubscriber;
 import io.mosip.authentication.core.config.RetryConfig;
+import io.mosip.authentication.core.config.RetryListenerImpl;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.core.util.RetryUtil;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
@@ -88,7 +89,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class,
 		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubSubscriptionHelper.class,
-		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class })
+		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {
