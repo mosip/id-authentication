@@ -36,16 +36,16 @@ public class RetryConfig {
 	
 	@Bean
 	public RetryPolicy retryPolicy(@Value("${" + IDA_RETRY_SIMPLE_LIMIT + ":3}") int retryLimit) {
+		int maxAttempts = retryLimit + 1;
 		Map<Class<? extends Throwable>, Boolean> retryableExceptions = getRetryableExceptionsFromConfig();
 		// Adding 1 as the limit is inclusive of the first attempt for this policy
-		int maxAttempts = retryLimit + 1;
 		SimpleRetryPolicy simpleRetryPolicyForInclusiveExceptions = new SimpleRetryPolicy(maxAttempts, retryableExceptions,
 				true, true);
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts, nonRetryableExceptions,
 				true, false);
 		CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
-		compositeRetryPolicy.setOptimistic(false); // Retry  only if inclusive and exclusive exceptions are matching
+		compositeRetryPolicy.setOptimistic(false); // Retry only if inclusive and exclusive exceptions are matching
 		compositeRetryPolicy.setPolicies(new RetryPolicy[] {simpleRetryPolicyForInclusiveExceptions, simpleRetryPolicyForExclusiveExceptions});
 		return compositeRetryPolicy;
 	}
@@ -80,9 +80,9 @@ public class RetryConfig {
 
 	@Bean
 	public BackOffPolicy backOffPolicy(
-			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS + "}:100") long initialIntervalMilliSecs,
-			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER + "}:2.0") double multiplier,
-			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS + "}:30000") long maxIntervalMilliSecs
+			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS + ":100}") long initialIntervalMilliSecs,
+			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER + ":2.0}") double multiplier,
+			@Value("${" + IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS + ":30000}") long maxIntervalMilliSecs
 			) {
 		ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
 		exponentialBackOffPolicy.setInitialInterval(initialIntervalMilliSecs);
