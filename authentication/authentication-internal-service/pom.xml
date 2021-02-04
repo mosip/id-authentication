@@ -26,6 +26,16 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-batch</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-integration</artifactId>
+			<version>${spring.batch.version}</version>
+		</dependency>
 		<!-- Kernel Hibernate Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
