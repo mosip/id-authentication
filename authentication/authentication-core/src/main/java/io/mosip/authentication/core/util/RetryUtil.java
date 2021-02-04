@@ -1,8 +1,6 @@
 package io.mosip.authentication.core.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
@@ -92,11 +90,7 @@ public class RetryUtil {
 	 * @throws E the e
 	 */
 	private <R, T, E extends Exception> R doProcessWithRetry(FunctionWithException<R, T, E> func, T t) throws E {
-		R result = retryTemplate.execute(new RetryCallback<R, E>() {
-		    public R doWithRetry(RetryContext context) throws E {
-		    	return func.apply(t);
-		    }
-		});
+		R result = retryTemplate.execute(context -> func.apply(t));
 		return result;
 	}
 

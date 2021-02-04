@@ -43,7 +43,7 @@ public class RetryConfig {
 				true, true);
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts, nonRetryableExceptions,
-				true, false);
+				true, true);
 		CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
 		compositeRetryPolicy.setOptimistic(false); // Retry only if inclusive and exclusive exceptions are matching
 		compositeRetryPolicy.setPolicies(new RetryPolicy[] {simpleRetryPolicyForInclusiveExceptions, simpleRetryPolicyForExclusiveExceptions});
@@ -51,14 +51,14 @@ public class RetryConfig {
 	}
 	
 	protected Map<Class<? extends Throwable>, Boolean> getRetryableExceptionsFromConfig() {
-		return getExceptionsMapFromConfig(IDA_RETRYABLE_EXCEPTIONS, DEFAULT_RETRYABLE_EXCEPTIONS);
+		return getExceptionsMapFromConfig(IDA_RETRYABLE_EXCEPTIONS, DEFAULT_RETRYABLE_EXCEPTIONS, true);
 	}
 	
 	private Map<Class<? extends Throwable>, Boolean> getNonRetryableExceptionsFromConfig() {
-		return getExceptionsMapFromConfig(IDA_NONRETRYABLE_EXCEPTIONS, DEFAULT_NONRETRYABLE_EXCEPTIONS);
+		return getExceptionsMapFromConfig(IDA_NONRETRYABLE_EXCEPTIONS, DEFAULT_NONRETRYABLE_EXCEPTIONS, false);
 	}
 	
-	private Map<Class<? extends Throwable>, Boolean> getExceptionsMapFromConfig(String configProperty, String defaulPropValue) {
+	private Map<Class<? extends Throwable>, Boolean> getExceptionsMapFromConfig(String configProperty, String defaulPropValue, boolean shouldRetry) {
 		String propertyValue = environment.getProperty(configProperty, defaulPropValue);
 		return Stream.of(propertyValue.split(","))
 			.filter(str -> !str.isEmpty())
@@ -74,7 +74,7 @@ public class RetryConfig {
 			.filter(Objects::nonNull)
 			.filter(cl -> Throwable.class.isAssignableFrom(cl))
 			.map(cl -> (Class< ? extends Throwable>) cl)
-			.collect(Collectors.toMap(Function.identity(), arg -> true));
+			.collect(Collectors.toMap(Function.identity(), arg -> shouldRetry));
 			
 	}
 
