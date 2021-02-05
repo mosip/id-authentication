@@ -1,22 +1,22 @@
 package io.mosip.authentication.core.function;
 
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-
 /**
- * Consumer Functional interface to throw Exception.
+ * Consumer Functional interface which can throw Exception.
  *
- * @author Loganathan Sekaran
  * @param <T> the generic type
+ * @param <E> the element type that can be any Throwable
+ * 
+ * @author Loganathan Sekar
+ * 
  */
 @FunctionalInterface
 public interface ConsumerWithThrowable<T, E extends Throwable> {
 
 	/**
-	 * Applies this function to the given arguments.
+	 * Expression that accepts the given arguments.
 	 *
 	 * @param t the first function argument
-	 * @return the function result
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws E the exception
 	 */
 	void accept(T t) throws E;
 
