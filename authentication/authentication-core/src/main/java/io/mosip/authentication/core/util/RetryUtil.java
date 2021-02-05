@@ -10,7 +10,7 @@ import io.mosip.authentication.core.function.RunnableWithThrowable;
 import io.mosip.authentication.core.function.SupplierWithThrowable;
 
 /**
- * The RetryUtil - an Utility to invoke any APIs with retries as per the
+ * The RetryUtil - an Utility to invoke any method / expression with retries as per the
  * configuration.
  */
 @Component
@@ -21,12 +21,12 @@ public class RetryUtil {
 	private RetryTemplate retryTemplate;
 	
 	/**
-	 * Do with retry.
+	 * Invoke the function with retry.
 	 *
 	 * @param <R> the generic type
 	 * @param <T> the generic type
 	 * @param <E> the element type
-	 * @param func the func
+	 * @param func the {@link FunctionWithThrowable} instance or its lambda expression
 	 * @param t the t
 	 * @return the r
 	 * @throws E the e
@@ -36,11 +36,11 @@ public class RetryUtil {
 	}
 	
 	/**
-	 * Do with retry.
+	 * Invoke the supplier with retry.
 	 *
 	 * @param <R> the generic type
 	 * @param <E> the element type
-	 * @param func the func
+	 * @param func the {@link SupplierWithThrowable} instance or its lambda expression
 	 * @return the r
 	 * @throws E the e
 	 */
@@ -49,11 +49,11 @@ public class RetryUtil {
 	}
 	
 	/**
-	 * Do with retry.
+	 * Invoke the consumer with retry.
 	 *
 	 * @param <T> the generic type
 	 * @param <E> the element type
-	 * @param func the func
+	 * @param func the {@link ConsumerWithThrowable} instance or its lambda expression
 	 * @param t the t
 	 * @throws E the e
 	 */
@@ -65,10 +65,10 @@ public class RetryUtil {
 	}
 	
 	/**
-	 * Do with retry.
+	 * Invoke the supplier with retry.
 	 *
 	 * @param <E> the element type
-	 * @param func the func
+	 * @param func the {@link RunnableWithThrowable} instance or its lambda expression
 	 * @throws E the e
 	 */
 	public <E extends Throwable> void doWithRetry(RunnableWithThrowable<E> func) throws E {
