@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.util.RetryUtil;
 
 /**
- * The Class RetryAspect - apply the retry mechanism on methods with
- * '@WithREtry' annotation.
+ * The Aspect Class RetryAspect that applies the retry mechanism on methods with
+ *  {@link WithRetry} annotation.
  * 
  * @author Loganathan Sekar
  */
