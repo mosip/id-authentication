@@ -21,6 +21,10 @@ import io.mosip.authentication.core.retry.RetryConfig;
 import io.mosip.authentication.core.retry.RetryListenerImpl;
 import io.mosip.authentication.core.util.RetryUtil;
 
+/**
+ * @author Loganathan Sekar
+ *
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, RetryConfig.class,

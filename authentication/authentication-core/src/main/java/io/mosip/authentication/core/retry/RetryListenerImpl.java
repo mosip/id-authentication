@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * The Class RetryListenerImpl - to log failed invocations.
+ * @author Loganathan Sekar
+ */
 @Component
 public class RetryListenerImpl implements RetryListener {
 	/** The mosipLogger. */
@@ -23,15 +27,6 @@ public class RetryListenerImpl implements RetryListener {
 			Throwable throwable) {
 	}
 
-	/**
-	 * On error.
-	 *
-	 * @param <T> the generic type
-	 * @param <E> the element type
-	 * @param context the context
-	 * @param callback the callback
-	 * @param throwable the throwable
-	 */
 	@Override
 	public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
 			Throwable throwable) {
