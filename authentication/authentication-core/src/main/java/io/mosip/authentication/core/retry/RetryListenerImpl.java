@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.config;
+package io.mosip.authentication.core.retry;
 
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;

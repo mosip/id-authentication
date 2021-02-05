@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.function;
 
 @FunctionalInterface
-public interface FunctionWithException<R, T, E extends Exception> {
+public interface FunctionWithThrowable<R, T, E extends Throwable> {
 
 	R apply(T t) throws E;
 

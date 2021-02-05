@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.config;
+package io.mosip.authentication.core.retry;
 
 import java.util.function.Supplier;
 

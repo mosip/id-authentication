@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.function;
 
 @FunctionalInterface
-public interface SupplierWithException<R, E extends Exception> {
+public interface SupplierWithThrowable<R, E extends Throwable> {
 
 	R get() throws E;
 

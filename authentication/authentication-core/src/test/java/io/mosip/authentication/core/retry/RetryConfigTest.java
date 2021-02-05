@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.config;
+package io.mosip.authentication.core.retry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.retry.RetryConfig;
+import io.mosip.authentication.core.retry.RetryListenerImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -33,7 +35,7 @@ public class RetryConfigTest {
 
 	@Test
 	public void testRetryPolicy_Testsuccess() throws Exception {
-		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(0, () -> new IOException());
+		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new IOException());
 		Object result = retryTemplate.execute(c -> failingMockOperation.get());
 		assertNotNull(result);
 	}

@@ -9,7 +9,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * @param <T> the generic type
  */
 @FunctionalInterface
-public interface ConsumerWithException<T, E extends Exception> {
+public interface ConsumerWithThrowable<T, E extends Throwable> {
 
 	/**
 	 * Applies this function to the given arguments.

@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.config;
+package io.mosip.authentication.core.retry;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_NONRETRYABLE_EXCEPTIONS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRYABLE_EXCEPTIONS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.RetryListener;
 import org.springframework.retry.RetryPolicy;
@@ -26,6 +27,7 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
+@EnableAspectJAutoProxy
 public class RetryConfig {
 	
 	private static final String DEFAULT_RETRYABLE_EXCEPTIONS = Exception.class.getName();
