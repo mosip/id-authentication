@@ -28,6 +28,7 @@ import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
@@ -51,6 +52,7 @@ import io.mosip.authentication.core.retry.RetryConfig;
 import io.mosip.authentication.core.retry.RetryListenerImpl;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.core.util.RetryUtil;
+import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -105,7 +107,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class,
 		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
 		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
-		RetryListenerImpl.class, RetryAspect.class })
+		RetryListenerImpl.class, RetryAspect.class, CredentialStoreService.class, CredentialStoreJobExecutionListener.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

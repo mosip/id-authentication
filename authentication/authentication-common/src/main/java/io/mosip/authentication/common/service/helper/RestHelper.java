@@ -5,7 +5,9 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ERRORS
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +53,21 @@ public interface RestHelper {
 		} catch (IOException e) {
 			//Ignoring parse error
 			return false;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	default Optional<Entry<String, Object>> getError(String response, ObjectMapper mapper) {
+		try {
+			Map<String, Object> readValue = mapper.readValue(response.getBytes(), Map.class);
+			return readValue.entrySet().stream()
+						.filter(entry -> entry.getKey().equals(ERRORS)
+											&& !Objects.isNull(entry.getValue()) 
+											&& (entry.getValue() instanceof List && !((List<?>)entry.getValue()).isEmpty()))
+						.findAny();
+		} catch (IOException e) {
+			//Ignoring parse error
+			return Optional.empty();
 		}
 	}
 	

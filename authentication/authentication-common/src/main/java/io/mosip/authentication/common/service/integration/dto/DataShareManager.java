@@ -3,6 +3,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DAT
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED;
 
 import java.io.IOException;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +19,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 
@@ -46,12 +49,18 @@ public class DataShareManager {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
+		Optional<Entry<String, Object>> errorOpt = restHelper.getError(responseStr, mapper);
+		if(errorOpt.isEmpty()) {
 		//Decrypt data
-		byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
-		try {
-			return mapper.readValue(decryptedData, clazz);
-		} catch (IOException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
+			try {
+				return mapper.readValue(decryptedData, clazz);
+			} catch (IOException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
+		} else {
+			//Unchecked exception is thrown so that retry will not be performed on this.
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() + " : " + errorOpt.get().toString());
 		}
 	}
 	
