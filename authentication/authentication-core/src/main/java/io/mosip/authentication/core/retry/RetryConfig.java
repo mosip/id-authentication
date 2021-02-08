@@ -64,7 +64,7 @@ public class RetryConfig {
 		Map<Class<? extends Throwable>, Boolean> retryableExceptions = getRetryableExceptionsFromConfig();
 		// Adding 1 as the limit is inclusive of the first attempt for this policy
 		SimpleRetryPolicy simpleRetryPolicyForInclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				retryableExceptions, true, true);
+				retryableExceptions, true, false);
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
 				nonRetryableExceptions, true, true);

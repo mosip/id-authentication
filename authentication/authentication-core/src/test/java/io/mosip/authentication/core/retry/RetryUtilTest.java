@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.retry.RetryConfig;
-import io.mosip.authentication.core.retry.RetryListenerImpl;
 import io.mosip.authentication.core.util.RetryUtil;
 
 /**
@@ -39,19 +37,19 @@ public class RetryUtilTest {
 
 	@Test
 	public void testRetryPolicy_Testsuccess() throws Exception {
-		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new IOException());
+		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new SocketTimeoutException());
 		Object result = retryUtil.doWithRetry(failingMockOperation::get);
 		assertNotNull(result);
 	}
 
-	@Test(expected = IOException.class)
+	@Test(expected = SocketTimeoutException.class)
 	public void testRetryPolicy_TestFailureWithRetryableException() throws Exception {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
-		FailingMockOperation<IOException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new IOException());
+		FailingMockOperation<SocketTimeoutException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new SocketTimeoutException());
 		Object result;
 		try {
 			result = retryUtil.doWithRetry(failingMockOperation::get);
-		} catch (IOException e) {
+		} catch (SocketTimeoutException e) {
 			assertEquals(failingMockOperation.getExecutedTimes(), retryLimit + 1);
 			throw e;
 		}
@@ -78,7 +76,7 @@ public class RetryUtilTest {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
 		int retryCount = retryLimit / 2;
 		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(retryCount,
-				() -> new IOException());
+				() -> new SocketTimeoutException());
 		Object result = retryUtil.doWithRetry(failingMockOperation::get);
 		assertEquals(failingMockOperation.getExecutedTimes(), retryCount + 1);
 		assertNotNull(result);
@@ -89,7 +87,7 @@ public class RetryUtilTest {
 	public void testRetryPolicy_TestSuccessAfterFailuresTillMaxRetries() throws Exception {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
 		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(retryLimit,
-				() -> new IOException());
+				() -> new SocketTimeoutException());
 		Object result = retryUtil.doWithRetry(failingMockOperation::get);
 		assertEquals(failingMockOperation.getExecutedTimes(), retryLimit + 1);
 		assertNotNull(result);
@@ -98,18 +96,18 @@ public class RetryUtilTest {
 	
 	@Test
 	public void testRetryPolicy_TestsuccessWithRunnable() throws Exception {
-		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new IOException());
+		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new SocketTimeoutException());
 		retryUtil.doWithRetry(failingMockOperation::run);
 	}
 	
-	@Test(expected = IOException.class)
+	@Test(expected = SocketTimeoutException.class)
 	public void testRetryPolicy_TestFailureWithRunnable() throws Exception {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
-		FailingMockOperation<IOException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new IOException());
+		FailingMockOperation<SocketTimeoutException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new SocketTimeoutException());
 		Object result;
 		try {
 			retryUtil.doWithRetry(failingMockOperation::run);
-		} catch (IOException e) {
+		} catch (SocketTimeoutException e) {
 			assertEquals(failingMockOperation.getExecutedTimes(), retryLimit + 1);
 			throw e;
 		}
@@ -118,18 +116,18 @@ public class RetryUtilTest {
 	
 	@Test
 	public void testRetryPolicy_TestsuccessWithConsumer() throws Exception {
-		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new IOException());
+		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new SocketTimeoutException());
 		retryUtil.doWithRetry(failingMockOperation::accept, "Hello");
 	}
 	
-	@Test(expected = IOException.class)
+	@Test(expected = SocketTimeoutException.class)
 	public void testRetryPolicy_TestFailureWithConsumer() throws Exception {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
-		FailingMockOperation<IOException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new IOException());
+		FailingMockOperation<SocketTimeoutException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new SocketTimeoutException());
 		Object result;
 		try {
 			retryUtil.doWithRetry(failingMockOperation::accept, "Hello");
-		} catch (IOException e) {
+		} catch (SocketTimeoutException e) {
 			assertEquals(failingMockOperation.getExecutedTimes(), retryLimit + 1);
 			throw e;
 		}
@@ -138,19 +136,19 @@ public class RetryUtilTest {
 	
 	@Test
 	public void testRetryPolicy_TestsuccessWithFunction() throws Exception {
-		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new IOException());
+		FailingMockOperation<?> failingMockOperation = new FailingMockOperation<>(() -> new SocketTimeoutException());
 		Object result = retryUtil.doWithRetry(failingMockOperation::apply, "Hello");
 		assertEquals(result, "Hello");
 	}
 
-	@Test(expected = IOException.class)
+	@Test(expected = SocketTimeoutException.class)
 	public void testRetryPolicy_TestFailureWithFunction() throws Exception {
 		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
-		FailingMockOperation<IOException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new IOException());
+		FailingMockOperation<SocketTimeoutException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10, () -> new SocketTimeoutException());
 		Object result;
 		try {
 			result = retryUtil.doWithRetry(failingMockOperation::apply, "Hello");
-		} catch (IOException e) {
+		} catch (SocketTimeoutException e) {
 			assertEquals(failingMockOperation.getExecutedTimes(), retryLimit + 1);
 			throw e;
 		}
