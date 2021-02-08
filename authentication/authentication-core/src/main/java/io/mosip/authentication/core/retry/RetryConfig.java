@@ -5,8 +5,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_TRAVERS_ROOT_CAUSE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_TRAVERS_ROOT_CAUSE;
 
 import java.util.Map;
 import java.util.Objects;
@@ -53,9 +53,7 @@ public class RetryConfig {
 	@Autowired
 	private Environment environment;
 
-	@Value("${" + IDA_RETRY_TRAVERS_ROOT_CAUSE + ":true}")
-	private boolean traverseRootCause;
-
+	
 	/**
 	 * Retry policy.
 	 *
@@ -63,7 +61,8 @@ public class RetryConfig {
 	 * @return the retry policy
 	 */
 	@Bean
-	public RetryPolicy retryPolicy(@Value("${" + IDA_RETRY_SIMPLE_LIMIT + ":3}") int retryLimit) {
+	public RetryPolicy retryPolicy(@Value("${" + IDA_RETRY_SIMPLE_LIMIT + ":3}") int retryLimit,
+			@Value("${" + IDA_RETRY_TRAVERS_ROOT_CAUSE + ":true}") boolean traverseRootCause) {
 		int maxAttempts = retryLimit + 1;
 		Map<Class<? extends Throwable>, Boolean> retryableExceptions = getRetryableExceptionsFromConfig();
 		// Adding 1 as the limit is inclusive of the first attempt for this policy
