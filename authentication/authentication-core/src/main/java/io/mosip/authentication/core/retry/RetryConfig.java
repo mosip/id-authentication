@@ -68,7 +68,8 @@ public class RetryConfig {
 													// will not be retried
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				nonRetryableExceptions, true, true); // Default is true, if exception is not listed it will
+				nonRetryableExceptions, true, true); // Default is true, if exception is not listed it will be allowed
+														// to retry
 		CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
 		// Don't retry if any of the two policies says not to retry. Retry only if
 		// inclusive and exclusive exceptions are matching
