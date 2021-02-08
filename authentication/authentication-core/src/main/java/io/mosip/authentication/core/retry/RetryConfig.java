@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_TRAVERS_ROOT_CAUSE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT;
 
 import java.util.Map;
@@ -52,6 +53,9 @@ public class RetryConfig {
 	@Autowired
 	private Environment environment;
 
+	@Value("${" + IDA_RETRY_TRAVERS_ROOT_CAUSE + ":true}")
+	private boolean traverseRootCause;
+
 	/**
 	 * Retry policy.
 	 *
@@ -64,12 +68,12 @@ public class RetryConfig {
 		Map<Class<? extends Throwable>, Boolean> retryableExceptions = getRetryableExceptionsFromConfig();
 		// Adding 1 as the limit is inclusive of the first attempt for this policy
 		SimpleRetryPolicy simpleRetryPolicyForInclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				retryableExceptions, true, false); // Default is false, so that if an exception/subclass not in list
-													// will not be retried
+				retryableExceptions, traverseRootCause, false); // Default is false, so that if an exception/subclass
+																// not in list will not be retried
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				nonRetryableExceptions, true, true); // Default is true, if exception is not listed it will be allowed
-														// to retry
+				nonRetryableExceptions, traverseRootCause, true); // Default is true, if exception is not listed it will
+																	// be allowed to retry
 		CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
 		// Don't retry if any of the two policies says not to retry. Retry only if
 		// inclusive and exclusive exceptions are matching
