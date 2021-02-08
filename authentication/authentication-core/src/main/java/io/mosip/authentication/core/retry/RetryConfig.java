@@ -115,8 +115,8 @@ public class RetryConfig {
 			try {
 				return Class.forName(str);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				mosipLogger.error("", this.getClass().getSimpleName(), "getExceptionsMapFromConfig",
+						e.getMessage() , e);
 			}
 			return null;
 		}).filter(Objects::nonNull).filter(cl -> Throwable.class.isAssignableFrom(cl))
