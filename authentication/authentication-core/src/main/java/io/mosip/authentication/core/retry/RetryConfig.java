@@ -64,12 +64,15 @@ public class RetryConfig {
 		Map<Class<? extends Throwable>, Boolean> retryableExceptions = getRetryableExceptionsFromConfig();
 		// Adding 1 as the limit is inclusive of the first attempt for this policy
 		SimpleRetryPolicy simpleRetryPolicyForInclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				retryableExceptions, true, false);
+				retryableExceptions, true, false); // Default is false, so that if an exception/subclass not in list
+													// will not be retried
 		Map<Class<? extends Throwable>, Boolean> nonRetryableExceptions = getNonRetryableExceptionsFromConfig();
 		SimpleRetryPolicy simpleRetryPolicyForExclusiveExceptions = new SimpleRetryPolicy(maxAttempts,
-				nonRetryableExceptions, true, true);
+				nonRetryableExceptions, true, true); // Default is true, if exception is not listed it will
 		CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
-		compositeRetryPolicy.setOptimistic(false); // Retry only if inclusive and exclusive exceptions are matching
+		// Don't retry if any of the two policies says not to retry. Retry only if
+		// inclusive and exclusive exceptions are matching
+		compositeRetryPolicy.setOptimistic(false); 
 		compositeRetryPolicy.setPolicies(
 				new RetryPolicy[] { simpleRetryPolicyForInclusiveExceptions, simpleRetryPolicyForExclusiveExceptions });
 		return compositeRetryPolicy;
