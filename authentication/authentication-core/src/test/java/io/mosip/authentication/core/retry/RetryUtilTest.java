@@ -58,7 +58,7 @@ public class RetryUtilTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testRetryPolicy_TestFailureWithNonRetryableException() throws Exception {
-		Integer retryLimit = env.getProperty("ida.retry.simple.limit", Integer.class);
+		Integer retryLimit = env.getProperty(IdAuthConfigKeyConstants.IDA_RETRY_SIMPLE_LIMIT, Integer.class);
 		FailingMockOperation<IllegalArgumentException> failingMockOperation = new FailingMockOperation<>(retryLimit + 10,
 				() -> new IllegalArgumentException());
 		Object result;
