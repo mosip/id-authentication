@@ -113,14 +113,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";
 	
 	
-	public static final String IDA_RETRY_SIMPLE_LIMIT = "ida.retry.simple.limit";
-	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_INITIAL_INTERVAL_MILLISECS ="ida.retry.exponential.backoff.initial.interval.millisecs";
-	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_MULTIPLIER = "ida.retry.exponential.backoff.multiplier";
-	public static final String IDA_RETRY_EXPONENTIAL_BACKOFF_MAX_INTERVAL_MILLISECS = "ida.retry.exponential.backoff.max.interval.millisecs";
-	public static final String IDA_RETRY_TRAVERSE_ROOT_CAUSE = "ida.retry.traverse.root.cause";
-	public static final String IDA_RETRYABLE_EXCEPTIONS = "ida.retry.retryable.exceptions";
-	public static final String IDA_NONRETRYABLE_EXCEPTIONS = "ida.retry.nonretryable.exceptions";
-	
 	public static final String CREDENTIAL_STORE_JOB_DELAY = "ida.batch.credential.store.job.delay";
 	public static final String CREDENTIAL_STORE_CHUNK_SIZE = "ida.batch.credential.store.chunk.size";
 	public static final String CREDENTIAL_STORE_RETRY_MAX_LIMIT = "ida.credential.store.retry.max.limit";
