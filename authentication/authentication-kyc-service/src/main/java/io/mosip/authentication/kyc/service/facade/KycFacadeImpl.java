@@ -50,6 +50,8 @@ import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
+import reactor.util.function.Tuple2;
 
 /**
  * 
@@ -207,7 +209,10 @@ public class KycFacadeImpl implements KycFacade {
 				response.setAuthToken(authResponse.getAuthToken());
 				
 				if(Objects.nonNull(response.getIdentity())) {
-					response.setIdentity(encryptKycResponse(response.getIdentity(),(String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE)));
+					String partnerCertificate = (String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
+					Tuple2<String, String> encryptKycResponse = encryptKycResponse(response.getIdentity(),partnerCertificate);
+					response.setIdentity(encryptKycResponse.getT1());
+					response.setThumbprint(encryptKycResponse.getT2());
 				}
 				
 				kycAuthResponseDTO.setResponse(response);
@@ -223,7 +228,7 @@ public class KycFacadeImpl implements KycFacade {
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
 	}
 
-	private String encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {
+	private Tuple2<String, String> encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {
 		try {
 			return securityManager.encryptData(identity.getBytes(), partnerCertificate);
 		} catch (IdAuthenticationBusinessException e) {

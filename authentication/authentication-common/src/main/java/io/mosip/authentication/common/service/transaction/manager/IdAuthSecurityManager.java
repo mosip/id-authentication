@@ -35,6 +35,7 @@ import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
@@ -50,6 +51,8 @@ import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoRequestDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoResponseDto;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 /**
  * The Class IdAuthSecurityManager.
@@ -118,6 +121,9 @@ public class IdAuthSecurityManager {
 	/** KeySplitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
+	
+	@Autowired
+	private CryptomanagerUtils cryptomanagerUtils;
 
 	/**
 	 * Gets the user.
@@ -311,11 +317,12 @@ public class IdAuthSecurityManager {
 		}
 	}
 
-	public String encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
+	public Tuple2<String, String> encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
 		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		byte[] encryptedData = encrypt(publicKey, data);
-		return CryptoUtil.encodeBase64(encryptedData);
+		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
+		return Tuples.of(CryptoUtil.encodeBase64(encryptedData), CryptoUtil.encodeBase64(certificateThumbprint));
 	}
 
 	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
