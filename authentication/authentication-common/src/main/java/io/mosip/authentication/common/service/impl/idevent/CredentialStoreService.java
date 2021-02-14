@@ -40,10 +40,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.dto.Event;
-import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.websub.model.Event;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
  * The CredentialStoreService - the service to store credentials in IDA DB from

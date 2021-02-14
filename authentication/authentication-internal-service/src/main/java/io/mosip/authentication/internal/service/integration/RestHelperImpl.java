@@ -33,11 +33,13 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -71,8 +73,8 @@ public class RestHelperImpl implements RestHelper{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T requestSync(RestRequestDTO request)
-			throws RestServiceException {
+	@WithRetry
+	public <T> T requestSync(RestRequestDTO request) throws RestServiceException {
 		Object response;
 		try {
 			requestTime = DateUtils.getUTCCurrentDateTime();
@@ -80,17 +82,17 @@ public class RestHelperImpl implements RestHelper{
 					"Request received at : " + requestTime);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				if(response != null && containsError(response.toString())) {
+				if (response != null && containsError(response.toString())) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
+							PREFIX_RESPONSE + response);
 				}
-				if(!String.class.equals(request.getResponseType())) {
+				if (!String.class.equals(request.getResponseType())) {
 					checkErrorResponse(response, request.getResponseType());
 				}
 				return (T) response;
 			} else {
 				response = request(request).block();
-				if(!String.class.equals(request.getResponseType())) {
+				if (!String.class.equals(request.getResponseType())) {
 					checkErrorResponse(response, request.getResponseType());
 				}
 				return (T) response;
@@ -104,11 +106,13 @@ public class RestHelperImpl implements RestHelper{
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
-				throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
+				throw new IdAuthRetryException(
+						new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e));
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
-				throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+				throw new IdAuthRetryException(
+						new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e));
 			}
 		} finally {
 			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
@@ -120,7 +124,6 @@ public class RestHelperImpl implements RestHelper{
 							+ ".  Time difference between request and response in Seconds: "
 							+ ((double) duration / 1000));
 		}
-
 	}
 	
 	private boolean containsError(String response) {
@@ -216,38 +219,49 @@ public class RestHelperImpl implements RestHelper{
 	 * @return the mono<? extends throwable>
 	 * @throws RestServiceException 
 	 */
-	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) throws RestServiceException {
+	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType)
+			throws RestServiceException {
 		try {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
-				if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
+				if (e.getRawStatusCode() == 401) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
 							"request failed with status code :" + e.getRawStatusCode(),
 							"\n\n" + e.getResponseBodyAsString());
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "Throwing AuthenticationException",
-							errorList.toString());
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
+							"Throwing AuthenticationException", errorList.toString());
+					throw new IdAuthRetryException(new RestServiceException(errorList.get(0).getErrorCode(),
+							errorList.get(0).getMessage(), e));
+				} else if (e.getRawStatusCode() == 403) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
+							"request failed with status code :" + e.getRawStatusCode(),
+							"\n\n" + e.getResponseBodyAsString());
+					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
+							"Throwing AuthenticationException", errorList.toString());
 					throw new RestServiceException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(), e);
-					
 				} else {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-						"Status error - returning RestServiceException - CLIENT_ERROR -- "
-								+ e.getResponseBodyAsString());
-				return new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
-						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+							"Status error - returning RestServiceException - CLIENT_ERROR -- "
+									+ e.getResponseBodyAsString());
+					return new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+							e.getResponseBodyAsString(),
+							mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR -- "
 								+ e.getResponseBodyAsString());
-				return new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, e.getResponseBodyAsString(),
-						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
+				throw new IdAuthRetryException(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR,
+						e.getResponseBodyAsString(),
+						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType)));
 			}
 		} catch (IOException ex) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, ex.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					ex.getMessage());
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
-
 	}
 }
