@@ -90,6 +90,7 @@ public final class IdAuthConfigKeyConstants {
 
 
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_SECRET = "ida-websub-ca-certificate-callback-secret";
+	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_SECRET = "ida-websub-holist-callback-secret";
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET = "ida-websub-partner-service-callback-secret";
 	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
@@ -111,6 +112,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";
+	public static final String IDA_WEBSUB_HOTLIST_TOPIC = "ida-topic-hotlist";
 
 	public static final String CREDENTIAL_STORE_JOB_DELAY = "ida.batch.credential.store.job.delay";
 	public static final String CREDENTIAL_STORE_CHUNK_SIZE = "ida.batch.credential.store.chunk.size";
