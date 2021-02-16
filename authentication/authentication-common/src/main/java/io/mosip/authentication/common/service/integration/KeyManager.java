@@ -22,7 +22,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.ConsumerWithException;
+import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
@@ -74,7 +74,7 @@ public class KeyManager {
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
 			String thumbprint, Boolean isThumbprintEnabled,
-			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
+			ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
@@ -108,7 +108,7 @@ public class KeyManager {
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint, byte[] encryptedRequest,
 			byte[] encryptedSessionKey, String refId, Boolean isThumbprintEnabled,
-			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
+			ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException, IOException {
 		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint,
 				CryptoUtil
