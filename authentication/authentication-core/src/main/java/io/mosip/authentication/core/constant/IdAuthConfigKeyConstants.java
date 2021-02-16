@@ -100,6 +100,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_URL = "ida-websub-ca-cert-callback-url";
+	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_URL = "ida-websub-hotlist-callback-url";
 	
 	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
 
