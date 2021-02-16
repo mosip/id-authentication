@@ -51,5 +51,10 @@ ALTER TABLE ida.otp_transaction ALTER COLUMN is_deleted SET DEFAULT FALSE;
 ALTER TABLE ida.credential_event_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
 ALTER TABLE ida.ca_cert_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
 -------------------------------------------------------------------------------------------------------
+--------------------------------------HOTLISTING TABLE DEPLOYMENT-----------------------------------------
+
+\ir ../ddl/ida-hotlisting_table.sql
+
+----------------------------------------------------------------------------------------------------------
 
 

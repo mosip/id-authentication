@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="12,595" last-zoom="0.55" max-obj-count="14"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="42,626" last-zoom="0.65" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -24,6 +24,17 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </role>
 
 <role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="sysadmin_cp"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
       inherit="true"
       login="true"
       encrypted="true"
@@ -200,7 +211,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
-	<position x="520" y="60"/>
+	<position x="560" y="60"/>
 	<column name="token_id" not-null="true">
 		<type name="character varying" length="128"/>
 		<comment><![CDATA[Token ID: ID generated with reference to UIN/VID.]]></comment>
@@ -420,7 +431,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.]]></comment>
-	<position x="1140" y="1120"/>
+	<position x="1080" y="1100"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
@@ -769,6 +780,40 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_ces_id" type="pk-constr" table="ida.credential_event_store">
 		<columns names="event_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<schema name="ida_cp" layer="0" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin_cp"/>
+</schema>
+
+<table name="hotlisting_table" layer="0" alias="uinal" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
+	<position x="1020" y="1460"/>
+	<column name="id_hash" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Vanilla hash of IdValue]]></comment>
+	</column>
+	<column name="id_type" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[ID Type ]]></comment>
+	</column>
+	<column name="status">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Status : Blocked/Unblocked]]></comment>
+	</column>
+	<column name="start_timestamp">
+		<type name="timestamp" length="64"/>
+		<comment><![CDATA[Start Timestamp]]></comment>
+	</column>
+	<column name="end_timestamp">
+		<type name="timestamp" length="64"/>
+		<comment><![CDATA[Lock End Datetime: End date and time when the UIN Authentication lock was released.]]></comment>
+	</column>
+	<constraint name="pk_idHashidType" type="pk-constr" table="ida.hotlisting_table">
+		<columns names="id_hash,id_type" ref-type="src-columns"/>
 	</constraint>
 </table>
 
