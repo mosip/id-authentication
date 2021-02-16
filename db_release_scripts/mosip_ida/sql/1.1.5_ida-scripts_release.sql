@@ -7,7 +7,8 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
-
+-- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
+----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
 ---------------- KEY MANAGER DDL DEPLOYMENT  ------------------
@@ -25,3 +26,35 @@
 \ir ../ddl/ida-fk.sql
 
 ----------------------------------------------------------------------------------------------------
+
+--------- ------------ALTER TABLE SCRIPT DEPLOYMENT ------------------------------------------------
+
+ALTER TABLE ida.auth_transaction ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.identity_cache ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.key_policy_def_h ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.key_policy_def ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.key_store ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.key_alias ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.uin_auth_lock ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.otp_transaction ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.credential_event_store ALTER COLUMN is_deleted SET NOT NULL;
+ALTER TABLE ida.ca_cert_store ALTER COLUMN is_deleted SET NOT NULL;
+
+ALTER TABLE ida.auth_transaction ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.identity_cache ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.key_policy_def_h ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.key_policy_def ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.key_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.key_alias ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.uin_auth_lock ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.otp_transaction ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.credential_event_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
+ALTER TABLE ida.ca_cert_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
+-------------------------------------------------------------------------------------------------------
+--------------------------------------HOTLISTING TABLE DEPLOYMENT-----------------------------------------
+
+\ir ../ddl/ida-hotlisting_table.sql
+
+----------------------------------------------------------------------------------------------------------
+
+
