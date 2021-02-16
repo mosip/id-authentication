@@ -69,8 +69,9 @@ public class HotlistEventController {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "HotlistEventController", "handleHotlisting", "EVENT RECEIVED");
 		Object data = eventModel.getEvent().getData().get(HOTLIST_DATA);
 		if (Objects.nonNull(data) && data instanceof List && !((List) data).isEmpty()) {
-			((List<Map<String, Object>>) data).stream().filter(
-					hotlistData -> validateHotlistData(hotlistData) && idTypes.contains(hotlistData.get(ID_TYPE)))
+			((List<Map<String, Object>>) data).stream()
+					.filter(hotlistEventData -> validateHotlistEventData(hotlistEventData)
+							&& idTypes.contains(hotlistEventData.get(ID_TYPE)))
 					.forEach(hotlistData -> {
 						String id = (String) hotlistData.get(ID);
 						String idType = (String) hotlistData.get(ID_TYPE);
@@ -92,17 +93,17 @@ public class HotlistEventController {
 		}
 	}
 
-	private boolean validateHotlistData(Map<String, Object> hotlistData) {
-		Object id = hotlistData.get(ID);
-		Object idType = hotlistData.get(ID_TYPE);
-		Object status = hotlistData.get(STATUS);
-		boolean expirtTimestamp = hotlistData.containsKey(EXPIRY_TIMESTAMP);
-		return hotlistData.containsKey(ID) && id instanceof String && StringUtils.isNotBlank((String) id)
-				&& hotlistData.containsKey(ID_TYPE) && idType instanceof String
+	private boolean validateHotlistEventData(Map<String, Object> hotlistEventData) {
+		Object id = hotlistEventData.get(ID);
+		Object idType = hotlistEventData.get(ID_TYPE);
+		Object status = hotlistEventData.get(STATUS);
+		return hotlistEventData.containsKey(ID) && id instanceof String && StringUtils.isNotBlank((String) id)
+				&& hotlistEventData.containsKey(ID_TYPE) && idType instanceof String
 				&& StringUtils.isNotBlank((String) idType)
-				&& ((hotlistData.containsKey(STATUS) && status instanceof String
+				&& ((hotlistEventData.containsKey(STATUS) && status instanceof String
 						&& StringUtils.isNotBlank((String) status))
-						|| (expirtTimestamp && hotlistData.get(EXPIRY_TIMESTAMP) instanceof String));
+						|| (hotlistEventData.containsKey(EXPIRY_TIMESTAMP)
+								&& hotlistEventData.get(EXPIRY_TIMESTAMP) instanceof String));
 	}
 
 }
