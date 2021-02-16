@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
  * The callback delegate for handling partner service update

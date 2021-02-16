@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.controller.PartnerServiceCallbackControllerDelegate;
-import io.mosip.idrepository.core.dto.EventModel;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 
 /**
