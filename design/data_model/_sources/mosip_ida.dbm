@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="42,626" last-zoom="0.65" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="41,626" last-zoom="0.65" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -787,7 +787,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="sysadmin_cp"/>
 </schema>
 
-<table name="hotlisting_table" layer="0" alias="uinal" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="hotlist_cache" layer="0" alias="uinal" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
@@ -808,11 +808,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="64"/>
 		<comment><![CDATA[Start Timestamp]]></comment>
 	</column>
-	<column name="end_timestamp">
+	<column name="expiry_timestamp">
 		<type name="timestamp" length="64"/>
 		<comment><![CDATA[Lock End Datetime: End date and time when the UIN Authentication lock was released.]]></comment>
 	</column>
-	<constraint name="pk_idHashidType" type="pk-constr" table="ida.hotlisting_table">
+	<constraint name="pk_idHashidType" type="pk-constr" table="ida.hotlist_cache">
 		<columns names="id_hash,id_type" ref-type="src-columns"/>
 	</constraint>
 </table>
