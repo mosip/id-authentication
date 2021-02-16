@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,275" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="12,595" last-zoom="0.55" max-obj-count="14"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -36,14 +36,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[ID Authorization related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database]]></comment>
 </database>
 
-<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+<schema name="public" layer="0" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<schema name="ida" rect-visible="true" fill-color="#83af1f">
+<schema name="ida" layer="0" rect-visible="true" fill-color="#83af1f">
 	<role name="sysadmin"/>
 </schema>
 
-<table name="auth_transaction">
+<table name="auth_transaction" layer="0" collapse-mode="2" max-obj-count="27" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Authentication Transaction : To track all authentication transactions steps / stages in the process flow.]]></comment>
@@ -132,7 +132,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -162,11 +162,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<table name="uin_hash_salt">
+<table name="uin_hash_salt" layer="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.]]></comment>
-	<position x="100" y="440"/>
+	<position x="100" y="600"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Unique id generated for the salts that is used to hash the uin field.]]></comment>
@@ -196,11 +196,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="uin_auth_lock" alias="uinal">
+<table name="uin_auth_lock" layer="0" alias="uinal" collapse-mode="2" max-obj-count="15" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
-	<position x="460" y="60"/>
+	<position x="520" y="60"/>
 	<column name="token_id" not-null="true">
 		<type name="character varying" length="128"/>
 		<comment><![CDATA[Token ID: ID generated with reference to UIN/VID.]]></comment>
@@ -245,7 +245,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -258,11 +258,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="key_alias" alias="uinal">
+<table name="key_alias" layer="0" alias="uinal" collapse-mode="2" max-obj-count="15" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.]]></comment>
-	<position x="900" y="80"/>
+	<position x="1160" y="80"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
@@ -307,7 +307,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -320,11 +320,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="key_store" alias="uinal">
+<table name="key_store" layer="0" alias="uinal" collapse-mode="2" max-obj-count="12" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Store: In MOSIP, data related to an individual in stored in encrypted form. This table is to manage all the keys(private and public keys) used. ]]></comment>
-	<position x="900" y="300"/>
+	<position x="1120" y="440"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: ID is a unique identifier (UUID) used for managing encryption keys]]></comment>
@@ -357,7 +357,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -370,11 +370,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="key_policy_def" alias="uinal">
+<table name="key_policy_def" layer="0" alias="uinal" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Policy Defination: Policy related to encryption key management is defined here. For eg. Expiry duration of a key generated.]]></comment>
-	<position x="880" y="500"/>
+	<position x="1140" y="740"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
@@ -403,7 +403,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -416,11 +416,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="key_policy_def_h" alias="uinal">
+<table name="key_policy_def_h" layer="0" alias="uinal" collapse-mode="2" max-obj-count="12" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.]]></comment>
-	<position x="880" y="700"/>
+	<position x="1140" y="1120"/>
 	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
@@ -453,7 +453,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -466,11 +466,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="identity_cache" alias="idch">
+<table name="identity_cache" layer="0" alias="idch" collapse-mode="2" max-obj-count="14" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.]]></comment>
-	<position x="80" y="640"/>
+	<position x="100" y="820"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[ID: ID of an identity cache, This can be UIN or VID of an individuals for whom the authentication request is beeing made. Hash value is stored.]]></comment>
@@ -511,7 +511,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -524,11 +524,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="data_encrypt_keystore" alias="dekstr">
+<table name="data_encrypt_keystore" layer="0" alias="dekstr" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.]]></comment>
-	<position x="480" y="520"/>
+	<position x="560" y="820"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Id of an encryption key alias]]></comment>
@@ -562,11 +562,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="otp_transaction" alias="uinal">
+<table name="otp_transaction" layer="0" alias="uinal" collapse-mode="2" max-obj-count="16" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.]]></comment>
-	<position x="460" y="280"/>
+	<position x="540" y="400"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
@@ -615,7 +615,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -628,11 +628,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="ca_cert_store" alias="ccs">
+<table name="ca_cert_store" layer="0" alias="ccs" collapse-mode="2" max-obj-count="20" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Certificate Authority Certificate Store: Store details of all the certificate provided by certificate authority which will be used by MOSIP]]></comment>
-	<position x="480" y="660"/>
+	<position x="560" y="1180"/>
 	<column name="cert_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Certificate ID: Unique ID (UUID) will be generated and assigned to the uploaded CA/Sub-CA certificate]]></comment>
@@ -693,7 +693,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
@@ -706,11 +706,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="credential_event_store" alias="cev">
+<table name="credential_event_store" layer="0" alias="cev" collapse-mode="2" max-obj-count="16" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure]]></comment>
-	<position x="60" y="880"/>
+	<position x="80" y="1160"/>
 	<column name="event_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Event ID: Event id of the credential request]]></comment>
@@ -759,7 +759,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
+	<column name="is_deleted" not-null="true" default-value="FALSE">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
