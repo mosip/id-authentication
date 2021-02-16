@@ -12,6 +12,8 @@
 \ir ddl/ida-otp_transaction.sql
 \ir ddl/ida-ca_cert_store.sql
 \ir ddl/ida-credential_event_store.sql
+\ir ddl/ida-hotlisting_table.sql
+
 
 \ir ddl/ida-batch_job_execution.sql
 \ir ddl/ida-batch_job_execution_context.sql

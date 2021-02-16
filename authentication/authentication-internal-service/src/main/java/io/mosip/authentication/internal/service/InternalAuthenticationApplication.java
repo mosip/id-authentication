@@ -54,6 +54,10 @@ import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.retry.RetryAspect;
+import io.mosip.kernel.core.retry.RetryConfig;
+import io.mosip.kernel.core.retry.RetryListenerImpl;
+import io.mosip.kernel.core.util.RetryUtil;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.controller.CryptomanagerController;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -102,7 +106,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class,
 		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
-		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, CredentialStoreService.class, CredentialStoreJobExecutionListener.class })
+		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
+		RetryListenerImpl.class, RetryAspect.class, CredentialStoreService.class, CredentialStoreJobExecutionListener.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

@@ -29,12 +29,14 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
@@ -50,6 +52,8 @@ import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoRequestDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoResponseDto;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 /**
  * The Class IdAuthSecurityManager.
@@ -118,6 +122,9 @@ public class IdAuthSecurityManager {
 	/** KeySplitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
+	
+	@Autowired
+	private CryptomanagerUtils cryptomanagerUtils;
 
 	/**
 	 * Gets the user.
@@ -139,6 +146,7 @@ public class IdAuthSecurityManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@WithRetry
 	public byte[] encrypt(String dataToEncrypt, String refId, String aad, String saltToEncrypt)
 			throws IdAuthenticationBusinessException {
 		try {
@@ -173,6 +181,7 @@ public class IdAuthSecurityManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@WithRetry
 	public byte[] decrypt(String dataToDecrypt, String refId, String aad, String saltToDecrypt,
 			Boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
 		try {
@@ -197,6 +206,7 @@ public class IdAuthSecurityManager {
 		}
 	}
 
+	@WithRetry
 	public String reEncryptRandomKey(String encryptedKey) {
 		ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = zkCryptoManagerService
 				.zkReEncryptRandomKey(encryptedKey);
@@ -216,6 +226,7 @@ public class IdAuthSecurityManager {
 		}
 	}
 
+	@WithRetry
 	public Map<String, String> zkDecrypt(String id, Map<String, String> encryptedAttributes)
 			throws IdAuthenticationBusinessException {
 		ZKCryptoRequestDto cryptoRequestDto = new ZKCryptoRequestDto();
@@ -249,6 +260,7 @@ public class IdAuthSecurityManager {
 	 * @param data the data
 	 * @return the string
 	 */
+	@WithRetry
 	public String sign(String data) {
 		// TODO: check whether any exception will be thrown
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
@@ -311,11 +323,12 @@ public class IdAuthSecurityManager {
 		}
 	}
 
-	public String encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
+	public Tuple2<String, String> encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
 		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		byte[] encryptedData = encrypt(publicKey, data);
-		return CryptoUtil.encodeBase64(encryptedData);
+		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
+		return Tuples.of(CryptoUtil.encodeBase64(encryptedData), CryptoUtil.encodeBase64(certificateThumbprint));
 	}
 
 	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
