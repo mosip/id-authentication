@@ -58,5 +58,11 @@ ALTER TABLE ida.ca_cert_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
 \ir ../ddl/ida-hotlist_cache.sql
 
 ----------------------------------------------------------------------------------------------------------
+--------------------------------------AUTH TYPE CODE SIZE CHANGE-----------------------------------------
+
+
+ALTER TABLE ida.auth_transaction ALTER COLUMN auth_type_code TYPE character varying(128);
+
+----------------------------------------------------------------------------------------------------------
 
 
