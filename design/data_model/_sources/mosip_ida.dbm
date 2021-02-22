@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="41,626" last-zoom="0.65" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="7,382" last-zoom="0.65" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -76,7 +76,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Request Transaction Id : Unique Authentication request transaction id assigned for each request received from client system.]]></comment>
 	</column>
 	<column name="auth_type_code" not-null="true">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="128"/>
 		<comment><![CDATA[Authentication Type Code : Type of authentication for the specific transaction, for ex.,  OTP, BIO, DEMO, etc]]></comment>
 	</column>
 	<column name="status_code" not-null="true">
