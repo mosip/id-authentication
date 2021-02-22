@@ -8,6 +8,8 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
+-- Feb-2021		Ram Bhatt	    Added hotlist table in ida
+-- Feb-2021		Ram Bhatt	    Changed size of auth_type_code from 32 to 128
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
@@ -54,6 +56,12 @@ ALTER TABLE ida.ca_cert_store ALTER COLUMN is_deleted SET DEFAULT FALSE;
 --------------------------------------HOTLISTING TABLE DEPLOYMENT-----------------------------------------
 
 \ir ../ddl/ida-hotlist_cache.sql
+
+----------------------------------------------------------------------------------------------------------
+--------------------------------------AUTH TYPE CODE SIZE CHANGE-----------------------------------------
+
+
+ALTER TABLE ida.auth_transaction ALTER COLUMN auth_type_code TYPE character varying(128);
 
 ----------------------------------------------------------------------------------------------------------
 
