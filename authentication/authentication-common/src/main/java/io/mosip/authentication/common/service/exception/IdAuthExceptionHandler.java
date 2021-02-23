@@ -256,7 +256,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 							actionMessage = actionArgs.get(i);
 						}
 					} else {
-						actionMessage = actionArgs.get(i);
+						if(actionArgs != null) {
+							actionMessage = actionArgs.get(i);
+						} else {
+							actionMessage = null;
+						}
 					}
 
 					return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);

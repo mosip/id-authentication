@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.integration.dto;
+package io.mosip.authentication.common.service.integration;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DATA_SHARE_GET_DECRYPT_REF_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED;
 

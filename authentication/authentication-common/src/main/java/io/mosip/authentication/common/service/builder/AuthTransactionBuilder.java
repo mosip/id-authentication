@@ -274,5 +274,5 @@ public class AuthTransactionBuilder {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
 				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
-
+	
 }
