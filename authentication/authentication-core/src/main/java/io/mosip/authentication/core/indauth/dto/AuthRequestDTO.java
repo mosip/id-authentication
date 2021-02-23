@@ -2,6 +2,7 @@ package io.mosip.authentication.core.indauth.dto;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AuthRequestDTO extends BaseAuthRequestDTO {
+public class AuthRequestDTO extends BaseAuthRequestDTO implements ObjectWithMetadata {
 
 	/** The value for requestedAuth*/
 	private AuthTypeDTO requestedAuth;

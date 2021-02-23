@@ -25,10 +25,9 @@ import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -45,7 +44,6 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.Policies;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
@@ -117,12 +115,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	private TokenIdManager tokenIdManager;
 
 	@Autowired
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
-
-	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
-
-	@Autowired
 	private AuthtypeStatusService authTypeStatusService;
 
 	@Autowired
@@ -134,6 +126,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	@Autowired
+	private AuthTransactionHelper authTransactionHelper;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -162,8 +156,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		String authTokenId = null;
 		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 		
-		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(authRequestDTO, token, authTokenId,
-				!isAuth, partnerId);
+		AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata().get(AuthTransactionBuilder.class.getSimpleName());
+		authTxnBuilder.withToken(token);
+		
 		try {
 			idInfo = idService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
@@ -191,7 +186,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			// This is sent back for the consumption by the caller for example
 			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
 			metadata.put(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			metadata.put(AutnTxn.class.getSimpleName(), authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager));
+			metadata.put(AutnTxn.class.getSimpleName(), authTransactionHelper.buildAuthTransactionEntity(authTxnBuilder));
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
@@ -569,33 +564,6 @@ public class AuthFacadeImpl implements AuthFacade {
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
 		}
-	}
-
-	/**
-	 * Fetch auth txn.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param token
-	 *            the uin
-	 * @param isStatus
-	 *            the is status
-	 * @param authTokenId
-	 *            the response token id
-	 * @return the autn txn
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-	private AuthTransactionBuilder createAuthTxnBuilder(AuthRequestDTO authRequestDTO, String token, String authTokenId,
-			boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
-		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
-
-		return AuthTransactionBuilder.newInstance()
-				.withToken(token)
-				.withAuthRequest(authRequestDTO)
-				.withAuthToken(authTokenId)
-				.withInternal(isInternal)
-				.withPartner(partner);
 	}
 
 }

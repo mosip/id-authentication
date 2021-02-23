@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -28,7 +29,9 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
@@ -62,6 +65,12 @@ public class AuthController {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
+	
+	@Autowired
+	private AuthTransactionHelper authTransactionHelper;
+	
+	@Autowired
+	private PartnerService partnerService;
 
 
 	/**
@@ -90,7 +99,12 @@ public class AuthController {
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("API-Key") String partnerApiKey)
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
-		AuthResponseDTO authResponsedto = null;
+		
+		boolean isAuth = true;
+		Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authrequestdto.getMetadata());
+		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+				.createAndSetAuthTxnBuilderMetadataToRequest(authrequestdto, !isAuth, partner);
+		
 		try {
 			String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
 					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
@@ -103,25 +117,25 @@ public class AuthController {
 				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 			}
 			DataValidationUtil.validate(errors);
-			authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
+			AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 			// Note: Auditing of success or failure status of each authentication (but not
 			// the exception) is handled in respective authentication invocations in the facade
+			return authResponsedto;
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 			
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 			
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
 		} 
-		return authResponsedto;
 	}
 
 	
