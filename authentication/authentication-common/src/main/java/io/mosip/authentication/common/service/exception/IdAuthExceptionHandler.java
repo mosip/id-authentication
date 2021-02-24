@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.exception;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,12 +25,15 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
+import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -177,20 +181,24 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
-		Throwable e = ex;
+		BaseCheckedException e = ex;
 		while (e.getCause() != null) {
 			if (e.getCause() instanceof BaseCheckedException
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
-				e = e.getCause();
+				e = (BaseCheckedException) e.getCause();
 			} else if (e.getCause() instanceof BaseCheckedException) {
-				e = new IdAuthenticationAppException(((BaseCheckedException) e).getErrorCode(),
-						((BaseCheckedException) e).getErrorText());
+				if(e.getCause() instanceof IdAuthenticationBaseException) {
+					e = (IdAuthenticationBaseException) e.getCause();
+				} else {
+					e = new IdAuthenticationAppException(((BaseCheckedException) e.getCause()).getErrorCode(),
+							((BaseCheckedException) e.getCause()).getErrorText());
+				}
 				break;
 			} else {
 				break;
 			}
 		}
-		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e, servletRequest), HttpStatus.OK);
+		return new ResponseEntity<>(buildExceptionResponse(e, servletRequest), HttpStatus.OK);
 	}
 
 	/**
@@ -214,6 +222,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
 			Object response = frameErrorResponse(requestReceived, type, errors);
+			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithMetadata) {
+				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
+				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
+				exceptionWithMetadata.copyMetadataTo(responsWithMetadata, AutnTxn.class.getSimpleName());
+			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
 			return response;

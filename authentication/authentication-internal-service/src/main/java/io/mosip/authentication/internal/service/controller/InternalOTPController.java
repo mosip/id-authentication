@@ -116,7 +116,7 @@ public class InternalOTPController {
 			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
 					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 			IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-			authTransactionHelper.setAuthTransactionMetadataToException(authTxnBuilder, authenticationAppException);
+			authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
 			throw authenticationAppException;
 		}
 	}

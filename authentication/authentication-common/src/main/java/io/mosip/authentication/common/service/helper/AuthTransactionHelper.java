@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.helper;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,27 +53,30 @@ public class AuthTransactionHelper {
 		return authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 	}
 	
-	public void setAuthTransactionBuilderMetadataToRequest(ObjectWithMetadata requestDTO, AuthTransactionBuilder authTxnBuilder) {
-		Map<String, Object> reqMetadata = requestDTO.getMetadata();
-		if(reqMetadata == null) {
-			reqMetadata = new HashMap<>();
-			requestDTO.setMetadata(reqMetadata);
-		}
-		reqMetadata.put(AuthTransactionBuilder.class.getSimpleName(), authTxnBuilder);
+	public void setAuthTransactionBuilderMetadata(ObjectWithMetadata objectWithMetadata, AuthTransactionBuilder authTxnBuilder) {
+		setObjectToMetadata(objectWithMetadata, getAuthTransactionBuilderKey(), authTxnBuilder);
 	}
-
-	public void setAuthTransactionMetadataToException(AuthTransactionBuilder authTxnBuilder,
-			IdAuthenticationAppException idAuthenticationAppException) throws IdAuthenticationBusinessException {
-		Map<String, Object> metadata = new HashMap<>();
-		metadata.put(AutnTxn.class.getSimpleName(), buildAuthTransactionEntity(authTxnBuilder));
-		idAuthenticationAppException.setMetadata(metadata);
+	public void setAuthTransactionEntityMetadata(ObjectWithMetadata objectWithMetadata , AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
+		setObjectToMetadata(objectWithMetadata, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
 	}
 	
+	public void setObjectToMetadata(ObjectWithMetadata objectWithMetadata, String key, Object value) {
+		objectWithMetadata.putMetadata(key, value);
+	}
+
+	private String getAuthTransactionBuilderKey() {
+		return AuthTransactionBuilder.class.getSimpleName();
+	}
+	
+	private String getAuthTransactionEntityKey() {
+		return AutnTxn.class.getSimpleName();
+	}
+
 	public AuthTransactionBuilder createAndSetAuthTxnBuilderMetadataToRequest(ObjectWithMetadata requestDTO, boolean isInternal, Optional<PartnerDTO> partner)
 			throws IdAuthenticationBusinessException {
 		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(requestDTO,
 				isInternal, partner);
-		setAuthTransactionBuilderMetadataToRequest(requestDTO, authTxnBuilder);
+		setAuthTransactionBuilderMetadata(requestDTO, authTxnBuilder);
 		return authTxnBuilder;
 	}
 	
@@ -92,7 +93,7 @@ public class AuthTransactionHelper {
 	private IdAuthenticationAppException createAppException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e, IdAuthenticationErrorConstants erroConst)
 			throws IdAuthenticationBusinessException {
 		IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(erroConst, e);
-		setAuthTransactionMetadataToException(authTxnBuilder, authenticationAppException);
+		setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
 		return authenticationAppException;
 	}
 	
