@@ -120,7 +120,7 @@ public class OTPController {
 			auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
 					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 			IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-			authTransactionHelper.setAuthTransactionMetadataToException(authTxnBuilder, authenticationAppException);
+			authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
 			throw authenticationAppException;
 		}
 	}

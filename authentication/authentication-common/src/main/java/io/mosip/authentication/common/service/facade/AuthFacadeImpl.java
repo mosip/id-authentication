@@ -178,15 +178,11 @@ public class AuthFacadeImpl implements AuthFacade {
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);
 			
-			Map<String, Object> metadata = authResponseDTO.getMetadata();
-			if(metadata == null) {
-				metadata = new HashMap<>();
-				authResponseDTO.setMetadata(metadata);
-			}
 			// This is sent back for the consumption by the caller for example
 			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
-			metadata.put(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			metadata.put(AutnTxn.class.getSimpleName(), authTransactionHelper.buildAuthTransactionEntity(authTxnBuilder));
+			authResponseDTO.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			
+			authTransactionHelper.setAuthTransactionEntityMetadata(authResponseDTO, authTxnBuilder);
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());

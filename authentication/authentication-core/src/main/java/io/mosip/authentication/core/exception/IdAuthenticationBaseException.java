@@ -3,6 +3,7 @@ package io.mosip.authentication.core.exception;
 import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
@@ -11,7 +12,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author Loganathan Sekar
  *
  */
-public class IdAuthenticationBaseException extends BaseCheckedException {
+public class IdAuthenticationBaseException extends BaseCheckedException implements ObjectWithMetadata {
 	
 	private Map<String, Object> metadata;
 	
