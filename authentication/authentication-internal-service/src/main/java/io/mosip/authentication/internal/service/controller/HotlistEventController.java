@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
@@ -65,31 +64,24 @@ public class HotlistEventController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_HOTLIST_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/hotlist", topic = "${" + IDA_WEBSUB_HOTLIST_TOPIC
 					+ "}")
-	public void handleHotlisting(@RequestBody EventModel eventModel) {
+	public void handleHotlisting(@RequestBody EventModel eventModel) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "HotlistEventController", "handleHotlisting", "EVENT RECEIVED");
 		Object data = eventModel.getEvent().getData().get(HOTLIST_DATA);
-		if (Objects.nonNull(data) && data instanceof List && !((List) data).isEmpty()) {
-			((List<Map<String, Object>>) data).stream()
-					.filter(hotlistEventData -> validateHotlistEventData(hotlistEventData)
-							&& idTypes.contains(hotlistEventData.get(ID_TYPE)))
-					.forEach(hotlistData -> {
-						String id = (String) hotlistData.get(ID);
-						String idType = (String) hotlistData.get(ID_TYPE);
-						String status = (String) hotlistData.get(STATUS);
-						String expiryTimestamp = (String) hotlistData.get(EXPIRY_TIMESTAMP);
-						try {
-							if (status.contentEquals(BLOCKED)) {
-								hotlistService.block(id, idType, status,
-										StringUtils.isNotBlank(expiryTimestamp)
-												? DateUtils.parseToLocalDateTime(expiryTimestamp)
-												: null);
-							} else if (status.contentEquals(UNBLOCKED)) {
-								hotlistService.unblock(id, idType);
-							}
-						} catch (IdAuthenticationBusinessException e) {
-							throw new IdAuthUncheckedException(e.getErrorCode(), e.getErrorText(), e);
-						}
-					});
+		if (Objects.nonNull(data) && data instanceof Map && !((Map) data).isEmpty()) {
+			Map<String, Object> eventData = (Map<String, Object>) data;
+			if (validateHotlistEventData(eventData) && idTypes.contains(eventData.get(ID_TYPE))) {
+				String id = (String) eventData.get(ID);
+				String idType = (String) eventData.get(ID_TYPE);
+				String status = (String) eventData.get(STATUS);
+				String expiryTimestamp = (String) eventData.get(EXPIRY_TIMESTAMP);
+				if (status.contentEquals(BLOCKED)) {
+					hotlistService.block(id, idType, status,
+							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
+									: null);
+				} else if (status.contentEquals(UNBLOCKED)) {
+					hotlistService.unblock(id, idType);
+				}
+			}
 		}
 	}
 
