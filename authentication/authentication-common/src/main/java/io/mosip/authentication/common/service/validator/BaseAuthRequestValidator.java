@@ -609,7 +609,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the finger subtypes counts map
 	 */
 	private void validateMaxFingerCount(Errors errors, Map<String, Long> fingerSubtypesCountsMap) {
-		Long fingerCountExceeding = fingerSubtypesCountsMap.values().stream().mapToLong(l -> l).sum();
+		long fingerCountExceeding = fingerSubtypesCountsMap.values().stream().mapToLong(l -> l).sum();
 		int maxFingerCount = getMaxFingerCount();
 		if (fingerCountExceeding > maxFingerCount) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),

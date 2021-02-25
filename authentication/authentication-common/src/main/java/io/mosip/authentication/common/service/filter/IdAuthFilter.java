@@ -46,7 +46,6 @@ import java.util.stream.Stream;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
@@ -791,19 +790,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
 		Map<String, String> params = new HashMap<>();
-		if (requestWrapper instanceof HttpServletRequestWrapper) {
-			String url = requestWrapper.getRequestURL().toString();
-			String contextPath = requestWrapper.getContextPath();
-			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
-				String[] splitedUrlByContext = url.split(contextPath);
-				String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
-						.toArray(size -> new String[size]);
+		String url = requestWrapper.getRequestURL().toString();
+		String contextPath = requestWrapper.getContextPath();
+		if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
+			String[] splitedUrlByContext = url.split(contextPath);
+			String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
+					.toArray(size -> new String[size]);
 
-				if (paramsArray.length >= 3) {
-					params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
-					params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
-					params.put(API_KEY, paramsArray[paramsArray.length - 1]);
-				}
+			if (paramsArray.length >= 3) {
+				params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
+				params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
+				params.put(API_KEY, paramsArray[paramsArray.length - 1]);
 			}
 		}
 		return params;
