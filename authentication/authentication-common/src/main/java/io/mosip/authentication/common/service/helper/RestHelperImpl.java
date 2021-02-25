@@ -50,6 +50,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.TokenHandlerUtil;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -312,7 +313,7 @@ public class RestHelperImpl implements RestHelper {
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + StringUtils.substring(e.getMessage(), 0, 500));
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -327,7 +328,7 @@ public class RestHelperImpl implements RestHelper {
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + StringUtils.substring(e.getMessage(), 0, 500));
 			return Collections.emptyList();
 		}
 		

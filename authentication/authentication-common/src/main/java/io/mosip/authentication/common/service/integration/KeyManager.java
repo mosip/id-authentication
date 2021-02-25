@@ -24,6 +24,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.ConsumerWithException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -84,7 +85,7 @@ public class KeyManager {
 			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId, dataValidator);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
-					e.getMessage());
+					StringUtils.substring(e.getMessage(), 0, 500));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}

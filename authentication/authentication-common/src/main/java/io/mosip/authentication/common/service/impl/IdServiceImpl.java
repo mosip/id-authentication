@@ -42,6 +42,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 
 /**
@@ -369,7 +370,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 											return mapper.readValue(val.getBytes(), Object.class);
 										} catch (IOException e) {
 											logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
-													ExceptionUtils.getStackTrace(e));
+													StringUtils.substring(e.getMessage(), 0, 500));
 											return val;
 										}
 									} else {

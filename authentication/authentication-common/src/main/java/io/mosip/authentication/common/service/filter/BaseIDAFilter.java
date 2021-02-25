@@ -353,7 +353,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestWrapper.resetInputStream();
 			validateRequest(requestWrapper, requestBody);
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, StringUtils.substring(e.getMessage(), 0, 500));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
