@@ -144,7 +144,6 @@ public class AuthTransactionHelper {
 			authTransactionBuilder.addRequestType(RequestType.OTP_REQUEST);
 		}
 		
-		authTransactionBuilder.withToken("");
 		return authTransactionBuilder;
 	}
 
