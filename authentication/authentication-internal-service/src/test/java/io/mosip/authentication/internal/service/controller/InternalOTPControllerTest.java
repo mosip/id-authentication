@@ -37,9 +37,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
@@ -47,6 +47,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalOTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -89,6 +90,12 @@ public class InternalOTPControllerTest {
 
 	@Mock
 	IdServiceImpl idServiceImpl;
+	
+	@Mock
+	AuthTransactionHelper authTransactionHelper;
+	
+	@Mock
+	PartnerService partnerService;
 
 	@Mock
 	AuditHelper auditHelper;
@@ -144,6 +151,8 @@ public class InternalOTPControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
+		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any()))
+				.thenReturn(new IdAuthenticationAppException());
 		internalotpController.generateOTP(new OtpRequestDTO(), errors);
 	}
 
