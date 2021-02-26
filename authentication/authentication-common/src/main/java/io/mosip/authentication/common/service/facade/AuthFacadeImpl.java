@@ -7,11 +7,9 @@ import static io.mosip.authentication.core.constant.AuthTokenType.PARTNER;
 import static io.mosip.authentication.core.constant.AuthTokenType.POLICY;
 import static io.mosip.authentication.core.constant.AuthTokenType.POLICY_GROUP;
 import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +38,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -540,22 +537,17 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String token, IdType idType, boolean isStatus,
 			String authTokenId, boolean isInternal, String partnerId, AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
 		String status = "authenticateApplicant status : " + isStatus;
-		if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
-				bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || (FMR_ENABLED_TEST.test(env)
-						&& bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))))) {
-
+		if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, status);
 			authTxnBuilder.addRequestType(RequestType.FINGER_AUTH);
 		}
-		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType()))) {
+		if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.IRIS_AUTH);
 		}
-		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()))) {
+		if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
