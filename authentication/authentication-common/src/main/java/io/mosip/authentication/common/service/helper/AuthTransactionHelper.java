@@ -34,7 +34,9 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 
 /**
- * The Class AuthTransactionHelper.
+ * The Class AuthTransactionHelper - the helper to create auth transaction entity
+ * 
+ * @author Loganathan Sekar
  */
 @Component
 public class AuthTransactionHelper {
@@ -55,6 +57,7 @@ public class AuthTransactionHelper {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
+	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -69,10 +72,23 @@ public class AuthTransactionHelper {
 		return authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 	}
 	
+	/**
+	 * Sets the auth transaction builder metadata.
+	 *
+	 * @param objectWithMetadata the object with metadata
+	 * @param authTxnBuilder the auth txn builder
+	 */
 	public void setAuthTransactionBuilderMetadata(ObjectWithMetadata objectWithMetadata, AuthTransactionBuilder authTxnBuilder) {
 		setObjectToMetadata(objectWithMetadata, getAuthTransactionBuilderKey(), authTxnBuilder);
 	}
 	
+	/**
+	 * Sets the auth transaction entity metadata.
+	 *
+	 * @param exception the exception
+	 * @param authTxnBuilder the auth txn builder
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public void setAuthTransactionEntityMetadata(IdAuthenticationBaseException exception , AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
 		try {
 			authTxnBuilder.withStatusComment(objectMapper.writeValueAsString(IdAuthExceptionHandler.getAuthErrors(exception)));
@@ -91,22 +107,55 @@ public class AuthTransactionHelper {
 		setObjectToMetadata(exception, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
 	}
 	
+	/**
+	 * Sets the auth transaction entity metadata.
+	 *
+	 * @param objectWithMetadata the object with metadata
+	 * @param authTxnBuilder the auth txn builder
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public void setAuthTransactionEntityMetadata(ObjectWithMetadata objectWithMetadata , AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
 		setObjectToMetadata(objectWithMetadata, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
 	}
 	
+	/**
+	 * Sets the object to metadata.
+	 *
+	 * @param objectWithMetadata the object with metadata
+	 * @param key the key
+	 * @param value the value
+	 */
 	public void setObjectToMetadata(ObjectWithMetadata objectWithMetadata, String key, Object value) {
 		objectWithMetadata.putMetadata(key, value);
 	}
 
+	/**
+	 * Gets the auth transaction builder key.
+	 *
+	 * @return the auth transaction builder key
+	 */
 	private String getAuthTransactionBuilderKey() {
 		return AuthTransactionBuilder.class.getSimpleName();
 	}
 	
+	/**
+	 * Gets the auth transaction entity key.
+	 *
+	 * @return the auth transaction entity key
+	 */
 	private String getAuthTransactionEntityKey() {
 		return AutnTxn.class.getSimpleName();
 	}
 
+	/**
+	 * Creates the and set auth txn builder metadata to request.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param isInternal the is internal
+	 * @param partner the partner
+	 * @return the auth transaction builder
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public AuthTransactionBuilder createAndSetAuthTxnBuilderMetadataToRequest(ObjectWithMetadata requestDTO, boolean isInternal, Optional<PartnerDTO> partner)
 			throws IdAuthenticationBusinessException {
 		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(requestDTO,
@@ -115,18 +164,45 @@ public class AuthTransactionHelper {
 		return authTxnBuilder;
 	}
 	
+	/**
+	 * Creates the data validation exception.
+	 *
+	 * @param authTxnBuilder the auth txn builder
+	 * @param e the e
+	 * @return the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public IdAuthenticationAppException createDataValidationException(AuthTransactionBuilder authTxnBuilder, IDDataValidationException e)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		setAuthTransactionEntityMetadata(e, authTxnBuilder);
 		return new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 	}
 
+	/**
+	 * Creates the unable to process exception.
+	 *
+	 * @param authTxnBuilder the auth txn builder
+	 * @param e the e
+	 * @return the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public IdAuthenticationAppException createUnableToProcessException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		setAuthTransactionEntityMetadata(e, authTxnBuilder);
 		return new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 	}
 	
+	/**
+	 * Creates the auth txn builder.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param isInternal the is internal
+	 * @param partner the partner
+	 * @return the auth transaction builder
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private AuthTransactionBuilder createAuthTxnBuilder(ObjectWithMetadata requestDTO,
 			boolean isInternal, Optional<PartnerDTO> partner) throws IdAuthenticationBusinessException {
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance()
@@ -147,6 +223,13 @@ public class AuthTransactionHelper {
 		return authTransactionBuilder;
 	}
 
+	/**
+	 * Adds the auth types.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param authTransactionBuilder the auth transaction builder
+	 * @param authRequestDTO the auth request DTO
+	 */
 	private void addAuthTypes(ObjectWithMetadata requestDTO, AuthTransactionBuilder authTransactionBuilder,
 			AuthRequestDTO authRequestDTO) {
 		AuthTypeDTO requestedAuth = authRequestDTO.getRequestedAuth();
@@ -174,17 +257,38 @@ public class AuthTransactionHelper {
 		}
 	}
 
+	/**
+	 * Checks if is finger auth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param env the env
+	 * @return true, if is finger auth
+	 */
 	public static boolean isFingerAuth(AuthRequestDTO authRequestDTO, Environment env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
 				bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || (FMR_ENABLED_TEST.test(env)
 						&& bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType())));
 	}
 	
+	/**
+	 * Checks if is iris auth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param env the env
+	 * @return true, if is iris auth
+	 */
 	public static boolean isIrisAuth(AuthRequestDTO authRequestDTO, Environment env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType()));
 	}
 	
+	/**
+	 * Checks if is face auth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param env the env
+	 * @return true, if is face auth
+	 */
 	public static boolean isFaceAuth(AuthRequestDTO authRequestDTO, Environment env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()));
