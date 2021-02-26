@@ -88,6 +88,10 @@ public class AuthTransactionBuilder {
 
 	private boolean isInternal;
 
+	private String statusComment;
+
+	private String authTypeCode;
+
 	/**
 	 * Set the AuthRequestDTO.
 	 *
@@ -120,6 +124,10 @@ public class AuthTransactionBuilder {
 		this.token = token;
 		return this;
 	}
+	
+	public String getToken() {
+		return this.token;
+	}
 
 	/**
 	 * Set the RequestType.
@@ -130,6 +138,10 @@ public class AuthTransactionBuilder {
 	public AuthTransactionBuilder addRequestType(RequestType requestType) {
 		requestTypes.add(requestType);
 		return this;
+	}
+	
+	public void withAuthTypeCode(String authTypeCode) {
+		this.authTypeCode = authTypeCode;
 	}
 
 	/**
@@ -153,6 +165,11 @@ public class AuthTransactionBuilder {
 		this.isStatus = isStatus;
 		return this;
 	}
+	
+	public AuthTransactionBuilder withStatusComment(String statusComment) {
+		this.statusComment = statusComment;
+		return this;
+	}
 
 	public AuthTransactionBuilder withPartner(Optional<PartnerDTO> partnerOptional) {
 		this.partnerOptional = partnerOptional;
@@ -162,6 +179,10 @@ public class AuthTransactionBuilder {
 	public AuthTransactionBuilder withInternal(boolean isInternal) {
 		this.isInternal = isInternal;
 		return this;
+	}
+	
+	public Set<RequestType> getRequestTypes() {
+		return requestTypes;
 	}
 
 	/**
@@ -212,7 +233,7 @@ public class AuthTransactionBuilder {
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
 			
-			if (!requestTypes.isEmpty()) {
+			if (!requestTypes.isEmpty() && this.statusComment != null) {
 				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
@@ -221,6 +242,11 @@ public class AuthTransactionBuilder {
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);
+			} else {
+				if(authTypeCode != null) {
+					autnTxn.setAuthTypeCode(authTypeCode);
+				}
+				autnTxn.setStatusComment(statusComment);
 			}
 			
 			// Setting primary code only
@@ -274,5 +300,5 @@ public class AuthTransactionBuilder {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
 				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
-	
+
 }
