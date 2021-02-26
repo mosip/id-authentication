@@ -50,7 +50,6 @@ import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import reactor.util.function.Tuple2;
 
 /**

@@ -14,7 +14,7 @@ import lombok.Data;
  */
 
 @Data
-public class OtpRequestDTO implements ObjectWithMetadata{
+public class OtpRequestDTO implements ObjectWithMetadata {
 
 	/** Variable to hold id */
 	private String id;
