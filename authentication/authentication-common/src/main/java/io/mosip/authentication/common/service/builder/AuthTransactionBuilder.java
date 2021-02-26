@@ -233,7 +233,7 @@ public class AuthTransactionBuilder {
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
 			
-			if (!requestTypes.isEmpty() && this.statusComment != null) {
+			if (!requestTypes.isEmpty()) {
 				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
@@ -245,8 +245,21 @@ public class AuthTransactionBuilder {
 			} else {
 				if(authTypeCode != null) {
 					autnTxn.setAuthTypeCode(authTypeCode);
+				} else {
+					autnTxn.setAuthTypeCode(IdAuthCommonConstants.UNKNOWN);
 				}
+			}
+			//Overwrite the generated status comment if specified explicitly
+			if(this.statusComment != null) {
 				autnTxn.setStatusComment(statusComment);
+			}
+			
+			if(autnTxn.getStatusComment() == null) {
+				autnTxn.setStatusComment(IdAuthCommonConstants.UNKNOWN);
+			}
+			
+			if(autnTxn.getToken() == null) {
+				autnTxn.setToken(IdAuthCommonConstants.UNKNOWN);
 			}
 			
 			// Setting primary code only
