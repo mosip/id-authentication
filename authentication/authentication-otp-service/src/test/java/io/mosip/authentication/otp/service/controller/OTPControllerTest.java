@@ -150,7 +150,7 @@ public class OTPControllerTest {
 
 	@Ignore
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testConstraintVoilation() throws IdAuthenticationAppException, IDDataValidationException {
+	public void testConstraintVoilation() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
@@ -212,7 +212,7 @@ public class OTPControllerTest {
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testGenerateOtpDataValidationException()
-			throws IdAuthenticationAppException, IDDataValidationException {
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001","TEST0000001");

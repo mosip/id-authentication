@@ -141,7 +141,7 @@ public class InternalOTPControllerTest {
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testGenerateOtpDataValidationException()
-			throws IdAuthenticationAppException, IDDataValidationException {
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		internalotpController.generateOTP(new OtpRequestDTO(), errors);
