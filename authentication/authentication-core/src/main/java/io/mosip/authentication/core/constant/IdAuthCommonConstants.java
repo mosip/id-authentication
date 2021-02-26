@@ -60,6 +60,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String REQUESTEDAUTH = "requestedAuth";
 
+	public static final String UNKNOWN = "UNKNOWN";
+	
 	public static final String UNKNOWN_BIO = "UNKNOWN";
 
 	public static final String UNKNOWN_COUNT_PLACEHOLDER = "%s";

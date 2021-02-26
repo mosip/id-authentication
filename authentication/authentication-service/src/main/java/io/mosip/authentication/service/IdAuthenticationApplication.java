@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
@@ -94,7 +95,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class,
 		PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
-		RetryAspect.class })
+		RetryAspect.class, AuthTransactionHelper.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {

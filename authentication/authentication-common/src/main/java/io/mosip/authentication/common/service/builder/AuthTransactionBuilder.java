@@ -33,13 +33,15 @@ import io.mosip.kernel.core.util.UUIDUtils;
 /**
  * The builder to build {@code AutnTxn} instance.
  * 
- * @author Loganathan.Sekar
+ * @author Loganathan Sekar
  *
  */
 public class AuthTransactionBuilder {
 
+	/** The Constant REQ_TYPE_MSG_DELIM. */
 	public static final String REQ_TYPE_MSG_DELIM = ";";
 
+	/** The Constant REQ_TYPE_DELIM. */
 	public static final String REQ_TYPE_DELIM = ",";
 
 	/**
@@ -49,8 +51,8 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
-	 * Get new instance of {@code AuthTransactionBuilder}
-	 * 
+	 * Get new instance of {@code AuthTransactionBuilder}.
+	 *
 	 * @return new instance of AuthTransactionBuilder
 	 */
 	public static AuthTransactionBuilder newInstance() {
@@ -84,9 +86,17 @@ public class AuthTransactionBuilder {
 	/** The otp request DTO. */
 	private OtpRequestDTO otpRequestDTO;
 
+	/** The partner optional. */
 	private Optional<PartnerDTO> partnerOptional = Optional.empty();
 
+	/** The is internal. */
 	private boolean isInternal;
+
+	/** The status comment. */
+	private String statusComment;
+
+	/** The auth type code. */
+	private String authTypeCode;
 
 	/**
 	 * Set the AuthRequestDTO.
@@ -113,12 +123,21 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the UIN.
 	 *
-	 * @param uin the uin
+	 * @param token the token
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withToken(String token) {
 		this.token = token;
 		return this;
+	}
+	
+	/**
+	 * Gets the token.
+	 *
+	 * @return the token
+	 */
+	public String getToken() {
+		return this.token;
 	}
 
 	/**
@@ -130,6 +149,15 @@ public class AuthTransactionBuilder {
 	public AuthTransactionBuilder addRequestType(RequestType requestType) {
 		requestTypes.add(requestType);
 		return this;
+	}
+	
+	/**
+	 * With auth type code.
+	 *
+	 * @param authTypeCode the auth type code
+	 */
+	public void withAuthTypeCode(String authTypeCode) {
+		this.authTypeCode = authTypeCode;
 	}
 
 	/**
@@ -153,21 +181,56 @@ public class AuthTransactionBuilder {
 		this.isStatus = isStatus;
 		return this;
 	}
+	
+	/**
+	 * With status comment.
+	 *
+	 * @param statusComment the status comment
+	 * @return the auth transaction builder
+	 */
+	public AuthTransactionBuilder withStatusComment(String statusComment) {
+		this.statusComment = statusComment;
+		return this;
+	}
 
+	/**
+	 * With partner.
+	 *
+	 * @param partnerOptional the partner optional
+	 * @return the auth transaction builder
+	 */
 	public AuthTransactionBuilder withPartner(Optional<PartnerDTO> partnerOptional) {
 		this.partnerOptional = partnerOptional;
 		return this;
 	}
 
+	/**
+	 * With internal.
+	 *
+	 * @param isInternal the is internal
+	 * @return the auth transaction builder
+	 */
 	public AuthTransactionBuilder withInternal(boolean isInternal) {
 		this.isInternal = isInternal;
 		return this;
+	}
+	
+	/**
+	 * Gets the request types.
+	 *
+	 * @return the request types
+	 */
+	public Set<RequestType> getRequestTypes() {
+		return requestTypes;
 	}
 
 	/**
 	 * Build {@code AutnTxn}.
 	 *
 	 * @param env the env
+	 * @param uinEncryptSaltRepo the uin encrypt salt repo
+	 * @param uinHashSaltRepo the uin hash salt repo
+	 * @param securityManager the security manager
 	 * @return the instance of {@code AutnTxn}
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -221,6 +284,24 @@ public class AuthTransactionBuilder {
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);
+			} else {
+				if(authTypeCode != null) {
+					autnTxn.setAuthTypeCode(authTypeCode);
+				} else {
+					autnTxn.setAuthTypeCode(IdAuthCommonConstants.UNKNOWN);
+				}
+			}
+			//Overwrite the generated status comment if specified explicitly
+			if(this.statusComment != null) {
+				autnTxn.setStatusComment(statusComment);
+			}
+			
+			if(autnTxn.getStatusComment() == null) {
+				autnTxn.setStatusComment(IdAuthCommonConstants.UNKNOWN);
+			}
+			
+			if(autnTxn.getToken() == null) {
+				autnTxn.setToken(IdAuthCommonConstants.UNKNOWN);
 			}
 			
 			// Setting primary code only
@@ -253,7 +334,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Creates UUID.
 	 *
-	 * @param uin the uin
+	 * @param token the token
 	 * @param env the env
 	 * @return the string
 	 */
@@ -264,6 +345,11 @@ public class AuthTransactionBuilder {
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, tokenAndDate).toString();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 

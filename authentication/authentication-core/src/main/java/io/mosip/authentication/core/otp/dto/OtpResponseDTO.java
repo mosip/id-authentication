@@ -3,6 +3,7 @@ package io.mosip.authentication.core.otp.dto;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ import lombok.Data;
  */
 
 @Data
-public class OtpResponseDTO {
+public class OtpResponseDTO implements ObjectWithMetadata {
 
 	/** Variable to hold id */
 	private String id;
