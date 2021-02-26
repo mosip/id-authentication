@@ -188,7 +188,7 @@ public class RestHelperImpl implements RestHelper {
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - "
 							+ StringUtils.substring(e.getMessage(), 0, 500));
 		}

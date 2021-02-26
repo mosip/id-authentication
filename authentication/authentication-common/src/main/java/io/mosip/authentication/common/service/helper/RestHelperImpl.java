@@ -327,7 +327,7 @@ public class RestHelperImpl implements RestHelper {
 				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
 			}
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + StringUtils.substring(e.getMessage(), 0, 500));
 			return Collections.emptyList();
 		}
