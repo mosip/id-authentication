@@ -188,9 +188,9 @@ public class RestHelperImpl implements RestHelper {
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
-			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - "
-							+ StringUtils.substring(e.getMessage(), 0, 500));
+							+ ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -210,8 +210,11 @@ public class RestHelperImpl implements RestHelper {
 			if (e.getStatusCode().is4xxClientError()) {
 				if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
-							"request failed with status code :" + e.getRawStatusCode(),
-							"\n\n" + e.getResponseBodyAsString());
+							METHOD_HANDLE_STATUS_ERROR,
+							ExceptionUtils.getStackTrace(e));
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+							"request failed with status code :" + e.getRawStatusCode() + "\n\n"
+									+ e.getResponseBodyAsString());
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER,
 							"Throwing AuthenticationException", errorList.toString());
@@ -219,6 +222,8 @@ public class RestHelperImpl implements RestHelper {
 
 				} else {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+							ExceptionUtils.getStackTrace(e));
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 							"Status error - returning RestServiceException - CLIENT_ERROR -- "
 									+ e.getResponseBodyAsString());
 					return new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
@@ -226,7 +231,9 @@ public class RestHelperImpl implements RestHelper {
 							mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+						ExceptionUtils.getStackTrace(e));
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR -- "
 								+ e.getResponseBodyAsString());
 				return new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR,
@@ -235,7 +242,7 @@ public class RestHelperImpl implements RestHelper {
 			}
 		} catch (IOException ex) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-					StringUtils.substring(ex.getMessage(), 0, 500));
+					ExceptionUtils.getStackTrace(e));
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
 

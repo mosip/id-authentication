@@ -369,8 +369,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 										try {
 											return mapper.readValue(val.getBytes(), Object.class);
 										} catch (IOException e) {
-											logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
-													StringUtils.substring(e.getMessage(), 0, 500));
+											logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
+													ExceptionUtils.getStackTrace(e));
 											return val;
 										}
 									} else {
