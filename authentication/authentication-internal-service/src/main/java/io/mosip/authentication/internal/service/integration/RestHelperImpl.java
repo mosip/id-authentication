@@ -231,7 +231,7 @@ public class RestHelperImpl implements RestHelper {
 							mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						ExceptionUtils.getStackTrace(e));
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR -- "
