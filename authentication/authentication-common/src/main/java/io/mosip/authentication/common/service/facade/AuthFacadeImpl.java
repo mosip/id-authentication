@@ -41,7 +41,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.partner.dto.Policies;
+import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
@@ -195,8 +195,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid, String token)
 			throws IdAuthenticationBusinessException {
-		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
-		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
+		Optional<PartnerPolicyResponseDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
+		Optional<String> authTokenTypeOpt = policyForPartner.map(PartnerPolicyResponseDTO::getPolicy)
+				.map(PolicyDTO::getAuthTokenType);
 		if (authTokenTypeOpt.isPresent()) {
 			String authTokenType = authTokenTypeOpt.get();
 			if (authTokenType.equalsIgnoreCase(RANDOM.getType())) {
@@ -204,7 +205,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			} else if (authTokenType.equalsIgnoreCase(PARTNER.getType())) {
 				return tokenIdManager.generateTokenId(token, partnerId);
 			} else if(authTokenType.equalsIgnoreCase(POLICY.getType())){
-				Optional<String> policyId = policyForPartner.map(PolicyDTO::getPolicyId);
+				Optional<String> policyId = policyForPartner.map(PartnerPolicyResponseDTO::getPolicyId);
 				if (policyId.isPresent()) {
 					return tokenIdManager.generateTokenId(token, policyId.get());
 				}
