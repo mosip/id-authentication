@@ -119,8 +119,10 @@ public class RestHelperImpl implements RestHelper {
 
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
-							+ " \n Response Body : \n" + e.getResponseBodyAsString());
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e));
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + " \n Response Body : \n"
+							+ e.getResponseBodyAsString());
 			Object statusError = handleStatusError(e, request.getResponseType());
 
 			if (statusError instanceof RestServiceException) {
@@ -312,7 +314,7 @@ public class RestHelperImpl implements RestHelper {
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + ExceptionUtils.getStackTrace(e));
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -326,8 +328,8 @@ public class RestHelperImpl implements RestHelper {
 				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
 			}
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + ExceptionUtils.getStackTrace(e));
 			return Collections.emptyList();
 		}
 		
