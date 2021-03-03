@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.partner.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -9,8 +11,12 @@ import lombok.Data;
 @Data
 public class PolicyDTO {
 	
-	private String policyId;
+	/** The list of auth type attributes. */
+	private List<AuthPolicy> allowedAuthTypes;
 	
-	/** The policies. */
-	private Policies policies;
+	/** The list of KYC attributes. */
+	private List<KYCAttributes> allowedKycAttributes;
+	
+	private String authTokenType;
+	
 }
