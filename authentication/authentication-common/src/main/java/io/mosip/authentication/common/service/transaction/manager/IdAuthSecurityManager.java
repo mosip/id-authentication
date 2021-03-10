@@ -125,7 +125,6 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private CryptomanagerUtils cryptomanagerUtils;
-
 	/**
 	 * Gets the user.
 	 *
@@ -360,4 +359,45 @@ public class IdAuthSecurityManager {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+	
+	private X509Certificate getX509Certificate(String partnerCertificate) throws IdAuthenticationBusinessException {
+		try {
+			String certificate = IdAuthSecurityManager.trimBeginEnd(partnerCertificate);
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			X509Certificate x509cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(java.util.Base64.getDecoder().decode(certificate)));
+			return x509cert;
+		} catch (CertificateException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}		
+	}
+	
+	public String encryptData(byte[] data, String partnerCertificate)
+			throws IdAuthenticationBusinessException {
+			X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
+			PublicKey publicKey = x509Certificate.getPublicKey();	
+			byte[] encryptedData = encrypt(publicKey, data);
+			return CryptoUtil.encodeBase64(encryptedData);
+	}
+	
+	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
+		SecretKey secretKey = keyGenerator.getSymmetricKey();
+		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, dataToEncrypt, null);
+		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey,secretKey.getEncoded());
+		return combineDataToEncrypt(encryptedData, encryptedSymmetricKey);
+	}
+	
+	public byte[] combineDataToEncrypt(byte[] encryptedData, byte[ ] encryptedSymmetricKey) {
+		return CryptoUtil.combineByteArray(
+						encryptedData, 
+						encryptedSymmetricKey, 
+						keySplitter);
+	}
+
+	public static String trimBeginEnd(String pKey) {
+		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("\\s", "");
+		return pKey;
+	}
+	
 }
