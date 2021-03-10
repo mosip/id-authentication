@@ -198,6 +198,7 @@ public class RestHelperImpl implements RestHelper {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - "
 							+ ExceptionUtils.getStackTrace(e));
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
