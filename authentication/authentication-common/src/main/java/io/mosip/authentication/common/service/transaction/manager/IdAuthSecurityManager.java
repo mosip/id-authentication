@@ -52,8 +52,6 @@ import io.mosip.kernel.zkcryptoservice.dto.ReEncryptRandomKeyResponseDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoRequestDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoResponseDto;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 /**
  * The Class IdAuthSecurityManager.
@@ -123,8 +121,6 @@ public class IdAuthSecurityManager {
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
 	
-	@Autowired
-	private CryptomanagerUtils cryptomanagerUtils;
 	/**
 	 * Gets the user.
 	 *
@@ -308,44 +304,6 @@ public class IdAuthSecurityManager {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							SALT_FOR_THE_GIVEN_ID));
 		}
-	}
-
-	private X509Certificate getX509Certificate(String partnerCertificate) throws IdAuthenticationBusinessException {
-		try {
-			String certificate = IdAuthSecurityManager.trimBeginEnd(partnerCertificate);
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate x509cert = (X509Certificate) cf
-					.generateCertificate(new ByteArrayInputStream(java.util.Base64.getDecoder().decode(certificate)));
-			return x509cert;
-		} catch (CertificateException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
-
-	public Tuple2<String, String> encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
-		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
-		PublicKey publicKey = x509Certificate.getPublicKey();
-		byte[] encryptedData = encrypt(publicKey, data);
-		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.encodeBase64(encryptedData), CryptoUtil.encodeBase64(certificateThumbprint));
-	}
-
-	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
-		SecretKey secretKey = keyGenerator.getSymmetricKey();
-		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, dataToEncrypt, null);
-		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey, secretKey.getEncoded());
-		return combineDataToEncrypt(encryptedData, encryptedSymmetricKey);
-	}
-
-	public byte[] combineDataToEncrypt(byte[] encryptedData, byte[] encryptedSymmetricKey) {
-		return CryptoUtil.combineByteArray(encryptedData, encryptedSymmetricKey, keySplitter);
-	}
-
-	public static String trimBeginEnd(String pKey) {
-		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
-		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
-		pKey = pKey.replaceAll("\\s", "");
-		return pKey;
 	}
 
 	public static String digestAsPlainText(byte[] data) {
