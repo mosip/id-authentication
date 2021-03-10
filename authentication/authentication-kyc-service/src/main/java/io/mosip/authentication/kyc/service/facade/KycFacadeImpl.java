@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -175,7 +178,6 @@ public class KycFacadeImpl implements KycFacade {
 						.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 				idService.saveAutnTxn(authTxn);
 			}
-			
 		}
 	}
 

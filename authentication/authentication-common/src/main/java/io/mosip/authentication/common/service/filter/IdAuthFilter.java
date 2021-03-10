@@ -346,7 +346,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 		requestBody.put(METADATA, metadata);
 	}
-
+	
 	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
 		PartnerDTO partnerDTO = new PartnerDTO();
 		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());

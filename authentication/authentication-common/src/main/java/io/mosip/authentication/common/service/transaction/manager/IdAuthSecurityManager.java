@@ -125,7 +125,6 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private CryptomanagerUtils cryptomanagerUtils;
-
 	/**
 	 * Gets the user.
 	 *
@@ -360,4 +359,5 @@ public class IdAuthSecurityManager {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+	
 }
