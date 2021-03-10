@@ -707,7 +707,6 @@ public class RestHelperImplTest {
 			throw e.getCause();
 		}
 	}
-
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
 		try {
