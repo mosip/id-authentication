@@ -61,7 +61,6 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerServiceCache.evictPartnerPolicy(key);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID);
 		}
-		
 		return partnerPolicyResponseDTO;
 	}
 
