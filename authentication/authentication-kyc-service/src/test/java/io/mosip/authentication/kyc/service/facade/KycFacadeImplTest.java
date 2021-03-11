@@ -130,6 +130,9 @@ public class KycFacadeImplTest {
 	private AuthtypeStatusImpl authTypeStatus;
 	
 	@Autowired
+	private ObjectMapper mapper;
+	
+	@Autowired
 	PartnerService partnerService;
 	
 	@Autowired
@@ -244,7 +247,7 @@ public class KycFacadeImplTest {
 	
 	
 	@Test
-	public void processKycAuthValid() throws IdAuthenticationBusinessException {
+	public void processKycAuthValid() throws IdAuthenticationBusinessException, JsonProcessingException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
@@ -294,7 +297,7 @@ public class KycFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res=new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);

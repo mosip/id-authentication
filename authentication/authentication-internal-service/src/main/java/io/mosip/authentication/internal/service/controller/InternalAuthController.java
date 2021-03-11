@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +25,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +52,9 @@ public class InternalAuthController {
 	
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
@@ -88,6 +94,10 @@ public class InternalAuthController {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		try {
+			String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
+					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
+			authRequestDTO.setIndividualIdType(idType);
+			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, e);
 			DataValidationUtil.validate(e);
 			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false, DEFAULT_PARTNER_ID, DEFAULT_PARTNER_API_KEY);
 		} catch (IDDataValidationException e1) {

@@ -4,6 +4,7 @@
 package io.mosip.authentication.kyc.service.controller;
 
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +31,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -50,6 +54,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
@@ -83,6 +88,9 @@ public class KycControllerTest {
 
 	@Mock
 	private KycFacadeImpl kycFacade;
+	
+	@Mock
+	private IdTypeUtil idTypeUtil;
 
 	@InjectMocks
 	private KycAuthController kycAuthController;
@@ -99,15 +107,23 @@ public class KycControllerTest {
 	/** The Kyc Service */
 	@Mock
 	private KycServiceImpl kycService;
-
+	
+	@Mock
+	private KycAuthRequestValidator kycReqValidator;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
+		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoFetcher", idInfoFetcherImpl);
+		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 
 	}
 
@@ -127,7 +143,7 @@ public class KycControllerTest {
 
 	@Test
 	public void processKycSuccess()
-			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException, JsonProcessingException {
 
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
@@ -179,7 +195,7 @@ public class KycControllerTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
@@ -202,7 +218,7 @@ public class KycControllerTest {
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void processKycFailure()
-			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException, JsonProcessingException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
@@ -252,7 +268,7 @@ public class KycControllerTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(idInfo);
-		kycAuthResponseDTO.setResponse(kycResponseDTO);
+		kycAuthResponseDTO.setResponse(mapper.writeValueAsString(kycResponseDTO));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);

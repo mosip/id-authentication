@@ -25,6 +25,10 @@ public final class IdAuthCommonConstants {
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
+	public static final String PHOTO = "photo";
+
+	public static final String PARTNER_CERTIFICATE = "PARTNER_CERTIFICATE";
+
 	private IdAuthCommonConstants() {
 
 	}
@@ -261,6 +265,8 @@ public final class IdAuthCommonConstants {
 	public static final String PHONE_NUMBER = "phone";
 
 	public static final String EMAIL = "email";
+	
+	public static final String CREDENTIAL_SUBJECT = "credentialSubject";
 	
 	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
 

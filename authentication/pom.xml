@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.3</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -67,33 +67,30 @@
 	</modules>
 
 	<properties>
-		<!--FIXME Temporarily disabling to avoid build error -->
-		<sonar.skip>true</sonar.skip>
-
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.1.2</kernel.parent.version>
+		<kernel.parent.version>1.1.3</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.0.7</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>1.0.6</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>1.0.6</kernel-idvalidator-vid.version>
+		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
+		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.0.6</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.1.2</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.0.7</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.1.0</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.0.6</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.1.2</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.1.2</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.1.2</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.1.2</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.2</id-repository-core.version>
+		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
+		<kernel-logger-logback.version>${kernel.parent.version}</kernel-logger-logback.version>
+		<kernel-dataaccess-hibernate.version>${kernel.parent.version}</kernel-dataaccess-hibernate.version>
+		<kernel-cbeffutil-api.version>${kernel.parent.version}</kernel-cbeffutil-api.version>
+		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
+		<kernel-auth-adapter.version>${kernel.parent.version}</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>${kernel.parent.version}</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>${kernel.parent.version}</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
+		<id-repository-core.version>1.1.3</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
@@ -116,6 +113,7 @@
 
 		<!-- Spring Boot -->
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
@@ -313,19 +311,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>${maven.sonar.version}</version>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>sonar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven.jar.plugin.version}</version>
@@ -392,7 +377,7 @@
 					<skipTests>${skipTests}</skipTests>
 					<skip>false</skip>
 					<argLine>
-						--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
 					</argLine>
 				</configuration>
 			</plugin>
@@ -408,5 +393,28 @@
 		<sonar.projectName>IdAuthentication</sonar.projectName> <sonar.projectVersion>0.7.0</sonar.projectVersion> 
 		<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
 		</properties> </profile> </profiles> -->
+		
+		<profiles>
+			<profile>
+				<id>sonar</id>
+				<build>
+					<plugins>
+						<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>${maven.sonar.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					</plugins>
+				</build>
+			</profile>
+		</profiles>
 
 </project>

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -40,6 +42,7 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -56,6 +59,8 @@ import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
+import io.mosip.kernel.partnercertservice.helper.PartnerCertManagerDBHelper;
+import io.mosip.kernel.partnercertservice.service.impl.PartnerCertificateManagerServiceImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
@@ -75,25 +80,23 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class,
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class, 
-		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
-		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,
-		InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
+		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class,
+		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
+		OTPRequestValidator.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
-		IdChangeEventHandlerServiceImpl.class,SignatureServiceImpl.class, 
-		KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, 
-		PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class})
+		IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class,
+		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
+		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.defaultadapter.*",
 		"io.mosip.kernel.core.logger.config" })
-@EnableJpaRepositories(basePackages = {"io.mosip.kernel.keymanagerservice.repository.*"})
+@EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {
 
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(InternalAuthenticationApplication.class, args);

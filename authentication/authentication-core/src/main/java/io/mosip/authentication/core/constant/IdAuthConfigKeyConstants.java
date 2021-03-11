@@ -4,6 +4,8 @@ import java.util.function.Predicate;
 
 import org.springframework.core.env.Environment;
 
+import io.mosip.idrepository.core.constant.IdRepoConstants;
+
 /**
  * This Class will provide constants for all Configured properties.
  * 
@@ -118,8 +120,8 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
 	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
-	public static final String IDA_WEBSUB_HUB_URL = "ida-websub-subscriber-hub-url";
-	public static final String IDA_WEBSUB_PUBLISHER_URL = "ida-websub-publisher-url";
+	public static final String IDA_WEBSUB_HUB_URL = IdRepoConstants.WEB_SUB_HUB_URL;
+	public static final String IDA_WEBSUB_PUBLISHER_URL = IdRepoConstants.WEB_SUB_PUBLISH_URL;
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
 	

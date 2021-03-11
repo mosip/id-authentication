@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +46,7 @@ public class InternalUpdateAuthTypeController {
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
 	
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
-	@PreAuthenticateContentAndVerifyIntent(secret = "Kslk30SNF2AChs2", callback = "/idauthentication/v1/internal/callback/authTypeCallback/{partnerId}", topic = "${ida-topic-auth-type-status-updated}")
+	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}", callback = "/idauthentication/v1/internal/callback/authTypeCallback/{partnerId}", topic = "${ida-topic-auth-type-status-updated}")
 	public void updateAuthtypeStatus(@RequestBody IDAEventDTO event)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {

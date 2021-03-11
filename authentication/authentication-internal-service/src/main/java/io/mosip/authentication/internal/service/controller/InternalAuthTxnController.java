@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtxn.service.AuthTxnService;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -72,6 +74,9 @@ public class InternalAuthTxnController {
 
 	@Autowired
 	Environment environment;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 
 	/**
 	 * To fetch Auth Transactions details based on Individual's details
@@ -86,10 +91,11 @@ public class InternalAuthTxnController {
 	 */
 	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
-	@GetMapping(path = "/authTransactions/individualIdType/{IDType}/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
-	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
+	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(
+			@RequestParam(name = "IDType", required = false) String individualIdType,
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
@@ -97,12 +103,12 @@ public class InternalAuthTxnController {
 		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
 		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
 		authtxnrequestdto.setIndividualId(individualId);
-		authtxnrequestdto.setIndividualIdType(individualIdType);
+		authtxnrequestdto.setIndividualIdType(
+				Objects.isNull(individualIdType) ? idTypeUtil.getIdType(individualId).getType() : individualIdType);
 		authtxnrequestdto.setPageStart(pageStart);
 		authtxnrequestdto.setPageFetch(pageFetch);
 		
 		try {
-			
 			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
 			authTxnValidator.validate(authtxnrequestdto, errors);
 			DataValidationUtil.validate(errors);

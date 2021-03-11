@@ -187,6 +187,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
 			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationBaseException ex)
 			throws IOException {
@@ -352,7 +353,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestWrapper.resetInputStream();
 			validateRequest(requestWrapper, requestBody);
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -29,6 +31,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -55,12 +58,7 @@ public class PartnerServiceManager {
 
 	@Autowired
 	protected ObjectMapper mapper;
-
-	private static final String ERRORS = "errors";
-
-	private static final String ERRORCODE = "errorCode";
-
-	@SuppressWarnings("unchecked")
+	
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest;
@@ -77,24 +75,7 @@ public class PartnerServiceManager {
 			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
 			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),PartnerPolicyResponseDTO.class);			
 		}catch (RestServiceException e) {			
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			Optional<Object> responseBody = ((RestServiceException) e).getResponseBody();
-			if (responseBody.isPresent()) {
-				Map<String, Object> partnerService = (Map<String, Object>) responseBody.get();
-				if (partnerService.containsKey(ERRORS)) {
-					List<Map<String, Object>> partnerServiceErrorList = (List<Map<String, Object>>) partnerService.get(ERRORS);
-					if(!partnerServiceErrorList.isEmpty()) {						
-						throw getMatchingErrorCodes(partnerServiceErrorList.get(0).get(ERRORCODE).toString(), e);
-					}
-				}else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-				}
-			}else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-			}			
+			handleRestServiceException(e);			
 		} catch (JsonParseException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} catch (JsonMappingException e) {
@@ -105,6 +86,32 @@ public class PartnerServiceManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		return response;
+	}
+
+	private void handleRestServiceException(RestServiceException e) throws IdAuthenticationBusinessException {
+		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+				e.getErrorText());
+		Optional<String> responseBodyAsStringOpt = e.getResponseBodyAsString();
+		if(responseBodyAsStringOpt.isPresent()) {
+			String responseBodyAsString = responseBodyAsStringOpt.get();
+			List<ServiceError> errorList = getErrorList(responseBodyAsString);
+			if (Objects.nonNull(errorList)
+					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())) {
+				throw getMatchingErrorCodes(errorList.get(0).getErrorCode(), e);
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+		}
+		
+	}
+	
+	private List<ServiceError> getErrorList(String responseBodyAsString) {
+		return RestHelperImpl.getErrorList(responseBodyAsString, mapper);
 	}
 	
 	/**
@@ -145,13 +152,15 @@ public class PartnerServiceManager {
 		case "PMS_PMP_024":
 			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
-			
+		case "PMS_PRT_108":
+			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE,e);
 		default:
 			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<String> getPartnerIds() {
 		try {
 			Map<String, Object> responseWrapperMap = restHelper.requestSync(restRequestFactory.buildRequest(RestServicesConstants.PARTNER_SERVICE, null, Map.class));
@@ -172,5 +181,23 @@ public class PartnerServiceManager {
 			logger.error(IdRepoSecurityManager.getUser(), this.getClass().getSimpleName(), "getPartnerIds", e.getMessage());
 		}
 		return Collections.emptyList();
+	}
+
+	public String getPartnerCertificate(String partnerId) throws IdAuthenticationBusinessException {
+		try {
+			Map<String, String> params = new HashMap<>();
+			RestRequestDTO buildRequest = restRequestFactory.buildRequest(RestServicesConstants.PARTNER_GET_CERT_SERVICE, null, Map.class);
+			params.put("partnerId", partnerId);
+
+			buildRequest.setPathVariables(params);
+			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
+			Map<String, Object> response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),Map.class);
+			return (String) response.get("certificateData");
+		} catch (IDDataValidationException | IOException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		} catch (RestServiceException e) {
+			handleRestServiceException(e);	
+		}
+		return null;
 	}
 }

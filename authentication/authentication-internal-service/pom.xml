@@ -7,14 +7,13 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.2</version>
+		<version>1.1.3</version>
 	</parent>
-	<version>1.1.2</version>
+	<version>1.1.3</version>
 	<artifactId>authentication-internal-service</artifactId>
 	<name>authentication-internal-service</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<kernel-websubclient-api.version>1.1.2</kernel-websubclient-api.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -42,11 +41,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
 			<version>${kernel-cbeffutil-api.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>${kernel-auth-adapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -86,6 +80,16 @@
 	  		<artifactId>lombok</artifactId>
 	  		<version>${lombok.version}</version>
   		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>${spring.security.test.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-websubclient-api</artifactId>

@@ -11,7 +11,8 @@ ARG spring_config_url
 
 ARG bio_sdk_folder=mock/0.9
 
-ARG softhsm_client_zip=client.zip
+# can be passed during Docker build as build time environment for hsm client zip file path
+ARG client_zip_path
 
 # can be passed during Docker build as build time environment for glowroot 
 ARG is_glowroot
@@ -34,9 +35,13 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
+# environment variable to pass iam_adapter url, at docker runtime
+ENV iam_adapter_url_env=${iam_adapter_url}
+
 ENV bio_sdk_folder_env=${bio_sdk_folder}
 
-ENV softhsm_client_zip_env=${softhsm_client_zip}
+# environment variable to pass hsm client zip file path, at docker runtime
+ENV zip_file_path=${client_zip_path}
 
 ENV work_dir_env=/
 
@@ -60,9 +65,11 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     sed -i "s/<service_name>/${current_module_env}/g" glowroot/glowroot.properties ; \
-    java -jar -Djava.security.debug=sunpkcs11 -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}" -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
+    wget "${iam_adapter_url_env}" -O kernel-auth-adapter.jar; \
+    java -jar -Djava.security.debug=sunpkcs11 -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}",./kernel-auth-adapter.jar -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
     else \
-    java -jar -Djava.security.debug=sunpkcs11 -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}" -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
+    wget "${iam_adapter_url_env}" -O kernel-auth-adapter.jar; \
+    java -jar -Djava.security.debug=sunpkcs11 -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}",./kernel-auth-adapter.jar -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
     fi
 
 #Sample docker run command:
