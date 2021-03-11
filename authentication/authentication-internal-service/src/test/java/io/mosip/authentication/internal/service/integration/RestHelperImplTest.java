@@ -700,7 +700,7 @@ public class RestHelperImplTest {
 		}
 	}
 	
-	@Test(expected = RestServiceException.class)
+	@Test
 	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
 		try {
 			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", "args", null);
