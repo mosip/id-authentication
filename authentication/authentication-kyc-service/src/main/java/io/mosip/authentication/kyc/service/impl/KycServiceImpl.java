@@ -14,12 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
@@ -54,6 +58,9 @@ public class KycServiceImpl implements KycService {
 	/** The mapping config. */
 	@Autowired
 	private MappingConfig mappingConfig;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
@@ -95,9 +102,10 @@ public class KycServiceImpl implements KycService {
 	 * @param bioValue the bio value
 	 * @param face the face
 	 * @param filteredIdentityInfo the filtered identity info
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
-			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
+			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) throws IdAuthenticationBusinessException {
 		// Getting allowed demographic data - key will be the ID Name (from ID Mapping),
 		// value will be the ID Entity value from ID Name
 		Map<String, Object> idMappingIdentityInfo = Stream.of(DemoMatchType.values())
@@ -118,7 +126,11 @@ public class KycServiceImpl implements KycService {
 		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey(IdAuthCommonConstants.PHOTO)) {
 			idMappingIdentityInfo.put(CbeffDocType.FACE.getType().value(), Objects.nonNull(bioValue) ? face : null);
 		}
-		kycResponseDTO.setIdentity(idMappingIdentityInfo);
+		try {
+			kycResponseDTO.setIdentity(mapper.writeValueAsString(idMappingIdentityInfo));
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 	
 	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {

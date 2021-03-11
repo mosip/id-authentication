@@ -10,6 +10,7 @@
 \ir ddl/ida-identity_cache.sql
 \ir ddl/ida-data_encrypt_keystore.sql
 \ir ddl/ida-otp_transaction.sql
+\ir ddl/ida-ca_cert_store.sql
 
 \ir ddl/ida-fk.sql
 

@@ -68,5 +68,24 @@ public class OTPFilter extends IdAuthFilter {
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
 	}
-	
+
+	@Override
+	protected boolean isSigningRequired() {
+		return env.getProperty("mosip.ida.otp.signing-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isSignatureVerificationRequired() {
+		return env.getProperty("mosip.ida.otp.signature-verification-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.otp.thumbprint-validation-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isTrustValidationRequired() {
+		return env.getProperty("mosip.ida.otp.trust-validation-required", Boolean.class, true);
+	}
 }

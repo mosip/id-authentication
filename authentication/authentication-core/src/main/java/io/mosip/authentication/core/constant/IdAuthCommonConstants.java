@@ -29,6 +29,12 @@ public final class IdAuthCommonConstants {
 
 	public static final String PARTNER_CERTIFICATE = "PARTNER_CERTIFICATE";
 
+	public static final boolean CONSUME_VID_DEFAULT = true;
+
+	public static final String IDENTITY_DATA = "IDENTITY_DATA";
+
+	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
+
 	private IdAuthCommonConstants() {
 
 	}
@@ -45,17 +51,17 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant IDV_ID. */
 	public static final String IDV_ID = "individualId";
-	
+
 	public static final String REQUEST = "request";
-	
+
 	public static final String HASH = "hash";
-	
+
 	public static final String UTF_8 = "utf-8";
 
 	public static final String REQUESTEDAUTH = "requestedAuth";
 
 	public static final String UNKNOWN_BIO = "UNKNOWN";
-	
+
 	public static final String UNKNOWN_COUNT_PLACEHOLDER = "%s";
 
 	public static final String TRANSACTION_ID = "transactionID";
@@ -108,41 +114,41 @@ public final class IdAuthCommonConstants {
 	public static final String AUTH_TRANSACTIONS = "authTransactions";
 
 	public static final String AUTH_TYPE = "authtypes";
-	
-	public static final String BIOMETRICS ="biometrics";
-	
-	public static final String IDENTITY ="identity";
-	
-	public static final String UIN_CAPS ="UIN";
-	
+
+	public static final String BIOMETRICS = "biometrics";
+
+	public static final String IDENTITY = "identity";
+
+	public static final String UIN_CAPS = "UIN";
+
 	public static final String UIN = "uin";
 
 	public static final String VID = "vid";
-	
+
 	public static final String UIN_MODULO_SPLITTER = "_";
-	
+
 	public static final String DOB_PATTERN = "yyyy/MM/dd";
-	
+
 	public static final String DEVICE_DOES_NOT_EXIST = "ADM-DPM-001";
-	
+
 	public static final String DEVICE_REVOKED_OR_RETIRED = "ADM-DPM-002";
-	
+
 	public static final String DEVICE_PROVIDER_NOT_EXIST = "ADM-DPM-003";
-	
+
 	public static final String DEVICE_PROVIDER_INACTIVE = "ADM-DPM-004";
-	
+
 	public static final String MDS_DOES_NOT_EXIST = "ADM-DPM-005";
-	
+
 	public static final String MDS_INACTIVE_STATE = "ADM-DPM-006";
-	
+
 	public static final String SW_ID_VERIFICATION_FAILED = "ADM-DPM-007";
-	
+
 	public static final String FIELD_VALIDATION_FAILED = "ADM-DPM-008";
-	
+
 	public static final String BIO_PATH = "request/biometrics/%s/%s";
-	
+
 	public static final String DIGITAL_ID = "digitalId";
-	
+
 	public static final String DIGITAL_ID_TYPE = "digitalId/type";
 
 	/** The Constant DEFAULT_AAD_LAST_BYTES_NUM. */
@@ -156,40 +162,39 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant BIO_VALUE. */
 	public static final String BIO_VALUE = "bioValue";
-	
+
 	/** The Constant BIO_TYPE. */
 	public static final String BIO_TYPE = "bioType";
-	
+
 	public static final String BIO_SUB_TYPE = "bioSubType";
-	
+
 	/** The Constant SESSION_KEY. */
 	public static final String SESSION_KEY = "sessionKey";
-	
+
 	public static final String REQUEST_BIOMETRICS_PARAM = REQUEST + "/" + BIOMETRICS;
 
 	/** The Constant BIO_DATA_INPUT_PARAM. */
 	public static final String BIO_DATA_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + DATA;
-	
+
 	public static final String BIO_SESSIONKEY_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + SESSION_KEY;
 
 	/** The Constant HASH_INPUT_PARAM. */
 	public static final String HASH_INPUT_PARAM = REQUEST_BIOMETRICS_PARAM + "/%s/" + HASH;
-	
+
 	public static final String BIO_VALUE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_VALUE;
-	
+
 	public static final String BIO_TIMESTAMP_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + TIMESTAMP;
-	
+
 	public static final String BIO_DIGITALID_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID;
-	
+
 	public static final String BIO_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_TYPE;
-	
+
 	public static final String BIO_SUB_TYPE_INPUT_PARAM = BIO_DATA_INPUT_PARAM + "/" + BIO_SUB_TYPE;
-	
+
 	public static final String BIO_DIGITALID_INPUT_PARAM_TYPE = BIO_DATA_INPUT_PARAM + "/" + DIGITAL_ID_TYPE;
-	
-	
+
 	/** The Constant EKYC. */
-	public static final String EKYC = "ekyc";
+	public static final String KYC = "kyc";
 
 	/** The Constant REQUEST_HMAC. */
 	public static final String REQUEST_HMAC = "requestHMAC";
@@ -198,7 +203,7 @@ public final class IdAuthCommonConstants {
 	public static final String MISPLICENSE_KEY = "misplicenseKey";
 
 	/** The constant api_key */
-	public static final String API_KEY="apiKey";
+	public static final String API_KEY = "apiKey";
 
 	/** The Constant PARTNER_ID. */
 	public static final String PARTNER_ID = "partnerId";
@@ -218,13 +223,8 @@ public final class IdAuthCommonConstants {
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";
 
-	/** The Constant KYC. */
-	public static final String KYC = "kyc";
-
 	/** The Constant SESSION_KEY. */
 	public static final String REQUEST_SESSION_KEY = "requestSessionKey";
-
-	
 
 	/** The Constant METHOD_REQUEST_SYNC. */
 	public static final String METHOD_REQUEST_SYNC = "requestSync";
@@ -249,25 +249,41 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant REQUEST_SYNC_RUNTIME_EXCEPTION. */
 	public static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
-	
+
 	public static final String CALLBACK = "credentialIssueanceCallback";
-	
+
 	public static final String PUBLICKEY = "publickey";
-	
+
 	public static final String ENCRYPT = "encrypt";
-	
+
 	public static final String DECRYPT = "decrypt";
-	
+
 	public static final String VERIFY = "verify";
-	
+
 	public static final String VALIDATESIGN = "validate";
 
 	public static final String PHONE_NUMBER = "phone";
 
 	public static final String EMAIL = "email";
-	
+
 	public static final String CREDENTIAL_SUBJECT = "credentialSubject";
-	
+
 	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+
+	public static final String MISP_UPDATED_EVENT_NAME = "misp_updated";
+
+	public static final String PARTNER_UPDATED_EVENT_NAME = "partner_updated";
+
+	public static final String PARTNER_API_KEY_UPDATED_EVENT_NAME = "partner_api_key_updated";
+
+	public static final String POLICY_UPDATED_EVENT_NAME = "policy_updated";
+
+	public static final String CA_CERT_EVENT = "ca_certificate";
+
+	public static final String METADATA = "metadata";
+
+	public static final String SIGNATURE = "signature";
+
+	public static final String SERVICE_ACCOUNT = "service-account-";
 
 }

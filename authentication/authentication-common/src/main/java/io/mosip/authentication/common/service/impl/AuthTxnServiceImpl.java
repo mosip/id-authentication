@@ -23,7 +23,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Service AuthTxnServiceImpl is used to retrive Auth transactions for a UIN/VID.
+ * The Service AuthTxnServiceImpl is used to store/retrive Auth transactions for a UIN/VID.
  * 
  */
 @Component
@@ -71,7 +71,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		}
 		
 		String individualId = authtxnrequestdto.getIndividualId();
-		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
+		Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false, false);
 		if (idResDTO != null && !idResDTO.isEmpty()) {
 			String token = idService.getToken(idResDTO);
 
@@ -157,6 +157,8 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		autnTxnDto.setStatusComment(autnTxn.getStatusComment());
 		autnTxnDto.setReferenceIdType(autnTxn.getRefIdType());
 		autnTxnDto.setEntityName(autnTxn.getEntityName());
+		autnTxnDto.setRequestSignature(autnTxn.getRequestSignature());
+		autnTxnDto.setResponseSignature(autnTxn.getResponseSignature());
 		return autnTxnDto;
 	}
 

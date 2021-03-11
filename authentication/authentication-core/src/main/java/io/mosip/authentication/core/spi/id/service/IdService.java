@@ -38,17 +38,16 @@ public interface IdService<T> {
 	Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
-	 * Process the IdType and validates the Idtype and upon validation reference Id
-	 * is returned in AuthRequestDTO.
+	 * Process id type.
 	 *
-	 * @param idvIdType idType
-	 * @param idvId     id-number
+	 * @param idvIdType the idv id type
+	 * @param idvId the idv id
 	 * @param isBio the is bio
-	 * @return map
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
+	 * @param markVidConsumed the flag to mark VID consumed
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
 			throws IdAuthenticationBusinessException;
 
 	/**
@@ -96,11 +95,4 @@ public interface IdService<T> {
 	 */
 	String getToken(Map<String, Object> idResDTO);
 
-	/**
-	 * Update VID status.
-	 *
-	 * @param individualId the individual id
-	 */
-	void updateVIDstatus(String individualId) throws IdAuthenticationBusinessException;
-	
 }

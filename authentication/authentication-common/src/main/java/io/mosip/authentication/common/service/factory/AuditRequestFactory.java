@@ -28,7 +28,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuditRequestFactory {
 
-    /** The mosipLogger. */
+    private static final String DEFAULT_HOST_NAME = "localhost";
+
+	private static final String DEFAULT_HOST_ADDRESS = "127.0.0.1";
+
+	/** The mosipLogger. */
     private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
     /** The env. */
@@ -70,8 +74,8 @@ public class AuditRequestFactory {
 	    hostAddress = inetAddress.getHostAddress();
 	} catch (UnknownHostException ex) {
 	    mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
-	    hostName = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_NAME);
-	    hostAddress = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_ADDRESS);
+	    hostName = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_NAME, DEFAULT_HOST_NAME);
+	    hostAddress = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_ADDRESS, DEFAULT_HOST_ADDRESS);
 	}
 
 	request.setEventId(event.getEventId());

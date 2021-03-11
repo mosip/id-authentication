@@ -110,19 +110,19 @@ public class RestHelperImpl implements RestHelper {
 					response = request(request, getSslContext()).block();
 				}
 			}
-			checkErrorResponse(response, request.getResponseType());
-			if(response != null && containsError(response.toString())) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-			}
+			if(!String.class.equals(request.getResponseType())) {
+				checkErrorResponse(response, request.getResponseType());
+				if(response != null && containsError(response.toString())) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+							PREFIX_RESPONSE + response);
+				}
+			}	
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e));
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + " \n Response Body : \n"
-							+ e.getResponseBodyAsString());
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
+							+ " \n Response Body : \n" + e.getResponseBodyAsString());
 			Object statusError = handleStatusError(e, request.getResponseType());
 
 			if (statusError instanceof RestServiceException) {
@@ -221,13 +221,17 @@ public class RestHelperImpl implements RestHelper {
 		}
 
 		method = webClient.method(request.getHttpMethod());
-		if (request.getParams() != null && request.getPathVariables() == null) {
-			uri = method.uri(builder -> builder.queryParams(request.getParams()).build());
-		} else if (request.getParams() == null && request.getPathVariables() != null) {
-			uri = method.uri(builder -> builder.build(request.getPathVariables()));
-		} else {
-			uri = method.uri(builder -> builder.build());
-		}
+		uri = method.uri(builder -> {
+			if(request.getParams() != null) {
+				builder.queryParams(request.getParams());
+			}
+			
+			if(request.getPathVariables() != null) {
+				return builder.build(request.getPathVariables());
+			} else {
+				return builder.build();
+			}
+		});
 
 		uri.cookie("Authorization", getAuthToken());
 
@@ -314,7 +318,7 @@ public class RestHelperImpl implements RestHelper {
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + ExceptionUtils.getStackTrace(e));
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -328,8 +332,8 @@ public class RestHelperImpl implements RestHelper {
 				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
 			}
 		} catch (IOException e) {
-			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
-					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 			return Collections.emptyList();
 		}
 		
@@ -371,6 +375,8 @@ public class RestHelperImpl implements RestHelper {
 		} catch (IOException ex) {
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
+		
 
 	}
+	
 }

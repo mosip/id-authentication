@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -30,12 +31,12 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.StaticPinRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.kernel.core.util.HMACUtils;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -91,9 +92,9 @@ public class PinAuthServiceImplTest {
 	}
 
 	@Test
-	public void validPinTest() throws IdAuthenticationBusinessException {
+	public void validPinTest() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		StaticPin stat = new StaticPin(null, null, false, null, null, null, null, false, null);
-		stat.setPin(HMACUtils.digestAsPlainText(HMACUtils.generateHash(("12345").getBytes())));
+		stat.setPin(IdAuthSecurityManager.generateHashAndDigestAsPlainText(("12345").getBytes()));
 		Optional<StaticPin> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.authenticate(constructRequest(), "284169042058",

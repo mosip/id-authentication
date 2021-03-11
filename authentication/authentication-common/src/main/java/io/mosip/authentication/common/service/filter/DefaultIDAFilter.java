@@ -24,4 +24,28 @@ public class DefaultIDAFilter extends BaseIDAFilter {
 		//default implementation does nothing
 	}
 
+	@Override
+	protected boolean isSigningRequired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected boolean isSignatureVerificationRequired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected boolean isTrustValidationRequired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

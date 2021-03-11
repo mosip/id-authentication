@@ -32,8 +32,8 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
@@ -55,6 +55,30 @@ public class FilterValidatorTest {
 		protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 				throws IdAuthenticationAppException {
 		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -62,6 +86,30 @@ public class FilterValidatorTest {
 		@Override
 		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
+		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	};
 
@@ -217,12 +265,10 @@ public class FilterValidatorTest {
 	public void validateRequestHMACTest() {
 		try {
 			ReflectionTestUtils.invokeMethod(baseAuthFilter, "validateRequestHMAC", "92834787293", "1234234");
-		} catch (UndeclaredThrowableException e) {
-			String detailMessage = e.getUndeclaredThrowable().getMessage();
-			String[] error = detailMessage.split("-->");
-			assertEquals("IDA-MPA-016", error[0].trim());
-			assertEquals("HMAC Validation failed", error[1].trim());
-			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
+		} catch (UndeclaredThrowableException ex) {
+			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getUndeclaredThrowable();
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
 

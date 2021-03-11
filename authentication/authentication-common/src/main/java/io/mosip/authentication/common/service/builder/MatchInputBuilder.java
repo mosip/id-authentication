@@ -36,6 +36,7 @@ public class MatchInputBuilder {
 
 	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
 	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
+	public static final int DEFAULT_PARTIAL_MATCH_VALUE = DEFAULT_EXACT_MATCH_VALUE;
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
@@ -151,8 +152,7 @@ public class MatchInputBuilder {
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
 							environment, idInfoFetcher);
-					matchValue = matchThresholdOpt.orElseGet(() -> Integer
-							.parseInt(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE)));
+					matchValue = matchThresholdOpt.orElseGet(() -> environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE, int.class, DEFAULT_PARTIAL_MATCH_VALUE));
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);

@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.util;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BDB_DEAULT_PROCESSED_LEVEL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BDB_PROCESSED_LEVEL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,9 +17,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -59,6 +64,9 @@ public class BioMatcherUtil {
 	/** The bio api factory. */
 	@Autowired
 	private BioAPIFactory bioApiFactory;
+	
+	@Value("${" + IDA_BDB_PROCESSED_LEVEL + ":" + BDB_DEAULT_PROCESSED_LEVEL + "}")
+	private String bdbProcessedLevel;
 
 	/**
 	 * Match function.
@@ -259,6 +267,7 @@ public class BioMatcherUtil {
 			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder()
 					.withType(Collections.singletonList(type.getSingleType()))
 					.withSubtype(Arrays.asList(type.getSubTypes()))
+					.withLevel(ProcessedLevelType.fromValue(bdbProcessedLevel))
 					.withFormat(format)
 					.withLevel(ProcessedLevelType.RAW)
 					.withPurpose(PurposeType.VERIFY).build();
