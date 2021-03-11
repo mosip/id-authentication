@@ -269,7 +269,6 @@ public class BioMatcherUtil {
 					.withSubtype(Arrays.asList(type.getSubTypes()))
 					.withLevel(ProcessedLevelType.fromValue(bdbProcessedLevel))
 					.withFormat(format)
-					.withLevel(ProcessedLevelType.RAW)
 					.withPurpose(PurposeType.VERIFY).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
