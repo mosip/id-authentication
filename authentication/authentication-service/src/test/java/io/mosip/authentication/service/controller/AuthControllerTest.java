@@ -132,7 +132,7 @@ public class AuthControllerTest {
 		requestedAuth.setDemo(true);
 		requestedAuth.setPin(true);
 		authReqDTO.setRequestedAuth(requestedAuth);
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
 
@@ -149,7 +149,7 @@ public class AuthControllerTest {
 		requestedAuth.setPin(true);
 		authReqDTO.setRequestedAuth(requestedAuth);
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345")).thenReturn(new AuthResponseDTO());
+		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true)).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
 
 	}

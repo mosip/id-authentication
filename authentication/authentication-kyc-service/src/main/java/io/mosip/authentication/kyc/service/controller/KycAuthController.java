@@ -1,5 +1,6 @@
 package io.mosip.authentication.kyc.service.controller;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -59,6 +61,9 @@ public class KycAuthController {
 	
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 
 	/**
 	 *
@@ -90,6 +95,10 @@ public class KycAuthController {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		try {
+			String idType = Objects.nonNull(kycAuthRequestDTO.getIndividualIdType()) ? kycAuthRequestDTO.getIndividualIdType()
+					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
+			kycAuthRequestDTO.setIndividualIdType(idType);
+			kycReqValidator.validateIdvId(kycAuthRequestDTO.getIndividualId(), idType, errors);
 			if(Optional.of(kycAuthRequestDTO)
 					.map(AuthRequestDTO::getRequestedAuth)
 					.filter(AuthTypeDTO::isBio)
@@ -97,8 +106,11 @@ public class KycAuthController {
 				kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
 			}
 			DataValidationUtil.validate(errors);
+			
 			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
-			if (authResponseDTO != null) {
+			if (authResponseDTO != null && 
+					authResponseDTO.getMetadata() != null && 
+					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null) {
 				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}
 		} catch (IDDataValidationException e) {

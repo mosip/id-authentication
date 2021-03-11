@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -25,18 +26,21 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class,
+		PartnerServiceManager.class, RestRequestFactory.class, RestHelper.class, RestHelperImpl.class,
+		PartnerServiceCache.class, ConcurrentMapCacheManager.class })
 public class FilterValidatorTest {
 
 	@Autowired
@@ -45,29 +49,76 @@ public class FilterValidatorTest {
 	@Autowired
 	ObjectMapper mapper;
 
-	
 	BaseIDAFilter baseIDAFilter = new BaseIDAFilter() {
-		
+
 		@Override
 		protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 				throws IdAuthenticationAppException {
 		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	};
-	
+
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
-		
+
 		@Override
 		protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 				Map<String, Object> decipherRequest) throws IdAuthenticationAppException {
 		}
+
+		@Override
+		protected boolean isSigningRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isSignatureVerificationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isThumbprintValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		protected boolean isTrustValidationRequired() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	};
-	
+
 	@Autowired
 	PartnerService partnerService;
-	
+
 	@InjectMocks
 	IdAuthFilter idAuthFilter;
-	
+
 	@Before
 	public void setUp() {
 		ReflectionTestUtils.setField(baseIDAFilter, "env", env);
@@ -92,7 +143,7 @@ public class FilterValidatorTest {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
 	}
-	
+
 	@Test
 	public void validateIDTest2() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> requestBody = mapper.readValue(
@@ -109,7 +160,7 @@ public class FilterValidatorTest {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
 	}
-	
+
 	@Test
 	public void validateIDTest3() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> requestBody = mapper.readValue(
@@ -125,12 +176,8 @@ public class FilterValidatorTest {
 			assertEquals("Missing Input Parameter - id", error[1].trim());
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
-	}	
-	
-	
-	
-	
-	
+	}
+
 //	@Test
 //	public void checkAllowedAuthTypeBasedOnPolicyTest1() throws JsonParseException, JsonMappingException, IOException {
 //		Map<String, Object> requestBody = mapper.readValue(
@@ -213,18 +260,16 @@ public class FilterValidatorTest {
 //			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 //		}
 //	}
-	
+
 	@Test
 	public void validateRequestHMACTest() {
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "validateRequestHMAC","92834787293", "1234234");
-		} catch (UndeclaredThrowableException e) {
-			String detailMessage = e.getUndeclaredThrowable().getMessage();
-			String[] error = detailMessage.split("-->");
-			assertEquals("IDA-MPA-016", error[0].trim());
-			assertEquals("HMAC Validation failed", error[1].trim());
-			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "validateRequestHMAC", "92834787293", "1234234");
+		} catch (UndeclaredThrowableException ex) {
+			IdAuthenticationAppException e = (IdAuthenticationAppException) ex.getUndeclaredThrowable();
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 }

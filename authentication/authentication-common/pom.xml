@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.2</version>
+		<version>1.1.4</version>
 	</parent>
-	<version>1.1.2</version>
+	<version>1.1.4</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<properties>
@@ -55,10 +55,6 @@
 			<artifactId>id-repository-core</artifactId>
 			<version>${id-repository-core.version}</version>
 			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-config</artifactId>
-				</exclusion>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>
@@ -162,10 +158,6 @@
 			<version>${kernel-keymanager-service.version}</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-config</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>
 						spring-boot-starter-security
@@ -193,6 +185,11 @@
 			<artifactId>objenesis</artifactId>
 			<version>${objenesis.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-websubclient-api</artifactId>
+			<version>${kernel-websubclient-api.version}</version>
 		</dependency>
 	</dependencies>
 </project>

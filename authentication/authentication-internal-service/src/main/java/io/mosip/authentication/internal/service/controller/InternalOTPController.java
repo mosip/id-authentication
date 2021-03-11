@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalOTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
@@ -51,6 +54,9 @@ public class InternalOTPController {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -75,6 +81,10 @@ public class InternalOTPController {
 			throws IdAuthenticationAppException, IDDataValidationException {
 		OtpResponseDTO otpResponseDTO = null;
 		try {
+			String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
+					: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
+			otpRequestDto.setIndividualIdType(idType);
+			otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 			DataValidationUtil.validate(errors);
 			otpResponseDTO = otpService.generateOtp(otpRequestDto, IdAuthCommonConstants.INTERNAL);
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,

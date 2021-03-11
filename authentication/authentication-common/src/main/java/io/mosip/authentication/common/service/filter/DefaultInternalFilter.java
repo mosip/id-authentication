@@ -15,7 +15,6 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.kernel.core.util.StringUtils;
-import io.netty.handler.codec.http.HttpMethod;
 
 /**
  * The Class OTPFilter.
@@ -94,15 +93,6 @@ public class DefaultInternalFilter extends IdAuthFilter {
 						id = attribute + IdAuthConfigKeyConstants.OTP_INTERNAL_ID_SUFFIX;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TRANSACTION;
-					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
-							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.GET)) {
-						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_READ;
-					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)
-							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
-						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE_UPDATE;
-					}  else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.CALLBACK)
-							&& HttpMethod.valueOf(requestWrapper.getMethod()).equals(HttpMethod.POST)) {
-						id = attribute + IdAuthConfigKeyConstants.EVENT_NOTIFY;
 					}
 				}
 			}

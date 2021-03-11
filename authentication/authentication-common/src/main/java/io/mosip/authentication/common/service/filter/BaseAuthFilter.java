@@ -1,8 +1,8 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.PublicKey;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,16 +15,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -46,18 +47,15 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
-	/** The public key. */
-	protected PublicKey publicKey;
-	
 	@Autowired
-	private CryptoCore cryptoCore;
-	
+	private IdAuthSecurityManager securityManager;
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		cryptoCore = context.getBean(CryptoCore.class);
+		securityManager = context.getBean(IdAuthSecurityManager.class);
 	}
 
 	/*
@@ -78,16 +76,16 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * Decipher and validate request - Method used to decipher the input stream request
-	 * and validate it using {@link validateDecipheredRequest} method.
+	 * Decipher and validate request - Method used to decipher the input stream
+	 * request and validate it using {@link validateDecipheredRequest} method.
 	 *
 	 * @param requestWrapper the request wrapper
-	 * @param requestBody the request body
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationBusinessException 
+	 * @param requestBody    the request body
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException
 	 */
-	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
-			throws IdAuthenticationAppException {
+	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper,
+			Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
@@ -96,13 +94,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 //			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
-	
+
 	protected void verifyJwsData(String jwsSignature) throws IdAuthenticationAppException {
-		if(!verifySignature(jwsSignature)) {
+		if (!verifySignature(jwsSignature, null, DomainType.JWT_DATA.getType())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
@@ -110,19 +108,23 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	protected String getPayloadFromJwsSingature(String jws) {
 		String[] split = jws.split("\\.");
-		if(split.length >= 2) {
+		if (split.length >= 2) {
 			return split[1];
 		}
 		return jws;
 	}
 
-	protected boolean verifySignature(String jwsSignature) {
-		try {
-			return cryptoCore.verifySignature(jwsSignature);
-		} catch (Exception e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER, "Invalid JWS data: " + e.getMessage());
-			return false;
+	protected boolean verifySignature(String jwsSignature, String requestData, String domain) {
+		if (isSignatureVerificationRequired()) {
+			try {
+				return securityManager.verifySignature(jwsSignature, domain, requestData, isTrustValidationRequired());
+			} catch (Exception e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, "verifySignature", BASE_AUTH_FILTER,
+						"Invalid JWS data: " + e.getMessage());
+				return false;
+			}
 		}
+		return true;
 	}
 
 	/**
@@ -130,10 +132,11 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * by validating the policy, partner and MISP id of the authenticating partner
 	 * once the request is decoded and deciphered.
 	 *
-	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
-	 * @param decipherRequest the request got after decode and decipher the input stream
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationBusinessException 
+	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
+	 * @param decipherRequest the request got after decode and decipher the input
+	 *                        stream
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException
 	 */
 	protected abstract void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> decipherRequest) throws IdAuthenticationAppException;
@@ -148,50 +151,41 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-//		String signature = requestWrapper.getHeader("signature");
-//		if (StringUtils.isEmpty(signature)) {
-//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature is empty or null");
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-//					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "signature - header"));
-//		} else if(!verifySignature(signature)) {
-//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "signature JWS failed");
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
-//		}
+		validateSignature(requestWrapper.getHeader("signature"), requestWrapper);
 		String consentToken = requestWrapper.getHeader("Authorization");
 		if (StringUtils.isEmpty(consentToken)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "consent token Auth is empty or null");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Authorization - header"));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"consent token Auth is empty or null");
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+							"Authorization - header"));
 		}
-//		try {
-//			requestWrapper.resetInputStream();
-//			if (!validateRequestSignature(signature, IOUtils.toByteArray(requestWrapper.getInputStream()))) {
-//				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid Signature");
-//				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
-//			}
-//		} catch (IOException e) {
-//			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-//			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
-//		}
 	}
 
-	/**
-	 * validateSignature method is used to authenticate the request
-	 * received from the authenticating partner from the pay load received
-	 * which consists of the JSON signature and certificate .
-	 *
-	 * @param signature     the JWS serialization received through the request
-	 * @param requestAsByte the byte array of the request got after decipher
-	 * @return true, if successful once the signature is validated
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected boolean validateRequestSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
-		boolean isSigned = false;
-		if(verifySignature(signature)) {
-			//TODO Compare signature payload with request
-			isSigned = true;
+	private void validateSignature(String signature, ResettableStreamHttpServletRequest requestWrapper)
+			throws IdAuthenticationAppException {
+		try {
+			if (isSignatureVerificationRequired()) {
+				if (StringUtils.isEmpty(signature)) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+							"signature is empty or null");
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+									"signature - header"));
+				} else if (!verifySignature(signature,
+						IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()),
+						DomainType.AUTH.getType())) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+							"signature JWS failed");
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+				}
+				requestWrapper.resetInputStream();
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-		return isSigned;
 	}
 
 	/**
@@ -215,9 +209,8 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * decipherRequest method is used to get the deciphered request
-	 * from the encoded and enciphered request passed by the 
-	 * authenticating partner.
+	 * decipherRequest method is used to get the deciphered request from the encoded
+	 * and enciphered request passed by the authenticating partner.
 	 *
 	 * @param requestBody the encoded and enciphered request body
 	 * @return the map the decoded and deciphered request body
@@ -228,8 +221,8 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * encipherResponse method is used to encoded and encrypt 
-	 * the response received while returning the KYC response.
+	 * encipherResponse method is used to encoded and encrypt the response received
+	 * while returning the KYC response.
 	 *
 	 * @param responseBody the response received after authentication
 	 * @return the map the final encoded and enciphered response
@@ -254,16 +247,17 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * validateRequestHMAC method is used to validate the HMAC 
-	 * of the request with the deciphered request block and 
-	 * requestHMAC received in the request body.
+	 * validateRequestHMAC method is used to validate the HMAC of the request with
+	 * the deciphered request block and requestHMAC received in the request body.
 	 *
 	 * @param requestHMAC the requestHMAC received in the request body
-	 * @param reqest the generated HMAC computed once the request is decoded and deciphered
+	 * @param request     the generated HMAC computed once the request is decoded
+	 *                    and deciphered
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected void validateRequestHMAC(String requestHMAC, String reqest) throws IdAuthenticationAppException {
-		if (!requestHMAC.equals(HMACUtils.digestAsPlainText(HMACUtils.generateHash(reqest.getBytes(StandardCharsets.UTF_8))))) {
+	protected void validateRequestHMAC(String requestHMAC, String request) throws IdAuthenticationAppException {
+		if (!requestHMAC.contentEquals(
+				IdAuthSecurityManager.generateHashAndDigestAsPlainText(request.getBytes(StandardCharsets.UTF_8)))) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
 		}
 	}

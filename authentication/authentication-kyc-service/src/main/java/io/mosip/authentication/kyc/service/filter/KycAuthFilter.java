@@ -31,29 +31,6 @@ public class KycAuthFilter extends IdAuthFilter {
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
-	
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#encodedResponse(java.
-	 * util.Map)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		try {
-			Map<String, Object> response = (Map<String, Object>) responseBody.get(IdAuthCommonConstants.RESPONSE);
-			response.put(IDENTITY, keyManager.encryptData(response, mapper));
-			responseBody.put(IdAuthCommonConstants.RESPONSE, response);
-			return responseBody;
-		} catch (IdAuthenticationAppException | ClassCastException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE, e);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,6 +46,11 @@ public class KycAuthFilter extends IdAuthFilter {
 		Object response = responseParams.get(IdAuthCommonConstants.RESPONSE);
 		responseParams.put(IdAuthCommonConstants.RESPONSE, response);
 		return responseParams;
+	}
+	
+	@Override
+	protected boolean isPartnerCertificateNeeded() {
+		return true;
 	}
 
 	/**
@@ -139,6 +121,26 @@ public class KycAuthFilter extends IdAuthFilter {
 
 		}
 		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
+	}
+	
+	@Override
+	protected boolean isSigningRequired() {
+		return env.getProperty("mosip.ida.kyc.signing-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isSignatureVerificationRequired() {
+		return env.getProperty("mosip.ida.kyc.signature-verification-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.kyc.thumbprint-validation-required", Boolean.class, true);
+	}
+
+	@Override
+	protected boolean isTrustValidationRequired() {
+		return env.getProperty("mosip.ida.kyc.trust-validation-required", Boolean.class, true);
 	}
 
 }

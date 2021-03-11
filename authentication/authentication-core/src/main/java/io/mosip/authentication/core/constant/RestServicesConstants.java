@@ -32,8 +32,6 @@ public enum RestServicesConstants {
 	
 	ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG("id-masterdata-template-service-multilang"),
 	
-	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
-	
 	TITLE_SERVICE("id-masterdata-title-service"),
 	
 	USERID_RID("userid-rid"),
@@ -51,8 +49,6 @@ public enum RestServicesConstants {
 	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
 	
 	ID_PMP_SERVICE("id-pmp-service"),
-	
-	PARTNER_SERVICE("ida-pmp-partners"),
 	
 	DATA_SHARE_GET("data-share-get");
 

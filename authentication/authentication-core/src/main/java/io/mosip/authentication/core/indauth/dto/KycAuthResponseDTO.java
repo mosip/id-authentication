@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
+import java.util.Map;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,5 +19,7 @@ public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
 	private KycResponseDTO response;
+	
+	private Map<String, Object> metadata;
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.otp.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import lombok.Data;
@@ -32,5 +33,7 @@ public class OtpResponseDTO {
 
 	/** List to hold response */
 	private MaskedResponseDTO response;
+	
+	private Map<String, Object> metadata;
 
 }

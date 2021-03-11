@@ -27,11 +27,11 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
-	@Query(value = "Select new AutnTxn(token, refIdType) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
+	@Query(value = "Select new AutnTxn(token, refIdType, entityId) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY cr_dtimes DESC")
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 
-	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, entityName ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
+	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, refIdType, entityName, requestSignature, responseSignature ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
 	public List<AutnTxn> findByToken(@Param("token") String token, Pageable pagaeable);
 
 	/**

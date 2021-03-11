@@ -2,6 +2,7 @@ package io.mosip.authentication.otp.service.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -39,6 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -48,6 +50,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -92,12 +95,20 @@ public class OTPControllerTest {
 	/** inject the mocked object */
 	@InjectMocks
 	OTPController otpController;
+	
+	@Mock
+	private IdTypeUtil idTypeUtil;
+
+	@Mock
+	private OTPRequestValidator otpRequestValidator;
 
 	private static Validator validator;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
+		ReflectionTestUtils.setField(otpController, "otpRequestValidator", otpRequestValidator);
+		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 	}
 
 	@BeforeClass

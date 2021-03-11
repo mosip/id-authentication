@@ -29,6 +29,8 @@ CREATE TABLE ida.auth_transaction(
 	requested_entity_id character varying(36),
 	requested_entity_name character varying(128),
 	static_tkn_id character varying(64),
+	request_signature character varying,
+	response_signature character varying,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
@@ -70,6 +72,10 @@ COMMENT ON COLUMN ida.auth_transaction.requested_entity_id IS 'Requested Entity 
 COMMENT ON COLUMN ida.auth_transaction.requested_entity_name IS 'Requested Entity Name: Name of the entity through which the authentication request was initiated.';
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.static_tkn_id IS 'Static Token Id : This is a static token id assigned for each authentication request. Static token id is combination of TSPID + UIN generated for any TSP or Individuls and sent back in response. End user can use this id while authenticating themselves. ';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.request_signature IS 'Request Signature: Request body information stored with signed';
+-- ddl-end --
+COMMENT ON COLUMN ida.auth_transaction.response_signature IS 'Response Signature: Response body stored with signed';
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.cr_by IS 'Created By : ID or name of the user who create / insert record';
 -- ddl-end --

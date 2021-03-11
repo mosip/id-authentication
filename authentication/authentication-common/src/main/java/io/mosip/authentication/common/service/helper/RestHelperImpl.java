@@ -11,7 +11,9 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.THROWI
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
@@ -108,11 +110,13 @@ public class RestHelperImpl implements RestHelper {
 					response = request(request, getSslContext()).block();
 				}
 			}
-			checkErrorResponse(response, request.getResponseType());
-			if(response != null && containsError(response.toString())) {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						PREFIX_RESPONSE + response);
-			}
+			if(!String.class.equals(request.getResponseType())) {
+				checkErrorResponse(response, request.getResponseType());
+				if(response != null && containsError(response.toString())) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+							PREFIX_RESPONSE + response);
+				}
+			}	
 			return (T) response;
 
 		} catch (WebClientResponseException e) {
@@ -217,13 +221,17 @@ public class RestHelperImpl implements RestHelper {
 		}
 
 		method = webClient.method(request.getHttpMethod());
-		if (request.getParams() != null && request.getPathVariables() == null) {
-			uri = method.uri(builder -> builder.queryParams(request.getParams()).build());
-		} else if (request.getParams() == null && request.getPathVariables() != null) {
-			uri = method.uri(builder -> builder.build(request.getPathVariables()));
-		} else {
-			uri = method.uri(builder -> builder.build());
-		}
+		uri = method.uri(builder -> {
+			if(request.getParams() != null) {
+				builder.queryParams(request.getParams());
+			}
+			
+			if(request.getPathVariables() != null) {
+				return builder.build(request.getPathVariables());
+			} else {
+				return builder.build();
+			}
+		});
 
 		uri.cookie("Authorization", getAuthToken());
 
@@ -287,9 +295,10 @@ public class RestHelperImpl implements RestHelper {
 	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
 		try {
 			String responseBodyAsString = mapper.writeValueAsString(response);
-			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
+			List<ServiceError> errorList = getErrorList(responseBodyAsString, mapper);
 			if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())
 					&& !errorList.get(0).getErrorCode().startsWith(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
@@ -299,6 +308,7 @@ public class RestHelperImpl implements RestHelper {
 						mapper.readValue(responseBodyAsString.getBytes(), responseType));
 			} else if (Objects.nonNull(errorList)
 					&& !errorList.isEmpty()
+					&& Objects.nonNull(errorList.get(0).getErrorCode())
 					&& errorList.get(0).getErrorCode().contentEquals(KER_ATH_TOKEN_EXPIRY_ERROR_CODE)) {
 				retry++;
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
@@ -311,6 +321,23 @@ public class RestHelperImpl implements RestHelper {
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	public static List<ServiceError> getErrorList(String responseBodyAsString, ObjectMapper mapper) {
+		try {
+			Map<String, Object> responseMap = mapper.readValue(responseBodyAsString.getBytes(), Map.class);
+			Object errors = responseMap.get("errors");
+			if(errors instanceof Map) {
+				Map<String, Object> errorMap = (Map<String, Object>) errors;
+				return List.of(new ServiceError((String)errorMap.get("errorCode"), (String)errorMap.get("message")));
+			}
+		} catch (IOException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+			return Collections.emptyList();
+		}
+		
+		return ExceptionUtils.getServiceErrorList(responseBodyAsString);
 	}
 
 	/**
@@ -348,6 +375,8 @@ public class RestHelperImpl implements RestHelper {
 		} catch (IOException ex) {
 			return new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 		}
+		
 
 	}
+	
 }

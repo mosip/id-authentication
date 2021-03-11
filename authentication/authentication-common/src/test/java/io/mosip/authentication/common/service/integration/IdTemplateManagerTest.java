@@ -36,6 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
@@ -44,7 +45,6 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -54,9 +54,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
-
-
-
 
 	private static final String AUTH_SMS = "auth-sms";
 
@@ -86,9 +83,13 @@ public class IdTemplateManagerTest {
 
 	@InjectMocks
 	private ObjectMapper mapper;
+	
 	@InjectMocks
 	private TemplateManagerBuilderImpl templateManagerBuilder;
-	
+
+	@InjectMocks
+	private MasterDataCache masterDataCache;
+
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
 
@@ -97,7 +98,7 @@ public class IdTemplateManagerTest {
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
-	
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
@@ -105,8 +106,7 @@ public class IdTemplateManagerTest {
 		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(masterDataManager, "mapper", mapper);
-		ReflectionTestUtils.setField(masterDataManager, "environment", environment);
+		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
@@ -149,6 +149,7 @@ public class IdTemplateManagerTest {
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
 	}
+
 	@Test
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -158,7 +159,7 @@ public class IdTemplateManagerTest {
 		mockRestCalls();
 		idTemplateManager.fetchTemplate(AUTH_SMS);
 	}
-	
+
 	@Test
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -212,32 +213,32 @@ public class IdTemplateManagerTest {
 	private void mockRestCalls() throws IDDataValidationException, RestServiceException {
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE, null, Map.class))
 				.thenReturn(getRestRequestDTO());
-		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class))
-		.thenReturn(getRestRequestDTO_Multi());
+		Mockito.when(restFactory.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null,
+				Map.class)).thenReturn(getRestRequestDTO_Multi());
 		Map<String, List<Map<String, Object>>> valuemap = new HashMap<>();
 		List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
-		
+
 		Map<String, Object> actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
-		actualMap.put("langCode","ara");
-		actualMap.put("templateTypeCode",AUTH_SMS);
+		actualMap.put("langCode", "ara");
+		actualMap.put("templateTypeCode", AUTH_SMS);
 		actualMap.put("isActive", true);
 		finalList.add(actualMap);
-		
+
 		actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
-		actualMap.put("langCode","fra");
-		actualMap.put("templateTypeCode",AUTH_SMS);
+		actualMap.put("langCode", "fra");
+		actualMap.put("templateTypeCode", AUTH_SMS);
 		actualMap.put("isActive", true);
 		finalList.add(actualMap);
-		
+
 		actualMap = new HashMap<>();
 		actualMap.put("fileText",
 				"OTP pour UIN $uin est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)");
-		actualMap.put("langCode","fra");
-		actualMap.put("templateTypeCode",AUTH_SMS);
+		actualMap.put("langCode", "fra");
+		actualMap.put("templateTypeCode", AUTH_SMS);
 		actualMap.put("isActive", true);
 		finalList.add(actualMap);
 		valuemap.put("templates", finalList);
@@ -254,6 +255,7 @@ public class IdTemplateManagerTest {
 		restRequestDTO.setTimeout(23);
 		return restRequestDTO;
 	}
+
 	private RestRequestDTO getRestRequestDTO_Multi() {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		restRequestDTO.setHttpMethod(HttpMethod.POST);

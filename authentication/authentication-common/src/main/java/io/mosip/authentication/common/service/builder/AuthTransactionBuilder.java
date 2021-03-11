@@ -1,7 +1,10 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
@@ -25,7 +28,6 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
@@ -36,7 +38,9 @@ import io.mosip.kernel.core.util.UUIDUtils;
  */
 public class AuthTransactionBuilder {
 
-	private static final String SERVICE_ACCOUNT = "service-account-";
+	public static final String REQ_TYPE_MSG_DELIM = ";";
+
+	public static final String REQ_TYPE_DELIM = ",";
 
 	/**
 	 * Instantiates a new auth transaction builder.
@@ -69,7 +73,7 @@ public class AuthTransactionBuilder {
 	private String token;
 
 	/** The request type. */
-	private RequestType requestType;
+	private Set<RequestType> requestTypes = new LinkedHashSet<>(6);
 
 	/** The auth token id. */
 	private String authTokenId;
@@ -87,8 +91,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
@@ -99,8 +102,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * With otp request.
 	 *
-	 * @param otpRequestDTO
-	 *            the otp request DTO
+	 * @param otpRequestDTO the otp request DTO
 	 * @return the auth transaction builder
 	 */
 	public AuthTransactionBuilder withOtpRequest(OtpRequestDTO otpRequestDTO) {
@@ -111,8 +113,7 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the UIN.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param uin the uin
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withToken(String token) {
@@ -123,20 +124,18 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the RequestType.
 	 *
-	 * @param requestType
-	 *            the request type
+	 * @param requestType the request type
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
-	public AuthTransactionBuilder withRequestType(RequestType requestType) {
-		this.requestType = requestType;
+	public AuthTransactionBuilder addRequestType(RequestType requestType) {
+		requestTypes.add(requestType);
 		return this;
 	}
 
 	/**
 	 * Set the auth token.
 	 *
-	 * @param authTokenId
-	 *            the auth token id
+	 * @param authTokenId the auth token id
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withAuthToken(String authTokenId) {
@@ -147,20 +146,19 @@ public class AuthTransactionBuilder {
 	/**
 	 * With status.
 	 *
-	 * @param isStatus
-	 *            the is status
+	 * @param isStatus the is status
 	 * @return the auth transaction builder
 	 */
 	public AuthTransactionBuilder withStatus(boolean isStatus) {
 		this.isStatus = isStatus;
 		return this;
 	}
-	
+
 	public AuthTransactionBuilder withPartner(Optional<PartnerDTO> partnerOptional) {
 		this.partnerOptional = partnerOptional;
 		return this;
 	}
-	
+
 	public AuthTransactionBuilder withInternal(boolean isInternal) {
 		this.isInternal = isInternal;
 		return this;
@@ -169,11 +167,10 @@ public class AuthTransactionBuilder {
 	/**
 	 * Build {@code AutnTxn}.
 	 *
-	 * @param env
-	 *            the env
+	 * @param env the env
 	 * @return the instance of {@code AutnTxn}
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public AutnTxn build(Environment env, UinEncryptSaltRepo uinEncryptSaltRepo, UinHashSaltRepo uinHashSaltRepo,
 			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
@@ -194,64 +191,57 @@ public class AuthTransactionBuilder {
 				txnID = otpRequestDTO.getTransactionID();
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-						"Missing arguments to build for AutnTxn", this.toString());
+						"Missing arguments to build for AutnTxn", "authRequestDTO");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
-			if (requestType != null) {
-				String status = isStatus ? SUCCESS_STATUS : FAILED;
-				String comment = isStatus ? requestType.getMessage() + " Success"
-						: requestType.getMessage() + " Failed";
-				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
-				autnTxn.setRefIdType(idvIdType);
-				String id = createId(token, env);
-				autnTxn.setToken(token);
-				autnTxn.setId(id);
-				autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-				autnTxn.setAuthTknId(authTokenId);
-				autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-				String strUTCDate = DateUtils.getUTCTimeFromDate(
-						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
-				autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
-				autnTxn.setAuthTypeCode(requestType.getRequestType());
-				autnTxn.setRequestTrnId(txnID);
-				autnTxn.setStatusCode(status);
+			String status = isStatus ? SUCCESS_STATUS : FAILED;
+			AutnTxn autnTxn = new AutnTxn();
+			autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
+			autnTxn.setRefIdType(idvIdType);
+			String id = createId(token, env);
+			autnTxn.setToken(token);
+			autnTxn.setId(id);
+			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			autnTxn.setAuthTknId(authTokenId);
+			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			String strUTCDate = DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
+			autnTxn.setRequestTrnId(txnID);
+			autnTxn.setStatusCode(status);
+			
+			if (!requestTypes.isEmpty()) {
+				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
+						.collect(Collectors.joining(REQ_TYPE_DELIM));
+				autnTxn.setAuthTypeCode(authTypeCodes);
+	
+				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
+				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);
-				// Setting primary code only
-				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+			}
+			
+			// Setting primary code only
+			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 
-				if(isInternal) {
-					autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
-					Optional<String> clientId = Optional.ofNullable(securityManager.getUser());
-					if (clientId.isPresent()) {
-						String user = clientId.get();
-						// Added workaround to trim the user id coming out authentication to avoid
-						// length exceeding than 36 chars for Entity ID value in Auth Transaction table.
-						// Handle this properly.
-						if(user.contains(SERVICE_ACCOUNT)) {
-							user = user.replace(SERVICE_ACCOUNT, "");
-						}
-						autnTxn.setEntityId(user);
-						autnTxn.setEntityName(user);
-					}
-				} else {
-					autnTxn.setEntitytype(TransactionType.PARTNER.getType());
-					if(partnerOptional.isPresent()) {
-						PartnerDTO partner = partnerOptional.get();
-						autnTxn.setEntityId(partner.getPartnerId());
-						autnTxn.setEntityName(partner.getPartnerName());
-					}
-
+			if (isInternal) {
+				autnTxn.setEntitytype(TransactionType.INTERNAL.getType());
+				String user = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT, "");
+				autnTxn.setEntityId(user);
+				autnTxn.setEntityName(user);
+			} else {
+				autnTxn.setEntitytype(TransactionType.PARTNER.getType());
+				if (partnerOptional.isPresent()) {
+					PartnerDTO partner = partnerOptional.get();
+					autnTxn.setEntityId(partner.getPartnerId());
+					autnTxn.setEntityName(partner.getPartnerName());
 				}
 
-				return autnTxn;
-			} else {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-						"Missing arguments to build for AutnTxn", this.toString());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
+
+			return autnTxn;
 
 		} catch (ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
@@ -263,10 +253,8 @@ public class AuthTransactionBuilder {
 	/**
 	 * Creates UUID.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param env
-	 *            the env
+	 * @param uin the uin
+	 * @param env the env
 	 * @return the string
 	 */
 	private String createId(String token, PropertyResolver env) {
@@ -284,7 +272,7 @@ public class AuthTransactionBuilder {
 	@Override
 	public String toString() {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
-				+ requestType + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
+				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
 
 }

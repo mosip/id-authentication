@@ -7,10 +7,8 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -118,12 +116,6 @@ public class IdMappingValidationTest {
 		AuthRequestDTO authRequestDTO = getAuthRequestDtoValue();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
-		Map<String, List<String>> valueMap = new HashMap<>();
-		List<String> valueList = new ArrayList<>();
-		valueList.add("ara");
-		valueList.add("MLE");
-		valueMap.put("ara", valueList);
-		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
 		List<String> phoneList = new ArrayList<>();
 		phoneList.add("phone");
 		List<String> emailList = new ArrayList<>();

@@ -76,7 +76,7 @@ public class PartnerServiceManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 		.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(getResponse());
-		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551", "bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).
+		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551", "bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).
 		thenThrow(NullPointerException.class);	
 	}
 
@@ -94,7 +94,7 @@ public class PartnerServiceManagerTest {
 						mapper.readValue(getErrorResponse("PMS_PMP_020", "MISP license key not exists.").getBytes(),
 								java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -112,7 +112,7 @@ public class PartnerServiceManagerTest {
 						mapper.readValue(getErrorResponse("PMS_PMP_021", "MISP license key is expired.").getBytes(),
 								java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -129,7 +129,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -146,7 +146,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -163,7 +163,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -180,7 +180,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -197,7 +197,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -214,7 +214,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -231,7 +231,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 
 	}
 
@@ -248,7 +248,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 	}
 
 	// Default error
@@ -264,7 +264,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 	}
 
 	// No error code in response
@@ -280,7 +280,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 	}
 
 	// No response body
@@ -296,7 +296,7 @@ public class PartnerServiceManagerTest {
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, errorResponse,
 						mapper.readValue(errorResponse.getBytes(), java.util.Map.class)));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 	}
 
 	// No response body
@@ -311,7 +311,7 @@ public class PartnerServiceManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, null));
 		Mockito.when(partnerServiceManager.validateAndGetPolicy("320216", "76185551",
-				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA")).thenReturn(response);
+				"bac3EYy8uLmKsSnR9N2whtJh66u3DEEUm4wnXgVSdk1bFqeNnA", false)).thenReturn(response);
 	}
 
 	private Map<String, Object> getResponse() {

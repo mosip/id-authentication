@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.55"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,276" last-zoom="0.55"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -107,6 +107,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="static_tkn_id">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Static Token Id : This is a static token id assigned for each authentication request. Static token id is combination of TSPID + UIN generated for any TSP or Individuls and sent back in response. End user can use this id while authenticating themselves. ]]></comment>
+	</column>
+	<column name="request_signature">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Request Signature: Request body information stored with signed]]></comment>
+	</column>
+	<column name="response_signature">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Response Signature: Response body stored with signed]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
 		<type name="character varying" length="256"/>
@@ -520,7 +528,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.]]></comment>
-	<position x="460" y="680"/>
+	<position x="480" y="520"/>
 	<column name="id" not-null="true">
 		<type name="bigint" length="0"/>
 		<comment><![CDATA[Id: Id of an encryption key alias]]></comment>
@@ -558,7 +566,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.]]></comment>
-	<position x="460" y="340"/>
+	<position x="460" y="280"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
@@ -617,6 +625,84 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_otpt_id" type="pk-constr" table="ida.otp_transaction">
 		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="ca_cert_store" alias="ccs">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Certificate Authority Certificate Store: Store details of all the certificate provided by certificate authority which will be used by MOSIP]]></comment>
+	<position x="480" y="660"/>
+	<column name="cert_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Certificate ID: Unique ID (UUID) will be generated and assigned to the uploaded CA/Sub-CA certificate]]></comment>
+	</column>
+	<column name="cert_subject" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Certificate Subject: Subject DN of the certificate]]></comment>
+	</column>
+	<column name="cert_issuer" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Certificate Issuer: Issuer DN of the certificate]]></comment>
+	</column>
+	<column name="issuer_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Issuer UUID of the certificate. (Issuer certificate should be available in the DB)]]></comment>
+	</column>
+	<column name="cert_not_before">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Certificate Start Date: Certificate Interval - Validity Start Date & Time]]></comment>
+	</column>
+	<column name="cert_not_after">
+		<type name="timestamp" length="36"/>
+		<comment><![CDATA[Certificate Validity end Date: Certificate Interval - Validity End Date & Time]]></comment>
+	</column>
+	<column name="crl_uri">
+		<type name="character varying" length="120"/>
+		<comment><![CDATA[CRL URL: CRL URI of the issuer.]]></comment>
+	</column>
+	<column name="cert_data">
+		<type name="character varying" length="0"/>
+		<comment><![CDATA[Certificate Data: PEM Encoded actual certificate data.]]></comment>
+	</column>
+	<column name="cert_thumbprint">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Certificate Thumb Print: SHA1 generated certificate thumbprint]]></comment>
+	</column>
+	<column name="cert_serial_no">
+		<type name="character varying" length="50"/>
+		<comment><![CDATA[Certificate Serial No: Serial Number of the certificate.]]></comment>
+	</column>
+	<column name="partner_domain">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Partner Domain : To add Partner Domain in CA/Sub-CA certificate chain]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_cacs_id" type="pk-constr" table="ida.ca_cert_store">
+		<columns names="cert_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 

@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,8 +23,10 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.ConsumerWithException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -50,7 +53,7 @@ public class KeyManager {
 	/** The key splitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
-	
+
 	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
@@ -62,29 +65,28 @@ public class KeyManager {
 	 * requestData method used to decipher the request block {@link RequestDTO}
 	 * present in AuthRequestDTO {@link AuthRequestDTO}.
 	 *
-	 * @param requestBody
-	 *            the request body
-	 * @param mapper
-	 *            the mapper
-	 * @param refId
-	 *            the ref id
-	 * @param reqHMAC 
-	 * @param dataValidator 
+	 * @param requestBody   the request body
+	 * @param mapper        the mapper
+	 * @param refId         the ref id
+	 * @param reqHMAC
+	 * @param dataValidator
 	 * @return the map
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException
 	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId, ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
+	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
+			String thumbprint, Boolean isThumbprintEnabled,
+			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId, dataValidator);
+			request = decipherData(mapper, thumbprint, encryptedRequest, encryptedSessionkey, refId,
+					isThumbprintEnabled, dataValidator);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
-					e.getMessage());
+					ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
@@ -94,77 +96,83 @@ public class KeyManager {
 	/**
 	 * decipherData method used to derypt data if session key is present.
 	 *
-	 * @param mapper            the mapper
-	 * @param encryptedRequest            the encrypted request
-	 * @param encryptedSessionKey            the encrypted session key
-	 * @param refId the ref id
-	 * @param reqHMAC 
+	 * @param mapper              the mapper
+	 * @param encryptedRequest    the encrypted request
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param refId               the ref id
+	 * @param reqHMAC
 	 * @return the map
-	 * @throws IdAuthenticationAppException             the id authentication app exception
-	 * @throws IOException             Signals that an I/O exception has occurred.
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IOException                       Signals that an I/O exception has
+	 *                                           occurred.
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey,
-			String refId, ConsumerWithException<String, IdAuthenticationAppException> dataValidator) throws IdAuthenticationAppException, IOException {
-		String decryptedAndDecodedData = kernelDecryptAndDecode(
-						CryptoUtil.encodeBase64(
-								CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)),
-						refId);
+	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint, byte[] encryptedRequest,
+			byte[] encryptedSessionKey, String refId, Boolean isThumbprintEnabled,
+			ConsumerWithException<String, IdAuthenticationAppException> dataValidator)
+			throws IdAuthenticationAppException, IOException {
+		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint,
+				CryptoUtil
+						.encodeBase64(CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)),
+				refId, isThumbprintEnabled);
 
-		if(dataValidator != null) {
+		if (dataValidator != null) {
 			dataValidator.accept(decryptedAndDecodedData);
 		}
-			
-		return mapper
-				.readValue(decryptedAndDecodedData, Map.class);
+
+		return mapper.readValue(decryptedAndDecodedData, Map.class);
 	}
-	
+
 	/**
 	 * Kernel decrypt and decode.
 	 *
-	 * @param data the data
+	 * @param data  the data
 	 * @param refId the ref id
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String kernelDecryptAndDecode(String data, String refId)
+	public String kernelDecryptAndDecode(String thumbprint, String data, String refId, Boolean isThumbprintEnabled)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(data, refId, null, null, true);
+		return internalKernelDecryptAndDecode(thumbprint, data, refId, null, null, true, isThumbprintEnabled);
 	}
-	
+
 	/**
 	 * Kernel decrypt.
 	 *
-	 * @param data the data
+	 * @param data  the data
 	 * @param refId the ref id
-	 * @param aad the aad
-	 * @param salt the salt
+	 * @param aad   the aad
+	 * @param salt  the salt
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String kernelDecrypt(String data, String refId, String aad, String salt)
-			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(data, refId, aad, salt, false);
+	public String kernelDecrypt(String thumbprint, String data, String refId, String aad, String salt,
+			Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+		return internalKernelDecryptAndDecode(thumbprint, data, refId, aad, salt, false, isThumbprintEnabled);
 	}
-
 
 	/**
 	 * Internal kernel decrypt and decode.
 	 *
-	 * @param data the data
-	 * @param refId the ref id
-	 * @param aad the aad
-	 * @param salt the salt
+	 * @param data   the data
+	 * @param refId  the ref id
+	 * @param aad    the aad
+	 * @param salt   the salt
 	 * @param decode the decode
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private String internalKernelDecryptAndDecode(String data, String refId, String aad, String salt, boolean decode)
-			throws IdAuthenticationAppException {
+	private String internalKernelDecryptAndDecode(String thumbprint, String data, String refId, String aad, String salt,
+			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
+		if (isThumbprintEnabled) {
+			data = CryptoUtil.encodeBase64(
+					ArrayUtils.addAll(CryptoUtil.decodeBase64(thumbprint), CryptoUtil.decodeBase64(data)));
+		}
 		try {
-			String encodedIdentity = CryptoUtil.encodeBase64(securityManager.decrypt(data, refId, aad, salt));
+			String encodedIdentity = CryptoUtil
+					.encodeBase64(securityManager.decrypt(data, refId, aad, salt, isThumbprintEnabled));
 			if (decode) {
 				decryptedRequest = new String(CryptoUtil.decodeBase64(encodedIdentity), StandardCharsets.UTF_8);
 			} else {
@@ -186,7 +194,7 @@ public class KeyManager {
 	 * Encrypt data.
 	 *
 	 * @param responseBody the response body
-	 * @param mapper the mapper
+	 * @param mapper       the mapper
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -200,8 +208,7 @@ public class KeyManager {
 			try {
 				String encodedData = CryptoUtil
 						.encodeBase64(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil
-						.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
+				return CryptoUtil.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());
@@ -218,10 +225,10 @@ public class KeyManager {
 	/**
 	 * This method is used to convert the map to JSON format.
 	 *
-	 * @param map            the map
-	 * @param mapper            the mapper
+	 * @param map    the map
+	 * @param mapper the mapper
 	 * @return the string
-	 * @throws IdAuthenticationAppException             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
 		try {
@@ -234,9 +241,9 @@ public class KeyManager {
 	/**
 	 * This method is used to digitally sign the response.
 	 *
-	 * @param data            the response got after authentication which to be signed
+	 * @param data the response got after authentication which to be signed
 	 * @return the signed response string
-	 * @throws IdAuthenticationAppException             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	public String signResponse(String data) throws IdAuthenticationAppException {
 		return securityManager.sign(data);

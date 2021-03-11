@@ -24,7 +24,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -91,7 +90,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId, uin, IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()));
+			boolean isValidRequest = validateTxnAndIdvidPartner(txnId, uin, IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()), partnerId);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -170,6 +169,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @param txnId
 	 *            the txn id
 	 * @param idType 
+	 * @param partnerId 
 	 * @param idvid
 	 *            the idvid
 	 * @return true, if successful
@@ -177,7 +177,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *             the id authentication business exception
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String token, String idType) throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvidPartner(String txnId, String token, String idType, String partnerId) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
 		Optional<AutnTxn> authTxn = autntxnrepository
 				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
@@ -192,6 +192,13 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 							"OTP id mismatch");
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 				}
+				
+				if(!authTxn.get().getEntityId().equalsIgnoreCase(partnerId)) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
+							"Partner id mismatch");
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_ID_MISMATCH);
+				}
+				
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
 						"OTP id type mismatch");

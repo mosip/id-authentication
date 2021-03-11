@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -46,6 +47,8 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
+import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.internal.service.validator.InternalOTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -73,6 +76,9 @@ public class InternalOTPControllerTest {
 	private OTPService otpService;
 	@Mock
 	Date date;
+	
+	@Mock
+	private IdTypeUtil idTypeUtil;
 
 	@Mock
 	IdAuthenticationBusinessException idAuthenticationBusinessException;
@@ -90,12 +96,16 @@ public class InternalOTPControllerTest {
 	/** inject the mocked object */
 	@InjectMocks
 	InternalOTPController internalotpController;
+	
+	@Mock
+	private InternalOTPRequestValidator internalOtpValidator;
 
 	private static Validator validator;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.invokeMethod(internalotpController, "initBinder", binder);
+		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 	}
 
 	@BeforeClass

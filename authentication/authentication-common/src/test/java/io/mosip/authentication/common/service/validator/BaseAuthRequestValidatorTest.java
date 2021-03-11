@@ -41,10 +41,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -103,9 +101,6 @@ public class BaseAuthRequestValidatorTest {
 	/** The error. */
 	Errors error;
 
-	@Mock
-	private MasterDataManager masterDataManager;
-
 	public void setValidation(Map<String, String> validation) {
 		this.validation = validation;
 	}
@@ -120,8 +115,6 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(AuthRequestValidator, "masterDataManager", masterDataManager);
-
 	}
 
 	@Test
@@ -2059,99 +2052,6 @@ public class BaseAuthRequestValidatorTest {
 				allowedAuthtype);
 		assertTrue(error.hasErrors());
 
-	}
-
-	/**
-	 * Test validate Gender.
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 */
-
-	@Test
-	public void testValidateGender_valid() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
-		idInfoDTO.setValue("Mike");
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		IdentityDTO idDTO = new IdentityDTO();
-		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
-		idInfoDTOGender.setValue("M");
-		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
-		idInfoListGender.add(idInfoDTOGender);
-		idDTO.setGender(idInfoListGender);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
-		assertFalse(error.hasErrors());
-	}
-
-	/**
-	 * Test validate Gender.
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 */
-
-	@Test
-	public void testValidateGender_invalid() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
-		idInfoDTO.setValue("Mike");
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		IdentityDTO idDTO = new IdentityDTO();
-		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
-		idInfoDTOGender.setValue("");
-		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
-		idInfoListGender.add(idInfoDTOGender);
-		idDTO.setGender(idInfoListGender);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderTypeNull());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	@Test
-	public void testValidateGender_NullFetchType() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
-		idInfoDTO.setValue("Mike");
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		IdentityDTO idDTO = new IdentityDTO();
-		IdentityInfoDTO idInfoDTOGender = new IdentityInfoDTO();
-		idInfoDTOGender.setLanguage(environment.getProperty("mosip.secondary-language"));
-		idInfoDTOGender.setValue("");
-		List<IdentityInfoDTO> idInfoListGender = new ArrayList<>();
-		idInfoListGender.add(idInfoDTOGender);
-		idDTO.setGender(idInfoListGender);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
-		assertTrue(error.hasErrors());
 	}
 
 	@Test

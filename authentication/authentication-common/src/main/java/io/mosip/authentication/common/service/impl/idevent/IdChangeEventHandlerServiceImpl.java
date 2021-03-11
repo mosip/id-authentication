@@ -239,12 +239,18 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			} catch (RestServiceException | IDDataValidationException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
+							+ ": Data Share URI is not proivded in the event");
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void storeIdentityEntity(String idHash, String token, Integer transactionLimit, String expiryTime,
 			Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
-		Map<String, Object>[] demoBioData =  splitDemoBioData(credentialData);
+		Map<String, Object>[] demoBioData = splitDemoBioData(
+				(Map<String, Object>) credentialData.get(IdAuthCommonConstants.CREDENTIAL_SUBJECT));
 		try {
 			byte [] demoBytes = objectMapper.writeValueAsBytes(demoBioData[0]);
 			byte [] bioBytes = objectMapper.writeValueAsBytes(demoBioData[1]);
@@ -269,7 +275,7 @@ public class IdChangeEventHandlerServiceImpl implements CredentialStoreService {
 			identityEntity.setDemographicData(demoBytes);
 			identityEntity.setBiometricData(bioBytes);
 			identityCacheRepo.save(identityEntity);
-		} catch (JsonProcessingException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 		}
 	}
