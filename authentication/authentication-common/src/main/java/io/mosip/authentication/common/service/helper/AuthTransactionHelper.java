@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,15 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class AuthTransactionHelper - the helper to create auth transaction entity
@@ -40,6 +46,9 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
  */
 @Component
 public class AuthTransactionHelper {
+	
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(AuthTransactionHelper.class);
 	
 	/** The uin encrypt salt repo. */
 	@Autowired
@@ -60,6 +69,10 @@ public class AuthTransactionHelper {
 	/** The object mapper. */
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	/** The id auth service. */
+	@Autowired
+	private IdService<AutnTxn> idService;
 
 	/**
 	 * Builds the auth transaction entity.
@@ -97,7 +110,7 @@ public class AuthTransactionHelper {
 		}
 		
 		if(authTxnBuilder.getToken() == null) {
-			authTxnBuilder.withToken(IdAuthCommonConstants.UNKNOWN);
+			authTxnBuilder.withToken(computeToken(authTxnBuilder));
 		}
 		
 		if(authTxnBuilder.getRequestTypes() == null || authTxnBuilder.getRequestTypes().isEmpty()) {
@@ -105,6 +118,23 @@ public class AuthTransactionHelper {
 		}
 		
 		setObjectToMetadata(exception, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
+	}
+
+	private String computeToken(AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
+		BaseRequestDTO requestDTO = authTxnBuilder.getRequestDTO();
+		if(requestDTO != null) {
+			String idvid = requestDTO.getIndividualId();
+			String idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthTransactionHelper", "computeToken: ",
+					idvIdType + "-" + idvid);
+
+			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
+					false, false);
+			
+			String token = idService.getToken(idResDTO);
+			return token;
+		}
+		return IdAuthCommonConstants.UNKNOWN;
 	}
 	
 	/**
@@ -211,12 +241,12 @@ public class AuthTransactionHelper {
 		
 		if(requestDTO instanceof AuthRequestDTO) {
 			AuthRequestDTO authRequestDTO = (AuthRequestDTO) requestDTO;
-			authTransactionBuilder.withAuthRequest(authRequestDTO);
+			authTransactionBuilder.withRequest(authRequestDTO);
 			addAuthTypes(requestDTO, authTransactionBuilder, authRequestDTO);
 
 		} else if(requestDTO instanceof OtpRequestDTO) {
 			OtpRequestDTO otpRequestDTO = (OtpRequestDTO) requestDTO;
-			authTransactionBuilder.withOtpRequest(otpRequestDTO);
+			authTransactionBuilder.withRequest(otpRequestDTO);
 			authTransactionBuilder.addRequestType(RequestType.OTP_REQUEST);
 		}
 		

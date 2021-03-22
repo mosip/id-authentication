@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
+import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * This class is used to provide request for OTP generation.
@@ -14,25 +16,8 @@ import lombok.Data;
  */
 
 @Data
-public class OtpRequestDTO implements ObjectWithMetadata {
-
-	/** Variable to hold id */
-	private String id;
-
-	/** Variable to hold version */
-	private String version;
-
-	/** Variable to hold Transaction ID */
-	private String transactionID;
-
-	/** Variable to hold Request time */
-	private String requestTime;
-
-	/** Variable to hold individualID */
-	private String individualId;
-
-	/** Variable to hold partnerID */
-	private String individualIdType;
+@EqualsAndHashCode(callSuper=true)
+public class OtpRequestDTO extends BaseRequestDTO implements ObjectWithMetadata {
 
 	private List<String> otpChannel;
 	
