@@ -24,7 +24,7 @@ public class AuthTransactionBuilderTest {
 	
 	@Test
 	public void withOtpRequestTest() {
-		assertNotNull(authTransactionBuilder.withOtpRequest(new OtpRequestDTO()));
+		assertNotNull(authTransactionBuilder.withRequest(new OtpRequestDTO()));
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
