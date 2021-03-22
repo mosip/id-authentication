@@ -20,10 +20,9 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.TransactionType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -69,7 +68,7 @@ public class AuthTransactionBuilder {
 	private Logger mosipLogger = IdaLogger.getLogger(AuditHelper.class);
 
 	/** The auth request DTO. */
-	private AuthRequestDTO authRequestDTO;
+	private BaseRequestDTO requestDTO;
 
 	/** The uin. */
 	private String token;
@@ -82,9 +81,6 @@ public class AuthTransactionBuilder {
 
 	/** The is status. */
 	private boolean isStatus;
-
-	/** The otp request DTO. */
-	private OtpRequestDTO otpRequestDTO;
 
 	/** The partner optional. */
 	private Optional<PartnerDTO> partnerOptional = Optional.empty();
@@ -101,22 +97,11 @@ public class AuthTransactionBuilder {
 	/**
 	 * Set the AuthRequestDTO.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param requestDTO the auth request DTO
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
-	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
-		this.authRequestDTO = authRequestDTO;
-		return this;
-	}
-
-	/**
-	 * With otp request.
-	 *
-	 * @param otpRequestDTO the otp request DTO
-	 * @return the auth transaction builder
-	 */
-	public AuthTransactionBuilder withOtpRequest(OtpRequestDTO otpRequestDTO) {
-		this.otpRequestDTO = otpRequestDTO;
+	public AuthTransactionBuilder withRequest(BaseRequestDTO requestDTO) {
+		this.requestDTO = requestDTO;
 		return this;
 	}
 
@@ -215,6 +200,10 @@ public class AuthTransactionBuilder {
 		return this;
 	}
 	
+	public BaseRequestDTO getRequestDTO() {
+		return requestDTO;
+	}
+	
 	/**
 	 * Gets the request types.
 	 *
@@ -242,16 +231,11 @@ public class AuthTransactionBuilder {
 			String reqTime;
 			String idvIdType;
 			String txnID;
-			if (authRequestDTO != null) {
-				idvId = authRequestDTO.getIndividualId();
-				reqTime = authRequestDTO.getRequestTime();
-				idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
-				txnID = authRequestDTO.getTransactionID();
-			} else if (otpRequestDTO != null) {
-				idvId = otpRequestDTO.getIndividualId();
-				reqTime = otpRequestDTO.getRequestTime();
-				idvIdType = IdType.getIDTypeStrOrDefault(otpRequestDTO.getIndividualIdType());
-				txnID = otpRequestDTO.getTransactionID();
+			if (requestDTO != null) {
+				idvId = requestDTO.getIndividualId();
+				reqTime = requestDTO.getRequestTime();
+				idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
+				txnID = requestDTO.getTransactionID();
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 						"Missing arguments to build for AutnTxn", "authRequestDTO");
@@ -357,7 +341,7 @@ public class AuthTransactionBuilder {
 	 */
 	@Override
 	public String toString() {
-		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", token=" + token + ", requestType="
+		return "AuthTransactionBuilder [requestDTO=" + requestDTO + ", token=" + token + ", requestType="
 				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
 

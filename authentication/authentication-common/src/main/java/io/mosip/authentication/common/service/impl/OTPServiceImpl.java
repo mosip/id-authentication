@@ -213,7 +213,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-				.withOtpRequest(otpRequestDto)
+				.withRequest(otpRequestDto)
 				.addRequestType(RequestType.OTP_REQUEST)
 				.withAuthToken(authTokenId)
 				.withStatus(status)
