@@ -5,6 +5,7 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.indauth.match.DynamicIdMapping;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -109,7 +111,19 @@ public enum IdaIdMapping implements IdMapping {
 	MULTI_MODAL_BIOMETRICS("biometrics", setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, 
 			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER,
 			RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS,
-			FACE,UNKNOWN_FACE), "DummyType");
+			FACE,UNKNOWN_FACE), "DummyType"),
+	
+	DYNAMIC("demographics") {
+		
+		public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
+			return (mappingConfig, matchType) -> {
+				Map<String, List<String>> dynamicAttributes = mappingConfig.getDynamicAttributes();
+				return dynamicAttributes.keySet().stream().collect(Collectors.toList());
+			};
+		}
+	}
+	
+	;
 
 
 // @formatter:on
@@ -150,6 +164,12 @@ public enum IdaIdMapping implements IdMapping {
 				return Collections.emptyList();
 			}
 		});
+	}
+	
+	private IdaIdMapping(String idname) {
+		this.idname = idname;
+		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((cfg, matchType) -> getMappingFunction().apply(cfg, matchType));
+		this.subIdMappings = Collections.emptySet();
 	}
 	
 	private BiFunction<MappingConfig, MatchType, List<String>> wrapFunctionToReturnEmptyListForNull(BiFunction<MappingConfig, MatchType, List<String>> func) {

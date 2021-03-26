@@ -36,6 +36,7 @@ import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
@@ -83,7 +84,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	@Autowired
 	private DemoNormalizer demoNormalizer;
-
+	
 	@Override
 	public DemoNormalizer getDemoNormalizer() {
 		return demoNormalizer;
@@ -328,6 +329,19 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		} else {
 			return defaultFunc;
 		}
+	}
+
+	@Override
+	public MappingConfig getMappingConfig() {
+		return idMappingConfig;
+	}
+
+	@Override
+	public Set<String> getAvailableDynamicAttributesNames(RequestDTO request) {
+		if(request.getDemographics() != null && request.getDemographics().getMetadata() != null) {
+			return request.getDemographics().getMetadata().keySet();
+		}
+		return Set.of();
 	}
 
 }

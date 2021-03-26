@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
+import io.mosip.authentication.common.service.impl.DynamicDemoAuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -33,7 +34,17 @@ public enum DemoAuthType implements AuthType {
 					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
 			AuthTypeDTO::isDemo, "Personal Identity"),
 
-	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address");
+	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address"),
+	
+	DYNAMIC("demographics", AuthType.setOf(DemoMatchType.DYNAMIC)){
+		
+		public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
+			return getAuthTypeImpl().isAuthTypeEnabled(authReq, idInfoFetcher);
+		}
+		
+	}
+		
+	;
 
 
 	/**  */
@@ -56,6 +67,10 @@ public enum DemoAuthType implements AuthType {
 	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
 		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, authTypePredicate, displayName);
+	}
+	
+	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes) {
+		authTypeImpl = new DynamicDemoAuthTypeImpl(type, associatedMatchTypes);
 	}
 
 	/*

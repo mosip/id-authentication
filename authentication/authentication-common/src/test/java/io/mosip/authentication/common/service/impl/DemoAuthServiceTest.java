@@ -58,6 +58,7 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -385,7 +386,7 @@ public class DemoAuthServiceTest {
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
 		entityInfo.put("firstName", identityInfoList);
-		Mockito.when(idInfoService.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
+		Mockito.when(IdInfoFetcher.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
 		AuthRequestDTO authRequestDTO = generateData();
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));

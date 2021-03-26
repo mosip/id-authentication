@@ -13,6 +13,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VA
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_AAD_LAST_BYTES_NUM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_SALT_LAST_BYTES_NUM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEMOGRAPHICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH_INPUT_PARAM;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -54,6 +56,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.DomainType;
@@ -92,13 +95,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private static final String THUMBPRINT = "thumbprint";
 	private static final String TRANSACTION_ID = "transactionId";
 	protected PartnerService partnerService;
-
+	private IDAMappingConfig idMappingConfig;
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 
+		idMappingConfig = context.getBean(IDAMappingConfig.class);
 		// Internal auth is not depending on partner service
 		try {
 			partnerService = context.getBean(PartnerService.class);
@@ -141,6 +146,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 						validateBioDataInRequest(request);
 						decipherBioData(request);
 					}
+					
+					if (request.get(DEMOGRAPHICS) instanceof Map) {
+						setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
+					}
 
 					requestBody.replace(REQUEST, request);
 
@@ -152,6 +161,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	private void setDymanicDemograpicData(Map<String, Object> demographics) {
+		Map<String, List<String>> dynamicAttributes = idMappingConfig.getDynamicAttributes();
+		Map<String, Object> metadata = demographics.entrySet()
+												.stream()
+												.filter(entry -> dynamicAttributes.containsKey(entry.getKey()))
+												.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		demographics.put(METADATA, metadata);
 	}
 
 	/**

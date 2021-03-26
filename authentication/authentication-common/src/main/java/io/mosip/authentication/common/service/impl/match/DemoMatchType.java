@@ -20,6 +20,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -102,6 +103,24 @@ public enum DemoMatchType implements MatchType {
 	ADDR(IdaIdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
 			FullAddressMatchingStrategy.PHONETICS), IdentityDTO::getFullAddress),
 
+	DYNAMIC(IdaIdMapping.DYNAMIC, setOf(DynamicDemoAttributeMatchingStrategy.EXACT)) {
+		@Override
+		public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			return req -> {
+				if(req.getDemographics() != null && req.getDemographics().getMetadata() != null) {
+					Map<String, Object> dynamicAttributes = req.getDemographics().getMetadata();
+					return IdInfoFetcher.getIdInfo(dynamicAttributes);
+				}
+				return Map.of();
+			};
+		}
+		
+		@Override
+		public boolean isDynamic() {
+			return true;
+		}
+	},
+	
 	/**  */
 	// @formatter:on
 	;
@@ -152,23 +171,6 @@ public enum DemoMatchType implements MatchType {
 		this.multiLanguage = multiLanguage;
 	}
 
-	private static String getDatePattern() {
-		// FIXME get from env.
-		return DATE_PATTERN;
-	}
-
-	private static List<IdentityInfoDTO> getIdInfoList(String value) {
-		if (value != null) {
-			IdentityInfoDTO identityDTOs = new IdentityInfoDTO();
-			identityDTOs.setValue(value);
-			List<IdentityInfoDTO> list = new ArrayList<>();
-			list.add(identityDTOs);
-			return list;
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
 	/**
 	 * Instantiates a new demo match type.
 	 *
@@ -187,6 +189,27 @@ public enum DemoMatchType implements MatchType {
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage) {
 		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, Function.identity());
+	}
+	
+	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
+		this(idMapping, allowedMatchingStrategy, null, true, Function.identity());
+	}
+	
+	private static String getDatePattern() {
+		// FIXME get from env.
+		return DATE_PATTERN;
+	}
+
+	private static List<IdentityInfoDTO> getIdInfoList(String value) {
+		if (value != null) {
+			IdentityInfoDTO identityDTOs = new IdentityInfoDTO();
+			identityDTOs.setValue(value);
+			List<IdentityInfoDTO> list = new ArrayList<>();
+			list.add(identityDTOs);
+			return list;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	/*
