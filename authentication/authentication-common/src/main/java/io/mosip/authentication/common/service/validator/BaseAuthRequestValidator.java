@@ -692,12 +692,19 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
-						List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoList(authRequest.getRequest());
-						if (identityInfos != null && !identityInfos.isEmpty()) {
-							availableAuthTypeInfos.add(authType.getType());
-							hasMatch = true;
-							checkIdentityInfoValue(identityInfos, errors);
-							checkLangaugeDetails(matchType, identityInfos, errors);
+						if(!matchType.equals(DemoMatchType.DYNAMIC)) {
+							List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoList(authRequest.getRequest());
+							hasMatch = checkIdentityInfoAndLanguageDetails(errors, availableAuthTypeInfos, hasMatch, authType, matchType,
+									identityInfos);
+						} else {
+							Set<String> dynamicAttributeNames = idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet();
+							for(String idName : dynamicAttributeNames) {
+								Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, idName, authRequest.getRequest());
+								for(List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
+									hasMatch = checkIdentityInfoAndLanguageDetails(errors, availableAuthTypeInfos, hasMatch, authType, matchType,
+											identityInfos);
+								}
+							}
 						}
 					}
 
@@ -715,6 +722,17 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		} else {
 			checkOtherValues(authRequest, errors, availableAuthTypeInfos);
 		}
+	}
+
+	private boolean checkIdentityInfoAndLanguageDetails(Errors errors, Set<String> availableAuthTypeInfos, boolean hasMatch, AuthType authType,
+			MatchType matchType, List<IdentityInfoDTO> identityInfos) {
+		if (identityInfos != null && !identityInfos.isEmpty()) {
+			availableAuthTypeInfos.add(authType.getType());
+			hasMatch = true;
+			checkIdentityInfoValue(identityInfos, errors);
+			checkLangaugeDetails(matchType, identityInfos, errors);
+		}
+		return hasMatch;
 	}
 
 	/**

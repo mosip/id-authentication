@@ -123,6 +123,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 		return Optional.ofNullable(languagName);
 	}
+	
+	@Override
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language) {
+		return getIdentityRequestInfo(matchType, matchType.getIdMapping().getIdname(), identity, language);
+	}
 
 	/**
 	 * Fetch Identity info based on Match type and Identity
@@ -131,8 +136,19 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * @return Map
 	 */
 	@Override
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language) {
-		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, String idName, RequestDTO identity, String language) {
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = getIdentityInfo(matchType, idName, identity);
+		return getInfo(filteredIdentityInfos, language);
+	}
+
+	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity) {
+		Map<String, List<IdentityInfoDTO>> identityInfos = matchType.getIdentityInfoFunction().apply(identity);
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = identityInfos
+																	.entrySet()
+																	.stream()
+																	.filter(e -> e.getKey() != null && e.getValue() != null)
+																	.filter(e -> e.getKey().equals(idName)).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		return filteredIdentityInfos;
 	}
 
 	/**

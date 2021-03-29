@@ -214,7 +214,7 @@ public class IdInfoHelperTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
+		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
 				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = DemoMatchType.PHONE;
@@ -240,7 +240,7 @@ public class IdInfoHelperTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthType demoAuthType = BioAuthType.FACE_IMG;
 		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE, MatchingStrategyType.PARTIAL.getType(),
+		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE.getIdMapping().getIdname(), BioMatchType.FACE, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, null);
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = BioMatchType.FACE;
@@ -266,7 +266,7 @@ public class IdInfoHelperTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthType demoAuthType = DemoAuthType.PERSONAL_IDENTITY;
 		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
+		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
 				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, "fra");
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = DemoMatchType.PHONE;
@@ -328,7 +328,7 @@ public class IdInfoHelperTest {
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = DemoAuthType.PERSONAL_IDENTITY;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.PARTIAL.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, "fra"));
 		idInfoHelper.matchIdentityData(authRequestDTO, identityEntity, listMatchInputsExp, "12523823232");
 	}
@@ -365,7 +365,7 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void TestmatchType() {
-		MatchInput matchInput = new MatchInput(DemoAuthType.ADDRESS, DemoMatchType.PHONE, "EXACT", 60, null, null);
+		MatchInput matchInput = new MatchInput(DemoAuthType.ADDRESS, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE, "EXACT", 60, null, null);
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "matchType", null, null, null, matchInput, null, null);
 	}
 

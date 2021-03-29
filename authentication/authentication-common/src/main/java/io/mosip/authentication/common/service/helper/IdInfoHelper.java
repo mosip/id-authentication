@@ -376,12 +376,12 @@ public class IdInfoHelper {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
+				String idName = input.getIdName();
 				if (null == reqInfo || reqInfo.isEmpty()) {
-					reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, authRequestDTO.getRequest(),
+					reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(),
 							input.getLanguage());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
-					String idName =reqInfo.keySet().stream().findFirst().orElseGet(() ->  matchType.getIdMapping().getIdname());
 
 					Map<String, String> entityInfo = getEntityInfo(idEntity, uin, authRequestDTO, input,
 							entityValueFetcher, matchType, strategy, idName, partnerId);

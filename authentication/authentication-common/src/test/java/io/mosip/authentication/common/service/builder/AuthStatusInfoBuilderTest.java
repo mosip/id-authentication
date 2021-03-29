@@ -109,15 +109,15 @@ public class AuthStatusInfoBuilderTest {
 	@Test
 	public void TestBuildAuthStatusInfo() {
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		MatchInput matchInput = new MatchInput(DemoAuthType.PERSONAL_IDENTITY, DemoMatchType.NAME, NameMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
+		MatchInput matchInput = new MatchInput(DemoAuthType.PERSONAL_IDENTITY, DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME, NameMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(DemoAuthType.FULL_ADDRESS, DemoMatchType.ADDR, FullAddressMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
+		matchInput = new MatchInput(DemoAuthType.FULL_ADDRESS, DemoMatchType.ADDR.getIdMapping().getIdname(), DemoMatchType.ADDR, FullAddressMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(BioAuthType.FGR_IMG, BioMatchType.FGRIMG_LEFT_INDEX, FingerPrintMatchingStrategy.PARTIAL.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(BioAuthType.FGR_IMG,  BioMatchType.FGRIMG_LEFT_INDEX.getIdMapping().getIdname(), BioMatchType.FGRIMG_LEFT_INDEX, FingerPrintMatchingStrategy.PARTIAL.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(PinAuthType.OTP, PinMatchType.OTP, OtpMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(PinAuthType.OTP, PinMatchType.OTP.getIdMapping().getIdname(), PinMatchType.OTP, OtpMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(PinAuthType.SPIN, PinMatchType.SPIN, PinMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(PinAuthType.SPIN, PinMatchType.SPIN.getIdMapping().getIdname(), PinMatchType.SPIN, PinMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
 		
 		List<MatchOutput> listMatchOutputs = new ArrayList<>();

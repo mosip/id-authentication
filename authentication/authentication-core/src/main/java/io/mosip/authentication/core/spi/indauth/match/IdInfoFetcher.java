@@ -55,6 +55,28 @@ public interface IdInfoFetcher {
 	 * Gets the identity info for the MatchType from the IdentityDTO.
 	 *
 	 * @param matchType the match type
+	 * @param idName 
+	 * @param identity  the identity
+	 * @param language the language
+	 * @return the identity info
+	 */
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, String idName, RequestDTO identity, String language);
+	
+	/**
+	 * Gets the identity info.
+	 *
+	 * @param matchType the match type
+	 * @param idName the id name
+	 * @param identity the identity
+	 * @return the identity info
+	 */
+	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity);
+	
+	/**
+	 * Gets the identity info for the MatchType from the IdentityDTO.
+	 *
+	 * @param matchType the match type
+	 * @param idName 
 	 * @param identity  the identity
 	 * @param language the language
 	 * @return the identity info

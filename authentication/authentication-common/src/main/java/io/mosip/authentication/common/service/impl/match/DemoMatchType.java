@@ -119,6 +119,11 @@ public enum DemoMatchType implements MatchType {
 		public boolean isDynamic() {
 			return true;
 		}
+		
+		public boolean isPropMultiLang(String propName, MappingConfig cfg) {
+			return true;
+		}
+
 	},
 	
 	/**  */
