@@ -20,16 +20,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 
 /**
- * 
- * Mapping factory class to map Request and Entity Mapping JSON
+ * Mapping factory class to map Request and Entity Mapping JSON.
  *
  * @author Dinesh Karuppiah.T
- *
  */
 public class IDAMappingFactory implements PropertySourceFactory {
 
 	/**
-	 * To create Mapping Factory class for IDA Mapping Configuration
+	 * To create Mapping Factory class for IDA Mapping Configuration.
+	 *
+	 * @param name the name
+	 * @param resource the resource
+	 * @return the property source<?>
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -42,6 +45,12 @@ public class IDAMappingFactory implements PropertySourceFactory {
 		return new MapPropertySource("json-property", unmodifiableMap);
 	}
 
+	/**
+	 * Gets the dynamic attributes.
+	 *
+	 * @param propertiesMap the properties map
+	 * @return the dynamic attributes
+	 */
 	private Map<String, List<String>> getDynamicAttributes(Map<String, ?> propertiesMap) {
 		Set<String> staticIdNames = Stream.of(IdaIdMapping.values())
 				.map(IdaIdMapping::getIdname)

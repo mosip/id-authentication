@@ -178,6 +178,15 @@ public class KycServiceImpl implements KycService {
 		}
 	}
 
+	/**
+	 * Gets the entity for lang codes and id name.
+	 *
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCodes the lang codes
+	 * @param demoMatchType the demo match type
+	 * @param idName the id name
+	 * @return the entity for lang codes and id name
+	 */
 	private Stream<? extends SimpleEntry<String, String>> getEntityForLangCodesAndIdName(
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, DemoMatchType demoMatchType,
 			String idName) {
@@ -188,6 +197,14 @@ public class KycServiceImpl implements KycService {
 						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode, idName)));
 	}
 
+	/**
+	 * Gets the entity for lang codes.
+	 *
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCodes the lang codes
+	 * @param demoMatchType the demo match type
+	 * @return the entity for lang codes
+	 */
 	private Stream<SimpleEntry<String, String>> getEntityForLangCodes(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
 			Set<String> langCodes, DemoMatchType demoMatchType) {
 		return langCodes.stream()
@@ -238,7 +255,7 @@ public class KycServiceImpl implements KycService {
 	 * @param matchType the match type
 	 * @param filteredIdentityInfo the filtered identity info
 	 * @param langCode the lang code
-	 * @param idName 
+	 * @param idName the id name
 	 * @return the entity for match type
 	 */
 	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {

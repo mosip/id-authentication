@@ -34,6 +34,7 @@ public interface TextMatchingStrategy extends MatchingStrategy {
 				String entityInfoText = normalizeFunction.normalizeText(demoNormalizer, (String) entityInfo, langCode, props);
 				return matchFunction.apply(refInfoText, entityInfoText);
 			} else {
+				//If language code is not present or demo normalizer is not present, directly perform match
 				return matchFunction.apply((String) reqInfo, (String) entityInfo);
 			}
 		} else {

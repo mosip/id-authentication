@@ -222,7 +222,7 @@ public class IdInfoHelperTest {
 		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -248,7 +248,7 @@ public class IdInfoHelperTest {
 		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -274,7 +274,7 @@ public class IdInfoHelperTest {
 		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

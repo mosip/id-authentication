@@ -419,9 +419,15 @@ public class IdInfoHelper {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity, String uin,
-			AuthRequestDTO req, MatchInput input, EntityValueFetcher entityValueFetcher, MatchType matchType,
-			MatchingStrategy strategy, String idName, String partnerId)
+	private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity, 
+			String uin,
+			AuthRequestDTO req, 
+			MatchInput input, 
+			EntityValueFetcher entityValueFetcher, 
+			MatchType matchType,
+			MatchingStrategy strategy, 
+			String idName, 
+			String partnerId)
 			throws IdAuthenticationBusinessException {
 
 		Map<String, String> entityInfo = null;

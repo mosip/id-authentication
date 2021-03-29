@@ -53,7 +53,6 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -147,7 +146,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("426789089018");
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -195,7 +194,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn(individualId);
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -287,7 +286,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);

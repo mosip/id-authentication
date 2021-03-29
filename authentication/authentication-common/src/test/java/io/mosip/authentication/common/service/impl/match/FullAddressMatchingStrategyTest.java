@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -283,7 +284,8 @@ public class FullAddressMatchingStrategyTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match("street chennai", "street chennai", valueMap);
-		assertEquals(0, value);
+		//Without demo normalization, it will proceed  to perform match
+		assertEquals(100, value);
 	}
 
 	@Test
@@ -291,7 +293,7 @@ public class FullAddressMatchingStrategyTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		int value = matchFunction.match("street chennai", "chennai", valueMap);
-		assertEquals(0, value);
+		assertTrue(0 > value);
 	}
 
 	/**
@@ -373,7 +375,7 @@ public class FullAddressMatchingStrategyTest {
 		valueMap.put("demoNormalizer", demoNormalizer);
 		valueMap.put("language", "arabic");
 		int value = matchFunction.match("mos", "arabic", valueMap);
-		assertEquals(0, value);
+		assertTrue(0 > value);
 	}
 
 	/**
