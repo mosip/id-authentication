@@ -138,11 +138,17 @@ public class KycServiceImpl implements KycService {
 		Map<String, Object> idMappingIdentityInfo = Stream.of(DemoMatchType.values())
 				.flatMap(demoMatchType -> {
 					if(demoMatchType.isMultiLanguage()) {
-						return langCodes.stream()
-								.map(langCode -> new SimpleEntry<>(
-										demoMatchType.getIdMapping().getIdname() + KYC_ATTRIB_LANGCODE_SEPERATOR
-												+ langCode,
-										getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode)));
+						if(demoMatchType.equals(DemoMatchType.DYNAMIC)) {
+							Map<String, List<String>> dynamicAttributes = mappingConfig.getDynamicAttributes();
+							return dynamicAttributes.entrySet()
+										.stream()
+										.map(Entry::getKey)
+										.flatMap(idName -> {
+											return getEntityForLangCodesAndIdName(filteredIdentityInfo, langCodes, demoMatchType, idName);
+										});
+						} else {
+							return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
+						}
 					} else {
 						return Stream.of(new SimpleEntry<>(demoMatchType.getIdMapping().getIdname(),
 								getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
@@ -170,6 +176,25 @@ public class KycServiceImpl implements KycService {
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	private Stream<? extends SimpleEntry<String, String>> getEntityForLangCodesAndIdName(
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, DemoMatchType demoMatchType,
+			String idName) {
+		return langCodes.stream()
+				.map(langCode -> new SimpleEntry<>(
+						idName + KYC_ATTRIB_LANGCODE_SEPERATOR
+								+ langCode,
+						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode, idName)));
+	}
+
+	private Stream<SimpleEntry<String, String>> getEntityForLangCodes(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
+			Set<String> langCodes, DemoMatchType demoMatchType) {
+		return langCodes.stream()
+				.map(langCode -> new SimpleEntry<>(
+						demoMatchType.getIdMapping().getIdname() + KYC_ATTRIB_LANGCODE_SEPERATOR
+								+ langCode,
+						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode)));
 	}
 	
 	/**
@@ -200,6 +225,29 @@ public class KycServiceImpl implements KycService {
 	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode) {
 		try {
 			return idInfoHelper.getEntityInfoAsString(matchType, langCode, filteredIdentityInfo);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the entity for match type.
+	 *
+	 * @param matchType the match type
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCode the lang code
+	 * @param idName 
+	 * @return the entity for match type
+	 */
+	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+		try {
+			return idInfoHelper.getIdEntityInfoMap(matchType, filteredIdentityInfo, langCode, idName).entrySet()
+					.stream()
+					.findFirst()
+					.map(Entry::getValue)
+					.orElse(null);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
