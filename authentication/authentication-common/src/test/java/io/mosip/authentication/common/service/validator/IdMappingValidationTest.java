@@ -34,6 +34,7 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
@@ -64,6 +65,9 @@ public class IdMappingValidationTest {
 
 	@Autowired
 	Environment environment;
+	
+	@Mock
+	private IdInfoFetcherImpl idInfoFetcher;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;

@@ -46,6 +46,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -81,6 +82,9 @@ public class AuthRequestValidatorTest {
 
 	@Mock
 	VidValidatorImpl vidValidator;
+	
+	@Mock
+	private IdInfoFetcher idInfoFetcher;
 
 	@InjectMocks
 	RollingFileAppender idaRollingFileAppender;
