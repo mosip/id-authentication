@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,8 +116,8 @@ public class IdInfoHelper {
 			List<String> fullMapping = new ArrayList<>();
 			for (String mappingStr : mappings) {
 				if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
-					Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values());
-					if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
+					Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values(), idMappingConfig);
+					if (mappingInternal.isPresent() && !idMapping.equals(mappingInternal.get())) {
 						List<String> internalMapping = getIdMappingValue(mappingInternal.get(), matchType);
 						fullMapping.addAll(internalMapping);
 					} else {
@@ -193,12 +194,19 @@ public class IdInfoHelper {
 			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity,
 				idInfoFetcher);
-		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName))
-				.collect(
-						Collectors.toMap(propName -> mappedIdEntity.get(propName).getKey(),
-								propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity, matchType)
-										.findAny().orElse(""),
-								(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
+		Function<? super String, ? extends String> keyMapper = propName -> {
+			String key = mappedIdEntity.get(propName).getKey();
+			if (languageCode != null) {
+				key = key + "_" + languageCode;
+			}
+			return key;
+		};
+		Function<? super String, ? extends String> valueMapper = propName -> getIdentityValueFromMap(propName,
+				languageCode, mappedIdEntity, matchType).findAny().orElse("");
+		return propertyNames.stream()
+						.filter(propName -> mappedIdEntity.containsKey(propName))
+						.collect(
+				Collectors.toMap(keyMapper, valueMapper, (p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 
 	/**
@@ -212,9 +220,53 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language) throws IdAuthenticationBusinessException {
+		return getIdEntityInfoMap(matchType, identityInfos, language, null);
+	}
+	
+	/**
+	 * Gets the entity info map.
+	 *
+	 * @param matchType     the match type
+	 * @param identityInfos the id entity
+	 * @param language the language
+	 * @param idName the id name
+	 * @return the entity info map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
+			String language, String idName) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
+		List<String> filteredPropNames;
+		//If this is dynamic match type, filter it based on the id name
+		if (matchType.isDynamic()) {
+			filteredPropNames = getFilteredPropNamesForIdName(matchType, idName, propertyNames);
+		} else {
+			filteredPropNames = propertyNames;
+		}
+		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
 		return matchType.getEntityInfoMapper().apply(identityValuesMap);
+	}
+
+	/**
+	 * Gets the filtered prop names for id name.
+	 *
+	 * @param matchType the match type
+	 * @param idName the id name
+	 * @param propertyNames the property names
+	 * @return the filtered prop names for id name
+	 */
+	private List<String> getFilteredPropNamesForIdName(MatchType matchType, String idName, List<String> propertyNames) {
+		List<String> filteredPropNames = propertyNames;
+		if(idName != null) {
+			Optional<IdMapping> idMapping = IdMapping.getIdMapping(idName, IdaIdMapping.values(), idMappingConfig);
+			if(idMapping.isPresent()) {
+				List<String> idEntityNames = idMapping.get().getMappingFunction().apply(idMappingConfig, matchType);
+				if(!idEntityNames.isEmpty()) {
+					filteredPropNames = propertyNames.stream().filter(idEntityNames::contains).collect(Collectors.toList());
+				}
+			}
+		}
+		return filteredPropNames;
 	}
 
 	/**
@@ -330,20 +382,22 @@ public class IdInfoHelper {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
+				String idName = input.getIdName();
 				if (null == reqInfo || reqInfo.isEmpty()) {
-					reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, authRequestDTO.getRequest(),
+					reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(),
 							input.getLanguage());
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
+
 					Map<String, String> entityInfo = getEntityInfo(idEntity, uin, authRequestDTO, input,
-							entityValueFetcher, matchType, strategy, reqInfo, partnerId);
+							entityValueFetcher, matchType, strategy, idName, partnerId);
 
 					Map<String, Object> matchProperties = input.getMatchProperties();
 					
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
-							input.getLanguage());
+							input.getLanguage(), idName);
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
@@ -365,21 +419,28 @@ public class IdInfoHelper {
 	 * @param entityValueFetcher the entity value fetcher
 	 * @param matchType          the match type
 	 * @param strategy           the strategy
-	 * @param reqInfo            the req info
+	 * @param idName the id name
 	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity, String uin,
-			AuthRequestDTO req, MatchInput input, EntityValueFetcher entityValueFetcher, MatchType matchType,
-			MatchingStrategy strategy, Map<String, String> reqInfo, String partnerId)
+	private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity, 
+			String uin,
+			AuthRequestDTO req, 
+			MatchInput input, 
+			EntityValueFetcher entityValueFetcher, 
+			MatchType matchType,
+			MatchingStrategy strategy, 
+			String idName, 
+			String partnerId)
 			throws IdAuthenticationBusinessException {
+
 		Map<String, String> entityInfo = null;
 		if (matchType.hasRequestEntityInfo()) {
 			entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
 		} else if (matchType.hasIdEntityInfo()) {
-			entityInfo = getIdEntityInfoMap(matchType, idEntity, input.getLanguage());
+			entityInfo = getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
@@ -399,13 +460,13 @@ public class IdInfoHelper {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorMessage(),
-									matchType.getIdMapping().getIdname()));
+									idName));
 
 				} else {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
-									matchType.getIdMapping().getIdname(), input.getLanguage()));
+									idName, input.getLanguage()));
 				}
 
 			}

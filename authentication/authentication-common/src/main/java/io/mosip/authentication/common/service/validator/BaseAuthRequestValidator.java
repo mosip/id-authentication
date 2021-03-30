@@ -98,6 +98,12 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant IRIS_COUNT. */
 	private static final int IRIS_COUNT = 2;
 
+	/**
+	 * Supports.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if successful
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,6 +114,12 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		return BaseAuthRequestDTO.class.isAssignableFrom(clazz);
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param req the req
+	 * @param errors the errors
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -324,13 +336,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Validate bio type.
 	 *
-	 * @param errors
-	 *            the errors
-	 * @param availableAuthTypeInfos
-	 *            the available auth type infos
-	 * @param bioInfo
-	 *            the bio info
-	 * @param bioIndex 
+	 * @param errors            the errors
+	 * @param availableAuthTypeInfos            the available auth type infos
+	 * @param bioInfo            the bio info
+	 * @param bioIndex the bio index
 	 */
 	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo, int bioIndex) {
 		String bioType = bioInfo.getBioType();
@@ -692,12 +701,19 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 				for (MatchType matchType : associatedMatchTypes) {
 					if (isMatchtypeEnabled(matchType)) {
-						List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoList(authRequest.getRequest());
-						if (identityInfos != null && !identityInfos.isEmpty()) {
-							availableAuthTypeInfos.add(authType.getType());
-							hasMatch = true;
-							checkIdentityInfoValue(identityInfos, errors);
-							checkLangaugeDetails(matchType, identityInfos, errors);
+						if(!matchType.equals(DemoMatchType.DYNAMIC)) {
+							List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoList(authRequest.getRequest());
+							hasMatch = checkIdentityInfoAndLanguageDetails(errors, availableAuthTypeInfos, hasMatch, authType, matchType,
+									identityInfos);
+						} else {
+							Set<String> dynamicAttributeNames = idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet();
+							for(String idName : dynamicAttributeNames) {
+								Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, idName, authRequest.getRequest());
+								for(List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
+									hasMatch = checkIdentityInfoAndLanguageDetails(errors, availableAuthTypeInfos, hasMatch, authType, matchType,
+											identityInfos);
+								}
+							}
 						}
 					}
 
@@ -715,6 +731,28 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		} else {
 			checkOtherValues(authRequest, errors, availableAuthTypeInfos);
 		}
+	}
+
+	/**
+	 * Check identity info and language details.
+	 *
+	 * @param errors the errors
+	 * @param availableAuthTypeInfos the available auth type infos
+	 * @param hasMatch the has match
+	 * @param authType the auth type
+	 * @param matchType the match type
+	 * @param identityInfos the identity infos
+	 * @return true, if successful
+	 */
+	private boolean checkIdentityInfoAndLanguageDetails(Errors errors, Set<String> availableAuthTypeInfos, boolean hasMatch, AuthType authType,
+			MatchType matchType, List<IdentityInfoDTO> identityInfos) {
+		if (identityInfos != null && !identityInfos.isEmpty()) {
+			availableAuthTypeInfos.add(authType.getType());
+			hasMatch = true;
+			checkIdentityInfoValue(identityInfos, errors);
+			checkLangaugeDetails(matchType, identityInfos, errors);
+		}
+		return hasMatch;
 	}
 
 	/**

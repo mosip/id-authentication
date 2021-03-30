@@ -137,8 +137,8 @@ public class AuthStatusInfoBuilder {
 			AuthError errors = null;
 			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
 					matchOutput.getMatchType());
-			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
-			String name = mappings.contains(idMapping.getIdname()) ? ADDRESS_LINE_ITEMS : idMapping.getIdname();
+			String idName = matchOutput.getIdName();
+			String name = mappings.contains(idName) ? ADDRESS_LINE_ITEMS : idName;
 
 			if (!multiLanguage) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
