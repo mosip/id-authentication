@@ -143,8 +143,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity) {
 		Map<String, List<IdentityInfoDTO>> identityInfos = matchType.getIdentityInfoFunction().apply(identity);
-		//If this is not a composite match type, filter it based on the id name
-		if (matchType.getIdMapping().getSubIdMappings().size() == 0) {
+		//If this is dynamic match type, filter it based on the id name
+		if (matchType.isDynamic()) {
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = identityInfos
 				.entrySet()
 				.stream()

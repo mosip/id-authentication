@@ -237,8 +237,8 @@ public class IdInfoHelper {
 			String language, String idName) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
 		List<String> filteredPropNames;
-		//If this is not a composite match type, filter it based on the id name
-		if (matchType.getIdMapping().getSubIdMappings().size() == 0) {
+		//If this is dynamic match type, filter it based on the id name
+		if (matchType.isDynamic()) {
 			filteredPropNames = getFilteredPropNamesForIdName(matchType, idName, propertyNames);
 		} else {
 			filteredPropNames = propertyNames;
@@ -260,9 +260,9 @@ public class IdInfoHelper {
 		if(idName != null) {
 			Optional<IdMapping> idMapping = IdMapping.getIdMapping(idName, IdaIdMapping.values(), idMappingConfig);
 			if(idMapping.isPresent()) {
-				Optional<String> idEntityName = idMapping.get().getMappingFunction().apply(idMappingConfig, matchType).stream().findFirst();
-				if(idEntityName.isPresent()) {
-					filteredPropNames = propertyNames.stream().filter(idEntityName.get()::equals).collect(Collectors.toList());
+				List<String> idEntityNames = idMapping.get().getMappingFunction().apply(idMappingConfig, matchType);
+				if(!idEntityNames.isEmpty()) {
+					filteredPropNames = propertyNames.stream().filter(idEntityNames::contains).collect(Collectors.toList());
 				}
 			}
 		}
