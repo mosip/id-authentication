@@ -293,7 +293,7 @@ public class FullAddressMatchingStrategyTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		int value = matchFunction.match("street chennai", "chennai", valueMap);
-		assertTrue(0 > value);
+		assertTrue(0 < value);
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class FullAddressMatchingStrategyTest {
 		valueMap.put("demoNormalizer", demoNormalizer);
 		valueMap.put("language", "arabic");
 		int value = matchFunction.match("mos", "arabic", valueMap);
-		assertTrue(0 > value);
+		assertTrue(0 < value);
 	}
 
 	/**

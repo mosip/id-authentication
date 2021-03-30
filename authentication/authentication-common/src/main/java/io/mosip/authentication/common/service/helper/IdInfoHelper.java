@@ -236,7 +236,13 @@ public class IdInfoHelper {
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language, String idName) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-		List<String> filteredPropNames = getFilteredPropNamesForIdName(matchType, idName, propertyNames);
+		List<String> filteredPropNames;
+		//If this is not a composite match type, filter it based on the id name
+		if (matchType.getIdMapping().getSubIdMappings().size() == 0) {
+			filteredPropNames = getFilteredPropNamesForIdName(matchType, idName, propertyNames);
+		} else {
+			filteredPropNames = propertyNames;
+		}
 		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
 		return matchType.getEntityInfoMapper().apply(identityValuesMap);
 	}

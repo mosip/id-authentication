@@ -137,18 +137,24 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public Map<String, String> getIdentityRequestInfo(MatchType matchType, String idName, RequestDTO identity, String language) {
-		Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = getIdentityInfo(matchType, idName, identity);
-		return getInfo(filteredIdentityInfos, language);
+		Map<String, List<IdentityInfoDTO>> identityInfos = getIdentityInfo(matchType, idName, identity);
+		return getInfo(identityInfos, language);
 	}
 
 	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity) {
 		Map<String, List<IdentityInfoDTO>> identityInfos = matchType.getIdentityInfoFunction().apply(identity);
-		Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = identityInfos
-																	.entrySet()
-																	.stream()
-																	.filter(e -> e.getKey() != null && e.getValue() != null)
-																	.filter(e -> e.getKey().equals(idName)).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		return filteredIdentityInfos;
+		//If this is not a composite match type, filter it based on the id name
+		if (matchType.getIdMapping().getSubIdMappings().size() == 0) {
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfos = identityInfos
+				.entrySet()
+				.stream()
+				.filter(e -> e.getKey() != null && e.getValue() != null)
+				.filter(e -> e.getKey().equals(idName))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+			return filteredIdentityInfos;
+		} else {
+			return identityInfos;
+		}
 	}
 
 	/**
