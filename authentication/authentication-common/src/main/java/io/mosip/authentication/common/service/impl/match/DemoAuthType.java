@@ -23,6 +23,7 @@ public enum DemoAuthType implements AuthType {
 
 	// @formatter:off
 
+	/** The address. */
 	ADDRESS("address",
 			AuthType.setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
 					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3, DemoMatchType.PINCODE),
@@ -34,8 +35,10 @@ public enum DemoAuthType implements AuthType {
 					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
 			AuthTypeDTO::isDemo, "Personal Identity"),
 
+	/** The full address. */
 	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address"),
 	
+	/** The dynamic. */
 	DYNAMIC("demographics", AuthType.setOf(DemoMatchType.DYNAMIC)){
 		
 		public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
@@ -47,12 +50,12 @@ public enum DemoAuthType implements AuthType {
 	;
 
 
-	/**  */
 	// @formatter:on
 	
-
+	/** The Constant ENGLISH. */
 	private static final String ENGLISH = "english";
 	
+	/** The auth type impl. */
 	private AuthTypeImpl authTypeImpl;
 
 	/**
@@ -60,7 +63,6 @@ public enum DemoAuthType implements AuthType {
 	 *
 	 * @param type                 the type
 	 * @param associatedMatchTypes the associated match types
-	 * @param langType             the lang type
 	 * @param authTypePredicate    the auth type predicate
 	 * @param displayName          the display name
 	 */
@@ -69,10 +71,24 @@ public enum DemoAuthType implements AuthType {
 		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, authTypePredicate, displayName);
 	}
 	
+	/**
+	 * Instantiates a new demo auth type.
+	 *
+	 * @param type the type
+	 * @param associatedMatchTypes the associated match types
+	 */
 	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes) {
 		authTypeImpl = new DynamicDemoAuthTypeImpl(type, associatedMatchTypes);
 	}
 
+	/**
+	 * Gets the match properties.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfoFetcher the id info fetcher
+	 * @param language the language
+	 * @return the match properties
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,6 +110,11 @@ public enum DemoAuthType implements AuthType {
 		return valuemap;
 	}
 
+	/**
+	 * Gets the auth type impl.
+	 *
+	 * @return the auth type impl
+	 */
 	@Override
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;

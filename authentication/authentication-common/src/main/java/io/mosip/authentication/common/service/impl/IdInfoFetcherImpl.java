@@ -45,8 +45,8 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
- * Helper class to fetch identity values from request
- * 
+ * Helper class to fetch identity values from request.
+ *
  * @author Dinesh Karuppiah.T
  */
 @Service
@@ -55,22 +55,19 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
-	/** The OTPManager */
+	/**  The OTPManager. */
 	@Autowired
 	private OTPManager otpManager;
 
-	/**
-	 * The Cbeff Util
-	 */
+	/** The Cbeff Util. */
 	@Autowired
 	private CbeffUtil cbeffUtil;
 
+	/** The bio matcher util. */
 	@Autowired(required = false)
 	private BioMatcherUtil bioMatcherUtil;
 
-	/**
-	 * The Master Data Manager
-	 */
+	/** The Master Data Manager. */
 	@Autowired
 	private MasterDataManager masterDataManager;
 
@@ -82,19 +79,24 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
+	/** The demo normalizer. */
 	@Autowired
 	private DemoNormalizer demoNormalizer;
 	
+	/**
+	 * Gets the demo normalizer.
+	 *
+	 * @return the demo normalizer
+	 */
 	@Override
 	public DemoNormalizer getDemoNormalizer() {
 		return demoNormalizer;
 	}
 
 	/**
-	 * Fetch language code from properties
+	 * Fetch language code from properties.
 	 *
-	 * @param langType
-	 *            - the language code
+	 * @param langType            - the language code
 	 * @return the language code
 	 */
 	@Override
@@ -106,6 +108,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Gets the language name.
+	 *
+	 * @param languageCode the language code
+	 * @return the language name
+	 */
 	/*
 	 * getLanguageCode Fetch language Name based on language code
 	 */
@@ -124,15 +132,26 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return Optional.ofNullable(languagName);
 	}
 	
+	/**
+	 * Gets the identity request info.
+	 *
+	 * @param matchType the match type
+	 * @param identity the identity
+	 * @param language the language
+	 * @return the identity request info
+	 */
 	@Override
 	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language) {
 		return getIdentityRequestInfo(matchType, matchType.getIdMapping().getIdname(), identity, language);
 	}
 
 	/**
-	 * Fetch Identity info based on Match type and Identity
+	 * Fetch Identity info based on Match type and Identity.
 	 *
-	 * 
+	 * @param matchType the match type
+	 * @param idName the id name
+	 * @param identity the identity
+	 * @param language the language
 	 * @return Map
 	 */
 	@Override
@@ -141,6 +160,14 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return getInfo(identityInfos, language);
 	}
 
+	/**
+	 * Gets the identity info.
+	 *
+	 * @param matchType the match type
+	 * @param idName the id name
+	 * @param identity the identity
+	 * @return the identity info
+	 */
 	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity) {
 		Map<String, List<IdentityInfoDTO>> identityInfos = matchType.getIdentityInfoFunction().apply(identity);
 		//If this is dynamic match type, filter it based on the id name
@@ -199,6 +226,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Gets the validate OTP function.
+	 *
+	 * @return the validate OTP function
+	 */
 	/*
 	 * Get Validataed Otp Function
 	 * 
@@ -210,6 +242,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return otpManager::validateOtp;
 	}
 
+	/**
+	 * Gets the cbeff values.
+	 *
+	 * @param idEntity the id entity
+	 * @param types the types
+	 * @param matchType the match type
+	 * @return the cbeff values
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	/*
 	 * To get the valid Cbeff for Entity Info
 	 * 
@@ -235,6 +276,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Gets the cbeff values for cbeff doc type.
+	 *
+	 * @param type the type
+	 * @param matchType the match type
+	 * @param identityValue the identity value
+	 * @return the cbeff values for cbeff doc type
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
 			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
@@ -279,11 +329,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	}
 
 	/**
-	 * Get the Cbeff Name mapped on ID Repo based on Ida Mapping
-	 * 
-	 * @param cbeffName
-	 * @param matchType
-	 * @return
+	 * Get the Cbeff Name mapped on ID Repo based on Ida Mapping.
+	 *
+	 * @param cbeffName the cbeff name
+	 * @param matchType the match type
+	 * @return the name for cbeff name
 	 */
 	private String getNameForCbeffName(String cbeffName, MatchType matchType) {
 		return Stream.of(IdaIdMapping.values()).filter(cfg -> matchType.getIdMapping().equals(cfg)
@@ -305,16 +355,32 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 				.map(Entry::getKey).findAny().orElse("");
 	}
 
+	/**
+	 * Gets the environment.
+	 *
+	 * @return the environment
+	 */
 	@Override
 	public Environment getEnvironment() {
 		return environment;
 	}
 
+	/**
+	 * Gets the title fetcher.
+	 *
+	 * @return the title fetcher
+	 */
 	@Override
 	public MasterDataFetcher getTitleFetcher() {
 		return masterDataManager::fetchTitles;
 	}
 
+	/**
+	 * Gets the matching threshold.
+	 *
+	 * @param key the key
+	 * @return the matching threshold
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -333,6 +399,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return Optional.ofNullable(threshold);
 	}
 
+	/**
+	 * Gets the type for id name.
+	 *
+	 * @param idName the id name
+	 * @param idMappings the id mappings
+	 * @return the type for id name
+	 */
 	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
 		return Stream.of(idMappings).filter(idmap -> {
 			String thisId = idName.replaceAll("\\d", "");
@@ -341,6 +414,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}).map(IdMapping::getType).findFirst();
 	}
 
+	/**
+	 * Gets the match function.
+	 *
+	 * @param authType the auth type
+	 * @return the match function
+	 */
 	@Override
 	public TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> getMatchFunction(
 			AuthType authType) {
@@ -353,11 +432,22 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Gets the mapping config.
+	 *
+	 * @return the mapping config
+	 */
 	@Override
 	public MappingConfig getMappingConfig() {
 		return idMappingConfig;
 	}
 
+	/**
+	 * Gets the available dynamic attributes names.
+	 *
+	 * @param request the request
+	 * @return the available dynamic attributes names
+	 */
 	@Override
 	public Set<String> getAvailableDynamicAttributesNames(RequestDTO request) {
 		if(request.getDemographics() != null && request.getDemographics().getMetadata() != null) {

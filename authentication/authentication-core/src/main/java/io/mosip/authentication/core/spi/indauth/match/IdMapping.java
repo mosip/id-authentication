@@ -34,7 +34,7 @@ public interface IdMapping {
 	 *
 	 * @param name the name
 	 * @param values the values
-	 * @param idMappingConfig 
+	 * @param idMappingConfig the id mapping config
 	 * @return the id mapping
 	 */
 	public static Optional<IdMapping> getIdMapping(String name, IdMapping[] values, MappingConfig idMappingConfig) {
@@ -53,10 +53,25 @@ public interface IdMapping {
 		
 	}
 	
+	/**
+	 * Gets the sub id mappings.
+	 *
+	 * @return the sub id mappings
+	 */
 	public Set<IdMapping> getSubIdMappings();
 	
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType();
 	
+	/**
+	 * Gets the sub type.
+	 *
+	 * @return the sub type
+	 */
 	public String getSubType();
 	
 

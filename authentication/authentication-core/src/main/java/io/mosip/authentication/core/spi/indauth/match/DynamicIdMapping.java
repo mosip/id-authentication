@@ -7,19 +7,35 @@ import java.util.function.BiFunction;
 
 /**
  * The Class DynamicIdMapping.
+ * 
+ * @author Loganathan Sekar
  */
 public class DynamicIdMapping implements IdMapping {
 	
+	/** The id name. */
 	private String idName;
+	
+	/** The mappings. */
 	private List<String> mappings;
 	
 	
+	/**
+	 * Instantiates a new dynamic id mapping.
+	 *
+	 * @param idName the id name
+	 * @param mappings the mappings
+	 */
 	public DynamicIdMapping(String idName, List<String> mappings) {
 		super();
 		this.idName = idName;
 		this.mappings = mappings;
 	}
 
+	/**
+	 * Gets the idname.
+	 *
+	 * @return the idname
+	 */
 	@Override
 	public String getIdname() {
 		return idName;
@@ -65,6 +81,11 @@ public class DynamicIdMapping implements IdMapping {
 		return null;
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -73,6 +94,12 @@ public class DynamicIdMapping implements IdMapping {
 		return result;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

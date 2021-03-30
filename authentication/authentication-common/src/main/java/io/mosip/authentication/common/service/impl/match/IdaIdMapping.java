@@ -22,47 +22,99 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 /**
- * 
- * Mapping class for IDA
- * 
+ * Mapping class for IDA.
+ *
  * @author Dinesh Karuppiah.T
  */
 public enum IdaIdMapping implements IdMapping {
 
 // @formatter:off
-	//PI
+	/** The name. */
+//PI
 	NAME("name", MappingConfig::getName),
+	
+	/** The dob. */
 	DOB("dob", MappingConfig::getDob),
+	
+	/** The dobtype. */
 	DOBTYPE("dobType", MappingConfig::getDobType),
+	
+	/** The age. */
 	AGE("age", MappingConfig::getAge),
+	
+	/** The gender. */
 	GENDER("gender", MappingConfig::getGender),
+	
+	/** The phone. */
 	PHONE("phoneNumber", MappingConfig::getPhoneNumber),
+	
+	/** The email. */
 	EMAIL("emailId", MappingConfig::getEmailId),
+	
+	/** The addressline1. */
 	ADDRESSLINE1("addressLine1", MappingConfig::getAddressLine1),
+	
+	/** The addressline2. */
 	ADDRESSLINE2("addressLine2", MappingConfig::getAddressLine2),
+	
+	/** The addressline3. */
 	ADDRESSLINE3("addressLine3", MappingConfig::getAddressLine3),
+	
+	/** The location1. */
 	LOCATION1("location1", MappingConfig::getLocation1),
+	
+	/** The location2. */
 	LOCATION2("location2", MappingConfig::getLocation2),
+	
+	/** The location3. */
 	LOCATION3("location3", MappingConfig::getLocation3),
+	
+	/** The pincode. */
 	PINCODE("postalCode", MappingConfig::getPostalCode),
+	
+	/** The fulladdress. */
 	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
 	
+	/** The otp. */
 	//PIN
 	OTP("otp", MappingConfig::getOtp),
+	
+	/** The pin. */
 	PIN("pin", MappingConfig::getPin),
 	
 	//FINGER
+	/** The leftindex. */
 	//BIO - Finger - Single
 	LEFTINDEX(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The leftlittle. */
 	LEFTLITTLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The leftmiddle. */
 	LEFTMIDDLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The leftring. */
 	LEFTRING(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.RING_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The leftthumb. */
 	LEFTTHUMB(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.THUMB.value()), SingleType.FINGER.value()),
+	
+	/** The rightindex. */
 	RIGHTINDEX(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The rightlittle. */
 	RIGHTLITTLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The rightmiddle. */
 	RIGHTMIDDLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The rightring. */
 	RIGHTRING(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.RING_FINGER.value()), SingleType.FINGER.value()),
+	
+	/** The rightthumb. */
 	RIGHTTHUMB(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()), SingleType.FINGER.value()),
+	
+	/** The unknown finger. */
 	//BIO - Finger - Multi or Unknown
 	UNKNOWN_FINGER(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
@@ -74,13 +126,19 @@ public enum IdaIdMapping implements IdMapping {
 		}
 	},
 	
+	/** The fingerprint. */
 	FINGERPRINT("fingerprint", setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, 
 			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER), SingleType.FINGER.value()),
 	
 	//IRIS
+	/** The leftiris. */
 	//BIO - Iris - Single
 	LEFTIRIS(SingleAnySubtypeType.LEFT.value(), SingleType.IRIS.value()),
+	
+	/** The rightiris. */
 	RIGHTIRIS(SingleAnySubtypeType.RIGHT.value(), SingleType.IRIS.value()),
+	
+	/** The unknown iris. */
 	//BIO - Iris - Multi or Unknown
 	UNKNOWN_IRIS(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
@@ -91,11 +149,16 @@ public enum IdaIdMapping implements IdMapping {
 			return unknown();
 		}
 	},
+	
+	/** The iris. */
 	IRIS("iris", setOf(RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS), SingleType.IRIS.value()),
 	
 	//FACE
+	/** The face. */
 	//BIO - Face - Single
 	FACE( SingleType.FACE.value(), SingleType.FACE.value()),
+	
+	/** The unknown face. */
 	//BIO - Face - Unknown
 	UNKNOWN_FACE(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
@@ -107,11 +170,13 @@ public enum IdaIdMapping implements IdMapping {
 		}
 	}, 
 	
+	/** The multi modal biometrics. */
 	MULTI_MODAL_BIOMETRICS("biometrics", setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, 
 			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER,
 			RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS,
 			FACE,UNKNOWN_FACE), "DummyType"),
 	
+	/** The dynamic demographics ID Mapping. */
 	DYNAMIC("demographics") {
 		
 		public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
@@ -127,20 +192,36 @@ public enum IdaIdMapping implements IdMapping {
 
 // @formatter:on
 
-	private String idname;
+	/** The idname. */
+private String idname;
 
+	/** The mapping function. */
 	private BiFunction<MappingConfig, MatchType, List<String>> mappingFunction;
 
+	/** The sub id mappings. */
 	private Set<IdMapping> subIdMappings;
 
+	/** The type. */
 	private String type;
 
+	/**
+	 * Instantiates a new ida id mapping.
+	 *
+	 * @param idname the idname
+	 * @param mappingFunction the mapping function
+	 */
 	private IdaIdMapping(String idname, Function<MappingConfig, List<String>> mappingFunction) {
 		this.idname = idname;
 		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((cfg, matchType) -> mappingFunction.apply(cfg));
 		this.subIdMappings = Collections.emptySet();
 	}
 
+	/**
+	 * Instantiates a new ida id mapping.
+	 *
+	 * @param idname the idname
+	 * @param type the type
+	 */
 	private IdaIdMapping(String idname, String type) {
 		this.idname = idname;
 		this.type = type;
@@ -148,6 +229,13 @@ public enum IdaIdMapping implements IdMapping {
 		this.subIdMappings = Collections.emptySet();
 	}
 
+	/**
+	 * Instantiates a new ida id mapping.
+	 *
+	 * @param idname the idname
+	 * @param subIdMappings the sub id mappings
+	 * @param type the type
+	 */
 	private IdaIdMapping(String idname, Set<IdMapping> subIdMappings, String type) {
 		this.idname = idname;
 		this.subIdMappings = subIdMappings;
@@ -165,12 +253,23 @@ public enum IdaIdMapping implements IdMapping {
 		});
 	}
 	
+	/**
+	 * Instantiates a new ida id mapping.
+	 *
+	 * @param idname the idname
+	 */
 	private IdaIdMapping(String idname) {
 		this.idname = idname;
 		this.mappingFunction = wrapFunctionToReturnEmptyListForNull((cfg, matchType) -> getMappingFunction().apply(cfg, matchType));
 		this.subIdMappings = Collections.emptySet();
 	}
 	
+	/**
+	 * Wrap function to return empty list for null.
+	 *
+	 * @param func the func
+	 * @return the bi function
+	 */
 	private BiFunction<MappingConfig, MatchType, List<String>> wrapFunctionToReturnEmptyListForNull(BiFunction<MappingConfig, MatchType, List<String>> func) {
 		return (cfg, matchType) -> {
 			List<String> retVal = func.apply(cfg, matchType);
@@ -182,31 +281,56 @@ public enum IdaIdMapping implements IdMapping {
 		};
 	}
 
+	/**
+	 * Gets the idname.
+	 *
+	 * @return the idname
+	 */
 	public String getIdname() {
 		return idname;
 	}
 	
+	/**
+	 * Unknown.
+	 *
+	 * @return the string
+	 */
 	private static String unknown() {
 		return IdAuthCommonConstants.UNKNOWN_BIO;
 	}
 
+	/**
+	 * Gets the sub id mappings.
+	 *
+	 * @return the sub id mappings
+	 */
 	public Set<IdMapping> getSubIdMappings() {
 		return subIdMappings;
 	}
 	
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
 	
+	/**
+	 * Gets the sub type.
+	 *
+	 * @return the sub type
+	 */
 	public String getSubType() {
 		return idname;
 	}
 	
 	/**
-	 * Fetch Cbeff Mapping based on Match Type
-	 * 
-	 * @param matchType
-	 * @return
+	 * Fetch Cbeff Mapping based on Match Type.
+	 *
+	 * @param matchType the match type
+	 * @return the cbeff mapping
 	 */
 	private static List<String> getCbeffMapping(MatchType matchType) {
 		if (matchType instanceof BioMatchType) {
@@ -221,13 +345,13 @@ public enum IdaIdMapping implements IdMapping {
 	}
 
 	/**
-	 * To get Cbeff mapping based on Single and SubType on Cbeff
-	 * 
-	 * @param singleType
-	 * @param subType
-	 * @param singleSubType
-	 * @param matchType
-	 * @return
+	 * To get Cbeff mapping based on Single and SubType on Cbeff.
+	 *
+	 * @param singleType the single type
+	 * @param subType the sub type
+	 * @param singleSubType the single sub type
+	 * @param matchType the match type
+	 * @return the cbeff mapping
 	 */
 	private static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
@@ -237,6 +361,15 @@ public enum IdaIdMapping implements IdMapping {
 		return collection;
 	}
 
+	/**
+	 * Gets the cbeff mapping for cbeff doc type.
+	 *
+	 * @param singleType the single type
+	 * @param subType the sub type
+	 * @param singleSubType the single sub type
+	 * @param cbeffDocType the cbeff doc type
+	 * @return the cbeff mapping for cbeff doc type
+	 */
 	private static String getCbeffMappingForCbeffDocType(SingleType singleType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, CbeffDocType cbeffDocType) {
 		String formatType = String.valueOf(cbeffDocType.getValue());
@@ -252,6 +385,11 @@ public enum IdaIdMapping implements IdMapping {
 		return cbeffKey;
 	}
 
+	/**
+	 * Gets the mapping function.
+	 *
+	 * @return the mapping function
+	 */
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.indauth.match.IdMapping#getMappingFunction()
 	 */
@@ -283,6 +421,12 @@ public enum IdaIdMapping implements IdMapping {
 				.findFirst().map(IdaIdMapping::getIdname);
 	}
 	
+	/**
+	 * Concat names.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	public static String concatNames(String... values) {
 		return Stream.of(values).collect(Collectors.joining(" "));
 	}

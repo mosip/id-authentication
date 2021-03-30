@@ -8,10 +8,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 
 /**
- * The Enum EmailMatchingStrategy - used to compare and
- * evaluate the EMAIL value received from the request and entity
+ * The Enum DynamicDemoAttributeMatchingStrategy - used to compare and
+ * evaluate the Dynamic Demographic attributes value received from the request and entity
  *
- * @author Sanjay Murali
+ * @author Loganathan Sekar
  */
 public enum DynamicDemoAttributeMatchingStrategy implements TextMatchingStrategy {
 
