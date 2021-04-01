@@ -147,7 +147,7 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR.getIdMapping().getIdname(), DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -239,17 +239,17 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1.getIdMapping().getIdname(), DemoMatchType.ADDR_LINE1,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2.getIdMapping().getIdname(), DemoMatchType.ADDR_LINE2,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3.getIdMapping().getIdname(), DemoMatchType.ADDR_LINE3,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1.getIdMapping().getIdname(), DemoMatchType.LOCATION1,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2.getIdMapping().getIdname(), DemoMatchType.LOCATION2,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3.getIdMapping().getIdname(), DemoMatchType.LOCATION3,
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
@@ -306,17 +306,17 @@ public class DemoAuthServiceTest {
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE.getIdMapping().getIdname(), DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB.getIdMapping().getIdname(), DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL.getIdMapping().getIdname(), DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
-		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER.getIdMapping().getIdname(), DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -385,7 +385,7 @@ public class DemoAuthServiceTest {
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
 		entityInfo.put("firstName", identityInfoList);
-		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
+		Mockito.when(idInfoService.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
 		AuthRequestDTO authRequestDTO = generateData();
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));

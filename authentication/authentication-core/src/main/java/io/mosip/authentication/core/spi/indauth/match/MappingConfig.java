@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Interface MappingConfig.
@@ -235,12 +234,5 @@ public interface MappingConfig {
 	 * @return the right eye
 	 */
 	public List<String> getRightEye();
-	
-	/**
-	 * Gets the dynamic attributes.
-	 *
-	 * @return the dynamic attributes
-	 */
-	public Map<String, List<String>> getDynamicAttributes(); 
 
 }

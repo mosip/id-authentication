@@ -157,7 +157,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
-			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 			String priLang = getLanguagecode(LanguageType.PRIMARY_LANG);
 			String secLang = getLanguagecode(LanguageType.SECONDARY_LANG);
 			String namePri = getName(priLang, idInfo);

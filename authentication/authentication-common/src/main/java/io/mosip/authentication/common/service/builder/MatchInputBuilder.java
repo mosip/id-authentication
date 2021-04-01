@@ -14,13 +14,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
@@ -93,7 +91,7 @@ public class MatchInputBuilder {
 		Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
 		if (authTypeOpt.isPresent()) {
 			matchInputs
-					.addAll(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt.get(), language));
+					.add(buildMatchInput(authRequestDTO, matchType, infoFromAuthRequest, authTypeOpt.get(), language));
 		}
 	}
 
@@ -107,39 +105,26 @@ public class MatchInputBuilder {
 	 * @param language
 	 * @return
 	 */
-	private List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
+	private MatchInput buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
 			Map<String, String> infoFromAuthRequest, AuthType authType, String language) {
 		if (infoFromAuthRequest.isEmpty()) {
 			// For Identity
 			Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());
 			if (identityOpt.isPresent()) {
 				RequestDTO identity = identityOpt.get();
-				if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
-					IdMapping idMapping = matchType.getIdMapping();
-					if(idMapping.equals(IdaIdMapping.DYNAMIC)) {
-						Map<String, List<String>> dynamicAttributes = idInfoFetcher.getMappingConfig().getDynamicAttributes();
-						return dynamicAttributes
-								.keySet()
-								.stream()
-								.filter(idName -> 
-						idInfoFetcher.getIdentityRequestInfo(matchType, idName, identity, language).size() > 0)
-								.map(idName -> contstructMatchInput(authRequestDTO, idName, matchType, authType, language))
-									.collect(Collectors.toList());
-					} else {
-						if(idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).size() > 0) {
-							return List.of(contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, language));
-						}
-					}
+				if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)
+						&& idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).size() > 0) {
+					return contstructMatchInput(authRequestDTO, matchType, authType, language);
 				}
 			}
 		} else {
 			// For non-identity
 			if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)
 					&& authType.isAuthTypeInfoAvailable(authRequestDTO)) {
-				return List.of(contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType , authType, null));
+				return contstructMatchInput(authRequestDTO, matchType, authType, null);
 			}
 		}
-		return List.of();
+		return null;
 	}
 
 	/**
@@ -151,7 +136,7 @@ public class MatchInputBuilder {
 	 * @param language       the language
 	 * @return the list
 	 */
-	private MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, String idName, MatchType matchType, AuthType authType,
+	private MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType,
 			String language) {
 
 		if (matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {
@@ -171,7 +156,7 @@ public class MatchInputBuilder {
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);
-			return new MatchInput(authType, idName, matchType, matchingStrategy, matchValue, matchProperties, language);
+			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
 	}
 
