@@ -36,7 +36,7 @@ public class AuthStatusInfoBuilderTest {
 
 	@Test
 	public void TestConstructOTPError() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.OTP.getIdname(), PinMatchType.OTP, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.OTP.getIdname(), PinMatchType.OTP, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructOTPError", matchOutput,
 				authStatusInfoBuilder);
@@ -44,7 +44,7 @@ public class AuthStatusInfoBuilderTest {
 
 	@Test
 	public void TestconstructBioError() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.FACE.getIdname(), BioMatchType.FACE, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.FACE.getIdname(), BioMatchType.FACE, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructBioError", matchOutput,
 				authStatusInfoBuilder);
@@ -52,7 +52,7 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructPinError() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.PIN.getIdname(), PinMatchType.SPIN, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.PIN.getIdname(), PinMatchType.SPIN, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructPinError", matchOutput,
 				authStatusInfoBuilder);
@@ -60,7 +60,7 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructDemoErrorForName() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), DemoMatchType.NAME, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), DemoMatchType.NAME, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
 		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
@@ -70,7 +70,7 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructDemoErrorForDOB() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.DOB.getIdname(), DemoMatchType.DOB, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.DOB.getIdname(), DemoMatchType.DOB, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
 		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
@@ -80,7 +80,7 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructDemoErrorForAddresLine() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.ADDRESSLINE1.getIdname(), DemoMatchType.ADDR_LINE1, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.ADDRESSLINE1.getIdname(), DemoMatchType.ADDR_LINE1, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
 		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
@@ -90,7 +90,7 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructDemoWrongMatchType() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), BioMatchType.FACE, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), BioMatchType.FACE, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
 		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
@@ -109,27 +109,27 @@ public class AuthStatusInfoBuilderTest {
 	@Test
 	public void TestBuildAuthStatusInfo() {
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		MatchInput matchInput = new MatchInput(DemoAuthType.PERSONAL_IDENTITY, DemoMatchType.NAME, NameMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
+		MatchInput matchInput = new MatchInput(DemoAuthType.PERSONAL_IDENTITY, DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME, NameMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(DemoAuthType.FULL_ADDRESS, DemoMatchType.ADDR, FullAddressMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
+		matchInput = new MatchInput(DemoAuthType.FULL_ADDRESS, DemoMatchType.ADDR.getIdMapping().getIdname(), DemoMatchType.ADDR, FullAddressMatchingStrategy.EXACT.name(), 60, new HashMap<>(), "fra");
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(BioAuthType.FGR_IMG, BioMatchType.FGRIMG_LEFT_INDEX, FingerPrintMatchingStrategy.PARTIAL.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(BioAuthType.FGR_IMG,  BioMatchType.FGRIMG_LEFT_INDEX.getIdMapping().getIdname(), BioMatchType.FGRIMG_LEFT_INDEX, FingerPrintMatchingStrategy.PARTIAL.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(PinAuthType.OTP, PinMatchType.OTP, OtpMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(PinAuthType.OTP, PinMatchType.OTP.getIdMapping().getIdname(), PinMatchType.OTP, OtpMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
-		matchInput = new MatchInput(PinAuthType.SPIN, PinMatchType.SPIN, PinMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
+		matchInput = new MatchInput(PinAuthType.SPIN, PinMatchType.SPIN.getIdMapping().getIdname(), PinMatchType.SPIN, PinMatchingStrategy.EXACT.name(), 60, new HashMap<>(), null);
 		listMatchInputs.add(matchInput);
 		
 		List<MatchOutput> listMatchOutputs = new ArrayList<>();
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), DemoMatchType.NAME, null);
+		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), DemoMatchType.NAME, null, "id");
 		listMatchOutputs.add(matchOutput);
-		matchOutput = new MatchOutput(100, true, IdaIdMapping.FULLADDRESS.getIdname(), DemoMatchType.ADDR, null);
+		matchOutput = new MatchOutput(100, true, IdaIdMapping.FULLADDRESS.getIdname(), DemoMatchType.ADDR, null, "id");
 		listMatchOutputs.add(matchOutput);
-		matchOutput = new MatchOutput(0, false, IdaIdMapping.LEFTINDEX.getIdname(), BioMatchType.FGRIMG_LEFT_INDEX, null);
+		matchOutput = new MatchOutput(0, false, IdaIdMapping.LEFTINDEX.getIdname(), BioMatchType.FGRIMG_LEFT_INDEX, null, "id");
 		listMatchOutputs.add(matchOutput);
-		matchOutput = new MatchOutput(0, false, IdaIdMapping.OTP.getIdname(), PinMatchType.OTP, null);
+		matchOutput = new MatchOutput(0, false, IdaIdMapping.OTP.getIdname(), PinMatchType.OTP, null, "id");
 		listMatchOutputs.add(matchOutput);
-		matchOutput = new MatchOutput(0, false, IdaIdMapping.PIN.getIdname(), PinMatchType.SPIN, null);
+		matchOutput = new MatchOutput(0, false, IdaIdMapping.PIN.getIdname(), PinMatchType.SPIN, null, "id");
 		listMatchOutputs.add(matchOutput);
 
 		AuthType[] authTypes = DemoAuthType.values();
