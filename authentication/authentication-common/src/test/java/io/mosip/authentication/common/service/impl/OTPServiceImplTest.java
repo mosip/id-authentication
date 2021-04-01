@@ -146,7 +146,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("426789089018");
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -194,7 +194,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn(individualId);
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -286,7 +286,7 @@ public class OTPServiceImplTest {
 		valueMap.put("response", idInfo);
 		Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean()))
 				.thenReturn(valueMap);
-		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
 
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);

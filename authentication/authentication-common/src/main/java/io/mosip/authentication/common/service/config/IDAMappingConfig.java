@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.config;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +19,6 @@ import lombok.Data;
 @Configuration
 @PropertySource(value = "${ida.mapping.property.source}", factory = IDAMappingFactory.class)
 @ConfigurationProperties
-
-/**
- * Instantiates a new IDA mapping config.
- */
 @Data
 public class IDAMappingConfig implements MappingConfig {
 
@@ -122,8 +117,5 @@ public class IDAMappingConfig implements MappingConfig {
 
 	/** The fingerprint. */
 	private List<String> fingerprint;
-	
-	/** The dynamic attributes. */
-	private Map<String, List<String>> dynamicAttributes;
 
 }

@@ -1,13 +1,9 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.core.env.Environment;
 
@@ -55,28 +51,6 @@ public interface IdInfoFetcher {
 	 * Gets the identity info for the MatchType from the IdentityDTO.
 	 *
 	 * @param matchType the match type
-	 * @param idName 
-	 * @param identity  the identity
-	 * @param language the language
-	 * @return the identity info
-	 */
-	public Map<String, String> getIdentityRequestInfo(MatchType matchType, String idName, RequestDTO identity, String language);
-	
-	/**
-	 * Gets the identity info.
-	 *
-	 * @param matchType the match type
-	 * @param idName the id name
-	 * @param identity the identity
-	 * @return the identity info
-	 */
-	public Map<String, List<IdentityInfoDTO>> getIdentityInfo(MatchType matchType, String idName, RequestDTO identity);
-	
-	/**
-	 * Gets the identity info for the MatchType from the IdentityDTO.
-	 *
-	 * @param matchType the match type
-	 * @param idName 
 	 * @param identity  the identity
 	 * @param language the language
 	 * @return the identity info
@@ -153,63 +127,5 @@ public interface IdInfoFetcher {
 	 */
 	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings);
 	
-	/**
-	 * Gets the mapping config.
-	 *
-	 * @return the mapping config
-	 */
-	public MappingConfig getMappingConfig();
-
-
-	/**
-	 * Gets the available dynamic attributes names.
-	 *
-	 * @param request the request
-	 * @return the available dynamic attributes names
-	 */
-	Set<String> getAvailableDynamicAttributesNames(RequestDTO request);
-	
-	/**
-	 * Fetch data from Identity info value based on Identity response.
-	 *
-	 * @param idResponseDTO the id response DTO
-	 * @return the id info
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) {
-		return idResponseDTO.entrySet().stream()
-				.flatMap(entry -> {
-					if(entry.getValue() instanceof Map) {
-						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
-					} else {
-						return Stream.of(entry);
-					}
-				})
-				.collect(Collectors.toMap(t -> t.getKey(), entry -> {
-					Object val = entry.getValue();
-					if (val instanceof List) {
-						List<Map> arrayList = (List) val;
-						return arrayList.stream().filter(elem -> elem instanceof Map)
-								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
-									String value = String.valueOf(map1.get("value"));
-									IdentityInfoDTO idInfo = new IdentityInfoDTO();
-									if (map1.containsKey("language")) {
-										idInfo.setLanguage(String.valueOf(map1.get("language")));
-									}
-									idInfo.setValue(value);
-									return idInfo;
-								}).collect(Collectors.toList());
-
-					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
-							|| val instanceof Integer || val instanceof Double || val instanceof Float) {
-						IdentityInfoDTO idInfo = new IdentityInfoDTO();
-						idInfo.setValue(String.valueOf(val));
-						return Stream.of(idInfo).collect(Collectors.toList());
-					}
-					return Collections.emptyList();
-				}));
-
-	}
 
 }

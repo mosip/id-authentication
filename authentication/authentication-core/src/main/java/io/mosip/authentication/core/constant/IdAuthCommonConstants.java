@@ -117,8 +117,6 @@ public final class IdAuthCommonConstants {
 	public static final String AUTH_TYPE = "authtypes";
 
 	public static final String BIOMETRICS = "biometrics";
-	
-	public static final String DEMOGRAPHICS = "demographics";
 
 	public static final String IDENTITY = "identity";
 
