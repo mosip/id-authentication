@@ -261,7 +261,7 @@ public class MatchTest {
 		};
 		String name = "name";
 		IdMapping[] authTypes = new IdMapping[] { idMapping };
-		IdMapping.getIdMapping(name, authTypes);
+		IdMapping.getIdMapping(name, authTypes, null);
 
 	}
 

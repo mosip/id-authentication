@@ -25,7 +25,7 @@ import io.mosip.kernel.core.util.DateUtils;
 public final class DemoMatcherUtil {
 
 	private static final String SPLIT_REGEX = "\\s+";
-	private static final Integer EXACT_MATCH_VALUE = 100;
+	public static final Integer EXACT_MATCH_VALUE = 100;
 
 	private static Logger mosipLogger = IdaLogger.getLogger(DemoMatcherUtil.class);
 
