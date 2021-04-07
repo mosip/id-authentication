@@ -4,6 +4,10 @@ import java.util.List;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import lombok.Data;
 
+/**
+ * @author Mamta A
+ *
+ */
 @Data
 public class HotlistResponseDTO {
 	

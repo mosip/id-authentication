@@ -1,10 +1,9 @@
 package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_CALLBACK_SECRET;
+
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_TOPIC;
 
-import java.time.ZoneOffset;
-import java.util.TimeZone;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
@@ -39,7 +37,7 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 
 /**
  * @author Manoj SP
- *
+ * @author Mamta A
  */
 @RestController
 public class HotlistEventController {
@@ -120,14 +118,20 @@ public class HotlistEventController {
 								&& hotlistEventData.get(EXPIRY_TIMESTAMP) instanceof String));
 	}
 
-	
+	/**
+	 * Hotlist status end point
+	 * @param id
+	 * @param idtype
+	 * @return response entity 
+	 * @throws IdAuthenticationAppException 
+	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@GetMapping(path = "/hotlist/status/id/{id}/idtype/{idtype}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HotlistResponseDTO> getHotlistingStatus(@PathVariable String id, @PathVariable String idtype) throws IdAuthenticationAppException{
 		HotlistResponseDTO response = new HotlistResponseDTO();
 		response.setId(API_ID);
 		response.setVersion(API_VERSION);
-		response.setResponseTime(getResponseTime());
+		response.setResponseTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		try {
 			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(id, idtype);
 			response.setResponse(hotlistStatus);
@@ -137,14 +141,5 @@ public class HotlistEventController {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
-	}
- 
-	private String getResponseTime() {
-		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
-						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
-						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
-				TimeZone.getTimeZone(ZoneOffset.UTC));
 	}
 }

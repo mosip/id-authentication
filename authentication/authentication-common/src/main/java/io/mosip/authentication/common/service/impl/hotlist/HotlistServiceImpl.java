@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.HotlistCache;
 import io.mosip.authentication.common.service.repository.HotlistCacheRepository;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -16,7 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Manoj SP
- *
+ * @author Mamta A
  */
 @Service
 public class HotlistServiceImpl implements HotlistService {
@@ -54,6 +55,17 @@ public class HotlistServiceImpl implements HotlistService {
 		}
 	}
 
+	/**
+	 * Retrieve the Hotlist Status information.
+	 * @param id 			the id_hash
+	 * @param idType 		the id_type
+	 * @return HotlistDTO 	consist of hotlisting information
+	 * @throws IdAuthenticationBusinessException
+	 */
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.hotlist.service.HotlistService#getHotlistStatus(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public HotlistDTO getHotlistStatus(String id, String idType) throws IdAuthenticationBusinessException {
 		HotlistDTO dto = null;
@@ -64,7 +76,8 @@ public class HotlistServiceImpl implements HotlistService {
 			dto.setStatus(hotlistCache.getStatus());
 			dto.setStartDTimes(hotlistCache.getStartDTimes());
 			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
-		}
+		}else
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),"ID / ID Type"));
 		return dto;
 	}
 
