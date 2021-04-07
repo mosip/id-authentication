@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.service.entity.HotlistCache;
 import io.mosip.authentication.common.service.repository.HotlistCacheRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -51,6 +52,20 @@ public class HotlistServiceImpl implements HotlistService {
 			HotlistCache hotlistCache = hotlistData.get();
 			hotlistCacheRepo.delete(hotlistCache);
 		}
+	}
+
+	@Override
+	public HotlistDTO getHotlistStatus(String id, String idType) throws IdAuthenticationBusinessException {
+		HotlistDTO dto = null;
+		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
+		if (hotlistData.isPresent()) {
+			HotlistCache hotlistCache = hotlistData.get();
+			dto = new HotlistDTO();
+			dto.setStatus(hotlistCache.getStatus());
+			dto.setStartDTimes(hotlistCache.getStartDTimes());
+			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
+		}
+		return dto;
 	}
 
 }
