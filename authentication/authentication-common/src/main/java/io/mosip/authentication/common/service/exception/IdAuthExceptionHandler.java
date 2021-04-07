@@ -37,6 +37,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.hotlist.dto.HotlistResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
@@ -56,6 +57,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * returns custom exception response {@link AuthResponseDTO}.
  *
  * @author Manoj SP
+ * @author Mamta A
  */
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
@@ -386,10 +388,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				authtypeResponseDto.setResponseTime(responseTime);
 				return authtypeResponseDto;
 			}else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.HOTLIST)) {
-				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
-				authtypeResponseDto.setErrors(errors);
-				authtypeResponseDto.setResponseTime(responseTime);
-				return authtypeResponseDto;
+				HotlistResponseDTO hotlistResponseDto = new HotlistResponseDTO();
+				hotlistResponseDto.setErrors(errors);
+				hotlistResponseDto.setResponseTime(responseTime);
+				return hotlistResponseDto;
 			}
 
 
