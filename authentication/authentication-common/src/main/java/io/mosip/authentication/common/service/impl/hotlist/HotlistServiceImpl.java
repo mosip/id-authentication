@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.HotlistCache;
 import io.mosip.authentication.common.service.repository.HotlistCacheRepository;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -57,27 +56,30 @@ public class HotlistServiceImpl implements HotlistService {
 
 	/**
 	 * Retrieve the Hotlist Status information.
-	 * @param id 			the id_hash
-	 * @param idType 		the id_type
-	 * @return HotlistDTO 	consist of hotlisting information
+	 * 
+	 * @param id     the id_hash
+	 * @param idType the id_type
+	 * @return HotlistDTO consist of hotlisting information
 	 * @throws IdAuthenticationBusinessException
 	 */
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.hotlist.service.HotlistService#getHotlistStatus(java.lang.String, java.lang.String)
+	 * 
+	 * @see io.mosip.authentication.core.spi.hotlist.service.HotlistService#
+	 * getHotlistStatus(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public HotlistDTO getHotlistStatus(String id, String idType) throws IdAuthenticationBusinessException {
-		HotlistDTO dto = null;
+	public HotlistDTO getHotlistStatus(String id, String idType) {
+		HotlistDTO dto = new HotlistDTO();
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
 			HotlistCache hotlistCache = hotlistData.get();
-			dto = new HotlistDTO();
 			dto.setStatus(hotlistCache.getStatus());
 			dto.setStartDTimes(hotlistCache.getStartDTimes());
 			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
-		}else
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),"ID / ID Type"));
+		} else {
+			dto.setStatus("UNBLOCKED");
+		}
 		return dto;
 	}
 

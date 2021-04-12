@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -22,6 +23,9 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
+import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 
@@ -48,6 +52,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
+
+	@Autowired
+	private HotlistService hotlistService;
 
 	/*
 	 * (non-Javadoc)
@@ -100,6 +107,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
+			if (!errors.hasErrors()) {
+				isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
+
+				isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
+
+				if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
+					isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
+					isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
+				}
+			}
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
@@ -109,10 +126,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
-		if (Objects.nonNull(authRequestDto.getRequest())
-				&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
-				&& authRequestDto.getRequest().getBiometrics().stream()
-						.filter(bio -> Objects.nonNull(bio.getData()))
+		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getDomainUri() == null) {
 								// It is error if domain URI in request is not null but in biometrics it is null
@@ -126,13 +141,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						})) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String.format(
-					IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
 		}
-		if (Objects.nonNull(authRequestDto.getRequest())
-				&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
-				&& authRequestDto.getRequest().getBiometrics().stream()
-						.filter(bio -> Objects.nonNull(bio.getData()))
+		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
+				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getEnv() == null) {
 								// It is error if env in request is not null but in biometrics it is null
@@ -162,10 +175,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Check auth request.
 	 *
-	 * @param authRequest
-	 *            the auth request
-	 * @param errors
-	 *            the errors
+	 * @param authRequest the auth request
+	 * @param errors      the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		AuthTypeDTO authType = authRequest.getRequestedAuth();
@@ -185,19 +196,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Validate device details.
 	 *
-	 * @param bioData
-	 *            the bio data
-	 * @param errors
-	 *            the errors
+	 * @param bioData the bio data
+	 * @param errors  the errors
 	 */
 	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
-		List<DataDTO> bioData = Optional.ofNullable(authRequest.getRequest())
-									.map(RequestDTO::getBiometrics)
-									.map(List<BioIdentityInfoDTO>::stream)
-									.orElseGet(Stream::empty)
-									.map(BioIdentityInfoDTO::getData)
-									.collect(Collectors.toList());
-		
+		List<DataDTO> bioData = Optional.ofNullable(authRequest.getRequest()).map(RequestDTO::getBiometrics)
+				.map(List<BioIdentityInfoDTO>::stream).orElseGet(Stream::empty).map(BioIdentityInfoDTO::getData)
+				.collect(Collectors.toList());
+
 		IntStream.range(0, bioData.size()).forEach(index -> {
 			if (StringUtils.isEmpty(bioData.get(index).getDeviceCode())) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -265,5 +271,56 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		});
 	}
 
+	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
+		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType) && hotlistService
+				.getHotlistStatus(individualId, individualIdType).getStatus().contentEquals(HotlistStatus.BLOCKED)) {
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+							individualIdType));
+		}
+	}
+
+	private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
+			IntStream.range(0, biometrics.size())
+					.filter(index -> hotlistService.getHotlistStatus(
+							biometrics.get(index).getData().getDigitalId().getSerialNo()
+									.concat(biometrics.get(index).getData().getDigitalId().getMake())
+									.concat(biometrics.get(index).getData().getDigitalId().getModel()),
+							HotlistIdTypes.DEVICE).getStatus().contentEquals(HotlistStatus.BLOCKED))
+					.forEach(index -> errors.rejectValue(REQUEST,
+							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE))));
+		}
+	}
+
+	private void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
+			IntStream
+					.range(0, biometrics.size()).filter(
+							index -> hotlistService
+									.getHotlistStatus(
+											biometrics.get(0).getData().getDigitalId().getDp()
+													.concat(biometrics.get(0).getData().getDigitalId().getDpId()),
+											HotlistIdTypes.DEVICE_PROVIDER)
+									.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					.forEach(index -> errors.rejectValue(REQUEST,
+							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE_PROVIDER))));
+		}
+	}
+
+	private void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
+		if (Objects.nonNull(metadata)) {
+			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
+					.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					.ifPresent(partnerId -> errors.rejectValue(REQUEST,
+							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+									HotlistIdTypes.PARTNER_ID)));
+		}
+	}
+
 }
-	

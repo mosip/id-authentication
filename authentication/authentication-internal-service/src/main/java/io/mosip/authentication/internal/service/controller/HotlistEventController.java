@@ -44,13 +44,13 @@ public class HotlistEventController {
 
 	@Value("{'${mosip.ida.internal.hotlist.idtypes.allowed}'.split(',')}")
 	private List<String> idTypes;
-	
+
 	@Value("${ida.api.id.hotlist}")
 	private String API_ID;
-	
+
 	@Value("${ida.api.version.hotlist}")
 	private String API_VERSION;
-	
+
 	private static final String UNBLOCKED = "UNBLOCKED";
 
 	private static final String BLOCKED = "BLOCKED";
@@ -64,13 +64,12 @@ public class HotlistEventController {
 	private static final String HOTLIST_DATA = "hotlistData";
 
 	private static final String ID = "id";
-	
-	
+
 	private static Logger logger = IdaLogger.getLogger(HotlistEventController.class);
 
 	@Autowired
 	Environment environment;
-	
+
 	@Autowired
 	private HotlistService hotlistService;
 
@@ -120,26 +119,22 @@ public class HotlistEventController {
 
 	/**
 	 * Hotlist status end point
+	 * 
 	 * @param id
 	 * @param idtype
-	 * @return response entity 
-	 * @throws IdAuthenticationAppException 
+	 * @return response entity
+	 * @throws IdAuthenticationAppException
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@GetMapping(path = "/hotlist/status/id/{id}/idtype/{idtype}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<HotlistResponseDTO> getHotlistingStatus(@PathVariable String id, @PathVariable String idtype) throws IdAuthenticationAppException{
+	public ResponseEntity<HotlistResponseDTO> getHotlistingStatus(@PathVariable String id, @PathVariable String idtype)
+			throws IdAuthenticationAppException {
 		HotlistResponseDTO response = new HotlistResponseDTO();
 		response.setId(API_ID);
 		response.setVersion(API_VERSION);
 		response.setResponseTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
-		try {
-			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(id, idtype);
-			response.setResponse(hotlistStatus);
-			return new ResponseEntity<>(response,HttpStatus.OK);
-		}
-		catch (IdAuthenticationBusinessException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-		}
+		HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(id, idtype);
+		response.setResponse(hotlistStatus);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

@@ -417,6 +417,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private void addMetadata(Map<String, Object> requestBody, String partnerId, String partnerApiKey,
 			PartnerPolicyResponseDTO partnerServiceResponse, String partnerCertificate) {
 		Map<String, Object> metadata = new HashMap<>();
+		metadata.put("partnerId", partnerId);
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
 		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
 		if (partnerCertificate != null) {

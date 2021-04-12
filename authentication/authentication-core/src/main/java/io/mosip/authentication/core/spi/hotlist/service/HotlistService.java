@@ -21,5 +21,5 @@ public interface HotlistService {
 	 * @return HotlistDTO 	consist of hotlisting information
 	 * @throws IdAuthenticationBusinessException id auth business exception
 	 */
-	HotlistDTO getHotlistStatus(String id, String idType) throws IdAuthenticationBusinessException;
+	HotlistDTO getHotlistStatus(String id, String idType);
 }
