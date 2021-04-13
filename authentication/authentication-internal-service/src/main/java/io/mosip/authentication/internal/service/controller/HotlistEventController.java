@@ -1,32 +1,23 @@
 package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_CALLBACK_SECRET;
-
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_TOPIC;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
-import io.mosip.authentication.core.hotlist.dto.HotlistResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -115,26 +106,5 @@ public class HotlistEventController {
 						&& StringUtils.isNotBlank((String) status))
 						|| (hotlistEventData.containsKey(EXPIRY_TIMESTAMP)
 								&& hotlistEventData.get(EXPIRY_TIMESTAMP) instanceof String));
-	}
-
-	/**
-	 * Hotlist status end point
-	 * 
-	 * @param id
-	 * @param idtype
-	 * @return response entity
-	 * @throws IdAuthenticationAppException
-	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
-	@GetMapping(path = "/hotlist/status/id/{id}/idtype/{idtype}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<HotlistResponseDTO> getHotlistingStatus(@PathVariable String id, @PathVariable String idtype)
-			throws IdAuthenticationAppException {
-		HotlistResponseDTO response = new HotlistResponseDTO();
-		response.setId(API_ID);
-		response.setVersion(API_VERSION);
-		response.setResponseTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
-		HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(id, idtype);
-		response.setResponse(hotlistStatus);
-		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }
