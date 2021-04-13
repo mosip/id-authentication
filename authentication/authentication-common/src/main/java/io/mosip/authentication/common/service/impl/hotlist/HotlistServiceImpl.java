@@ -12,6 +12,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
+import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -78,7 +79,7 @@ public class HotlistServiceImpl implements HotlistService {
 			dto.setStartDTimes(hotlistCache.getStartDTimes());
 			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
 		} else {
-			dto.setStatus("UNBLOCKED");
+			dto.setStatus(HotlistStatus.UNBLOCKED);
 		}
 		return dto;
 	}
