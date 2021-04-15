@@ -41,10 +41,13 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	/** The Constant DIGITAL_ID. */
 	private static final String DIGITAL_ID = "data/digitalId/";
 
+	/** The Constant FINGERPRINT_COUNT. */
 	private static final int FINGERPRINT_COUNT = 10;
 
+	/** The Constant REQUEST_REQUEST_TIME. */
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
 	/** The Constant AUTH_REQUEST. */
@@ -53,9 +56,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
+	/** The hotlist service. */
 	@Autowired
 	private HotlistService hotlistService;
 
+	/**
+	 * Supports.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if successful
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,6 +77,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		return AuthRequestDTO.class.equals(clazz);
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param target the target
+	 * @param errors the errors
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,6 +141,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Validate domain UR iand env.
+	 *
+	 * @param authRequestDto the auth request dto
+	 * @param errors the errors
+	 */
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
@@ -164,6 +186,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 * @param paramName the param name
+	 */
 	@Override
 	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
 		super.validateReqTime(reqTime, errors, paramName);
@@ -188,6 +217,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Gets the max finger count.
+	 *
+	 * @return the max finger count
+	 */
 	@Override
 	protected int getMaxFingerCount() {
 		return FINGERPRINT_COUNT;
@@ -196,7 +230,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Validate device details.
 	 *
-	 * @param bioData the bio data
+	 * @param authRequest the auth request
 	 * @param errors  the errors
 	 */
 	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
@@ -271,6 +305,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		});
 	}
 
+	/**
+	 * Checks if is individual id hotlisted.
+	 *
+	 * @param individualId the individual id
+	 * @param individualIdType the individual id type
+	 * @param errors the errors
+	 */
 	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
 		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType) && hotlistService
 				.getHotlistStatus(individualId, individualIdType).getStatus().contentEquals(HotlistStatus.BLOCKED)) {
@@ -280,6 +321,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Checks if is devices hotlisted.
+	 *
+	 * @param biometrics the biometrics
+	 * @param errors the errors
+	 */
 	private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
 			IntStream.range(0, biometrics.size())
@@ -295,6 +342,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Checks if is device provider hotlisted.
+	 *
+	 * @param biometrics the biometrics
+	 * @param errors the errors
+	 */
 	private void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
 			IntStream
@@ -312,6 +365,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Checks if is partner id hotlisted.
+	 *
+	 * @param metadata the metadata
+	 * @param errors the errors
+	 */
 	private void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
 		if (Objects.nonNull(metadata)) {
 			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
