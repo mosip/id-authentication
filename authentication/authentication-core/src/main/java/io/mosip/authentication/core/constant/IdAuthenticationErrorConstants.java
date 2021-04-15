@@ -60,6 +60,7 @@ public enum IdAuthenticationErrorConstants {
 	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
 	INPUT_MISMATCH("IDA-MLC-024", "%s of request is not matching with %s of biometrics"),
 	PARTNER_CERT_NOT_AVAILABLE("IDA-MLC-025", "Partner Certificate is not available"),
+	IDVID_DEACTIVATED_BLOCKED("IDA-MLC-022", "%s is blocked"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
