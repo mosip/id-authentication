@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -145,7 +146,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Validate domain UR iand env.
 	 *
 	 * @param authRequestDto the auth request dto
-	 * @param errors the errors
+	 * @param errors         the errors
 	 */
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
@@ -189,8 +190,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param reqTime the req time
-	 * @param errors the errors
+	 * @param reqTime   the req time
+	 * @param errors    the errors
 	 * @param paramName the param name
 	 */
 	@Override
@@ -231,7 +232,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Validate device details.
 	 *
 	 * @param authRequest the auth request
-	 * @param errors  the errors
+	 * @param errors      the errors
 	 */
 	public void validateDeviceDetails(AuthRequestDTO authRequest, Errors errors) {
 		List<DataDTO> bioData = Optional.ofNullable(authRequest.getRequest()).map(RequestDTO::getBiometrics)
@@ -308,13 +309,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Checks if is individual id hotlisted.
 	 *
-	 * @param individualId the individual id
+	 * @param individualId     the individual id
 	 * @param individualIdType the individual id type
-	 * @param errors the errors
+	 * @param errors           the errors
 	 */
 	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
-		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType) && hotlistService
-				.getHotlistStatus(individualId, individualIdType).getStatus().contentEquals(HotlistStatus.BLOCKED)) {
+		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)
+				&& hotlistService.getHotlistStatus(
+						IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()),
+						individualIdType).getStatus().contentEquals(HotlistStatus.BLOCKED)) {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
 							individualIdType));
@@ -325,15 +328,18 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Checks if is devices hotlisted.
 	 *
 	 * @param biometrics the biometrics
-	 * @param errors the errors
+	 * @param errors     the errors
 	 */
 	private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream.range(0, biometrics.size())
+			IntStream
+					.range(0,
+							biometrics.size())
 					.filter(index -> hotlistService.getHotlistStatus(
-							biometrics.get(index).getData().getDigitalId().getSerialNo()
+							IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData()
+									.getDigitalId().getSerialNo()
 									.concat(biometrics.get(index).getData().getDigitalId().getMake())
-									.concat(biometrics.get(index).getData().getDigitalId().getModel()),
+									.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
 							HotlistIdTypes.DEVICE).getStatus().contentEquals(HotlistStatus.BLOCKED))
 					.forEach(index -> errors.rejectValue(REQUEST,
 							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
@@ -346,7 +352,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Checks if is device provider hotlisted.
 	 *
 	 * @param biometrics the biometrics
-	 * @param errors the errors
+	 * @param errors     the errors
 	 */
 	private void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
@@ -354,8 +360,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					.range(0, biometrics.size()).filter(
 							index -> hotlistService
 									.getHotlistStatus(
-											biometrics.get(0).getData().getDigitalId().getDp()
-													.concat(biometrics.get(0).getData().getDigitalId().getDpId()),
+											IdAuthSecurityManager.generateHashAndDigestAsPlainText(
+													biometrics.get(0).getData().getDigitalId().getDp()
+															.concat(biometrics.get(0).getData().getDigitalId()
+																	.getDpId())
+															.getBytes()),
 											HotlistIdTypes.DEVICE_PROVIDER)
 									.getStatus().contentEquals(HotlistStatus.BLOCKED))
 					.forEach(index -> errors.rejectValue(REQUEST,
@@ -369,10 +378,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Checks if is partner id hotlisted.
 	 *
 	 * @param metadata the metadata
-	 * @param errors the errors
+	 * @param errors   the errors
 	 */
 	private void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
-		if (Objects.nonNull(metadata)) {
+		if (Objects.nonNull(metadata) && metadata.isPresent()) {
 			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
 					.getStatus().contentEquals(HotlistStatus.BLOCKED))
 					.ifPresent(partnerId -> errors.rejectValue(REQUEST,
