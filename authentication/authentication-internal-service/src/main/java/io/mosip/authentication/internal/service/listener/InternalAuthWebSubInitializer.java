@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.CacheUpdatingWebsubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventManager;
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
@@ -24,6 +25,8 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private HotlistEventInitializer hotlistEventInitializer;
 	
+	@Autowired 
+	private CredentialStoreStatusEventManager credentialStoreStatusEventManager;
 	
 	protected void doInitSubscriptions() {
 		webSubHelper.initSubscriber(authTypeStatusEventsInitializer);
@@ -39,6 +42,8 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(idChangeEventInitializer);
 		webSubHelper.initRegistrar(partnerCACertEventInitializer);
 		webSubHelper.initRegistrar(hotlistEventInitializer);		
+		
+		webSubHelper.initRegistrar(credentialStoreStatusEventManager);		
 	}
 
 }
