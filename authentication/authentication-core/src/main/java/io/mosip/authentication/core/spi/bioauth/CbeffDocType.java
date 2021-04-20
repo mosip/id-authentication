@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.spi.bioauth;
 
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 /**
  * General-purpose of {@code CbeffDocType} class used to Cbeff Documents Type
@@ -13,23 +13,23 @@ public enum CbeffDocType {
 	/**
 	 * Enum for Finger
 	 */
-	FINGER(SingleType.FINGER.name(), SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER),
+	FINGER(BiometricType.FINGER.name(), BiometricType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER),
 	//To be removed
 	/**
 	 * Enum for FMR
 	 */
-	FMR("FMR", SingleType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE),
+	FMR("FMR", BiometricType.FINGER, CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE),
 	/**
 	 * Enum for IRIS
 	 */
-	IRIS(SingleType.IRIS.name(), SingleType.IRIS, CbeffConstant.FORMAT_TYPE_IRIS),
+	IRIS(BiometricType.IRIS.name(), BiometricType.IRIS, CbeffConstant.FORMAT_TYPE_IRIS),
 	/**
 	 * Enum for Face
 	 */
-	FACE(SingleType.FACE.name(), SingleType.FACE, CbeffConstant.FORMAT_TYPE_FACE);
+	FACE(BiometricType.FACE.name(), BiometricType.FACE, CbeffConstant.FORMAT_TYPE_FACE);
 
 	private String name;
-	private SingleType type;
+	private BiometricType type;
 	private long value;
 
 	/**
@@ -39,7 +39,7 @@ public enum CbeffDocType {
 	 * @param type
 	 * @param value
 	 */
-	private CbeffDocType(String name, SingleType type, long value) {
+	private CbeffDocType(String name, BiometricType type, long value) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
@@ -49,7 +49,7 @@ public enum CbeffDocType {
 		return name;
 	}
 
-	public SingleType getType() {
+	public BiometricType getType() {
 		return type;
 	}
 
