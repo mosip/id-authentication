@@ -4,32 +4,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.CacheUpdatingWebsubInitializer;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
-import io.mosip.authentication.common.service.websub.impl.HotlistEventSubscriber;
-import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
-import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
+import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 
 @Component
 public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitializer{
 	
 	@Autowired
-	private AuthTypeStatusEventsSubscriber authTypeStatusEventsSubscriber;
+	private AuthTypeStatusEventsInitializer authTypeStatusEventsInitializer;
 	
 	@Autowired
-	private IdChangeEventsSubscriber idChangeEventSubscriber;
+	private IdChangeEventsInitializer idChangeEventInitializer;
 	
 	@Autowired
-	private PartnerCACertEventSubscriber partnerCACertEventSubscriber;
+	private PartnerCACertEventInitializer partnerCACertEventInitializer;
 	
 	@Autowired
-	private HotlistEventSubscriber hotlistEventSubscriber;
+	private HotlistEventInitializer hotlistEventInitializer;
 	
 	
 	protected void doInitSubscriptions() {
-		webSubSubscriptionHelper.initSubscriber(authTypeStatusEventsSubscriber);
-		webSubSubscriptionHelper.initSubscriber(idChangeEventSubscriber);
-		webSubSubscriptionHelper.initSubscriber(partnerCACertEventSubscriber);
-		webSubSubscriptionHelper.initSubscriber(hotlistEventSubscriber);
+		webSubHelper.initSubscriber(authTypeStatusEventsInitializer);
+		webSubHelper.initSubscriber(idChangeEventInitializer);
+		webSubHelper.initSubscriber(partnerCACertEventInitializer);
+		webSubHelper.initSubscriber(hotlistEventInitializer);
+	}
+
+
+	@Override
+	protected void doRegisterTopics() {
+		webSubHelper.initRegistrar(authTypeStatusEventsInitializer);
+		webSubHelper.initRegistrar(idChangeEventInitializer);
+		webSubHelper.initRegistrar(partnerCACertEventInitializer);
+		webSubHelper.initRegistrar(hotlistEventInitializer);		
 	}
 
 }

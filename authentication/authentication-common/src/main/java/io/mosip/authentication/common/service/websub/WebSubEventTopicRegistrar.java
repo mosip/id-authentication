@@ -3,16 +3,16 @@ package io.mosip.authentication.common.service.websub;
 import java.util.function.Supplier;
 
 /**
- * The Interface WebSubEventSubcriber.
+ * The Interface WebSubEventTopicRegistrar.
  * @author Loganathan Sekar
  */
-public interface WebSubEventSubcriber {
+public interface WebSubEventTopicRegistrar {
 	
 	/**
-	 * subscribe.
+	 * Initialize.
 	 *
 	 * @param enableTester the enable tester
 	 */
-	void subscribe(Supplier<Boolean> enableTester);
+	void register(Supplier<Boolean> enableTester);
 	
 }

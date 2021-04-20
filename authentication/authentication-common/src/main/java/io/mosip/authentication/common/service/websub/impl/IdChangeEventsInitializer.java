@@ -16,14 +16,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class IdChangeEventsSubscriber.
+ * The Class IdChangeEventsInitializer.
  * @author Loganathan Sekar
  */
 @Component
-public class IdChangeEventsSubscriber extends BaseWebSubEventsSubscriber {
+public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 	
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(IdChangeEventsSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(IdChangeEventsInitializer.class);
 	
 	/** The Constant ID_CHANGE_EVENTS. */
 	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
@@ -44,25 +44,15 @@ public class IdChangeEventsSubscriber extends BaseWebSubEventsSubscriber {
 	private String authPartherId;
 
 	/**
-	 * Do initialize.
+	 * Do subscribe.
 	 */
 	@Override
-	protected void doInitialize() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "doInitialize",  this.getClass().getSimpleName(), "Initializing Internal Auth subscribptions..");
+	protected void doSubscribe() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doSubscribe",  this.getClass().getSimpleName(), "Initializing Internal Auth subscribptions..");
 		String topicPrefix = authPartherId + "/";
-		initCredentialIssueanceEvent(topicPrefix);
-	}
-	
-	/**
-	 * Inits the credential issueance event.
-	 *
-	 * @param topicPrefix the topic prefix
-	 */
-	private void initCredentialIssueanceEvent(String topicPrefix) {
-		tryRegisterTopicCredentialIssueanceEvents(topicPrefix);
 		subscribeForCredentialIssueanceEvents(topicPrefix);
 	}
-
+	
 	/**
 	 * Try register topic credential issueance events.
 	 *
@@ -108,6 +98,16 @@ public class IdChangeEventsSubscriber extends BaseWebSubEventsSubscriber {
 			}
 		});
 					
+	}
+
+	/**
+	 * Do register.
+	 */
+	@Override
+	protected void doRegister() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister",  this.getClass().getSimpleName(), "Registering Id Change Event topics..");
+		String topicPrefix = authPartherId + "/";
+		tryRegisterTopicCredentialIssueanceEvents(topicPrefix);
 	}
 
 }

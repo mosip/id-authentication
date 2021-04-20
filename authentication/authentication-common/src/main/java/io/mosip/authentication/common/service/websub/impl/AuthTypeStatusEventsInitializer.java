@@ -14,14 +14,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class AuthTypeStatusEventsSubscriber.
+ * The Class AuthTypeStatusEventsInitializer.
  * @author Loganathan Sekar
  */
 @Component
-public class AuthTypeStatusEventsSubscriber extends BaseWebSubEventsSubscriber {
+public class AuthTypeStatusEventsInitializer extends BaseWebSubEventsInitializer {
 	
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventsSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventsInitializer.class);
 	
 	/** The Constant PARTNER_ID_PLACEHOLDER. */
 	private static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";
@@ -43,10 +43,10 @@ public class AuthTypeStatusEventsSubscriber extends BaseWebSubEventsSubscriber {
 	 * Do initialize.
 	 */
 	@Override
-	protected void doInitialize() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "doInitialize",  this.getClass().getSimpleName(), "Initializing Internal Auth subscribptions..");
+	protected void doSubscribe() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doSubscribe",  this.getClass().getSimpleName(), "Initializing Internal Auth subscribptions..");
 		String topicPrefix = authPartherId + "/";
-		initAuthTypeEvent(topicPrefix);	
+		subscribeForAuthTypeEvents(topicPrefix);
 	}
 	
 	/**
@@ -87,14 +87,11 @@ public class AuthTypeStatusEventsSubscriber extends BaseWebSubEventsSubscriber {
 		}
 	}
 
-	/**
-	 * Inits the auth type event.
-	 *
-	 * @param topicPrefix the topic prefix
-	 */
-	private void initAuthTypeEvent(String topicPrefix) {
+	@Override
+	protected void doRegister() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister",  this.getClass().getSimpleName(), "Registering Auth Type Status topic..");
+		String topicPrefix = authPartherId + "/";
 		tryRegisterTopicForAuthEvents(topicPrefix);
-		subscribeForAuthTypeEvents(topicPrefix);
 	}
 
 }

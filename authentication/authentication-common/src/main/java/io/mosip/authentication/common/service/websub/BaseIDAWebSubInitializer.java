@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
+import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -48,8 +48,8 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	private int reSubscriptionDelaySecs;
 
 	@Autowired
-	protected WebSubSubscriptionHelper webSubSubscriptionHelper;
-
+	protected WebSubHelper webSubHelper;
+	
 	@Autowired
 	private ThreadPoolTaskScheduler taskScheduler;
 	
@@ -60,10 +60,12 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
-		taskScheduler.schedule(
-				  this::initSubsriptions,
-				  new Date(System.currentTimeMillis() + taskSubsctiptionDelay)
-				);
+		taskScheduler.schedule(() -> {
+			//Invoke topic registrations. This is done only once.
+			registerTopics();
+			//Init topic subscriptions
+			initSubsriptions();
+		}, new Date(System.currentTimeMillis() + taskSubsctiptionDelay));
 		
 		if (reSubscriptionDelaySecs > 0) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "onApplicationEvent",
@@ -107,7 +109,22 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 			return false;
 		}
 	}
+	
+	private boolean registerTopics() {
+		try {
+			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registering Topics..");
+			doRegisterTopics();
+			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registered subscribptions.");
+			return true;
+		} catch (Exception e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "registerTopics", "",
+					"Topics registration failed: " + e.getMessage());
+			return false;
+		}
+	}
 
 	protected abstract void doInitSubscriptions();
+	
+	protected abstract void doRegisterTopics();
 
 }

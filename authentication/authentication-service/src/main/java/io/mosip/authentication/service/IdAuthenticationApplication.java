@@ -20,7 +20,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
-import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
+import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
@@ -43,7 +43,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
-import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsSubscriber;
+import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -93,9 +93,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
 		PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
 		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class,
-		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubSubscriptionHelper.class,
+		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubHelper.class,
 		PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class,
-		PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
+		PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
 		RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

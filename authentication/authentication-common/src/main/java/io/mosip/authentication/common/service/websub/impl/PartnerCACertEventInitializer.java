@@ -13,15 +13,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class PartnerCACertEventSubscriber.
+ * The Class PartnerCACertEventInitializer.
  * 
  * @author Manoj SP
  */
 @Component
-public class PartnerCACertEventSubscriber extends BaseWebSubEventsSubscriber {
+public class PartnerCACertEventInitializer extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(PartnerCACertEventSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(PartnerCACertEventInitializer.class);
 
 	/** The partner service callback URL. */
 	@Value("${" + IDA_WEBSUB_CA_CERT_CALLBACK_URL + "}")
@@ -35,13 +35,12 @@ public class PartnerCACertEventSubscriber extends BaseWebSubEventsSubscriber {
 	private String partnerCertEventTopic;
 
 	/**
-	 * Do initialize.
+	 * Do subscribe.
 	 */
 	@Override
-	protected void doInitialize() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "doInitialize", this.getClass().getSimpleName(),
+	protected void doSubscribe() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doSubscribe", this.getClass().getSimpleName(),
 				"Initializing Partner Certificate event subscriptions..");
-		tryRegisterTopicPartnerCertEvents();
 		subscribeForPartnerCertEvent();
 	}
 
@@ -82,5 +81,12 @@ public class PartnerCACertEventSubscriber extends BaseWebSubEventsSubscriber {
 					"Error subscribing topic: " + partnerCertEventTopic + "\n" + e.getMessage());
 			throw e;
 		}
+	}
+
+	@Override
+	protected void doRegister() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister", this.getClass().getSimpleName(),
+				"Registering Partner Certificate event topic..");
+		tryRegisterTopicPartnerCertEvents();		
 	}
 }
