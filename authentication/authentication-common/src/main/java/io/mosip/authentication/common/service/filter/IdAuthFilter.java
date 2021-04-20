@@ -75,7 +75,7 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
@@ -738,11 +738,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 			bioAuthType = bioType;
 			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
 					|| (FMR_ENABLED_TEST.test(env) && bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))) {
-				bioType = SingleType.FINGER.value();
+				bioType = BiometricType.FINGER.value();
 			} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
-				bioType = SingleType.FACE.value();
+				bioType = BiometricType.FACE.value();
 			} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
-				bioType = SingleType.IRIS.value();
+				bioType = BiometricType.IRIS.value();
 			}
 
 			if (!isDeviceTypeBioTypeSame(bioType, deviceTypeList)) {
