@@ -218,7 +218,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		if (isSuccess) {
 			credentialEventStore.setStatusCode(CredentialStoreStatus.STORED.name());
 			// Send websub event "STORED" status for the event id.
-			credentialStoreStatusEventManager.sendCredentialUpdateStatusEvent(CredentialStoreStatus.STORED.name(), requestId, updatedDTimes);
+			credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.STORED.name(), requestId, updatedDTimes);
 		} else {
 			if (isRecoverableException) {
 				int retryCount = 0;
@@ -231,13 +231,13 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 				} else {
 					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 					// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
-					credentialStoreStatusEventManager.sendCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+					credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 				}
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name());
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
-				credentialStoreStatusEventManager.sendCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+				credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 			}
 		}
 

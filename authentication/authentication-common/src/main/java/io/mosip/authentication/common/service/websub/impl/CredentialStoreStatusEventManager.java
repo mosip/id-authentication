@@ -17,7 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 /**
  * The Class CredentialStoreStatusEventManager.
  * 
- * @author Manoj SP
+ * @author Loganathan Sekar
  */
 @Component
 public class CredentialStoreStatusEventManager extends BaseWebSubEventsInitializer {
@@ -65,7 +65,7 @@ public class CredentialStoreStatusEventManager extends BaseWebSubEventsInitializ
 		tryRegisterTopicHotlistEvent();
 	}
 	
-	public void sendCredentialUpdateStatusEvent(String status, String requestId, LocalDateTime updatedDTimes) {
+	public void publishCredentialUpdateStatusEvent(String status, String requestId, LocalDateTime updatedDTimes) {
 		CredentialStatusUpdateEvent credentialStatusUpdateEvent = createCredentialStatusUpdateEvent(requestId, status, updatedDTimes);
 		webSubHelper.publishEvent(credentialStatusUpdateTopic, webSubHelper.createEventModel(credentialStatusUpdateTopic, credentialStatusUpdateEvent));
 	}
