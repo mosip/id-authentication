@@ -34,7 +34,6 @@ public final class IdAuthCommonConstants {
 	public static final String IDENTITY_DATA = "IDENTITY_DATA";
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
-
 	private IdAuthCommonConstants() {
 
 	}
@@ -60,6 +59,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String REQUESTEDAUTH = "requestedAuth";
 
+	public static final String UNKNOWN = "UNKNOWN";
+	
 	public static final String UNKNOWN_BIO = "UNKNOWN";
 
 	public static final String UNKNOWN_COUNT_PLACEHOLDER = "%s";

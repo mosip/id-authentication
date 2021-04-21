@@ -1,5 +1,4 @@
 package io.mosip.authentication.core.partner.dto;
-
 import java.time.LocalDateTime;
 
 import lombok.Data;

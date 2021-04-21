@@ -125,7 +125,6 @@ public class PartnerServiceManager {
 								.contentEquals(Objects.nonNull(mispLicenseKey) ? mispLicenseKey : ""))
 				.forEach(partnerServiceCache::evictPartnerPolicy);
 	}
-
 	private void handleRestServiceException(RestServiceException e) throws IdAuthenticationBusinessException {
 		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 				e.getErrorText());

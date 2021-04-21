@@ -69,7 +69,6 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
@@ -318,7 +317,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (partnerId != null && licenseKey != null) {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey, licenseKey,
 					isPartnerCertificateNeeded());
-			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
+			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse, requestBody);
 			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse,
 					partnerServiceResponse.getCertificateData());
 		}
@@ -347,7 +346,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 		requestBody.put(METADATA, metadata);
 	}
-
+	
 	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
 		PartnerDTO partnerDTO = new PartnerDTO();
 		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
@@ -512,11 +511,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected void checkAllowedAuthTypeBasedOnPolicy(PolicyDTO policies, Map<String, Object> requestBody)
+	protected void checkAllowedAuthTypeBasedOnPolicy(PartnerPolicyResponseDTO partnerPolicyResponseDTO, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		if (policies != null) {
-			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
-			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
+		if (partnerPolicyResponseDTO != null) {
+			List<AuthPolicy> authPolicies = partnerPolicyResponseDTO.getPolicy().getAllowedAuthTypes();
+			List<KYCAttributes> allowedKycAttributes = partnerPolicyResponseDTO.getPolicy().getAllowedKycAttributes();
 			List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes).stream()
 					.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 			requestBody.put("allowedKycAttributes", allowedTypeList);

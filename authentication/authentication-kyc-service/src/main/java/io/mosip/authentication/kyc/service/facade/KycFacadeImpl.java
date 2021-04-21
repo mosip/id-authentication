@@ -50,7 +50,6 @@ import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import reactor.util.function.Tuple2;
 
 /**
@@ -170,13 +169,12 @@ public class KycFacadeImpl implements KycFacade {
 					kycAuthResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
 				}
 			} else {
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
+				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)
 						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
 						.withInternal(false).withPartner(partner).withToken(token)
 						.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 				idService.saveAutnTxn(authTxn);
 			}
-			
 		}
 	}
 

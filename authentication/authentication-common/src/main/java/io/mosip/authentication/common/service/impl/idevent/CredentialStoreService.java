@@ -28,7 +28,7 @@ import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.entity.UinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.integration.dto.DataShareManager;
+import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
