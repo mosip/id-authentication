@@ -157,7 +157,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		authTxnBuilder.withToken(token);
 		
 		try {
-			idInfo = idService.getIdInfo(idResDTO);
+			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
 			
