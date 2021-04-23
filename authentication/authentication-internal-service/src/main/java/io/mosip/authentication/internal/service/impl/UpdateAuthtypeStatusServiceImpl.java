@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -27,6 +28,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 @Transactional
 public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusService {
+
+	private static final String UNLOCK_EXP_TIMESTAMP = "unlockExpiryTimestamp";
 
 	/** The auth lock repository. */
 	@Autowired
@@ -66,6 +69,11 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		LocalDateTime currentDtime = DateUtils.getUTCCurrentDateTime();
 		authtypeLock.setLockrequestDTtimes(currentDtime);
 		authtypeLock.setLockstartDTtimes(currentDtime);
+		if (Objects.nonNull(authtypeStatus.getMetadata())
+				&& authtypeStatus.getMetadata().containsKey(UNLOCK_EXP_TIMESTAMP)
+				&& authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP) instanceof LocalDateTime) {
+			authtypeLock.setUnlockExpiryDTtimes((LocalDateTime) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP));
+		}
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 		authtypeLock.setCrDTimes(currentDtime);

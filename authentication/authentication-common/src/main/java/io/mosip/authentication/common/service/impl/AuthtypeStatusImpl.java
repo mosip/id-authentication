@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class AuthtypeStatusImpl - implementation of
@@ -39,7 +42,8 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		List<AuthtypeLock> authTypeLockList;
 		List<Object[]> authTypeLockObjectsList = authLockRepository.findByToken(token);
 		authTypeLockList = authTypeLockObjectsList.stream()
-				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1])).collect(Collectors.toList());
+				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1], Objects.nonNull(obj[2]) ? ((Timestamp) obj[2]).toLocalDateTime() : null))
+				.collect(Collectors.toList());
 		return authTypeLockList;
 	}
 
@@ -73,7 +77,9 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 			authtypeStatus.setAuthSubType(null);
 		}
 		boolean isLocked = authtypeLock.getStatuscode().equalsIgnoreCase(Boolean.TRUE.toString());
-		authtypeStatus.setLocked(isLocked);
+		boolean isAuthTypeUnlockedTemporarily = isLocked && Objects.nonNull(authtypeLock.getUnlockExpiryDTtimes())
+				&& authtypeLock.getUnlockExpiryDTtimes().isAfter(DateUtils.getUTCCurrentDateTime());
+		authtypeStatus.setLocked(isAuthTypeUnlockedTemporarily ? false : isLocked);
 		return authtypeStatus;
 	}
 

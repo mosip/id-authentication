@@ -1,17 +1,21 @@
 package io.mosip.authentication.core.authtype.dto;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
  * 
- * @author Dinesh Karuppiah.T
+ * @author Manoj SP
  *
  */
 @Data
 public class AuthtypeStatus {
 
-	String authType;
-	String authSubType;
-	Boolean locked;
-
+	private String authType;
+	private String authSubType;
+	private Boolean locked;
+	private Long unlockForSeconds;
+	private String requestId;
+	private Map<String, Object> metadata;
 }
