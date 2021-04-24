@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
@@ -96,7 +97,7 @@ public class AddressMatchingStrategyTest {
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value = matchFunction.match(2, 2, matchProperties);
-		assertEquals(0, value);
+		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class AddressMatchingStrategyTest {
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		int value = matchFunction.match(2, 2, matchProperties);
-		assertEquals(0, value);
+		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);
 
 		matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
