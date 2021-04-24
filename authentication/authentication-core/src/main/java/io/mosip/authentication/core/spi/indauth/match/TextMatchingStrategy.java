@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 
@@ -38,7 +39,7 @@ public interface TextMatchingStrategy extends MatchingStrategy {
 				return matchFunction.apply((String) reqInfo, (String) entityInfo);
 			}
 		} else {
-			return 0;
+			return reqInfo.equals(entityInfo) ? DemoMatcherUtil.EXACT_MATCH_VALUE : 0;
 		}
 	}
 	
