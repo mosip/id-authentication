@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**

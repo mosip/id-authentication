@@ -88,7 +88,7 @@ public class AuthtypeLock {
 		
 		private static final long serialVersionUID = 1L;
 		
-		private String hashedUin;
+		private String token;
 		
 		private String authtypecode;
 		

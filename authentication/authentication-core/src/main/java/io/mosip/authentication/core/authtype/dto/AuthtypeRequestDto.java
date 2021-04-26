@@ -2,6 +2,7 @@ package io.mosip.authentication.core.authtype.dto;
 
 import java.util.List;
 
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import lombok.Data;
 
 /**
