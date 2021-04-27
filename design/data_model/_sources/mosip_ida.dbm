@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="6,2" last-zoom="0.65" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="5,1" last-zoom="0.65" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -264,7 +264,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<column name="unlock_timestamp">
+	<column name="unlock_expiry_datetime">
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Unlock Timestamp]]></comment>
 	</column>

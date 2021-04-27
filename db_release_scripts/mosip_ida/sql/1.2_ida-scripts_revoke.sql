@@ -10,6 +10,6 @@
 
 \c mosip_ida sysadmin
 
-ALTER TABLE ida.uin_auth_lock DROP COLUMN unlock_timestamp;
+ALTER TABLE ida.uin_auth_lock DROP COLUMN unlock_expiry_datetime;
 
 -- -------------------------------------------------------------------------------------------------

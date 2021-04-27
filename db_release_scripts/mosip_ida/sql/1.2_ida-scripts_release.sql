@@ -11,7 +11,7 @@
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
-ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_timestamp timestamp;
+ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 
 ----------------------------------------------------------------------------------------------------------
 
