@@ -28,6 +28,7 @@ CREATE TABLE ida.uin_auth_lock(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
+	unlock_timestamp timestamp,
 	CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
 
 );
@@ -59,4 +60,6 @@ COMMENT ON COLUMN ida.uin_auth_lock.upd_dtimes IS 'Updated DateTimestamp : Date 
 COMMENT ON COLUMN ida.uin_auth_lock.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 -- ddl-end --
 COMMENT ON COLUMN ida.uin_auth_lock.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
+COMMENT ON COLUMN ida.uin_auth_lock.unlock_timestamp IS E'Unlock Timestamp';
 -- ddl-end --

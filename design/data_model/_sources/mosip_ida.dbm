@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="7,382" last-zoom="0.65" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="6,2" last-zoom="0.65" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -207,7 +207,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="uin_auth_lock" layer="0" alias="uinal" collapse-mode="2" max-obj-count="15" z-value="0">
+<table name="uin_auth_lock" layer="0" alias="uinal" collapse-mode="2" max-obj-count="16" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
@@ -263,6 +263,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<column name="unlock_timestamp">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Unlock Timestamp]]></comment>
 	</column>
 	<constraint name="pk_uinal" type="pk-constr" table="ida.uin_auth_lock">
 		<columns names="token_id,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
