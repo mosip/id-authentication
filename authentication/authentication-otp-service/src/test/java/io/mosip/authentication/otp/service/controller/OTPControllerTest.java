@@ -112,7 +112,7 @@ public class OTPControllerTest {
 	private static Validator validator;
 
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 		ReflectionTestUtils.setField(otpController, "otpRequestValidator", otpRequestValidator);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);

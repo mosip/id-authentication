@@ -87,7 +87,7 @@ public class InternalAuthTxnController {
 	 * @param mispLK        the misp LK
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IDDataValidationException    the ID data validation exception
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@PreAuthorize("hasAnyRole('RESIDENT')")
 	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
@@ -99,7 +99,7 @@ public class InternalAuthTxnController {
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
-			throws IdAuthenticationAppException, IDDataValidationException {
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
 		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
 		authtxnrequestdto.setIndividualId(individualId);

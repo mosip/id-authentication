@@ -51,7 +51,6 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
@@ -161,9 +160,6 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private BioAuthService bioAuthService;
-
-	@Mock
-	private IdRepoManager idRepoManager;
 
 	@Mock
 	private AutnTxnRepository autntxnrepository;

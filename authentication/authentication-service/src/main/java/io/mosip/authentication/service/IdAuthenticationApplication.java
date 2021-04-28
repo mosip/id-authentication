@@ -32,7 +32,6 @@ import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
@@ -82,7 +81,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 @SpringBootApplication(exclude = HibernateDaoConfig.class)
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, CbeffImpl.class,
 		RestHelperImpl.class, RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class,
-		IdRepoManager.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
+		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class, OTPManager.class,
 		MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class, AuditHelper.class,
 		PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class,

@@ -110,7 +110,7 @@ public class InternalOTPControllerTest {
 	private static Validator validator;
 
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.invokeMethod(internalotpController, "initBinder", binder);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 	}

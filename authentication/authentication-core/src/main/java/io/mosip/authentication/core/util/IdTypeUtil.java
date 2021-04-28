@@ -5,6 +5,9 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -45,11 +48,14 @@ public class IdTypeUtil {
 		}
 	}
 
-	public IdType getIdType(String id) {
+	public IdType getIdType(String id) throws IdAuthenticationBusinessException {
 		if (this.validateUin(id))
 			return IdType.UIN;
 		if (this.validateVid(id))
 			return IdType.VID;
-		return IdType.USER_ID;
+		throw new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+						IdAuthCommonConstants.INDIVIDUAL_ID));
 	}
 }

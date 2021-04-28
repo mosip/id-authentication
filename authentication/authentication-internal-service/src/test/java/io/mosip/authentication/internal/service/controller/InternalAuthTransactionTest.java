@@ -186,7 +186,7 @@ public class InternalAuthTransactionTest {
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void TestIdAppException() throws IDDataValidationException, IdAuthenticationAppException {
+	public void TestIdAppException() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(false);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "", 1, 10);
 	}
