@@ -24,3 +24,9 @@
 
 \ir ddl/ida-fk.sql
 
+
+
+\ir ddl/ida-api_key_data.sql
+\ir ddl/ida-partner_data.sql
+\ir ddl/ida-partner_mapping.sql
+\ir ddl/ida-policy_data.sql

@@ -7,11 +7,17 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
-
+-- Apr-2021		Ram Bhatt	    create tables to store partner details
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
 ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
+-------------------------------------------------------------------------------------------------------
+
+\ir ../ddl/ida-api_key_data.sql
+\ir ../ddl/ida-partner_data.sql
+\ir ../ddl/ida-partner_mapping.sql
+\ir ../ddl/ida-policy_data.sql
 
 ----------------------------------------------------------------------------------------------------------
 
