@@ -68,11 +68,11 @@ public class KeyManager {
 	 * @param requestBody   the request body
 	 * @param mapper        the mapper
 	 * @param refId         the ref id
-	 * @param reqHMAC
-	 * @param dataValidator
+	 * @param thumbprint the thumbprint
+	 * @param isThumbprintEnabled the is thumbprint enabled
+	 * @param dataValidator the data validator
 	 * @return the map
 	 * @throws IdAuthenticationAppException      the id authentication app exception
-	 * @throws IdAuthenticationBusinessException
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
 			String thumbprint, Boolean isThumbprintEnabled,
@@ -97,15 +97,16 @@ public class KeyManager {
 	 * decipherData method used to derypt data if session key is present.
 	 *
 	 * @param mapper              the mapper
-	 * @param encryptedRequest    the encrypted request
+	 * @param thumbprint the thumbprint
 	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedRequest    the encrypted request
 	 * @param refId               the ref id
-	 * @param reqHMAC
+	 * @param isThumbprintEnabled the is thumbprint enabled
+	 * @param dataValidator the data validator
 	 * @return the map
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IOException                       Signals that an I/O exception has
 	 *                                           occurred.
-	 * @throws IdAuthenticationBusinessException
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint,
@@ -125,8 +126,11 @@ public class KeyManager {
 	/**
 	 * Kernel decrypt and decode.
 	 *
-	 * @param data  the data
+	 * @param thumbprint the thumbprint
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedData the encrypted data
 	 * @param refId the ref id
+	 * @param isThumbprintEnabled the is thumbprint enabled
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -138,11 +142,13 @@ public class KeyManager {
 	/**
 	 * Kernel decrypt.
 	 *
-	 * @param data  the data
+	 * @param thumbprint the thumbprint
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedData the encrypted data
 	 * @param refId the ref id
 	 * @param aad   the aad
 	 * @param salt  the salt
-	 * @param salt2 
+	 * @param isThumbprintEnabled the is thumbprint enabled
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -154,11 +160,14 @@ public class KeyManager {
 	/**
 	 * Internal kernel decrypt and decode.
 	 *
-	 * @param data   the data
+	 * @param thumbprint the thumbprint
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedData the encrypted data
 	 * @param refId  the ref id
 	 * @param aad    the aad
 	 * @param salt   the salt
 	 * @param decode the decode
+	 * @param isThumbprintEnabled the is thumbprint enabled
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -201,8 +210,8 @@ public class KeyManager {
 	/**
 	 * Combine data for decryption.
 	 *
-	 * @param encryptedData   the bio value
-	 * @param encryptedSessionKey the session key
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedData the encrypted data
 	 * @return the string
 	 */
 	private String combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
