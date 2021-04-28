@@ -28,17 +28,16 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.kernel.biometrics.constant.BiometricFunction;
 import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.biometrics.constant.ProcessedLevelType;
+import io.mosip.kernel.biometrics.constant.PurposeType;
+import io.mosip.kernel.biometrics.entities.BDBInfo;
+import io.mosip.kernel.biometrics.entities.BIR;
+import io.mosip.kernel.biometrics.entities.BIR.BIRBuilder;
+import io.mosip.kernel.biometrics.entities.RegistryIDType;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
-import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -229,16 +228,16 @@ public class BioMatcherUtil {
 		//Note: Finger minutiea type not handled based on the requirement
 		String typeForIdName = idInfoFetcher.getTypeForIdName(idName, idMappings).orElse("");
 		long type = 0L;
-		SingleType singleType = null;
-		if(typeForIdName.equalsIgnoreCase(SingleType.FINGER.value())) {
+		BiometricType singleType = null;
+		if(typeForIdName.equalsIgnoreCase(BiometricType.FINGER.value())) {
 			type = CbeffConstant.FORMAT_TYPE_FINGER;
-			singleType = SingleType.FINGER;
-		} else if(typeForIdName.equalsIgnoreCase(SingleType.IRIS.value())) {
+			singleType = BiometricType.FINGER;
+		} else if(typeForIdName.equalsIgnoreCase(BiometricType.IRIS.value())) {
 			type = CbeffConstant.FORMAT_TYPE_IRIS;
-			singleType = SingleType.IRIS;
-		} else if(typeForIdName.equalsIgnoreCase(SingleType.FACE.value())) {
+			singleType = BiometricType.IRIS;
+		} else if(typeForIdName.equalsIgnoreCase(BiometricType.FACE.value())) {
 			type = CbeffConstant.FORMAT_TYPE_FACE;
-			singleType = SingleType.FACE;
+			singleType = BiometricType.FACE;
 		} else {
 			 logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "getType",
 						"Found invalid type: " + typeForIdName);
@@ -307,7 +306,7 @@ public class BioMatcherUtil {
 		private String type;
 		
 		/** The single type. */
-		private SingleType singleType;
+		private BiometricType singleType;
 		
 		/** The sub types. */
 		private String[] subTypes;

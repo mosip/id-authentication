@@ -18,8 +18,8 @@ import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 
 /**
  * Mapping class for IDA.
@@ -85,41 +85,41 @@ public enum IdaIdMapping implements IdMapping {
 	//FINGER
 	/** The leftindex. */
 	//BIO - Finger - Single
-	LEFTINDEX(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), SingleType.FINGER.value()),
+	LEFTINDEX(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The leftlittle. */
-	LEFTLITTLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), SingleType.FINGER.value()),
+	LEFTLITTLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The leftmiddle. */
-	LEFTMIDDLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), SingleType.FINGER.value()),
+	LEFTMIDDLE(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The leftring. */
-	LEFTRING(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.RING_FINGER.value()), SingleType.FINGER.value()),
+	LEFTRING(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.RING_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The leftthumb. */
-	LEFTTHUMB(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.THUMB.value()), SingleType.FINGER.value()),
+	LEFTTHUMB(concatNames(SingleAnySubtypeType.LEFT.value(), SingleAnySubtypeType.THUMB.value()), BiometricType.FINGER.value()),
 	
 	/** The rightindex. */
-	RIGHTINDEX(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), SingleType.FINGER.value()),
+	RIGHTINDEX(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.INDEX_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The rightlittle. */
-	RIGHTLITTLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), SingleType.FINGER.value()),
+	RIGHTLITTLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.LITTLE_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The rightmiddle. */
-	RIGHTMIDDLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), SingleType.FINGER.value()),
+	RIGHTMIDDLE(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.MIDDLE_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The rightring. */
-	RIGHTRING(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.RING_FINGER.value()), SingleType.FINGER.value()),
+	RIGHTRING(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.RING_FINGER.value()), BiometricType.FINGER.value()),
 	
 	/** The rightthumb. */
-	RIGHTTHUMB(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()), SingleType.FINGER.value()),
+	RIGHTTHUMB(concatNames(SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()), BiometricType.FINGER.value()),
 	
 	/** The unknown finger. */
 	//BIO - Finger - Multi or Unknown
 	UNKNOWN_FINGER(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
-					SingleType.FINGER.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
-			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB,			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB), SingleType.FINGER.value()) {
+					BiometricType.FINGER.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB,			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB), BiometricType.FINGER.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -128,22 +128,22 @@ public enum IdaIdMapping implements IdMapping {
 	
 	/** The fingerprint. */
 	FINGERPRINT("fingerprint", setOf(LEFTINDEX, LEFTLITTLE, LEFTMIDDLE, LEFTRING, LEFTTHUMB, 
-			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER), SingleType.FINGER.value()),
+			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER), BiometricType.FINGER.value()),
 	
 	//IRIS
 	/** The leftiris. */
 	//BIO - Iris - Single
-	LEFTIRIS(SingleAnySubtypeType.LEFT.value(), SingleType.IRIS.value()),
+	LEFTIRIS(SingleAnySubtypeType.LEFT.value(), BiometricType.IRIS.value()),
 	
 	/** The rightiris. */
-	RIGHTIRIS(SingleAnySubtypeType.RIGHT.value(), SingleType.IRIS.value()),
+	RIGHTIRIS(SingleAnySubtypeType.RIGHT.value(), BiometricType.IRIS.value()),
 	
 	/** The unknown iris. */
 	//BIO - Iris - Multi or Unknown
 	UNKNOWN_IRIS(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
-					SingleType.IRIS.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
-			setOf(RIGHTIRIS, LEFTIRIS), SingleType.IRIS.value()) {
+					BiometricType.IRIS.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(RIGHTIRIS, LEFTIRIS), BiometricType.IRIS.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -151,19 +151,19 @@ public enum IdaIdMapping implements IdMapping {
 	},
 	
 	/** The iris. */
-	IRIS("iris", setOf(RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS), SingleType.IRIS.value()),
+	IRIS("iris", setOf(RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS), BiometricType.IRIS.value()),
 	
 	//FACE
 	/** The face. */
 	//BIO - Face - Single
-	FACE( SingleType.FACE.value(), SingleType.FACE.value()),
+	FACE( BiometricType.FACE.value(), BiometricType.FACE.value()),
 	
 	/** The unknown face. */
 	//BIO - Face - Unknown
 	UNKNOWN_FACE(
 			concatNames(unknown() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER,
-					SingleType.FACE.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
-			setOf(FACE), SingleType.FACE.value()) {
+					BiometricType.FACE.value() + IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER),
+			setOf(FACE), BiometricType.FACE.value()) {
 		@Override
 		public String getSubType() {
 			return unknown();
@@ -347,16 +347,16 @@ private String idname;
 	/**
 	 * To get Cbeff mapping based on Single and SubType on Cbeff.
 	 *
-	 * @param singleType the single type
+	 * @param BiometricType the single type
 	 * @param subType the sub type
 	 * @param singleSubType the single sub type
 	 * @param matchType the match type
 	 * @return the cbeff mapping
 	 */
-	private static List<String> getCbeffMapping(SingleType singleType, SingleAnySubtypeType subType,
+	private static List<String> getCbeffMapping(BiometricType BiometricType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
 		List<String> collection = Stream.of(matchType.getCbeffDocTypes())
-						.map(cbeffDocType -> getCbeffMappingForCbeffDocType(singleType, subType, singleSubType, cbeffDocType))
+						.map(cbeffDocType -> getCbeffMappingForCbeffDocType(BiometricType, subType, singleSubType, cbeffDocType))
 						.collect(Collectors.toList());
 		return collection;
 	}
@@ -364,23 +364,23 @@ private String idname;
 	/**
 	 * Gets the cbeff mapping for cbeff doc type.
 	 *
-	 * @param singleType the single type
+	 * @param BiometricType the single type
 	 * @param subType the sub type
 	 * @param singleSubType the single sub type
 	 * @param cbeffDocType the cbeff doc type
 	 * @return the cbeff mapping for cbeff doc type
 	 */
-	private static String getCbeffMappingForCbeffDocType(SingleType singleType, SingleAnySubtypeType subType,
+	private static String getCbeffMappingForCbeffDocType(BiometricType BiometricType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleSubType, CbeffDocType cbeffDocType) {
 		String formatType = String.valueOf(cbeffDocType.getValue());
 
 		String cbeffKey = null;
 		if (subType == null && singleSubType == null) {// for FACE
-			cbeffKey = singleType.name() + "__" + formatType;
+			cbeffKey = BiometricType.name() + "__" + formatType;
 		} else if (subType != null && singleSubType != null) { // for FINGER
-			cbeffKey = singleType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
+			cbeffKey = BiometricType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
 		} else if (subType != null && singleSubType == null) {
-			cbeffKey = singleType.name() + "_" + subType.value() + "_" + formatType; // for IRIS
+			cbeffKey = BiometricType.name() + "_" + subType.value() + "_" + formatType; // for IRIS
 		}
 		return cbeffKey;
 	}

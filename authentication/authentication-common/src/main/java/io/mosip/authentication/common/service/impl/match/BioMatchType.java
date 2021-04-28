@@ -28,8 +28,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;;
-
+import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 /**
  * 
  * Match type for Bio Entity
