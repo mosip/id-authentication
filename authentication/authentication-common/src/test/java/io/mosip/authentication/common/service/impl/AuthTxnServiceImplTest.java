@@ -145,7 +145,7 @@ public class AuthTxnServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestfetchAuthTxnDetailsInvalidIdType() throws IdAuthenticationBusinessException {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
-		authtxnrequestdto.setIndividualIdType(IdType.USER_ID.getType());
+		authtxnrequestdto.setIndividualIdType("USERID");
 		authtxnrequestdto.setPageStart(null);
 		authtxnrequestdto.setPageFetch(null);
 		Map<String, Object> value = new HashMap<>();
