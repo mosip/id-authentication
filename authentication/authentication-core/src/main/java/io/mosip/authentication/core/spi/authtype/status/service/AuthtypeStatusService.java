@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 
 /**
  * The Interface AuthtypeStatusService - Service to check whether the
