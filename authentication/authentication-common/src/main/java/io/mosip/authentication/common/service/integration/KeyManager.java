@@ -26,6 +26,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -81,7 +82,7 @@ public class KeyManager {
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, thumbprint, encryptedRequest, encryptedSessionkey, refId,
+			request = decipherData(mapper, thumbprint, encryptedSessionkey, encryptedRequest, refId,
 					isThumbprintEnabled, dataValidator);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
@@ -107,13 +108,11 @@ public class KeyManager {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint, byte[] encryptedRequest,
-			byte[] encryptedSessionKey, String refId, Boolean isThumbprintEnabled,
+	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint,
+			byte[] encryptedSessionKey, byte[] encryptedRequest, String refId, Boolean isThumbprintEnabled,
 			ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
 			throws IdAuthenticationAppException, IOException {
-		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint,
-				CryptoUtil
-						.encodeBase64(CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)),
+		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedRequest,
 				refId, isThumbprintEnabled);
 
 		if (dataValidator != null) {
@@ -131,9 +130,9 @@ public class KeyManager {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String kernelDecryptAndDecode(String thumbprint, String data, String refId, Boolean isThumbprintEnabled)
+	public String kernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId, Boolean isThumbprintEnabled)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, data, refId, null, null, true, isThumbprintEnabled);
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, true, isThumbprintEnabled);
 	}
 
 	/**
@@ -143,12 +142,13 @@ public class KeyManager {
 	 * @param refId the ref id
 	 * @param aad   the aad
 	 * @param salt  the salt
+	 * @param salt2 
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public String kernelDecrypt(String thumbprint, String data, String refId, String aad, String salt,
-			Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, data, refId, aad, salt, false, isThumbprintEnabled);
+	public String kernelDecrypt(String thumbprint, byte[] encryptedSessionKey,
+			byte[] encryptedData, String refId, String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, false, isThumbprintEnabled);
 	}
 
 	/**
@@ -162,12 +162,21 @@ public class KeyManager {
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private String internalKernelDecryptAndDecode(String thumbprint, String data, String refId, String aad, String salt,
+	private String internalKernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey,
+			byte[] encryptedData, String refId, String aad, String salt,
 			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
+		String data;
 		if (isThumbprintEnabled) {
-			data = CryptoUtil.encodeBase64(
-					ArrayUtils.addAll(CryptoUtil.decodeBase64(thumbprint), CryptoUtil.decodeBase64(data)));
+			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
+			boolean isThumbprintAlreadyExsists = encryptedSessionKey.length == (CryptomanagerConstant.ENCRYPTED_SESSION_KEY_LENGTH 
+					+ CryptomanagerConstant.THUMBPRINT_LENGTH);
+			if(!isThumbprintAlreadyExsists) {
+				data = CryptoUtil.encodeBase64(
+						ArrayUtils.addAll(CryptoUtil.decodeBase64(thumbprint), CryptoUtil.decodeBase64(data)));
+			}
+		} else {
+			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 		}
 		try {
 			String encodedIdentity = CryptoUtil
@@ -187,6 +196,18 @@ public class KeyManager {
 			}
 		}
 		return decryptedRequest;
+	}
+	
+	/**
+	 * Combine data for decryption.
+	 *
+	 * @param encryptedData   the bio value
+	 * @param encryptedSessionKey the session key
+	 * @return the string
+	 */
+	private String combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
+		byte[] combineByteArray = CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
+		return CryptoUtil.encodeBase64(combineByteArray);
 	}
 
 	/**
