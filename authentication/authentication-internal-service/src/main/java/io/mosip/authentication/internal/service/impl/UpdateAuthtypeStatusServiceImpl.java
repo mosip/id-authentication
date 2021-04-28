@@ -29,6 +29,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @Transactional
 public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusService {
 
+	/** The Constant UNLOCK_EXP_TIMESTAMP. */
 	private static final String UNLOCK_EXP_TIMESTAMP = "unlockExpiryTimestamp";
 
 	/** The auth lock repository. */
@@ -39,6 +40,13 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	@Autowired
 	private Environment environment;
 
+	/**
+	 * Update auth type status.
+	 *
+	 * @param tokenId the token id
+	 * @param authTypeStatusList the auth type status list
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@Override
 	public void updateAuthTypeStatus(String tokenId, List<AuthtypeStatus> authTypeStatusList)
 			throws IdAuthenticationBusinessException {
@@ -50,12 +58,8 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	/**
 	 * Put auth type status.
 	 *
-	 * @param authtypeStatus
-	 *            the authtype status
-	 * @param uin
-	 *            the uin
-	 * @param reqTime
-	 *            the req time
+	 * @param authtypeStatus            the authtype status
+	 * @param token the token
 	 * @return the authtype lock
 	 */
 	private AuthtypeLock putAuthTypeStatus(AuthtypeStatus authtypeStatus, String token) {
