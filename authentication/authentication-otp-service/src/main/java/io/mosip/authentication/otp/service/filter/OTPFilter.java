@@ -79,10 +79,11 @@ public class OTPFilter extends IdAuthFilter {
 		return env.getProperty("mosip.ida.otp.signature-verification-required", Boolean.class, true);
 	}
 
-	@Override
-	protected boolean isThumbprintValidationRequired() {
-		return env.getProperty("mosip.ida.otp.thumbprint-validation-required", Boolean.class, true);
-	}
+	//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
+//	@Override
+//	protected boolean isThumbprintValidationRequired() {
+//		return env.getProperty("mosip.ida.otp.thumbprint-validation-required", Boolean.class, true);
+//	}
 
 	@Override
 	protected boolean isTrustValidationRequired() {
