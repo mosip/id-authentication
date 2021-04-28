@@ -110,7 +110,11 @@ public class AuthTransactionHelper {
 		}
 		
 		if(authTxnBuilder.getToken() == null) {
-			authTxnBuilder.withToken(computeToken(authTxnBuilder));
+			try {
+				authTxnBuilder.withToken(computeToken(authTxnBuilder));
+			} catch (IdAuthenticationBusinessException e) {
+				// Ignoring the error, otherwiser it will override the actual exception.
+			}
 		}
 		
 		if(authTxnBuilder.getRequestTypes() == null || authTxnBuilder.getRequestTypes().isEmpty()) {

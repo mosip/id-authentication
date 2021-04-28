@@ -148,14 +148,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(REQUEST_HMAC);
 				} else {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
-					byte[] requestToDecrypt = CryptoUtil.combineByteArray((byte[]) requestBody.get(REQUEST_HMAC),
-							(byte[]) encryptedSessionkey, env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
+					byte[] encryptedSessionkey = (byte[]) decode((String) requestBody.get(REQUEST_SESSION_KEY));
+					byte[] encryptedHmac = (byte[]) requestBody.get(REQUEST_HMAC);
 					String thumbprint = Objects.nonNull(requestBody.get(THUMBPRINT))
 							? String.valueOf(requestBody.get(THUMBPRINT))
 							: null;
-					String reqHMAC = keyManager.kernelDecryptAndDecode(thumbprint,
-							CryptoUtil.encodeBase64(requestToDecrypt), fetchReferenceId(),
+					String reqHMAC = keyManager.kernelDecryptAndDecode(thumbprint, encryptedSessionkey, encryptedHmac, fetchReferenceId(),
 							isThumbprintValidationRequired());
 					Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId(),
 							thumbprint, isThumbprintValidationRequired(),
@@ -277,8 +275,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
-			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
-			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), combinedData, getBioRefId(),
+			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64(String.valueOf(sessionKey)), CryptoUtil.decodeBase64(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
@@ -322,19 +319,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-	}
-
-	/**
-	 * Combine data for decryption.
-	 *
-	 * @param bioValue   the bio value
-	 * @param sessionKey the session key
-	 * @return the string
-	 */
-	private String combineDataForDecryption(String bioValue, String sessionKey) {
-		byte[] combineByteArray = CryptoUtil.combineByteArray(CryptoUtil.decodeBase64(bioValue),
-				CryptoUtil.decodeBase64(sessionKey), env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
-		return CryptoUtil.encodeBase64(combineByteArray);
 	}
 
 	/**
@@ -934,8 +918,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return true, if is thumbprint validation required
 	 */
 	@Override
-	protected boolean isThumbprintValidationRequired() {
-		return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
+	protected final boolean isThumbprintValidationRequired() {
+		//return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
+		//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
+		return true;
 	}
 
 	/**

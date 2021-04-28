@@ -125,20 +125,24 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
-				isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
-
-				isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
-
-				if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
-					isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-					isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-				}
+				validateHotlistedIds(errors, authRequestDto);
 			}
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		}
+	}
+
+	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
+		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
+
+		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
+
+		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
+			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
+			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
 		}
 	}
 
@@ -330,7 +334,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param biometrics the biometrics
 	 * @param errors     the errors
 	 */
-	private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
 			IntStream
 					.range(0,
@@ -354,7 +358,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param biometrics the biometrics
 	 * @param errors     the errors
 	 */
-	private void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
 			IntStream
 					.range(0, biometrics.size()).filter(
@@ -380,7 +384,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param metadata the metadata
 	 * @param errors   the errors
 	 */
-	private void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
+	protected void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
 		if (Objects.nonNull(metadata) && metadata.isPresent()) {
 			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
 					.getStatus().contentEquals(HotlistStatus.BLOCKED))

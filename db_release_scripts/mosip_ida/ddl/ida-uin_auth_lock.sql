@@ -9,6 +9,8 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 --  Sep-2020            Sadanandegowda DM   removed uin,uin_hash added token_id
+--  Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
+--  Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
 -- ------------------------------------------------------------------------------------------
 -- object: ida.uin_auth_lock | type: TABLE --
 -- DROP TABLE IF EXISTS ida.uin_auth_lock CASCADE;
@@ -24,8 +26,9 @@ CREATE TABLE ida.uin_auth_lock(
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
 	upd_dtimes timestamp,
-	is_deleted boolean,
+	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
+	unlock_expiry_datetime timestamp,
 	CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
 
 );
@@ -57,4 +60,6 @@ COMMENT ON COLUMN ida.uin_auth_lock.upd_dtimes IS 'Updated DateTimestamp : Date 
 COMMENT ON COLUMN ida.uin_auth_lock.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 -- ddl-end --
 COMMENT ON COLUMN ida.uin_auth_lock.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
+COMMENT ON COLUMN ida.uin_auth_lock.unlock_expiry_datetime IS E'Unlock Timestamp';
 -- ddl-end --

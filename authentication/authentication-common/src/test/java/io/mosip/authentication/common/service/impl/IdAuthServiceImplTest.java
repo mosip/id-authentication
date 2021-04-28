@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -38,7 +37,6 @@ import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -60,8 +58,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdAuthServiceImplTest {
 
-	@Mock
-	private IdRepoManager idRepoManager;
 	@Mock
 	private AuditRequestFactory auditFactory;
 	@Mock
@@ -97,7 +93,6 @@ public class IdAuthServiceImplTest {
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(idServiceImpl, "idRepoManager", idRepoManager);
 		ReflectionTestUtils.setField(idServiceImpl, "mapper", mapper);
 
 	}
@@ -170,20 +165,6 @@ public class IdAuthServiceImplTest {
 			e.printStackTrace();
 			throw e.getCause();
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testProcessIdType_IdTypeIsUserId() throws IdAuthenticationBusinessException {
-		String idvIdType = "USERID";
-		String idvId = "121212";
-		Map<String, Object> idRepo = new HashMap<>();
-		idRepo.put("uin", "476567");
-		Mockito.when(idRepoManager.getRIDByUID(idvId)).thenReturn("1212121212121212121");
-		Mockito.when(idRepoManager.getIdByRID(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
-		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idServiceImpl,
-				"processIdType", idvIdType, idvId, false);
-		assertEquals("476567", idResponseMap.get("uin"));
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import lombok.Data;
 
 /**

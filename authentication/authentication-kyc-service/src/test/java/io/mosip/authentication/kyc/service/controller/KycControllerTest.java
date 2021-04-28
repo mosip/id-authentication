@@ -118,7 +118,7 @@ public class KycControllerTest {
 	private ObjectMapper mapper;
 	
 	@Before
-	public void before() {
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);

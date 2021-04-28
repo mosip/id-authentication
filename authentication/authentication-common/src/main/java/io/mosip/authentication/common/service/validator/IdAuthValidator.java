@@ -304,6 +304,12 @@ public abstract class IdAuthValidator implements Validator {
 							new Object[] { IDV_ID_TYPE },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
+			} else {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						"INCORRECT_IDTYPE - " + idTypeOrAlias);
+				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { IDV_ID_TYPE },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		} else {
 			// Checks idType is valid or invalid.If Valid and not configured

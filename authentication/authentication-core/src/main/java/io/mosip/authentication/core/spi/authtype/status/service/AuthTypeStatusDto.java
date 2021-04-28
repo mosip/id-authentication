@@ -2,7 +2,7 @@ package io.mosip.authentication.core.spi.authtype.status.service;
 
 import java.util.List;
 
-import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import lombok.Data;
 
 /**

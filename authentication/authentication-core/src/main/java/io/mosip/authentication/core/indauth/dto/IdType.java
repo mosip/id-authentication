@@ -24,9 +24,8 @@ public enum IdType {
 	/** The uin. */
 	UIN("UIN"), 
 	/** The vid. */
-	VID("VID"),
-	/** The user id. */
-	USER_ID("USERID");
+	VID("VID")
+	;
 
 	/**
 	 * Value that indicates that default id.
