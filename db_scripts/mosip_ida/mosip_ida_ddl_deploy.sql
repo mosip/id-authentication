@@ -30,4 +30,3 @@
 \ir ddl/ida-partner_data.sql
 \ir ddl/ida-partner_mapping.sql
 \ir ddl/ida-policy_data.sql
-
