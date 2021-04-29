@@ -43,7 +43,12 @@ public enum AuditModules {
 	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested", ""),//not applicable for release v1
 	
 	/** The vid generation request. */
-	VID_GENERATION_REQUEST("IDA-MOD-109","VID Generation requested", "");//not applicable for release v1
+	VID_GENERATION_REQUEST("IDA-MOD-109","VID Generation requested", ""),//not applicable for release v1
+	
+	CREDENTIAL_STORAGE("IDA-MOD-110","Credential Storage websub-callback", ""),//not applicable for release v1
+
+	
+	;
 
 	/** The module id. */
 	private final String moduleId;
