@@ -8,6 +8,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.kernel.core.websub.model.EventModel;
 
+/**
+ * The Interface CredentialStoreService.
+ * @author Loganathan Sekar
+ */
 public interface CredentialStoreService {
 
 	/**
