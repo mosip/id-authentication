@@ -14,6 +14,11 @@ import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 
+/**
+ * The Class WebSubHelper.
+ * 
+ * @author Loganathan Sekar
+ */
 @Component
 public class WebSubHelper {
 	
@@ -24,21 +29,44 @@ public class WebSubHelper {
 	@Autowired
 	private PublisherClient<String, Object, HttpHeaders> publisher;
 	
+	/** The websub publish url. */
 	@Value("${" + WEBSUB_PUBLISH_URL + "}")
 	private String websubPublishUrl;
 
+	/**
+	 * Inits the subscriber.
+	 *
+	 * @param subscriber the subscriber
+	 */
 	public void initSubscriber(WebSubEventSubcriber subscriber) {
 		initSubscriber(subscriber, null);
 	}
 	
+	/**
+	 * Inits the subscriber.
+	 *
+	 * @param subscriber the subscriber
+	 * @param enableTester the enable tester
+	 */
 	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
 		subscriber.subscribe(enableTester);
 	}
 	
+	/**
+	 * Inits the registrar.
+	 *
+	 * @param registrar the registrar
+	 */
 	public void initRegistrar(WebSubEventTopicRegistrar registrar) {
 		initRegistrar(registrar, null);
 	}
 	
+	/**
+	 * Inits the registrar.
+	 *
+	 * @param registrar the registrar
+	 * @param enableTester the enable tester
+	 */
 	public void initRegistrar(WebSubEventTopicRegistrar registrar, Supplier<Boolean> enableTester) {
 		registrar.register(enableTester);
 	}
