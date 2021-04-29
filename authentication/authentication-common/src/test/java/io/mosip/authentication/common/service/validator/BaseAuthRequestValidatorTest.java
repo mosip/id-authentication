@@ -40,6 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -97,6 +98,9 @@ public class BaseAuthRequestValidatorTest {
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
+	
+	@Mock
+	private IdInfoFetcherImpl idInfoFetcher;
 
 	/** The error. */
 	Errors error;

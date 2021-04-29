@@ -31,5 +31,8 @@ public class MatchOutput {
 	/**  The language   */
 	private String language;
 	
+	/** The id name. */
+	private String idName;
+	
 	
 }	

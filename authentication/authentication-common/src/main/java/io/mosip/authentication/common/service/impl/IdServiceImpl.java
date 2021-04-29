@@ -36,7 +36,6 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -182,45 +181,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	public void saveAutnTxn(AutnTxn authTxn) throws IdAuthenticationBusinessException {
 		autntxnrepository.saveAndFlush(authTxn);
-	}
-
-	/**
-	 * Fetch data from Identity info value based on Identity response.
-	 *
-	 * @param idResponseDTO the id response DTO
-	 * @return the id info
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
-			throws IdAuthenticationBusinessException {
-		return idResponseDTO.entrySet().stream()
-				.filter(entry -> entry.getValue() instanceof Map)
-				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
-				.collect(Collectors.toMap(t -> t.getKey(), entry -> {
-					Object val = entry.getValue();
-					if (val instanceof List) {
-						List<Map> arrayList = (List) val;
-						return arrayList.stream().filter(elem -> elem instanceof Map)
-								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
-									String value = String.valueOf(map1.get("value"));
-									IdentityInfoDTO idInfo = new IdentityInfoDTO();
-									if (map1.containsKey("language")) {
-										idInfo.setLanguage(String.valueOf(map1.get("language")));
-									}
-									idInfo.setValue(value);
-									return idInfo;
-								}).collect(Collectors.toList());
-
-					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
-							|| val instanceof Integer || val instanceof Double || val instanceof Float) {
-						IdentityInfoDTO idInfo = new IdentityInfoDTO();
-						idInfo.setValue(String.valueOf(val));
-						return Stream.of(idInfo).collect(Collectors.toList());
-					}
-					return Collections.emptyList();
-				}));
-
 	}
 
 	/**

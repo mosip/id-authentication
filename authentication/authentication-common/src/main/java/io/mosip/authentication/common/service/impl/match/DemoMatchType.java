@@ -20,6 +20,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -76,7 +77,7 @@ public enum DemoMatchType implements MatchType {
 	EMAIL(IdaIdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT),
 			identityDTO -> getIdInfoList(identityDTO.getEmailId()), false),
 
-	/**  */
+	/** The addr line1. */
 	ADDR_LINE1(IdaIdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1),
 
 	/** The addr line2 pri. */
@@ -102,7 +103,31 @@ public enum DemoMatchType implements MatchType {
 	ADDR(IdaIdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
 			FullAddressMatchingStrategy.PHONETICS), IdentityDTO::getFullAddress),
 
-	/**  */
+	/** The dynamic. */
+	DYNAMIC(IdaIdMapping.DYNAMIC, setOf(DynamicDemoAttributeMatchingStrategy.EXACT)) {
+		@Override
+		public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+			return req -> {
+				if(req.getDemographics() != null && req.getDemographics().getMetadata() != null) {
+					Map<String, Object> dynamicAttributes = req.getDemographics().getMetadata();
+					return IdInfoFetcher.getIdInfo(dynamicAttributes);
+				}
+				return Map.of();
+			};
+		}
+		
+		@Override
+		public boolean isDynamic() {
+			return true;
+		}
+		
+		public boolean isPropMultiLang(String propName, MappingConfig cfg) {
+			return true;
+		}
+
+	},
+	
+	/** The Constant DATE_PATTERN. */
 	// @formatter:on
 	;
 
@@ -114,27 +139,26 @@ public enum DemoMatchType implements MatchType {
 	/** The entity info. */
 	private Function<Map<String, String>, Map<String, String>> entityInfoFetcher;
 
-	/**  */
+	/** The lang type. */
 	private LanguageType langType;
 
-	/**  */
+	/** The identity info function. */
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
-	/**  */
+	/** The id mapping. */
 	private IdMapping idMapping;
 
+	/** The multi language. */
 	private boolean multiLanguage;
 
 	/**
 	 * Instantiates a new demo match type.
 	 *
-	 * @param idMapping
-	 * @param allowedMatchingStrategy
-	 * @param identityInfoFunction
-	 * @param langType
-	 * @param usedBit
-	 * @param matchedBit
-	 * @param entityInfoFetcher
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param identityInfoFunction the identity info function
+	 * @param multiLanguage the multi language
+	 * @param entityInfoFetcher the entity info fetcher
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage,
@@ -152,11 +176,57 @@ public enum DemoMatchType implements MatchType {
 		this.multiLanguage = multiLanguage;
 	}
 
+	/**
+	 * Instantiates a new demo match type.
+	 *
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param identityInfoFunction the identity info function
+	 */
+	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction) {
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, true);
+	}
+
+	/**
+	 * Instantiates a new demo match type.
+	 *
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param identityInfoFunction the identity info function
+	 * @param multiLanguage the multi language
+	 */
+	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage) {
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, Function.identity());
+	}
+	
+	/**
+	 * Instantiates a new demo match type.
+	 *
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 */
+	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
+		this(idMapping, allowedMatchingStrategy, null, true, Function.identity());
+	}
+	
+	/**
+	 * Gets the date pattern.
+	 *
+	 * @return the date pattern
+	 */
 	private static String getDatePattern() {
 		// FIXME get from env.
 		return DATE_PATTERN;
 	}
 
+	/**
+	 * Gets the id info list.
+	 *
+	 * @param value the value
+	 * @return the id info list
+	 */
 	private static List<IdentityInfoDTO> getIdInfoList(String value) {
 		if (value != null) {
 			IdentityInfoDTO identityDTOs = new IdentityInfoDTO();
@@ -170,25 +240,10 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	/**
-	 * Instantiates a new demo match type.
+	 * Gets the language type.
 	 *
-	 * @param idMapping
-	 * @param allowedMatchingStrategy
-	 * @param identityInfoFunction
-	 * @param langType
-	 * @param usedBit
-	 * @param matchedBit
+	 * @return the language type
 	 */
-	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, true);
-	}
-
-	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, Function.identity());
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -218,6 +273,11 @@ public enum DemoMatchType implements MatchType {
 		return entityInfoFetcher;
 	}
 
+	/**
+	 * Gets the id mapping.
+	 *
+	 * @return the id mapping
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -228,6 +288,11 @@ public enum DemoMatchType implements MatchType {
 		return idMapping;
 	}
 
+	/**
+	 * Gets the identity info function.
+	 *
+	 * @return the identity info function
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -239,6 +304,11 @@ public enum DemoMatchType implements MatchType {
 		return identityInfoFunction;
 	}
 
+	/**
+	 * Gets the category.
+	 *
+	 * @return the category
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -249,11 +319,23 @@ public enum DemoMatchType implements MatchType {
 		return Category.DEMO;
 	}
 
+	/**
+	 * Checks if is multi language.
+	 *
+	 * @return true, if is multi language
+	 */
 	@Override
 	public boolean isMultiLanguage() {
 		return multiLanguage;
 	}
 	
+	/**
+	 * Checks if is prop multi lang.
+	 *
+	 * @param propName the prop name
+	 * @param cfg the cfg
+	 * @return true, if is prop multi lang
+	 */
 	@Override
 	public boolean isPropMultiLang(String propName, MappingConfig cfg) {
 		DemoMatchType[] values = DemoMatchType.values();
