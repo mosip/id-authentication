@@ -14,14 +14,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class AuthTypeStatusEventSubscriberInitializer.
+ * The Class AuthTypeStatusEventSubscriber.
  * @author Loganathan Sekar
  */
 @Component
-public class AuthTypeStatusEventSubscriberInitializer extends BaseWebSubEventsInitializer {
+public class AuthTypeStatusEventSubscriber extends BaseWebSubEventsInitializer {
 	
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventSubscriberInitializer.class);
+	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventSubscriber.class);
 	
 	/** The Constant PARTNER_ID_PLACEHOLDER. */
 	private static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";

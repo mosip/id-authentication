@@ -44,7 +44,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
+import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -103,6 +105,8 @@ public abstract class BaseIDAFilter implements Filter {
 	protected KeyManager keyManager;
 
 	protected IdService<AutnTxn> idService;
+	
+	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseIDAFilter.class);
@@ -121,6 +125,7 @@ public abstract class BaseIDAFilter implements Filter {
 		mapper = context.getBean(ObjectMapper.class);
 		keyManager = context.getBean(KeyManager.class);
 		idService = context.getBean(IdService.class);
+		authTransactionStatusEventPublisher = context.getBean(AuthTransactionStatusEventPublisher.class);
 	}
 
 	/*
@@ -530,10 +535,12 @@ public abstract class BaseIDAFilter implements Filter {
 				autnTxn.setResponseSignature(responseSignature);
 				try {
 					idService.saveAutnTxn(autnTxn);
+					authTransactionStatusEventPublisher.publishEvent(AuthTxnServiceImpl.fetchAuthResponseDTO(autnTxn), autnTxn.getId(), autnTxn.getCrDTimes());
 				} catch (IdAuthenticationBusinessException e) {
 					mosipLogger.error("sessionId", BASE_IDA_FILTER, "storeAuthTransaction", "\n" + ExceptionUtils.getStackTrace(e));
 					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 				}
+				
 			}
 		}
 	}

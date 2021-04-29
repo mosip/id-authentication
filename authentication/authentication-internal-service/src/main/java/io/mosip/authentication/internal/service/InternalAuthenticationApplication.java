@@ -45,9 +45,10 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisherManager;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriberInitializer;
-import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventManager;
+import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
@@ -57,6 +58,7 @@ import io.mosip.authentication.internal.service.manager.InternalAuthSecurityMana
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
+import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_1_2;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.retry.RetryAspect;
 import io.mosip.kernel.core.retry.RetryConfig;
@@ -100,7 +102,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class,
-		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
+		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
 		OTPRequestValidator.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
 		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
@@ -108,12 +110,12 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		AuthTypeStatusEventSubscriberInitializer.class, IdChangeEventsInitializer.class, SignatureController.class,
+		AuthTypeStatusEventSubscriber.class, IdChangeEventsInitializer.class, SignatureController.class,
 		CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
 		PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
 		RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
 		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class, AuthTransactionHelper.class,
-		CredentialStoreStatusEventManager.class, AuthTypeStatusEventPublisherManager.class })
+		CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class, AuthTransactionStatusEventPublisher.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

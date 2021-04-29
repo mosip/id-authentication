@@ -15,15 +15,15 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class CredentialStoreStatusEventManager.
+ * The Class CredentialStoreStatusEventPublisher.
  * 
  * @author Loganathan Sekar
  */
 @Component
-public class CredentialStoreStatusEventManager extends BaseWebSubEventsInitializer {
+public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(CredentialStoreStatusEventManager.class);
+	private static final Logger logger = IdaLogger.getLogger(CredentialStoreStatusEventPublisher.class);
 
 	/** The credential status update topic. */
 	@Value("${" + CREDENTIAL_STATUS_UPDATE_TOPIC + "}")
@@ -65,7 +65,7 @@ public class CredentialStoreStatusEventManager extends BaseWebSubEventsInitializ
 		tryRegisterTopicHotlistEvent();
 	}
 	
-	public void publishCredentialUpdateStatusEvent(String status, String requestId, LocalDateTime updatedDTimes) {
+	public void publishEvent(String status, String requestId, LocalDateTime updatedDTimes) {
 		CredentialStatusUpdateEvent credentialStatusUpdateEvent = createCredentialStatusUpdateEvent(requestId, status, updatedDTimes);
 		webSubHelper.publishEvent(credentialStatusUpdateTopic, webSubHelper.createEventModel(credentialStatusUpdateTopic, credentialStatusUpdateEvent));
 	}

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisherManager;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -54,7 +54,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	private Environment environment;
 	
 	@Autowired
-	private AuthTypeStatusEventPublisherManager authTypeStatusEventPublisherManager;
+	private AuthTypeStatusEventPublisher authTypeStatusEventPublisherManager;
 
 	/**
 	 * Update auth type status.
@@ -78,7 +78,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 			if(requestId != null) {
 				AuthtypeLock authtypeLock = entry.getValue();
 				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
-				authTypeStatusEventPublisherManager.publishCredentialUpdateStatusEvent(status, requestId, authtypeLock.getCrDTimes());
+				authTypeStatusEventPublisherManager.publishEvent(status, requestId, authtypeLock.getCrDTimes());
 			} else {
 				mosipLogger.error("requestId is null; Websub Notification for {} topic is not sent." , AUTH_TYPE_STATUS_ACK_TOPIC);
 			}

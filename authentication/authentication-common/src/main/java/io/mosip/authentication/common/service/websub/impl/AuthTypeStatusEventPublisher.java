@@ -16,15 +16,15 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class CredentialStoreStatusEventManager.
+ * The Class CredentialStoreStatusEventPublisher.
  * 
  * @author Loganathan Sekar
  */
 @Component
-public class AuthTypeStatusEventPublisherManager extends BaseWebSubEventsInitializer {
+public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventPublisherManager.class);
+	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventPublisher.class);
 
 	/** The credential status update topic. */
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
@@ -48,13 +48,13 @@ public class AuthTypeStatusEventPublisherManager extends BaseWebSubEventsInitial
 	private void tryRegisterTopic() {
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
-					"Trying to register topic: " + authTypeStatusAcknlowedgeTopic);
-			publisher.registerTopic(authTypeStatusAcknlowedgeTopic, publisherUrl);
+					"Trying to register topic: " + getTopic());
+			publisher.registerTopic(getTopic(), publisherUrl);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
-					"Registered topic: " + authTypeStatusAcknlowedgeTopic);
+					"Registered topic: " + getTopic());
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", e.getClass().toString(),
-					"Error registering topic: " + authTypeStatusAcknlowedgeTopic + "\n" + e.getMessage());
+					"Error registering topic: " + getTopic() + "\n" + e.getMessage());
 		}
 	}
 
@@ -66,10 +66,10 @@ public class AuthTypeStatusEventPublisherManager extends BaseWebSubEventsInitial
 		tryRegisterTopic();
 	}
 	
-	public void publishCredentialUpdateStatusEvent(String status, String requestId, LocalDateTime updatedDTimes) {
-		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = createCredentialStatusUpdateEvent(requestId, status, updatedDTimes);
-		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(authTypeStatusAcknlowedgeTopic, credentialStatusUpdateEvent);
-		webSubHelper.publishEvent(authTypeStatusAcknlowedgeTopic, eventModel);
+	public void publishEvent(String status, String requestId, LocalDateTime updatedDTimes) {
+		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = createEvent(requestId, status, updatedDTimes);
+		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
+		webSubHelper.publishEvent(getTopic(), eventModel);
 	}
 	
 	/**
@@ -80,12 +80,19 @@ public class AuthTypeStatusEventPublisherManager extends BaseWebSubEventsInitial
 	 * @param updatedTimestamp the updated timestamp
 	 * @return the credential status update event
 	 */
-	private AuthTypeStatusUpdateAckEvent createCredentialStatusUpdateEvent(String requestId, String status, LocalDateTime updatedTimestamp) {
+	private AuthTypeStatusUpdateAckEvent createEvent(String requestId, String status, LocalDateTime updatedTimestamp) {
 		AuthTypeStatusUpdateAckEvent event = new AuthTypeStatusUpdateAckEvent();
 		event.setStatus(status);
 		event.setRequestId(requestId);
 		event.setTimestamp(updatedTimestamp);
 		return event;
+	}
+
+	/**
+	 * @return the authTypeStatusAcknlowedgeTopic
+	 */
+	public String getTopic() {
+		return authTypeStatusAcknlowedgeTopic;
 	}
 	
 }

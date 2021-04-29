@@ -33,7 +33,7 @@ import io.mosip.authentication.common.service.repository.CredentialEventStoreRep
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventManager;
+import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -136,7 +136,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private long maxExponentialRetryIntervalLimitMillis;
 	
 	@Autowired
-	private CredentialStoreStatusEventManager credentialStoreStatusEventManager;
+	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
 	
 	/**
 	 * Process credential store event.
@@ -218,7 +218,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		if (isSuccess) {
 			credentialEventStore.setStatusCode(CredentialStoreStatus.STORED.name());
 			// Send websub event "STORED" status for the event id.
-			credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.STORED.name(), requestId, updatedDTimes);
+			credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.STORED.name(), requestId, updatedDTimes);
 		} else {
 			if (isRecoverableException) {
 				int retryCount = 0;
@@ -231,13 +231,13 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 				} else {
 					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 					// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
-					credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+					credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 				}
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name());
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
-				credentialStoreStatusEventManager.publishCredentialUpdateStatusEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 			}
 		}
 
