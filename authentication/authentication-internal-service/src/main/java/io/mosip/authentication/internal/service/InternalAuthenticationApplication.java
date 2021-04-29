@@ -45,7 +45,8 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisherManager;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriberInitializer;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventManager;
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
@@ -107,12 +108,12 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		AuthTypeStatusEventsInitializer.class, IdChangeEventsInitializer.class, SignatureController.class,
+		AuthTypeStatusEventSubscriberInitializer.class, IdChangeEventsInitializer.class, SignatureController.class,
 		CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
 		PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
 		RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
 		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class, AuthTransactionHelper.class,
-		CredentialStoreStatusEventManager.class})
+		CredentialStoreStatusEventManager.class, AuthTypeStatusEventPublisherManager.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

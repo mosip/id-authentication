@@ -1,9 +1,11 @@
 package io.mosip.authentication.common.service.helper;
-
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.WEBSUB_PUBLISH_URL;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
@@ -21,6 +23,9 @@ public class WebSubHelper {
 	/** The publisher. */
 	@Autowired
 	private PublisherClient<String, Object, HttpHeaders> publisher;
+	
+	@Value("${" + WEBSUB_PUBLISH_URL + "}")
+	private String websubPublishUrl;
 
 	public void initSubscriber(WebSubEventSubcriber subscriber) {
 		initSubscriber(subscriber, null);
@@ -46,7 +51,7 @@ public class WebSubHelper {
 	 * @param eventModel the event model
 	 */
 	public <U> void publishEvent(String eventTopic, U eventModel) {
-		publisher.publishUpdate(eventTopic, eventModel, eventTopic, null, eventTopic);
+		publisher.publishUpdate(eventTopic, eventModel, MediaType.APPLICATION_JSON_VALUE, null, websubPublishUrl);
 	}
 	
 	/**

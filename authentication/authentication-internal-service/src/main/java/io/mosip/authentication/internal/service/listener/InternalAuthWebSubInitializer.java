@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.CacheUpdatingWebsubInitializer;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisherManager;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriberInitializer;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventManager;
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
@@ -14,7 +15,7 @@ import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInit
 public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitializer{
 	
 	@Autowired
-	private AuthTypeStatusEventsInitializer authTypeStatusEventsInitializer;
+	private AuthTypeStatusEventSubscriberInitializer authTypeStatusEventsInitializer;
 	
 	@Autowired
 	private IdChangeEventsInitializer idChangeEventInitializer;
@@ -27,6 +28,9 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	
 	@Autowired 
 	private CredentialStoreStatusEventManager credentialStoreStatusEventManager;
+	
+	@Autowired
+	private AuthTypeStatusEventPublisherManager authTypeStatusEventPublisherManager;
 	
 	protected void doInitSubscriptions() {
 		webSubHelper.initSubscriber(authTypeStatusEventsInitializer);
@@ -44,6 +48,7 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(hotlistEventInitializer);		
 		
 		webSubHelper.initRegistrar(credentialStoreStatusEventManager);		
+		webSubHelper.initRegistrar(authTypeStatusEventPublisherManager);		
 	}
 
 }
