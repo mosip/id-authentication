@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,8 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -216,9 +219,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		String requestId = credentialEventStore.getCredentialTransactionId();
 
 		if (isSuccess) {
-			credentialEventStore.setStatusCode(CredentialStoreStatus.STORED.name());
+			String statusCode = CredentialStoreStatus.STORED.name();
+			credentialEventStore.setStatusCode(statusCode);
 			// Send websub event "STORED" status for the event id.
-			credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.STORED.name(), requestId, updatedDTimes);
+			credentialStoreStatusEventPublisher.publishEvent(statusCode, requestId, updatedDTimes);
+			audit(requestId, statusCode);
 		} else {
 			if (isRecoverableException) {
 				int retryCount = 0;
@@ -232,16 +237,26 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
 					// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 					credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+					audit(requestId, CredentialStoreStatus.FAILED.name());
 				}
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name());
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+				audit(requestId, CredentialStoreStatus.FAILED.name());
 			}
 		}
 
 		credentialEventRepo.save(credentialEventStore);
+	}
+
+	private void audit(String requestId, String desc) {
+		try {
+			auditHelper.audit(AuditModules.CREDENTIAL_STORAGE, AuditEvents.CREDENTIAL_STORED_EVENT, requestId, "request-id", desc);
+		} catch (IDDataValidationException e) {
+			mosipLogger.error(ExceptionUtils.getFullStackTrace(e));
+		}
 	}
 
 	/**

@@ -35,6 +35,7 @@ public enum AuditEvents {
 	REMOVE_ID_EVENT("IDA-010", "SYSTEM", "Remove ID"),
 	DEACTIVATE_ID_EVENT("IDA-011", "SYSTEM", "Deactivate ID"),
 	ACTIVATE_ID_EVENT("IDA-012", "SYSTEM", "Activate ID"),
+	CREDENTIAL_STORED_EVENT("IDA-009", "SYSTEM", "Credential Issued"),
 	
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1
