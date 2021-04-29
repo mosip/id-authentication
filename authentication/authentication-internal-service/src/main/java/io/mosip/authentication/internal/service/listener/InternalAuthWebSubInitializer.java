@@ -12,30 +12,44 @@ import io.mosip.authentication.common.service.websub.impl.HotlistEventInitialize
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 
+/**
+ * The Class InternalAuthWebSubInitializer.
+ * @author Loganathan Sekar
+ */
 @Component
 public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitializer{
 	
+	/** The auth type status event subscriber. */
 	@Autowired
 	private AuthTypeStatusEventSubscriber authTypeStatusEventSubscriber;
 	
+	/** The id change event initializer. */
 	@Autowired
 	private IdChangeEventsInitializer idChangeEventInitializer;
 	
+	/** The partner CA cert event initializer. */
 	@Autowired
 	private PartnerCACertEventInitializer partnerCACertEventInitializer;
 	
+	/** The hotlist event initializer. */
 	@Autowired
 	private HotlistEventInitializer hotlistEventInitializer;
 	
+	/** The credential store status event publisher. */
 	@Autowired 
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
 	
+	/** The auth type status event publisher. */
 	@Autowired
 	private AuthTypeStatusEventPublisher authTypeStatusEventPublisher;
 	
+	/** The auth transaction status event publisher. */
 	@Autowired
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 	
+	/**
+	 * Do init subscriptions.
+	 */
 	protected void doInitSubscriptions() {
 		webSubHelper.initSubscriber(authTypeStatusEventSubscriber);
 		webSubHelper.initSubscriber(idChangeEventInitializer);
@@ -44,6 +58,9 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	}
 
 
+	/**
+	 * Do register topics.
+	 */
 	@Override
 	protected void doRegisterTopics() {
 		webSubHelper.initRegistrar(authTypeStatusEventSubscriber);
