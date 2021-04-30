@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.repository;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +28,6 @@ public interface CredentialEventStoreRepository extends BaseRepository<Credentia
 	@Query(value = "SELECT * from credential_event_store where status_code in ('NEW', 'FAILED')" // then, try processing old entries
 			, nativeQuery = true)
 	Page<CredentialEventStore> findNewOrFailedEvents(Pageable pageable);
+	
+	Optional<LocalDateTime> getMaxCrDTimes();
 }

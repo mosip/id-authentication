@@ -25,7 +25,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.RepositoryItemReader;
-import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,12 +38,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.impl.idevent.CredentialStatusUpdateEvent;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
+import io.mosip.authentication.internal.service.batch.MissingCredentialsItemReader;
+import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -90,11 +92,14 @@ public class CredentialStoreBatchConfig {
 	
 	/** The job. */
 	@Autowired 
-	private Job job;
+	private Job credentialStoreJob;
 	
 	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
+	
+	@Autowired
+	private MissingCredentialsItemReader missingCredentialsItemReader;
 	
 	/**
 	 * Credential store job.
@@ -117,6 +122,22 @@ public class CredentialStoreBatchConfig {
 		}
 		return job;
 	}
+	
+	@Bean
+	public Job retriggerMissingCredentialIssuancesJob(CredentialStoreJobExecutionListener listener) {
+		Job job = jobBuilderFactory.get("retriggerMissingCredentialIssuancesJob")
+				.incrementer(new RunIdIncrementer())
+				.listener(listener)
+				.flow(retriggerMissingCredentialsStep())
+				.end()
+				.build();
+		try {
+			jobRegistry.register(new ReferenceJobFactory(job));
+		} catch (DuplicateJobException e) {
+			logger.warn("error in registering job: {}", e.getMessage(), e);
+		}
+		return job;
+	}
 
 	/**
 	 * Credential store step.
@@ -127,15 +148,35 @@ public class CredentialStoreBatchConfig {
 	public Step credentialStoreStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
-		RepositoryItemWriter<CredentialEventStore> writer = new RepositoryItemWriter<>();
-		writer.setRepository(credentialEventRepo);
-		writer.setMethodName("update");
-		
 		return stepBuilderFactory.get("credentialStoreStep")
 				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize)
 				.reader(credentialEventReader())
-				.processor(asyncItemProcessor())
-				.writer(asyncWriter())
+				.processor(asyncCredentialStoreItemProcessor())
+				.writer(asyncCredentialStoreItemWriter())
+				// Here Job level retry is not applied, because, event level retry is handled
+				// explicitly by the item processor
+				.faultTolerant()
+				// Skipping the processing of the event for this exception because it is thrown
+				// when try was tried before the retry interval
+				.skip(RetryingBeforeRetryIntervalException.class)
+				.skipLimit(Integer.MAX_VALUE)
+				.build();
+	}
+	
+	/**
+	 * Credential store step.
+	 *
+	 * @return the step
+	 */
+	@Bean
+	public Step retriggerMissingCredentialsStep() {
+		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		exceptions.put(IdAuthenticationBusinessException.class, false);
+		return stepBuilderFactory.get("retriggerMissingCredentialsStep")
+				.<CredentialRequestIdsDto, Future<CredentialStatusUpdateEvent>>chunk(chunkSize)
+				.reader(missingCredentialsItemReader)
+				.processor(asyncRetriggerMissingCredentialItemProcessor())
+				.writer(asyncWebsubPublishingItemWriter())
 				// Here Job level retry is not applied, because, event level retry is handled
 				// explicitly by the item processor
 				.faultTolerant()
@@ -151,8 +192,17 @@ public class CredentialStoreBatchConfig {
 	 *
 	 * @return the item writer
 	 */
-	private ItemWriter<IdentityEntity> itemWriter() {
+	private ItemWriter<IdentityEntity> credentialStoreItemWriter() {
 		return credentialStoreService::storeIdentityEntity;
+	}
+	
+	/**
+	 * Item writer.
+	 *
+	 * @return the item writer
+	 */
+	private ItemWriter<CredentialStatusUpdateEvent> websubPublishingItemWriter() {
+		return credentialStoreService::publishWebsubEvent;
 	}
 	
 	/**
@@ -161,9 +211,16 @@ public class CredentialStoreBatchConfig {
 	 * @return the async item writer
 	 */
 	@Bean
-    public AsyncItemWriter<IdentityEntity> asyncWriter() {
+    public AsyncItemWriter<IdentityEntity> asyncCredentialStoreItemWriter() {
         AsyncItemWriter<IdentityEntity> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(itemWriter());
+        asyncItemWriter.setDelegate(credentialStoreItemWriter());
+        return asyncItemWriter;
+    }
+	
+	@Bean
+    public AsyncItemWriter<CredentialStatusUpdateEvent> asyncWebsubPublishingItemWriter() {
+        AsyncItemWriter<CredentialStatusUpdateEvent> asyncItemWriter = new AsyncItemWriter<>();
+        asyncItemWriter.setDelegate(websubPublishingItemWriter());
         return asyncItemWriter;
     }
 
@@ -172,7 +229,11 @@ public class CredentialStoreBatchConfig {
 	 *
 	 * @return the item processor
 	 */
-	private ItemProcessor<CredentialEventStore, IdentityEntity> itemProcessor() {
+	private ItemProcessor<CredentialEventStore, IdentityEntity> credentialStoreItemProcessor() {
+		return credentialStoreService::processCredentialStoreEvent;
+	}
+	
+	private ItemProcessor<CredentialRequestIdsDto, CredentialStatusUpdateEvent> retriggerMissingCredentialItemProcessor() {
 		return credentialStoreService::processCredentialStoreEvent;
 	}
 	
@@ -182,9 +243,17 @@ public class CredentialStoreBatchConfig {
 	 * @return the async item processor
 	 */
 	@Bean
-	public AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor() {
+	public AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncCredentialStoreItemProcessor() {
 		AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor = new AsyncItemProcessor<>();
-		    asyncItemProcessor.setDelegate(itemProcessor());
+		    asyncItemProcessor.setDelegate(credentialStoreItemProcessor());
+		    asyncItemProcessor.setTaskExecutor(taskExecutor());
+		return asyncItemProcessor;
+	}
+	
+	@Bean
+	public AsyncItemProcessor<CredentialRequestIdsDto, CredentialStatusUpdateEvent> asyncRetriggerMissingCredentialItemProcessor() {
+		AsyncItemProcessor<CredentialRequestIdsDto, CredentialStatusUpdateEvent> asyncItemProcessor = new AsyncItemProcessor<>();
+		    asyncItemProcessor.setDelegate(retriggerMissingCredentialItemProcessor());
 		    asyncItemProcessor.setTaskExecutor(taskExecutor());
 		return asyncItemProcessor;
 	}
@@ -229,14 +298,15 @@ public class CredentialStoreBatchConfig {
 	 * Schedule job.
 	 */
 	@Scheduled(fixedDelayString = "${" + CREDENTIAL_STORE_JOB_DELAY + ":" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
-	public void scheduleJob() {
+	public void scheduleCredentialStoreJob() {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 					.toJobParameters();
-			jobLauncher.run(job, jobParameters);
+			jobLauncher.run(credentialStoreJob, jobParameters);
 		} catch (Exception e) {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}
 	}
+
 	
 }
