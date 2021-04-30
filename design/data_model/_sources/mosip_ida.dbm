@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,861" last-zoom="0.65" max-obj-count="20"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,652" last-zoom="0.65" max-obj-count="20"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -995,11 +995,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="partner_mapping" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<position x="1200" y="1800"/>
+	<position x="1080" y="1820"/>
 	<column name="partner_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
-	<column name="policy_d" not-null="true">
+	<column name="policy_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
 	<column name="api_key_id" not-null="true">
@@ -1024,7 +1024,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 	</column>
 	<constraint name="partner_mapping_pk" type="pk-constr" table="ida.partner_mapping">
-		<columns names="partner_id,policy_d,api_key_id" ref-type="src-columns"/>
+		<columns names="partner_id,policy_id,api_key_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 

@@ -15,7 +15,7 @@
 -- DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
 CREATE TABLE ida.partner_mapping (
 	partner_id character varying(36) NOT NULL,
-	policy_d character varying(36) NOT NULL,
+	policy_id character varying(36) NOT NULL,
 	api_key_id character varying(36) NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
