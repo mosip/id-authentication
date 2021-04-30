@@ -52,8 +52,6 @@ public class HotlistEventController {
 
 	private static final String ID_TYPE = "idType";
 
-	private static final String HOTLIST_DATA = "hotlistData";
-
 	private static final String ID = "id";
 
 	private static Logger logger = IdaLogger.getLogger(HotlistEventController.class);
@@ -76,7 +74,7 @@ public class HotlistEventController {
 					+ "}")
 	public void handleHotlisting(@RequestBody EventModel eventModel) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "HotlistEventController", "handleHotlisting", "EVENT RECEIVED");
-		Object data = eventModel.getEvent().getData().get(HOTLIST_DATA);
+		Object data = eventModel.getEvent().getData();
 		if (Objects.nonNull(data) && data instanceof Map && !((Map) data).isEmpty()) {
 			Map<String, Object> eventData = (Map<String, Object>) data;
 			if (validateHotlistEventData(eventData) && idTypes.contains(eventData.get(ID_TYPE))) {
