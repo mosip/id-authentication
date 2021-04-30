@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
+import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -36,8 +36,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public abstract class BaseIDAWebSubInitializer implements ApplicationListener<ApplicationReadyEvent>{
 	
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
+	/** The retry count. */
 	@Value("${ida-websub-resubscription-retry-count:3}")
 	private int retryCount;
 
@@ -47,23 +49,33 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	@Value("${ida-websub-resubscription-delay-secs:0}")
 	private int reSubscriptionDelaySecs;
 
+	/** The web sub helper. */
 	@Autowired
-	protected WebSubSubscriptionHelper webSubSubscriptionHelper;
-
+	protected WebSubHelper webSubHelper;
+	
+	/** The task scheduler. */
 	@Autowired
 	private ThreadPoolTaskScheduler taskScheduler;
 	
 	
+	/** The task subsctiption delay. */
 	@Value("${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}")
 	private int taskSubsctiptionDelay;
 	
+	/**
+	 * On application event.
+	 *
+	 * @param event the event
+	 */
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
-		taskScheduler.schedule(
-				  this::initSubsriptions,
-				  new Date(System.currentTimeMillis() + taskSubsctiptionDelay)
-				);
+		taskScheduler.schedule(() -> {
+			//Invoke topic registrations. This is done only once.
+			registerTopics();
+			//Init topic subscriptions
+			initSubsriptions();
+		}, new Date(System.currentTimeMillis() + taskSubsctiptionDelay));
 		
 		if (reSubscriptionDelaySecs > 0) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "onApplicationEvent",
@@ -77,6 +89,9 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 		
 	}
 	
+	/**
+	 * Schedule retry subscriptions.
+	 */
 	private void scheduleRetrySubscriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
 				"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
@@ -84,6 +99,9 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 				Duration.ofSeconds(reSubscriptionDelaySecs));
 	}
 
+	/**
+	 * Retry subscriptions.
+	 */
 	private void retrySubscriptions() {
 		// Call Init Subscriptions for the count until no error in the subscription.
 		// This will execute once first for sure if retry count is 0 or more. If the
@@ -95,6 +113,11 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 		}
 	}
 
+	/**
+	 * Inits the subsriptions.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean initSubsriptions() {
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initializing subscribptions..");
@@ -107,7 +130,33 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 			return false;
 		}
 	}
+	
+	/**
+	 * Register topics.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean registerTopics() {
+		try {
+			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registering Topics..");
+			doRegisterTopics();
+			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registered subscribptions.");
+			return true;
+		} catch (Exception e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "registerTopics", "",
+					"Topics registration failed: " + e.getMessage());
+			return false;
+		}
+	}
 
+	/**
+	 * Do init subscriptions.
+	 */
 	protected abstract void doInitSubscriptions();
+	
+	/**
+	 * Do register topics.
+	 */
+	protected abstract void doRegisterTopics();
 
 }

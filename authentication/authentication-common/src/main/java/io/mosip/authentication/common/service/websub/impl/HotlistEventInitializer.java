@@ -11,15 +11,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class PartnerCACertEventSubscriber.
+ * The Class HotlistEventInitializer.
  * 
  * @author Manoj SP
  */
 @Component
-public class HotlistEventSubscriber extends BaseWebSubEventsSubscriber {
+public class HotlistEventInitializer extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(HotlistEventSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(HotlistEventInitializer.class);
 
 	/** The partner service callback URL. */
 	@Value("${" + IDA_WEBSUB_HOTLIST_CALLBACK_URL + "}")
@@ -33,13 +33,12 @@ public class HotlistEventSubscriber extends BaseWebSubEventsSubscriber {
 	private String hotlistEventTopic;
 
 	/**
-	 * Do initialize.
+	 * Do subscribe.
 	 */
 	@Override
-	protected void doInitialize() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "doInitialize", this.getClass().getSimpleName(),
+	protected void doSubscribe() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doSubscribe", this.getClass().getSimpleName(),
 				"Initializing hotlist event subscriptions..");
-		tryRegisterTopicHotlistEvent();
 		subscribeForHotlistEvent();
 	}
 
@@ -80,5 +79,12 @@ public class HotlistEventSubscriber extends BaseWebSubEventsSubscriber {
 					"Error subscribing topic: " + hotlistEventTopic + "\n" + e.getMessage());
 			throw e;
 		}
+	}
+
+	@Override
+	protected void doRegister() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister", this.getClass().getSimpleName(),
+				"Registering hotlist event topic..");
+		tryRegisterTopicHotlistEvent();
 	}
 }

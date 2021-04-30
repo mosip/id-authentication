@@ -139,7 +139,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	 * @return the list
 	 */
 	private List<AutnTxnDto> fetchAuthResponse(List<AutnTxn> autnTxnList) {
-		return autnTxnList.stream().map(this::fetchAuthResponseDTO).collect(Collectors.toList());
+		return autnTxnList.stream().map(AuthTxnServiceImpl::fetchAuthResponseDTO).collect(Collectors.toList());
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	 * @param autnTxn the autn txn
 	 * @return the autn txn dto
 	 */
-	private AutnTxnDto fetchAuthResponseDTO(AutnTxn autnTxn) {
+	public static AutnTxnDto fetchAuthResponseDTO(AutnTxn autnTxn) {
 		AutnTxnDto autnTxnDto = new AutnTxnDto();
 		autnTxnDto.setTransactionID(autnTxn.getRequestTrnId());
 		autnTxnDto.setRequestdatetime(autnTxn.getRequestDTtimes());

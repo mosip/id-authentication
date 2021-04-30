@@ -16,14 +16,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 
 /**
- * The Class PartnerServiceEventsSubscriber.
+ * The Class PartnerServiceEventsInitializer.
  * @author Loganathan Sekar
  */
 @Component
-public class PartnerServiceEventsSubscriber extends BaseWebSubEventsSubscriber {
+public class PartnerServiceEventsInitializer extends BaseWebSubEventsInitializer {
 	
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(PartnerServiceEventsSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(PartnerServiceEventsInitializer.class);
 	
 	/** The partner service callback URL. */
 	@Value("${"+ IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL +"}")
@@ -34,12 +34,11 @@ public class PartnerServiceEventsSubscriber extends BaseWebSubEventsSubscriber {
 	private String partnerServiceCallbackSecret;
 	
 	/**
-	 * Do initialize.
+	 * Do subscribe.
 	 */
 	@Override
-	protected void doInitialize() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "doInitialize",  this.getClass().getSimpleName(), "Initializing Partner Service event subscriptions..");
-		tryRegisterTopicPartnerServiceEvents();
+	protected void doSubscribe() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doSubscribe",  this.getClass().getSimpleName(), "Initializing Partner Service event subscriptions..");
 		subscribeForPartnerServiceEvents();		
 	}
 	
@@ -85,6 +84,12 @@ public class PartnerServiceEventsSubscriber extends BaseWebSubEventsSubscriber {
 			}
 		});
 		
+	}
+
+	@Override
+	protected void doRegister() {
+		logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister",  this.getClass().getSimpleName(), "Registering Partner Service event topic..");
+		tryRegisterTopicPartnerServiceEvents();		
 	}
 
 }

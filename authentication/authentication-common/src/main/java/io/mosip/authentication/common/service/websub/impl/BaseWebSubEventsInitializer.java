@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
+import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -23,13 +24,13 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
 import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
 
 /**
- * The Class BaseWebSubEventsSubscriber.
+ * The Class BaseWebSubEventsInitializer.
  * @author Loganathan Sekar
  */
 @Component
-public abstract class BaseWebSubEventsSubscriber implements WebSubEventSubcriber {
+public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicRegistrar, WebSubEventSubcriber {
 	
-	private static final Logger logger = IdaLogger.getLogger(BaseWebSubEventsSubscriber.class);
+	private static final Logger logger = IdaLogger.getLogger(BaseWebSubEventsInitializer.class);
 	
 	/** The Constant EVENT_TYPE_PLACEHOLDER. */
 	protected static final String EVENT_TYPE_PLACEHOLDER = "{eventType}";
@@ -56,22 +57,41 @@ public abstract class BaseWebSubEventsSubscriber implements WebSubEventSubcriber
 	
 
 	/**
-	 * Initialize.
+	 * Subscribe.
 	 *
 	 * @param enableTester the enable tester
 	 */
 	@Override
-	public void initialize(Supplier<Boolean> enableTester) {
+	public void subscribe(Supplier<Boolean> enableTester) {
 		if(enableTester == null || enableTester.get()) {
-			doInitialize();
+			doSubscribe();
 		} else {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "initialize",  this.getClass().getSimpleName(), "This websub subscriber is disabled.");
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribe",  this.getClass().getSimpleName(), "This websub subscriber is disabled.");
 		}
 	}
 	
 	/**
-	 * Do initialize.
+	 * Do subscribe.
 	 */
-	protected abstract void doInitialize();
+	protected abstract void doSubscribe();
+	
+	/**
+	 * Register.
+	 *
+	 * @param enableTester the enable tester
+	 */
+	@Override
+	public void register(Supplier<Boolean> enableTester) {
+		if(enableTester == null || enableTester.get()) {
+			doRegister();
+		} else {
+			logger.info(IdAuthCommonConstants.SESSION_ID, "register",  this.getClass().getSimpleName(), "This websub subscriber is disabled.");
+		}
+	}
+	
+	/**
+	 * Do register.
+	 */
+	protected abstract void doRegister();
 
 }
