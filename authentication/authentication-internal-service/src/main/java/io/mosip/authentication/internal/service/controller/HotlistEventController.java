@@ -67,16 +67,15 @@ public class HotlistEventController {
 		idTypes.remove("");
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	@PostMapping(value = "/callback/hotlist", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_HOTLIST_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/hotlist", topic = "${" + IDA_WEBSUB_HOTLIST_TOPIC
 					+ "}")
 	public void handleHotlisting(@RequestBody EventModel eventModel) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "HotlistEventController", "handleHotlisting", "EVENT RECEIVED");
-		Object data = eventModel.getEvent().getData();
-		if (Objects.nonNull(data) && data instanceof Map && !((Map) data).isEmpty()) {
-			Map<String, Object> eventData = (Map<String, Object>) data;
+		Map<String, Object> eventData = eventModel.getEvent().getData();
+		if (Objects.nonNull(eventData) && !((Map) eventData).isEmpty()) {
 			if (validateHotlistEventData(eventData) && idTypes.contains(eventData.get(ID_TYPE))) {
 				String id = (String) eventData.get(ID);
 				String idType = (String) eventData.get(ID_TYPE);
