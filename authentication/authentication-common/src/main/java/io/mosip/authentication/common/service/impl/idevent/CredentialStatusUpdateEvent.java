@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
 
 /**
@@ -21,6 +19,6 @@ public class CredentialStatusUpdateEvent {
 	private String status;
 	
 	/** The timestamp. */
-	private LocalDateTime timestamp;
+	private String timestamp;
 
 }
