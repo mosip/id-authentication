@@ -36,12 +36,6 @@ public class HotlistEventController {
 	@Value("{'${mosip.ida.internal.hotlist.idtypes.allowed}'.split(',')}")
 	private List<String> idTypes;
 
-	@Value("${ida.api.id.hotlist}")
-	private String API_ID;
-
-	@Value("${ida.api.version.hotlist}")
-	private String API_VERSION;
-
 	private static final String UNBLOCKED = "UNBLOCKED";
 
 	private static final String BLOCKED = "BLOCKED";
