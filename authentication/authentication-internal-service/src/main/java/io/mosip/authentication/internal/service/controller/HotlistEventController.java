@@ -33,7 +33,7 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 @RestController
 public class HotlistEventController {
 
-	@Value("{'${mosip.ida.internal.hotlist.idtypes.allowed}'.split(',')}")
+	@Value("#{'${mosip.ida.internal.hotlist.idtypes.allowed}'.split(',')}")
 	private List<String> idTypes;
 
 	private static final String UNBLOCKED = "UNBLOCKED";
