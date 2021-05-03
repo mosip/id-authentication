@@ -443,12 +443,35 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		}
 	}
 	
-	public CredentialStatusUpdateEvent processMissingCredentialRequestIds(CredentialRequestIdsDto dto) {
-		return null;
+	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dtos) {
+		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
 	}
 	
-	public void publishCredentialStatusUpdateEvent(List<? extends CredentialStatusUpdateEvent> events) {
-		System.out.println(events);
+	private void processMissingCredentialRequestId(CredentialRequestIdsDto dto) {
+		String requestId = dto.getRequestId();
+		Optional<CredentialEventStore>  eventOpt = credentialEventRepo.findByCredentialTransactionId(requestId);
+		if(eventOpt.isPresent()) {
+			CredentialEventStore eventStore = eventOpt.get();
+			String statusCode = eventStore.getStatusCode();
+			// For STORED, FAILED_WITH_MAX_RETRIES and FAILED_NON_RECOVERABLE, the status is
+			// not yet updated for in credential request service, so notify that. 
+			// STORED to be notified as STORED and FAILED_* as FAILED 
+			// For NEW and FAILED, events will be processed by credential store batch job
+			if(CredentialStoreStatus.STORED.name().equalsIgnoreCase(statusCode)) {
+				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.STORED.name(), requestId, eventStore.getCrDTimes());
+			} else if(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name().equalsIgnoreCase(statusCode)
+					|| CredentialStoreStatus.FAILED_NON_RECOVERABLE.name().equalsIgnoreCase(statusCode)) {
+				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, eventStore.getCrDTimes());
+			}
+		} else {
+			//Re-trigger credential issuance
+			retriggerCredentialIssuance(requestId);
+		}
 	}
 
+	private void retriggerCredentialIssuance(String requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

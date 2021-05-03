@@ -32,4 +32,6 @@ public interface CredentialEventStoreRepository extends BaseRepository<Credentia
 	
 	@Query(value = "SELECT  MAX(crDTimes) from CredentialEventStore where statusCode = :statusCode")
 	Optional<LocalDateTime> findMaxCrDTimesByStatusCode(@Param("statusCode")String statusCode);
+
+	Optional<CredentialEventStore> findByCredentialTransactionId(String requestId);
 }

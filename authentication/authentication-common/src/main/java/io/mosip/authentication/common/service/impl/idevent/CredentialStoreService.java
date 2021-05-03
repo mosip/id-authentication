@@ -43,18 +43,10 @@ public interface CredentialStoreService {
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException;
 	
 	/**
-	 * Process credential store event.
+	 * Process missing credential request id.
 	 *
 	 * @param dto the dto
-	 * @return the credential status update event
 	 */
-	public CredentialStatusUpdateEvent processMissingCredentialRequestIds(CredentialRequestIdsDto dto);
-	
-	/**
-	 * Publish websub event.
-	 *
-	 * @param event the event
-	 */
-	public void publishCredentialStatusUpdateEvent(List<? extends CredentialStatusUpdateEvent> events);
+	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dto);
 
 }
