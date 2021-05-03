@@ -44,6 +44,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
@@ -440,6 +441,14 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			saltEntity.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
 			uinHashSaltRepo.save(saltEntity);
 		}
+	}
+	
+	public CredentialStatusUpdateEvent processMissingCredentialRequestIds(CredentialRequestIdsDto dto) {
+		return null;
+	}
+	
+	public void publishCredentialStatusUpdateEvent(List<? extends CredentialStatusUpdateEvent> events) {
+		System.out.println(events);
 	}
 
 }

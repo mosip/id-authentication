@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_JOB_DELAY;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +7,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -17,7 +14,6 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
@@ -34,7 +30,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
@@ -61,8 +56,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @EnableScheduling
 public class CredentialStoreBatchConfig {
 	
-	/** The Constant CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING. */
-	private static final String CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING = "1000";
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(CredentialStoreBatchConfig.class);
@@ -90,18 +83,6 @@ public class CredentialStoreBatchConfig {
 	/** The credential store service. */
 	@Autowired
 	private CredentialStoreService credentialStoreService;
-	
-	@Autowired
-	@Qualifier("credentialStoreJob")
-	private Job credentialStoreJob;
-	
-	@Autowired
-	@Qualifier("retriggerMissingCredentialIssuancesJob")
-	private Job retriggerMissingCredentialIssuancesJob;
-	
-	/** The job launcher. */
-	@Autowired
-	private JobLauncher jobLauncher;
 	
 	@Autowired
 	private MissingCredentialsItemReader missingCredentialsItemReader;
@@ -209,7 +190,7 @@ public class CredentialStoreBatchConfig {
 	 * @return the item writer
 	 */
 	private ItemWriter<CredentialStatusUpdateEvent> websubPublishingItemWriter() {
-		return credentialStoreService::publishWebsubEvent;
+		return credentialStoreService::publishCredentialStatusUpdateEvent;
 	}
 	
 	/**
@@ -241,7 +222,7 @@ public class CredentialStoreBatchConfig {
 	}
 	
 	private ItemProcessor<CredentialRequestIdsDto, CredentialStatusUpdateEvent> retriggerMissingCredentialItemProcessor() {
-		return credentialStoreService::processCredentialStoreEvent;
+		return credentialStoreService::processMissingCredentialRequestIds;
 	}
 	
 	/**
@@ -301,27 +282,5 @@ public class CredentialStoreBatchConfig {
 		return reader;
 	}
 	
-	@Scheduled(fixedDelayString = "${" + CREDENTIAL_STORE_JOB_DELAY + ":" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
-	public void scheduleCredentialStoreJob() {
-		try {
-			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-					.toJobParameters();
-			jobLauncher.run(credentialStoreJob, jobParameters);
-		} catch (Exception e) {
-			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
-		}
-	}
-	
-	@Scheduled(fixedDelay=Long.MAX_VALUE)
-	public void scheduleMissingCredentialRetriggerJob() {
-		try {
-			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-					.toJobParameters();
-			jobLauncher.run(retriggerMissingCredentialIssuancesJob, jobParameters);
-		} catch (Exception e) {
-			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
-		}
-	}
-
 	
 }

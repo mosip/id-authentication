@@ -6,6 +6,7 @@ import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
+import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
@@ -40,5 +41,20 @@ public interface CredentialStoreService {
 	 */
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException;
+	
+	/**
+	 * Process credential store event.
+	 *
+	 * @param dto the dto
+	 * @return the credential status update event
+	 */
+	public CredentialStatusUpdateEvent processMissingCredentialRequestIds(CredentialRequestIdsDto dto);
+	
+	/**
+	 * Publish websub event.
+	 *
+	 * @param event the event
+	 */
+	public void publishCredentialStatusUpdateEvent(List<? extends CredentialStatusUpdateEvent> events);
 
 }

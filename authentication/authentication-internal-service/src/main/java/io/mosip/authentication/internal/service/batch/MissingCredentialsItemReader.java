@@ -1,12 +1,13 @@
 package io.mosip.authentication.internal.service.batch;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -29,8 +30,9 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
-import io.mosip.idrepository.core.dto.PageDto;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -58,10 +60,13 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 
 	
 	/** The current page index. */
-	private AtomicInteger currentPageIndex = new AtomicInteger(0);
+	private AtomicInteger currentPageIndex;
+	
+	/** The total count. */
+	private AtomicInteger totalCount;
 	
 	/** The effectivedtimes. */
-	private String effectivedtimes = getEffectiveDTimes();
+	private String effectivedtimes;
 
 	/** The credential event repo. */
 	@Autowired
@@ -69,11 +74,17 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 
 	/** The object mapper. */
 	@Autowired
-
 	private ObjectMapper objectMapper;
 
 	/** The request ids iterator. */
 	private Iterator<CredentialRequestIdsDto> requestIdsIterator;
+	
+	private void initialize() {
+		currentPageIndex = new AtomicInteger(0);
+		totalCount = new AtomicInteger(0);
+		effectivedtimes = getEffectiveDTimes();
+		requestIdsIterator = getRequestIdsIterator();
+	}
 
 	/**
 	 * Gets the request ids iterator.
@@ -82,7 +93,9 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private Iterator<CredentialRequestIdsDto> getRequestIdsIterator() {
 		Stream<CredentialRequestIdsDto> requestIdStream = Stream
-				.<List<CredentialRequestIdsDto>>iterate(this.getNextPageItems(), list -> !list.isEmpty(),
+				.<List<CredentialRequestIdsDto>>iterate(
+						this.getNextPageItems(), 
+						list -> list != null && !list.isEmpty(),
 						list -> this.getNextPageItems())
 				.flatMap(List::stream);
 		return requestIdStream.iterator();
@@ -101,10 +114,19 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	public CredentialRequestIdsDto read()
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		if(requestIdsIterator == null) {
-			requestIdsIterator = getRequestIdsIterator();
+			initialize();
 		}
-		return requestIdsIterator.hasNext() ? requestIdsIterator.next() : null;
+		
+		if (requestIdsIterator.hasNext()) {
+			totalCount.incrementAndGet();
+			return requestIdsIterator.next();
+		} else {
+			mosipLogger.info("Fetched missing credentials. Total count: {}", totalCount.get());
+			requestIdsIterator = null;
+			return null;
+		}
 	}
+
 
 	/**
 	 * Gets the next page items.
@@ -113,25 +135,34 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private List<CredentialRequestIdsDto> getNextPageItems() {
 		try {
-			RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, PageDto.class);
+			RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class);
 			Map<String, String> pathVariables = Map.of("pageNumber", String.valueOf(currentPageIndex.getAndIncrement()),
 														"effectivedtimes", effectivedtimes);
 			request.setPathVariables(pathVariables);
 			
 			try {
-				return restHelper.<PageDto<CredentialRequestIdsDto>>requestSync(request).getData();
+				Map<String, Object> response = restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request).getResponse();
+				List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
+				if (data == null) {
+					return List.of();
+				} else {
+					List<CredentialRequestIdsDto> requestIds = data.stream().map(map -> objectMapper.convertValue(map, CredentialRequestIdsDto.class))
+							.collect(Collectors.toList());
+					return requestIds;
+				}
 			} catch (RestServiceException e) {
 				List<ServiceError> errorList = RestHelperImpl.getErrorList(e.getResponseBodyAsString().orElse("{}"), objectMapper);
 				if(errorList.stream().anyMatch(err -> NO_RECORD_FOUND_ERR_CODE.equals(err.getErrorCode()))) {
-					//Reached end of pages
+					//Reached end of pages.
 					return List.of();
 				} else {
-					mosipLogger.error(ExceptionUtils.getFullStackTrace(e));
+					mosipLogger.error(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(ExceptionUtils.getFullStackTrace(e));
+			mosipLogger.error(ExceptionUtils.getStackTrace(e));
 		}
+		
 		return List.of();
 	}
 
@@ -142,8 +173,11 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private String getEffectiveDTimes() {
 		return DateUtils
-				.formatToISOString(credentialEventRepo.getMaxCrDTimes()
-						.orElseGet(DateUtils::getUTCCurrentDateTime));
+				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
+		//TODO commented for debug. Fetch credentials since last credential stored event date time.
+//		return DateUtils
+//				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
+//						.orElseGet(DateUtils::getUTCCurrentDateTime));
 	}
 
 }
