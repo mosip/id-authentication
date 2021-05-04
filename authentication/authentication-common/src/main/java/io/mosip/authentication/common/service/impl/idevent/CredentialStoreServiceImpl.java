@@ -480,7 +480,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		mosipLogger.info("Retriggering credential issuance with request-id {} ", requestId);
 		try {
 			credentialRequestManager.retriggerCredentialIssuance(requestId);
-		} catch (RestServiceException e) {
+		} catch (RestServiceException | IDDataValidationException e) {
 			mosipLogger.info(ExceptionUtils.getStackTrace(e));
 		}
 	}

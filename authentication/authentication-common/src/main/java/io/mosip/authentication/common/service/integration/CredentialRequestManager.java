@@ -16,7 +16,6 @@ import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
@@ -24,7 +23,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.retry.WithRetry;
 
 /**
  * The Class CredentialRequestManager.
@@ -60,9 +58,9 @@ public class CredentialRequestManager {
 	 * @param effectivedtimes the effectivedtimes
 	 * @return the next page items
 	 * @throws RestServiceException 
+	 * @throws IDDataValidationException 
 	 */
-	@WithRetry
-	public List<CredentialRequestIdsDto> getMissingCredentialsPageItems(int currentPageIndex, String effectivedtimes) throws RestServiceException {
+	public List<CredentialRequestIdsDto> getMissingCredentialsPageItems(int currentPageIndex, String effectivedtimes) throws RestServiceException, IDDataValidationException {
 		try {
 			RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class);
 			Map<String, String> pathVariables = Map.of("pageNumber", String.valueOf(currentPageIndex),
@@ -92,7 +90,7 @@ public class CredentialRequestManager {
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(ExceptionUtils.getStackTrace(e));
-			throw new IdAuthRetryException(e);
+			throw e;
 		}
 	}
 	
@@ -101,9 +99,9 @@ public class CredentialRequestManager {
 	 *
 	 * @param requestId the request id
 	 * @throws RestServiceException 
+	 * @throws IDDataValidationException 
 	 */
-	@WithRetry
-	public void retriggerCredentialIssuance(String requestId) throws RestServiceException {
+	public void retriggerCredentialIssuance(String requestId) throws RestServiceException, IDDataValidationException {
 		try {
 			RestRequestDTO request = restRequestFactory.buildRequest(
 					RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class);
@@ -119,7 +117,7 @@ public class CredentialRequestManager {
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(ExceptionUtils.getStackTrace(e));
-			throw new IdAuthRetryException(e);
+			throw e;
 		}
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
@@ -79,7 +80,7 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	private List<CredentialRequestIdsDto> getNextPageItems() {
 		try {
 			return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
-		} catch (RestServiceException e) {
+		} catch (RestServiceException | IDDataValidationException e) {
 			mosipLogger.info(ExceptionUtils.getStackTrace(e));
 		}
 		return List.of();
