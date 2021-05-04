@@ -52,9 +52,13 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	/** The request ids iterator. */
 	private Iterator<CredentialRequestIdsDto> requestIdsIterator;
 
+	/** The credential request manager. */
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
 	
+	/**
+	 * Initialize.
+	 */
 	private void initialize() {
 		currentPageIndex = new AtomicInteger(0);
 		totalCount = new AtomicInteger(0);
@@ -77,6 +81,11 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 		return requestIdStream.iterator();
 	}
 
+	/**
+	 * Gets the next page items.
+	 *
+	 * @return the next page items
+	 */
 	private List<CredentialRequestIdsDto> getNextPageItems() {
 		try {
 			return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);

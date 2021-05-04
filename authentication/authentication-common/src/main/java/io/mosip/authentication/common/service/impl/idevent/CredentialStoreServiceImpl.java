@@ -140,9 +140,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
 	private long maxExponentialRetryIntervalLimitMillis;
 	
+	/** The credential store status event publisher. */
 	@Autowired
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
 	
+	/** The credential request manager. */
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
 	
@@ -256,6 +258,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		credentialEventRepo.save(credentialEventStore);
 	}
 
+	/**
+	 * Audit.
+	 *
+	 * @param requestId the request id
+	 * @param desc the desc
+	 */
 	private void audit(String requestId, String desc) {
 		try {
 			auditHelper.audit(AuditModules.CREDENTIAL_STORAGE, AuditEvents.CREDENTIAL_STORED_EVENT, requestId, "request-id", desc);
@@ -447,10 +455,20 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		}
 	}
 	
+	/**
+	 * Process missing credential request id.
+	 *
+	 * @param dtos the dtos
+	 */
 	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dtos) {
 		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
 	}
 	
+	/**
+	 * Process missing credential request id.
+	 *
+	 * @param dto the dto
+	 */
 	private void processMissingCredentialRequestId(CredentialRequestIdsDto dto) {
 		String requestId = dto.getRequestId();
 		Optional<CredentialEventStore>  eventOpt = credentialEventRepo.findByCredentialTransactionId(requestId);
@@ -476,6 +494,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		}
 	}
 
+	/**
+	 * Retrigger credential issuance.
+	 *
+	 * @param requestId the request id
+	 */
 	private void retriggerCredentialIssuance(String requestId) {
 		mosipLogger.info("Retriggering credential issuance with request-id {} ", requestId);
 		try {
