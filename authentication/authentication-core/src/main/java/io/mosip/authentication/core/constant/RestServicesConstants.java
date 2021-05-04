@@ -48,8 +48,6 @@ public enum RestServicesConstants {
 	
 	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
 	
-	ID_PMP_SERVICE("id-pmp-service"),
-	
 	DATA_SHARE_GET("data-share-get");
 
 	/** The service name. */

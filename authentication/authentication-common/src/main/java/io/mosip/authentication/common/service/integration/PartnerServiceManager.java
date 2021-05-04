@@ -1,202 +1,269 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.cache.PartnerServiceCache;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
+import io.mosip.authentication.common.service.entity.ApiKeyData;
+import io.mosip.authentication.common.service.entity.MispLicenseData;
+import io.mosip.authentication.common.service.entity.PartnerData;
+import io.mosip.authentication.common.service.entity.PartnerMapping;
+import io.mosip.authentication.common.service.entity.PolicyData;
+import io.mosip.authentication.common.service.repository.ApiKeyDataRepository;
+import io.mosip.authentication.common.service.repository.MispLicenseDataRepository;
+import io.mosip.authentication.common.service.repository.PartnerDataRepository;
+import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
+import io.mosip.authentication.common.service.repository.PolicyDataRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
- * This class Partner Service Manager connects to partner service to validate and 
- * get the policy file for a given partnerID, partner api key and misp license key.
+ * This class Partner Service Manager connects to partner service to validate
+ * and get the policy file for a given partnerID, partner api key and misp
+ * license key.
  * 
  * @author Nagarjuna
  *
  */
 @Component
+@Transactional
 public class PartnerServiceManager {
-	
+
 	/** The logger. */
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
 	@Autowired
-	private RestRequestFactory restRequestFactory;
+	private PartnerMappingRepository partnerMappingRepo;
 
 	@Autowired
-	@Qualifier("external")
-	private RestHelper restHelper;
+	private PartnerDataRepository partnerDataRepo;
 
 	@Autowired
-	protected ObjectMapper mapper;
-	
+	private PolicyDataRepository policyDataRepo;
+
 	@Autowired
-	private PartnerServiceCache partnerServiceCache;
-	
+	private ApiKeyDataRepository apiKeyRepo;
+
 	@Autowired
-	private CacheManager cacheManager;
-	
-	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key, boolean certificateNeeded) throws IdAuthenticationBusinessException {
+	private MispLicenseDataRepository mispLicDataRepo;
 
-		RestRequestDTO buildRequest;
-		PartnerPolicyResponseDTO response = null;	
+	@Autowired
+	private ObjectMapper mapper;
 
-		try {			
-			Map<String, String> pathParams = new HashMap<>();
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_PMP_SERVICE, null, Map.class);
-			pathParams.put("partner_id", partnerId);
-			pathParams.put("partner_api_key", partner_api_key);
-			pathParams.put("misp_license_key", misp_license_key);
-			pathParams.put("need_partner_cert", String.valueOf(certificateNeeded));
+	@Autowired
+	private IdAuthSecurityManager securityManager;
 
-			buildRequest.setPathVariables(pathParams);
-
-			Map<String, Object> partnerServiceResponse = restHelper.requestSync(buildRequest);
-			response = mapper.readValue(mapper.writeValueAsString(partnerServiceResponse.get("response")),PartnerPolicyResponseDTO.class);			
-		}catch (RestServiceException e) {			
-			handleRestServiceException(e);			
-		} catch (JsonParseException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (JsonMappingException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (JsonProcessingException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (IOException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
+			boolean certificateNeeded) throws IdAuthenticationBusinessException {
+		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerId(partnerId);
+		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findById(misp_license_key);
+		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional);
+		PartnerPolicyResponseDTO response = new PartnerPolicyResponseDTO();
+		PartnerMapping partnerMapping = partnerMappingDataOptional.get();
+		PartnerData partnerData = partnerMapping.getPartnerData();
+		PolicyData policyData = partnerMapping.getPolicyData();
+		ApiKeyData apiKeyData = partnerMapping.getApiKeyData();
+		MispLicenseData mispLicenseData = mispLicOptional.get();
+		response.setPolicyId(policyData.getPolicyId());
+		response.setPolicyName(policyData.getPolicyName());
+		response.setPolicy(mapper.convertValue(policyData.getPolicy(), PolicyDTO.class));
+		response.setPolicyDescription(policyData.getPolicyDescription());
+		response.setPolicyStatus(policyData.getPolicyStatus().contentEquals("ACTIVE"));
+		response.setPartnerId(partnerData.getPartnerId());
+		response.setPartnerName(partnerData.getPartnerName());
+		if (certificateNeeded) {
+			response.setCertificateData(partnerData.getCertificateData());
 		}
+		response.setPolicyExpiresOn(policyData.getPolicyExpiresOn());
+		response.setApiKeyExpiresOn(apiKeyData.getApiKeyExpiresOn());
+		response.setMispExpiresOn(mispLicenseData.getMispExpiresOn());
 		return response;
 	}
 
-	public void evictPartnerBasedOnPartnerId(String partnerId) {
-		this.evictPartner(partnerId, null, null);
-	}
-	
-	public void evictPartnerBasedOnPartnerApiKey(String partnerApiKey) {
-		this.evictPartner(null, partnerApiKey, null);
-	}
-	
-	public void evictPartnerBasedOnMispLicenseKey(String mispLicenseKey) {
-		this.evictPartner(null, null, mispLicenseKey);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void evictPartnerBasedOnPolicyId(String policyId) {
-		Map<PartnerDTO, PartnerPolicyResponseDTO> partnerCacheMap = (Map<PartnerDTO, PartnerPolicyResponseDTO>) cacheManager
-				.getCache("partner").getNativeCache();
-		partnerCacheMap.entrySet().stream()
-				.filter(partnerEntry -> partnerEntry.getValue().getPolicyId().contentEquals(policyId))
-				.forEach(partnerEntry -> partnerServiceCache.evictPartnerPolicy(partnerEntry.getKey()));
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void evictPartner(String partnerId, String partnerApiKey, String mispLicenseKey) {
-		Map<PartnerDTO, PartnerPolicyResponseDTO> partnerCacheMap = (Map<PartnerDTO, PartnerPolicyResponseDTO>) cacheManager
-				.getCache("partner").getNativeCache();
-		partnerCacheMap.keySet().stream().filter(
-				partnerKey -> partnerKey.getPartnerId().contentEquals(Objects.nonNull(partnerId) ? partnerId : "")
-						|| partnerKey.getPartnerApiKey().contentEquals(Objects.nonNull(partnerApiKey) ? partnerApiKey : "")
-						|| partnerKey.getMispLicenseKey()
-								.contentEquals(Objects.nonNull(mispLicenseKey) ? mispLicenseKey : ""))
-				.forEach(partnerServiceCache::evictPartnerPolicy);
-	}
-	private void handleRestServiceException(RestServiceException e) throws IdAuthenticationBusinessException {
-		logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-				e.getErrorText());
-		Optional<String> responseBodyAsStringOpt = e.getResponseBodyAsString();
-		if(responseBodyAsStringOpt.isPresent()) {
-			String responseBodyAsString = responseBodyAsStringOpt.get();
-			List<ServiceError> errorList = getErrorList(responseBodyAsString);
-			if (Objects.nonNull(errorList)
-					&& !errorList.isEmpty()
-					&& Objects.nonNull(errorList.get(0).getErrorCode())) {
-				throw getMatchingErrorCodes(errorList.get(0).getErrorCode(), e);
+	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
+			Optional<MispLicenseData> mispLicOptional) throws IdAuthenticationBusinessException {
+		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
+			PartnerMapping partnerMapping = partnerMappingDataOptional.get();
+			if (partnerMapping.getPartnerData().isDeleted()) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+			}
+			if (!partnerMapping.getPartnerData().getPartnerStatus().contentEquals("ACTIVE")) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
+			}
+			if (partnerMapping.getPolicyData().isDeleted()) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage());
+			}
+			if (!partnerMapping.getPolicyData().getPolicyStatus().contentEquals("ACTIVE")) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
+			}
+			if (!(partnerMapping.getPolicyData().getPolicyCommenceOn().isBefore(DateUtils.getUTCCurrentDateTime())
+					&& partnerMapping.getPolicyData().getPolicyExpiresOn().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
+			}
+			if (partnerMapping.getApiKeyData().isDeleted()) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+			}
+			if (!partnerMapping.getApiKeyData().getApiKeyStatus().contentEquals("ACTIVE")) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
+			}
+			if (!(partnerMapping.getApiKeyData().getApiKeyCommenceOn().isBefore(DateUtils.getUTCCurrentDateTime())
+					&& partnerMapping.getApiKeyData().getApiKeyExpiresOn().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+			}
+			if (mispLicOptional.isPresent()) {
+				MispLicenseData mispLicenseData = mispLicOptional.get();
+				if (mispLicenseData.isDeleted()) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+							IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
+				}
+				if (!mispLicenseData.getMispStatus().contentEquals("ACTIVE")) {
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
+							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage());
+				}
+				if (mispLicenseData.getMispCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())) {
+					// TODO need to throw different exception for misp not active
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+							IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
+				}
+				if (mispLicenseData.getMispExpiresOn().isBefore(DateUtils.getUTCCurrentDateTime())) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+							IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage());
+				}
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
 			}
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-		}
-		
-	}
-	
-	private List<ServiceError> getErrorList(String responseBodyAsString) {
-		return RestHelperImpl.getErrorList(responseBodyAsString, mapper);
-	}
-	
-	/**
-	 * This method will throw ida exceptions corresponding to pmp
-	 * @param erroCode
-	 * @param e
-	 * @return
-	 */
-	private IdAuthenticationBusinessException getMatchingErrorCodes(String erroCode,RestServiceException e) {
-		switch(erroCode) {
-		case "PMS_PMP_020":
-			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage(),e);
-		case "PMS_PMP_021":
-			 return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
-						IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage(),e);
-		case "PMS_PMP_025":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
-					IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage(),e);
-		case "PMS_PMP_016":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage(),e);
-		case "PMS_PMP_013":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
-		case "PMS_PMP_017":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOTMAPPED.getErrorMessage(),e);
-		case "PMS_PMP_023":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
-		case "PMS_PMP_019":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage(),e);
-		case "PMS_PMP_018":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage(),e);
-		case "PMS_PMP_024":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage(),e);
-		case "PMS_PRT_108":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE,e);
-		case "PMS_PMP_052":
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERT_NOT_AVAILABLE,e);
-		default:
-			return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 		}
 	}
-	
+
+	public void updateApiKeyData(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
+		if (eventModel.getTopic().contentEquals(IdAuthCommonConstants.APIKEY_APPROVED)) {
+			PartnerMapping mapping = new PartnerMapping();
+			PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData(), PartnerData.class);
+			mapping.setPartnerId(partnerEventData.getPartnerId());
+			partnerEventData.setCreatedBy(securityManager.getUser());
+			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData(), ApiKeyData.class);
+			mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
+			apiKeyEventData.setCreatedBy(securityManager.getUser());
+			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData(), PolicyData.class);
+			mapping.setPolicyId(policyEventData.getPolicyId());
+			policyEventData.setCreatedBy(securityManager.getUser());
+			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			mapping.setCreatedBy(securityManager.getUser());
+			mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			partnerDataRepo.save(partnerEventData);
+			apiKeyRepo.save(apiKeyEventData);
+			policyDataRepo.save(policyEventData);
+			partnerMappingRepo.save(mapping);
+		} else {
+			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData(), ApiKeyData.class);
+			Optional<ApiKeyData> apiKeyDataOptional = apiKeyRepo.findById(apiKeyEventData.getApiKeyId());
+			if (apiKeyDataOptional.isPresent()) {
+				ApiKeyData apiKeyData = apiKeyDataOptional.get();
+				apiKeyData.setApiKeyCommenceOn(apiKeyEventData.getApiKeyCommenceOn());
+				apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
+				apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
+				apiKeyData.setUpdatedBy(securityManager.getUser());
+				apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+				apiKeyRepo.save(apiKeyData);
+			} else {
+				apiKeyEventData.setCreatedBy(securityManager.getUser());
+				apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+				apiKeyRepo.save(apiKeyEventData);
+			}
+		}
+	}
+
+	public void updatePartnerData(EventModel eventModel) {
+		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData(), PartnerData.class);
+		Optional<PartnerData> partnerDataOptional = partnerDataRepo.findById(partnerEventData.getPartnerId());
+		if (partnerDataOptional.isPresent()) {
+			PartnerData partnerData = partnerDataOptional.get();
+			partnerData.setPartnerId(partnerEventData.getPartnerId());
+			partnerData.setPartnerName(partnerEventData.getPartnerName());
+			partnerData.setCertificateData(partnerEventData.getCertificateData());
+			partnerData.setPartnerStatus(partnerEventData.getPartnerStatus());
+			partnerData.setUpdatedBy(securityManager.getUser());
+			partnerData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			partnerDataRepo.save(partnerData);
+		} else {
+			partnerEventData.setCreatedBy(securityManager.getUser());
+			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			partnerDataRepo.save(partnerEventData);
+		}
+	}
+
+	public void updatePolicyData(EventModel eventModel) {
+		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData(), PolicyData.class);
+		Optional<PolicyData> policyDataOptional = policyDataRepo.findById(policyEventData.getPolicyId());
+		if (policyDataOptional.isPresent()) {
+			PolicyData policyData = policyDataOptional.get();
+			policyData.setUpdatedBy(securityManager.getUser());
+			policyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			policyData.setPolicyId(policyEventData.getPolicyId());
+			policyData.setPolicy(policyEventData.getPolicy());
+			policyData.setPolicyName(policyEventData.getPolicyName());
+			policyData.setPolicyStatus(policyEventData.getPolicyStatus());
+			policyData.setPolicyDescription(policyEventData.getPolicyDescription());
+			policyData.setPolicyCommenceOn(policyEventData.getPolicyCommenceOn());
+			policyData.setPolicyExpiresOn(policyEventData.getPolicyExpiresOn());
+			policyDataRepo.save(policyData);
+		} else {
+			policyEventData.setCreatedBy(securityManager.getUser());
+			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			policyDataRepo.save(policyEventData);
+		}
+	}
+
+	public void updateMispLicenseData(EventModel eventModel) {
+		MispLicenseData mispLicenseEventData = mapper.convertValue(eventModel.getEvent().getData(), MispLicenseData.class);
+		Optional<MispLicenseData> mispLicenseDataOptional = mispLicDataRepo.findById(mispLicenseEventData.getMispId());
+		if (mispLicenseDataOptional.isPresent()) {
+			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
+			mispLicenseData.setUpdatedBy(securityManager.getUser());
+			mispLicenseData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			mispLicenseData.setMispId(mispLicenseEventData.getMispId());
+			mispLicenseData.setLicenseKey(mispLicenseEventData.getLicenseKey());
+			mispLicenseData.setMispCommenceOn(mispLicenseEventData.getMispCommenceOn());
+			mispLicenseData.setMispExpiresOn(mispLicenseEventData.getMispExpiresOn());
+			mispLicenseData.setMispStatus(mispLicenseEventData.getMispStatus());
+			mispLicDataRepo.save(mispLicenseData);
+		} else {
+			mispLicenseEventData.setCreatedBy(securityManager.getUser());
+			mispLicenseEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			mispLicDataRepo.save(mispLicenseEventData);
+		}
+	}
 }

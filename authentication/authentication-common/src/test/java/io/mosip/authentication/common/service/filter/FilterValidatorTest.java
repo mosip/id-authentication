@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -26,21 +26,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.cache.PartnerServiceCache;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
-import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
-import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class,
-		PartnerServiceManager.class, RestRequestFactory.class, RestHelper.class, RestHelperImpl.class,
-		PartnerServiceCache.class, ConcurrentMapCacheManager.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class FilterValidatorTest {
 
 	@Autowired
@@ -113,7 +105,7 @@ public class FilterValidatorTest {
 		}
 	};
 
-	@Autowired
+	@Mock
 	PartnerService partnerService;
 
 	@InjectMocks
@@ -124,7 +116,6 @@ public class FilterValidatorTest {
 		ReflectionTestUtils.setField(baseIDAFilter, "env", env);
 		ReflectionTestUtils.setField(idAuthFilter, "env", env);
 		ReflectionTestUtils.setField(idAuthFilter, "mapper", mapper);
-		ReflectionTestUtils.setField(idAuthFilter, "partnerService", partnerService);
 	}
 
 	@Test
