@@ -29,6 +29,7 @@ import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.entity.UinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
@@ -141,6 +142,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	
 	@Autowired
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
+	
+	@Autowired
+	private CredentialRequestManager credentialRequestManager;
 	
 	/**
 	 * Process credential store event.
@@ -453,14 +457,17 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		if(eventOpt.isPresent()) {
 			CredentialEventStore eventStore = eventOpt.get();
 			String statusCode = eventStore.getStatusCode();
+			mosipLogger.debug("Found existing credential with request-id {} and status {}..", requestId, statusCode);
 			// For STORED, FAILED_WITH_MAX_RETRIES and FAILED_NON_RECOVERABLE, the status is
 			// not yet updated for in credential request service, so notify that. 
-			// STORED to be notified as STORED and FAILED_* as FAILED 
-			// For NEW and FAILED, events will be processed by credential store batch job
+			// STORED to be notified as STORED and FAILED_* as FAILED. 
+			// For NEW and FAILED, events will be processed by credential store batch job, so noting to do.
 			if(CredentialStoreStatus.STORED.name().equalsIgnoreCase(statusCode)) {
+				mosipLogger.debug("Notifying credential with request-id {} as 'STORED'", requestId);
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.STORED.name(), requestId, eventStore.getCrDTimes());
 			} else if(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name().equalsIgnoreCase(statusCode)
 					|| CredentialStoreStatus.FAILED_NON_RECOVERABLE.name().equalsIgnoreCase(statusCode)) {
+				mosipLogger.debug("Notifying credential with request-id {} as 'FAILED'", requestId);
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, eventStore.getCrDTimes());
 			}
 		} else {
@@ -470,8 +477,8 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	}
 
 	private void retriggerCredentialIssuance(String requestId) {
-		// TODO Auto-generated method stub
-		
+		mosipLogger.info("Retriggering credential issuance with request-id {} ", requestId);
+		credentialRequestManager.retriggerCredentialIssuance(requestId);
 	}
 	
 }

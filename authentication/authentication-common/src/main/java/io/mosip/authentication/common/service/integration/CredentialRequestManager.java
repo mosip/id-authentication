@@ -1,4 +1,4 @@
-package io.mosip.authentication.internal.service.manager;
+package io.mosip.authentication.common.service.integration;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,7 @@ import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
@@ -23,6 +24,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.retry.WithRetry;
 
 /**
  * The Class CredentialRequestManager.
@@ -58,6 +60,7 @@ public class CredentialRequestManager {
 	 * @param effectivedtimes the effectivedtimes
 	 * @return the next page items
 	 */
+	@WithRetry
 	public List<CredentialRequestIdsDto> getMissingCredentialsPageItems(int currentPageIndex, String effectivedtimes) {
 		try {
 			RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class);
@@ -82,13 +85,37 @@ public class CredentialRequestManager {
 					return List.of();
 				} else {
 					mosipLogger.error(ExceptionUtils.getStackTrace(e));
+					throw new IdAuthRetryException(e);
 				}
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(ExceptionUtils.getStackTrace(e));
+			throw new IdAuthRetryException(e);
 		}
-		
-		return List.of();
+	}
+	
+	/**
+	 * Retrigger credential issuance.
+	 *
+	 * @param requestId the request id
+	 */
+	public void retriggerCredentialIssuance(String requestId) {
+		try {
+			RestRequestDTO request = restRequestFactory.buildRequest(
+					RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class);
+			Map<String, String> pathVariables = Map.of("requestId", requestId);
+			request.setPathVariables(pathVariables);
+
+			try {
+				restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request).getResponse();
+			} catch (RestServiceException e) {
+				mosipLogger.error(ExceptionUtils.getStackTrace(e));
+				throw new IdAuthRetryException(e);
+			}
+		} catch (IDDataValidationException e) {
+			mosipLogger.error(ExceptionUtils.getStackTrace(e));
+			throw new IdAuthRetryException(e);
+		}
 	}
 
 }
