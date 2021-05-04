@@ -14,6 +14,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * The Class BatchJobSchedulerConfig.
+ * @author Loganathan Sekar
+ */
 @Configuration
 public class BatchJobSchedulerConfig {
 	
@@ -23,10 +27,12 @@ public class BatchJobSchedulerConfig {
 	/** The Constant CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING. */
 	private static final String CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING = "1000";
 	
+	/** The credential store job. */
 	@Autowired
 	@Qualifier("credentialStoreJob")
 	private Job credentialStoreJob;
 	
+	/** The retrigger missing credential issuances job. */
 	@Autowired
 	@Qualifier("retriggerMissingCredentialIssuancesJob")
 	private Job retriggerMissingCredentialIssuancesJob;
@@ -35,6 +41,9 @@ public class BatchJobSchedulerConfig {
 	@Autowired
 	private JobLauncher jobLauncher;
 	
+	/**
+	 * Schedule credential store job.
+	 */
 	@Scheduled(fixedDelayString = "${" + CREDENTIAL_STORE_JOB_DELAY + ":" + CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING + "}")
 	public void scheduleCredentialStoreJob() {
 		try {
@@ -46,6 +55,9 @@ public class BatchJobSchedulerConfig {
 		}
 	}
 	
+	/**
+	 * Schedule missing credential retrigger job.
+	 */
 	@Scheduled(fixedDelay=Long.MAX_VALUE)
 	public void scheduleMissingCredentialRetriggerJob() {
 		try {
