@@ -41,6 +41,7 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
@@ -504,7 +505,8 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		try {
 			credentialRequestManager.retriggerCredentialIssuance(requestId);
 		} catch (RestServiceException | IDDataValidationException e) {
-			mosipLogger.info(ExceptionUtils.getStackTrace(e));
+			// Throwing retry exception to perform job level retry
+			throw new IdAuthRetryException(e);
 		}
 	}
 	

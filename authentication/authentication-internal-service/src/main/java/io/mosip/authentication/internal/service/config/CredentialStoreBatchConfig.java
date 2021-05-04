@@ -29,6 +29,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.retry.RetryPolicy;
+import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -85,6 +87,12 @@ public class CredentialStoreBatchConfig {
 	
 	@Autowired
 	private MissingCredentialsItemReader missingCredentialsItemReader;
+	
+	@Autowired
+	private RetryPolicy retryPolicy;
+
+	@Autowired
+	private BackOffPolicy backOffPolicy;
 	
 	/**
 	 * Credential store job.
@@ -144,7 +152,7 @@ public class CredentialStoreBatchConfig {
 				// explicitly by the item processor
 				.faultTolerant()
 				// Skipping the processing of the event for this exception because it is thrown
-				// when try was tried before the retry interval
+				// when retry was done before the retry interval
 				.skip(RetryingBeforeRetryIntervalException.class)
 				.skipLimit(Integer.MAX_VALUE)
 				.build();
@@ -163,12 +171,11 @@ public class CredentialStoreBatchConfig {
 				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
 				.reader(missingCredentialsItemReader)
 				.writer(asyncMissingCredentialRetriggerItemWriter())
-				// Here Job level retry is not applied, because, event level retry is handled
-				// explicitly by the item processor
 				.faultTolerant()
-				// Skipping the processing of the event for this exception because it is thrown
-				// when try was tried before the retry interval
-				.skip(RetryingBeforeRetryIntervalException.class)
+				// Applying common retry policy
+				.retryPolicy(retryPolicy)
+				// Applying common back-off policy
+				.backOffPolicy(backOffPolicy)
 				.skipLimit(Integer.MAX_VALUE)
 				.build();
 	}
