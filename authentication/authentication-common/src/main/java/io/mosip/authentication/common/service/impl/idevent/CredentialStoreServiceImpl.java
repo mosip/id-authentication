@@ -478,7 +478,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 
 	private void retriggerCredentialIssuance(String requestId) {
 		mosipLogger.info("Retriggering credential issuance with request-id {} ", requestId);
-		credentialRequestManager.retriggerCredentialIssuance(requestId);
+		try {
+			credentialRequestManager.retriggerCredentialIssuance(requestId);
+		} catch (RestServiceException e) {
+			mosipLogger.info(ExceptionUtils.getStackTrace(e));
+		}
 	}
 	
 }

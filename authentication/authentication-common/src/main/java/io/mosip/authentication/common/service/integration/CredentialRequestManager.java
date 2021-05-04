@@ -59,9 +59,10 @@ public class CredentialRequestManager {
 	 * @param currentPageIndex the current page index
 	 * @param effectivedtimes the effectivedtimes
 	 * @return the next page items
+	 * @throws RestServiceException 
 	 */
 	@WithRetry
-	public List<CredentialRequestIdsDto> getMissingCredentialsPageItems(int currentPageIndex, String effectivedtimes) {
+	public List<CredentialRequestIdsDto> getMissingCredentialsPageItems(int currentPageIndex, String effectivedtimes) throws RestServiceException {
 		try {
 			RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class);
 			Map<String, String> pathVariables = Map.of("pageNumber", String.valueOf(currentPageIndex),
@@ -85,7 +86,8 @@ public class CredentialRequestManager {
 					return List.of();
 				} else {
 					mosipLogger.error(ExceptionUtils.getStackTrace(e));
-					throw new IdAuthRetryException(e);
+					//RestServiceException are already retried in RestHelper, so just throwing
+					throw e;				
 				}
 			}
 		} catch (IDDataValidationException e) {
@@ -98,8 +100,10 @@ public class CredentialRequestManager {
 	 * Retrigger credential issuance.
 	 *
 	 * @param requestId the request id
+	 * @throws RestServiceException 
 	 */
-	public void retriggerCredentialIssuance(String requestId) {
+	@WithRetry
+	public void retriggerCredentialIssuance(String requestId) throws RestServiceException {
 		try {
 			RestRequestDTO request = restRequestFactory.buildRequest(
 					RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class);
@@ -110,7 +114,8 @@ public class CredentialRequestManager {
 				restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request).getResponse();
 			} catch (RestServiceException e) {
 				mosipLogger.error(ExceptionUtils.getStackTrace(e));
-				throw new IdAuthRetryException(e);
+				//RestServiceException are already retried in RestHelper, so just throwing
+				throw e;
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(ExceptionUtils.getStackTrace(e));

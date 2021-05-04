@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.batch;
 
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,10 +14,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -75,7 +77,12 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	}
 
 	private List<CredentialRequestIdsDto> getNextPageItems() {
-		return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
+		try {
+			return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
+		} catch (RestServiceException e) {
+			mosipLogger.info(ExceptionUtils.getStackTrace(e));
+		}
+		return List.of();
 	}
 	
 	/**
@@ -111,12 +118,15 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 * @return the effective D times
 	 */
 	private String getEffectiveDTimes() {
+		// Fetch credentials since last credential stored event date time.
 		return DateUtils
-				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
-		//TODO commented for debug. Fetch credentials since last credential stored event date time.
+				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
+						.orElseGet(DateUtils::getUTCCurrentDateTime));
+		
+		// TODO code for debug.
 //		return DateUtils
-//				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
-//						.orElseGet(DateUtils::getUTCCurrentDateTime));
+//				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
+		
 	}
 
 }
