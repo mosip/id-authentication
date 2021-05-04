@@ -176,7 +176,6 @@ public class CredentialStoreBatchConfig {
 				.retryPolicy(retryPolicy)
 				// Applying common back-off policy
 				.backOffPolicy(backOffPolicy)
-				.skipLimit(Integer.MAX_VALUE)
 				.build();
 	}
 
