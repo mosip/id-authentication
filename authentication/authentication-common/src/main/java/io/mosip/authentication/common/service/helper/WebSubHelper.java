@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.WEBSUB_PUBLISH_URL;
+
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
+import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 
@@ -48,6 +50,7 @@ public class WebSubHelper {
 	 * @param subscriber the subscriber
 	 * @param enableTester the enable tester
 	 */
+	@WithRetry
 	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
 		subscriber.subscribe(enableTester);
 	}
@@ -67,6 +70,7 @@ public class WebSubHelper {
 	 * @param registrar the registrar
 	 * @param enableTester the enable tester
 	 */
+	@WithRetry
 	public void initRegistrar(WebSubEventTopicRegistrar registrar, Supplier<Boolean> enableTester) {
 		registrar.register(enableTester);
 	}
@@ -78,6 +82,7 @@ public class WebSubHelper {
 	 * @param eventTopic the event topic
 	 * @param eventModel the event model
 	 */
+	@WithRetry
 	public <U> void publishEvent(String eventTopic, U eventModel) {
 		publisher.publishUpdate(eventTopic, eventModel, MediaType.APPLICATION_JSON_VALUE, null, websubPublishUrl);
 	}

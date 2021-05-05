@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service.batch;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -138,13 +138,13 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private String getEffectiveDTimes() {
 		// Fetch credentials since last credential stored event date time.
-		return DateUtils
-				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
-						.orElseGet(DateUtils::getUTCCurrentDateTime));
+//		return DateUtils
+//				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
+//						.orElseGet(DateUtils::getUTCCurrentDateTime));
 		
 		// TODO code for debug.
-//		return DateUtils
-//				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
+		return DateUtils
+				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
 		
 	}
 

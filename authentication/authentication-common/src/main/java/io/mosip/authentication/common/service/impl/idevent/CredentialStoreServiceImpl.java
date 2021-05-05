@@ -472,7 +472,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	private void processMissingCredentialRequestId(CredentialRequestIdsDto dto) {
 		String requestId = dto.getRequestId();
-		Optional<CredentialEventStore>  eventOpt = credentialEventRepo.findByCredentialTransactionId(requestId);
+		Optional<CredentialEventStore>  eventOpt = credentialEventRepo.findTop1ByCredentialTransactionIdOrderByCrDTimesDesc(requestId);
 		if(eventOpt.isPresent()) {
 			CredentialEventStore eventStore = eventOpt.get();
 			String statusCode = eventStore.getStatusCode();

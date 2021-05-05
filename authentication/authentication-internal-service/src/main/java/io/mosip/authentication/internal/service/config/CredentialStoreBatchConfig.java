@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Function;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -170,6 +171,7 @@ public class CredentialStoreBatchConfig {
 		return stepBuilderFactory.get("retriggerMissingCredentialsStep")
 				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
 				.reader(missingCredentialsItemReader)
+				.processor(asyncIdentityItemProcessor())
 				.writer(asyncMissingCredentialRetriggerItemWriter())
 				.faultTolerant()
 				// Applying common retry policy
@@ -223,6 +225,14 @@ public class CredentialStoreBatchConfig {
 	 */
 	private ItemProcessor<CredentialEventStore, IdentityEntity> credentialStoreItemProcessor() {
 		return credentialStoreService::processCredentialStoreEvent;
+	}
+	
+	@Bean
+	public <T> AsyncItemProcessor<T, T> asyncIdentityItemProcessor() {
+		AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>();
+		    asyncItemProcessor.setDelegate(elem -> elem);
+		    asyncItemProcessor.setTaskExecutor(taskExecutor());
+		return asyncItemProcessor;
 	}
 	
 	/**
