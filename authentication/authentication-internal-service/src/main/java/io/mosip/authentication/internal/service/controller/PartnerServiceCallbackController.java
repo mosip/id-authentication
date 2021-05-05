@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.controller;
+package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.APIKEY_APPROVED;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISP_LICENSE_GENERATED;
@@ -47,7 +47,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
 	public void handleApiKeyApprovedEvent(@RequestBody EventModel eventModel) {
 		try {
@@ -63,7 +63,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_UPDATED_EVENT_NAME, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ PARTNER_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED + "}")
 	public void handlePartnerUpdated(@RequestBody EventModel eventModel) {
 		try {
@@ -78,7 +78,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ POLICY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED + "}")
 	public void handlePolicyUpdated(@RequestBody EventModel eventModel) {
 		try {
@@ -93,7 +93,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_API_KEY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ PARTNER_API_KEY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED + "}")
 	public void handlePartnerApiKeyUpdated(@RequestBody EventModel eventModel) {
 		try {
@@ -108,7 +108,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_GENERATED, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ MISP_LICENSE_GENERATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED + "}")
 	public void handleMispLicenseGeneratedEvent(@RequestBody EventModel eventModel) {
 		try {
@@ -123,7 +123,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_UPDATED, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/partnermanagement/"
+			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ MISP_LICENSE_UPDATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED + "}")
 	public void handleMispUpdatedEvent(@RequestBody EventModel eventModel) {
 		try {
