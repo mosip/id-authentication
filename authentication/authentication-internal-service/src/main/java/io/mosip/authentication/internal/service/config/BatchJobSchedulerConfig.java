@@ -61,6 +61,7 @@ public class BatchJobSchedulerConfig {
 	
 	/**
 	 * Schedule missing credential retrigger job.
+	 * Scheduling to run only once in the startup.
 	 */
 	@Scheduled(fixedDelay=Long.MAX_VALUE)
 	public void scheduleMissingCredentialRetriggerJob() {
