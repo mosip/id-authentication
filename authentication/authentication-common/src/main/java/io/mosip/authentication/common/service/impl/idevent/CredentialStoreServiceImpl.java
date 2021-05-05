@@ -171,20 +171,17 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
 			updateEventProcessingStatus(credentialEventStore, true, false, alreadyFailed);
-			//TODO Add audit log for credential store success
 			return entity;
 		} catch (RuntimeException e) {
 			// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, false, alreadyFailed);
-			//TODO Add audit log for credential store success
 			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, true, alreadyFailed);
-			//TODO Add audit log for credential store success
 			throw e;
 		}
 	}
