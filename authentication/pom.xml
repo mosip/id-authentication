@@ -73,23 +73,23 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel-core.version>1.1.5-rc1</kernel-core.version>
+		<kernel-core.version>1.1.5</kernel-core.version>
 		<kernel-keymanager-service.version>1.1.5.1-SNAPSHOT</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.1.5-rc1</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>1.1.5-rc1</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>1.1.5-rc1</kernel-idvalidator-vid.version>
-		<kernel-idobjectvalidator.version>1.1.5-rc1</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.1.5-rc1</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.1.5-rc1</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.1.5-rc1</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.1.5-rc1</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.1.5-rc1</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.1.5-rc1</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.1.5-rc1</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.1.5-rc1</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.1.5-rc1</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.1.5-rc1</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.5-rc1</id-repository-core.version>
+		<kernel-idgenerator-tokenid.version>1.1.5</kernel-idgenerator-tokenid.version>
+		<kernel-idvalidator-uin.version>1.1.5</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-vid.version>1.1.5</kernel-idvalidator-vid.version>
+		<kernel-idobjectvalidator.version>1.1.5</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.1.5</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.1.5</kernel-templatemanager-velocity.version>
+		<kernel-logger-logback.version>1.1.5</kernel-logger-logback.version>
+		<kernel-dataaccess-hibernate.version>1.1.5</kernel-dataaccess-hibernate.version>
+		<kernel-cbeffutil-api.version>1.1.5</kernel-cbeffutil-api.version>
+		<kernel-templatemanager-velocity.version>1.1.5</kernel-templatemanager-velocity.version>
+		<kernel-auth-adapter.version>1.1.5</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.1.5</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.1.5</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.1.5</kernel-websubclient-api.version>
+		<id-repository-core.version>1.1.5</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
