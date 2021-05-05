@@ -48,7 +48,15 @@ public enum RestServicesConstants {
 	
 	DEVICE_VERIFICATION_SERVICE("device-verification-service"),
 	
-	DATA_SHARE_GET("data-share-get");
+	ID_PMP_SERVICE("id-pmp-service"),
+	
+	DATA_SHARE_GET("data-share-get"),
+	
+	CRED_REQUEST_GET_REQUEST_IDS("cred-request-service-get-request-ids"),
+	
+	CRED_REQUEST_RETRIGGER_CRED_ISSUANCE("cred-request-service-retrigger-cred-issuance")
+	
+	;
 
 	/** The service name. */
 	private final String serviceName;

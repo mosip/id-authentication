@@ -29,6 +29,7 @@ import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.entity.UinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
@@ -40,10 +41,12 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
@@ -138,8 +141,13 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
 	private long maxExponentialRetryIntervalLimitMillis;
 	
+	/** The credential store status event publisher. */
 	@Autowired
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
+	
+	/** The credential request manager. */
+	@Autowired
+	private CredentialRequestManager credentialRequestManager;
 	
 	/**
 	 * Process credential store event.
@@ -163,20 +171,17 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
 			updateEventProcessingStatus(credentialEventStore, true, false, alreadyFailed);
-			//TODO Add audit log for credential store success
 			return entity;
 		} catch (RuntimeException e) {
 			// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, false, alreadyFailed);
-			//TODO Add audit log for credential store success
 			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, true, alreadyFailed);
-			//TODO Add audit log for credential store success
 			throw e;
 		}
 	}
@@ -251,6 +256,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		credentialEventRepo.save(credentialEventStore);
 	}
 
+	/**
+	 * Audit.
+	 *
+	 * @param requestId the request id
+	 * @param desc the desc
+	 */
 	private void audit(String requestId, String desc) {
 		try {
 			auditHelper.audit(AuditModules.CREDENTIAL_STORAGE, AuditEvents.CREDENTIAL_STORED_EVENT, requestId, "request-id", desc);
@@ -441,5 +452,59 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			uinHashSaltRepo.save(saltEntity);
 		}
 	}
+	
+	/**
+	 * Process missing credential request id.
+	 *
+	 * @param dtos the dtos
+	 */
+	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dtos) {
+		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
+	}
+	
+	/**
+	 * Process missing credential request id.
+	 *
+	 * @param dto the dto
+	 */
+	private void processMissingCredentialRequestId(CredentialRequestIdsDto dto) {
+		String requestId = dto.getRequestId();
+		Optional<CredentialEventStore>  eventOpt = credentialEventRepo.findTop1ByCredentialTransactionIdOrderByCrDTimesDesc(requestId);
+		if(eventOpt.isPresent()) {
+			CredentialEventStore eventStore = eventOpt.get();
+			String statusCode = eventStore.getStatusCode();
+			mosipLogger.debug("Found existing credential with request-id {} and status {}..", requestId, statusCode);
+			// For STORED, FAILED_WITH_MAX_RETRIES and FAILED_NON_RECOVERABLE, the status is
+			// not yet updated for in credential request service, so notify that. 
+			// STORED to be notified as STORED and FAILED_* as FAILED. 
+			// For NEW and FAILED, events will be processed by credential store batch job, so noting to do.
+			if(CredentialStoreStatus.STORED.name().equalsIgnoreCase(statusCode)) {
+				mosipLogger.debug("Notifying credential with request-id {} as 'STORED'", requestId);
+				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.STORED.name(), requestId, eventStore.getCrDTimes());
+			} else if(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name().equalsIgnoreCase(statusCode)
+					|| CredentialStoreStatus.FAILED_NON_RECOVERABLE.name().equalsIgnoreCase(statusCode)) {
+				mosipLogger.debug("Notifying credential with request-id {} as 'FAILED'", requestId);
+				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, eventStore.getCrDTimes());
+			}
+		} else {
+			//Re-trigger credential issuance
+			retriggerCredentialIssuance(requestId);
+		}
+	}
 
+	/**
+	 * Retrigger credential issuance.
+	 *
+	 * @param requestId the request id
+	 */
+	private void retriggerCredentialIssuance(String requestId) {
+		mosipLogger.info("Retriggering credential issuance with request-id {} ", requestId);
+		try {
+			credentialRequestManager.retriggerCredentialIssuance(requestId);
+		} catch (RestServiceException | IDDataValidationException e) {
+			// Throwing retry exception to perform job level retry
+			throw new IdAuthRetryException(e);
+		}
+	}
+	
 }
