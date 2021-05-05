@@ -11,6 +11,7 @@ import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusE
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
+import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 
 /**
  * The Class InternalAuthWebSubInitializer.
@@ -47,6 +48,10 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 	
+	/** The partner service events subscriber. */
+	@Autowired
+	private PartnerServiceEventsInitializer partnerServiceEventsInitializer;
+	
 	/**
 	 * Do init subscriptions.
 	 */
@@ -55,6 +60,7 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initSubscriber(idChangeEventInitializer);
 		webSubHelper.initSubscriber(partnerCACertEventInitializer);
 		webSubHelper.initSubscriber(hotlistEventInitializer);
+		webSubHelper.initSubscriber(partnerServiceEventsInitializer);
 	}
 
 
@@ -67,7 +73,7 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(idChangeEventInitializer);
 		webSubHelper.initRegistrar(partnerCACertEventInitializer);
 		webSubHelper.initRegistrar(hotlistEventInitializer);		
-		
+		webSubHelper.initRegistrar(partnerServiceEventsInitializer);
 		webSubHelper.initRegistrar(credentialStoreStatusEventPublisher);		
 		webSubHelper.initRegistrar(authTypeStatusEventPublisher);		
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);		
