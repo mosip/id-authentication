@@ -53,6 +53,7 @@ import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusE
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
+import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
@@ -95,29 +96,26 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class,
-		RestHelperImpl.class, RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class,
-		MasterDataManager.class, MatchInputBuilder.class, NotificationManager.class,
-		NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
-		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class,
-		CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
-		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
-		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class,
-		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
-		OTPRequestValidator.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class,
-		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class,
-		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class,
-		IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class,
-		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
-		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubHelper.class,
-		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		AuthTypeStatusEventSubscriber.class, IdChangeEventsInitializer.class, SignatureController.class,
-		CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
-		PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
-		RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
-		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class, AuthTransactionHelper.class,
-		CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class, AuthTransactionStatusEventPublisher.class,
-		CredentialRequestManager.class })
+@Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
+		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
+		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
+		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
+		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
+		SwaggerConfig.class, AuditHelper.class, PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class,
+		BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class,
+		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class, InternalAuthSecurityManager.class,
+		AuthTxnServiceImpl.class, AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class,
+		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class,
+		KeymanagerUtil.class, IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
+		KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class,
+		TokenIDGenerator.class, IdTypeUtil.class, MasterDataCache.class, WebSubHelper.class,
+		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventSubscriber.class,
+		IdChangeEventsInitializer.class, SignatureController.class, CryptomanagerController.class, KeymanagerController.class,
+		CACertificateStore.class, PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class,
+		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
+		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class,
+		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
+		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

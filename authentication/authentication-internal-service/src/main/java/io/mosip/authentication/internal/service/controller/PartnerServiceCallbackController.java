@@ -1,4 +1,4 @@
-package io.mosip.authentication.otp.service.controller;
+package io.mosip.authentication.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.APIKEY_APPROVED;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISP_LICENSE_GENERATED;

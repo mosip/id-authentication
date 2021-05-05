@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,652" last-zoom="0.65" max-obj-count="20"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,768" last-zoom="0.65" max-obj-count="21"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -995,7 +995,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="partner_mapping" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<position x="1080" y="1820"/>
+	<position x="1040" y="1800"/>
 	<column name="partner_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -1025,6 +1025,48 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="partner_mapping_pk" type="pk-constr" table="ida.partner_mapping">
 		<columns names="partner_id,policy_id,api_key_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="misp_license_data" layer="0" collapse-mode="2" max-obj-count="13" z-value="0">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<position x="580" y="1880"/>
+	<column name="misp_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="license_key" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="misp_commence_on" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="misp_expires_on">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="misp_status" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted" default-value="false">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="misp_license_data_pk" type="pk-constr" table="ida.misp_license_data">
+		<columns names="misp_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 

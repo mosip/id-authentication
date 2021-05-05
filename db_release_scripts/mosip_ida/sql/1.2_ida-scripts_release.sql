@@ -19,6 +19,8 @@ ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 \ir ../ddl/ida-partner_mapping.sql
 \ir ../ddl/ida-policy_data.sql
 
+
+\ir ../ddl/ida-misp_license_data.sql
 ----------------------------------------------------------------------------------------------------------
 
 
