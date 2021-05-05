@@ -31,11 +31,11 @@ import javax.servlet.http.Part;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -48,26 +48,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.cache.PartnerServiceCache;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
-import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
-import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 /**
  * The Class IdAuthFilterTest.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PartnerServiceImpl.class,
-		PartnerServiceManager.class, RestRequestFactory.class, RestHelper.class, RestHelperImpl.class,
-		PartnerServiceCache.class, ConcurrentMapCacheManager.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @AutoConfigureMockMvc
 public class IdAuthFilterTest {
@@ -89,7 +80,7 @@ public class IdAuthFilterTest {
 	/** The response body. */
 	Map<String, Object> responseBody = new HashMap<>();
 
-	@Autowired
+	@Mock
 	PartnerService partnerService;
 
 	/**
@@ -127,8 +118,8 @@ public class IdAuthFilterTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testDecodedRequest() throws IdAuthenticationAppException, ServletException, JsonParseException,
-			JsonMappingException, IOException {
+	public void testDecodedRequest()
+			throws IdAuthenticationAppException, ServletException, JsonParseException, JsonMappingException, IOException {
 		KeyManager keyManager = Mockito.mock(KeyManager.class);
 		ReflectionTestUtils.setField(filter, "keyManager", keyManager);
 		requestBody.put("request",
@@ -138,8 +129,9 @@ public class IdAuthFilterTest {
 		responseBody.put("request",
 				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
 		String dicipheredreq = "{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}";
-		Mockito.when(keyManager.requestData(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(new ObjectMapper().readValue(dicipheredreq.getBytes(), Map.class));
+		Mockito.when(
+				keyManager.requestData(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(new ObjectMapper().readValue(dicipheredreq.getBytes(), Map.class));
 		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
 		Map<String, Object> decipherRequest = filter.decipherRequest(requestBody);
@@ -204,9 +196,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void mandatoryAuthPolicyTestOTPcheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": false,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
@@ -227,9 +218,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void mandatoryAuthPolicyTestbiocheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": true,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
@@ -250,9 +240,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void mandatoryAuthPolicyTestpincheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": true,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 
@@ -273,9 +262,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void mandatoryAuthPolicyTestdemocheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": false,\r\n" + "                             \"pin\": true\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": false,\r\n"
+				+ "                             \"pin\": true\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983222(), requestBodyMap);
@@ -295,9 +283,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void allowedAuthPolicyTestOTPCheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": true,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": true,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983252(), requestBodyMap);
@@ -316,9 +303,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void allowedAuthPolicyTestDemoCheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": true,\r\n"
-				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": true,\r\n" + "                             \"otp\": false,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 		try {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
@@ -339,9 +325,8 @@ public class IdAuthFilterTest {
 	@Test
 	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": false,\r\n" + "                             \"pin\": true\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": false,\r\n"
+				+ "                             \"pin\": true\r\n" + "              }}";
 		try {
 			Map<String, Object> requestBodyMap = mapper.readValue(requestedAuth.getBytes("UTF-8"), HashMap.class);
 			filter.checkAllowedAuthTypeBasedOnPolicy(getPolicyFor0983754(), requestBodyMap);
@@ -382,424 +367,422 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = IdAuthenticationAppException.class)
 	public void validateDecipheredRequestTest() throws IdAuthenticationAppException {
-		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
-				new HttpServletRequest() {
+		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(new HttpServletRequest() {
 
-					@Override
-					public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
-							throws IllegalStateException {
+			@Override
+			public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+					throws IllegalStateException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public AsyncContext startAsync() throws IllegalStateException {
+			@Override
+			public AsyncContext startAsync() throws IllegalStateException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
+			@Override
+			public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
 
-					}
+			}
 
-					@Override
-					public void setAttribute(String name, Object o) {
+			@Override
+			public void setAttribute(String name, Object o) {
 
-					}
+			}
 
-					@Override
-					public void removeAttribute(String name) {
+			@Override
+			public void removeAttribute(String name) {
 
-					}
+			}
 
-					@Override
-					public boolean isSecure() {
+			@Override
+			public boolean isSecure() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isAsyncSupported() {
+			@Override
+			public boolean isAsyncSupported() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isAsyncStarted() {
+			@Override
+			public boolean isAsyncStarted() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public ServletContext getServletContext() {
+			@Override
+			public ServletContext getServletContext() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public int getServerPort() {
+			@Override
+			public int getServerPort() {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public String getServerName() {
+			@Override
+			public String getServerName() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getScheme() {
+			@Override
+			public String getScheme() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public RequestDispatcher getRequestDispatcher(String path) {
+			@Override
+			public RequestDispatcher getRequestDispatcher(String path) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public int getRemotePort() {
+			@Override
+			public int getRemotePort() {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public String getRemoteHost() {
+			@Override
+			public String getRemoteHost() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getRemoteAddr() {
+			@Override
+			public String getRemoteAddr() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getRealPath(String path) {
+			@Override
+			public String getRealPath(String path) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public BufferedReader getReader() throws IOException {
+			@Override
+			public BufferedReader getReader() throws IOException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getProtocol() {
+			@Override
+			public String getProtocol() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String[] getParameterValues(String name) {
+			@Override
+			public String[] getParameterValues(String name) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Enumeration<String> getParameterNames() {
+			@Override
+			public Enumeration<String> getParameterNames() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Map<String, String[]> getParameterMap() {
+			@Override
+			public Map<String, String[]> getParameterMap() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getParameter(String name) {
+			@Override
+			public String getParameter(String name) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Enumeration<Locale> getLocales() {
+			@Override
+			public Enumeration<Locale> getLocales() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Locale getLocale() {
+			@Override
+			public Locale getLocale() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public int getLocalPort() {
+			@Override
+			public int getLocalPort() {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public String getLocalName() {
+			@Override
+			public String getLocalName() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getLocalAddr() {
+			@Override
+			public String getLocalAddr() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public ServletInputStream getInputStream() throws IOException {
+			@Override
+			public ServletInputStream getInputStream() throws IOException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public DispatcherType getDispatcherType() {
+			@Override
+			public DispatcherType getDispatcherType() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getContentType() {
+			@Override
+			public String getContentType() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public long getContentLengthLong() {
+			@Override
+			public long getContentLengthLong() {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public int getContentLength() {
+			@Override
+			public int getContentLength() {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public String getCharacterEncoding() {
+			@Override
+			public String getCharacterEncoding() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Enumeration<String> getAttributeNames() {
+			@Override
+			public Enumeration<String> getAttributeNames() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Object getAttribute(String name) {
+			@Override
+			public Object getAttribute(String name) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public AsyncContext getAsyncContext() {
+			@Override
+			public AsyncContext getAsyncContext() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass)
-							throws IOException, ServletException {
+			@Override
+			public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass)
+					throws IOException, ServletException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public void logout() throws ServletException {
+			@Override
+			public void logout() throws ServletException {
 
-					}
+			}
 
-					@Override
-					public void login(String username, String password) throws ServletException {
+			@Override
+			public void login(String username, String password) throws ServletException {
 
-					}
+			}
 
-					@Override
-					public boolean isUserInRole(String role) {
+			@Override
+			public boolean isUserInRole(String role) {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isRequestedSessionIdValid() {
+			@Override
+			public boolean isRequestedSessionIdValid() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isRequestedSessionIdFromUrl() {
+			@Override
+			public boolean isRequestedSessionIdFromUrl() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isRequestedSessionIdFromURL() {
+			@Override
+			public boolean isRequestedSessionIdFromURL() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public boolean isRequestedSessionIdFromCookie() {
+			@Override
+			public boolean isRequestedSessionIdFromCookie() {
 
-						return false;
-					}
+				return false;
+			}
 
-					@Override
-					public Principal getUserPrincipal() {
+			@Override
+			public Principal getUserPrincipal() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public HttpSession getSession(boolean create) {
+			@Override
+			public HttpSession getSession(boolean create) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public HttpSession getSession() {
+			@Override
+			public HttpSession getSession() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getServletPath() {
+			@Override
+			public String getServletPath() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getRequestedSessionId() {
+			@Override
+			public String getRequestedSessionId() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public StringBuffer getRequestURL() {
+			@Override
+			public StringBuffer getRequestURL() {
 
-						return new StringBuffer("localhost:8090/identity/auth/0.8/1873299273/735899345");
-					}
+				return new StringBuffer("localhost:8090/identity/auth/0.8/1873299273/735899345");
+			}
 
-					@Override
-					public String getRequestURI() {
+			@Override
+			public String getRequestURI() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getRemoteUser() {
+			@Override
+			public String getRemoteUser() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getQueryString() {
+			@Override
+			public String getQueryString() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getPathTranslated() {
+			@Override
+			public String getPathTranslated() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getPathInfo() {
+			@Override
+			public String getPathInfo() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Collection<Part> getParts() throws IOException, ServletException {
+			@Override
+			public Collection<Part> getParts() throws IOException, ServletException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Part getPart(String name) throws IOException, ServletException {
+			@Override
+			public Part getPart(String name) throws IOException, ServletException {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getMethod() {
+			@Override
+			public String getMethod() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public int getIntHeader(String name) {
+			@Override
+			public int getIntHeader(String name) {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public Enumeration<String> getHeaders(String name) {
+			@Override
+			public Enumeration<String> getHeaders(String name) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public Enumeration<String> getHeaderNames() {
+			@Override
+			public Enumeration<String> getHeaderNames() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getHeader(String name) {
+			@Override
+			public String getHeader(String name) {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public long getDateHeader(String name) {
+			@Override
+			public long getDateHeader(String name) {
 
-						return 0;
-					}
+				return 0;
+			}
 
-					@Override
-					public Cookie[] getCookies() {
+			@Override
+			public Cookie[] getCookies() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String getContextPath() {
+			@Override
+			public String getContextPath() {
 
-						return "identity";
-					}
+				return "identity";
+			}
 
-					@Override
-					public String getAuthType() {
+			@Override
+			public String getAuthType() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public String changeSessionId() {
+			@Override
+			public String changeSessionId() {
 
-						return null;
-					}
+				return null;
+			}
 
-					@Override
-					public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+			@Override
+			public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
 
-						return false;
-					}
-				});
+				return false;
+			}
+		});
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
-				+ "                             \"demo\": false,\r\n"
-				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
-				+ "              }}";
+				+ "                             \"demo\": false,\r\n" + "                             \"otp\": false,\r\n"
+				+ "                             \"pin\": false\r\n" + "              }}";
 
 		Map<String, Object> requestBodyMap;
 		try {

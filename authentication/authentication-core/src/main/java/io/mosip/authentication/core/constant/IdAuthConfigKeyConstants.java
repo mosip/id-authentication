@@ -109,8 +109,10 @@ public final class IdAuthConfigKeyConstants {
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup";
 	public static final String DATA_SHARE_GET_DECRYPT_REF_ID = "data-share-get-decrypt-ref-id";
 	
-	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_UPDATED = "ida-topic-pmp-misp-updated";
+	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED = "ida-topic-pmp-misp-license-generated";
+	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED = "ida-topic-pmp-misp-license-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED = "ida-topic-pmp-partner-updated";
+	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED = "ida-topic-pmp-partner-api-key-approved";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";

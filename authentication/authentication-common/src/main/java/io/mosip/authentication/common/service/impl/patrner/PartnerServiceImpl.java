@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl.patrner;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.cache.PartnerServiceCache;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -28,7 +26,7 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 public class PartnerServiceImpl implements PartnerService {
 
 	@Autowired
-	private PartnerServiceCache partnerServiceCache;
+	private PartnerServiceManager partnerServiceManager;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -49,23 +47,7 @@ public class PartnerServiceImpl implements PartnerService {
 	@Override
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey, boolean certificateNeeded)
 			throws IdAuthenticationBusinessException {
-		PartnerDTO key = new PartnerDTO(partnerId, partnerApiKey, mispLicenseKey);
-		PartnerPolicyResponseDTO partnerPolicyResponseDTO = partnerServiceCache.getPartnerPolicy(key, mispLicenseKey, certificateNeeded);
-		
-		if(isExpired(partnerPolicyResponseDTO.getMispExpiresOn())) {
-			partnerServiceCache.evictPartnerPolicy(key);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISP_LICENSE_KEY_EXPIRED);
-		}
-		
-		if(isExpired(partnerPolicyResponseDTO.getApiKeyExpiresOn()) || isExpired(partnerPolicyResponseDTO.getPolicyExpiresOn())) {
-			partnerServiceCache.evictPartnerPolicy(key);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID);
-		}
-		return partnerPolicyResponseDTO;
-	}
-
-	private boolean isExpired(LocalDateTime expiryDateTime) {
-		return expiryDateTime == null || LocalDateTime.now().isAfter(expiryDateTime);
+		return partnerServiceManager.validateAndGetPolicy(partnerId, partnerApiKey, mispLicenseKey, certificateNeeded);
 	}
 
 	@Override

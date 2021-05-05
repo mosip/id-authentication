@@ -22,7 +22,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import io.mosip.authentication.common.service.cache.MasterDataCache;
-import io.mosip.authentication.common.service.cache.PartnerServiceCache;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -48,10 +47,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	/** The master data cache. */
 	@Autowired
 	private MasterDataCache masterDataCache;
-
-	/** The partner service cache. */
-	@Autowired
-	private PartnerServiceCache partnerServiceCache;
 
 	/** The cache TTL. */
 	@Value("${ida-cache-ttl-in-days:0}")
@@ -130,8 +125,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
 					"Scheduling cache eviction every " + cacheTTL + " day(s)");
 			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,
-					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofDays(cacheTTL));
-			threadPoolTaskScheduler().scheduleAtFixedRate(partnerServiceCache::clearPartnerServiceCache,
 					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofDays(cacheTTL));
 		}
 	}
