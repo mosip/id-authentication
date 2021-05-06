@@ -5,12 +5,11 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CRE
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -21,8 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Loganathan Sekar
  */
 @Configuration
-@EnableBatchProcessing
-@EnableScheduling
+@DependsOn("credentialStoreBatchConfig")
 public class BatchJobSchedulerConfig {
 	
 	/** The logger. */
