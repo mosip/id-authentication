@@ -65,7 +65,7 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
 
-	@Value("${" + IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS + "}:" + DEFAULT_MAX_CREDENTIAL_PULL_WINDOW_DAYS)
+	@Value("${" + IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS + ":" + DEFAULT_MAX_CREDENTIAL_PULL_WINDOW_DAYS + "}" )
 	private int maxCredentialPullWindowDays;
 	
 	/**
