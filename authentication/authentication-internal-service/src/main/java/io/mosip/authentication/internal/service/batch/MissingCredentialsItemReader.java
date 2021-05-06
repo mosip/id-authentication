@@ -1,8 +1,11 @@
 package io.mosip.authentication.internal.service.batch;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -11,10 +14,12 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -35,6 +40,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MissingCredentialsItemReader implements ItemReader<CredentialRequestIdsDto> {
 	
+	private static final int DEFAULT_MAX_CREDENTIAL_PULL_WINDOW_DAYS = 2;
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(MissingCredentialsItemReader.class);
 	
@@ -57,6 +64,9 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	/** The credential request manager. */
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
+
+	@Value("${" + IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS + "}:" + DEFAULT_MAX_CREDENTIAL_PULL_WINDOW_DAYS)
+	private int maxCredentialPullWindowDays;
 	
 	/**
 	 * Initialize.
@@ -138,13 +148,16 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private String getEffectiveDTimes() {
 		// Fetch credentials since last credential stored event date time.
-//		return DateUtils
-//				.formatToISOString(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())
-//						.orElseGet(DateUtils::getUTCCurrentDateTime));
+		Optional<LocalDateTime> lastCredentialStoreTime = credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name());
+		LocalDateTime maxCredentialPullWindowTime = LocalDateTime.now().minus(maxCredentialPullWindowDays, ChronoUnit.DAYS);
 		
-		// TODO code for debug.
-		return DateUtils
-				.formatToISOString(LocalDateTime.of(2021, 1, 1, 0, 0));
+		LocalDateTime effectiveDTimes = lastCredentialStoreTime.orElse(maxCredentialPullWindowTime);
+		//If last credential store time is greater than window time, use the window time
+		if(effectiveDTimes.isBefore(maxCredentialPullWindowTime)) {
+			effectiveDTimes = maxCredentialPullWindowTime;
+		}
+		
+		return DateUtils.formatToISOString(effectiveDTimes);
 		
 	}
 
