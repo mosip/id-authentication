@@ -275,8 +275,6 @@ public final class IdAuthCommonConstants {
 
 	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
 
-	public static final String MISP_UPDATED_EVENT_NAME = "misp_updated";
-
 	public static final String PARTNER_UPDATED_EVENT_NAME = "partner_updated";
 
 	public static final String PARTNER_API_KEY_UPDATED_EVENT_NAME = "partner_api_key_updated";
@@ -290,6 +288,12 @@ public final class IdAuthCommonConstants {
 	public static final String SIGNATURE = "signature";
 
 	public static final String SERVICE_ACCOUNT = "service-account-";
+	
+	public static final String APIKEY_APPROVED = "apikey_approved";
+	
+	public static final String MISP_LICENSE_GENERATED = "misp_license_generated";
+	
+	public static final String MISP_LICENSE_UPDATED = "misp_license_updated";
 	
 	public static final String INDIVIDUAL_ID = "individualId";
 

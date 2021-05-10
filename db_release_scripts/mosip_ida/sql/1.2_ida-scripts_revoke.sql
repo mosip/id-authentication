@@ -22,6 +22,8 @@ DROP TABLE IF EXISTS ida.policy_data;
 DROP TABLE IF EXISTS ida.api_key_data;
 DROP TABLE IF EXISTS ida.partner_mapping;
 
+DROP TABLE IF EXISTS ida.misp_license_data.sql;
+
 -----------------------------------------------------------------------------------------------------
 
 
