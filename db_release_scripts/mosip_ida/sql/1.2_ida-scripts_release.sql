@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS ida.partner_data CASCADE;
 DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
 DROP TABLE IF EXISTS ida.policy_data CASCADE;
 DROP TABLE IF EXISTS ida.misp_license_data CASCADE;
---ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
+ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 -------------------------------------------------------------------------------------------------------
 
 \ir ../ddl/ida-api_key_data.sql
