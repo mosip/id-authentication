@@ -11,6 +11,11 @@
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
+DROP TABLE IF EXISTS ida.api_key_data CASCADE;
+DROP TABLE IF EXISTS ida.partner_data CASCADE;
+DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
+DROP TABLE IF EXISTS ida.policy_data CASCADE;
+DROP TABLE IF EXISTS ida.misp_license_data CASCADE;
 ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 -------------------------------------------------------------------------------------------------------
 

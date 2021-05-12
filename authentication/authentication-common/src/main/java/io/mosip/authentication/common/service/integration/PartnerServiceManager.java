@@ -45,6 +45,14 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Transactional
 public class PartnerServiceManager {
 
+	private static final String API_KEY_DATA = "apiKeyData";
+
+	private static final String PARTNER_DATA = "partnerData";
+
+	private static final String POLICY_DATA = "policyData";
+
+	private static final String MISP_LICENSE_DATA = "mispLicenseData";
+
 	/** The logger. */
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
@@ -169,15 +177,15 @@ public class PartnerServiceManager {
 	public void updateApiKeyData(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
 		if (eventModel.getTopic().contentEquals(IdAuthCommonConstants.APIKEY_APPROVED)) {
 			PartnerMapping mapping = new PartnerMapping();
-			PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData(), PartnerData.class);
+			PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA), PartnerData.class);
 			mapping.setPartnerId(partnerEventData.getPartnerId());
 			partnerEventData.setCreatedBy(securityManager.getUser());
 			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData(), ApiKeyData.class);
+			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA), ApiKeyData.class);
 			mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
 			apiKeyEventData.setCreatedBy(securityManager.getUser());
 			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData(), PolicyData.class);
+			PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA), PolicyData.class);
 			mapping.setPolicyId(policyEventData.getPolicyId());
 			policyEventData.setCreatedBy(securityManager.getUser());
 			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
@@ -188,7 +196,7 @@ public class PartnerServiceManager {
 			policyDataRepo.save(policyEventData);
 			partnerMappingRepo.save(mapping);
 		} else {
-			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData(), ApiKeyData.class);
+			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA), ApiKeyData.class);
 			Optional<ApiKeyData> apiKeyDataOptional = apiKeyRepo.findById(apiKeyEventData.getApiKeyId());
 			if (apiKeyDataOptional.isPresent()) {
 				ApiKeyData apiKeyData = apiKeyDataOptional.get();
@@ -207,7 +215,7 @@ public class PartnerServiceManager {
 	}
 
 	public void updatePartnerData(EventModel eventModel) {
-		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData(), PartnerData.class);
+		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA), PartnerData.class);
 		Optional<PartnerData> partnerDataOptional = partnerDataRepo.findById(partnerEventData.getPartnerId());
 		if (partnerDataOptional.isPresent()) {
 			PartnerData partnerData = partnerDataOptional.get();
@@ -226,7 +234,7 @@ public class PartnerServiceManager {
 	}
 
 	public void updatePolicyData(EventModel eventModel) {
-		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData(), PolicyData.class);
+		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA), PolicyData.class);
 		Optional<PolicyData> policyDataOptional = policyDataRepo.findById(policyEventData.getPolicyId());
 		if (policyDataOptional.isPresent()) {
 			PolicyData policyData = policyDataOptional.get();
@@ -248,7 +256,7 @@ public class PartnerServiceManager {
 	}
 
 	public void updateMispLicenseData(EventModel eventModel) {
-		MispLicenseData mispLicenseEventData = mapper.convertValue(eventModel.getEvent().getData(), MispLicenseData.class);
+		MispLicenseData mispLicenseEventData = mapper.convertValue(eventModel.getEvent().getData().get(MISP_LICENSE_DATA), MispLicenseData.class);
 		Optional<MispLicenseData> mispLicenseDataOptional = mispLicDataRepo.findById(mispLicenseEventData.getMispId());
 		if (mispLicenseDataOptional.isPresent()) {
 			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
