@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -46,9 +44,6 @@ public class PartnerServiceCallbackController {
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
-	
-	@Autowired
-	private ObjectMapper mapper;
 
 	@PostMapping(value = "/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
@@ -56,8 +51,6 @@ public class PartnerServiceCallbackController {
 					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
 	public void handleApiKeyApprovedEvent(@RequestBody EventModel eventModel) {
 		try {
-			logger.info(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
-					APIKEY_APPROVED + mapper.writeValueAsString(eventModel));
 			eventModel.setTopic(APIKEY_APPROVED);
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
 					APIKEY_APPROVED + " EVENT RECEIVED");
