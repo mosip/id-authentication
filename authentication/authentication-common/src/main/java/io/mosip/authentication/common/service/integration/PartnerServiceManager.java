@@ -79,7 +79,7 @@ public class PartnerServiceManager {
 
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
 			boolean certificateNeeded) throws IdAuthenticationBusinessException {
-		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerId(partnerId);
+		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
 		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findByLicenseKey(misp_license_key);
 		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional);
 		PartnerPolicyResponseDTO response = new PartnerPolicyResponseDTO();
