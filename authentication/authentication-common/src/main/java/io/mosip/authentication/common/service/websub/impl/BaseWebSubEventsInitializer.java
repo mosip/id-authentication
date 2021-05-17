@@ -93,5 +93,38 @@ public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicReg
 	 * Do register.
 	 */
 	protected abstract void doRegister();
+	
+	protected void tryRegisterTopicEvent(String eventTopic) {
+		try {
+			logger.debug(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", "",
+					"Trying to register topic: " + eventTopic);
+			publisher.registerTopic(eventTopic, publisherUrl);
+			logger.info(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", "",
+					"Registered topic: " + eventTopic);
+		} catch (Exception e) {
+			logger.info(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", e.getClass().toString(),
+					"Error registering topic: " + eventTopic + "\n" + e.getMessage());
+		}
+	}
+
+	protected void subscribeForEvent(String eventTopic, String callbackUrl, String callbackSecret) {
+		try {
+			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
+			subscriptionRequest.setCallbackURL(callbackUrl);
+			subscriptionRequest.setHubURL(hubURL);
+			subscriptionRequest.setSecret(callbackSecret);
+			subscriptionRequest.setTopic(eventTopic);
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForHotlistEvent", "",
+					"Trying to subscribe to topic: " + eventTopic + " callback-url: "
+							+ callbackUrl);
+			subscribe.subscribe(subscriptionRequest);
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForHotlistEvent", "",
+					"Subscribed to topic: " + eventTopic);
+		} catch (Exception e) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForHotlistEvent", e.getClass().toString(),
+					"Error subscribing topic: " + eventTopic + "\n" + e.getMessage());
+			throw e;
+		}
+	}
 
 }

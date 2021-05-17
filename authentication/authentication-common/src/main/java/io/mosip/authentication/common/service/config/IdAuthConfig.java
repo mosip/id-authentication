@@ -2,15 +2,11 @@ package io.mosip.authentication.common.service.config;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,12 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import io.mosip.authentication.common.service.cache.MasterDataCache;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -37,24 +28,9 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  */
 public abstract class IdAuthConfig extends HibernateDaoConfig {
 
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(IdAuthConfig.class);
-
 	/** The environment. */
 	@Autowired
 	private Environment environment;
-
-	/** The master data cache. */
-	@Autowired
-	private MasterDataCache masterDataCache;
-
-	/** The cache TTL. */
-	@Value("${ida-cache-ttl-in-days:0}")
-	public int cacheTTL;
-
-	/** The cache type. */
-	@Value("${spring.cache.type:simple}")
-	public String cacheType;
 
 	/**
 	 * Initialize.
@@ -62,7 +38,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@PostConstruct
 	public void initialize() {
 		IdType.initializeAliases(environment);
-		ScheduleCacheEviction();
 	}
 
 	/**
@@ -112,21 +87,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		threadPoolTaskScheduler.setPoolSize(5);
 		threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
 		return threadPoolTaskScheduler;
-	}
-
-	/**
-	 * Schedule cache eviction.
-	 * 
-	 * ida-cache-ttl-in-days property is used to schedule cache eviction in days.
-	 * spring.cache.type is used to disable/enable cache.
-	 */
-	private void ScheduleCacheEviction() {
-		if (cacheTTL > 0 && !StringUtils.equalsIgnoreCase(cacheType, "none")) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "cacheTTL",
-					"Scheduling cache eviction every " + cacheTTL + " day(s)");
-			threadPoolTaskScheduler().scheduleAtFixedRate(masterDataCache::clearMasterDataCache,
-					Instant.now().plus(cacheTTL, ChronoUnit.DAYS), Duration.ofDays(cacheTTL));
-		}
 	}
 
 	/**
