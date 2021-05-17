@@ -33,6 +33,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class MasterDataCache implements ApplicationListener<ApplicationReadyEvent>{
 
+	private static final String MASTERDATA_TITLES = "masterdata/titles";
+
+	private static final String MASTERDATA_TEMPLATES = "masterdata/templates";
+
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataCache.class);
 
@@ -65,14 +69,14 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE));
 		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE));
 	}
-
+	
 	/**
 	 * Gets the master data titles.
 	 *
 	 * @return the master data titles
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable("masterdata")
+	@Cacheable(cacheNames = MASTERDATA_TITLES)
 	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
 		try {
 			return restHelper
@@ -83,7 +87,7 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-
+	
 	/**
 	 * Gets the master data template.
 	 *
@@ -91,7 +95,7 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 	 * @return the master data template
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable("masterdata")
+	@Cacheable(cacheNames = MASTERDATA_TEMPLATES, key = "#template")
 	public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
 		try {
 			RestRequestDTO request = restFactory
@@ -105,11 +109,14 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 		}
 	}
 	
-	/**
-	 * Clear master data cache.
-	 */
-	@CacheEvict(value="masterdata", allEntries=true)
-	public void clearMasterDataCache() {
+	@CacheEvict(value=MASTERDATA_TEMPLATES, key = "#template")
+	public void clearMasterDataTemplateCache(String template) {
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
+				"masterdata cache cleared");
+	}
+	
+	@CacheEvict(value=MASTERDATA_TITLES)
+	public void clearMasterDataTitlesCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
 				"masterdata cache cleared");
 	}
