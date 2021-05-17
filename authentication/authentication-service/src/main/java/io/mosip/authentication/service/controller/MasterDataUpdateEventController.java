@@ -18,7 +18,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 
 /**
- * @author Manoj SP
+ * @author Loganathan Sekar
  *
  */
 @RestController
