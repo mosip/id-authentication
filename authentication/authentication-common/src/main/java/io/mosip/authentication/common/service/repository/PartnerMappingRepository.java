@@ -8,5 +8,5 @@ import io.mosip.authentication.common.service.entity.PartnerMapping;
 
 public interface PartnerMappingRepository extends JpaRepository<PartnerMapping, String> {
 
-	Optional<PartnerMapping> findByPartnerId(String partnerId);
+	Optional<PartnerMapping> findByPartnerIdAndApiKeyId(String partnerId, String apiKeyId);
 }
