@@ -1,6 +1,9 @@
 package io.mosip.authentication.common.service.websub;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 
 /**
  * Websub Initializer for External facing IDA services such as Auth, EKYC and
@@ -12,12 +15,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitializer {
+	
+	@Autowired
+	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
 
 	/**
 	 * Do init subscriptions.
 	 */
 	@Override
 	protected void doInitSubscriptions() {
+		masterDataUpdateEventInitializer.subscribe(this::isCacheEnabled);
 	}
 
 	/**
@@ -25,6 +32,7 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	 */
 	@Override
 	protected void doRegisterTopics() {
+		masterDataUpdateEventInitializer.register(this::isCacheEnabled);
 	}
 
 }

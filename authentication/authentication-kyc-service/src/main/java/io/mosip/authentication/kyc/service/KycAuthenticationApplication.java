@@ -6,8 +6,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import io.mosip.authentication.common.controller.MasterDataCacheUpdateControllerDelegate;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.cache.MasterDataCacheInitializer;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -42,6 +44,7 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
@@ -90,11 +93,11 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class, CryptomanagerServiceImpl.class,
 		KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, PartnerServiceImpl.class,
 		TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class,
-		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class,
+		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, MasterDataCacheInitializer.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubHelper.class,
 		IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class,
 		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
-		AuthTransactionStatusEventPublisher.class })
+		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.kyc.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class KycAuthenticationApplication {
