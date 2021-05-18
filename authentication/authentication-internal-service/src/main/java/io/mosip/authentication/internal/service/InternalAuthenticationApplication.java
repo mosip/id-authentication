@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
-import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -107,7 +106,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class,
 		KeymanagerUtil.class, IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
 		KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class,
-		TokenIDGenerator.class, IdTypeUtil.class, MasterDataCache.class, WebSubHelper.class,
+		TokenIDGenerator.class, IdTypeUtil.class, WebSubHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventSubscriber.class,
 		IdChangeEventsInitializer.class, SignatureController.class, CryptomanagerController.class, KeymanagerController.class,
 		CACertificateStore.class, PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class,

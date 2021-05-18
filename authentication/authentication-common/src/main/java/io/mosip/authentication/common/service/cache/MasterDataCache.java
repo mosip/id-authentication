@@ -4,22 +4,17 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationListener;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -31,7 +26,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Component
-public class MasterDataCache implements ApplicationListener<ApplicationReadyEvent>{
+public class MasterDataCache {
 
 	private static final String MASTERDATA_TITLES = "masterdata/titles";
 
@@ -44,32 +39,11 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 	@Autowired
 	private RestRequestFactory restFactory;
 
-	/** The environment. */
-	@Autowired
-	private Environment environment;
-
 	/** The Rest Helper. */
 	@Autowired
 	@Qualifier("external")
 	private RestHelper restHelper;
 
-	/**
-	 * Load master data.
-	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	// Invoking this in post construct does not work due to time-out issue happening
-	// with webclient while invoking from post constuct.
-	public void loadMasterData() throws IdAuthenticationBusinessException {
-		getMasterDataTitles();
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_CONTENT_TEMPLATE));
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_SUBJECT_TEMPLATE));
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.OTP_SUBJECT_TEMPLATE));
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.OTP_CONTENT_TEMPLATE));
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE));
-		getMasterDataTemplate(environment.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE));
-	}
-	
 	/**
 	 * Gets the master data titles.
 	 *
@@ -111,22 +85,14 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 	
 	@CacheEvict(value=MASTERDATA_TEMPLATES, key = "#template")
 	public void clearMasterDataTemplateCache(String template) {
-		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
-				"masterdata cache cleared");
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataTemplateCache",
+				"masterdata cache cleared for template code: " + template);
 	}
 	
 	@CacheEvict(value=MASTERDATA_TITLES)
 	public void clearMasterDataTitlesCache() {
-		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataCache",
-				"masterdata cache cleared");
+		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataTitlesCache",
+				"masterdata cache cleared for titles");
 	}
 
-	@Override
-	public void onApplicationEvent(ApplicationReadyEvent event) {
-		try {
-			loadMasterData();
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}		
-	}
 }

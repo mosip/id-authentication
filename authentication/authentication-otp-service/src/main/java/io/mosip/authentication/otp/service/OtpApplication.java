@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import io.mosip.authentication.common.controller.MasterDataCacheUpdateControllerDelegate;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.cache.MasterDataCacheInitializer;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -89,7 +90,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
 		PartnerServiceManager.class, SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class,
-		ZKCryptoManagerServiceImpl.class, IdTypeUtil.class, MasterDataCache.class, PartnerCertificateManagerServiceImpl.class,
+		ZKCryptoManagerServiceImpl.class, IdTypeUtil.class, MasterDataCache.class, MasterDataCacheInitializer.class, PartnerCertificateManagerServiceImpl.class,
 		PartnerCertManagerDBHelper.class, WebSubHelper.class, IdAuthWebSubInitializer.class,
 		PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class, RetryAspect.class,
 		AuthTransactionHelper.class, HotlistServiceImpl.class, AuthTransactionStatusEventPublisher.class,
