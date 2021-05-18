@@ -12,9 +12,9 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
- * The Class MasterDataCache.
+ * The Class MasterDataCacheInitializer.
  *
- * @author Manoj SP
+ * @author Loganathan Sekar
  */
 @Component
 public class MasterDataCacheInitializer implements ApplicationListener<ApplicationReadyEvent>{

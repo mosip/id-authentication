@@ -28,8 +28,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class MasterDataCache {
 
+	/** The Constant MASTERDATA_TITLES. */
 	private static final String MASTERDATA_TITLES = "masterdata/titles";
 
+	/** The Constant MASTERDATA_TEMPLATES. */
 	private static final String MASTERDATA_TEMPLATES = "masterdata/templates";
 
 	/** The logger. */
@@ -83,12 +85,20 @@ public class MasterDataCache {
 		}
 	}
 	
+	/**
+	 * Clear master data template cache.
+	 *
+	 * @param template the template
+	 */
 	@CacheEvict(value=MASTERDATA_TEMPLATES, key = "#template")
 	public void clearMasterDataTemplateCache(String template) {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataTemplateCache",
 				"masterdata cache cleared for template code: " + template);
 	}
 	
+	/**
+	 * Clear master data titles cache.
+	 */
 	@CacheEvict(value=MASTERDATA_TITLES)
 	public void clearMasterDataTitlesCache() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "clearMasterDataTitlesCache",
