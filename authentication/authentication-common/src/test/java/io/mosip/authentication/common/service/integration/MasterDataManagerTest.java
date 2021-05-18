@@ -76,7 +76,6 @@ public class MasterDataManagerTest {
 	public void before() {
 		ReflectionTestUtils.setField(masterDataCache, "restHelper", restHelper);
 		ReflectionTestUtils.setField(masterDataCache, "restFactory", restFactory);
-		ReflectionTestUtils.setField(masterDataCache, "environment", env);
 		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
