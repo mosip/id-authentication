@@ -110,7 +110,7 @@ public class AuthController {
 					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
 			authrequestdto.setIndividualIdType(idType);
 			authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
-			if(Optional.of(authrequestdto)
+			if(!errors.hasErrors() && Optional.of(authrequestdto)
 					.map(AuthRequestDTO::getRequestedAuth)
 					.filter(AuthTypeDTO::isBio)
 					.isPresent()) {

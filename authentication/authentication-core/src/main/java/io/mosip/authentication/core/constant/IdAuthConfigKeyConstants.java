@@ -23,6 +23,7 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String APPLICATION_ID = "application.id";
 	public static final String DATE_TIME_PATTERN = "datetime.pattern";
+	public static final String BIO_DATE_TIME_PATTERN = "biometrics.datetime.pattern";
 	public static final String REST_URI = ".rest.uri";
 	public static final String REST_HTTP_METHOD = ".rest.httpMethod";
 	public static final String REST_TIMEOUT = ".rest.timeout";

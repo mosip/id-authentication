@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -112,7 +113,8 @@ public class AuthTransactionHelper {
 		if(authTxnBuilder.getToken() == null) {
 			try {
 				authTxnBuilder.withToken(computeToken(authTxnBuilder));
-			} catch (IdAuthenticationBusinessException e) {
+			} catch (RuntimeException | IdAuthenticationBusinessException e) {
+				logger.error("Error in getting token id for auth transaction. Skipping to set token id in auth transaction entry: {}", ExceptionUtils.getStackTrace(e));
 				// Ignoring the error, otherwiser it will override the actual exception.
 			}
 		}

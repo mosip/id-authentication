@@ -2339,9 +2339,9 @@ public class BaseAuthRequestValidatorTest {
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/deviceProviderId"),
 				error.getFieldErrors().get(0).getArguments()[0]);
 	}
-
+	
 	@Test
-	public void testValidateDeviceDetailsMissingDateTime() {
+	public void testValidateDeviceDetailsMissingBioTimestamp() {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
@@ -2362,8 +2362,39 @@ public class BaseAuthRequestValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		assertEquals(String.format(BIO_PATH, 0, "data/timestamp"), error.getFieldErrors().get(0).getArguments()[0]);
+		
+	}
+
+	@Test
+	public void testValidateDeviceDetailsMissingDateTime() {
+		DataDTO dataDTO = new DataDTO();
+		dataDTO.setDeviceCode("1");
+		dataDTO.setDeviceServiceVersion("1");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("1");
+		digitalId.setMake("1");
+		digitalId.setModel("1");
+		digitalId.setType("1");
+		digitalId.setDeviceSubType("1");
+		digitalId.setDeviceProvider("1");
+		digitalId.setDeviceProviderId("1");
+		digitalId.setDateTime("");
+		dataDTO.setDigitalId(digitalId);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
+		dataDTO.setTimestamp(timestamp);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
+		bioInfo.setData(dataDTO);
+		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
+		request.setBiometrics(biometrics);
+		authRequestDTO.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
+		
 	}
 
 	@Test
@@ -2388,7 +2419,11 @@ public class BaseAuthRequestValidatorTest {
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateDeviceDetails", authRequestDTO, error);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
+		dataDTO.setTimestamp(timestamp);
+		
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
