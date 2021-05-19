@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,17 +32,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -52,12 +55,11 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Sanjay Murali
  */
 //TODO remove the ignore . This is ignored due to Java 11 mockito error
-@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@TestPropertySource("classpath:sample-data-test.properties")
+@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
 public class KycServiceImplTest {
 
 	@Autowired
@@ -68,6 +70,9 @@ public class KycServiceImplTest {
 
 	@Mock
 	private IdInfoHelper idInfoHelper;
+	
+	@InjectMocks
+	private IdInfoHelper idInfoHelper2;
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
@@ -77,6 +82,15 @@ public class KycServiceImplTest {
 
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
+	
+	@InjectMocks
+	private KycServiceImpl kycServiceImpl2;
+	
+	@InjectMocks
+	private IdInfoFetcherImpl idinfoFetcher;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Value("${sample.demo.entity}")
 	String value;
@@ -87,9 +101,19 @@ public class KycServiceImplTest {
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(kycServiceImpl, "mappingConfig", mappingConfig);
+		ReflectionTestUtils.setField(kycServiceImpl2, "env", env);
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", mappingConfig);
+		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
+		ReflectionTestUtils.setField(idInfoHelper2, "environment", environment);
+		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
+		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
+		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
 		idInfo = getIdInfo("12232323121");
 
 	}
@@ -176,6 +200,12 @@ public class KycServiceImplTest {
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testValidUINWithFace() throws JsonParseException, JsonMappingException, IOException, IdAuthenticationBusinessException {
+			KycResponseDTO k = kycServiceImpl2.retrieveKycInfo(limitedList(), "ara", idInfo);
+			assertNotNull(mapper.readValue(k.getIdentity().getBytes(), Map.class).get("Face"));
 	}
 	
 	@Test
@@ -271,11 +301,6 @@ public class KycServiceImplTest {
 
 	@Test
 	public void validUIN6() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException {
-		MockEnvironment environment = new MockEnvironment();
-		environment.setProperty("uin.masking.required", "true");
-		environment.setProperty("uin.masking.charcount", "2");
-		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
-
 		kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
 	}
 
@@ -324,13 +349,13 @@ public class KycServiceImplTest {
 	}
 
 	private List<String> limitedList() {
-		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,photo";
 		List<String> allowedKycList = Arrays.asList(s.split(","));
 		return allowedKycList;
 	}
 
 	private List<String> fullKycList() {
-		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,photo";
 		return Arrays.asList(s.split(","));
 	}
 	
