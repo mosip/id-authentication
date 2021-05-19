@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.validator;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRIC_DATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 
@@ -48,6 +47,8 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
+
+	private static final String DATA_TIMESTAMP = "data/timestamp";
 
 	/** The Constant DIGITAL_ID. */
 	private static final String DIGITAL_ID = "data/digitalId/";
@@ -159,13 +160,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				if(bioIdentityInfoDTO.getData() == null) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { String.format(BIOMETRIC_DATA, i) },
+							new Object[] { String.format(BIO_PATH, i, IdAuthCommonConstants.DATA) },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				} else {
-					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors, String.format(BIO_PATH, i, "timestamp"), this::biometricTimestampParser);
+					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors, String.format(BIO_PATH, i, DATA_TIMESTAMP), this::biometricTimestampParser);
 					
 					if(!errors.hasErrors()) {
-						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors, String.format(BIO_PATH, i, "digitalId"));
+						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors, String.format(BIO_PATH, i, DIGITAL_ID));
 					}
 				}
 			}
@@ -186,7 +187,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
 		if (digitalId != null) {
-			final String dateTimeField = field + "/dateTime";
+			final String dateTimeField = field + "dateTime";
 			if (digitalId.getDateTime() == null) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

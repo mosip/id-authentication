@@ -150,9 +150,7 @@ public final class IdAuthCommonConstants {
 
 	public static final String FIELD_VALIDATION_FAILED = "ADM-DPM-008";
 
-	public static final String BIOMETRIC_DATA = "request/biometrics/%s/data";
-	
-	public static final String BIO_PATH = BIOMETRIC_DATA + "/%s";
+	public static final String BIO_PATH = "request/biometrics/%s/%s";
 
 	public static final String DIGITAL_ID = "digitalId";
 
