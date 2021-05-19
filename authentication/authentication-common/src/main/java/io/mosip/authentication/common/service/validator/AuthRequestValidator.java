@@ -146,6 +146,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Validate biometric timestamps.
+	 *
+	 * @param biometrics the biometrics
+	 * @param errors the errors
+	 */
 	protected void validateBiometricTimestamps(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if(biometrics != null) {
 			for (int i = 0; i < biometrics.size(); i++) {
@@ -171,6 +177,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Validate digital id timestamp.
+	 *
+	 * @param digitalId the digital id
+	 * @param errors the errors
+	 * @param field the field
+	 */
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
 		if (digitalId != null) {
 			final String dateTimeField = field + "/dateTime";
@@ -190,6 +203,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	}
 
+	/**
+	 * Validate hotlisted ids.
+	 *
+	 * @param errors the errors
+	 * @param authRequestDto the auth request dto
+	 */
 	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
 		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
 
@@ -261,6 +280,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 	
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 * @param paramName the param name
+	 * @param dateTimeParser the date time parser
+	 */
 	protected void validateReqTime(String reqTime, Errors errors, String paramName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		super.validateReqTime(reqTime, errors, paramName, dateTimeParser);
 		if (!errors.hasErrors()) {
@@ -457,6 +484,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	/**
+	 * Biometric timestamp parser.
+	 *
+	 * @param timestamp the timestamp
+	 * @return the date
+	 * @throws ParseException the parse exception
+	 */
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
 			//First try parsing with biometric timestamp format
