@@ -56,8 +56,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 //TODO remove the ignore . This is ignored due to Java 11 mockito error
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(IDAMappingConfig.class)
 @TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
 public class KycServiceImplTest {
