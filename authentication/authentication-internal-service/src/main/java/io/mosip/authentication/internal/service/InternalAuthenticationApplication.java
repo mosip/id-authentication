@@ -86,6 +86,7 @@ import io.mosip.kernel.signature.controller.SignatureController;
 import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
+import io.mosip.kernel.zkcryptoservice.controller.ZKCryptoManagerController;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 
 /**
@@ -108,7 +109,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class,
 		TokenIDGenerator.class, IdTypeUtil.class, WebSubHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventSubscriber.class,
-		IdChangeEventsInitializer.class, SignatureController.class, CryptomanagerController.class, KeymanagerController.class,
+		IdChangeEventsInitializer.class, SignatureController.class, CryptomanagerController.class, KeymanagerController.class, ZKCryptoManagerController.class,
 		CACertificateStore.class, PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class,
 		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
 		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class,
