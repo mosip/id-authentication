@@ -62,7 +62,7 @@ public enum DemoMatchType implements MatchType {
 					map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
 					return map;
 				} else {
-					return null;
+					return Map.of();
 				}
 			}),
 
