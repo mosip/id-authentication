@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.5.1</version>
+		<version>1.1.5.3-SNAPSHOT</version>
 	</parent>
-	<version>1.1.5.1</version>
+	<version>1.1.5.3-SNAPSHOT</version>
 	<artifactId>authentication-kyc-service</artifactId>
 	<name>authentication-kyc-service</name>
 	<properties>
@@ -21,11 +21,27 @@
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
 			<version>${authentication-common.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
 			<version>${authentication-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -69,6 +85,27 @@
 			<artifactId>objenesis</artifactId>
 			<version>${objenesis.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${kernel-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>
+						spring-boot-starter-security
+					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	

@@ -40,6 +40,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
@@ -142,7 +143,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				idvIdType + "-" + idvid);
 
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-				authRequestDTO.getRequestedAuth().isBio(), markVidConsumed);
+				isBiometricDataNeeded(authRequestDTO), markVidConsumed);
 		
 		String token = idService.getToken(idResDTO);
 		validateAuthTypeStatus(authRequestDTO, token);
@@ -193,6 +194,17 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
+	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
+		return authRequestDTO.getRequestedAuth().isBio() || containsPhotoKYCAttribute(authRequestDTO);
+	}
+
+	private boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
+		return (authRequestDTO instanceof KycAuthRequestDTO)
+				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO)
+						.getAllowedKycAttributes()).orElse(List.of())
+						.contains(IdAuthCommonConstants.PHOTO);
+	}
+
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid, String token)
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerPolicyResponseDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
@@ -241,7 +253,7 @@ public class AuthFacadeImpl implements AuthFacade {
 								MatchType.Category.DEMO.getType()));
 			}
 
-			else if (authRequestDTO.getRequestedAuth().isBio()
+			else if (isBiometricDataNeeded(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
 				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
 					if (authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
@@ -396,7 +408,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId, AuthTransactionBuilder authTxnBuilder)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getRequestedAuth().isBio()) {
+		if (isBiometricDataNeeded(authRequestDTO)) {
 			AuthStatusInfo bioValidationStatus;
 			try {
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, token, idInfo, partnerId, isAuth);
