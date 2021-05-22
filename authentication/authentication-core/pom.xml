@@ -92,6 +92,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-biosdk-provider</artifactId>
 			<version>${kernel-biosdk-provider.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
