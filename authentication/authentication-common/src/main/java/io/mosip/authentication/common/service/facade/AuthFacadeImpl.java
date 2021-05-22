@@ -253,7 +253,7 @@ public class AuthFacadeImpl implements AuthFacade {
 								MatchType.Category.DEMO.getType()));
 			}
 
-			else if (isBiometricDataNeeded(authRequestDTO)
+			else if (authRequestDTO.getRequestedAuth().isBio()
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
 				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
 					if (authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
@@ -408,7 +408,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId, AuthTransactionBuilder authTxnBuilder)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (isBiometricDataNeeded(authRequestDTO)) {
+		if (authRequestDTO.getRequestedAuth().isBio()) {
 			AuthStatusInfo bioValidationStatus;
 			try {
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, token, idInfo, partnerId, isAuth);
