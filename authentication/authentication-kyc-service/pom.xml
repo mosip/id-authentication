@@ -44,11 +44,6 @@
 			<version>${kernel-dataaccess-hibernate.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-cbeffutil-api</artifactId>
-			<version>${kernel-cbeffutil-api.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-core</artifactId>
 			<version>${io.micrometer.prometheus.version}</version>
