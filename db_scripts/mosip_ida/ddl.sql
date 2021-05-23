@@ -1,4 +1,4 @@
-\c mosip_ida sysadmin
+\c mosip_ida 
 
 \ir ddl/ida-auth_transaction.sql
 \ir ddl/ida-uin_auth_lock.sql
@@ -13,14 +13,11 @@
 \ir ddl/ida-ca_cert_store.sql
 \ir ddl/ida-credential_event_store.sql
 \ir ddl/ida-hotlist_cache.sql
-
-
 \ir ddl/ida-batch_job_execution.sql
 \ir ddl/ida-batch_job_execution_context.sql
 \ir ddl/ida-batch_job_execution_params.sql
 \ir ddl/ida-batch_job_instance.sql
 \ir ddl/ida-batch_step_execution.sql
 \ir ddl/ida-batch_step_execution_context.sql
-
 \ir ddl/ida-fk.sql
 
