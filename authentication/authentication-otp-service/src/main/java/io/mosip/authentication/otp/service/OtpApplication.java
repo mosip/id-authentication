@@ -28,7 +28,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
-import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
@@ -84,7 +83,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
 		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
-		SwaggerConfig.class, AuditHelper.class, PinAuthServiceImpl.class, IdAuthExceptionHandler.class,
+		SwaggerConfig.class, AuditHelper.class, IdAuthExceptionHandler.class,
 		AuthRequestValidator.class, PinValidatorImpl.class, DemoNormalizerImpl.class, OTPServiceImpl.class,
 		OTPRequestValidator.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
@@ -96,7 +95,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTransactionHelper.class, HotlistServiceImpl.class, AuthTransactionStatusEventPublisher.class,
 		MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
-@EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
+@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {
 
 	/**

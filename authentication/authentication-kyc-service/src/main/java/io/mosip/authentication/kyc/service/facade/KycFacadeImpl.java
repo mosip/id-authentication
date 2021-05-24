@@ -23,7 +23,6 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -81,9 +80,6 @@ public class KycFacadeImpl implements KycFacade {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
-
-	@Autowired
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
 
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
@@ -173,7 +169,7 @@ public class KycFacadeImpl implements KycFacade {
 				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)
 						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
 						.withInternal(false).withPartner(partner).withToken(token)
-						.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
+						.build(env, uinHashSaltRepo, securityManager);
 				idService.saveAutnTxn(authTxn);
 			}
 		}

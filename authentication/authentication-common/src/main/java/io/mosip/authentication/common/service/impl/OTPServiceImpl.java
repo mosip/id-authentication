@@ -22,7 +22,6 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -84,9 +83,6 @@ public class OTPServiceImpl implements OTPService {
 	@Autowired
 	private TokenIdManager tokenIdManager;
 	
-	@Autowired
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
-
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
 	
@@ -220,7 +216,7 @@ public class OTPServiceImpl implements OTPService {
 				.withToken(token)
 				.withPartner(partner)
 				.withInternal(isInternal)
-				.build(env,uinEncryptSaltRepo,uinHashSaltRepo,securityManager);
+				.build(env,uinHashSaltRepo,securityManager);
 		if(otpResponseDTO != null) {
 			otpResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
 		} else {

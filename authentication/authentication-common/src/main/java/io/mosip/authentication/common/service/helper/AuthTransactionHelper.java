@@ -17,7 +17,6 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -51,10 +50,6 @@ public class AuthTransactionHelper {
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(AuthTransactionHelper.class);
 	
-	/** The uin encrypt salt repo. */
-	@Autowired
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
-
 	/** The uin hash salt repo. */
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
@@ -83,7 +78,7 @@ public class AuthTransactionHelper {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public AutnTxn buildAuthTransactionEntity(AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
-		return authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
+		return authTxnBuilder.build(env, uinHashSaltRepo, securityManager);
 	}
 	
 	/**
