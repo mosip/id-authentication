@@ -295,7 +295,7 @@ public class IdAuthSecurityManager {
 
 	public String hash(String id) throws IdAuthenticationBusinessException {
 		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-		Long idModulo = (Long.parseLong(id) % saltModuloConstant);
+		Integer idModulo = (int)(Long.parseLong(id) % saltModuloConstant);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if (hashSaltValue != null) {
 			try {
