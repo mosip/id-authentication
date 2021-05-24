@@ -44,7 +44,6 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
 import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -118,9 +117,6 @@ public class KycFacadeImplTest {
 	private IdService<AutnTxn> idService;
 
 	@Mock
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
-	
-	@Mock
 	private UinHashSaltRepo uinHashSaltRepo;
 	
 	@Mock
@@ -140,7 +136,6 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "idService", idService);
-		ReflectionTestUtils.setField(authFacadeImpl, "uinEncryptSaltRepo", uinEncryptSaltRepo);
 		ReflectionTestUtils.setField(authFacadeImpl, "uinHashSaltRepo", uinHashSaltRepo);
 		ReflectionTestUtils.setField(authFacadeImpl, "securityManager", idAuthSecurityManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "authTypeStatusService", authTypeStatus);
@@ -223,7 +218,6 @@ public class KycFacadeImplTest {
 		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Mockito.when(idService.getToken(idRepo)).thenReturn(uin);
-		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -307,7 +301,6 @@ public class KycFacadeImplTest {
 		authResponseDTO.setVersion("1.0");
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycResponseDTO);
-		Mockito.when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());

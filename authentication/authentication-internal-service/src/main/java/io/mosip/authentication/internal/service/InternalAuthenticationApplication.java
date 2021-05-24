@@ -26,7 +26,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
-import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
@@ -99,7 +98,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
 		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
-		SwaggerConfig.class, AuditHelper.class, PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class,
+		SwaggerConfig.class, AuditHelper.class, PinValidatorImpl.class, BioMatcherUtil.class,
 		BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class,
 		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class, InternalAuthSecurityManager.class,
 		AuthTxnServiceImpl.class, AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class,
@@ -116,7 +115,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
-@EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
+@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {
 
 	/**

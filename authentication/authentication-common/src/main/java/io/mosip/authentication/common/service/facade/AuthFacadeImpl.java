@@ -52,7 +52,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
-import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
@@ -103,10 +102,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The NotificationService */
 	@Autowired
 	private NotificationService notificationService;
-
-	/** The Pin Auth Service */
-	@Autowired
-	private PinAuthService pinAuthService;
 
 	/** The TokenId manager */
 	@Autowired
@@ -318,10 +313,6 @@ public class AuthFacadeImpl implements AuthFacade {
 		processOTPAuth(authRequestDTO, token, isAuth, authStatusList, idType, authTokenId, partnerId, authTxnBuilder);
 
 		if(!isMatchFailed(authStatusList)) {
-			processPinAuth(authRequestDTO, token, authStatusList, idType, authTokenId, isAuth, partnerId, authTxnBuilder);
-		}
-		
-		if(!isMatchFailed(authStatusList)) {
 			processDemoAuth(authRequestDTO, idInfo, token, isAuth, authStatusList, idType, authTokenId, partnerId, authTxnBuilder);
 		}
 		
@@ -334,52 +325,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private boolean isMatchFailed(List<AuthStatusInfo> authStatusList) {
 		return authStatusList.stream().anyMatch(st -> st != null && !st.isStatus());
-	}
-
-	/**
-	 * Process the authorisation type and corresponding authorisation service is
-	 * called according to authorisation type.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param uin
-	 *            the uin
-	 * @param authStatusList
-	 *            the auth status list
-	 * @param idType
-	 *            the id type
-	 * @param authTokenId
-	 *            the response token id
-	 * @param partnerId
-	 *            the partner id
-	 * @param authTxnBuilder 
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-	private void processPinAuth(AuthRequestDTO authRequestDTO, String token, List<AuthStatusInfo> authStatusList,
-			IdType idType, String authTokenId, boolean isAuth, String partnerId, AuthTransactionBuilder authTxnBuilder)
-			throws IdAuthenticationBusinessException {
-		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getRequestedAuth().isPin()) {
-			try {
-				AuthStatusInfo pinValidationStatus;
-				pinValidationStatus = pinAuthService.authenticate(authRequestDTO, token, Collections.emptyMap(),
-						partnerId);
-				authStatusList.add(pinValidationStatus);
-				statusInfo = pinValidationStatus;
-
-				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-						authRequestDTO.getIndividualId(), idType, "authenticateApplicant status : " + isStatus);
-
-			} finally {
-				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
-						AUTH_FACADE, "Pin Authentication  status :" + isStatus);
-				authTxnBuilder.addRequestType(RequestType.STATIC_PIN_AUTH);
-			}
-
-		}
 	}
 
 	/**

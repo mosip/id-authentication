@@ -30,12 +30,12 @@ public class AuthTransactionBuilderTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(authTransactionBuilder, "requestDTO", null);
-	authTransactionBuilder.build(env,null,null,null);
+	authTransactionBuilder.build(env,null,null);
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest2() throws IdAuthenticationBusinessException {
-		authTransactionBuilder.build(env,null,null,null);
+		authTransactionBuilder.build(env,null,null);
 	}
 	
 	@Test
