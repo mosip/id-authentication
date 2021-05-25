@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.1.5.3-SNAPSHOT</version>
+	<version>1.1.5.3</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -73,23 +73,23 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel-core.version>1.1.5.2</kernel-core.version>
-		<kernel-keymanager-service.version>1.1.5.2</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.1.5.2</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>1.1.5.2</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>1.1.5.2</kernel-idvalidator-vid.version>
-		<kernel-idobjectvalidator.version>1.1.5.2</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.1.5.2</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.1.5.2</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.1.5.2</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.1.5.2</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.1.5.2</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.1.5.2</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.1.5.2</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.1.5.2</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.1.5.2</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.1.5.2</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.5.2</id-repository-core.version>
+		<kernel-core.version>1.1.5.3</kernel-core.version>
+		<kernel-keymanager-service.version>1.1.5.3</kernel-keymanager-service.version>
+		<kernel-idgenerator-tokenid.version>1.1.5.3</kernel-idgenerator-tokenid.version>
+		<kernel-idvalidator-uin.version>1.1.5.3</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-vid.version>1.1.5.3</kernel-idvalidator-vid.version>
+		<kernel-idobjectvalidator.version>1.1.5.3</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.1.5.3</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.1.5.3</kernel-templatemanager-velocity.version>
+		<kernel-logger-logback.version>1.1.5.3</kernel-logger-logback.version>
+		<kernel-dataaccess-hibernate.version>1.1.5.3</kernel-dataaccess-hibernate.version>
+		<kernel-cbeffutil-api.version>1.1.5.3</kernel-cbeffutil-api.version>
+		<kernel-templatemanager-velocity.version>1.1.5.3</kernel-templatemanager-velocity.version>
+		<kernel-auth-adapter.version>1.1.5.3</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.1.5.3</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.1.5.3</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.1.5.3</kernel-websubclient-api.version>
+		<id-repository-core.version>1.1.5.3</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>

@@ -133,7 +133,7 @@ public class KycAuthFilter extends IdAuthFilter {
 		return env.getProperty("mosip.ida.kyc.signature-verification-required", Boolean.class, true);
 	}
 
-	//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
+	//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
 //	@Override
 //	protected boolean isThumbprintValidationRequired() {
 //		return env.getProperty("mosip.ida.kyc.thumbprint-validation-required", Boolean.class, true);
