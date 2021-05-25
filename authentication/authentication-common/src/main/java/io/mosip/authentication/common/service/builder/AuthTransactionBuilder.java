@@ -11,7 +11,7 @@ import org.springframework.core.env.PropertyResolver;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -223,7 +223,7 @@ public class AuthTransactionBuilder {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public AutnTxn build(Environment env, UinHashSaltRepo uinHashSaltRepo,
+	public AutnTxn build(Environment env, IdaUinHashSaltRepo uinHashSaltRepo,
 			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
 		try {
 			String idvId;

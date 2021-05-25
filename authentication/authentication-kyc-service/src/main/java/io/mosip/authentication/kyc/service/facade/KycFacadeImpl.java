@@ -23,7 +23,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -82,7 +82,7 @@ public class KycFacadeImpl implements KycFacade {
 	private AuditHelper auditHelper;
 
 	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 
 	/** The TokenId manager */
 	@Autowired

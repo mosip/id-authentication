@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class UinHashSalt - Entity class for uin_hash_salt table in idauthentication.
+ * The Class IdaUinHashSalt - Entity class for uin_hash_salt table in idauthentication.
  *
  * @author Arun Bose S.
  */
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "uin_hash_salt",schema = "ida")
-public class UinHashSalt {
+public class IdaUinHashSalt {
 	
 	/**  The Id value. */
 	@Id

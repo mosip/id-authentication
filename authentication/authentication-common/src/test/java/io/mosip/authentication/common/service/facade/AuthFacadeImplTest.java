@@ -55,7 +55,7 @@ import io.mosip.authentication.common.service.repository.MispLicenseDataReposito
 import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -156,7 +156,7 @@ public class AuthFacadeImplTest {
 	private TokenIdManager tokenIdManager;
 
 	@Mock
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 
 	@Mock
 	private IdAuthSecurityManager idAuthSecurityManager;

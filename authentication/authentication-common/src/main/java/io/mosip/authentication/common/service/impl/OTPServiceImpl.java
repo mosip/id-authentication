@@ -22,7 +22,7 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -84,7 +84,7 @@ public class OTPServiceImpl implements OTPService {
 	private TokenIdManager tokenIdManager;
 	
 	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 	
 	@Autowired
 	private IdAuthSecurityManager securityManager;

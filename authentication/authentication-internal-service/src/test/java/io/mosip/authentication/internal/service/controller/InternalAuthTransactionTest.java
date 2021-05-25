@@ -29,7 +29,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -81,7 +81,7 @@ public class InternalAuthTransactionTest {
 	Environment env;
 
 	@Mock
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 	
 	@Mock
 	private AuditHelper auditHelper;
