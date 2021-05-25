@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -51,7 +51,7 @@ public class AuthTxnServiceImplTest {
 	private AuthTxnServiceImpl authTxnServiceImpl;
 
 	@Mock
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 
 	@Before
 	public void before() throws IdAuthenticationBusinessException {

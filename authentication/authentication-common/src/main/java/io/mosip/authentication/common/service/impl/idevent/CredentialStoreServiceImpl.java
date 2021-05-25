@@ -27,13 +27,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
-import io.mosip.authentication.common.service.entity.UinHashSalt;
+import io.mosip.authentication.common.service.entity.IdaUinHashSalt;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -111,7 +111,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 
 	/** The uin hash salt repo. */
 	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
+	private IdaUinHashSaltRepo uinHashSaltRepo;
 
 	/** The object mapper. */
 	@Autowired
@@ -444,7 +444,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private void saveSalt(String modulo, String salt) {
 		Integer saltModulo = Integer.valueOf(modulo);
 		if (!uinHashSaltRepo.existsById(saltModulo)) {
-			UinHashSalt saltEntity = new UinHashSalt();
+			IdaUinHashSalt saltEntity = new IdaUinHashSalt();
 			saltEntity.setId(saltModulo);
 			saltEntity.setSalt(salt);
 			saltEntity.setCreatedBy(IDA);

@@ -5,15 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.authentication.common.service.entity.UinHashSalt;
+import io.mosip.authentication.common.service.entity.IdaUinHashSalt;
 
 /**
- * The Interface UinHashSaltRepo.
+ * The Interface IdaUinHashSaltRepo.
  *
  * @author Arun Bose S
  */
 @Repository
-public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Integer> {
+public interface IdaUinHashSaltRepo extends JpaRepository<IdaUinHashSalt, Integer> {
 	
 	/**
 	 * The Query to retrieve salt by passing id as parameter.
@@ -21,6 +21,6 @@ public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Integer> {
 	 * @param id the id
 	 * @return String salt
 	 */
-	@Query("select salt from UinHashSalt where id = :id")
+	@Query("select salt from IdaUinHashSalt where id = :id")
 	public String retrieveSaltById(@Param("id") Integer id);
 }
