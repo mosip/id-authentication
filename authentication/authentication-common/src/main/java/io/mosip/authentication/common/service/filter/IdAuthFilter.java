@@ -919,7 +919,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected final boolean isThumbprintValidationRequired() {
 		//return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
-		//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
+		//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
 		return true;
 	}
 
