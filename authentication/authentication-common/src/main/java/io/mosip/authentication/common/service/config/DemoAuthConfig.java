@@ -16,17 +16,37 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.demographics.spi.IDemoApi;
 import io.mosip.kernel.demographics.spi.IDemoNormalizer;
 
+/**
+ * This class instantiates the demo sdk objcets
+ * @author Nagarjuna
+ *
+ */
 @Configuration
 public class DemoAuthConfig {
 
 	private static Logger logger = IdaLogger.getLogger(IdServiceImpl.class);
 
+	/**
+	 * class name to instantiate the demo sdk class
+	 */
 	@Value("${mosip.demographic.sdk.api.classname}")
 	private String demosdkClassName;
 
+	/**
+	 * class name to instantiate the normalizer class
+	 */
 	@Value("${mosip.normalizer.sdk.api.classname}")
 	private String normalizerClassName;
 
+	/**
+	 * Method to load demoapi sdk instance
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	@Bean
 	public IDemoApi getDemoApiSDKInstance() throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -46,10 +66,19 @@ public class DemoAuthConfig {
 		}
 	}
 
+	/**
+	 * Method to load normalizer sdk instance
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
 	@Bean
 	public IDemoNormalizer getNormalizerSDKInstance() throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Class<?> object = Class.forName("io.mosip.demosdk.client.impl.spec_1_0.Normalizer_V_1_0");
+		Class<?> object = Class.forName(normalizerClassName);
 		Object[] args = new Object[0];
 		Optional<Constructor<?>> result = ReflectionUtils.findConstructor(object, args);
 		if (result.isPresent()) {

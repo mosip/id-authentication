@@ -4,12 +4,12 @@ import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * evaluate the AGE value received from the request and entity
  *
  * @author Sanjay Murali
+ * @author Nagarjuna
  */
 public enum AgeMatchingStrategy implements TextMatchingStrategy {
 
@@ -90,6 +91,11 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 		return matchFunction;
 	}
 	
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
 	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
 		return (DemoMatcherUtil)props.get("demoMatcherUtil");
 	}

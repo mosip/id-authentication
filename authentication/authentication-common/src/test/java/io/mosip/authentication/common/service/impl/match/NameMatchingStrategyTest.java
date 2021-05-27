@@ -23,17 +23,18 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
-import io.mosip.authentication.core.dto.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 
 /**
  * 
  * @author Dinesh Karuppiah
+ * @author Nagarjuna
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest

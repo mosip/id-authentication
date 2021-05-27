@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.dto;
+package io.mosip.authentication.core.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

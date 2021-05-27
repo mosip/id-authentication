@@ -45,8 +45,8 @@ import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
-import io.mosip.authentication.core.dto.DemoNormalizer;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -81,6 +81,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * Spring-boot class for ID Authentication Application.
  *
  * @author Dinesh Karuppiah
+ * @author Nagarjuna
  */
 @SpringBootApplication(exclude = {HibernateDaoConfig.class, SecurityAutoConfiguration.class})
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, CbeffImpl.class, RestHelperImpl.class,

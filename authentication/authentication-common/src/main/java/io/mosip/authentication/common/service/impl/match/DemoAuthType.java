@@ -18,6 +18,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
  * The Enum DemoAuthType.
  *
  * @author Dinesh Karuppiah.T
+ * @author Nagarjuna
  */
 public enum DemoAuthType implements AuthType {
 

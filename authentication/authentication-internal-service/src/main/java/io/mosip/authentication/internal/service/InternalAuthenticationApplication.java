@@ -50,8 +50,8 @@ import io.mosip.authentication.common.service.websub.impl.HotlistEventInitialize
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
-import io.mosip.authentication.core.dto.DemoNormalizer;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;

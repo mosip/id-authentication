@@ -2,18 +2,19 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
-import io.mosip.authentication.core.dto.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 
 /**
  * 
  * Matching Strategy for Full Address entity
  * 
  * @author Dinesh Karuppiah.T
+ * @author Nagarjuna
  */
 
 public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
@@ -71,6 +72,11 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 		return demoNormalizer.normalizeAddress(inputText, langCode);
 	}
 	
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
 	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
 		return (DemoMatcherUtil)props.get("demoMatcherUtil");
 	}
