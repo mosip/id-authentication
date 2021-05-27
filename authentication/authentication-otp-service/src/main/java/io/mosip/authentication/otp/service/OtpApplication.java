@@ -47,6 +47,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusE
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.idrepository.core.config.IdRepoDataSourceConfig;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.retry.RetryAspect;
 import io.mosip.kernel.core.retry.RetryConfig;
@@ -77,7 +78,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = HibernateDaoConfig.class)
+@SpringBootApplication(exclude = { HibernateDaoConfig.class, IdRepoDataSourceConfig.class })
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,

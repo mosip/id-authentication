@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;

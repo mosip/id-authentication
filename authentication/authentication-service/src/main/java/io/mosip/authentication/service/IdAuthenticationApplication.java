@@ -47,6 +47,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusE
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.idrepository.core.config.IdRepoDataSourceConfig;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
@@ -81,7 +82,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = {HibernateDaoConfig.class, SecurityAutoConfiguration.class})
+@SpringBootApplication(exclude = {HibernateDaoConfig.class, SecurityAutoConfiguration.class, IdRepoDataSourceConfig.class})
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, CbeffImpl.class, RestHelperImpl.class,
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
 		NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class,
