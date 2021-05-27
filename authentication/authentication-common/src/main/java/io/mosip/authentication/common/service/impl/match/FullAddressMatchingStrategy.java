@@ -3,8 +3,8 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Map;
 
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
+import io.mosip.authentication.core.dto.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
@@ -23,14 +23,14 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 				entityInfo, 
 				props,
 				FullAddressMatchingStrategy::normalizeText,
-				DemoMatcherUtil::doExactMatch);
+				getDemoMatcherUtilObject(props)::doExactMatch);
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		return TextMatchingStrategy.normalizeAndMatch(reqInfo, 
 				entityInfo, 
 				props,
 				FullAddressMatchingStrategy::normalizeText,
-				DemoMatcherUtil::doPartialMatch);
+				getDemoMatcherUtilObject(props)::doPartialMatch);
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		return TextMatchingStrategy.normalizeAndMatch(reqInfo, 
 				entityInfo,
@@ -38,7 +38,7 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 				FullAddressMatchingStrategy::normalizeText,
 				(refInfoName, entityInfoName) -> {
 					String language = (String) props.get("language");
-					return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+					return getDemoMatcherUtilObject(props).doPhoneticsMatch(refInfoName, entityInfoName, language);
 				});
 	});
 	private final MatchFunction matchFunction;
@@ -69,5 +69,9 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 	public static String normalizeText(DemoNormalizer demoNormalizer, String inputText, String langCode,
 			Map<String, Object> properties) throws IdAuthenticationBusinessException {
 		return demoNormalizer.normalizeAddress(inputText, langCode);
+	}
+	
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
 	}
 }

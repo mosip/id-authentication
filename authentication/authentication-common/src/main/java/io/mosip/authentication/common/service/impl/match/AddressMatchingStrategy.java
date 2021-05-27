@@ -20,7 +20,7 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 				entityInfo, 
 				props,
 				FullAddressMatchingStrategy::normalizeText,
-				DemoMatcherUtil::doExactMatch);
+				getDemoMatcherUtilObject(props)::doExactMatch);
 	});
 
 	/** The match function. */
@@ -28,6 +28,8 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
+	
+	
 
 	/**
 	 * Constructor for Address Matching Strategy.
@@ -62,5 +64,9 @@ public enum AddressMatchingStrategy implements TextMatchingStrategy {
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
+	}
+	
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
 	}
 }

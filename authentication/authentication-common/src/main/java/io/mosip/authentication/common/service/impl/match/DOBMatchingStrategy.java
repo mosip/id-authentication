@@ -47,7 +47,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 			}
 			
-			return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
+			return getDemoMatcherUtilObject(props).doExactMatch(reqInfoDate, entityInfoDate);
 
 		}
 		return 0;
@@ -114,4 +114,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				"Inside DOB Mathing Strategy" + errorConstants.getErrorCode(), errorConstants.getErrorMessage());
 	}
 
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }

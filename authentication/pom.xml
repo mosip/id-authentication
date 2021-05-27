@@ -92,6 +92,7 @@
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
 		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
+		<kernel-demoapi.version>1.2.0-SNAPSHOT</kernel-demoapi.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -209,6 +210,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+	<dependency>
+		<groupId>io.mosip.biosdk</groupId>
+		<artifactId>biosdk-client</artifactId>
+		<version>1.1.7-SNAPSHOT</version>
+	</dependency>
 	</dependencies>
 
 	<build>

@@ -5,9 +5,21 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Test;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.mosip.authentication.common.service.impl.match.DOBTypeMatchingStrategy;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.WebApplicationContext;
+
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -17,8 +29,21 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  *
  * @author Manoj SP
  */
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class DOBTypeMatchingStrategyTest {
 
+	@Mock
+	private DemoMatcherUtil demoMatcherUtil;
+	
+	Map<String, Object> matchProperties = new HashMap<>();
+	
+	@Before
+	public void before() {				
+		matchProperties.put("demoMatcherUtil", demoMatcherUtil);
+	}
+	
 	/**
 	 * Check for Exact type matched with Enum value of DOB Type Matching Strategy.
 	 */
@@ -63,8 +88,8 @@ public class DOBTypeMatchingStrategyTest {
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
-
-		value = matchFunction.match("V", "V", null);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
+		value = matchFunction.match("V", "V", matchProperties);
 
 		assertEquals(100, value);
 	}
@@ -78,14 +103,14 @@ public class DOBTypeMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.match(332, "V", null);
+		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(0);
+		int value = matchFunction.match(332, "V", matchProperties);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.match("A", "V", null);
+		int value1 = matchFunction.match("A", "V", matchProperties);
 		assertEquals(0, value1);
 
-		int value3 = matchFunction.match(null, null, null);
+		int value3 = matchFunction.match(null, null, matchProperties);
 		assertEquals(0, value3);
 
 	}

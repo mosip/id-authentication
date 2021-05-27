@@ -27,12 +27,13 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.DemoMatcherUtil;
+import io.mosip.authentication.core.dto.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -82,6 +83,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/** The demo normalizer. */
 	@Autowired
 	private DemoNormalizer demoNormalizer;
+	
+	@Autowired
+	private DemoMatcherUtil demoMatcherUtil;
 	
 	/**
 	 * Gets the demo normalizer.
@@ -454,6 +458,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			return request.getDemographics().getMetadata().keySet();
 		}
 		return Set.of();
+	}
+
+	@Override
+	public DemoMatcherUtil getDemoMatcherUtil() {
+		return demoMatcherUtil;
 	}
 
 }

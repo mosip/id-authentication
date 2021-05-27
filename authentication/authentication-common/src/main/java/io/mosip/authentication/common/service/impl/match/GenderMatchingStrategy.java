@@ -20,7 +20,7 @@ public enum GenderMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			return getDemoMatcherUtilObject(props).doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}
@@ -59,4 +59,7 @@ public enum GenderMatchingStrategy implements TextMatchingStrategy {
 		return matchFunction;
 	}
 
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }

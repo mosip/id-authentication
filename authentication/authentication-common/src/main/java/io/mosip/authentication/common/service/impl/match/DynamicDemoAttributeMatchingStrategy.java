@@ -17,7 +17,7 @@ public enum DynamicDemoAttributeMatchingStrategy implements TextMatchingStrategy
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			return getDemoMatcherUtilObject(props).doExactMatch((String) reqInfo, (String) entityInfo);
 		} if (reqInfo.equals(entityInfo)) {
 			return DemoMatcherUtil.EXACT_MATCH_VALUE;
 		} else {
@@ -58,4 +58,7 @@ public enum DynamicDemoAttributeMatchingStrategy implements TextMatchingStrategy
 		return matchFunction;
 	}
 
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }

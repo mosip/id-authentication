@@ -3,8 +3,8 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Map;
 
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
+import io.mosip.authentication.core.dto.DemoNormalizer;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -22,14 +22,14 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 				entityInfo, 
 				props,
 				NameMatchingStrategy::normalizeText,
-				DemoMatcherUtil::doExactMatch);
+				getDemoMatcherUtilObject(props)::doExactMatch);
 
 	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		return TextMatchingStrategy.normalizeAndMatch(reqInfo, 
 				entityInfo, 
 				props,
 				NameMatchingStrategy::normalizeText,
-				DemoMatcherUtil::doPartialMatch);
+				getDemoMatcherUtilObject(props)::doPartialMatch);
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		return TextMatchingStrategy.normalizeAndMatch(reqInfo, 
 				entityInfo,
@@ -37,7 +37,7 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 				NameMatchingStrategy::normalizeText,
 				(refInfoName, entityInfoName) -> {
 					String language = (String) props.get("language");
-					return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+					return getDemoMatcherUtilObject(props).doPhoneticsMatch(refInfoName, entityInfoName, language);
 				});
 	});
 
@@ -71,4 +71,7 @@ public enum NameMatchingStrategy implements TextMatchingStrategy {
 		return demoNormalizer.normalizeName(inputText, langCode, (MasterDataFetcher) properties.get("titlesFetcher"));
 	}
 
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }

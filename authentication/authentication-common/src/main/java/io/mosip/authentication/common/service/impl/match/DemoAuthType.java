@@ -107,6 +107,7 @@ public enum DemoAuthType implements AuthType {
 		valuemap.put("titlesFetcher", idInfoFetcher.getTitleFetcher());
 		valuemap.put("langCode", language);
 		valuemap.put("demoNormalizer", idInfoFetcher.getDemoNormalizer());
+		valuemap.put("demoMatcherUtil", idInfoFetcher.getDemoMatcherUtil());
 		return valuemap;
 	}
 

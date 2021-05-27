@@ -26,7 +26,7 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 		try {
 			int reqAge = Integer.parseInt(String.valueOf(reqInfo));
 			int entityAge = Integer.parseInt(String.valueOf(entityInfo));
-			return DemoMatcherUtil.doLessThanEqualToMatch(reqAge, entityAge);
+			return getDemoMatcherUtilObject(props).doLessThanEqualToMatch(reqAge, entityAge);
 		} catch (NumberFormatException e) {
 			logError(e);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -89,5 +89,8 @@ public enum AgeMatchingStrategy implements TextMatchingStrategy {
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
-
+	
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }
