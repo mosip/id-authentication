@@ -103,11 +103,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-demographics-api</artifactId>
 			<version>${kernel-demoapi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.demosdk</groupId>
-			<artifactId>demosdk</artifactId>
-			<version>${kernel-demoapi.version}</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>

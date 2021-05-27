@@ -210,13 +210,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	<dependency>
-		<groupId>io.mosip.biosdk</groupId>
-		<artifactId>biosdk-client</artifactId>
-		<version>1.1.7-SNAPSHOT</version>
-	</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
