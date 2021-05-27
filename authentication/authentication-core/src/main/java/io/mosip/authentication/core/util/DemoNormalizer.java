@@ -12,6 +12,7 @@ import io.mosip.kernel.demographics.spi.IDemoNormalizer;
  *
  * @author Rakesh Roshan
  * @author Arun Bose S
+ * @author Nagarjuna
  */
 @Service
 public class DemoNormalizer {
@@ -21,7 +22,7 @@ public class DemoNormalizer {
 	
 
 	/**
-	 * This method is used to normalize name.
+	 * This method is used to normalize name. Calss the demo normalizer api instance to normalize the name
 	 *
 	 * @param nameInfo     the name info
 	 * @param language     the language
@@ -36,7 +37,7 @@ public class DemoNormalizer {
 	}
 
 	/**
-	 * This method is used to normalize address.
+	 * This method is used to normalize address.Calss the demo normalizer api instance to normalize the address
 	 *
 	 * @param address the address received from request or entity
 	 * @return the string output after normalization

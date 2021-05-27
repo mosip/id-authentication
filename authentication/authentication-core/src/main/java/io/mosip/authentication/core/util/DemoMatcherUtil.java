@@ -1,12 +1,8 @@
 package io.mosip.authentication.core.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
@@ -17,6 +13,7 @@ import io.mosip.kernel.demographics.spi.IDemoApi;
  * Util class for Demo Matcher
  * 
  * @author Dinesh Karuppiah
+ * @author Nagarjuna
  */
 
 @Component
@@ -102,21 +99,5 @@ public class DemoMatcherUtil {
 	 */
 	public int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
 		return iDemoApi.doPhoneticsMatch(refInfoName, entityInfoName, language, null);
-	}	
-
-	public static IDemoApi getSDKInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Class<?> object = Class.forName("io.mosip.demosdk.client.impl.spec_1_0.Client_V_1_0");	
-		Object[] args = new Object[0];
-		Optional<Constructor<?>> result = ReflectionUtils.findConstructor(object, args);
-		if (result.isPresent()) {
-			Constructor<?> constructor = result.get();
-			constructor.setAccessible(true);
-			IDemoApi newInstance = (IDemoApi)constructor.newInstance(args);	
-			newInstance.init();
-			return newInstance;
-		}else {
-			return null;
-		}
 	}
-
 }
