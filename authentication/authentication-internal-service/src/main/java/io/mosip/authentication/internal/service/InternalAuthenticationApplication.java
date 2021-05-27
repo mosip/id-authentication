@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -54,7 +55,6 @@ import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsIn
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
-import io.mosip.idrepository.core.config.IdRepoDataSourceConfig;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
@@ -93,7 +93,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = { HibernateDaoConfig.class, IdRepoDataSourceConfig.class })
+@SpringBootApplication(exclude = { HibernateDaoConfig.class })
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
@@ -114,8 +114,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class,
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class })
-@ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
-		"io.mosip.kernel.core.logger.config" })
+@ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
+		"io.mosip.kernel.core.logger.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {
 
