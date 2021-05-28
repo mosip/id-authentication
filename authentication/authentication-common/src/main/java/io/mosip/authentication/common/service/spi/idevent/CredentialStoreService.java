@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.impl.idevent;
+package io.mosip.authentication.common.service.spi.idevent;
 
 import java.util.List;
 

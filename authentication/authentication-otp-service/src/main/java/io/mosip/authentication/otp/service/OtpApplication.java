@@ -3,6 +3,7 @@ package io.mosip.authentication.otp.service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -76,7 +77,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = HibernateDaoConfig.class)
+@SpringBootApplication(exclude = { HibernateDaoConfig.class })
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
@@ -93,7 +94,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class, RetryAspect.class,
 		AuthTransactionHelper.class, HotlistServiceImpl.class, AuthTransactionStatusEventPublisher.class,
 		MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class})
-@ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" })
+@ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*", "io.mosip.kernel.core.logger.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+  "io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class OtpApplication {
 

@@ -33,6 +33,7 @@ import io.mosip.authentication.common.service.integration.CredentialRequestManag
 import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;

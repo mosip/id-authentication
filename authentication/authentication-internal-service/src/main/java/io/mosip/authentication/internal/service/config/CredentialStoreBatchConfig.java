@@ -37,8 +37,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
-import io.mosip.authentication.common.service.impl.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
