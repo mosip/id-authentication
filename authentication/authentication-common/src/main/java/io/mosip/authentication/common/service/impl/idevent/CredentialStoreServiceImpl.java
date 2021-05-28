@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -26,15 +27,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
-import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.entity.IdaUinHashSalt;
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
-import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -163,26 +164,25 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Override
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
-		boolean alreadyFailed = credentialEventStore.getStatusCode().equals(CredentialStoreStatus.FAILED.name());
-
-		if (alreadyFailed) {
+		String statusCode = credentialEventStore.getStatusCode();
+		if (statusCode.equals(CredentialStoreStatus.FAILED.name())) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
 		}
-
+		
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
-			updateEventProcessingStatus(credentialEventStore, true, false, alreadyFailed);
+			updateEventProcessingStatus(credentialEventStore, true, false, statusCode);
 			return entity;
 		} catch (RuntimeException e) {
 			// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
-			updateEventProcessingStatus(credentialEventStore, false, false, alreadyFailed);
+			updateEventProcessingStatus(credentialEventStore, false, false, statusCode);
 			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
-			updateEventProcessingStatus(credentialEventStore, false, true, alreadyFailed);
+			updateEventProcessingStatus(credentialEventStore, false, true, statusCode);
 			throw e;
 		}
 	}
@@ -214,11 +214,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @param credentialEventStore the credential event store
 	 * @param isSuccess            the is success
 	 * @param isRecoverableException the is recoverable exception
-	 * @param alreadyFailed        the already failed
+	 * @param status the status
 	 */
 	@Transactional
 	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess, boolean isRecoverableException,
-			boolean alreadyFailed) {
+			String status) {
 		credentialEventStore.setUpdBy(IDA);
 		LocalDateTime updatedDTimes = DateUtils.getUTCCurrentDateTime();
 		credentialEventStore.setUpdDTimes(updatedDTimes);
@@ -232,28 +232,42 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			audit(requestId, statusCode);
 		} else {
 			if (isRecoverableException) {
-				int retryCount = 0;
-				if (alreadyFailed) {
+				int retryCount;
+				if (status.equals(CredentialStoreStatus.NEW.name()) || status.equals(CredentialStoreStatus.FAILED.name())) {
 					retryCount = credentialEventStore.getRetryCount() + 1;
-					credentialEventStore.setRetryCount(retryCount);
-				}
-				if (retryCount < maxRetryCount) {
-					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED.name());
-				} else {
-					credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name());
-					// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
-					credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
-					audit(requestId, CredentialStoreStatus.FAILED.name());
+					if (retryCount < maxRetryCount) {
+						if(status.equals(CredentialStoreStatus.NEW.name())) {
+							updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED.name()), OptionalInt.empty());
+						} else if(status.equals(CredentialStoreStatus.FAILED.name())){
+							updateStatusAndRetryCount(credentialEventStore, Optional.empty(), OptionalInt.of(retryCount));
+						}
+					} else {
+						retryCount = maxRetryCount;
+						updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name()), OptionalInt.of(retryCount));
+						
+						// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
+						credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
+						audit(requestId, CredentialStoreStatus.FAILED.name());
+					}
 				}
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
-				credentialEventStore.setStatusCode(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name());
+				updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name()), OptionalInt.empty());
+				
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 				audit(requestId, CredentialStoreStatus.FAILED.name());
 			}
 		}
+	}
 
+	private void updateStatusAndRetryCount(CredentialEventStore credentialEventStore, Optional<String> status, OptionalInt retryCount) {
+		retryCount.ifPresent(credentialEventStore::setRetryCount);
+		status.ifPresent(credentialEventStore::setStatusCode);
+		
+		credentialEventStore.setUpdBy(IDA);
+		credentialEventStore.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+		
 		credentialEventRepo.save(credentialEventStore);
 	}
 
