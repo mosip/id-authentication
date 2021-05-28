@@ -19,7 +19,7 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
  * The Class PartnerServiceEventsInitializer.
  * @author Loganathan Sekar
  */
-//@Component
+@Component
 public class PartnerServiceEventsInitializer extends BaseWebSubEventsInitializer {
 	
 	/** The Constant logger. */
