@@ -12,6 +12,8 @@ ARG spring_config_url
 #ARG bio_sdk_folder=mock/0.9
 ARG biosdk_zip_path
 
+ARG demosdk_zip_path
+
 # can be passed during Docker build as build time environment for hsm client zip file path
 #ARG client_zip_path
 ARG hsm_client_zip_path
@@ -43,6 +45,8 @@ ENV iam_adapter_url_env=${iam_adapter_url}
 #ENV bio_sdk_folder_env=${bio_sdk_folder}
 ENV biosdk_zip_file_path=${biosdk_zip_path}
 
+ENV demosdk_zip_file_path=${demosdk_zip_path}
+
 # environment variable to pass hsm client zip file path, at docker runtime
 #ENV zip_file_path=${client_zip_path}
 ENV hsm_zip_file_path=${hsm_client_zip_path}
@@ -65,7 +69,11 @@ ENV hsm_local_dir_name=${hsm_local_dir}
 
 ARG biosdk_local_dir=biosdk-client
 
+ARG demosdk_local_dir=demosdk
+
 ENV biosdk_local_dir_name=${biosdk_local_dir}
+
+ENV demosdk_local_dir_name=${demosdk_local_dir}
 
 # install packages and create user
 RUN apt-get -y update \

@@ -10,26 +10,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 
 /**
  * 
  * @author Dinesh Karuppiah
+ * @author Nagarjuna
  */
 @RunWith(SpringRunner.class)
+@WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class NameMatchingStrategyTest {
 
 	@Autowired
@@ -37,6 +46,16 @@ public class NameMatchingStrategyTest {
 
 	@Mock
 	DemoNormalizer demoNormalizer;
+	
+	@Mock
+	private DemoMatcherUtil demoMatcherUtil;
+	
+	Map<String, Object> matchProperties = new HashMap<>();
+	
+	@Before
+	public void before() {				
+		matchProperties.put("demoMatcherUtil", demoMatcherUtil);
+	}
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -81,6 +100,7 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
 		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn("dinesh karuppiah");
 		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", getFetcher());
@@ -92,6 +112,7 @@ public class NameMatchingStrategyTest {
 		valuemap.put("demoNormalizer", demoNormalizer);
 		valuemap.put("language", "english");
 		valuemap.put("env", env);
+		valuemap.put("demoMatcherUtil", demoMatcherUtil);
 		MasterDataFetcher f = () -> createFetcher();
 		valuemap.put("titlesFetcher", f);
 		valuemap.put("langCode", "fra");
@@ -116,8 +137,8 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
-		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();		
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
@@ -172,6 +193,7 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 		.thenReturn("dinesh karuppiah");
+		Mockito.when(demoMatcherUtil.doPartialMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
 		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", getFetcher());
 		assertEquals(100, value);
 	}
@@ -183,10 +205,9 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-
+		Mockito.when(demoMatcherUtil.doPartialMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
@@ -197,10 +218,9 @@ public class NameMatchingStrategyTest {
 
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction1() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-
+		Mockito.when(demoMatcherUtil.doPartialMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
@@ -209,25 +229,25 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestInvalidPartialMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		Map<String, Object> matchProperties = new HashMap<>();
+		Mockito.when(demoMatcherUtil.doPartialMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}
 
 	@Test
-	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
+	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {		
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doPartialMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);
 	}
 
 	@Test
-	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
+	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {		
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match(2, "2", matchProperties);
@@ -236,18 +256,18 @@ public class NameMatchingStrategyTest {
 	}
 
 	@Test
-	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
-		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {		
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();		
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}
 
 	@Test
 	public void TestInvalid() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);
@@ -255,9 +275,9 @@ public class NameMatchingStrategyTest {
 
 	@Test
 	public void TestInvalidPhoneticsMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
@@ -342,6 +362,7 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("language", "arabic");
+		Mockito.when(demoMatcherUtil.doPhoneticsMatch(Mockito.anyString(), Mockito.anyString(),Mockito.anyString())).thenReturn(100);
 		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 		.thenReturn("dinesh karuppiah");
 		int value = matchFunction.match("mos", "arabic", getFetcher());
@@ -356,16 +377,16 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched()
 			throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doPhoneticsMatch(Mockito.anyString(), Mockito.anyString(),Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(5, "arabic", matchProperties);
 		assertEquals(0, value);
 	}
 
 	@Test
 	public void TestInvalidExactMatchingStrategy() throws IdAuthenticationBusinessException {
-		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(5, 1, matchProperties);
 		assertEquals(0, value);
 	}

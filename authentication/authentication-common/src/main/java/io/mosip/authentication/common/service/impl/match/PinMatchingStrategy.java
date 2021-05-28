@@ -18,6 +18,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * evaluate the PIN value received from the request and entity
  * 
  * @author Sanjay Murali
+ * @author Nagarjuna
  */
 public enum PinMatchingStrategy implements TextMatchingStrategy {
 
@@ -26,7 +27,7 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String hashPin;
 				hashPin = IdAuthSecurityManager.generateHashAndDigestAsPlainText(((String) reqInfo).getBytes());
-				return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
+				return getDemoMatcherUtilObject(props).doExactMatch(hashPin, (String) entityInfo);
 		} else {
 			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_MISMATCH);
@@ -90,4 +91,12 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 				errorConstants.getErrorMessage());
 	}
 
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }

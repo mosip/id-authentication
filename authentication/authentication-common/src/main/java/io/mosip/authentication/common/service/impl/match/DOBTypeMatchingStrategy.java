@@ -11,14 +11,14 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * The Enum DOBTypeMatchingStrategy.
  * 
  * @author Manoj SP
- *
+ * @author Nagarjuna
  */
 public enum DOBTypeMatchingStrategy implements TextMatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String) {
-			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			return getDemoMatcherUtilObject(props).doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}
@@ -55,6 +55,15 @@ public enum DOBTypeMatchingStrategy implements TextMatchingStrategy {
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
+	}
+	
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
 	}
 
 }

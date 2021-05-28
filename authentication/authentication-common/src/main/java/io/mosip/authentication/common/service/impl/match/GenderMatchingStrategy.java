@@ -15,12 +15,13 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * evaluate the GENDER value received from the request and entity
  *
  * @author Sanjay Murali
+ * @author Nagarjuna
  */
 public enum GenderMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			return getDemoMatcherUtilObject(props).doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
 			return 0;
 		}
@@ -59,4 +60,12 @@ public enum GenderMatchingStrategy implements TextMatchingStrategy {
 		return matchFunction;
 	}
 
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }
