@@ -98,7 +98,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class,
 		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class,DemoMatcherUtil.class,DemoNormalizer.class})
-@ComponentScan(basePackages = { "io.mosip.authentication.kyc.service.*", "io.mosip.kernel.core.logger.config","io.mosip.authentication.common.*" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+@ComponentScan(basePackages = { "io.mosip.authentication.kyc.service.*", "io.mosip.kernel.core.logger.config","io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
   "io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class KycAuthenticationApplication {
