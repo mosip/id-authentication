@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
@@ -14,7 +14,7 @@ import io.mosip.kernel.demographics.spi.IDemoNormalizer;
  * @author Arun Bose S
  * @author Nagarjuna
  */
-@Service
+@Component
 public class DemoNormalizer {
 	
 	@Autowired
