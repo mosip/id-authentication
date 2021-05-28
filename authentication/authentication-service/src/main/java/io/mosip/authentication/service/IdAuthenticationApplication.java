@@ -101,7 +101,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		WebSubHelper.class, IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class,
 		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class,DemoNormalizer.class,DemoMatcherUtil.class})
-@ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config","io.mosip.authentication.common.*" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+@ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config","io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 	"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {
