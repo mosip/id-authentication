@@ -15,7 +15,7 @@ chmod +x configure_biosdk.sh
 chmod +x configure_hsmclient.sh
 ./configure_hsmclient.sh
 
-chmod +x configure_biosdk.sh
+chmod +x configure_demosdk.sh
 ./configure_demosdk.sh
 
 echo "Installating pre-requisites completed."
