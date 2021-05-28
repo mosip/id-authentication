@@ -48,7 +48,6 @@ import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsIn
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
-import io.mosip.idrepository.core.config.IdRepoDataSourceConfig;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
