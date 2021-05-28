@@ -47,5 +47,9 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
+	
+	List<AutnTxn> findByRefIdAndRequestDTtimesBefore(String refId, LocalDateTime beforeRequestTime);
+	
+	List<AutnTxn> findByEntityIdAndRequestDTtimesBefore(String entityId, LocalDateTime beforeRequestTime);
 
 }

@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -76,6 +77,9 @@ public class BaseAuthFilterTest {
 
 	@Autowired
 	Environment env;
+	
+	@Mock
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 
 	@Mock
 	ResettableStreamHttpServletRequest requestWrapper;
@@ -136,6 +140,7 @@ public class BaseAuthFilterTest {
 		ReflectionTestUtils.setField(baseAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseAuthFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(baseAuthFilter, "securityManager", securityManager);
+		ReflectionTestUtils.setField(baseAuthFilter, "fraudEventManager", fraudEventManager);
 	}
 
 	@Test

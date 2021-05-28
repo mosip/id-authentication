@@ -3,8 +3,6 @@ package io.mosip.authentication.core.util;
 import org.apache.commons.codec.EncoderException;
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.TextMatcherUtil;
-
 public class TextMatcherUtilTest {
 
 	@Test

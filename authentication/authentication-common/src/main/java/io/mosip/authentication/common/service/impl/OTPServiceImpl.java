@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -28,7 +29,6 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
-import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -44,6 +44,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -91,6 +92,9 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private PartnerService partnerService;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -217,6 +221,7 @@ public class OTPServiceImpl implements OTPService {
 				.withPartner(partner)
 				.withInternal(isInternal)
 				.build(env,uinHashSaltRepo,securityManager);
+		fraudEventManager.analyseEvent(authTxn);
 		if(otpResponseDTO != null) {
 			otpResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
 		} else {

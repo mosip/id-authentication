@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
+import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.internal.service.validator.CredentialIssueEventValidator;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;

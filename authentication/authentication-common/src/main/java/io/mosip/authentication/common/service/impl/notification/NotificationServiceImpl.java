@@ -28,7 +28,6 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
@@ -39,6 +38,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.util.MaskUtil;
 
 /***
  * 
