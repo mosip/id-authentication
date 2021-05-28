@@ -18,6 +18,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
  * The Enum DemoAuthType.
  *
  * @author Dinesh Karuppiah.T
+ * @author Nagarjuna
  */
 public enum DemoAuthType implements AuthType {
 
@@ -107,6 +108,7 @@ public enum DemoAuthType implements AuthType {
 		valuemap.put("titlesFetcher", idInfoFetcher.getTitleFetcher());
 		valuemap.put("langCode", language);
 		valuemap.put("demoNormalizer", idInfoFetcher.getDemoNormalizer());
+		valuemap.put("demoMatcherUtil", idInfoFetcher.getDemoMatcherUtil());
 		return valuemap;
 	}
 

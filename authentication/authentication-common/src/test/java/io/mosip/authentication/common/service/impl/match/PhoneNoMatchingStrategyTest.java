@@ -8,15 +8,41 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.impl.match.PhoneNoMatchingStrategy;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
+/**
+ * 
+ * @author Nagarjuna
+ *
+ */
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class PhoneNoMatchingStrategyTest {
 
+	Map<String, Object> matchProperties = new HashMap<>();
+	
+	@Mock
+	private DemoMatcherUtil demoMatcherUtil;
+	
+	@Before
+	public void before() {				
+		matchProperties.put("demoMatcherUtil", demoMatcherUtil);
+	}
 	/**
 	 * Check for Exact type matched with Enum value of PhoneNo Matching Strategy
 	 */
@@ -59,14 +85,15 @@ public class PhoneNoMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.match("9876543210", "9876543210", null);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
+		
+		int value = matchFunction.match("9876543210", "9876543210", matchProperties);
 		assertEquals(100, value);
 
-		int value1 = matchFunction.match("+91-9876543210", "+91-9876543210", null);
+		int value1 = matchFunction.match("+91-9876543210", "+91-9876543210", matchProperties);
 		assertEquals(100, value1);
 
-		int value2 = matchFunction.match("413-3432-321", "413-3432-321", null);
+		int value2 = matchFunction.match("413-3432-321", "413-3432-321", matchProperties);
 		assertEquals(100, value2);
 	}
 
@@ -80,7 +107,7 @@ public class PhoneNoMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
-		Map<String, Object> matchProperties = new HashMap<>();
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match("9789438210", "1234567890", matchProperties);
 		assertEquals(0, value);
 

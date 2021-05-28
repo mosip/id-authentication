@@ -30,7 +30,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
-import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
@@ -47,6 +46,8 @@ import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
@@ -81,6 +82,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * Spring-boot class for ID Authentication Application.
  *
  * @author Dinesh Karuppiah
+ * @author Nagarjuna
  */
 @SpringBootApplication(exclude = {HibernateDaoConfig.class, SecurityAutoConfiguration.class})
 @Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, CbeffImpl.class, RestHelperImpl.class,
@@ -90,7 +92,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuditHelper.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class,
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class,
 		TokenIdManager.class, SwaggerConfig.class, BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class,
-		BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class, DemoNormalizerImpl.class, IdAuthSecurityManager.class,
+		BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class, IdAuthSecurityManager.class,
 		RestRequestFactory.class, RestHelperImpl.class, AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class,
 		KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class, PartnerServiceManager.class,
@@ -98,8 +100,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdTypeUtil.class, MasterDataCache.class, MasterDataCacheInitializer.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		WebSubHelper.class, IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class,
 		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
-		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class })
-@ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class,DemoNormalizer.class,DemoMatcherUtil.class})
+@ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config","io.mosip.authentication.common.*" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 	"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {

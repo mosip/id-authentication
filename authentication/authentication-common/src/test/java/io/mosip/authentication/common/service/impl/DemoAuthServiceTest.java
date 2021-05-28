@@ -55,12 +55,18 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 
+/**
+ * 
+ * @author Nagarjuna
+ *
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -88,6 +94,9 @@ public class DemoAuthServiceTest {
 
 	@Mock
 	private DemoNormalizer demoNormalizer;
+	
+	@Mock
+	private DemoMatcherUtil demoMatcherUtil;
 
 	@Mock
 	private MasterDataManager masterDataManager;
@@ -526,6 +535,7 @@ public class DemoAuthServiceTest {
 		valueSet.add("fra");
 		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn("Dinesh");
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
 		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());

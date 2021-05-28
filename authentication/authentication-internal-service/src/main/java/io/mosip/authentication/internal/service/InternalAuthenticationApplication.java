@@ -30,7 +30,6 @@ import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
-import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
@@ -52,6 +51,8 @@ import io.mosip.authentication.common.service.websub.impl.HotlistEventInitialize
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
@@ -101,7 +102,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
 		SwaggerConfig.class, AuditHelper.class, PinValidatorImpl.class, BioMatcherUtil.class,
 		BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class,
-		DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class, InternalAuthSecurityManager.class,
+		OTPServiceImpl.class, OTPRequestValidator.class, InternalAuthSecurityManager.class,
 		AuthTxnServiceImpl.class, AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class,
 		CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class, KeymanagerServiceImpl.class,
 		KeymanagerUtil.class, IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
@@ -113,9 +114,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
 		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventInitializer.class,
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
-		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class })
+		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class,DemoNormalizer.class,DemoMatcherUtil.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
-		"io.mosip.kernel.core.logger.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.kernel.core.logger.config","io.mosip.authentication.common.*" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 		"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*", "io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {

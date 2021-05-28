@@ -32,7 +32,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -41,6 +40,8 @@ import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 
@@ -48,6 +49,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
  * Helper class to fetch identity values from request.
  *
  * @author Dinesh Karuppiah.T
+ * @author Nagarjuna
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
@@ -82,6 +84,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/** The demo normalizer. */
 	@Autowired
 	private DemoNormalizer demoNormalizer;
+	
+	/** The demo matecher util. */
+	@Autowired
+	private DemoMatcherUtil demoMatcherUtil;
 	
 	/**
 	 * Gets the demo normalizer.
@@ -454,6 +460,16 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			return request.getDemographics().getMetadata().keySet();
 		}
 		return Set.of();
+	}
+
+	/**
+	 * Get the demo matcher util
+	 * 
+	 * @return demoMatcherUtil
+	 */
+	@Override
+	public DemoMatcherUtil getDemoMatcherUtil() {
+		return demoMatcherUtil;
 	}
 
 }

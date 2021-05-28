@@ -5,12 +5,12 @@ import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -20,6 +20,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * received from the request and entity
  *
  * @author Sanjay Murali
+ * @author Nagarjuna
  */
 public enum DOBMatchingStrategy implements TextMatchingStrategy {
 
@@ -47,7 +48,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 			}
 			
-			return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
+			return getDemoMatcherUtilObject(props).doExactMatch(reqInfoDate, entityInfoDate);
 
 		}
 		return 0;
@@ -114,4 +115,12 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 				"Inside DOB Mathing Strategy" + errorConstants.getErrorCode(), errorConstants.getErrorMessage());
 	}
 
+	/**
+	 * Gets the demoMatcherUtil object
+	 * @param props
+	 * @return
+	 */
+	public static DemoMatcherUtil getDemoMatcherUtilObject(Map<String, Object> props) {
+		return (DemoMatcherUtil)props.get("demoMatcherUtil");
+	}
 }
