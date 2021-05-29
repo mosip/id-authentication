@@ -82,11 +82,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	private IDAMappingConfig idMappingConfig;
 
 	/** The demo normalizer. */
-	@Autowired
+	@Autowired(required = false)
 	private DemoNormalizer demoNormalizer;
 	
 	/** The demo matecher util. */
-	@Autowired
+	@Autowired(required = false)
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	/**
