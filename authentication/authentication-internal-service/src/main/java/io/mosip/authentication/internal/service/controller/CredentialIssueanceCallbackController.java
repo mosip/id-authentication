@@ -74,7 +74,7 @@ public class CredentialIssueanceCallbackController {
 	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
-		return handleEevent(eventModel, e);
+		return handleEvent(eventModel, e);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class CredentialIssueanceCallbackController {
 	public ResponseWrapper<?> handleRemoveIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleRemoveIdEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
-		return handleEevent(eventModel, e);
+		return handleEvent(eventModel, e);
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class CredentialIssueanceCallbackController {
 	public ResponseWrapper<?> handleDeactivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
-		return handleEevent(eventModel, e);
+		return handleEvent(eventModel, e);
 	}
 	
 	/**
@@ -128,10 +128,10 @@ public class CredentialIssueanceCallbackController {
 	public ResponseWrapper<?> handleActivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
-		return handleEevent(eventModel, e);
+		return handleEvent(eventModel, e);
 	}
 
-	private ResponseWrapper<?> handleEevent(EventModel eventModel, Errors e)
+	private ResponseWrapper<?> handleEvent(EventModel eventModel, Errors e)
 			throws IDDataValidationException, IdAuthenticationBusinessException {
 		DataValidationUtil.validate(e);
 		handleEvents(eventModel);
