@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -93,6 +94,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private PartnerService partnerService;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 	
 	/*
 	 * (non-Javadoc)
@@ -170,6 +174,7 @@ public class KycFacadeImpl implements KycFacade {
 						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
 						.withInternal(false).withPartner(partner).withToken(token)
 						.build(env, uinHashSaltRepo, securityManager);
+				fraudEventManager.analyseEvent(authTxn);
 				idService.saveAutnTxn(authTxn);
 			}
 		}

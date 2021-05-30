@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -49,6 +50,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -56,6 +60,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		securityManager = context.getBean(IdAuthSecurityManager.class);
+		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
 	}
 
 	/*
@@ -174,12 +179,17 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 									"signature - header"));
-				} else if (!verifySignature(signature,
-						IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()),
-						DomainType.AUTH.getType())) {
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-							"signature JWS failed");
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+				} else {
+					String requestData = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
+					requestWrapper.resetInputStream();
+					if (!verifySignature(signature,
+							requestData,
+							DomainType.AUTH.getType())) {
+						mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+								"signature JWS failed");
+						fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestData);
+						throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+					}
 				}
 				requestWrapper.resetInputStream();
 			}

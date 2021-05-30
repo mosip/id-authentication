@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
@@ -69,6 +70,9 @@ public class AuthTransactionHelper {
 	/** The id auth service. */
 	@Autowired
 	private IdService<AutnTxn> idService;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 
 	/**
 	 * Builds the auth transaction entity.
@@ -78,7 +82,9 @@ public class AuthTransactionHelper {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public AutnTxn buildAuthTransactionEntity(AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
-		return authTxnBuilder.build(env, uinHashSaltRepo, securityManager);
+		AutnTxn authTxn = authTxnBuilder.build(env, uinHashSaltRepo, securityManager);
+		fraudEventManager.analyseEvent(authTxn);
+		return authTxn;
 	}
 	
 	/**

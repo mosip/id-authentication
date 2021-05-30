@@ -38,7 +38,6 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
@@ -48,6 +47,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
+import io.mosip.authentication.core.util.DataValidationUtil;
 
 /**
  * @author Manoj SP

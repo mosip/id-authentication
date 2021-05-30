@@ -29,7 +29,6 @@ import io.mosip.kernel.demographics.spi.IDemoApi;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,  })
-@SuppressWarnings("unchecked")
 public class MatcherUtilTest {
 
 	@InjectMocks
