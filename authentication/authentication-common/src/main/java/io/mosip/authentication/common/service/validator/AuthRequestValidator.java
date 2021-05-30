@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -113,7 +114,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				// Validation for Time Stamp in the RequestDTO.
 				validateReqTime(authRequestDto.getRequest().getTimestamp(), errors, REQUEST_REQUEST_TIME);
 			}
-			
+
 			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 			}
@@ -140,8 +141,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateBiometricTimestamps(authRequestDto.getRequest().getBiometrics(), errors);
 			}
 		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
@@ -151,29 +152,30 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Validate biometric timestamps.
 	 *
 	 * @param biometrics the biometrics
-	 * @param errors the errors
+	 * @param errors     the errors
 	 */
 	protected void validateBiometricTimestamps(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		if(biometrics != null) {
+		if (biometrics != null) {
 			for (int i = 0; i < biometrics.size(); i++) {
 				BioIdentityInfoDTO bioIdentityInfoDTO = biometrics.get(i);
-				if(bioIdentityInfoDTO.getData() == null) {
+				if (bioIdentityInfoDTO.getData() == null) {
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { String.format(BIO_PATH, i, IdAuthCommonConstants.DATA) },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				} else {
-					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors, String.format(BIO_PATH, i, DATA_TIMESTAMP), this::biometricTimestampParser);
-					
-					if(!errors.hasErrors()) {
-						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors, String.format(BIO_PATH, i, DIGITAL_ID));
+					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors,
+							String.format(BIO_PATH, i, DATA_TIMESTAMP), this::biometricTimestampParser);
+
+					if (!errors.hasErrors()) {
+						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors,
+								String.format(BIO_PATH, i, DIGITAL_ID));
 					}
 				}
 			}
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "request/biometrics" },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { "request/biometrics" },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
@@ -182,16 +184,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Validate digital id timestamp.
 	 *
 	 * @param digitalId the digital id
-	 * @param errors the errors
-	 * @param field the field
+	 * @param errors    the errors
+	 * @param field     the field
 	 */
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
 		if (digitalId != null) {
 			final String dateTimeField = field + "dateTime";
 			if (digitalId.getDateTime() == null) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { dateTimeField },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { dateTimeField },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else {
 				validateReqTime(digitalId.getDateTime(), errors, dateTimeField, this::biometricTimestampParser);
@@ -207,7 +208,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Validate hotlisted ids.
 	 *
-	 * @param errors the errors
+	 * @param errors         the errors
 	 * @param authRequestDto the auth request dto
 	 */
 	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
@@ -241,10 +242,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+					"request domainUri is no matching against bio domainUri");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
 		}
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
@@ -259,8 +260,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										|| !bio.getData().getEnv().contentEquals(authRequestDto.getEnv());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "request env is no matching against bio env");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
+					"request env is no matching against bio env");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "env", "env"));
 		}
@@ -280,16 +281,17 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			validateRequestTimedOut(reqTime, errors);
 		}
 	}
-	
+
 	/**
 	 * Validate req time.
 	 *
-	 * @param reqTime the req time
-	 * @param errors the errors
-	 * @param paramName the param name
+	 * @param reqTime        the req time
+	 * @param errors         the errors
+	 * @param paramName      the param name
 	 * @param dateTimeParser the date time parser
 	 */
-	protected void validateReqTime(String reqTime, Errors errors, String paramName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
+	protected void validateReqTime(String reqTime, Errors errors, String paramName,
+			FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		super.validateReqTime(reqTime, errors, paramName, dateTimeParser);
 		if (!errors.hasErrors()) {
 			validateRequestTimedOut(reqTime, errors, dateTimeParser, paramName);
@@ -394,8 +396,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "deviceProviderId") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
-				
-				
+
 			}
 		});
 	}
@@ -408,13 +409,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors           the errors
 	 */
 	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
-		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)
-				&& hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()),
-						individualIdType).getStatus().contentEquals(HotlistStatus.BLOCKED)) {
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-							individualIdType));
+		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)) {
+			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
+					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), individualIdType);
+			if (hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
+					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
+						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), individualIdType));
+			}
 		}
 	}
 
@@ -426,17 +429,17 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream
-					.range(0,
-							biometrics.size())
-					.filter(index -> hotlistService.getHotlistStatus(
-							IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData()
-									.getDigitalId().getSerialNo()
-									.concat(biometrics.get(index).getData().getDigitalId().getMake())
-									.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
-							HotlistIdTypes.DEVICE).getStatus().contentEquals(HotlistStatus.BLOCKED))
-					.forEach(index -> errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+			IntStream.range(0, biometrics.size()).filter(index -> {
+				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
+						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
+								.getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
+								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
+						HotlistIdTypes.DEVICE);
+				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
+						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
+			}).forEach(
+					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
 									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE))));
 		}
@@ -450,19 +453,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream
-					.range(0, biometrics.size()).filter(
-							index -> hotlistService
-									.getHotlistStatus(
-											IdAuthSecurityManager.generateHashAndDigestAsPlainText(
-													biometrics.get(0).getData().getDigitalId().getDp()
-															.concat(biometrics.get(0).getData().getDigitalId()
-																	.getDpId())
-															.getBytes()),
-											HotlistIdTypes.DEVICE_PROVIDER)
-									.getStatus().contentEquals(HotlistStatus.BLOCKED))
-					.forEach(index -> errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+			IntStream.range(0, biometrics.size()).filter(index -> {
+				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
+						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(0).getData().getDigitalId().getDp()
+								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
+						HotlistIdTypes.DEVICE_PROVIDER);
+				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
+						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
+			}).forEach(
+					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
 									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE_PROVIDER))));
 		}
@@ -494,11 +494,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
-			//First try parsing with biometric timestamp format
-			return DateUtils.parseToDate(timestamp,
-					env.getProperty(IdAuthConfigKeyConstants.BIO_DATE_TIME_PATTERN));
+			// First try parsing with biometric timestamp format
+			return DateUtils.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.BIO_DATE_TIME_PATTERN));
 		} catch (ParseException e) {
-			mosipLogger.debug("error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern", e.getMessage());
+			mosipLogger.debug(
+					"error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern",
+					e.getMessage());
 			// Try parsing with request time stamp format
 			return this.requestTimeParser(timestamp);
 		}
