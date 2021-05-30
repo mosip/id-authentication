@@ -171,7 +171,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	private void validateSignature(String signature, ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
 		try {
-			fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()));
 			if (isSignatureVerificationRequired()) {
 				if (StringUtils.isEmpty(signature)) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
