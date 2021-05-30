@@ -413,7 +413,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
 					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), individualIdType);
 			if (hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-					|| hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
 						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), individualIdType));
 			}
@@ -435,7 +436,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
 						HotlistIdTypes.DEVICE);
 				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime());
+						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
 			}).forEach(
 					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
@@ -457,7 +459,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
 						HotlistIdTypes.DEVICE_PROVIDER);
 				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime());
+						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
 			}).forEach(
 					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
