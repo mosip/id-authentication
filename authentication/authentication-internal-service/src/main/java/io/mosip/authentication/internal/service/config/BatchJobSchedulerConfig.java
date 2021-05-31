@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.config;
-
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_JOB_DELAY;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -61,7 +62,9 @@ public class BatchJobSchedulerConfig {
 	 * Schedule missing credential retrigger job.
 	 * Scheduling to run only once in the startup.
 	 */
-	@Scheduled(fixedDelay=Long.MAX_VALUE)
+	// Waiting for one more minute for the subscription to complete for credential event topic.
+	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
+			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
 	public void scheduleMissingCredentialRetriggerJob() {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())

@@ -1,4 +1,4 @@
-package io.mosip.authentication.kyc.service.controller;
+package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC;
@@ -40,7 +40,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/templates", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/kyc/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
+			+ "}", callback = "/idauthentication/v1/internal/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
 	public void handleMasterdataTemplatesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTemplatesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateControllerDelegate.updateTemplates(eventModel);
@@ -53,7 +53,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/titles", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/kyc/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
+			+ "}", callback = "/idauthentication/v1/internal/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
 	public void handleMasterdataTitlesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTitlesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateControllerDelegate.updateTitles(eventModel);

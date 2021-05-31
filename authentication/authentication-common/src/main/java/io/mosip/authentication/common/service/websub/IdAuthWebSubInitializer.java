@@ -28,8 +28,7 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	 */
 	@Override
 	protected void doInitSubscriptions() {
-		masterDataUpdateEventInitializer.subscribe(this::isCacheEnabled);
-		fraudEventPublisher.subscribe(null);
+		webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
 	}
 
 	/**
@@ -37,8 +36,8 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	 */
 	@Override
 	protected void doRegisterTopics() {
-		masterDataUpdateEventInitializer.register(this::isCacheEnabled);
-		fraudEventPublisher.register(null);
+		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		webSubHelper.initRegistrar(fraudEventPublisher);
 	}
 
 }
