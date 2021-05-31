@@ -138,6 +138,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * io.mosip.authentication.service.filter.BaseAuthFilter#decodedRequest(java.
 	 * util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
@@ -160,8 +161,17 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 					// If biometrics is present validate and decipher it.
 					if (request.get(BIOMETRICS) != null) {
+						
+						boolean isHashBasedOnBiometricDataBlock = isHashBasedOnBiometricDataBlock();
+						if(isHashBasedOnBiometricDataBlock) {
+							validateHashWithBioDataInRequest(request);
+						}
+						
 						decipherBioData(request);
-						validateBioDataInRequest(request);
+						
+						if(!isHashBasedOnBiometricDataBlock) {
+							validateHashWithDecryptedBdbInRequest(request);
+						}
 					}
 					
 					if (request.get(DEMOGRAPHICS) instanceof Map) {
@@ -178,6 +188,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	/**
+	 * Checks if is hash based on biometric data block.
+	 *
+	 * @return true, if is hash based on biometric data block
+	 */
+	private boolean isHashBasedOnBiometricDataBlock() {
+		return env.getProperty("ida.bio.hash.based.on.biometric.data.block", Boolean.class, false);
 	}
 
 	/**
@@ -433,13 +452,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	private void validateHashWithDecryptedBdbInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		validateHashWithDecryptedBdbInSegments(getBiometricsSegmentsList(requestBody));
+	}
+
+	/**
+	 * Gets the biometrics segments list.
+	 *
+	 * @param requestBody the request body
+	 * @return the biometrics segments list
+	 */
 	@SuppressWarnings("unchecked")
-	private void validateBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	private List<Map<String, Object>> getBiometricsSegmentsList(Map<String, Object> requestBody) {
 		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(BIOMETRICS))
 				.filter(obj -> obj instanceof List).map(obj -> (List<Map<String, Object>>) obj)
 				.orElse(Collections.emptyList());
-
-		validateBioData(biometricsList);
+		return biometricsList;
 	}
 
 	/**
@@ -448,7 +476,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param biometricsList the biometrics list
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateBioData(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
+	@SuppressWarnings("unchecked")
+	private void validateHashWithDecryptedBdbInSegments(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
 		try {
 			byte[] previousHash = getHash("");
 
@@ -475,6 +504,51 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+	
+	
+	/**
+	 * Validate hash with bio data in request.
+	 *
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateHashWithBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		validateHashWithBioDataInSegments(getBiometricsSegmentsList(requestBody));
+	}
+
+	/**
+	 * Validate hash with bio data in segments.
+	 *
+	 * @param biometricsList the biometrics list
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void validateHashWithBioDataInSegments(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
+		try {
+			String previousHash = digest(getHash(""));
+
+			for (int i = 0; i < biometricsList.size(); i++) {
+				Map<String, Object> biometricData = biometricsList.get(i);
+				Optional<String> dataOpt = getStringValue(biometricData, DATA);
+
+				if (!dataOpt.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, i));
+				}
+
+				Optional<String> hashOpt = getStringValue(biometricData, HASH);
+
+				if (!hashOpt.isPresent()) {
+					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
+				}
+
+				String dataFieldValue = dataOpt.get();
+				String data = getPayloadFromJwsSingature(dataFieldValue);
+
+				previousHash = validateHash(data, hashOpt.get(), previousHash);
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
 
 	/**
 	 * Digest.
@@ -484,7 +558,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private String digest(byte[] hash) throws IdAuthenticationAppException {
-			return IdAuthSecurityManager.digestAsPlainText(hash);
+		return IdAuthSecurityManager.digestAsPlainText(hash);
 	}
 
 	/**
@@ -517,7 +591,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Validate hash.
 	 *
-	 * @param data the data
+	 * @param bdb the bdb
 	 * @param inputHashDigest the input hash digest
 	 * @param previousHash  the previous hash
 	 * @return the byte[]
@@ -539,7 +613,39 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return finalHash;
 
 	}
+	
+	/**
+	 * Validate hash.
+	 *
+	 * @param data the data
+	 * @param inputHashDigest the input hash digest
+	 * @param previousHash  the previous hash
+	 * @return the byte[]
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	private String validateHash(String data, String inputHashDigest, String previousHash)
+			throws IdAuthenticationAppException, UnsupportedEncodingException {
+		String currentHash = digest(getHash(CryptoUtil.decodeBase64(data)));
+		String concatenatedHash = previousHash + currentHash;
+		byte[] finalHash = getHash(concatenatedHash);
+		String finalHashDigest = digest(finalHash);
 
+		if (!inputHashDigest.equals(finalHashDigest)) {
+			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
+		}
+
+		return finalHashDigest;
+
+	}
+
+	/**
+	 * Contat bytes.
+	 *
+	 * @param previousHash the previous hash
+	 * @param currentHash the current hash
+	 * @return the byte[]
+	 */
 	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
 		byte[] finalHash = new byte[currentHash.length + previousHash.length];
 		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
