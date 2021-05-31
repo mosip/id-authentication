@@ -1,9 +1,9 @@
 package io.mosip.authentication.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TITLES_TOPIC;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +40,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/templates", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL + "}")
+			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
 	public void handleMasterdataTemplatesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTemplatesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateControllerDelegate.updateTemplates(eventModel);
@@ -53,7 +53,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/titles", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL + "}")
+			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
 	public void handleMasterdataTitlesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTitlesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateControllerDelegate.updateTitles(eventModel);

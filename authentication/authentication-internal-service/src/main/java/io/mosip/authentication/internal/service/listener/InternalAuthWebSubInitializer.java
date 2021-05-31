@@ -9,7 +9,9 @@ import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPub
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriber;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
+import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 
@@ -52,6 +54,12 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private PartnerServiceEventsInitializer partnerServiceEventsInitializer;
 	
+	@Autowired
+	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
+	
 	/**
 	 * Do init subscriptions.
 	 */
@@ -61,6 +69,8 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initSubscriber(partnerCACertEventInitializer);
 		webSubHelper.initSubscriber(hotlistEventInitializer);
 		webSubHelper.initSubscriber(partnerServiceEventsInitializer);
+		
+		webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
 	}
 
 
@@ -76,7 +86,11 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(partnerServiceEventsInitializer);
 		webSubHelper.initRegistrar(credentialStoreStatusEventPublisher);		
 		webSubHelper.initRegistrar(authTypeStatusEventPublisher);		
-		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);		
+		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
+		
+		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		webSubHelper.initRegistrar(fraudEventPublisher);
+
 	}
 
 }

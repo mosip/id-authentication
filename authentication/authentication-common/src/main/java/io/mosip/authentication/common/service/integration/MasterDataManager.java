@@ -73,7 +73,6 @@ public class MasterDataManager {
 
 	/** The master data cache. */
 	@Autowired
-	@Lazy
 	private MasterDataCache masterDataCache;
 
 	/**
