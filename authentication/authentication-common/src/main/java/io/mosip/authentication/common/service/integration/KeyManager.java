@@ -27,7 +27,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -181,22 +180,23 @@ public class KeyManager {
 			byte[] encryptedData, String refId, String aad, String salt,
 			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
-		String data;
+		byte[] data;
 		if (isThumbprintEnabled) {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 			byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
-			boolean isThumbprintAlreadyExsists = encryptedSessionKey.length > bytesFromThumbprint.length 
-					&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(encryptedSessionKey, bytesFromThumbprint.length));
+			// Compare the thumbprint bytes with starting bytes of data to check if it is already exists
+			boolean isThumbprintAlreadyExsists = data.length > bytesFromThumbprint.length 
+					&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(data, bytesFromThumbprint.length));
 			if(!isThumbprintAlreadyExsists) {
-				data = CryptoUtil.encodeBase64(
-						ArrayUtils.addAll(bytesFromThumbprint, CryptoUtil.decodeBase64(data)));
+				data = ArrayUtils.addAll(bytesFromThumbprint, data);
 			}
 		} else {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 		}
 		try {
 			String encodedIdentity = CryptoUtil
-					.encodeBase64(securityManager.decrypt(data, refId, aad, salt, isThumbprintEnabled));
+					.encodeBase64(securityManager.decrypt(CryptoUtil.encodeBase64(data), refId, aad, salt,
+							isThumbprintEnabled));
 			if (decode) {
 				decryptedRequest = new String(CryptoUtil.decodeBase64(encodedIdentity), StandardCharsets.UTF_8);
 			} else {
@@ -236,9 +236,8 @@ public class KeyManager {
 	 * @param encryptedData the encrypted data
 	 * @return the string
 	 */
-	private String combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
-		byte[] combineByteArray = CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
-		return CryptoUtil.encodeBase64(combineByteArray);
+	private byte[] combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
+		return CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
 	}
 
 	/**
