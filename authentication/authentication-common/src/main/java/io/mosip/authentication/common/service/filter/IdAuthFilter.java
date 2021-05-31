@@ -498,7 +498,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 				byte[] bdb = CryptoUtil.decodeBase64(bioValueOpt.get());
 
-				previousHash = validateHash(bdb, hashOpt.get(), previousHash);
+				previousHash = validateHashBytes(bdb, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -543,7 +543,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				String dataFieldValue = dataOpt.get();
 				String data = getPayloadFromJwsSingature(dataFieldValue);
 
-				previousHash = validateHash(data, hashOpt.get(), previousHash);
+				previousHash = validateHashStrings(data, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -598,7 +598,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private byte[] validateHash(byte[] bdb, String inputHashDigest, byte[] previousHash)
+	private byte[] validateHashBytes(byte[] bdb, String inputHashDigest, byte[] previousHash)
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		byte[] currentHash = getHash(bdb);
 		
@@ -624,7 +624,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private String validateHash(String data, String inputHashDigest, String previousHash)
+	private String validateHashStrings(String data, String inputHashDigest, String previousHash)
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		String currentHash = digest(getHash(CryptoUtil.decodeBase64(data)));
 		String concatenatedHash = previousHash + currentHash;
