@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -57,6 +58,11 @@ public class KeyManager {
 	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	/** The thubprint with base 64 encoded. */
+	//Temporary flag for backward compatiblity
+	@Value("${ida.thumbprint.encoded.with.bas64:false}")
+	private boolean thumbprintWithBase64Encoded;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -178,11 +184,12 @@ public class KeyManager {
 		String data;
 		if (isThumbprintEnabled) {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
-			boolean isThumbprintAlreadyExsists = encryptedSessionKey.length == (CryptomanagerConstant.ENCRYPTED_SESSION_KEY_LENGTH 
-					+ CryptomanagerConstant.THUMBPRINT_LENGTH);
+			byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
+			boolean isThumbprintAlreadyExsists = encryptedSessionKey.length > bytesFromThumbprint.length 
+					&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(encryptedSessionKey, bytesFromThumbprint.length));
 			if(!isThumbprintAlreadyExsists) {
 				data = CryptoUtil.encodeBase64(
-						ArrayUtils.addAll(CryptoUtil.decodeBase64(thumbprint), CryptoUtil.decodeBase64(data)));
+						ArrayUtils.addAll(bytesFromThumbprint, CryptoUtil.decodeBase64(data)));
 			}
 		} else {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
@@ -207,6 +214,21 @@ public class KeyManager {
 		return decryptedRequest;
 	}
 	
+	/**
+	 * Gets the bytes from thumbprint.
+	 *
+	 * @param thumbprint the thumbprint
+	 * @return the bytes from thumbprint
+	 */
+	private byte[] getBytesFromThumbprint(String thumbprint) {
+		if(thumbprintWithBase64Encoded) {
+			//Temporary flag for backward compatiblity
+			return CryptoUtil.decodeBase64(thumbprint);
+		} else {
+			return IdAuthSecurityManager.getBytesFromThumbprint(thumbprint);
+		}
+	}
+
 	/**
 	 * Combine data for decryption.
 	 *

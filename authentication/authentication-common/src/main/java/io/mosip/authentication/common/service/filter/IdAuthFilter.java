@@ -77,7 +77,6 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -161,8 +160,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 					// If biometrics is present validate and decipher it.
 					if (request.get(BIOMETRICS) != null) {
-						validateBioDataInRequest(request);
 						decipherBioData(request);
+						validateBioDataInRequest(request);
 					}
 					
 					if (request.get(DEMOGRAPHICS) instanceof Map) {
@@ -230,18 +229,19 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 		Map<String, Object> map = (Map<String, Object>) obj;
 
-		if (!getStringValue(map, DATA).isPresent()) {
+		Optional<String> dataOpt = getStringValue(map, DATA);
+		if (!dataOpt.isPresent()) {
 			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
 		}
+		
+		verifyJwsData(dataOpt.get());
 
 		if (!getStringValue(map, SESSION_KEY).isPresent()) {
 			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
 		}
 
 		try {
-			byte[] decodedData = Objects.nonNull(map.get(DATA))
-					? CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA)))
-					: new byte[0];
+			byte[] decodedData = CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA)));
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 
 			if (!getStringValue(data, BIO_VALUE).isPresent()) {
@@ -450,14 +450,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private void validateBioData(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
 		try {
-			String previousHash = digest(getHash(""));
+			byte[] previousHash = getHash("");
 
 			for (int i = 0; i < biometricsList.size(); i++) {
 				Map<String, Object> biometricData = biometricsList.get(i);
-				Optional<String> dataOpt = getStringValue(biometricData, DATA);
+				Map<String, Object> dataMap = (Map<String, Object>)biometricData.get(DATA);
 
-				if (!dataOpt.isPresent()) {
-					throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, i));
+				Optional<String> bioValueOpt = getStringValue(dataMap, BIO_VALUE);
+				if (!bioValueOpt.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_VALUE_INPUT_PARAM, i));
 				}
 
 				Optional<String> hashOpt = getStringValue(biometricData, HASH);
@@ -466,26 +467,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
 				}
 
-				String dataFieldValue = dataOpt.get();
-				String data = extractBioData(dataFieldValue);
+				byte[] bdb = CryptoUtil.decodeBase64(bioValueOpt.get());
 
-				previousHash = validateHash(data, hashOpt.get(), previousHash);
+				previousHash = validateHash(bdb, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-	}
-
-	/**
-	 * Extract bio data.
-	 *
-	 * @param dataFieldValue the data field value
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected String extractBioData(String dataFieldValue) throws IdAuthenticationAppException {
-		verifyJwsData(dataFieldValue);
-		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
 	/**
@@ -520,7 +508,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private byte[] getHash(byte[] bytes) throws IdAuthenticationAppException {
 		try {
-			return HMACUtils2.generateHash(bytes);
+			return IdAuthSecurityManager.generateHash(bytes);
 		} catch (NoSuchAlgorithmException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
@@ -536,19 +524,27 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private String validateHash(String data, String inputHashDigest, String previousHash)
+	private byte[] validateHash(byte[] bdb, String inputHashDigest, byte[] previousHash)
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
-		String currentHash = digest(getHash(CryptoUtil.decodeBase64(data)));
-		String concatenatedHash = previousHash + currentHash;
-		byte[] finalHash = getHash(concatenatedHash);
+		byte[] currentHash = getHash(bdb);
+		
+		byte[] finalHash = contatBytes(previousHash, currentHash);
+		
 		String finalHashDigest = digest(finalHash);
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
 		}
 
-		return finalHashDigest;
+		return finalHash;
 
+	}
+
+	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
+		byte[] finalHash = new byte[currentHash.length + previousHash.length];
+		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
+		System.arraycopy(currentHash, 0, finalHash, previousHash.length, currentHash.length);
+		return finalHash;
 	}
 
 	/**
