@@ -104,7 +104,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	private IDAMappingConfig idMappingConfig;
 	
 	/**
-	 * Inits the.
+	 * Initialize the filter.
 	 *
 	 * @param filterConfig the filter config
 	 * @throws ServletException the servlet exception
@@ -130,13 +130,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestBody the request body
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#decodedRequest(java.
-	 * util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
