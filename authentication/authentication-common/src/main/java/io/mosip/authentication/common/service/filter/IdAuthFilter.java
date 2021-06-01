@@ -1,5 +1,4 @@
 package io.mosip.authentication.common.service.filter;
-
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
@@ -28,6 +27,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSIO
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BIO_HASH_VALIDATION_DISABLED;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -155,14 +155,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 					// If biometrics is present validate and decipher it.
 					if (request.get(BIOMETRICS) != null) {
 						
-						boolean isHashBasedOnBiometricDataBlock = isHashBasedOnBiometricDataBlock();
-						if(isHashBasedOnBiometricDataBlock) {
-							validateHashWithBioDataInRequest(request);
-						}
-						
+						boolean skipBioHashValidation = isBiometricHashValidationDisabled();
+
 						decipherBioData(request);
 						
-						if(!isHashBasedOnBiometricDataBlock) {
+						if(!skipBioHashValidation) {
 							validateHashWithDecryptedBdbInRequest(request);
 						}
 					}
@@ -188,8 +185,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @return true, if is hash based on biometric data block
 	 */
-	private boolean isHashBasedOnBiometricDataBlock() {
-		return env.getProperty("ida.bio.hash.based.on.biometric.data.block", Boolean.class, false);
+	private boolean isBiometricHashValidationDisabled() {
+		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
 	}
 
 	/**
@@ -253,7 +250,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		try {
-			byte[] decodedData = CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA)));
+			byte[] decodedData = CryptoUtil.decodeBase64(extractBioData((String) map.get(DATA)));
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 
 			if (!getStringValue(data, BIO_VALUE).isPresent()) {
@@ -499,48 +496,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 	
 	
-	/**
-	 * Validate hash with bio data in request.
-	 *
-	 * @param requestBody the request body
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void validateHashWithBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		validateHashWithBioDataInSegments(getBiometricsSegmentsList(requestBody));
-	}
-
-	/**
-	 * Validate hash with bio data in segments.
-	 *
-	 * @param biometricsList the biometrics list
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private void validateHashWithBioDataInSegments(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
-		try {
-			String previousHash = digest(getHash(""));
-
-			for (int i = 0; i < biometricsList.size(); i++) {
-				Map<String, Object> biometricData = biometricsList.get(i);
-				Optional<String> dataOpt = getStringValue(biometricData, DATA);
-
-				if (!dataOpt.isPresent()) {
-					throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, i));
-				}
-
-				Optional<String> hashOpt = getStringValue(biometricData, HASH);
-
-				if (!hashOpt.isPresent()) {
-					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
-				}
-
-				String dataFieldValue = dataOpt.get();
-				String data = getPayloadFromJwsSingature(dataFieldValue);
-
-				previousHash = validateHashStrings(data, hashOpt.get(), previousHash);
-			}
-		} catch (UnsupportedEncodingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
+	protected String extractBioData(String dataFieldValue) throws IdAuthenticationAppException {
+		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
 	/**
@@ -607,30 +564,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	}
 	
-	/**
-	 * Validate hash.
-	 *
-	 * @param data the data
-	 * @param inputHashDigest the input hash digest
-	 * @param previousHash  the previous hash
-	 * @return the byte[]
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
-	 */
-	private String validateHashStrings(String data, String inputHashDigest, String previousHash)
-			throws IdAuthenticationAppException, UnsupportedEncodingException {
-		String currentHash = digest(getHash(CryptoUtil.decodeBase64(data)));
-		String concatenatedHash = previousHash + currentHash;
-		byte[] finalHash = getHash(concatenatedHash);
-		String finalHashDigest = digest(finalHash);
-
-		if (!inputHashDigest.equals(finalHashDigest)) {
-			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
-		}
-
-		return finalHashDigest;
-
-	}
 
 	/**
 	 * Contat bytes.
