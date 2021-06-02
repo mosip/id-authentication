@@ -266,9 +266,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateRequestHMAC(String requestHMAC, String request) throws IdAuthenticationAppException {
-		if (!requestHMAC.contentEquals(
-				IdAuthSecurityManager.generateHashAndDigestAsPlainText(request.getBytes(StandardCharsets.UTF_8)))) {
+		if (!requestHMAC.contentEquals(calculateHash(request))) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED);
 		}
+	}
+
+	private static String calculateHash(String request) {
+		return IdAuthSecurityManager.generateHashAndDigestAsPlainText(request.getBytes(StandardCharsets.UTF_8));
 	}
 }
