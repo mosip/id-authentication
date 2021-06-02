@@ -155,11 +155,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 					// If biometrics is present validate and decipher it.
 					if (request.get(BIOMETRICS) != null) {
 						
-						boolean skipBioHashValidation = isBiometricHashValidationDisabled();
-
 						decipherBioData(request);
 						
-						if(!skipBioHashValidation) {
+						if(!isBiometricHashValidationDisabled()) {
 							validateHashWithDecryptedBdbInRequest(request);
 						}
 					}
