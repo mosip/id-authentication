@@ -58,11 +58,6 @@ public class KeyManager {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
-	/** The thubprint with base 64 encoded. */
-	//Temporary flag for backward compatiblity
-	@Value("${ida.thumbprint.encoded.with.bas64:false}")
-	private boolean thumbprintWithBase64Encoded;
-
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
 
@@ -221,12 +216,7 @@ public class KeyManager {
 	 * @return the bytes from thumbprint
 	 */
 	private byte[] getBytesFromThumbprint(String thumbprint) {
-		if(thumbprintWithBase64Encoded) {
-			//Temporary flag for backward compatiblity
-			return CryptoUtil.decodeBase64(thumbprint);
-		} else {
-			return IdAuthSecurityManager.getBytesFromThumbprint(thumbprint);
-		}
+		return IdAuthSecurityManager.getBytesFromThumbprint(thumbprint);
 	}
 
 	/**

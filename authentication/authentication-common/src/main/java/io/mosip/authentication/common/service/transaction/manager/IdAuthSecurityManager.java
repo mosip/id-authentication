@@ -505,9 +505,15 @@ public class IdAuthSecurityManager {
 	 */
 	public static byte[] getBytesFromThumbprint(String thumbprint) {
 		try {
+			//First try decoding with hex
 			return decodeHex(thumbprint);
 		} catch (DecoderException e) {
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			try {
+				//Then try decoding with base64
+				return CryptoUtil.decodeBase64(thumbprint);
+			} catch (Exception ex) {
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
+			}
 		}
 	}
 	

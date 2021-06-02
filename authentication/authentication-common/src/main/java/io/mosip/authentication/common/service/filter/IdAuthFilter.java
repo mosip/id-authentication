@@ -554,7 +554,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		
 		byte[] finalHash = contatBytes(previousHash, currentHash);
 		
-		String finalHashDigest = digest(finalHash);
+		String finalHashDigest = digest(getHash(finalHash));
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
