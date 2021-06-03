@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +43,9 @@ public class PartnerCACertEventController {
 
 	@Autowired
 	private PartnerCertificateManagerService partnerCertManager;
+
+	@Value("${ida-decrypt-ca-cert-data-share-content:false}")
+	private boolean decryptCaCertFromDataShare;
 	
 	@PostMapping(value = "/callback/partnermanagement/" + CA_CERT_EVENT, consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET
@@ -62,7 +66,7 @@ public class PartnerCACertEventController {
 
 	private String downloadCertificate(String certificateDataShareUrl) throws RestServiceException, IdAuthenticationBusinessException {
 		try {
-			return dataShareManager.downloadObject(certificateDataShareUrl, String.class, false);
+			return dataShareManager.downloadObject(certificateDataShareUrl, String.class, decryptCaCertFromDataShare);
 		} catch (RestServiceException e) {
 			logger.error("Error occured while downloading certificate from datashare : \n {}",e.getResponseBodyAsString());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
