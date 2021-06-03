@@ -44,17 +44,27 @@ public class DataShareManager {
 	
 	@Value("${" + IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED + ":true}")
 	private boolean thumbprintValidationRequired;
-	
-	public <R> R downloadObject(String dataShareUrl, Class<R> clazz) throws  RestServiceException, IdAuthenticationBusinessException {
+
+	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequred) throws  RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
 		Optional<Entry<String, Object>> errorOpt = restHelper.getError(responseStr, mapper);
+		byte[] data;
 		if(errorOpt.isEmpty()) {
-		//Decrypt data
-			byte[] decryptedData = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
+			if(decryptionRequred) {
+				//Decrypt data
+				data = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
+			} else {
+				if(clazz.equals(String.class)) {
+					return (R) responseStr;
+				} else {
+					data = responseStr.getBytes();
+				}
+			}
+			
 			try {
-				return mapper.readValue(decryptedData, clazz);
+				return mapper.readValue(data, clazz);
 			} catch (IOException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}

@@ -355,7 +355,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 					String expiryTime = (String) additionalData.get(EXPIRY_TIME);
 					String token = (String) additionalData.get(TOKEN);
-					Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class);
+					Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class, true);
 					return createIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
 
 				} catch (RestServiceException | IDDataValidationException e) {
