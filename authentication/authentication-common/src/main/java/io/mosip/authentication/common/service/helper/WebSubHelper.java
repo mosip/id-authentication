@@ -3,15 +3,21 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.WEB
 
 import java.util.function.Supplier;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
+import io.mosip.authentication.common.service.websub.impl.BaseWebSubEventsInitializer;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
@@ -23,6 +29,8 @@ import io.mosip.kernel.core.websub.spi.PublisherClient;
  */
 @Component
 public class WebSubHelper {
+	
+	private static final Logger logger = IdaLogger.getLogger(WebSubHelper.class);
 	
 	/** The Constant PUBLISHER_IDA. */
 	private static final String PUBLISHER_IDA = "IDA";
@@ -40,6 +48,7 @@ public class WebSubHelper {
 	 *
 	 * @param subscriber the subscriber
 	 */
+	@Async
 	public void initSubscriber(WebSubEventSubcriber subscriber) {
 		initSubscriber(subscriber, null);
 	}
@@ -50,9 +59,14 @@ public class WebSubHelper {
 	 * @param subscriber the subscriber
 	 * @param enableTester the enable tester
 	 */
-	@WithRetry
+	@Async
 	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
-		subscriber.subscribe(enableTester);
+		try {
+			subscriber.subscribe(enableTester);
+		} catch (Exception e) {
+			//Just logging the exception to avoid other further subscriptions failure
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "FATAL: Subscription failed for:" + subscriber.getClass().getCanonicalName());
+		}
 	}
 	
 	/**

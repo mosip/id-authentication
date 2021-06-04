@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 
 import java.util.function.Supplier;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -14,11 +15,14 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
+import io.mosip.kernel.websub.api.exception.WebSubClientException;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
 import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
@@ -62,9 +66,15 @@ public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicReg
 	 * @param enableTester the enable tester
 	 */
 	@Override
+	@WithRetry
 	public void subscribe(Supplier<Boolean> enableTester) {
 		if(enableTester == null || enableTester.get()) {
-			doSubscribe();
+			try {
+				doSubscribe();
+			} catch (WebSubClientException e) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, "subscribe",  this.getClass().getSimpleName(), ExceptionUtils.getStackTrace(e));
+				throw new IdAuthRetryException(e);
+			}
 		} else {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribe",  this.getClass().getSimpleName(), "This websub subscriber is disabled.");
 		}
