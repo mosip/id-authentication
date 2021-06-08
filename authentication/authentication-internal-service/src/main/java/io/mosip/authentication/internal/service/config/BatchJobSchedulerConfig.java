@@ -37,8 +37,8 @@ public class BatchJobSchedulerConfig {
 	
 	/** The retrigger missing credential issuances job. */
 	@Autowired
-	@Qualifier("retriggerMissingCredentialIssuancesJob")
-	private Job retriggerMissingCredentialIssuancesJob;
+	@Qualifier("pullFailedWebsubMessagesAndProcess")
+	private Job pullFailedWebsubMessagesAndProcess;
 	
 	/** The job launcher. */
 	@Autowired
@@ -65,11 +65,11 @@ public class BatchJobSchedulerConfig {
 	// Waiting for one more minute for the subscription to complete for credential event topic.
 	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
 			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
-	public void scheduleMissingCredentialRetriggerJob() {
+	public void scheduleFaliedMessagesProcessJob() {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 					.toJobParameters();
-			jobLauncher.run(retriggerMissingCredentialIssuancesJob, jobParameters);
+			jobLauncher.run(pullFailedWebsubMessagesAndProcess, jobParameters);
 		} catch (Exception e) {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Function;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -119,12 +118,13 @@ public class CredentialStoreBatchConfig {
 	}
 	
 	@Bean
-	@Qualifier("retriggerMissingCredentialIssuancesJob")
-	public Job retriggerMissingCredentialIssuancesJob(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("retriggerMissingCredentialIssuancesJob")
+	@Qualifier("pullFailedWebsubMessagesAndProcess")
+	public Job pullFailedWebsubMessagesAndProcess(CredentialStoreJobExecutionListener listener) {
+		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
-				.flow(retriggerMissingCredentialsStep())
+				.flow(pullFailedMessagesAndProcess()) // First process failed messages
+				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
 				.end()
 				.build();
 		try {
@@ -159,16 +159,28 @@ public class CredentialStoreBatchConfig {
 				.build();
 	}
 	
-	/**
-	 * Credential store step.
-	 *
-	 * @return the step
-	 */
 	@Bean
 	public Step retriggerMissingCredentialsStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
 		return stepBuilderFactory.get("retriggerMissingCredentialsStep")
+				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
+				.reader(missingCredentialsItemReader)
+				.processor(asyncIdentityItemProcessor())
+				.writer(asyncMissingCredentialRetriggerItemWriter())
+				.faultTolerant()
+				// Applying common retry policy
+				.retryPolicy(retryPolicy)
+				// Applying common back-off policy
+				.backOffPolicy(backOffPolicy)
+				.build();
+	}
+	
+	@Bean
+	public Step pullFailedMessagesAndProcess() {
+		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		exceptions.put(IdAuthenticationBusinessException.class, false);
+		return stepBuilderFactory.get("pullMissingFailedMessagesAndProcess")
 				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
 				.reader(missingCredentialsItemReader)
 				.processor(asyncIdentityItemProcessor())
