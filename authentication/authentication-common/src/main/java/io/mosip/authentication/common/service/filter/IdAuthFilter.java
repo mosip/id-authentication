@@ -187,7 +187,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @return true, if is hash based on biometric data block
 	 */
-	private boolean isBiometricHashValidationDisabled() {
+	protected boolean isBiometricHashValidationDisabled() {
 		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
 	}
 
