@@ -68,5 +68,11 @@ public class InternalAuthFilter extends IdAuthFilter {
 	protected boolean isTrustValidationRequired() {
 		return env.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false);
 	}
+	
+	@Override
+	protected boolean isBiometricHashValidationDisabled() {
+		//Disable biometric hash validation for internal auth
+		return true;
+	}
 
 }

@@ -120,5 +120,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.interval.millisecs";
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER = "ida.credential.store.retry.backoff.exponential.multiplier";
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.exponential.max.interval.millisecs";
+	
+	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
 
 }
