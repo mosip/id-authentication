@@ -49,7 +49,7 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Trying to register topic: " + getTopic());
-			publisher.registerTopic(getTopic(), publisherUrl);
+			webSubHelper.registerTopic(getTopic());
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Registered topic: " + getTopic());
 		} catch (Exception e) {

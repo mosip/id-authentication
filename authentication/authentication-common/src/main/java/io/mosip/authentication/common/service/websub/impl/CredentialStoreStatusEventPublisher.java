@@ -49,7 +49,7 @@ public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitial
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Trying to register topic: " + credentialStatusUpdateTopic);
-			publisher.registerTopic(credentialStatusUpdateTopic, publisherUrl);
+			webSubHelper.registerTopic(credentialStatusUpdateTopic);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Registered topic: " + credentialStatusUpdateTopic);
 		} catch (Exception e) {
