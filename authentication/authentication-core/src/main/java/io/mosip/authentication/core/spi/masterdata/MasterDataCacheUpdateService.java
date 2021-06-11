@@ -2,6 +2,11 @@ package io.mosip.authentication.core.spi.masterdata;
 
 import io.mosip.kernel.core.websub.model.EventModel;
 
+/**
+ * The Interface MasterDataCacheUpdateService.
+ * 
+ * @author Loganathan Sekar
+ */
 public interface MasterDataCacheUpdateService {
 
 	/**

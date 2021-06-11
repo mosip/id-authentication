@@ -313,7 +313,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 				totalCount.incrementAndGet();
 				return messagesIterator.next();
 			} else {
-				mosipLogger.info("Fetched missing credentials. Total count: {}", totalCount.get());
+				mosipLogger.info("Fetched failed messages. Total count: {}", totalCount.get());
 				messagesIterator = null;
 				return null;
 			}

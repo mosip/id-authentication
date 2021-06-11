@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
+import io.mosip.authentication.common.service.impl.patrner.PartnerCACertEventService;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
@@ -28,6 +30,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
  * The Class FailedWebsubMessageProcessor.
+ * 
  * @author Loganathan Sekar
  */
 @Component
@@ -36,21 +39,31 @@ public class FailedWebsubMessageProcessor {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(FailedWebsubMessageProcessor.class);
 	
+	/** The auth parther id. */
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 	
+	/** The credential store service. */
 	@Autowired
 	private IdChangeEventHandlerService credentialStoreService;
 	
+	/** The authtype status service. */
 	@Autowired
 	private UpdateAuthtypeStatusService authtypeStatusService;
 	
+	/** The hotlist service. */
 	@Autowired
 	private HotlistService hotlistService;
 	
+	/** The master data cache update service. */
 	@Autowired
 	private MasterDataCacheUpdateService masterDataCacheUpdateService;
 	
+	/** The partner CA cert event service. */
+	@Autowired
+	private PartnerCACertEventService partnerCACertEventService;
+	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 	
@@ -82,18 +95,31 @@ public class FailedWebsubMessageProcessor {
 	 * Do process failed message.
 	 *
 	 * @param failedMessage the failed message
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	private void doProcessFailedMessage(FailedMessage failedMessage) throws Exception {
 		failedMessage.getFailedMessageConsumer().accept(failedMessage);
 	}
 
+	/**
+	 * Process id change event.
+	 *
+	 * @param eventType the event type
+	 * @param failedMessage the failed message
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public void processIdChangeEvent(IDAEventType eventType, FailedMessage failedMessage) throws IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "processIdChangeEvent", "", "handling " + eventType + " event for partnerId: " + authPartherId);
 		EventModel event = mapper.convertValue(failedMessage.getMessage(), EventModel.class);
 		credentialStoreService.handleIdEvent(event);
 	}
 
+	/**
+	 * Process auth type status event.
+	 *
+	 * @param failedMessage the failed message
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public void processAuthTypeStatusEvent(FailedMessage failedMessage) throws IdAuthenticationAppException {
 		try {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "processAuthTypeStatusEvent", this.getClass().getCanonicalName(), "handling updateAuthtypeStatus event for partnerId: " + authPartherId);
@@ -107,6 +133,12 @@ public class FailedWebsubMessageProcessor {
 		}
 	}
 	
+	/**
+	 * Process hotlist event.
+	 *
+	 * @param failedMessage the failed message
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public void processHotlistEvent(FailedMessage failedMessage) throws IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processHotlistEvent", "EVENT RECEIVED");
 
@@ -114,22 +146,47 @@ public class FailedWebsubMessageProcessor {
 		hotlistService.handlingHotlistingEvent(eventModel);
 	}
 
+	/**
+	 * Process master data templates event.
+	 *
+	 * @param failedMessage the failed message
+	 */
 	public void processMasterdataTemplatesEvent(FailedMessage failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processMasterdataTemplatesEvent", "EVENT RECEIVED");
 		EventModel eventModel = mapper.convertValue(failedMessage.getMessage(), EventModel.class);
 		masterDataCacheUpdateService.updateTemplates(eventModel);
 	}
 
+	/**
+	 * Process master data titles event.
+	 *
+	 * @param failedMessage the failed message
+	 */
 	public void processMasterdataTitlesEvent(FailedMessage failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processMasterdataTitlesEvent", "EVENT RECEIVED");
 		EventModel eventModel = mapper.convertValue(failedMessage.getMessage(), EventModel.class);
 		masterDataCacheUpdateService.updateTemplates(eventModel);
 	}
 
-	public void processPartnerCACertEvent(FailedMessage failedMessage) {
-		
+	/**
+	 * Process partner CA cert event.
+	 *
+	 * @param failedMessage the failed message
+	 * @throws RestServiceException the rest service exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	public void processPartnerCACertEvent(FailedMessage failedMessage) throws RestServiceException, IdAuthenticationBusinessException {
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processPartnerCACertEvent", "EVENT RECEIVED");
+		EventModel eventModel = mapper.convertValue(failedMessage.getMessage(), EventModel.class);
+		partnerCACertEventService.handleCACertEvent(eventModel);
 	}
 
+	/**
+	 * Process partner event.
+	 *
+	 * @param partnerEventType the partner event type
+	 * @param failedMessage the failed message
+	 */
 	public void processPartnerEvent(PartnerEventTypes partnerEventType, FailedMessage failedMessage) {
 
 	}
