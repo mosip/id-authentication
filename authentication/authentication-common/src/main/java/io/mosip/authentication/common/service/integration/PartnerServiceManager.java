@@ -23,13 +23,10 @@ import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -52,9 +49,6 @@ public class PartnerServiceManager {
 	private static final String POLICY_DATA = "policyData";
 
 	private static final String MISP_LICENSE_DATA = "mispLicenseData";
-
-	/** The logger. */
-	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
 
 	@Autowired
 	private PartnerMappingRepository partnerMappingRepo;
@@ -174,43 +168,48 @@ public class PartnerServiceManager {
 		}
 	}
 
-	public void updateApiKeyData(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
-		if (eventModel.getTopic().contentEquals(IdAuthCommonConstants.APIKEY_APPROVED)) {
-			PartnerMapping mapping = new PartnerMapping();
-			PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA), PartnerData.class);
-			mapping.setPartnerId(partnerEventData.getPartnerId());
-			partnerEventData.setCreatedBy(securityManager.getUser());
-			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA), ApiKeyData.class);
-			mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
+	public void handleApiKeyApproved(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
+		PartnerMapping mapping = new PartnerMapping();
+		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA),
+				PartnerData.class);
+		mapping.setPartnerId(partnerEventData.getPartnerId());
+		partnerEventData.setCreatedBy(securityManager.getUser());
+		partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
+				ApiKeyData.class);
+		mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
+		apiKeyEventData.setCreatedBy(securityManager.getUser());
+		apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA),
+				PolicyData.class);
+		mapping.setPolicyId(policyEventData.getPolicyId());
+		policyEventData.setCreatedBy(securityManager.getUser());
+		policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		mapping.setCreatedBy(securityManager.getUser());
+		mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		partnerDataRepo.save(partnerEventData);
+		apiKeyRepo.save(apiKeyEventData);
+		policyDataRepo.save(policyEventData);
+		partnerMappingRepo.save(mapping);
+	}
+	
+	public void handleApiKeyUpdated(EventModel eventModel)
+			throws JsonParseException, JsonMappingException, IOException {
+		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
+				ApiKeyData.class);
+		Optional<ApiKeyData> apiKeyDataOptional = apiKeyRepo.findById(apiKeyEventData.getApiKeyId());
+		if (apiKeyDataOptional.isPresent()) {
+			ApiKeyData apiKeyData = apiKeyDataOptional.get();
+			apiKeyData.setApiKeyCommenceOn(apiKeyEventData.getApiKeyCommenceOn());
+			apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
+			apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
+			apiKeyData.setUpdatedBy(securityManager.getUser());
+			apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			apiKeyRepo.save(apiKeyData);
+		} else {
 			apiKeyEventData.setCreatedBy(securityManager.getUser());
 			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA), PolicyData.class);
-			mapping.setPolicyId(policyEventData.getPolicyId());
-			policyEventData.setCreatedBy(securityManager.getUser());
-			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			mapping.setCreatedBy(securityManager.getUser());
-			mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			partnerDataRepo.save(partnerEventData);
 			apiKeyRepo.save(apiKeyEventData);
-			policyDataRepo.save(policyEventData);
-			partnerMappingRepo.save(mapping);
-		} else {
-			ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA), ApiKeyData.class);
-			Optional<ApiKeyData> apiKeyDataOptional = apiKeyRepo.findById(apiKeyEventData.getApiKeyId());
-			if (apiKeyDataOptional.isPresent()) {
-				ApiKeyData apiKeyData = apiKeyDataOptional.get();
-				apiKeyData.setApiKeyCommenceOn(apiKeyEventData.getApiKeyCommenceOn());
-				apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
-				apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
-				apiKeyData.setUpdatedBy(securityManager.getUser());
-				apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-				apiKeyRepo.save(apiKeyData);
-			} else {
-				apiKeyEventData.setCreatedBy(securityManager.getUser());
-				apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-				apiKeyRepo.save(apiKeyEventData);
-			}
 		}
 	}
 

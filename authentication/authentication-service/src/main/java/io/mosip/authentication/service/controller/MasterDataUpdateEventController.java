@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.controller.MasterDataCacheUpdateControllerDelegate;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.masterdata.MasterDataCacheUpdateService;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
@@ -31,7 +31,7 @@ public class MasterDataUpdateEventController {
 
 	/** The master data cache update controller delegate. */
 	@Autowired
-	private MasterDataCacheUpdateControllerDelegate masterDataCacheUpdateControllerDelegate;
+	private MasterDataCacheUpdateService masterDataCacheUpdateService;
 	
 	/**
 	 * Handle masterdata templates update.
@@ -43,7 +43,7 @@ public class MasterDataUpdateEventController {
 			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
 	public void handleMasterdataTemplatesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTemplatesUpdate", "EVENT RECEIVED");
-		masterDataCacheUpdateControllerDelegate.updateTemplates(eventModel);
+		masterDataCacheUpdateService.updateTemplates(eventModel);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class MasterDataUpdateEventController {
 			+ "}", callback = "/idauthentication/v1/auth/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
 	public void handleMasterdataTitlesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTitlesUpdate", "EVENT RECEIVED");
-		masterDataCacheUpdateControllerDelegate.updateTitles(eventModel);
+		masterDataCacheUpdateService.updateTitles(eventModel);
 	}
 
 }
