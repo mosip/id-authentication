@@ -3,7 +3,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,7 @@ import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
@@ -41,6 +41,15 @@ import lombok.Data;
  */
 @Component
 public class WebSubHelper {
+	
+	@Data
+	public static class FailedMessage{
+		private String topic;
+		private String message;
+		private String timestamp;
+		
+		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
+	}
 	
 	private static final Logger logger = IdaLogger.getLogger(WebSubHelper.class);
 	
@@ -154,7 +163,7 @@ public class WebSubHelper {
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, Consumer<FailedMessage> failedMessageConsumer) {
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(hubURL);
 		failedContentRequest.setTopic(topic);
@@ -169,16 +178,6 @@ public class WebSubHelper {
 			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
 			return failedMessage;
 		}).collect(Collectors.toList());
-	}
-	
-	
-	@Data
-	public static class FailedMessage{
-		private String topic;
-		private String message;
-		private String timestamp;
-		
-		private Consumer<FailedMessage> failedMessageConsumer;
 	}
 	
 	

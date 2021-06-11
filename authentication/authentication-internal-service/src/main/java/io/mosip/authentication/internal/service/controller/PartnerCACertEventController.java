@@ -52,6 +52,10 @@ public class PartnerCACertEventController {
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/" + CA_CERT_EVENT, topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
 	public void handleCACertificate(@RequestBody EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "PartnerCACertEventController", "handleCACertificate", "EVENT RECEIVED");
+		handleCACertEvent(eventModel);
+	}
+
+	public void handleCACertEvent(EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {
 		Map<String, Object> data = eventModel.getEvent().getData();
 		CACertificateRequestDto caCertRequestDto = new CACertificateRequestDto();
 		if (data.containsKey(CERTIFICATE_DATA_SHARE_URL) && data.get(CERTIFICATE_DATA_SHARE_URL) instanceof String) {

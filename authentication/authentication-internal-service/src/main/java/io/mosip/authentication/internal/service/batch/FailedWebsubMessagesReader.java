@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -53,6 +52,7 @@ import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IDAEventType;
+import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import lombok.AllArgsConstructor;
@@ -72,7 +72,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		private String topic;
 		private String callbackUrl;
 		private String secret;
-		private Consumer<FailedMessage> failedMessageConsumer;
+		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
 	}
 
 
@@ -209,7 +209,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 				failedWebsubMessageProcessor::processMasterdataTitlesEvent));
 		
 		topicsToFetchFailedMessages.add(new TopicInfo(partnerCertEventTopic, partnerCertCallbackURL, partnerCertCallbackSecret,
-				failedWebsubMessageProcessor::processPartnerCertEvent));
+				failedWebsubMessageProcessor::processPartnerCACertEvent));
 		
 		//Partner Event topics
 		Stream.of(PartnerEventTypes.values()).forEach(partnerEventType -> {
