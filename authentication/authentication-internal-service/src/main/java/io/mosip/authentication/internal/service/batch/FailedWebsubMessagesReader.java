@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -66,16 +67,39 @@ import lombok.Data;
 @Component
 public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	
+	/**
+	 * To string.
+	 *
+	 * @return the java.lang. string
+	 */
 	@Data
+	
+	/**
+	 * Instantiates a new topic info.
+	 *
+	 * @param topic the topic
+	 * @param callbackUrl the callback url
+	 * @param secret the secret
+	 * @param failedMessageConsumer the failed message consumer
+	 */
 	@AllArgsConstructor
 	public class TopicInfo {
+		
+		/** The topic. */
 		private String topic;
+		
+		/** The callback url. */
 		private String callbackUrl;
+		
+		/** The secret. */
 		private String secret;
+		
+		/** The failed message consumer. */
 		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
 	}
 
 
+	/** The Constant DEFAULT_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS. */
 	private static final int DEFAULT_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS = 2;
 
 	/** The mosip logger. */
@@ -84,46 +108,60 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The total count. */
 	private AtomicInteger totalCount;
 	
+	/** The start. */
 	private AtomicBoolean start = new AtomicBoolean(true);
 	
+	/** The current effectivedtimes. */
 	private String currentEffectivedtimes;
 
 	/** The request ids iterator. */
 	private Iterator<FailedMessage> messagesIterator;
 
+	/** The max websub messages pull window days. */
 	@Value("${" + IDA_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS + ":" + DEFAULT_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS + "}" )
 	private int maxWebsubMessagesPullWindowDays;
 	
+	/** The websub helper. */
 	@Autowired
 	private WebSubHelper websubHelper;
 	
+	/** The auth parther id. */
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 	
+	/** The hotlist event topic. */
 	@Value("${" + IDA_WEBSUB_HOTLIST_TOPIC + "}")
 	private String hotlistEventTopic;
 	
+	/** The masterdata templates event topic. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
 	private String masterdataTemplatesEventTopic;
 	
+	/** The masterdata titles event topic. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
 	private String masterdataTitlesEventTopic;
 	
+	/** The partner cert event topic. */
 	@Value("${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
 	private String partnerCertEventTopic;
 	
+	/** The credential issue callback URL. */
 	@Value("${"+ IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
 	private String credentialIssueCallbackURL;
 	
+	/** The cred issue callbacksecret. */
 	@Value("${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}")
 	private String credIssueCallbacksecret;
 	
+	/** The auth type callback URL. */
 	@Value("${"+ IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
 	private String authTypeCallbackURL;
 	
+	/** The autype callback secret. */
 	@Value("${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}")
 	private String autypeCallbackSecret;
 	
+	/** The hotlist callback URL. */
 	@Value("${" + IDA_WEBSUB_HOTLIST_CALLBACK_URL + "}")
 	private String hotlistCallbackURL;
 
@@ -131,18 +169,23 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Value("${" + IDA_WEBSUB_HOTLIST_CALLBACK_SECRET + "}")
 	private String hotlistCallbackSecret;
 	
+	/** The masterdata templates callback URL. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL + "}")
 	private String masterdataTemplatesCallbackURL;
 
+	/** The masterdata templates callback secret. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET + "}")
 	private String masterdataTemplatesCallbackSecret;
 	
+	/** The masterdata titles callback URL. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL + "}")
 	private String masterdataTitlesCallbackURL;
 
+	/** The masterdata titles callback secret. */
 	@Value("${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET + "}")
 	private String masterdataTitlesCallbackSecret;
 	
+	/** The partner cert callback URL. */
 	@Value("${" + IDA_WEBSUB_CA_CERT_CALLBACK_URL + "}")
 	private String partnerCertCallbackURL;
 
@@ -150,6 +193,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Value("${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET + "}")
 	private String partnerCertCallbackSecret;
 	
+	/** The partner service callback URL. */
 	@Value("${"+ IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL +"}")
 	private String partnerServiceCallbackURL;
 	
@@ -157,6 +201,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Value("${"+ IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET +"}")
 	private String partnerServiceCallbackSecret;
 	
+	/** The env. */
 	@Autowired
 	protected Environment env;
 	
@@ -164,24 +209,34 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Value("${" + IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE + ":10}")
 	private int chunkSize;
 	
+	/** The failed websub message processor. */
 	@Autowired
 	private FailedWebsubMessageProcessor failedWebsubMessageProcessor;
 	
+	/** The topics to fetch failed messages. */
 	private final List<TopicInfo> topicsToFetchFailedMessages = new ArrayList<>();
 
+	/** The topics to fetch failed messages iterator. */
 	private Iterator<TopicInfo> topicsToFetchFailedMessagesIterator;
 
+	/** The current topic info. */
 	private TopicInfo currentTopicInfo;
 	
 	/** The Constant ID_CHANGE_EVENTS. */
 	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
 	
+	/**
+	 * Post construct.
+	 */
 	@PostConstruct
 	public void postConstruct() {
 		initializeTopicInfosToPullFailedMessages();
 	}
 
+	/**
+	 * Initialize topic infos to pull failed messages.
+	 */
 	private void initializeTopicInfosToPullFailedMessages() {
 		//ID Change event topics
 		String topicPrefix = authPartherId + "/";
@@ -266,10 +321,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			return List.of();
 		}
 		
-		List<FailedMessage> failedMessages = websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+		List<FailedMessage> failedMessages = getNextFailedMessagesForCurrentTopic();
 		if(!failedMessages.isEmpty()) {
-			//Get last message and assign it as current effectiveDtimes
-			currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
 			return failedMessages;
 		}
 		
@@ -279,10 +332,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 				//Initialize effectivedtimes for the next topic
 				currentEffectivedtimes = getInitialEffectiveDTimes();
 
-				failedMessages = websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+				failedMessages = getNextFailedMessagesForCurrentTopic();
 				if(!failedMessages.isEmpty()) {
-					//Get last message and assign it as current effectiveDtimes
-					currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
 					return failedMessages;
 				}
 			} else {
@@ -290,6 +341,31 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			}
 		}
 		
+		return List.of();
+	}
+
+	/**
+	 * Gets the next failed messages for current topic.
+	 *
+	 * @return the next failed messages for current topic
+	 */
+	private List<FailedMessage> getNextFailedMessagesForCurrentTopic() {
+		List<FailedMessage> failedMessages = doGetNextFailedMessages();
+		if(!failedMessages.isEmpty()) {
+			//Get last message and assign it as current effectiveDtimes
+			currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
+			return failedMessages;
+		}
+		return List.of();
+	}
+
+	private List<FailedMessage> doGetNextFailedMessages() {
+		try {
+			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentTopicInfo.getSecret(), currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+		} catch (Exception e) {
+			mosipLogger.error("Error in Fetched failed messages for topic {} \n {}", currentTopicInfo.toString(),
+					ExceptionUtils.getStackTrace(e));
+		}
 		return List.of();
 	}
 	

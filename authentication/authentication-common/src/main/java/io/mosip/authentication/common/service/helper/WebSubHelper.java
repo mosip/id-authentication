@@ -19,6 +19,8 @@ import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -163,13 +165,16 @@ public class WebSubHelper {
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
+	@WithRetry
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
+		try {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(hubURL);
 		failedContentRequest.setTopic(topic);
 		failedContentRequest.setCallbackURL(callbackUrl);
 		failedContentRequest.setMessageCount(messageCount);
 		failedContentRequest.setSecret(secret);
+		failedContentRequest.setTimestamp(timestamp);
 		FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
 		List<?> messages = failedContent.getMessages();
 		return messages.stream().map(obj -> {
@@ -178,6 +183,9 @@ public class WebSubHelper {
 			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
 			return failedMessage;
 		}).collect(Collectors.toList());
+		} catch(Exception e) {
+			throw new IdAuthRetryException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 	
 	

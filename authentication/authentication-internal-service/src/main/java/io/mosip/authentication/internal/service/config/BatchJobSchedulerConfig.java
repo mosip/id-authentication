@@ -21,7 +21,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Loganathan Sekar
  */
 @Configuration
-@DependsOn("credentialStoreBatchConfig")
+@DependsOn("dataProcessingBatchConfig")
 public class BatchJobSchedulerConfig {
 	
 	/** The logger. */
