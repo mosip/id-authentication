@@ -3,6 +3,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -153,7 +154,7 @@ public class WebSubHelper {
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret) {
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, Consumer<FailedMessage> failedMessageConsumer) {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(hubURL);
 		failedContentRequest.setTopic(topic);
@@ -165,6 +166,7 @@ public class WebSubHelper {
 		return messages.stream().map(obj -> {
 			FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
 			failedMessage.setTopic(topic);
+			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
 			return failedMessage;
 		}).collect(Collectors.toList());
 	}
@@ -175,6 +177,8 @@ public class WebSubHelper {
 		private String topic;
 		private String message;
 		private String timestamp;
+		
+		private Consumer<FailedMessage> failedMessageConsumer;
 	}
 	
 	

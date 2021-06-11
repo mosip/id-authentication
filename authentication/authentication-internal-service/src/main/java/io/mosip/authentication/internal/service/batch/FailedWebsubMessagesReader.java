@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service.batch;
 import static io.mosip.authentication.common.service.websub.impl.BaseWebSubEventsInitializer.EVENT_TYPE_PLACEHOLDER;
 import static io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer.PARTNER_ID_PLACEHOLDER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL;
@@ -30,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -58,6 +60,7 @@ import lombok.Data;
 
 /**
  * The Class FailedWebsubMessagesReader.
+ * 
  * @author Loganathan Sekar
  */
 @Component
@@ -69,6 +72,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		private String topic;
 		private String callbackUrl;
 		private String secret;
+		private Consumer<FailedMessage> failedMessageConsumer;
 	}
 
 
@@ -82,8 +86,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	
 	private AtomicBoolean start = new AtomicBoolean(true);
 	
-	/** The effectivedtimes. */
-	private String effectivedtimes;
+	private String currentEffectivedtimes;
 
 	/** The request ids iterator. */
 	private Iterator<FailedMessage> messagesIterator;
@@ -157,6 +160,13 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Autowired
 	protected Environment env;
 	
+	/** The chunk size. */
+	@Value("${" + IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE + ":10}")
+	private int chunkSize;
+	
+	@Autowired
+	private FailedWebsubMessageProcessor failedWebsubMessageProcessor;
+	
 	private final List<TopicInfo> topicsToFetchFailedMessages = new ArrayList<>();
 
 	private Iterator<TopicInfo> topicsToFetchFailedMessagesIterator;
@@ -181,25 +191,32 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId)
 					.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
 			
-			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL,credIssueCallbacksecret));
+			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL,credIssueCallbacksecret, 
+					failedMessage -> failedWebsubMessageProcessor.processIdChangeEvent(eventType, failedMessage)));
 		});
 		
 		String authTypeStatusTopic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
-		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL, autypeCallbackSecret));
+		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL, autypeCallbackSecret,
+				failedWebsubMessageProcessor::processAuthTypeStatusEvent));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(hotlistEventTopic, hotlistCallbackURL, hotlistCallbackSecret));
+		topicsToFetchFailedMessages.add(new TopicInfo(hotlistEventTopic, hotlistCallbackURL, hotlistCallbackSecret,
+				failedWebsubMessageProcessor::processHotlistEvent));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTemplatesEventTopic, masterdataTemplatesCallbackURL, masterdataTemplatesCallbackSecret));
+		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTemplatesEventTopic, masterdataTemplatesCallbackURL, masterdataTemplatesCallbackSecret,
+				failedWebsubMessageProcessor::processMasterdataTemplatesEvent));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTitlesEventTopic, masterdataTitlesCallbackURL, masterdataTitlesCallbackSecret));
+		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTitlesEventTopic, masterdataTitlesCallbackURL, masterdataTitlesCallbackSecret,
+				failedWebsubMessageProcessor::processMasterdataTitlesEvent));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(partnerCertEventTopic, partnerCertCallbackURL, partnerCertCallbackSecret));
+		topicsToFetchFailedMessages.add(new TopicInfo(partnerCertEventTopic, partnerCertCallbackURL, partnerCertCallbackSecret,
+				failedWebsubMessageProcessor::processPartnerCertEvent));
 		
 		//Partner Event topics
 		Stream.of(PartnerEventTypes.values()).forEach(partnerEventType -> {
 			String topic = env.getProperty(partnerEventType.getTopicPropertyName());
 			String callbackURL = partnerServiceCallbackURL.replace(EVENT_TYPE_PLACEHOLDER, partnerEventType.getName());
-			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL, partnerServiceCallbackSecret));
+			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL, partnerServiceCallbackSecret, 
+					failedMessage -> failedWebsubMessageProcessor.processPartnerEvent(partnerEventType, failedMessage)));
 		});
 	}
 	
@@ -208,7 +225,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 */
 	private void initialize() {
 		totalCount = new AtomicInteger(0);
-		effectivedtimes = getInitialEffectiveDTimes();
+		currentEffectivedtimes = getInitialEffectiveDTimes();
 		topicsToFetchFailedMessagesIterator = topicsToFetchFailedMessages.iterator();
 		messagesIterator = getFailedMessagesIterator();
 	}
@@ -238,6 +255,10 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			start.set(false);
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
 				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				//Initialize effectivedtimes for the next topic
+				currentEffectivedtimes = getInitialEffectiveDTimes();
+			} else {
+				return List.of();
 			}
 		}
 		
@@ -245,14 +266,31 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			return List.of();
 		}
 		
+		List<FailedMessage> failedMessages = websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+		if(!failedMessages.isEmpty()) {
+			//Get last message and assign it as current effectiveDtimes
+			currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
+			return failedMessages;
+		}
 		
+		while(failedMessages.isEmpty()) {
+			if(topicsToFetchFailedMessagesIterator.hasNext()) {
+				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				//Initialize effectivedtimes for the next topic
+				currentEffectivedtimes = getInitialEffectiveDTimes();
+
+				failedMessages = websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+				if(!failedMessages.isEmpty()) {
+					//Get last message and assign it as current effectiveDtimes
+					currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
+					return failedMessages;
+				}
+			} else {
+				return List.of();
+			}
+		}
 		
-//		try {
-			return websubHelper.getFailedMessages(currentTopicInfo, effectivedtimes, DEFAULT_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS, effectivedtimes);
-//			return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
-//		} catch (RestServiceException | IDDataValidationException e) {
-//			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
-//		}
+		return List.of();
 	}
 	
 	/**
