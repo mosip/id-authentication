@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -42,35 +43,56 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Transactional
 public class PartnerServiceManager {
 
+	/** The Constant API_KEY_DATA. */
 	private static final String API_KEY_DATA = "apiKeyData";
 
+	/** The Constant PARTNER_DATA. */
 	private static final String PARTNER_DATA = "partnerData";
 
+	/** The Constant POLICY_DATA. */
 	private static final String POLICY_DATA = "policyData";
 
+	/** The Constant MISP_LICENSE_DATA. */
 	private static final String MISP_LICENSE_DATA = "mispLicenseData";
 
+	/** The partner mapping repo. */
 	@Autowired
 	private PartnerMappingRepository partnerMappingRepo;
 
+	/** The partner data repo. */
 	@Autowired
 	private PartnerDataRepository partnerDataRepo;
 
+	/** The policy data repo. */
 	@Autowired
 	private PolicyDataRepository policyDataRepo;
 
+	/** The api key repo. */
 	@Autowired
 	private ApiKeyDataRepository apiKeyRepo;
 
+	/** The misp lic data repo. */
 	@Autowired
 	private MispLicenseDataRepository mispLicDataRepo;
 
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
+	/**
+	 * Validate and get policy.
+	 *
+	 * @param partnerId the partner id
+	 * @param partner_api_key the partner api key
+	 * @param misp_license_key the misp license key
+	 * @param certificateNeeded the certificate needed
+	 * @return the partner policy response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
 			boolean certificateNeeded) throws IdAuthenticationBusinessException {
 		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
@@ -98,6 +120,13 @@ public class PartnerServiceManager {
 		return response;
 	}
 
+	/**
+	 * Validate partner mapping details.
+	 *
+	 * @param partnerMappingDataOptional the partner mapping data optional
+	 * @param mispLicOptional the misp lic optional
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
 			Optional<MispLicenseData> mispLicOptional) throws IdAuthenticationBusinessException {
 		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
@@ -168,31 +197,71 @@ public class PartnerServiceManager {
 		}
 	}
 
+	/**
+	 * Handle api key approved.
+	 *
+	 * @param eventModel the event model
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void handleApiKeyApproved(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
 		PartnerMapping mapping = new PartnerMapping();
 		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA),
 				PartnerData.class);
 		mapping.setPartnerId(partnerEventData.getPartnerId());
-		partnerEventData.setCreatedBy(securityManager.getUser());
+		partnerEventData.setCreatedBy(getCreatedBy(eventModel));
 		partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
 				ApiKeyData.class);
 		mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
-		apiKeyEventData.setCreatedBy(securityManager.getUser());
+		apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
 		apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA),
 				PolicyData.class);
 		mapping.setPolicyId(policyEventData.getPolicyId());
-		policyEventData.setCreatedBy(securityManager.getUser());
+		policyEventData.setCreatedBy(getCreatedBy(eventModel));
 		policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-		mapping.setCreatedBy(securityManager.getUser());
+		mapping.setCreatedBy(getCreatedBy(eventModel));
 		mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		partnerDataRepo.save(partnerEventData);
 		apiKeyRepo.save(apiKeyEventData);
 		policyDataRepo.save(policyEventData);
 		partnerMappingRepo.save(mapping);
 	}
+
 	
+	/**
+	 * Gets the created by.
+	 *
+	 * @param eventModel the event model
+	 * @return the created by
+	 */
+	private String getCreatedBy(EventModel eventModel) {
+		//Get user from session
+		String user = securityManager.getUser();
+		if (user == null) {
+			//Get publisher from event
+			String publisher = eventModel.getPublisher();
+			if (publisher == null) {
+				//return as created by IDA
+				return IdAuthCommonConstants.IDA;
+			} else {
+				return publisher;
+			}
+		} else {
+			return user;
+		}
+	}
+	
+	/**
+	 * Handle api key updated.
+	 *
+	 * @param eventModel the event model
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void handleApiKeyUpdated(EventModel eventModel)
 			throws JsonParseException, JsonMappingException, IOException {
 		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
@@ -203,16 +272,21 @@ public class PartnerServiceManager {
 			apiKeyData.setApiKeyCommenceOn(apiKeyEventData.getApiKeyCommenceOn());
 			apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
 			apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
-			apiKeyData.setUpdatedBy(securityManager.getUser());
+			apiKeyData.setUpdatedBy(getCreatedBy(eventModel));
 			apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyData);
 		} else {
-			apiKeyEventData.setCreatedBy(securityManager.getUser());
+			apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
 			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyEventData);
 		}
 	}
 
+	/**
+	 * Update partner data.
+	 *
+	 * @param eventModel the event model
+	 */
 	public void updatePartnerData(EventModel eventModel) {
 		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA), PartnerData.class);
 		Optional<PartnerData> partnerDataOptional = partnerDataRepo.findById(partnerEventData.getPartnerId());
@@ -222,22 +296,27 @@ public class PartnerServiceManager {
 			partnerData.setPartnerName(partnerEventData.getPartnerName());
 			partnerData.setCertificateData(partnerEventData.getCertificateData());
 			partnerData.setPartnerStatus(partnerEventData.getPartnerStatus());
-			partnerData.setUpdatedBy(securityManager.getUser());
+			partnerData.setUpdatedBy(getCreatedBy(eventModel));
 			partnerData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerData);
 		} else {
-			partnerEventData.setCreatedBy(securityManager.getUser());
+			partnerEventData.setCreatedBy(getCreatedBy(eventModel));
 			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerEventData);
 		}
 	}
 
+	/**
+	 * Update policy data.
+	 *
+	 * @param eventModel the event model
+	 */
 	public void updatePolicyData(EventModel eventModel) {
 		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA), PolicyData.class);
 		Optional<PolicyData> policyDataOptional = policyDataRepo.findById(policyEventData.getPolicyId());
 		if (policyDataOptional.isPresent()) {
 			PolicyData policyData = policyDataOptional.get();
-			policyData.setUpdatedBy(securityManager.getUser());
+			policyData.setUpdatedBy(getCreatedBy(eventModel));
 			policyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			policyData.setPolicyId(policyEventData.getPolicyId());
 			policyData.setPolicy(policyEventData.getPolicy());
@@ -248,18 +327,23 @@ public class PartnerServiceManager {
 			policyData.setPolicyExpiresOn(policyEventData.getPolicyExpiresOn());
 			policyDataRepo.save(policyData);
 		} else {
-			policyEventData.setCreatedBy(securityManager.getUser());
+			policyEventData.setCreatedBy(getCreatedBy(eventModel));
 			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			policyDataRepo.save(policyEventData);
 		}
 	}
 
+	/**
+	 * Update misp license data.
+	 *
+	 * @param eventModel the event model
+	 */
 	public void updateMispLicenseData(EventModel eventModel) {
 		MispLicenseData mispLicenseEventData = mapper.convertValue(eventModel.getEvent().getData().get(MISP_LICENSE_DATA), MispLicenseData.class);
 		Optional<MispLicenseData> mispLicenseDataOptional = mispLicDataRepo.findById(mispLicenseEventData.getMispId());
 		if (mispLicenseDataOptional.isPresent()) {
 			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
-			mispLicenseData.setUpdatedBy(securityManager.getUser());
+			mispLicenseData.setUpdatedBy(getCreatedBy(eventModel));
 			mispLicenseData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicenseData.setMispId(mispLicenseEventData.getMispId());
 			mispLicenseData.setLicenseKey(mispLicenseEventData.getLicenseKey());
@@ -268,7 +352,7 @@ public class PartnerServiceManager {
 			mispLicenseData.setMispStatus(mispLicenseEventData.getMispStatus());
 			mispLicDataRepo.save(mispLicenseData);
 		} else {
-			mispLicenseEventData.setCreatedBy(securityManager.getUser());
+			mispLicenseEventData.setCreatedBy(getCreatedBy(eventModel));
 			mispLicenseEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicDataRepo.save(mispLicenseEventData);
 		}
