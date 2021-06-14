@@ -363,7 +363,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		try {
 			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentTopicInfo.getSecret(), currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
 		} catch (Exception e) {
-			mosipLogger.error("Error in Fetched failed messages for topic {} \n {}", currentTopicInfo.toString(),
+			mosipLogger.error("Error in Fetched failed messages for topic {} \n {}", currentTopicInfo.getTopic(),
 					ExceptionUtils.getStackTrace(e));
 		}
 		return List.of();

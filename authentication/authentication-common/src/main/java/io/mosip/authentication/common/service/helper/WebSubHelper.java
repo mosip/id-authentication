@@ -1,4 +1,5 @@
 package io.mosip.authentication.common.service.helper;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
@@ -70,6 +71,9 @@ public class WebSubHelper {
 	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
+	@Value("${"+ IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL +"}")
+	private String failedMessageSyncUrl;
+	
 	@Autowired
 	protected SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscriptionClient;
 	
@@ -78,7 +82,6 @@ public class WebSubHelper {
 	
 	@Autowired
 	private ObjectMapper mapper;
-	
 
 	/**
 	 * Inits the subscriber.
@@ -169,15 +172,15 @@ public class WebSubHelper {
 	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
 		try {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
-		failedContentRequest.setHubURL(hubURL);
+		failedContentRequest.setHubURL(failedMessageSyncUrl);
 		failedContentRequest.setTopic(topic);
 		failedContentRequest.setCallbackURL(callbackUrl);
 		failedContentRequest.setMessageCount(messageCount);
 		failedContentRequest.setSecret(secret);
 		failedContentRequest.setTimestamp(timestamp);
 		FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
-		List<?> messages = failedContent.getMessages();
-		return messages.stream().map(obj -> {
+		List<?> messages = failedContent.getFailedcontents();
+		return messages == null ? List.of() : messages.stream().map(obj -> {
 			FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
 			failedMessage.setTopic(topic);
 			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
