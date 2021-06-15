@@ -1396,6 +1396,10 @@ public class AuthRequestValidatorTest {
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
 		authRequestDTO.setRequestTime(timestamp);
+		
+		data.setTimestamp(timestamp);
+		digitalId.setDateTime(timestamp);
+		
 		authRequestDTO.setTransactionID("1234567890");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
@@ -1437,6 +1441,10 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
+		
+		data.setTimestamp(timestamp);
+		digitalId.setDateTime(timestamp);
+		
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
@@ -1584,6 +1592,10 @@ public class AuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
 		authRequestDTO.setRequestTime(timestamp);
 		authRequestDTO.setTransactionID("1234567890");
+		
+		data.setTimestamp(timestamp);
+		digitalId.setDateTime(timestamp);
+		
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
@@ -1623,6 +1635,10 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTransactionID("1234567890");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
+		
+		data.setTimestamp(timestamp);
+		digitalId.setDateTime(timestamp);
+		
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
