@@ -59,11 +59,13 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
+	/** The Constant A_Z0_9_10. */
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Za-z0-9]{10}");
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
 
+	/** The Constant CONSENT_OBTAINED. */
 	private static final String CONSENT_OBTAINED = "consentObtained";
 
 	/** The uin validator. */
@@ -74,6 +76,7 @@ public abstract class IdAuthValidator implements Validator {
 	@Autowired
 	private VidValidatorImpl vidValidator;
 
+	/** The env. */
 	@Autowired
 	protected Environment env;
 
@@ -93,6 +96,13 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Validate idv id.
+	 *
+	 * @param id the id
+	 * @param idType the id type
+	 * @param errors the errors
+	 */
 	public void validateIdvId(String id, String idType, Errors errors) {
 		validateIdvId(id, idType, errors, REQUEST);
 	}
@@ -139,9 +149,25 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 	
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 * @param paramName the param name
+	 */
 	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
 		validateReqTime(reqTime, errors, paramName, this::requestTimeParser);
 	}
+	
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 * @param paramName the param name
+	 * @param dateTimeParser the date time parser
+	 */
 	protected void validateReqTime(String reqTime, Errors errors, String paramName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		validateReqTime(reqTime, errors, paramName, REQ_TIME, dateTimeParser);
 	}
@@ -152,8 +178,8 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 * @param paramName the param name
-	 * @param parser 
-	 * @param pattern 
+	 * @param fieldName the field name
+	 * @param parser the parser
 	 */
 	private void validateReqTime(String reqTime, Errors errors, String paramName, String fieldName, FunctionWithThrowable<Date, String, ParseException> parser) {
 
@@ -173,8 +199,9 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param reqTime the req time
 	 * @param errors  the errors
-	 * @param fieldName 
-	 * @param pattern 
+	 * @param paramName the param name
+	 * @param fieldName the field name
+	 * @param dateTimeParser the date time parser
 	 */
 	private void checkFutureReqTime(String reqTime, Errors errors, String paramName, String fieldName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		Date reqDateAndTime = null;
@@ -207,10 +234,22 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Gets the current time plus adjutsment time.
+	 *
+	 * @return the current time plus adjutsment time
+	 */
 	private Date getCurrentTimePlusAdjutsmentTime() {
 		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusMinutes);
 	}
 	
+	/**
+	 * Gets the adjustment time.
+	 *
+	 * @param originalLdt the original ldt
+	 * @param adjustmentFunc the adjustment func
+	 * @return the adjustment time
+	 */
 	private Date getAdjustmentTime(LocalDateTime originalLdt, BiFunction<LocalDateTime, Long, LocalDateTime> adjustmentFunc) {
 		long adjustmentMins = getRequestTimeAdjustmentMins();
 		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentMins);
@@ -218,10 +257,21 @@ public abstract class IdAuthValidator implements Validator {
 		return plusAdjustmentTime;
 	}
 
+	/**
+	 * Gets the request time adjustment mins.
+	 *
+	 * @return the request time adjustment mins
+	 */
 	private Long getRequestTimeAdjustmentMins() {
 		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS);
 	}
 	
+	/**
+	 * Validate request timed out.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 */
 	protected void validateRequestTimedOut(String reqTime, Errors errors) {
 		validateRequestTimedOut(reqTime, errors, this::requestTimeParser, null);
 	}
@@ -231,6 +281,8 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param reqTime the req time
 	 * @param errors  the errors
+	 * @param dateTimeParser the date time parser
+	 * @param paramName the param name
 	 */
 	protected void validateRequestTimedOut(String reqTime, Errors errors, FunctionWithThrowable<Date, String, ParseException> dateTimeParser, String paramName) {
 		try {
@@ -281,6 +333,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param id     the id
 	 * @param idTypeOrAlias the id type
 	 * @param errors the errors
+	 * @param idFieldName the id field name
 	 */
 	private void validateIdtypeUinVid(String id, String idTypeOrAlias, Errors errors, String idFieldName) {
 		Set<String> allowedIdTypeSet = getAllowedIdTypes();
@@ -347,6 +400,11 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Gets the allowed id types.
+	 *
+	 * @return the allowed id types
+	 */
 	protected Set<String> getAllowedIdTypes() {
 		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
 		return Stream.of(allowedIdTypes.split(","))
@@ -355,6 +413,11 @@ public abstract class IdAuthValidator implements Validator {
 				.collect(Collectors.toSet());
 	}
 	
+	/**
+	 * Gets the allowed auth types.
+	 *
+	 * @return the allowed auth types
+	 */
 	protected Set<String> getAllowedAuthTypes() {
 		return getAllowedAuthTypes(getAllowedAuthTypeProperty());
 	}
@@ -374,12 +437,19 @@ public abstract class IdAuthValidator implements Validator {
 	}
 
 	/**
+	 * Gets the allowed auth type property.
+	 *
 	 * @return the allowedAuthType
 	 */
 	protected String getAllowedAuthTypeProperty() {
 		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
 	}
 
+	/**
+	 * Gets the allowed id types config key.
+	 *
+	 * @return the allowed id types config key
+	 */
 	protected String getAllowedIdTypesConfigKey() {
 		return IdAuthConfigKeyConstants.MOSIP_IDTYPE_ALLOWED;
 	}
@@ -387,7 +457,7 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validates the ConsentRequest on request.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param consentValue the consent value
 	 * @param errors         the errors
 	 */
 	protected void validateConsentReq(boolean consentValue, Errors errors) {
@@ -416,6 +486,13 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Request time parser.
+	 *
+	 * @param reqTime the req time
+	 * @return the date
+	 * @throws ParseException the parse exception
+	 */
 	protected Date requestTimeParser(String reqTime) throws ParseException {
 		return DateUtils.parseToDate(reqTime,
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
