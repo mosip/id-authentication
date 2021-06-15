@@ -10,9 +10,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -42,10 +40,12 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -82,7 +82,7 @@ public class AuthRequestValidatorTest {
 
 	@Mock
 	VidValidatorImpl vidValidator;
-	
+
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
 
@@ -100,6 +100,9 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	private IDAMappingConfig idMappingConfig;
+
+	@Mock
+	private HotlistService hotlistService;
 
 	@Before
 	public void before() {
@@ -573,14 +576,6 @@ public class AuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
-	}
-
-	private Map<String, List<String>> fetchGenderType() {
-		Map<String, List<String>> map = new HashMap<>();
-		List<String> list = new ArrayList<>();
-		list.add("M");
-		map.put(env.getProperty("mosip.primary-language"), list);
-		return map;
 	}
 
 	@Test
@@ -1228,7 +1223,7 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 	}
-	
+
 	@Test
 	public void testNoErrorForDomainUriEnvOptional() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1254,7 +1249,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
-	
+
 	@Test
 	public void testErrorForDomainUriInBioData() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1267,7 +1262,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1276,7 +1271,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1291,7 +1286,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testErrorForDomainUriMissingInAuthReq() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1303,7 +1298,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1313,7 +1308,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1328,7 +1323,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testErrorForDomainUriNotMatchingBetweenReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1341,7 +1336,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1351,7 +1346,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1366,7 +1361,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testNoErrorForDomainUriNullOnBothReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1375,21 +1370,28 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
-		//authRequestDTO.setDomainUri("localhost1");
+		// authRequestDTO.setDomainUri("localhost1");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("");
+		digitalId.setMake("");
+		digitalId.setModel("");
+		digitalId.setDeviceProvider("");
+		digitalId.setDeviceProviderId("");
+		data.setDigitalId(digitalId);
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
-		//data.setDomainUri("localhost2");
+		// data.setDomainUri("localhost2");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1407,7 +1409,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
-	
+
 	@Test
 	public void testNoErrorForDomainUriMatchesOnBothReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1420,17 +1422,24 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		data.setDomainUri("localhost");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("");
+		digitalId.setMake("");
+		digitalId.setModel("");
+		digitalId.setDeviceProvider("");
+		digitalId.setDeviceProviderId("");
+		data.setDigitalId(digitalId);
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1448,8 +1457,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
-	
-	
+
 	@Test
 	public void testErrorForEnvInBioData() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1462,7 +1470,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1471,7 +1479,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1486,7 +1494,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testErrorForEnvMissingInAuthReq() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1498,7 +1506,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1508,7 +1516,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1523,7 +1531,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testErrorForEnvNotMatchingBetweenReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1536,7 +1544,7 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
@@ -1546,7 +1554,7 @@ public class AuthRequestValidatorTest {
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1561,7 +1569,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
 				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
 	}
-	
+
 	@Test
 	public void testNoErrorForEnvNullOnBothReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1570,21 +1578,28 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
-		//authRequestDTO.setEnv("Staging");
+		// authRequestDTO.setEnv("Staging");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
-		//data.setEnv("Staging");
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("");
+		digitalId.setMake("");
+		digitalId.setModel("");
+		digitalId.setDeviceProvider("");
+		digitalId.setDeviceProviderId("");
+		data.setDigitalId(digitalId);
+		// data.setEnv("Staging");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1602,7 +1617,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
-	
+
 	@Test
 	public void testNoErrorForEnvMatchesOnBothReqAndBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1615,17 +1630,24 @@ public class AuthRequestValidatorTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
-		
+
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
+		DigitalId digitalId = new DigitalId();
+		digitalId.setSerialNo("");
+		digitalId.setMake("");
+		digitalId.setModel("");
+		digitalId.setDeviceProvider("");
+		digitalId.setDeviceProviderId("");
+		data.setDigitalId(digitalId);
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		data.setEnv("Staging");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
-		
+
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1643,6 +1665,5 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
-
 
 }
