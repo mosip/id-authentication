@@ -26,6 +26,8 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.function.FunctionWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -160,17 +162,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
-	}
-
-	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
-		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
-
-		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
-
-		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
-			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-		}
 	}
 
 	/**

@@ -1,10 +1,10 @@
 package io.mosip.authentication.internal.service.validator;
 
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 
 /**
