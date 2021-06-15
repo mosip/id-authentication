@@ -1,8 +1,10 @@
 package io.mosip.authentication.common.service.validator;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRIC_DATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,14 +17,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -81,6 +86,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				// Validation for Time Stamp in the RequestDTO.
 				validateReqTime(authRequestDto.getRequest().getTimestamp(), errors, REQUEST_REQUEST_TIME);
 			}
+			
 			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 			}
@@ -100,6 +106,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
+			if (!errors.hasErrors() && authRequestDto.getRequestedAuth().isBio()) {
+				validateBiometricTimestamps(authRequestDto.getRequest().getBiometrics(), errors);
+			}
+
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
@@ -108,6 +118,67 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
+	protected void validateBiometricTimestamps(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+		if(biometrics != null) {
+			for (int i = 0; i < biometrics.size(); i++) {
+				BioIdentityInfoDTO bioIdentityInfoDTO = biometrics.get(i);
+				if(bioIdentityInfoDTO.getData() == null) {
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { String.format(BIOMETRIC_DATA, i) },
+							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+				} else {
+					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors, String.format(BIO_PATH, i, "timestamp"), this::biometricTimestampParser);
+					
+					if(!errors.hasErrors()) {
+						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors, String.format(BIO_PATH, i, "digitalId"));
+					}
+				}
+			}
+		} else {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { "request/biometrics" },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+	}
+
+	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
+		if (digitalId != null) {
+			final String dateTimeField = field + "/dateTime";
+			if (digitalId.getDateTime() == null) {
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { dateTimeField },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			} else {
+				validateReqTime(digitalId.getDateTime(), errors, dateTimeField, this::biometricTimestampParser);
+			}
+		} else {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { field },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+
+	}
+
+	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
+		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
+
+		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
+
+		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
+			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
+			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
+		}
+	}
+
+	/**
+	 * Validate domain UR iand env.
+	 *
+	 * @param authRequestDto the auth request dto
+	 * @param errors         the errors
+	 */
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
 		if (Objects.nonNull(authRequestDto.getRequest())
 				&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())
@@ -156,6 +227,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		super.validateReqTime(reqTime, errors, paramName);
 		if (!errors.hasErrors()) {
 			validateRequestTimedOut(reqTime, errors);
+		}
+	}
+	
+	protected void validateReqTime(String reqTime, Errors errors, String paramName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
+		super.validateReqTime(reqTime, errors, paramName, dateTimeParser);
+		if (!errors.hasErrors()) {
+			validateRequestTimedOut(reqTime, errors, dateTimeParser, paramName);
 		}
 	}
 
@@ -259,11 +337,22 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							new Object[] { String.format(BIO_PATH, index, DIGITAL_ID + "deviceProviderId") },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				}
-				super.validateReqTime(bioData.get(index).getDigitalId().getDateTime(), errors,
-						String.format(BIO_PATH, index, DIGITAL_ID + "dateTime"));
+				
+				
 			}
 		});
 	}
 
+    private Date biometricTimestampParser(String timestamp) throws ParseException {
+		try {
+			//First try parsing with biometric timestamp format
+			return DateUtils.parseToDate(timestamp,
+					env.getProperty(IdAuthConfigKeyConstants.BIO_DATE_TIME_PATTERN));
+		} catch (ParseException e) {
+			mosipLogger.debug("error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern", e.getMessage());
+			// Try parsing with request time stamp format
+			return this.requestTimeParser(timestamp);
+		}
+	}
 }
 	

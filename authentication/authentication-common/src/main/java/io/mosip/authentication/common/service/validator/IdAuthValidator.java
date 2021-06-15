@@ -34,6 +34,7 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.kernel.core.function.FunctionWithThrowable;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -139,7 +140,10 @@ public abstract class IdAuthValidator implements Validator {
 	}
 	
 	protected void validateReqTime(String reqTime, Errors errors, String paramName) {
-		validateReqTime(reqTime, errors, paramName, REQ_TIME);
+		validateReqTime(reqTime, errors, paramName, this::requestTimeParser);
+	}
+	protected void validateReqTime(String reqTime, Errors errors, String paramName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
+		validateReqTime(reqTime, errors, paramName, REQ_TIME, dateTimeParser);
 	}
 
 	/**
@@ -148,8 +152,10 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 * @param paramName the param name
+	 * @param parser 
+	 * @param pattern 
 	 */
-	protected void validateReqTime(String reqTime, Errors errors, String paramName, String fieldName) {
+	private void validateReqTime(String reqTime, Errors errors, String paramName, String fieldName, FunctionWithThrowable<Date, String, ParseException> parser) {
 
 		if (StringUtils.isEmpty(reqTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
@@ -158,7 +164,7 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
-			checkFutureReqTime(reqTime, errors, paramName, fieldName);
+			checkFutureReqTime(reqTime, errors, paramName, fieldName, parser);
 		}
 	}
 
@@ -168,12 +174,12 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 * @param fieldName 
+	 * @param pattern 
 	 */
-	private void checkFutureReqTime(String reqTime, Errors errors, String paramName, String fieldName) {
+	private void checkFutureReqTime(String reqTime, Errors errors, String paramName, String fieldName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		Date reqDateAndTime = null;
 		try {
-			reqDateAndTime = DateUtils.parseToDate(reqTime,
-					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+			reqDateAndTime = dateTimeParser.apply(reqTime);
 		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
@@ -188,10 +194,16 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			Long reqDateMaxTimeLong = env
 					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			errors.rejectValue(fieldName,
+			String message;
+			if (paramName == null) {
+				message = IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage();
+			} else {
+				message = String.format("%s. Attribute: %s", IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(), paramName);
+			}
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 					new Object[] { reqDateMaxTimeLong },
-					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+					message);
 		}
 	}
 
@@ -210,16 +222,19 @@ public abstract class IdAuthValidator implements Validator {
 		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS);
 	}
 	
+	protected void validateRequestTimedOut(String reqTime, Errors errors) {
+		validateRequestTimedOut(reqTime, errors, this::requestTimeParser, null);
+	}
+	
 	/**
 	 * Validate request timed out.
 	 *
 	 * @param reqTime the req time
 	 * @param errors  the errors
 	 */
-	protected void validateRequestTimedOut(String reqTime, Errors errors) {
+	protected void validateRequestTimedOut(String reqTime, Errors errors, FunctionWithThrowable<Date, String, ParseException> dateTimeParser, String paramName) {
 		try {
-			Instant reqTimeInstance = DateUtils
-					.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)).toInstant();
+			Instant reqTimeInstance = dateTimeParser.apply(reqTime).toInstant();
 			Instant now = Instant.now();
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					VALIDATE_REQUEST_TIMED_OUT,
@@ -237,10 +252,16 @@ public abstract class IdAuthValidator implements Validator {
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
 								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
+				String message;
+				if (paramName == null) {
+					message = IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage();
+				} else {
+					message = String.format("%s. Attribute: %s", IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(), paramName);
+				}
 				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
 						new Object[] { reqDateMaxTimeLong },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+						message);
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -393,6 +414,11 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { TRANSACTION_ID },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
+	}
+
+	protected Date requestTimeParser(String reqTime) throws ParseException {
+		return DateUtils.parseToDate(reqTime,
+				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 	}
 
 }
