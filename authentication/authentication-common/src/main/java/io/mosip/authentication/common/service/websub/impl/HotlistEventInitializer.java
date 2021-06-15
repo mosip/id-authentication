@@ -49,7 +49,7 @@ public class HotlistEventInitializer extends BaseWebSubEventsInitializer {
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Trying to register topic: " + hotlistEventTopic);
-			publisher.registerTopic(hotlistEventTopic, publisherUrl);
+			webSubHelper.registerTopic(hotlistEventTopic);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Registered topic: " + hotlistEventTopic);
 		} catch (Exception e) {
@@ -65,13 +65,12 @@ public class HotlistEventInitializer extends BaseWebSubEventsInitializer {
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 			subscriptionRequest.setCallbackURL(hotlistCallbackURL);
-			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(hotlistCallbackSecret);
 			subscriptionRequest.setTopic(hotlistEventTopic);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForHotlistEvent", "",
 					"Trying to subscribe to topic: " + hotlistEventTopic + " callback-url: "
 							+ hotlistCallbackURL);
-			subscribe.subscribe(subscriptionRequest);
+			webSubHelper.subscribe(subscriptionRequest);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForHotlistEvent", "",
 					"Subscribed to topic: " + hotlistEventTopic);
 		} catch (Exception e) {

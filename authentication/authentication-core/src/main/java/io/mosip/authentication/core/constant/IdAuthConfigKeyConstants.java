@@ -89,8 +89,6 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
-	public static final String WEBSUB_PUBLISH_URL = "websub.publish.url";
-	
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_SECRET = "ida-websub-ca-certificate-callback-secret";
 	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_SECRET = "ida-websub-hotlist-callback-secret";
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
@@ -100,6 +98,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET = "ida-websub-masterdata-titles-callback-secret";
 	public static final String IDA_WEBSUB_HUB_URL = IdRepoConstants.WEB_SUB_HUB_URL;
 	public static final String IDA_WEBSUB_PUBLISHER_URL = IdRepoConstants.WEB_SUB_PUBLISH_URL;
+	public static final String IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL = "websub.failed.messages.sync.url";
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
@@ -141,8 +140,12 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_FRAUD_ANALYSIS_TOPIC = "ida-topic-fraud-analysis";
 
 	public static final String IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS = "ida-max-credential-pull-window-days";
+	public static final String IDA_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS = "ida-max-websub-messages-pull-window-days";
 	
 	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
+	
+	public static final String IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE = "ida.fetch.failed.websub.messages.chunk.size";
+
 
 
 }

@@ -6,15 +6,13 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OTP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUESTEDAUTH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -60,7 +58,7 @@ public class IdAuthFraudAnalysisEventManager {
 	@Async
 	public void analyseDigitalSignatureFailure(String uri, String authRequest)
 			throws JsonParseException, JsonMappingException, IOException {
-		List<String> pathSegments = URLEncodedUtils.parsePathSegments(uri, Charset.forName(UTF_8));
+		List<String> pathSegments = Arrays.asList(uri.split("/"));
 		String authType = null;
 		if (pathSegments.size() > 4) {
 			Map<String, Object> request = mapper.readValue(authRequest, new TypeReference<Map<String, Object>>() {

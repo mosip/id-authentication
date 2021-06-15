@@ -51,7 +51,7 @@ public class PartnerCACertEventInitializer extends BaseWebSubEventsInitializer {
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerCertEvent", "",
 					"Trying to register topic: " + partnerCertEventTopic);
-			publisher.registerTopic(partnerCertEventTopic, publisherUrl);
+			webSubHelper.registerTopic(partnerCertEventTopic);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerCertEvent", "",
 					"Registered topic: " + partnerCertEventTopic);
 		} catch (Exception e) {
@@ -67,13 +67,12 @@ public class PartnerCACertEventInitializer extends BaseWebSubEventsInitializer {
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 			subscriptionRequest.setCallbackURL(partnerCertCallbackURL);
-			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(partnerCertCallbackSecret);
 			subscriptionRequest.setTopic(partnerCertEventTopic);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForPartnerCertEvent", "",
 					"Trying to subscribe to topic: " + partnerCertEventTopic + " callback-url: "
 							+ partnerCertCallbackURL);
-			subscribe.subscribe(subscriptionRequest);
+			webSubHelper.subscribe(subscriptionRequest);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForPartnerCertEvent", "",
 					"Subscribed to topic: " + partnerCertEventTopic);
 		} catch (Exception e) {

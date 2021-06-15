@@ -58,7 +58,7 @@ public class AuthTypeStatusEventSubscriber extends BaseWebSubEventsInitializer {
 		String topic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Trying to register topic: " + topic);
-			publisher.registerTopic(topic, publisherUrl);	
+			webSubHelper.registerTopic(topic);	
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents", "", "Registered topic: " + topic);
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicForAuthEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
@@ -75,11 +75,10 @@ public class AuthTypeStatusEventSubscriber extends BaseWebSubEventsInitializer {
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
 			subscriptionRequest.setCallbackURL(authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId));
-			subscriptionRequest.setHubURL(hubURL);
 			subscriptionRequest.setSecret(autypeCallbackSecret);
 			subscriptionRequest.setTopic(topic);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to subscribe to topic: " + topic + " callback-url: " + authTypeCallbackURL);
-			subscribe.subscribe(subscriptionRequest);
+			webSubHelper.subscribe(subscriptionRequest);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Subscribed to topic: " + topic);
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());

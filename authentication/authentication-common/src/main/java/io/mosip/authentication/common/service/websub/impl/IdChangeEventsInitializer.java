@@ -29,7 +29,7 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
 	/** The Constant PARTNER_ID_PLACEHOLDER. */
-	private static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";
+	public static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";
 	
 	/** The credential issue callback URL. */
 	@Value("${"+ IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
@@ -63,7 +63,7 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 			String topic = topicPrefix + eventType.toString();
 			try {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
-				publisher.registerTopic(topic, publisherUrl);
+				webSubHelper.registerTopic(topic);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
 			} catch (Exception e) {
 				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
@@ -86,11 +86,10 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 				String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId)
 														.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
 				subscriptionRequest.setCallbackURL(callbackURL);
-				subscriptionRequest.setHubURL(hubURL);
 				subscriptionRequest.setSecret(credIssueCallbacksecret);
 				subscriptionRequest.setTopic(topic);
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Trying to subscribe to topic: " + topic);
-				subscribe.subscribe(subscriptionRequest);
+				webSubHelper.subscribe(subscriptionRequest);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
 			} catch (Exception e) {
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());

@@ -50,7 +50,7 @@ public class PartnerServiceEventsInitializer extends BaseWebSubEventsInitializer
 			String topic = env.getProperty(eventType.getTopicPropertyName());
 			try {
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents", "", "Trying to register topic: " + topic);
-				publisher.registerTopic(topic, publisherUrl);
+				webSubHelper.registerTopic(topic);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents", "", "Registered topic: " + topic);
 			} catch (Exception e) {
 				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerServiceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
@@ -67,14 +67,14 @@ public class PartnerServiceEventsInitializer extends BaseWebSubEventsInitializer
 			String topic = env.getProperty(partnerEventType.getTopicPropertyName());
 			try {
 				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-				subscriptionRequest.setCallbackURL(partnerServiceCallbackURL.replace(EVENT_TYPE_PLACEHOLDER, partnerEventType.getName()));
-				subscriptionRequest.setHubURL(hubURL);
+				String callbackURL = partnerServiceCallbackURL.replace(EVENT_TYPE_PLACEHOLDER, partnerEventType.getName());
+				subscriptionRequest.setCallbackURL(callbackURL);
 				subscriptionRequest.setSecret(partnerServiceCallbackSecret);
 				subscriptionRequest.setTopic(topic);
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
 						"Trying to subscribe to topic: " + topic + " callback-url: "
 								+ partnerServiceCallbackURL);
-				subscribe.subscribe(subscriptionRequest);
+				webSubHelper.subscribe(subscriptionRequest);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
 						"Subscribed to topic: " + topic);
 			} catch (Exception e) {

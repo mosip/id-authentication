@@ -104,9 +104,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		}
 	}
 
-	protected void verifyJwsData(String jwsSignature) throws IdAuthenticationAppException {
+	protected void verifyBioDataSignature(String jwsSignature) throws IdAuthenticationAppException {
 		if (!verifySignature(jwsSignature, null, DomainType.JWT_DATA.getType())) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, BASE_AUTH_FILTER, "verifyJwsData", "Invalid certificate in biometrics>data");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
 	}
@@ -186,7 +186,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 							requestData,
 							DomainType.AUTH.getType())) {
 						mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
-								"signature JWS failed");
+								"signature header verification failed");
 						fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestData);
 						throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
 					}

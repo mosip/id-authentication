@@ -68,6 +68,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -76,6 +77,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
 
@@ -90,6 +92,8 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
+	
+	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthFilter.class);
 
 	/** The Constant THUMBPRINT. */
 	private static final String THUMBPRINT = "thumbprint";
@@ -183,7 +187,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @return true, if is hash based on biometric data block
 	 */
-	private boolean isBiometricHashValidationDisabled() {
+	protected boolean isBiometricHashValidationDisabled() {
 		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
 	}
 
@@ -241,7 +245,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
 		}
 		
-		verifyJwsData(dataOpt.get());
+		verifyBioDataSignature(dataOpt.get());
 
 		if (!getStringValue(map, SESSION_KEY).isPresent()) {
 			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
@@ -308,8 +312,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
-		if (!super.verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		if (!verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "verifyDigitalIdSignature", "Invalid certificate in biometrics>data>digitalId");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
 		}
 	}
 

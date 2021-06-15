@@ -297,5 +297,7 @@ public final class IdAuthCommonConstants {
 	
 	public static final String INDIVIDUAL_ID = "individualId";
 
+	public static final String IDA = "IDA";
+
 
 }
