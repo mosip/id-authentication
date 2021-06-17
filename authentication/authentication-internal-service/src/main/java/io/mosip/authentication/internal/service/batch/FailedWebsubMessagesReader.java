@@ -47,6 +47,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
@@ -251,7 +252,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		});
 		
 		String authTypeStatusTopic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
-		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL, autypeCallbackSecret,
+		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId), autypeCallbackSecret,
 				failedWebsubMessageProcessor::processAuthTypeStatusEvent));
 		
 		topicsToFetchFailedMessages.add(new TopicInfo(hotlistEventTopic, hotlistCallbackURL, hotlistCallbackSecret,
@@ -353,7 +354,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		List<FailedMessage> failedMessages = doGetNextFailedMessages();
 		if(!failedMessages.isEmpty()) {
 			//Get last message and assign it as current effectiveDtimes
-			currentEffectivedtimes = failedMessages.get(failedMessages.size() - 1).getTimestamp();
+			String timestampStr = failedMessages.get(failedMessages.size() - 1).getTimestamp();
+			currentEffectivedtimes = DateUtils.formatToISOString(DateUtils.parseUTCToLocalDateTime(timestampStr, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 			return failedMessages;
 		}
 		return List.of();
