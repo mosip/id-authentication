@@ -4,6 +4,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,8 +119,10 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processIdChangeEvent(IDAEventType eventType, FailedMessage failedMessage) throws IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "processIdChangeEvent", "", "handling " + eventType + " event for partnerId: " + authPartherId);
-		EventModel event = getEventModel(failedMessage);
-		credentialStoreService.handleIdEvent(event);
+		Optional<EventModel> eventModel = getEventModel(failedMessage);
+		if(eventModel.isPresent()) {
+			credentialStoreService.handleIdEvent(eventModel.get());
+		}
 	}
 
 	/**
@@ -149,8 +152,10 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processHotlistEvent(FailedMessage failedMessage) throws IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processHotlistEvent", "EVENT RECEIVED");
-		EventModel eventModel = getEventModel(failedMessage);
-		hotlistService.handlingHotlistingEvent(eventModel);
+		Optional<EventModel> eventModel = getEventModel(failedMessage);
+		if(eventModel.isPresent()) {
+			hotlistService.handlingHotlistingEvent(eventModel.get());
+		}
 	}
 
 	/**
@@ -160,8 +165,10 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processMasterdataTemplatesEvent(FailedMessage failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processMasterdataTemplatesEvent", "EVENT RECEIVED");
-		EventModel eventModel = getEventModel(failedMessage);
-		masterDataCacheUpdateService.updateTemplates(eventModel);
+		Optional<EventModel> eventModel = getEventModel(failedMessage);
+		if(eventModel.isPresent()) {
+			masterDataCacheUpdateService.updateTemplates(eventModel.get());
+		}
 	}
 
 	/**
@@ -171,8 +178,10 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processMasterdataTitlesEvent(FailedMessage failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processMasterdataTitlesEvent", "EVENT RECEIVED");
-		EventModel eventModel = getEventModel(failedMessage);
-		masterDataCacheUpdateService.updateTemplates(eventModel);
+		Optional<EventModel> eventModel = getEventModel(failedMessage);
+		if(eventModel.isPresent()) {
+			masterDataCacheUpdateService.updateTemplates(eventModel.get());
+		}
 	}
 
 	/**
@@ -184,8 +193,10 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processPartnerCACertEvent(FailedMessage failedMessage) throws RestServiceException, IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processPartnerCACertEvent", "EVENT RECEIVED");
-		EventModel eventModel = getEventModel(failedMessage);
-		partnerCACertEventService.handleCACertEvent(eventModel);
+		Optional<EventModel> eventModel = getEventModel(failedMessage);
+		if(eventModel.isPresent()) {
+			partnerCACertEventService.handleCACertEvent(eventModel.get());
+		}
 	}
 
 	/**
@@ -198,8 +209,10 @@ public class FailedWebsubMessageProcessor {
 		try {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(),
 					"processPartnerEvent", partnerEventType.getName() + " EVENT RECEIVED");
-			EventModel eventModel = getEventModel(failedMessage);
-			handlePartnerEvent(partnerEventType, eventModel);
+			Optional<EventModel> eventModel = getEventModel(failedMessage);
+			if(eventModel.isPresent()) {
+				handlePartnerEvent(partnerEventType, eventModel.get());
+			}
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(),
 					"processPartnerEvent",
@@ -207,8 +220,15 @@ public class FailedWebsubMessageProcessor {
 		}
 	}
 
-	private EventModel getEventModel(FailedMessage failedMessage) {
-		return mapper.convertValue(failedMessage.getMessage(), EventModel.class);
+	private Optional<EventModel> getEventModel(FailedMessage failedMessage) {
+		try {
+			return Optional.of(mapper.readValue(failedMessage.getMessage(), EventModel.class));
+		} catch (IOException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"getEventModel", "Error in Parsing message as EventModel : " + failedMessage.toString() + ": "
+							+ ExceptionUtils.getStackTrace(e));
+		}
+		return Optional.empty();
 	}
 
 	private void handlePartnerEvent(PartnerEventTypes partnerEventType, EventModel eventModel)
