@@ -135,7 +135,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
@@ -166,10 +165,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 						}
 					}
 					
-					if (request.get(DEMOGRAPHICS) instanceof Map) {
-						setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
-					}
-
 					requestBody.replace(REQUEST, request);
 
 				}
@@ -180,6 +175,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Map<String, Object> processDecipheredReqeuest(Map<String, Object> decipheredRequest) {
+		Map<String, Object> request = (Map<String, Object>) decipheredRequest.get(REQUEST);
+		if (request.get(DEMOGRAPHICS) instanceof Map) {
+			setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
+		}
+		return decipheredRequest;
 	}
 
 	/**

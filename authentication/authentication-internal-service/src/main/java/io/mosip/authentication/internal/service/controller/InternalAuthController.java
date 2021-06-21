@@ -139,5 +139,64 @@ public class InternalAuthController {
 		}
 
 	}
+	
+	/**
+	 * Authenticate tsp.
+	 * 
+	 * @since 1.2.0
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors              the e
+	 * @return authResponseDTO the auth response DTO
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 * @throws IdAuthenticationDaoException      the id authentication dao exception
+	 * 
+	 * 
+	 */
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
+	@PostMapping(path = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	public AuthResponseDTO authenticateInternal(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors)
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		boolean isAuth = false;
+		Optional<PartnerDTO> partner = Optional.empty();
+		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+				.createAndSetAuthTxnBuilderMetadataToRequest(authRequestDTO, !isAuth, partner);
+
+		try {
+			String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
+					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
+			authRequestDTO.setIndividualIdType(idType);
+			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
+			
+			
+			DataValidationUtil.validate(errors);
+			String partnerId = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT,"");
+			AuthResponseDTO authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, isAuth,
+					partnerId,
+					DEFAULT_PARTNER_API_KEY, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
+			return authResponseDTO;
+		} catch (IDDataValidationException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
+					e);
+
+			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+
+			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
+					e);
+
+			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
+		}
+
+	}
 
 }
