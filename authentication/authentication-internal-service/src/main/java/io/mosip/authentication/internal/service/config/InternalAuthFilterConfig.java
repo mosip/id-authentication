@@ -38,7 +38,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<InternalAuthenticationFilter> getInternalAuthenticationFilter() {
 		FilterRegistrationBean<InternalAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new InternalAuthenticationFilter());
-		registrationBean.addUrlPatterns("/authenticate");
+		registrationBean.addUrlPatterns("/authentication");
 		return registrationBean;
 	}
 
