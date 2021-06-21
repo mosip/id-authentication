@@ -165,7 +165,10 @@ jobs:
       
       - name: Unzip and extract the authentication-otp-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
-      
+      - name: Get current date
+          id: date
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Build image
         run: |
           cd "./${{env.SERVICE_LOCATION}}"
@@ -223,7 +226,11 @@ jobs:
       
       - name: Unzip and extract the authentication-internal-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
-      
+
+      - name: Get current date
+          id: date
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Build image
         run: |
           cd "./${{env.SERVICE_LOCATION}}"
@@ -281,7 +288,10 @@ jobs:
       
       - name: Unzip and extract the authentication-kyc-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
-      
+      - name: Get current date
+          id: date
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Build image
         run: |
           cd "./${{env.SERVICE_LOCATION}}"
@@ -339,7 +349,10 @@ jobs:
       
       - name: Unzip and extract the authentication-service
         run: unzip -uj "release.zip" "${{ env.SERVICE_LOCATION }}/target/*" -d "./${{ env.SERVICE_LOCATION }}/target"
-      
+      - name: Get current date
+          id: date
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+          
       - name: Build image
         run: |
           cd "./${{env.SERVICE_LOCATION}}"
