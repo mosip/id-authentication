@@ -261,7 +261,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 								// It is error if domain URI in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getDomainUri() == null
-										|| allowedDomainUris.contains(bio.getData().getDomainUri())
+										|| !allowedDomainUris.contains(bio.getData().getDomainUri())
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
