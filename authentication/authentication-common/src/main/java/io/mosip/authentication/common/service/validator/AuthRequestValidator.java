@@ -5,7 +5,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -77,19 +76,19 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * Allowed environments
 	 */
-	private Set<String> allowedEnvironments;
+	private List<String> allowedEnvironments;
 	
 	/**
 	 * Allowed domainUris
 	 */
-	private Set<String> allowedDomainUris;
+	private List<String> allowedDomainUris;
 	
 	@PostConstruct
 	public void initialize() {
-		allowedEnvironments = new HashSet<>(
-				Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((","))));
-		allowedDomainUris = new HashSet<>(
-				Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((","))));
+		allowedEnvironments = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((",")))
+				.map(String::trim).collect(Collectors.toList());
+		allowedDomainUris = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((",")))
+				.map(String::trim).collect(Collectors.toList());
 	}
 
 	/**
