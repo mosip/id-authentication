@@ -100,15 +100,5 @@
 			<artifactId>kernel-demographics-api</artifactId>
 			<version>${kernel-demoapi.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator-uin</artifactId>
-			<version>${kernel-idvalidator-uin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator-vid</artifactId>
-			<version>${kernel-idvalidator-vid.version}</version>
-		</dependency>
 	</dependencies>
 </project>
