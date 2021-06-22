@@ -37,6 +37,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -46,11 +47,10 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 @RunWith(SpringRunner.class)
@@ -69,10 +69,8 @@ public class ValidatorTest {
 	Environment env;
 
 	@Mock
-	UinValidatorImpl uinValidator;
-
-	@Mock
-	VidValidatorImpl vidValidator;
+	IdValidationUtil idValidator;
+	
 
 	@InjectMocks
 	RollingFileAppender idaRollingFileAppender;
@@ -98,8 +96,7 @@ public class ValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.setField(authRequestValidator, "uinValidator", uinValidator);
-		ReflectionTestUtils.setField(authRequestValidator, "vidValidator", vidValidator);
+		ReflectionTestUtils.setField(authRequestValidator, "idValidator", idValidator);
 	}
 
 	@Test
@@ -139,19 +136,19 @@ public class ValidatorTest {
 	}
 
 	@Test
-	public void validateIdvIdUinFailure() {
+	public void validateIdvIdUinFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-002")));
 	}
 
 	@Test
-	public void validateIdvIdVidFailure() {
+	public void validateIdvIdVidFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		authRequestDTO.setIndividualIdType("VID");
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateVID(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-004")));

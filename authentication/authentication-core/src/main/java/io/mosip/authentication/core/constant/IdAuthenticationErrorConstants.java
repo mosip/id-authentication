@@ -141,7 +141,15 @@ public enum IdAuthenticationErrorConstants {
 	MISP_LICENSE_KEY_NOT_EXISTS("PMS_PMP_020","MISP license key not exists."),
 	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
 	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
-	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked");
+	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked"),
+	
+	// UIN and VID validations
+	UIN_VAL_ILLEGAL_LENGTH("IDA-MLC-026", "UIN length should be as per configured digit."),
+	UIN_VAL_ILLEGAL_CHECKSUM("IDA-MLC-027", "UIN should match checksum."),
+	VID_VAL_ILLEGAL_LENGTH("IDA-MLC-028", "UIN length should be as per configured digit."),
+	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum."),
+	UIN_VAL_INVALID_NULL("IDA-MLC-030", "UIN should not be Empty or Null."),
+	VID_VAL_INVALID_NULL("IDA-MLC-031", "VID should not be Empty or Null.");
 	
 	private final String errorCode;
 	private final String errorMessage;

@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.validator;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +69,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The hotlist service. */
 	@Autowired
-	private HotlistService hotlistService;
+	private HotlistService hotlistService;	
 
 	/**
 	 * Supports.
@@ -223,45 +224,49 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validate domain UR iand env.
+	 * Validate domain URI and env.
 	 *
 	 * @param authRequestDto the auth request dto
 	 * @param errors         the errors
 	 */
-	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
+	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {		
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getDomainUri() == null) {
 								// It is error if domain URI in request is not null but in biometrics it is null
-								return authRequestDto.getDomainUri() != null;
+								return (authRequestDto.getDomainUri() != null
+										|| getAllowedDomainUris().contains(authRequestDto.getDomainUri()));
 							} else {
 								// It is error if domain URI in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getDomainUri() == null
+										|| getAllowedDomainUris().contains(bio.getData().getDomainUri())
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					"request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
 		}
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getEnv() == null) {
 								// It is error if env in request is not null but in biometrics it is null
-								return authRequestDto.getEnv() != null;
+								return ((authRequestDto.getEnv() != null)
+										|| getAllowedEnvironments().contains(authRequestDto.getEnv()));
 							} else {
 								// It is error if env in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getEnv() == null
+										|| !getAllowedEnvironments().contains(bio.getData().getEnv())
 										|| !bio.getData().getEnv().contentEquals(authRequestDto.getEnv());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					"request env is no matching against bio env");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "request env is no matching against bio env");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "env", "env"));
 		}
@@ -504,5 +509,20 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			return this.requestTimeParser(timestamp);
 		}
 	}
+	
+	/**
+	 *   Gets the allowed environments from the configuration
+	 * @return
+	 */
+	private List<String> getAllowedEnvironments(){
+		return Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((",")));
+	}
 
+	/**
+	 * Gets the allowed domainUris from the configuration
+	 * @return
+	 */
+	private List<String> getAllowedDomainUris() {
+		return Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((",")));
+	}
 }

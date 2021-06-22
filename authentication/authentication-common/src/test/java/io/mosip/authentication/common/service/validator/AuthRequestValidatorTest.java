@@ -23,7 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -52,11 +53,10 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
@@ -68,7 +68,8 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  */
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthRequestValidatorTest {
 
@@ -85,10 +86,7 @@ public class AuthRequestValidatorTest {
 	Environment env;
 
 	@Mock
-	UinValidatorImpl uinValidator;
-
-	@Mock
-	VidValidatorImpl vidValidator;
+	IdValidationUtil idValidator;
 
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
@@ -180,7 +178,7 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInvalidUin() throws IdAuthenticationBusinessException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -231,7 +229,7 @@ public class AuthRequestValidatorTest {
 	@Test
 	@Ignore
 	public void testValidVid() throws IdAuthenticationBusinessException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -279,7 +277,7 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInvalidVid() throws IdAuthenticationBusinessException {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateVID(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -413,8 +411,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -448,7 +446,7 @@ public class AuthRequestValidatorTest {
 	@Test
 	@Ignore
 	public void testValidRequest() throws IdAuthenticationBusinessException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(Boolean.TRUE);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setVersion("1.0");
@@ -519,7 +517,7 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInValidRequest2() throws IdAuthenticationBusinessException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -589,8 +587,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest3() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest3() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -656,8 +654,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest4() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest4() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -723,8 +721,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest5() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest5() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -790,8 +788,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest6() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest6() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -858,8 +856,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest7() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest7() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -927,8 +925,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testInValidRequest8() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInValidRequest8() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -997,8 +995,8 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidRequest2() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testValidRequest2() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
@@ -1070,7 +1068,7 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testValidRequest10() throws IdAuthenticationBusinessException {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setConsentObtained(true);

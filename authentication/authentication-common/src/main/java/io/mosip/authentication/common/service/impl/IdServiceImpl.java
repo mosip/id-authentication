@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
@@ -76,6 +76,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
+	
+	/**
+	 * Biometric attribute name in credential data
+	 */
+	@Value("${"+ CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME  +"}")
+	private String credentialBiometricAttribute;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -181,11 +187,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 										((List<Map<String, Object>>)obj)
 											.stream()
 											.filter(map -> map.containsKey("category") 
-															&& map.get("category").toString().equalsIgnoreCase(INDIVIDUAL_BIOMETRICS)
+															&& map.get("category").toString().equalsIgnoreCase(credentialBiometricAttribute)
 															&& map.containsKey("value"))
 											.map(map -> (String)map.get("value"))
 											.findAny())
-								.map(encodedBioCbeff -> Map.<String, Object>of(INDIVIDUAL_BIOMETRICS, encodedBioCbeff))
+								.map(encodedBioCbeff -> Map.<String, Object>of(credentialBiometricAttribute, encodedBioCbeff))
 								.orElseGet(Collections::emptyMap);
 	}
 

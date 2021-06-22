@@ -145,6 +145,12 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
 	
 	public static final String IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE = "ida.fetch.failed.websub.messages.chunk.size";
+	
+	public static final String CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME = "mosip.ida.credential.biometric.attribute.name";
+	
+	public static final String ALLOWED_ENVIRONMENTS="mosip.ida.allowed.enviromemnts";
+	
+	public static final String ALLOWED_DOMAIN_URIS="mosip.ida.allowed.domain.uris";
 
 
 
