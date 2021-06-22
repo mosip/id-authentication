@@ -115,6 +115,7 @@ public class AuthRequestValidatorTest {
 		HotlistDTO response = new HotlistDTO();
 		response.setStatus(HotlistStatus.UNBLOCKED);
 		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(response);
+		authRequestValidator.initialize();
 	}
 
 	@Test

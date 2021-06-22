@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,6 +73,24 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The hotlist service. */
 	@Autowired
 	private HotlistService hotlistService;	
+	
+	/**
+	 * Allowed environments
+	 */
+	private Set<String> allowedEnvironments;
+	
+	/**
+	 * Allowed domainUris
+	 */
+	private Set<String> allowedDomainUris;
+	
+	@PostConstruct
+	public void initialize() {
+		allowedEnvironments = new HashSet<>(
+				Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((","))));
+		allowedDomainUris = new HashSet<>(
+				Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((","))));
+	}
 
 	/**
 	 * Supports.
@@ -236,12 +257,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							if (bio.getData().getDomainUri() == null) {
 								// It is error if domain URI in request is not null but in biometrics it is null
 								return (authRequestDto.getDomainUri() != null
-										|| getAllowedDomainUris().contains(authRequestDto.getDomainUri()));
+										|| allowedDomainUris.contains(authRequestDto.getDomainUri()));
 							} else {
 								// It is error if domain URI in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getDomainUri() == null
-										|| getAllowedDomainUris().contains(bio.getData().getDomainUri())
+										|| allowedDomainUris.contains(bio.getData().getDomainUri())
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
@@ -256,12 +277,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							if (bio.getData().getEnv() == null) {
 								// It is error if env in request is not null but in biometrics it is null
 								return ((authRequestDto.getEnv() != null)
-										|| getAllowedEnvironments().contains(authRequestDto.getEnv()));
+										|| allowedEnvironments.contains(authRequestDto.getEnv()));
 							} else {
 								// It is error if env in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getEnv() == null
-										|| !getAllowedEnvironments().contains(bio.getData().getEnv())
+										|| !allowedEnvironments.contains(bio.getData().getEnv())
 										|| !bio.getData().getEnv().contentEquals(authRequestDto.getEnv());
 							}
 						})) {
@@ -508,21 +529,5 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			// Try parsing with request time stamp format
 			return this.requestTimeParser(timestamp);
 		}
-	}
-	
-	/**
-	 *   Gets the allowed environments from the configuration
-	 * @return
-	 */
-	private List<String> getAllowedEnvironments(){
-		return Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((",")));
-	}
-
-	/**
-	 * Gets the allowed domainUris from the configuration
-	 * @return
-	 */
-	private List<String> getAllowedDomainUris() {
-		return Arrays.asList(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((",")));
 	}
 }
