@@ -1427,7 +1427,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
-		authRequestDTO.setDomainUri("localhost");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(true);
 		RequestDTO request = new RequestDTO();
@@ -1437,7 +1437,7 @@ public class AuthRequestValidatorTest {
 		DataDTO data = new DataDTO();
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
-		data.setDomainUri("localhost");
+		data.setDomainUri("https://dev.mosip.net");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
