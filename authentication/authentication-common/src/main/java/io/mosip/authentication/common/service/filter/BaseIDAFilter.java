@@ -509,10 +509,12 @@ public abstract class BaseIDAFilter implements Filter {
 			}
 			Map<String, Object> finalResponse = transformResponse(responseMap);
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
-			
 			String responseAsString = mapper.writeValueAsString(finalResponse);
-			String responseSignature = keyManager.signResponse(responseAsString);
-			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
+			String responseSignature = null;
+			if(isSigningRequired()) {
+				responseSignature = keyManager.signResponse(responseAsString);
+				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
+			}
 			storeAuthTransaction(metadata, requestSignature, responseSignature);
 			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
