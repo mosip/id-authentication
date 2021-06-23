@@ -12,8 +12,6 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -30,11 +28,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.authentication.core.util.IdValidationUtil;
 
 /**
  * The Class IdAuthValidatorTest.
@@ -44,7 +41,7 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,IdValidationUtil.class })
 public class IdAuthValidatorTest {
 
 
@@ -57,12 +54,8 @@ public class IdAuthValidatorTest {
 	private static final String TRANSACTION_ID = "transactionID";
 
 	/** The uin validator. */
-	@Mock
-	UinValidatorImpl uinValidator;
-
-	/** The vid validator. */
-	@Mock
-	VidValidatorImpl vidValidator;
+	@Autowired
+	IdValidationUtil idValidator;
 
 	@Autowired
 	Environment env;
@@ -98,8 +91,7 @@ public class IdAuthValidatorTest {
 	public void setup() {
 		ReflectionTestUtils.setField(validator, "env", env);
 		errors = new BeanPropertyBindingResult(request, "IdAuthValidator");
-		ReflectionTestUtils.setField(validator, "uinValidator", uinValidator);
-		ReflectionTestUtils.setField(validator, "vidValidator", vidValidator);
+		ReflectionTestUtils.setField(validator, "idValidator", idValidator);;
 	}
 
 	/**
@@ -170,10 +162,10 @@ public class IdAuthValidatorTest {
 	
 	/**
 	 * Test invalid UIN.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void testInvalidUIN() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("", ""));
+	public void testInvalidUIN() throws IdAuthenticationBusinessException {
 		validator.validateIdvId("1234", "UIN", errors, INDIVIDUAL_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(), error.getCode());
@@ -184,10 +176,10 @@ public class IdAuthValidatorTest {
 
 	/**
 	 * Test invalid VID.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void testInvalidVID() {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("", ""));
+	public void testInvalidVID() throws IdAuthenticationBusinessException {
 		validator.validateIdvId("1234", "VID", errors, INDIVIDUAL_ID);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(), error.getCode());

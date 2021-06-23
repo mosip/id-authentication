@@ -30,17 +30,16 @@ import org.springframework.validation.Validator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.function.FunctionWithThrowable;
-import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
  * The Class IdAuthValidator - abstract class containing common validations.
@@ -68,13 +67,9 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant CONSENT_OBTAINED. */
 	private static final String CONSENT_OBTAINED = "consentObtained";
 
-	/** The uin validator. */
 	@Autowired
-	private UinValidatorImpl uinValidator;
-
-	/** The vid validator. */
-	@Autowired
-	private VidValidatorImpl vidValidator;
+	IdValidationUtil idValidator;
+	
 
 	/** The env. */
 	@Autowired
@@ -353,8 +348,8 @@ public abstract class IdAuthValidator implements Validator {
 				if (idType.getAliasOrType().equals(idTypeOrAlias)) {
 					if (idType == IdType.UIN) {
 						try {
-							uinValidator.validateId(id);
-						} catch (InvalidIDException e) {
+							idValidator.validateUIN(id);
+						} catch (IdAuthenticationBusinessException e) {
 							mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 									"InvalidIDException - " + e);
 							errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
@@ -363,8 +358,8 @@ public abstract class IdAuthValidator implements Validator {
 						}
 					} else if (idType == IdType.VID) {
 						try {
-							vidValidator.validateId(id);
-						} catch (InvalidIDException e) {
+							idValidator.validateVID(id);
+						} catch (IdAuthenticationBusinessException e) {
 							mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 									"InvalidIDException - " + e);
 							errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),

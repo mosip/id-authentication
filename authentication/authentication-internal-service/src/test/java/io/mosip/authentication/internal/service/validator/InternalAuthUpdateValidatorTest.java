@@ -35,9 +35,8 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
@@ -51,9 +50,6 @@ public class InternalAuthUpdateValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
-
-	@Autowired
-	private Environment environment;
 
 	@Mock
 	Errors errors;
@@ -74,10 +70,7 @@ public class InternalAuthUpdateValidatorTest {
 	IdInfoHelper idinfoHelper;
 
 	@Mock
-	UinValidatorImpl uinValidator;
-
-	@Mock
-	VidValidatorImpl vidValidator;
+	private IdValidationUtil idValidatorUtil;
 
 	@Mock
 	IdAuthValidator idValidator;
@@ -183,7 +176,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -205,7 +198,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -231,7 +224,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -257,7 +250,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -284,7 +277,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime("2019-08-06T09:06:13.092Z");
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -318,7 +311,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
@@ -345,7 +338,7 @@ public class InternalAuthUpdateValidatorTest {
 		authTypeStatusDto.setConsentObtained(true);
 		authTypeStatusDto.setIndividualId("274390482564");
 		authTypeStatusDto.setIndividualIdType(IdType.UIN.getType());
-		ZoneOffset offset = ZoneOffset.MAX;
+		
 		authTypeStatusDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		MockEnvironment mockenv = new MockEnvironment();
