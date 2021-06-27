@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,9 +48,11 @@ public class InternalUpdateAuthTypeController {
 	
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}", callback = "/idauthentication/v1/internal/callback/authTypeCallback/{partnerId}", topic = "${ida-topic-auth-type-status-updated}")
-	public void updateAuthtypeStatus(@RequestBody IDAEventDTO event)
+	public void updateAuthtypeStatus(@RequestBody IDAEventDTO event, @PathVariable("partnerId") String partnerId)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {
+				logger.debug(IdAuthCommonConstants.SESSION_ID, "updateAuthtypeStatus", this.getClass().getCanonicalName(), "handling updateAuthtypeStatus event for partnerId: " + partnerId);
+
 				authtypeStatusService.updateAuthTypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
 
 				auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,

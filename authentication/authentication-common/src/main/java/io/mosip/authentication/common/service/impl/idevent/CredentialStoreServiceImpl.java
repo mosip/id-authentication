@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS;
@@ -130,6 +131,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/** The retry interval. */
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS + ":60000}")
 	private long retryInterval;
+	
+	/**
+	 * Biometric attribute name in credential data
+	 */
+	@Value("${"+ CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME  +"}")
+	private String credentialBiometricAttribute;
 
 	/** The credential event repo. */
 	@Autowired
@@ -440,7 +447,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
 		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
-				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.INDIVIDUAL_BIOMETRICS)));
+				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(credentialBiometricAttribute)));
 
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
@@ -521,5 +528,5 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			throw new IdAuthRetryException(e);
 		}
 	}
-	
+
 }

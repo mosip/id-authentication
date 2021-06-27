@@ -51,10 +51,9 @@ public class PartnerServiceCallbackController {
 					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
 	public void handleApiKeyApprovedEvent(@RequestBody EventModel eventModel) {
 		try {
-			eventModel.setTopic(APIKEY_APPROVED);
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
 					APIKEY_APPROVED + " EVENT RECEIVED");
-			partnerManager.updateApiKeyData(eventModel);
+			partnerManager.handleApiKeyApproved(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
@@ -99,7 +98,7 @@ public class PartnerServiceCallbackController {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
 					PARTNER_API_KEY_UPDATED_EVENT_NAME + " EVENT RECEIVED");
-			partnerManager.updateApiKeyData(eventModel);
+			partnerManager.handleApiKeyUpdated(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));

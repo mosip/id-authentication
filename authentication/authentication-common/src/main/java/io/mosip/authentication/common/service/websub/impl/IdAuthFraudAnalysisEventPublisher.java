@@ -53,7 +53,7 @@ public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializ
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "doRegister", this.getClass().getSimpleName(),
 					"Registering fraud management event topic..");
-			publisher.registerTopic(fraudAnalysisTopic, publisherUrl);
+			webSubHelper.registerTopic(fraudAnalysisTopic);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopic", "", "Registered topic: " + fraudAnalysisTopic);
 		} catch (Exception e) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopic", e.getClass().toString(),

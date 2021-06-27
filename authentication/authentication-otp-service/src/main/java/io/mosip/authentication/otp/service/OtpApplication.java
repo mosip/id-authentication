@@ -7,7 +7,6 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import io.mosip.authentication.common.controller.MasterDataCacheUpdateControllerDelegate;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
@@ -31,6 +30,7 @@ import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
+import io.mosip.authentication.common.service.impl.masterdata.MasterDataCacheUpdateServiceImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
@@ -49,6 +49,7 @@ import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEve
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.retry.RetryAspect;
 import io.mosip.kernel.core.retry.RetryConfig;
@@ -58,8 +59,6 @@ import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
@@ -80,7 +79,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
+@Import(value = {IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
@@ -94,7 +93,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubHelper.class,
 		IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class,
 		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
-		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateControllerDelegate.class,
+		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {

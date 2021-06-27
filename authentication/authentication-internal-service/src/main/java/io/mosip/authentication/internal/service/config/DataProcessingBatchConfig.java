@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Function;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -37,30 +36,34 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
+import io.mosip.authentication.internal.service.batch.FailedWebsubMessageProcessor;
+import io.mosip.authentication.internal.service.batch.FailedWebsubMessagesReader;
 import io.mosip.authentication.internal.service.batch.MissingCredentialsItemReader;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The CredentialStoreBatchConfig - Configuration file for scheduling Batch Job
- * for credential store.
+ * The DataProcessingBatchConfig - Configuration file for scheduling Batch Job
+ * for credential store, reprocessing missed credentials and reprocessing missed
+ * websub messages.
  *
  * @author Loganathan Sekar
  */
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
-public class CredentialStoreBatchConfig {
+public class DataProcessingBatchConfig {
 	
 
 	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(CredentialStoreBatchConfig.class);
+	private static Logger logger = IdaLogger.getLogger(DataProcessingBatchConfig.class);
 
 	/** The job builder factory. */
 	@Autowired
@@ -88,6 +91,12 @@ public class CredentialStoreBatchConfig {
 	
 	@Autowired
 	private MissingCredentialsItemReader missingCredentialsItemReader;
+	
+	@Autowired
+	private FailedWebsubMessagesReader failedWebsubMessagesReader;
+	
+	@Autowired
+	private FailedWebsubMessageProcessor failedWebsubMessageProcessor;
 	
 	@Autowired
 	private RetryPolicy retryPolicy;
@@ -119,12 +128,13 @@ public class CredentialStoreBatchConfig {
 	}
 	
 	@Bean
-	@Qualifier("retriggerMissingCredentialIssuancesJob")
-	public Job retriggerMissingCredentialIssuancesJob(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("retriggerMissingCredentialIssuancesJob")
+	@Qualifier("pullFailedWebsubMessagesAndProcess")
+	public Job pullFailedWebsubMessagesAndProcess(CredentialStoreJobExecutionListener listener) {
+		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
-				.flow(retriggerMissingCredentialsStep())
+				.flow(pullFailedMessagesAndProcess()) // First process failed websub messages
+				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
 				.end()
 				.build();
 		try {
@@ -159,11 +169,6 @@ public class CredentialStoreBatchConfig {
 				.build();
 	}
 	
-	/**
-	 * Credential store step.
-	 *
-	 * @return the step
-	 */
 	@Bean
 	public Step retriggerMissingCredentialsStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
@@ -173,6 +178,23 @@ public class CredentialStoreBatchConfig {
 				.reader(missingCredentialsItemReader)
 				.processor(asyncIdentityItemProcessor())
 				.writer(asyncMissingCredentialRetriggerItemWriter())
+				.faultTolerant()
+				// Applying common retry policy
+				.retryPolicy(retryPolicy)
+				// Applying common back-off policy
+				.backOffPolicy(backOffPolicy)
+				.build();
+	}
+	
+	@Bean
+	public Step pullFailedMessagesAndProcess() {
+		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		exceptions.put(IdAuthenticationBusinessException.class, false);
+		return stepBuilderFactory.get("pullMissingFailedMessagesAndProcess")
+				.<FailedMessage, Future<FailedMessage>>chunk(chunkSize)
+				.reader(failedWebsubMessagesReader)
+				.processor(asyncIdentityItemProcessor())
+				.writer(asyncFailedMessagesHandlerItemWriter())
 				.faultTolerant()
 				// Applying common retry policy
 				.retryPolicy(retryPolicy)
@@ -199,6 +221,10 @@ public class CredentialStoreBatchConfig {
 		return credentialStoreService::processMissingCredentialRequestId;
 	}
 	
+	private ItemWriter<FailedMessage> failedMessagesHandlerItemWriter() {
+		return failedWebsubMessageProcessor::processFailedWebsubMessages;
+	}
+	
 	/**
 	 * Async writer.
 	 *
@@ -215,6 +241,13 @@ public class CredentialStoreBatchConfig {
     public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
         AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
+        return asyncItemWriter;
+    }
+	
+	@Bean
+    public AsyncItemWriter<FailedMessage> asyncFailedMessagesHandlerItemWriter() {
+        AsyncItemWriter<FailedMessage> asyncItemWriter = new AsyncItemWriter<>();
+        asyncItemWriter.setDelegate(failedMessagesHandlerItemWriter());
         return asyncItemWriter;
     }
 

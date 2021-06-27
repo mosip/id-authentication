@@ -73,7 +73,7 @@ public class CredentialIssueanceCallbackController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "/idauthentication/v1/internal/callback/idchange/credential_issued/{partnerId}",topic = "${ida-topic-credential-issued}")
 	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
 	}
 	
@@ -91,7 +91,7 @@ public class CredentialIssueanceCallbackController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "/idauthentication/v1/internal/callback/idchange/remove_id/{partnerId}",topic = "${ida-topic-remove-id}")
 	public ResponseWrapper<?> handleRemoveIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleRemoveIdEvent", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleRemoveIdEvent", this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
 	}
 	
@@ -109,7 +109,7 @@ public class CredentialIssueanceCallbackController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "/idauthentication/v1/internal/callback/idchange/deactivate_id/{partnerId}",topic = "${ida-topic-deactivate-id}")
 	public ResponseWrapper<?> handleDeactivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleDeactivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
 	}
 	
@@ -127,7 +127,7 @@ public class CredentialIssueanceCallbackController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "/idauthentication/v1/internal/callback/idchange/activate_id/{partnerId}",topic = "${ida-topic-activate-id}")
 	public ResponseWrapper<?> handleActivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleEvents", "", "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleActivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
 	}
 

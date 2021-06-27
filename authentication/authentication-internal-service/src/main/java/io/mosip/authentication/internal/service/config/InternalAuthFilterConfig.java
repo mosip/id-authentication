@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
 import io.mosip.authentication.common.service.filter.InternalAuthFilter;
+import io.mosip.authentication.common.service.filter.InternalAuthenticationFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
 
 /**
@@ -30,6 +31,14 @@ public class InternalAuthFilterConfig {
 		FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new InternalAuthFilter());
 		registrationBean.addUrlPatterns("/auth");
+		return registrationBean;
+	}
+	
+	@Bean
+	public FilterRegistrationBean<InternalAuthenticationFilter> getInternalAuthenticationFilter() {
+		FilterRegistrationBean<InternalAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new InternalAuthenticationFilter());
+		registrationBean.addUrlPatterns("/verifyidentity");
 		return registrationBean;
 	}
 

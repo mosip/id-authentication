@@ -51,11 +51,21 @@ public class IdAuthRetryException extends BaseUncheckedException {
 	public IdAuthRetryException(IdAuthenticationErrorConstants exceptionConstant) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
 	}
+	
+	/**
+	 * Instantiates a new id auth retry exception.
+	 *
+	 * @param exceptionConstant the exception constant
+	 * @param rootCause the root cause
+	 */
+	public IdAuthRetryException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
+		super(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
+	}
 
 	/**
 	 * Instantiates a new id auth retry exception.
 	 *
-	 * @param BaseCheckedException the root cause
+	 * @param rootCause the root cause
 	 */
 	public IdAuthRetryException(BaseCheckedException rootCause) {
 		this(rootCause.getErrorCode(), rootCause.getErrorText(), rootCause);
@@ -64,7 +74,7 @@ public class IdAuthRetryException extends BaseUncheckedException {
 	/**
 	 * Instantiates a new id auth retry exception.
 	 *
-	 * @param BaseUncheckedException the root cause
+	 * @param rootCause the root cause
 	 */
 	public IdAuthRetryException(BaseUncheckedException rootCause) {
 		this(rootCause.getErrorCode(), rootCause.getErrorText(), rootCause);

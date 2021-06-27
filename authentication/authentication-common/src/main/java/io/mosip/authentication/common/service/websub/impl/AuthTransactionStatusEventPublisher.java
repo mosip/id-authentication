@@ -35,10 +35,6 @@ public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitial
 	@Value("${" + AUTH_TRANSACTION_STATUS_TOPIC + "}")
 	private String authTransactionStatusTopic;
 	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
-
 	@Autowired
 	private ObjectMapper objectMapper;
 	
@@ -57,7 +53,7 @@ public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitial
 		try {
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Trying to register topic: " + authTransactionStatusTopic);
-			publisher.registerTopic(authTransactionStatusTopic, publisherUrl);
+			webSubHelper.registerTopic(authTransactionStatusTopic);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
 					"Registered topic: " + authTransactionStatusTopic);
 		} catch (Exception e) {

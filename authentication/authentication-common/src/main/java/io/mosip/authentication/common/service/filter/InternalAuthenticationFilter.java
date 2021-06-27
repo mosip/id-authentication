@@ -10,8 +10,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * authenticating internal AUTH request {@link InternalAuthController}
  * 
  * @author Sanjay Murali
+ * @author Loganathan Sekar
  */
-public class InternalAuthFilter extends IdAuthFilter {
+public class InternalAuthenticationFilter extends IdAuthFilter {
 
 	/*
 	 * (non-Javadoc)
@@ -50,29 +51,29 @@ public class InternalAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, false);
+		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, true);
 	}
 
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, false);
+		return env.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, true);
 	}
-
-	//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
-//	@Override
-//	protected boolean isThumbprintValidationRequired() {
-//		return env.getProperty("mosip.ida.internal.thumbprint-validation-required", Boolean.class, false);
-//	}
 
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false);
+		return env.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, true);
 	}
 	
 	@Override
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
 		return true;
+	}
+	
+	@Override
+	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		//No decryption to be performed
+		return requestBody;
 	}
 
 }

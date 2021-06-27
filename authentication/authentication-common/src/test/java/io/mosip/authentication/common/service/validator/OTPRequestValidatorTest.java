@@ -1,7 +1,4 @@
-
 package io.mosip.authentication.common.service.validator;
-
-
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,11 +29,11 @@ import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
@@ -60,11 +57,7 @@ public class OTPRequestValidatorTest {
 
 	/** The uin validator. */
 	@Mock
-	UinValidatorImpl uinValidator;
-
-	/** The vid validator. */
-	@Mock
-	VidValidatorImpl vidValidator;
+	IdValidationUtil idValidator;
 
 	/** The ida rolling file appender. */
 	@InjectMocks
@@ -126,10 +119,11 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test invalid uin.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void testInvalidUin() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInvalidUin() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
@@ -144,11 +138,12 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test valid vid.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Ignore
 	@Test
-	public void testValidVid() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testValidVid() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setTransactionID("1234567890");
@@ -166,10 +161,11 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test invalid vid.
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	@Test
-	public void testInvalidVid() {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
+	public void testInvalidVid() throws IdAuthenticationBusinessException {
+		Mockito.when(idValidator.validateVID(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");

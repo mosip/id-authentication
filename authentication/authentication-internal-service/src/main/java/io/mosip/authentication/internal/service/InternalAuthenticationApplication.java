@@ -7,7 +7,6 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import io.mosip.authentication.common.controller.MasterDataCacheUpdateControllerDelegate;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
@@ -33,7 +32,9 @@ import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
+import io.mosip.authentication.common.service.impl.masterdata.MasterDataCacheUpdateServiceImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
+import io.mosip.authentication.common.service.impl.patrner.PartnerCACertEventServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.integration.DataShareManager;
@@ -59,6 +60,7 @@ import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsIn
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
@@ -75,8 +77,6 @@ import io.mosip.kernel.cryptomanager.controller.CryptomanagerController;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
@@ -100,9 +100,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
-		MasterDataCache.class, MasterDataCacheUpdateControllerDelegate.class, MasterDataUpdateEventInitializer.class, MatchInputBuilder.class,
+		MasterDataCache.class, MasterDataCacheUpdateServiceImpl.class, MasterDataUpdateEventInitializer.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
 		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
@@ -113,7 +113,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class,
 		KeyStoreImpl.class, KeymanagerDBHelper.class, ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class,
 		DataShareManager.class, TokenIDGenerator.class, IdTypeUtil.class, WebSubHelper.class,
-		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventSubscriber.class,
+		PartnerCACertEventServiceImpl.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, AuthTypeStatusEventSubscriber.class,
 		IdChangeEventsInitializer.class, SignatureController.class, CryptomanagerController.class, KeymanagerController.class,
 		CACertificateStore.class, PartnerCACertEventInitializer.class, PartnerCertManagerController.class, RetryConfig.class,
 		RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, CredentialStoreServiceImpl.class,
