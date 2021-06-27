@@ -437,8 +437,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)) {
 			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
 					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), individualIdType);
-			if (hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
+			if ((Objects.isNull(hotlistStatus.getExpiryDTimes()) && hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED))
 					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
+							&& hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
 							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
 						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), individualIdType));
