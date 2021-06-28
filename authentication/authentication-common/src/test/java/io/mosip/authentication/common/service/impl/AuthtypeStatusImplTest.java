@@ -1,11 +1,12 @@
 package io.mosip.authentication.common.service.impl;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -32,50 +32,20 @@ public class AuthtypeStatusImplTest {
 
 	@InjectMocks
 	private AuthtypeStatusImpl authtypeStatusImpl;
-	
-	@Mock
-	private IdAuthSecurityManager securityManager;
-
-	@Mock
-	private IdServiceImpl idService;
 
 	@Mock
 	private AuthLockRepository authLockRepository;
-	
+
 	@Test
-	@Ignore
 	public void TestvalidfetchAuthtypeStatus() throws IdAuthenticationBusinessException {
 		AuthtypeRequestDto authtypeRequestDto = getAuthTypeRequestDto();
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
-				.thenReturn(value);
-		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
-		
 		List<Object[]> valuelist = new ArrayList<>();
-		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
+		Object[] authtypeLockStatus = new Object[] { "bio-FMR", "true", Timestamp.valueOf(LocalDateTime.now().plusMinutes(1)) };
 		valuelist.add(authtypeLockStatus);
 		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
-//		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
-	}
-
-	@Test
-	@Ignore
-	public void TestvalidfetchAuthtypeStatuswithParam() throws IdAuthenticationBusinessException {
-		Map<String, Object> value = new HashMap<>();
-		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
-				.thenReturn(value);
-		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("213213214325254326643");
-
-		List<Object[]> valuelist = new ArrayList<>();
-		Object[] authtypeLockStatus = new Object[] {"bio-FMR", "y"};
-		valuelist.add(authtypeLockStatus);
-		authtypeLockStatus = new Object[] {"demo", "n"};
-		valuelist.add(authtypeLockStatus);
-		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
-//		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("9172985031",
-//				IdType.UIN.getType());
+		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("");
 	}
 
 	private AuthtypeRequestDto getAuthTypeRequestDto() {
