@@ -135,12 +135,16 @@ public class FailedWebsubMessageProcessor {
 		try {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "processAuthTypeStatusEvent", this.getClass().getCanonicalName(), "handling updateAuthtypeStatus event for partnerId: " + authPartherId);
 
-			IDAEventDTO event = mapper.convertValue(failedMessage.getMessage(), IDAEventDTO.class);
+			IDAEventDTO event = mapper.readValue(failedMessage.getMessage(), IDAEventDTO.class);
 			authtypeStatusService.updateAuthTypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
 
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().getCanonicalName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (IOException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"getEventModel", "Error in Parsing message as EventModel : " + failedMessage.toString() + ": "
+							+ ExceptionUtils.getStackTrace(e));
 		}
 	}
 	

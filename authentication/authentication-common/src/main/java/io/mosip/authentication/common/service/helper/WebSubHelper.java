@@ -169,7 +169,7 @@ public class WebSubHelper {
 	}
 	
 	@WithRetry
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
 		try {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(failedMessageSyncUrl);
@@ -178,6 +178,7 @@ public class WebSubHelper {
 		failedContentRequest.setMessageCount(messageCount);
 		failedContentRequest.setSecret(secret);
 		failedContentRequest.setTimestamp(timestamp);
+		failedContentRequest.setPaginationIndex(pageIndex);
 		FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
 		List<?> messages = failedContent.getFailedcontents();
 		return messages == null ? List.of() : messages.stream().map(obj -> {
