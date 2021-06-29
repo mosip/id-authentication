@@ -53,10 +53,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-
-	/** The Constant INDIVIDUAL BIOMETRICS. */
-	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
+	
 	/**  The OTPManager. */
 	@Autowired
 	private OTPManager otpManager;
@@ -268,7 +265,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
-		Optional<String> identityValue = getIdentityValue(INDIVIDUAL_BIOMETRICS, null, idEntity)
+		Optional<String> identityValue = getIdentityValue(environment.getProperty(IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME), null, idEntity)
 				.findAny();
 		if (identityValue.isPresent()) {
 			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();

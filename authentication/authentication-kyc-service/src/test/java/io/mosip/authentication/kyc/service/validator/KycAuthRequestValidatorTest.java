@@ -41,8 +41,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
@@ -75,13 +73,7 @@ public class KycAuthRequestValidatorTest {
 
 	@InjectMocks
 	AuthRequestValidator authRequestValidator;
-
-	@Mock
-	UinValidatorImpl uinValidator;
-
-	@Mock
-	VidValidatorImpl vidValidator;
-
+	
 	@Mock
 	PinValidatorImpl pinValidator;
 
