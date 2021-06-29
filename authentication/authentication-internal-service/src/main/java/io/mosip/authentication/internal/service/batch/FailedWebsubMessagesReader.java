@@ -47,7 +47,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
@@ -112,8 +111,10 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The start. */
 	private AtomicBoolean start = new AtomicBoolean(true);
 	
+	private AtomicInteger currentPageIndex = new AtomicInteger(0);
+	
 	/** The current effectivedtimes. */
-	private String currentEffectivedtimes;
+	private String effectivedtimes;
 
 	/** The request ids iterator. */
 	private Iterator<FailedMessage> messagesIterator;
@@ -281,7 +282,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 */
 	private void initialize() {
 		totalCount = new AtomicInteger(0);
-		currentEffectivedtimes = getInitialEffectiveDTimes();
+		effectivedtimes = getEffectiveDTimes();
 		topicsToFetchFailedMessagesIterator = topicsToFetchFailedMessages.iterator();
 		messagesIterator = getFailedMessagesIterator();
 	}
@@ -311,8 +312,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			start.set(false);
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
 				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
-				//Initialize effectivedtimes for the next topic
-				currentEffectivedtimes = getInitialEffectiveDTimes();
 			} else {
 				return List.of();
 			}
@@ -330,9 +329,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		while(failedMessages.isEmpty()) {
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
 				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
-				//Initialize effectivedtimes for the next topic
-				currentEffectivedtimes = getInitialEffectiveDTimes();
-
+				//Reset page index to 0 for next topic
+				currentPageIndex.set(0);
 				failedMessages = getNextFailedMessagesForCurrentTopic();
 				if(!failedMessages.isEmpty()) {
 					return failedMessages;
@@ -353,9 +351,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	private List<FailedMessage> getNextFailedMessagesForCurrentTopic() {
 		List<FailedMessage> failedMessages = doGetNextFailedMessages();
 		if(!failedMessages.isEmpty()) {
-			//Get last message and assign it as current effectiveDtimes
-			String timestampStr = failedMessages.get(failedMessages.size() - 1).getTimestamp();
-			currentEffectivedtimes = DateUtils.formatToISOString(DateUtils.parseUTCToLocalDateTime(timestampStr, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			//Increment page index
+			currentPageIndex.incrementAndGet();
 			return failedMessages;
 		}
 		return List.of();
@@ -363,7 +360,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 
 	private List<FailedMessage> doGetNextFailedMessages() {
 		try {
-			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentTopicInfo.getSecret(), currentEffectivedtimes, currentTopicInfo.getFailedMessageConsumer());
+			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentTopicInfo.getSecret(), effectivedtimes, currentPageIndex.get(), currentTopicInfo.getFailedMessageConsumer());
 		} catch (Exception e) {
 			mosipLogger.error("Error in Fetched failed messages for topic {} \n {}", currentTopicInfo.getTopic(),
 					ExceptionUtils.getStackTrace(e));
@@ -411,7 +408,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 *
 	 * @return the effective D times
 	 */
-	private String getInitialEffectiveDTimes() {
+	private String getEffectiveDTimes() {
 		// Fetch credentials since last credential stored event date time.
 		LocalDateTime maxCredentialPullWindowTime = LocalDateTime.now().minus(maxWebsubMessagesPullWindowDays, ChronoUnit.DAYS);
 		return DateUtils.formatToISOString(maxCredentialPullWindowTime);
