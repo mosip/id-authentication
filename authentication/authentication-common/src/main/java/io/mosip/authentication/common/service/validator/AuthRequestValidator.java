@@ -255,13 +255,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						.anyMatch(bio -> {
 							if (bio.getData().getDomainUri() == null) {
 								// It is error if domain URI in request is not null but in biometrics it is null
-								return (authRequestDto.getDomainUri() != null
-										|| allowedDomainUris.contains(authRequestDto.getDomainUri()));
+								return (authRequestDto.getDomainUri() != null										
+										|| isValuesContainsValue(allowedDomainUris, authRequestDto.getDomainUri()));
 							} else {
 								// It is error if domain URI in biometrics is not null and the same in request
 								// is not null or they both are not equal
-								return authRequestDto.getDomainUri() == null
-										|| !allowedDomainUris.contains(bio.getData().getDomainUri())
+								return authRequestDto.getDomainUri() == null										
+										|| !isValuesContainsValue(allowedDomainUris, bio.getData().getDomainUri())
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
@@ -276,12 +276,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							if (bio.getData().getEnv() == null) {
 								// It is error if env in request is not null but in biometrics it is null
 								return ((authRequestDto.getEnv() != null)
-										|| allowedEnvironments.contains(authRequestDto.getEnv()));
+										|| isValuesContainsValue(allowedEnvironments,authRequestDto.getEnv()));
 							} else {
 								// It is error if env in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getEnv() == null
-										|| !allowedEnvironments.contains(bio.getData().getEnv())
+										|| !isValuesContainsValue(allowedEnvironments, bio.getData().getEnv())
 										|| !bio.getData().getEnv().contentEquals(authRequestDto.getEnv());
 							}
 						})) {
@@ -529,5 +529,19 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			// Try parsing with request time stamp format
 			return this.requestTimeParser(timestamp);
 		}
+	}
+	
+	/**
+	 * Checks the list of Strings contains given string or not
+	 * 
+	 * @param values
+	 * @param value
+	 * @return
+	 */
+	private boolean isValuesContainsValue(List<String> values, String value) {
+		if (value != null) {
+			return values.stream().anyMatch(value::equalsIgnoreCase);
+		}
+		return false;
 	}
 }
