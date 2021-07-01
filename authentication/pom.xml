@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.1.5.4-SNAPSHOT</version>
+	<version>1.1.5.4</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -76,7 +76,7 @@
 		<kernel-core.version>1.1.5.3</kernel-core.version>
 		<kernel-keymanager-service.version>1.1.5.3</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.1.5.3</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>1.1.5.3</kernel-idvalidator-uin.version>
+		<kernel-idvalidator-uin.version>1.1.5.4</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>1.1.5.3</kernel-idvalidator-vid.version>
 		<kernel-idobjectvalidator.version>1.1.5.3</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>1.1.5.3</kernel-pinvalidator.version>
