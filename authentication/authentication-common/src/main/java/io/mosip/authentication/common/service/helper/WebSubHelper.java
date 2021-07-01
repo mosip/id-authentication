@@ -23,7 +23,6 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
@@ -50,8 +49,6 @@ public class WebSubHelper {
 		private String topic;
 		private String message;
 		private String timestamp;
-		
-		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
 	}
 	
 	private static final Logger logger = IdaLogger.getLogger(WebSubHelper.class);
@@ -169,7 +166,7 @@ public class WebSubHelper {
 	}
 	
 	@WithRetry
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex) {
 		try {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(failedMessageSyncUrl);
@@ -184,7 +181,6 @@ public class WebSubHelper {
 		return messages == null ? List.of() : messages.stream().map(obj -> {
 			FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
 			failedMessage.setTopic(topic);
-			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
 			return failedMessage;
 		}).collect(Collectors.toList());
 		} catch(Exception e) {
