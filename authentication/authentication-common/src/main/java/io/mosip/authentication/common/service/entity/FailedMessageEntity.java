@@ -41,6 +41,10 @@ public class FailedMessageEntity {
 	@NotNull
 	@Column(name = "message")
 	private String message;
+	
+	@NotNull
+	@Column(name = "failed_dtimes")
+	private LocalDateTime failedDTimes;
 
 	/** The cr by. */
 	@NotNull

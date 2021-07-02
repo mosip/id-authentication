@@ -357,7 +357,7 @@ public class DataProcessingBatchConfig {
 		reader.setRepository(failedMessagesRepo);
 		reader.setMethodName("findNewFailedMessages");
 		final Map<String, Sort.Direction> sorts = new HashMap<>();
-		    sorts.put("cr_dtimes", Direction.ASC); 
+		    sorts.put("published_on_dtimes", Direction.ASC); // Sort the websub messages by published timestamp
 		reader.setSort(sorts);
 		reader.setPageSize(chunkSize);
 		return reader;
