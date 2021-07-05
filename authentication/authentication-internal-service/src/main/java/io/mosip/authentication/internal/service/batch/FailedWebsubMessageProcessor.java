@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.FailedMessageEntity;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
+import io.mosip.authentication.common.service.impl.idevent.MessageStoreStatus;
 import io.mosip.authentication.common.service.impl.patrner.PartnerCACertEventService;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
@@ -61,6 +62,7 @@ public class FailedWebsubMessageProcessor {
 	/** The mosip logger. */
 	private static final Logger mosipLogger = IdaLogger.getLogger(FailedWebsubMessageProcessor.class);
 
+	/** The Constant DUMMY_CONSUMER. */
 	private static final ConsumerWithThrowable<FailedMessageEntity, Exception> DUMMY_CONSUMER = t -> {
 		return;
 	};
@@ -89,6 +91,7 @@ public class FailedWebsubMessageProcessor {
 	@Autowired
 	private PartnerCACertEventService partnerCACertEventService;
 
+	/** The partner manager. */
 	@Autowired
 	private PartnerServiceManager partnerManager;
 
@@ -112,9 +115,11 @@ public class FailedWebsubMessageProcessor {
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The env. */
 	@Autowired
 	protected Environment env;
 
+	/** The failed messages repo. */
 	@Autowired
 	private FailedMessagesRepo failedMessagesRepo;
 
@@ -127,10 +132,20 @@ public class FailedWebsubMessageProcessor {
 		failedMessages.forEach(this::storeFailedMessage);
 	}
 
+	/**
+	 * Process failed websub messages.
+	 *
+	 * @param failedMessageEntities the failed message entities
+	 */
 	public void processFailedWebsubMessages(List<? extends FailedMessageEntity> failedMessageEntities) {
 		failedMessageEntities.forEach(this::processFailedMessage);
 	}
 
+	/**
+	 * Store failed message.
+	 *
+	 * @param failedMessage the failed message
+	 */
 	private void storeFailedMessage(FailedMessage failedMessage) {
 		Optional<EventModel> eventModelOpt = getEventModel(failedMessage);
 		if (eventModelOpt.isPresent()) {
@@ -143,6 +158,12 @@ public class FailedWebsubMessageProcessor {
 		}
 	}
 
+	/**
+	 * Gets the failed D times.
+	 *
+	 * @param failedMessage the failed message
+	 * @return the failed D times
+	 */
 	private LocalDateTime getFailedDTimes(FailedMessage failedMessage) {
 		// Get last message and assign it as current effectiveDtimes
 		String timestampStr = failedMessage.getTimestamp();
@@ -150,22 +171,45 @@ public class FailedWebsubMessageProcessor {
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 	}
 
+	/**
+	 * Store failed message.
+	 *
+	 * @param eventModel the event model
+	 * @param id the id
+	 * @param failedDtimes the failed dtimes
+	 */
 	public void storeFailedMessage(EventModel eventModel, String id, LocalDateTime failedDtimes) {
-		FailedMessageEntity failedMessageEntity = new FailedMessageEntity();
-		failedMessageEntity.setCrBy(IDA);
-		failedMessageEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-		failedMessageEntity.setId(id);
-		failedMessageEntity.setTopic(eventModel.getTopic());
-		failedMessageEntity.setPublishedOnDtimes(DateUtils.convertUTCToLocalDateTime(eventModel.getPublishedOn()));
-		failedMessageEntity.setStatusCode(CredentialStoreStatus.NEW.name());
-		failedMessageEntity.setFailedDTimes(failedDtimes);
-		try {
-			failedMessageEntity.setMessage(mapper.writeValueAsString(eventModel));
-			failedMessagesRepo.save(failedMessageEntity);
-		} catch (JsonProcessingException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "storeEventModel",
-					"error in json processing: " + e.getMessage());
+		if(failedMessagesRepo.findById(id).isEmpty()) {
+			FailedMessageEntity failedMessageEntity = new FailedMessageEntity();
+			failedMessageEntity.setCrBy(IDA);
+			failedMessageEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			failedMessageEntity.setId(id);
+			failedMessageEntity.setTopic(eventModel.getTopic());
+			failedMessageEntity.setPublishedOnDtimes(DateUtils.convertUTCToLocalDateTime(eventModel.getPublishedOn()));
+			failedMessageEntity.setStatusCode(CredentialStoreStatus.NEW.name());
+			failedMessageEntity.setFailedDTimes(failedDtimes);
+			try {
+				failedMessageEntity.setMessage(mapper.writeValueAsString(eventModel));
+				failedMessagesRepo.save(failedMessageEntity);
+			} catch (JsonProcessingException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "storeEventModel",
+						"error in json processing: " + e.getMessage());
+			}
 		}
+	}
+	
+	/**
+	 * Update failed message.
+	 *
+	 * @param eventId the event id
+	 * @param status the status
+	 */
+	public void updateFailedMessage(String eventId, String status) {
+		FailedMessageEntity failedMessageEntity = failedMessagesRepo.getOne(eventId);
+		failedMessageEntity.setUpdBy(IDA);
+		failedMessageEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+		failedMessageEntity.setStatusCode(status);
+		failedMessagesRepo.save(failedMessageEntity);
 	}
 
 	/**
@@ -176,10 +220,12 @@ public class FailedWebsubMessageProcessor {
 	private void processFailedMessage(FailedMessageEntity failedMessage) {
 		try {
 			doProcessFailedMessage(failedMessage);
+			updateFailedMessage(failedMessage.getId(), MessageStoreStatus.PROCESSED.name());
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processFailedMessage",
 					"Error in Processing failedMessage : " + failedMessage.toString() + ": "
 							+ ExceptionUtils.getStackTrace(e));
+			updateFailedMessage(failedMessage.getId(), MessageStoreStatus.FAILED.name());
 		}
 	}
 
@@ -193,6 +239,12 @@ public class FailedWebsubMessageProcessor {
 		getFailedMessageConsumer(failedMessage.getTopic()).accept(failedMessage);
 	}
 
+	/**
+	 * Gets the failed message consumer.
+	 *
+	 * @param topic the topic
+	 * @return the failed message consumer
+	 */
 	private ConsumerWithThrowable<FailedMessageEntity, Exception> getFailedMessageConsumer(String topic) {
 		if (topic.contains("/")) {
 			String topicPrefix = authPartherId + "/";
@@ -225,12 +277,25 @@ public class FailedWebsubMessageProcessor {
 		return DUMMY_CONSUMER;
 	}
 
+	/**
+	 * Gets the partner event type.
+	 *
+	 * @param topic the topic
+	 * @return the partner event type
+	 */
 	private Optional<PartnerEventTypes> getPartnerEventType(String topic) {
 		Optional<PartnerEventTypes> partnerType = Arrays.stream(PartnerEventTypes.values())
 				.filter(type -> (env.getProperty(type.getTopicPropertyName())).equalsIgnoreCase(topic)).findAny();
 		return partnerType;
 	}
 
+	/**
+	 * Gets the id change event type.
+	 *
+	 * @param topic the topic
+	 * @param topicPrefix the topic prefix
+	 * @return the id change event type
+	 */
 	private Optional<IDAEventType> getIdChangeEventType(String topic, String topicPrefix) {
 		return Arrays.stream(FailedWebsubMessagesReader.ID_CHANGE_EVENTS)
 				.filter(type -> (topicPrefix + type.toString()).equalsIgnoreCase(topic)).findAny();
@@ -364,6 +429,12 @@ public class FailedWebsubMessageProcessor {
 		}
 	}
 
+	/**
+	 * Gets the event model.
+	 *
+	 * @param failedMessage the failed message
+	 * @return the event model
+	 */
 	private Optional<EventModel> getEventModel(FailedMessage failedMessage) {
 		try {
 			return Optional.of(mapper.readValue(failedMessage.getMessage(), EventModel.class));
@@ -375,6 +446,12 @@ public class FailedWebsubMessageProcessor {
 		return Optional.empty();
 	}
 
+	/**
+	 * Gets the event model.
+	 *
+	 * @param failedMessage the failed message
+	 * @return the event model
+	 */
 	private Optional<EventModel> getEventModel(FailedMessageEntity failedMessage) {
 		try {
 			return Optional.of(mapper.readValue(failedMessage.getMessage(), EventModel.class));
@@ -386,6 +463,15 @@ public class FailedWebsubMessageProcessor {
 		return Optional.empty();
 	}
 
+	/**
+	 * Handle partner event.
+	 *
+	 * @param partnerEventType the partner event type
+	 * @param eventModel the event model
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void handlePartnerEvent(PartnerEventTypes partnerEventType, EventModel eventModel)
 			throws JsonParseException, JsonMappingException, IOException {
 		switch (partnerEventType) {

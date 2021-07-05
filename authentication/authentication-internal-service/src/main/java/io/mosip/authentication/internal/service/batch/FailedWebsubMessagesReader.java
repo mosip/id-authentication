@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -45,8 +46,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.entity.FailedMessageEntity;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
+import io.mosip.authentication.common.service.impl.idevent.MessageStoreStatus;
+import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
@@ -220,7 +224,8 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The Constant ID_CHANGE_EVENTS. */
 	public static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
-	
+	@Autowired
+	private FailedMessagesRepo failedMessagesRepo;
 	/**
 	 * Post construct.
 	 */
@@ -268,7 +273,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 */
 	private void initialize() {
 		totalCount = new AtomicInteger(0);
-		effectivedtimes = getEffectiveDTimes();
 		topicsToFetchFailedMessagesIterator = topicsToFetchFailedMessages.iterator();
 		messagesIterator = getFailedMessagesIterator();
 	}
@@ -297,7 +301,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		if(start.get()) {
 			start.set(false);
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
-				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				currentTopicInfo = getNextTopic();
 			} else {
 				return List.of();
 			}
@@ -314,7 +318,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		
 		while(failedMessages.isEmpty()) {
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
-				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				currentTopicInfo = getNextTopic();
 				//Reset page index to 0 for next topic
 				currentPageIndex.set(0);
 				failedMessages = getNextFailedMessagesForCurrentTopic();
@@ -327,6 +331,24 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		}
 		
 		return List.of();
+	}
+
+	private TopicInfo getNextTopic() {
+		TopicInfo nextTopicInfo = topicsToFetchFailedMessagesIterator.next();
+		updateEffectiveTimeForTopic(nextTopicInfo.getTopic());
+		return nextTopicInfo;
+	}
+
+	private void updateEffectiveTimeForTopic(String topic) {
+		LocalDateTime minDTime = getMinEffectiveDTimes();
+		Optional<FailedMessageEntity> failedMessage = failedMessagesRepo.findFirstByTopicAndCrDTimesGreaterThanAndStatusCodeOrderByPublishedOnDtimesDesc(topic, minDTime, MessageStoreStatus.PROCESSED.toString());
+		LocalDateTime effDTime;
+		if (failedMessage.isPresent() && failedMessage.get().getFailedDTimes().isAfter(minDTime)) {
+			effDTime = failedMessage.get().getFailedDTimes();
+		} else {
+			effDTime = minDTime;
+		}
+		effectivedtimes = DateUtils.formatToISOString(effDTime);
 	}
 
 	/**
@@ -346,7 +368,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 
 	private List<FailedMessage> doGetNextFailedMessages() {
 		try {
-			//TODO calculate the last message published time for topic if any as last time or use default effectivedtimes
 			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(),
 					chunkSize, currentTopicInfo.getSecret(), effectivedtimes, currentPageIndex.get());
 		} catch (Exception e) {
@@ -396,10 +417,9 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 *
 	 * @return the effective D times
 	 */
-	private String getEffectiveDTimes() {
+	private LocalDateTime getMinEffectiveDTimes() {
 		// Fetch credentials since last credential stored event date time.
-		LocalDateTime maxCredentialPullWindowTime = LocalDateTime.now().minus(maxWebsubMessagesPullWindowDays, ChronoUnit.DAYS);
-		return DateUtils.formatToISOString(maxCredentialPullWindowTime);
+		return LocalDateTime.now().minus(maxWebsubMessagesPullWindowDays, ChronoUnit.DAYS);
 		
 	}
 

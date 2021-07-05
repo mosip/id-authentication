@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-@Table(name = "failed_messages_store", schema = "ida")
+@Table(name = "failed_message_store", schema = "ida")
 @Entity
 public class FailedMessageEntity {
 	
