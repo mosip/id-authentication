@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.batch.item.ItemReader;
@@ -100,7 +101,17 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 	 */
 	private List<CredentialRequestIdsDto> getNextPageItems() {
 		try {
-			return credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
+			List<CredentialRequestIdsDto> credRequests = credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex.getAndIncrement(), effectivedtimes);
+			// Filter out any request ID which is already stored credential event store.
+			// Such entry could be there due to the Pull Failed Message Job has processed the respective
+			// CREDENTIAL_ISSUED event.
+			List<String> requestIds = credRequests.stream()
+					.map(CredentialRequestIdsDto::getRequestId)
+					.collect(Collectors.toList());
+			List<String> existingEvents = credentialEventRepo.findDistictCredentialTransactionIdsInList(requestIds);
+			return credRequests.stream()
+					.filter(requestIdDto -> !existingEvents.contains(requestIdDto.getRequestId()))
+					.collect(Collectors.toList());
 		} catch (RestServiceException | IDDataValidationException e) {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 		}
