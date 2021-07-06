@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.websub.dto;
 
-import java.util.Map;
-
 import lombok.Data;
 
 /**
@@ -9,7 +7,7 @@ import lombok.Data;
  * @author Loganathan Sekar
  */
 @Data
-public class EventModel<T> {
+public class EventModel<T extends EventInterface> {
 
     /** The publisher. */
     private String publisher;
@@ -22,7 +20,4 @@ public class EventModel<T> {
     
     /** The event. */
     private T event;
-    
-    /** The data. */
-    private Map<String, Object> data;
 }

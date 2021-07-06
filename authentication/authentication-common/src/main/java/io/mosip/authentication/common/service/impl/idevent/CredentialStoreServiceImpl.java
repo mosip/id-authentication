@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CRE
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_MAX_LIMIT;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -79,9 +80,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/** The Constant TOKEN. */
 	private static final String TOKEN = "TOKEN";
 
-	/** The Constant IDA. */
-	private static final String IDA = "IDA";
-
 	/** The Constant EXPIRY_TIME. */
 	private static final String EXPIRY_TIME = "expiry_timestamp";
 
@@ -95,7 +93,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private static final String MODULO = "MODULO";
 
 	/** The Constant ID_HASH. */
-	private static final String ID_HASH = "id_hash";
+	public static final String ID_HASH = "id_hash";
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(CredentialStoreServiceImpl.class);
