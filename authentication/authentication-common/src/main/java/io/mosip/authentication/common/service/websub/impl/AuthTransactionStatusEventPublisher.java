@@ -75,7 +75,7 @@ public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitial
 		AuthTransactionStatusEvent credentialStatusUpdateEvent = createEvent(transactionId, updatedDTimes);
 		EventModel<AuthTransactionStatusEvent> eventModel = webSubHelper.createEventModel(authTransactionStatusTopic, credentialStatusUpdateEvent);
 		TypeReference<Map<String,Object>> typeReference = new TypeReference<Map<String, Object>>() {};
-		eventModel.setData((java.util.Map<String, Object>) objectMapper.convertValue(authTxnDto, typeReference));
+		eventModel.getEvent().setData((java.util.Map<String, Object>) objectMapper.convertValue(authTxnDto, typeReference));
 		webSubHelper.publishEvent(authTransactionStatusTopic, eventModel);
 	}
 	

@@ -75,6 +75,12 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 *
 	 * @return the java.lang. string
 	 */
+	
+	/**
+	 * To string.
+	 *
+	 * @return the java.lang. string
+	 */
 	@Data
 	
 	/**
@@ -84,6 +90,14 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 * @param callbackUrl the callback url
 	 * @param secret the secret
 	 * @param failedMessageConsumer the failed message consumer
+	 */
+	
+	/**
+	 * Instantiates a new topic info.
+	 *
+	 * @param topic the topic
+	 * @param callbackUrl the callback url
+	 * @param secret the secret
 	 */
 	@AllArgsConstructor
 	public class TopicInfo {
@@ -112,6 +126,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The start. */
 	private AtomicBoolean start = new AtomicBoolean(true);
 	
+	/** The current page index. */
 	private AtomicInteger currentPageIndex = new AtomicInteger(0);
 	
 	/** The current effectivedtimes. */
@@ -224,6 +239,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The Constant ID_CHANGE_EVENTS. */
 	public static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
+	/** The failed messages repo. */
 	@Autowired
 	private FailedMessagesRepo failedMessagesRepo;
 	/**
@@ -333,12 +349,22 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		return List.of();
 	}
 
+	/**
+	 * Gets the next topic.
+	 *
+	 * @return the next topic
+	 */
 	private TopicInfo getNextTopic() {
 		TopicInfo nextTopicInfo = topicsToFetchFailedMessagesIterator.next();
 		updateEffectiveTimeForTopic(nextTopicInfo.getTopic());
 		return nextTopicInfo;
 	}
 
+	/**
+	 * Update effective time for topic.
+	 *
+	 * @param topic the topic
+	 */
 	private void updateEffectiveTimeForTopic(String topic) {
 		LocalDateTime minDTime = getMinEffectiveDTimes();
 		Optional<FailedMessageEntity> failedMessage = failedMessagesRepo.findFirstByTopicAndCrDTimesGreaterThanAndStatusCodeOrderByPublishedOnDtimesDesc(topic, minDTime, MessageStoreStatus.PROCESSED.toString());
@@ -366,6 +392,11 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		return List.of();
 	}
 
+	/**
+	 * Do get next failed messages.
+	 *
+	 * @return the list
+	 */
 	private List<FailedMessage> doGetNextFailedMessages() {
 		try {
 			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(),

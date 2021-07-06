@@ -4,6 +4,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
+import io.mosip.authentication.common.service.websub.dto.EventInterface;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -44,13 +46,23 @@ import lombok.Data;
 @Component
 public class WebSubHelper {
 	
+	/**
+	 * Instantiates a new failed message.
+	 */
 	@Data
 	public static class FailedMessage{
+		
+		/** The topic. */
 		private String topic;
+		
+		/** The message. */
 		private String message;
+		
+		/** The timestamp. */
 		private String timestamp;
 	}
 	
+	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(WebSubHelper.class);
 	
 	/** The Constant PUBLISHER_IDA. */
@@ -68,15 +80,19 @@ public class WebSubHelper {
 	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
+	/** The failed message sync url. */
 	@Value("${"+ IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL +"}")
 	private String failedMessageSyncUrl;
 	
+	/** The subscription client. */
 	@Autowired
 	protected SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscriptionClient;
 	
+	/** The subscription extended client. */
 	@Autowired
 	protected SubscriptionExtendedClient<FailedContentResponse, FailedContentRequest> subscriptionExtendedClient;
 	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -147,7 +163,9 @@ public class WebSubHelper {
 	 * @param event the event
 	 * @return the event model
 	 */
-	public <T,S> EventModel<T> createEventModel(String topic, T event) {
+	public <T extends EventInterface,S> EventModel<T> createEventModel(String topic, T event) {
+		String eventId = UUID.randomUUID().toString();
+		event.setId(eventId);
 		EventModel<T> eventModel = new EventModel<>();
 		eventModel.setEvent(event);
 		eventModel.setPublisher(PUBLISHER_IDA);
@@ -156,15 +174,58 @@ public class WebSubHelper {
 		return eventModel;
 	}
 	
+	/**
+	 * Creates the event model.
+	 *
+	 * @param topic the topic
+	 * @return the io.mosip.kernel.core.websub.model. event model
+	 */
+	public  io.mosip.kernel.core.websub.model.EventModel createEventModel(String topic) {
+		io.mosip.kernel.core.websub.model.Event event = new io.mosip.kernel.core.websub.model.Event();
+		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		event.setTimestamp(dateTime);
+		String eventId = UUID.randomUUID().toString();
+		event.setId(eventId);
+		
+		io.mosip.kernel.core.websub.model.EventModel eventModel = new io.mosip.kernel.core.websub.model.EventModel();
+		eventModel.setEvent(event);
+		eventModel.setPublisher(PUBLISHER_IDA);
+		eventModel.setPublishedOn(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		eventModel.setTopic(topic);
+		return eventModel;
+	}
+	
+	/**
+	 * Register topic.
+	 *
+	 * @param eventTopic the event topic
+	 */
 	public void registerTopic(String eventTopic) {
 		publisher.registerTopic(eventTopic, publisherUrl);
 	}
 	
+	/**
+	 * Subscribe.
+	 *
+	 * @param subscriptionRequest the subscription request
+	 * @return the subscription change response
+	 */
 	public SubscriptionChangeResponse subscribe(SubscriptionChangeRequest subscriptionRequest) {
 		subscriptionRequest.setHubURL(hubURL);
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
+	/**
+	 * Gets the failed messages.
+	 *
+	 * @param topic the topic
+	 * @param callbackUrl the callback url
+	 * @param messageCount the message count
+	 * @param secret the secret
+	 * @param timestamp the timestamp
+	 * @param pageIndex the page index
+	 * @return the failed messages
+	 */
 	@WithRetry
 	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex) {
 		try {

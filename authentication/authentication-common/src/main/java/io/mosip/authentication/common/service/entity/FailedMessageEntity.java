@@ -12,17 +12,24 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Class failed message entity.
+ * 
+ * @author Loganathan Sekar
+ */
 @NoArgsConstructor
 @Data
 @Table(name = "failed_message_store", schema = "ida")
 @Entity
 public class FailedMessageEntity {
 	
+	/** The id. */
 	@Id
 	@NotNull
 	@Column(name = "id")
 	private String id;
 	
+	/** The topic. */
 	@NotNull
 	@Column(name = "topic")
 	private String topic;
@@ -42,6 +49,7 @@ public class FailedMessageEntity {
 	@Column(name = "message")
 	private String message;
 	
+	/** The failed D times. */
 	@NotNull
 	@Column(name = "failed_dtimes")
 	private LocalDateTime failedDTimes;

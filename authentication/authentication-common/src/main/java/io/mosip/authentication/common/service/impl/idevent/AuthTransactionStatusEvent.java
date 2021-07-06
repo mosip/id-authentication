@@ -1,15 +1,19 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
+import io.mosip.authentication.common.service.websub.dto.EventInterface;
 import lombok.Data;
 
 /**
- * Instantiates a new auth transaction status event.
+ * The class auth transaction status event.
+ * 
  * @author Loganathan Sekar
  */
+
 @Data
-public class AuthTransactionStatusEvent {
+public class AuthTransactionStatusEvent implements EventInterface{
 	
 	/** The id. */
 	private String id;
@@ -19,5 +23,8 @@ public class AuthTransactionStatusEvent {
 	
 	/** The timestamp. */
 	private LocalDateTime timestamp;
+	
+	/** The data. */
+	private Map<String, Object> data;
 
 }
