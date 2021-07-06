@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -45,15 +46,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.entity.FailedMessageEntity;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
+import io.mosip.authentication.common.service.impl.idevent.MessageStoreStatus;
+import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.PartnerEventTypes;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IDAEventType;
-import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import lombok.AllArgsConstructor;
@@ -72,6 +75,12 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 *
 	 * @return the java.lang. string
 	 */
+	
+	/**
+	 * To string.
+	 *
+	 * @return the java.lang. string
+	 */
 	@Data
 	
 	/**
@@ -81,6 +90,14 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 * @param callbackUrl the callback url
 	 * @param secret the secret
 	 * @param failedMessageConsumer the failed message consumer
+	 */
+	
+	/**
+	 * Instantiates a new topic info.
+	 *
+	 * @param topic the topic
+	 * @param callbackUrl the callback url
+	 * @param secret the secret
 	 */
 	@AllArgsConstructor
 	public class TopicInfo {
@@ -94,8 +111,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		/** The secret. */
 		private String secret;
 		
-		/** The failed message consumer. */
-		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
 	}
 
 
@@ -111,6 +126,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	/** The start. */
 	private AtomicBoolean start = new AtomicBoolean(true);
 	
+	/** The current page index. */
 	private AtomicInteger currentPageIndex = new AtomicInteger(0);
 	
 	/** The current effectivedtimes. */
@@ -211,10 +227,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	@Value("${" + IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE + ":10}")
 	private int chunkSize;
 	
-	/** The failed websub message processor. */
-	@Autowired
-	private FailedWebsubMessageProcessor failedWebsubMessageProcessor;
-	
 	/** The topics to fetch failed messages. */
 	private final List<TopicInfo> topicsToFetchFailedMessages = new ArrayList<>();
 
@@ -225,9 +237,11 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	private TopicInfo currentTopicInfo;
 	
 	/** The Constant ID_CHANGE_EVENTS. */
-	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
+	public static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
-	
+	/** The failed messages repo. */
+	@Autowired
+	private FailedMessagesRepo failedMessagesRepo;
 	/**
 	 * Post construct.
 	 */
@@ -248,32 +262,25 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 			String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId)
 					.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
 			
-			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL,credIssueCallbacksecret, 
-					failedMessage -> failedWebsubMessageProcessor.processIdChangeEvent(eventType, failedMessage)));
+			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL,credIssueCallbacksecret));
 		});
 		
 		String authTypeStatusTopic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
-		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId), autypeCallbackSecret,
-				failedWebsubMessageProcessor::processAuthTypeStatusEvent));
+		topicsToFetchFailedMessages.add(new TopicInfo(authTypeStatusTopic, authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId), autypeCallbackSecret));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(hotlistEventTopic, hotlistCallbackURL, hotlistCallbackSecret,
-				failedWebsubMessageProcessor::processHotlistEvent));
+		topicsToFetchFailedMessages.add(new TopicInfo(hotlistEventTopic, hotlistCallbackURL, hotlistCallbackSecret));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTemplatesEventTopic, masterdataTemplatesCallbackURL, masterdataTemplatesCallbackSecret,
-				failedWebsubMessageProcessor::processMasterdataTemplatesEvent));
+		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTemplatesEventTopic, masterdataTemplatesCallbackURL, masterdataTemplatesCallbackSecret));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTitlesEventTopic, masterdataTitlesCallbackURL, masterdataTitlesCallbackSecret,
-				failedWebsubMessageProcessor::processMasterdataTitlesEvent));
+		topicsToFetchFailedMessages.add(new TopicInfo(masterdataTitlesEventTopic, masterdataTitlesCallbackURL, masterdataTitlesCallbackSecret));
 		
-		topicsToFetchFailedMessages.add(new TopicInfo(partnerCertEventTopic, partnerCertCallbackURL, partnerCertCallbackSecret,
-				failedWebsubMessageProcessor::processPartnerCACertEvent));
+		topicsToFetchFailedMessages.add(new TopicInfo(partnerCertEventTopic, partnerCertCallbackURL, partnerCertCallbackSecret));
 		
 		//Partner Event topics
 		Stream.of(PartnerEventTypes.values()).forEach(partnerEventType -> {
 			String topic = env.getProperty(partnerEventType.getTopicPropertyName());
 			String callbackURL = partnerServiceCallbackURL.replace(EVENT_TYPE_PLACEHOLDER, partnerEventType.getName());
-			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL, partnerServiceCallbackSecret, 
-					failedMessage -> failedWebsubMessageProcessor.processPartnerEvent(partnerEventType, failedMessage)));
+			topicsToFetchFailedMessages.add(new TopicInfo(topic, callbackURL, partnerServiceCallbackSecret));
 		});
 	}
 	
@@ -282,7 +289,6 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 */
 	private void initialize() {
 		totalCount = new AtomicInteger(0);
-		effectivedtimes = getEffectiveDTimes();
 		topicsToFetchFailedMessagesIterator = topicsToFetchFailedMessages.iterator();
 		messagesIterator = getFailedMessagesIterator();
 	}
@@ -311,7 +317,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		if(start.get()) {
 			start.set(false);
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
-				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				currentTopicInfo = getNextTopic();
 			} else {
 				return List.of();
 			}
@@ -328,7 +334,7 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		
 		while(failedMessages.isEmpty()) {
 			if(topicsToFetchFailedMessagesIterator.hasNext()) {
-				currentTopicInfo = topicsToFetchFailedMessagesIterator.next();
+				currentTopicInfo = getNextTopic();
 				//Reset page index to 0 for next topic
 				currentPageIndex.set(0);
 				failedMessages = getNextFailedMessagesForCurrentTopic();
@@ -341,6 +347,34 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		}
 		
 		return List.of();
+	}
+
+	/**
+	 * Gets the next topic.
+	 *
+	 * @return the next topic
+	 */
+	private TopicInfo getNextTopic() {
+		TopicInfo nextTopicInfo = topicsToFetchFailedMessagesIterator.next();
+		updateEffectiveTimeForTopic(nextTopicInfo.getTopic());
+		return nextTopicInfo;
+	}
+
+	/**
+	 * Update effective time for topic.
+	 *
+	 * @param topic the topic
+	 */
+	private void updateEffectiveTimeForTopic(String topic) {
+		LocalDateTime minDTime = getMinEffectiveDTimes();
+		Optional<FailedMessageEntity> failedMessage = failedMessagesRepo.findFirstByTopicAndCrDTimesGreaterThanAndStatusCodeOrderByPublishedOnDtimesDesc(topic, minDTime, MessageStoreStatus.PROCESSED.toString());
+		LocalDateTime effDTime;
+		if (failedMessage.isPresent() && failedMessage.get().getFailedDTimes().isAfter(minDTime)) {
+			effDTime = failedMessage.get().getFailedDTimes();
+		} else {
+			effDTime = minDTime;
+		}
+		effectivedtimes = DateUtils.formatToISOString(effDTime);
 	}
 
 	/**
@@ -358,9 +392,15 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 		return List.of();
 	}
 
+	/**
+	 * Do get next failed messages.
+	 *
+	 * @return the list
+	 */
 	private List<FailedMessage> doGetNextFailedMessages() {
 		try {
-			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(), chunkSize, currentTopicInfo.getSecret(), effectivedtimes, currentPageIndex.get(), currentTopicInfo.getFailedMessageConsumer());
+			return websubHelper.getFailedMessages(currentTopicInfo.getTopic(), currentTopicInfo.getCallbackUrl(),
+					chunkSize, currentTopicInfo.getSecret(), effectivedtimes, currentPageIndex.get());
 		} catch (Exception e) {
 			mosipLogger.error("Error in Fetched failed messages for topic {} \n {}", currentTopicInfo.getTopic(),
 					ExceptionUtils.getStackTrace(e));
@@ -408,10 +448,9 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 *
 	 * @return the effective D times
 	 */
-	private String getEffectiveDTimes() {
+	private LocalDateTime getMinEffectiveDTimes() {
 		// Fetch credentials since last credential stored event date time.
-		LocalDateTime maxCredentialPullWindowTime = LocalDateTime.now().minus(maxWebsubMessagesPullWindowDays, ChronoUnit.DAYS);
-		return DateUtils.formatToISOString(maxCredentialPullWindowTime);
+		return LocalDateTime.now().minus(maxWebsubMessagesPullWindowDays, ChronoUnit.DAYS);
 		
 	}
 

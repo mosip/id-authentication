@@ -1,7 +1,9 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
+import io.mosip.authentication.common.service.websub.dto.EventInterface;
 import lombok.Data;
 
 /**
@@ -9,7 +11,7 @@ import lombok.Data;
  * @author Loganathan Sekar
  */
 @Data
-public class AuthTypeStatusUpdateAckEvent {
+public class AuthTypeStatusUpdateAckEvent implements EventInterface{
 	
 	/** The id. */
 	private String id;
@@ -22,5 +24,8 @@ public class AuthTypeStatusUpdateAckEvent {
 	
 	/** The timestamp. */
 	private LocalDateTime timestamp;
+	
+	/** The data. */
+	private Map<String, Object> data;
 
 }

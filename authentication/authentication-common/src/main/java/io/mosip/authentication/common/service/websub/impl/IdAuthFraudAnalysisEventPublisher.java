@@ -11,12 +11,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
-import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.websub.model.Event;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
  * The Class CredentialStoreStatusEventPublisher.
@@ -63,9 +62,8 @@ public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializ
 	
 	@SuppressWarnings("unchecked")
 	public void publishEvent(IdAuthFraudAnalysisEventDTO eventData) {
-		Event event = new Event();
-		EventModel<Object> eventModel = webSubHelper.createEventModel(fraudAnalysisTopic, event);
-		eventModel.setData(objectMapper.convertValue(eventData, Map.class));
+		EventModel eventModel = webSubHelper.createEventModel(fraudAnalysisTopic);
+		eventModel.getEvent().setData(objectMapper.convertValue(eventData, Map.class));
 		webSubHelper.publishEvent(fraudAnalysisTopic, eventModel);
 	}
 }
