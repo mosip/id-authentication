@@ -1,11 +1,14 @@
 package io.mosip.authentication.common.service.integration;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +48,9 @@ public class CredentialRequestManager {
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
+	
+	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
+	private String authPartherId;
 
 	
 	/** The object mapper. */
@@ -73,7 +79,10 @@ public class CredentialRequestManager {
 				if (data == null) {
 					return List.of();
 				} else {
-					List<CredentialRequestIdsDto> requestIds = data.stream().map(map -> objectMapper.convertValue(map, CredentialRequestIdsDto.class))
+					List<CredentialRequestIdsDto> requestIds = data.stream()
+							.map(map -> objectMapper.convertValue(map, CredentialRequestIdsDto.class))
+							//Take only request for the current online verification partner ID
+							.filter(requestIdDto -> authPartherId.equals(requestIdDto.getPartner()))
 							.collect(Collectors.toList());
 					return requestIds;
 				}
