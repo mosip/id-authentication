@@ -108,10 +108,14 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 			List<String> requestIds = credRequests.stream()
 					.map(CredentialRequestIdsDto::getRequestId)
 					.collect(Collectors.toList());
-			List<String> existingEvents = credentialEventRepo.findDistictCredentialTransactionIdsInList(requestIds);
-			return credRequests.stream()
-					.filter(requestIdDto -> !existingEvents.contains(requestIdDto.getRequestId()))
-					.collect(Collectors.toList());
+			if(!requestIds.isEmpty()) {
+				List<String> existingEvents = credentialEventRepo.findDistictCredentialTransactionIdsInList(requestIds);
+				return credRequests.stream()
+						.filter(requestIdDto -> !existingEvents.contains(requestIdDto.getRequestId()))
+						.collect(Collectors.toList());
+			} else {
+				return List.of();
+			}
 		} catch (RestServiceException | IDDataValidationException e) {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 		}
