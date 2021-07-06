@@ -343,6 +343,10 @@ public class FailedWebsubMessageProcessor {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().getCanonicalName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (IOException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+					"getEventModel", "Error in Parsing message as EventModel : " + failedMessage.toString() + ": "
+							+ ExceptionUtils.getStackTrace(e));
 		}
 	}
 
