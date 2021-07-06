@@ -1,5 +1,14 @@
 FROM openjdk:11
 
+ARG SOURCE
+ARG COMMIT_HASH
+ARG COMMIT_ID
+ARG BUILD_TIME
+LABEL source=${SOURCE}
+LABEL commit_hash=${COMMIT_HASH}
+LABEL commit_id=${COMMIT_ID}
+LABEL build_time=${BUILD_TIME}
+
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
 
