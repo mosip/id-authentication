@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BIO_HASH_VALIDATION_DISABLED;
+
 import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -72,7 +74,7 @@ public class InternalAuthFilter extends IdAuthFilter {
 	@Override
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
-		return false;
+		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
 	}
 
 }
