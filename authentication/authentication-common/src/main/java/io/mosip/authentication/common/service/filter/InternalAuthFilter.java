@@ -50,7 +50,7 @@ public class InternalAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, false);
+		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, true);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class InternalAuthFilter extends IdAuthFilter {
 	@Override
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
-		return true;
+		return false;
 	}
 
 }
