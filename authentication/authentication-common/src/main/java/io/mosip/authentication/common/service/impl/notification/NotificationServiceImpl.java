@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +34,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -80,13 +81,10 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Map<String, Object> values = new HashMap<>();
 
-		String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
-		String namePri = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
-		values.put(NAME, namePri);
-		values.put(NAME + "_" + priLang, namePri);
-		String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
-		String nameSec = infoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
-		values.put(NAME + "_" + secLang, nameSec);
+		Set<String> defualtTemplateLangs = Collections.synchronizedSortedSet(new TreeSet<>(idInfoFetcher.getTemplatesDefaultLanguageCodes()));
+		for (String lang : defualtTemplateLangs) {			
+			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
+		}
 
 		String resTime = authResponseDTO.getResponseTime();
 

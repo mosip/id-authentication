@@ -2,8 +2,10 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -467,6 +469,14 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public DemoMatcherUtil getDemoMatcherUtil() {
 		return demoMatcherUtil;
+	}
+
+	/**
+	 * Gets the template default language codes
+	 */
+	@Override
+	public Set<String> getTemplatesDefaultLanguageCodes() {
+		return new HashSet<>(Arrays.asList(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(",")));
 	}
 
 }

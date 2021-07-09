@@ -57,7 +57,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String DEFAULT_MATCH_VALUE = "ida.default.match.value";
 	public static final String MOSIP_PHONETIC_LANG = "mosip.phonetic.lang.";
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
-	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
 	public static final String PARTNER_REFERENCE_ID = "partner.reference.id";
 	public static final String PARTNER_BIO_REFERENCE_ID = "partner.biometric.reference.id";
 	public static final String SERVER_PORT = "server.port";
@@ -151,6 +150,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String ALLOWED_ENVIRONMENTS="mosip.ida.allowed.enviromemnts";
 	
 	public static final String ALLOWED_DOMAIN_URIS="mosip.ida.allowed.domain.uris";
+	
+	public static final String DEFAULT_TEMPLATE_LANGUAGES = "mosip.default.template-languages";
 
 
 

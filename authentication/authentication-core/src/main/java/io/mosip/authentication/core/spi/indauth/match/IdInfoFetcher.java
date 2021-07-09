@@ -34,6 +34,13 @@ public interface IdInfoFetcher {
 	 * @return language code
 	 */
 	public String getLanguageCode(LanguageType langType);
+	
+	/**
+	 * Gets the template default language codes
+	 * @return
+	 */
+	public Set<String> getTemplatesDefaultLanguageCodes();
+	
 
 	/**
 	 * To check language type.

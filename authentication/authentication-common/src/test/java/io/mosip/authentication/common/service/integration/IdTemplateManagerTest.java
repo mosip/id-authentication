@@ -102,8 +102,6 @@ public class IdTemplateManagerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
-		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
@@ -112,60 +110,19 @@ public class IdTemplateManagerTest {
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
 	}
 
-//	@Test(expected = IdAuthenticationBusinessException.class)
-//	public void TestInvalidApplyTemplate() throws IOException, IdAuthenticationBusinessException, RestServiceException {
-//		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(null);
-//		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG)).thenReturn("fra");
-//		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
-//		mockRestCalls();
-//		Map<String, Object> valueMap = new HashMap<>();
-//		idTemplateManager.applyTemplate("otp-sms", valueMap);
-//	}
-
 	@Test
 	public void Testpostconstruct() {
 		idTemplateManager.idTemplateManagerPostConstruct();
-	}
-
-//	@Test(expected = IdAuthenticationBusinessException.class)
-//	public void TestTemplateResourceNotFoundException()
-//			throws IOException, IdAuthenticationBusinessException, RestServiceException {
-//		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IOException());
-//		mockRestCalls();
-//		Map<String, Object> valueMap = new HashMap<>();
-//		valueMap.put("uin", "1234567890");
-//		valueMap.put("otp", "123456");
-//		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
-//		valueMap.put("validTime", "3");
-//		idTemplateManager.applyTemplate(OTP_SMS_TEMPLATE_TXT, valueMap);
-//	}
+	}	
 
 	@Test
-	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "primary");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
-		mockRestCalls();
-		idTemplateManager.fetchTemplate("test");
-	}
-
-	@Test
-	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "BOTH");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {		
 		mockRestCalls();
 		idTemplateManager.fetchTemplate(AUTH_SMS);
 	}
 
-	@Test
-	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "invalid");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestTemplateNotFound() throws IdAuthenticationBusinessException, RestServiceException {		
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("test");
 	}
