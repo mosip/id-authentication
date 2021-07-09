@@ -89,8 +89,9 @@ public class InternalAuthTxnController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('RESIDENT')")
+	//@PreAuthorize("hasAnyRole('RESIDENT')")
 	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetauthtransactionsindividualid())")
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
