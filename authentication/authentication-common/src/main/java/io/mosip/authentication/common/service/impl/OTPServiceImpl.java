@@ -161,12 +161,12 @@ public class OTPServiceImpl implements OTPService {
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			Set<String> defaultTemplateLangs =idInfoFetcher.getTemplatesDefaultLanguageCodes();
+			Set<String> defaultTemplateLangs = idInfoFetcher.getTemplatesDefaultLanguageCodes();
 			Map<String, String> valueMap = new HashMap<>();
 			for (String lang : defaultTemplateLangs) {
 				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
 			}
-			
+
 			String email = getEmail(idInfo);
 			String phoneNumber = getPhoneNumber(idInfo);			
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
