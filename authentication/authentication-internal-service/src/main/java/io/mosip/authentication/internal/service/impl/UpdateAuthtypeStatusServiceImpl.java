@@ -9,15 +9,12 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -34,7 +31,6 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Dinesh Karuppaiah T
  */
 @Component
-@Transactional
 public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusService {
 
 	private static Logger mosipLogger = IdaLogger.getLogger(UpdateAuthtypeStatusServiceImpl.class);
@@ -73,6 +69,8 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 						this.putAuthTypeStatus(authTypeStatus, tokenId)))
 				.collect(Collectors.toList());
 		List<AuthtypeLock> entities = entitiesForRequestId.stream().map(Entry::getValue).collect(Collectors.toList());
+		entities.forEach(entity -> authLockRepository.findByTokenAndAuthtypecode(tokenId, entity.getAuthtypecode())
+				.forEach(authLockRepository::delete));
 		authLockRepository.saveAll(entities);
 
 		entitiesForRequestId.stream().forEach(entry -> {
@@ -108,7 +106,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		if (Objects.nonNull(authtypeStatus.getMetadata())
 				&& authtypeStatus.getMetadata().containsKey(UNLOCK_EXP_TIMESTAMP)) {
 			authtypeLock.setUnlockExpiryDTtimes(
-					DateUtils.parseUTCToLocalDateTime((String) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP)));
+					DateUtils.parseToLocalDateTime((String) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP)));
 		}
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
