@@ -57,7 +57,7 @@ public class IdAuthFraudAnalysisEventManager {
 
 	@Async
 	public void analyseDigitalSignatureFailure(String uri, String authRequest)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 		List<String> pathSegments = Arrays.asList(uri.split("/"));
 		String authType = null;
 		if (pathSegments.size() > 4) {
