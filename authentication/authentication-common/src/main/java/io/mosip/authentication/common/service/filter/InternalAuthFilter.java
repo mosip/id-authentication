@@ -74,7 +74,7 @@ public class InternalAuthFilter extends IdAuthFilter {
 	@Override
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
-		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
+		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, true);
 	}
 
 }
