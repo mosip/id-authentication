@@ -23,4 +23,5 @@ public class AuthorizedRolesDTO {
     private List<String> getauthtransactionsindividualid;
 	
 	private List<String> postotp;
-}
+	
+}	
