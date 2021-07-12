@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.idevent.AuthTransactionStatusEvent;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;

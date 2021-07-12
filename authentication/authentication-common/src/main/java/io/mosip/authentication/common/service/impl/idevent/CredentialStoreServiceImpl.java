@@ -402,7 +402,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			byte[] demoBytes = objectMapper.writeValueAsBytes(demoBioData[0]);
 			byte[] bioBytes = objectMapper.writeValueAsBytes(demoBioData[1]);
 
-			IdentityEntity identityEntity = new IdentityEntity();
+			IdentityEntity identityEntity ;
 			Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
 			if (identityEntityOpt.isPresent()) {
 				identityEntity = identityEntityOpt.get();

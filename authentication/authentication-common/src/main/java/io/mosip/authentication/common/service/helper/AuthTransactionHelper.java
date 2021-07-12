@@ -241,7 +241,7 @@ public class AuthTransactionHelper {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private AuthTransactionBuilder createAuthTxnBuilder(ObjectWithMetadata requestDTO,
-			boolean isInternal, Optional<PartnerDTO> partner) throws IdAuthenticationBusinessException {
+			boolean isInternal, Optional<PartnerDTO> partner) {
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance()
 						.withInternal(isInternal)
 						.withPartner(partner);
@@ -314,7 +314,7 @@ public class AuthTransactionHelper {
 	 * @param env the env
 	 * @return true, if is iris auth
 	 */
-	public static boolean isIrisAuth(AuthRequestDTO authRequestDTO, Environment env) {
+	public static boolean isIrisAuth(AuthRequestDTO authRequestDTO ) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType()));
 	}
@@ -326,7 +326,7 @@ public class AuthTransactionHelper {
 	 * @param env the env
 	 * @return true, if is face auth
 	 */
-	public static boolean isFaceAuth(AuthRequestDTO authRequestDTO, Environment env) {
+	public static boolean isFaceAuth(AuthRequestDTO authRequestDTO ) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()));
 	}

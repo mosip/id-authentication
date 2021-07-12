@@ -205,7 +205,7 @@ public class PartnerServiceManager {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void handleApiKeyApproved(EventModel eventModel) throws JsonParseException, JsonMappingException, IOException {
+	public void handleApiKeyApproved(EventModel eventModel) throws IOException {
 		PartnerMapping mapping = new PartnerMapping();
 		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA),
 				PartnerData.class);
@@ -263,7 +263,7 @@ public class PartnerServiceManager {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void handleApiKeyUpdated(EventModel eventModel)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
 				ApiKeyData.class);
 		Optional<ApiKeyData> apiKeyDataOptional = apiKeyRepo.findById(apiKeyEventData.getApiKeyId());

@@ -473,7 +473,7 @@ public class FailedWebsubMessageProcessor {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void handlePartnerEvent(PartnerEventTypes partnerEventType, EventModel eventModel)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws IOException {
 		switch (partnerEventType) {
 		case API_KEY_APPROVED:
 			partnerManager.handleApiKeyApproved(eventModel);

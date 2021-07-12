@@ -172,7 +172,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		}
 	}
 	
-	private void handleCredentialIssued(EventModel eventModel) throws IdAuthenticationBusinessException {
+	private void handleCredentialIssued(EventModel eventModel) {
 		//Here only event model is getting stored with status NEW. Batch job will take care of taking the new JOB
 		credStorService.storeEventModel(eventModel);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),

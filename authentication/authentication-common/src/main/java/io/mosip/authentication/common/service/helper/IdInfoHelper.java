@@ -433,8 +433,7 @@ public class IdInfoHelper {
 			AuthRequestDTO req, 
 			MatchInput input, 
 			EntityValueFetcher entityValueFetcher, 
-			MatchType matchType,
-			MatchingStrategy strategy, 
+			MatchType matchType, 
 			String idName, 
 			String partnerId)
 			throws IdAuthenticationBusinessException {
