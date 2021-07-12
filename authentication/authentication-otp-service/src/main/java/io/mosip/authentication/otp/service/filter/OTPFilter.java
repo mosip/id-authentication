@@ -91,9 +91,4 @@ public class OTPFilter extends IdAuthFilter {
 		return env.getProperty("mosip.ida.otp.trust-validation-required", Boolean.class, true);
 	}
 	
-	@Override
-	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		//Nothing to do for OTP request
-	}
 }
