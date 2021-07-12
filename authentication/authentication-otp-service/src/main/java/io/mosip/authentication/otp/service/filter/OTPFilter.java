@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
-import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
@@ -91,9 +90,4 @@ public class OTPFilter extends IdAuthFilter {
 		return env.getProperty("mosip.ida.otp.trust-validation-required", Boolean.class, true);
 	}
 	
-	@Override
-	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		//Nothing to do for OTP request
-	}
 }
