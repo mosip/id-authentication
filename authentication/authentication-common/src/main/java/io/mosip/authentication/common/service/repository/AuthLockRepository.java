@@ -42,5 +42,7 @@ public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer
 			"        t.token_id = :token_id", 
 			nativeQuery = true)
 	public List<Object[]> findByToken(@Param("token_id") String tokenId);
+	
+	public List<AuthtypeLock> findByTokenAndAuthtypecode(String tokenId, String authtypecode);
 
 }	
