@@ -100,7 +100,6 @@ public class IdMappingValidationTest {
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
-//		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
 
 	@Test

@@ -114,7 +114,6 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
-		//ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -384,7 +383,6 @@ public class DemoAuthServiceTest {
 	public void TestValidgetDemoStatus()
 			throws IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IdAuthenticationDaoException {
-//		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		Map<String, List<IdentityInfoDTO>> entityInfo = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
 		IdentityInfoDTO infoDTO = new IdentityInfoDTO();
@@ -497,10 +495,6 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-//		mockenv.setProperty("mosip.primary-language", "fre");
-//		mockenv.setProperty("mosip.secondary-language", "ara");
-//		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
-//		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity, "123456");
 	}

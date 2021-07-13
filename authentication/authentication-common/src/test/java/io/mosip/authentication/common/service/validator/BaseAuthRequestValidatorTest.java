@@ -118,7 +118,6 @@ public class BaseAuthRequestValidatorTest {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.setField(AuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
-//		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 	}
 
