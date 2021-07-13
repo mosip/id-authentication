@@ -106,7 +106,6 @@ public class DemoAuthServiceTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
@@ -115,8 +114,7 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+		//ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -386,7 +384,7 @@ public class DemoAuthServiceTest {
 	public void TestValidgetDemoStatus()
 			throws IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IdAuthenticationDaoException {
-		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
+//		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		Map<String, List<IdentityInfoDTO>> entityInfo = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
 		IdentityInfoDTO infoDTO = new IdentityInfoDTO();
@@ -481,7 +479,7 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setLanguage("eng");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
@@ -491,7 +489,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("fre");
+		identityInfoDTO1.setLanguage("eng");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -499,10 +497,10 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("mosip.primary-language", "fre");
-		mockenv.setProperty("mosip.secondary-language", "ara");
-		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
-		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
+//		mockenv.setProperty("mosip.primary-language", "fre");
+//		mockenv.setProperty("mosip.secondary-language", "ara");
+//		mockenv.setProperty("mosip.supported-languages", "eng,ara,fre");
+//		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity, "123456");
 	}
@@ -607,7 +605,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO demographics = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setLanguage("tml");
 		identityInfoDTO.setValue("Dinesh");
 		nameList.add(identityInfoDTO);
 		demographics.setName(nameList);
@@ -616,7 +614,7 @@ public class DemoAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		List<IdentityInfoDTO> nameListEntity = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTOEntity = new IdentityInfoDTO();
-		identityInfoDTOEntity.setLanguage("fra");
+		identityInfoDTOEntity.setLanguage("tml");
 		identityInfoDTOEntity.setValue("Dinesh1");
 		nameListEntity.add(identityInfoDTOEntity);
 		demoEntity.put("fullName", nameListEntity);
@@ -681,7 +679,7 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setName(nameList);
@@ -689,7 +687,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		authRequestDTO.setIndividualId("426789089018");
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoEntity.put("name", nameList);
+		demoEntity.put("fullName", nameList);
 		demoAuthServiceImpl.authenticate(authRequestDTO, "274390482564", demoEntity, "123456");
 
 	}

@@ -93,28 +93,26 @@ public class BioAuthServiceTest {
 	@Autowired
 	Environment environment;
 
-	@Autowired
-	private IDAMappingConfig idMappingConfig;
-
 	@Mock
 	private CbeffUtil cbeffUtil;
 
 	@Mock
 	IBioApi fingerApi;
+	
+	@Autowired
+	private IDAMappingConfig idMappingConfig;
 
 	@Before
 	public void before() throws IDDataValidationException, RestServiceException {
-		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
-		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "bioMatcherUtil", bioMatcherUtil);
 		ReflectionTestUtils.setField(bioMatcherUtil, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any())).thenReturn(null);
 	}

@@ -11,7 +11,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 
@@ -26,7 +25,7 @@ public class CompositeIrisMatchingStrategyTest {
 		entityValues.put("leftEye", "Test");
 		entityValues.put("rightEye", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}
@@ -35,7 +34,7 @@ public class CompositeIrisMatchingStrategyTest {
 	public void TestInValidMatchingStrategy2() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = CompositeIrisMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match(1, 2, matchProperties);
 		assertEquals(0, value);
 	}
@@ -44,7 +43,7 @@ public class CompositeIrisMatchingStrategyTest {
 	public void TestInValidMatchingStrategy3() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = CompositeIrisMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		assertEquals(0, matchFunction.match(1, 2, matchProperties));
 	}
 
@@ -58,7 +57,7 @@ public class CompositeIrisMatchingStrategyTest {
 		entityValues.put("leftEye", "Test");
 		entityValues.put("rightEye", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		matchProperties.put(IdaIdMapping.IRIS.getIdname(),
 				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, String>, Double>) (o1, o2, o3) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);

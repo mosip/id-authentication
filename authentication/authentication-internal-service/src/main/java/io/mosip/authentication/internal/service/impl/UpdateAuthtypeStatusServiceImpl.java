@@ -111,7 +111,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 		authtypeLock.setCrDTimes(currentDtime);
-		authtypeLock.setLangCode(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		//authtypeLock.setLangCode(environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 		return authtypeLock;
 	}
 

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,6 +174,7 @@ public class AuthRequestValidatorTest {
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(new HashSet<>(List.of("eng","fra","ara")));
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}

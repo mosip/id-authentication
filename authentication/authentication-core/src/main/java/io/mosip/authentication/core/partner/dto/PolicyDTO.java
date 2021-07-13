@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.partner.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -18,5 +19,8 @@ public class PolicyDTO {
 	private List<KYCAttributes> allowedKycAttributes;
 	
 	private String authTokenType;
+	
+	/** Languages to sign kyc response. */
+	private Set<String> kycLanguages;
 	
 }

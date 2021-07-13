@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
@@ -113,7 +112,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();		
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match("test", "2", matchProperties);
 		assertEquals(0, value);
@@ -130,7 +129,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
@@ -142,7 +141,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
@@ -164,7 +163,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
@@ -176,7 +175,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
@@ -198,7 +197,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doPhoneticsMatch(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(0);
 		int value = matchFunction.match(2, "2", matchProperties);
@@ -211,7 +210,7 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		matchProperties.put("langCode", "eng");
 		matchProperties.put("demoNormalizer", demoNormalizer);
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doPhoneticsMatch(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 		.thenReturn(0);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);

@@ -421,6 +421,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		metadata.put("partnerId", partnerId);
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
 		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		metadata.put(IdAuthCommonConstants.KYC_LANGUAGES, partnerServiceResponse.getPolicy().getKycLanguages());
 		if (partnerCertificate != null) {
 			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
 		}

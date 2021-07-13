@@ -12,14 +12,10 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
@@ -28,19 +24,13 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
  * Manage fetching / applying Templates based on entity.
  *
  * @author Dinesh Karuppiah.T
+ * @author Nagarjuna
  */
 @Component
 public class IdTemplateManager {
-
-	private static final String BOTH = "BOTH";
-
+	
 	/** The Constant TEMPLATE. */
-	private static final String TEMPLATE = "Template";
-
-	/** The Constant PRIMARY. */
-	private static final String PRIMARY = "primary";
-
-	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
+	private static final String TEMPLATE = "Template";	
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
@@ -62,15 +52,6 @@ public class IdTemplateManager {
 	 */
 	@Autowired
 	private MasterDataManager masterDataManager;
-
-	/**
-	 * The environment
-	 */
-	@Autowired
-	private Environment environment;
-
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
 
 	/**
 	 * Id template manager post construct.
@@ -118,17 +99,9 @@ public class IdTemplateManager {
 	 * @return the string
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
-		String languageRequired = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATION_LANGUAGE_TYPE);
+	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {		
 		StringBuilder stringBuilder = new StringBuilder();
-		if (languageRequired.equalsIgnoreCase(BOTH)) {
-			stringBuilder.append(masterDataManager.fetchTemplate(templateName));
-		} else if (languageRequired.equalsIgnoreCase(PRIMARY)) {
-			stringBuilder.append(masterDataManager
-					.fetchTemplate(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG), templateName));
-		} else {
-			// TODO throw exception
-		}
+		stringBuilder.append(masterDataManager.fetchTemplate(templateName));
 		return stringBuilder.toString();
 	}
 

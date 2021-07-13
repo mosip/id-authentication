@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -42,10 +41,7 @@ public class MatchInputBuilder {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
-
-	@Autowired
-	private IdInfoHelper idInfoHelper;
-
+	
 	/** The environment. */
 	@Autowired
 	private Environment environment;
@@ -63,7 +59,7 @@ public class MatchInputBuilder {
 	 */
 	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
 			MatchType[] matchTypes) {
-		Set<String> languages = idInfoHelper.getAllowedLang();
+		Set<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
 		return Stream.of(matchTypes).flatMap(matchType -> {
 			List<MatchInput> matchInputs = new ArrayList<>();
 			if (matchType.isMultiLanguage()) {

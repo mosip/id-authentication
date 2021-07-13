@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -138,10 +137,7 @@ public enum DemoMatchType implements MatchType {
 
 	/** The entity info. */
 	private Function<Map<String, String>, Map<String, String>> entityInfoFetcher;
-
-	/** The lang type. */
-	private LanguageType langType;
-
+	
 	/** The identity info function. */
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
@@ -237,22 +233,7 @@ public enum DemoMatchType implements MatchType {
 		} else {
 			return Collections.emptyList();
 		}
-	}
-
-	/**
-	 * Gets the language type.
-	 *
-	 * @return the language type
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.MatchType#getLanguageType()
-	 */
-	public LanguageType getLanguageType() {
-		return langType;
-	}
+	}	
 
 	/**
 	 * Gets the allowed matching strategy.

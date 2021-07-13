@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -27,7 +28,7 @@ public interface KycService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public KycResponseDTO retrieveKycInfo(List<String> eKycTypeAttributes, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(List<String> eKycTypeAttributes, Set<String> langCodes,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException;
 
 }

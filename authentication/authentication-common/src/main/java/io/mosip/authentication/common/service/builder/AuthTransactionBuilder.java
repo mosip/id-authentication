@@ -288,7 +288,7 @@ public class AuthTransactionBuilder {
 			}
 			
 			// Setting primary code only
-			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+			autnTxn.setLangCode(env.getProperty("eng"));
 
 			if (isInternal) {
 				autnTxn.setEntitytype(TransactionType.INTERNAL.getType());

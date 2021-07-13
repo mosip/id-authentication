@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -117,7 +118,7 @@ public class BaseAuthRequestValidatorTest {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.setField(AuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
+//		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 	}
 
@@ -1592,10 +1593,10 @@ public class BaseAuthRequestValidatorTest {
 		authTypeDTO.setDemo(true);
 		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
+		idInfoDTO.setLanguage("eng");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO1.setLanguage("fra");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1605,7 +1606,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("1990/11/25");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1615,6 +1616,8 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
+		Set<String> langugaes = new HashSet<>(List.of("eng","fra"));
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(langugaes);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}

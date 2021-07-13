@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,10 +200,10 @@ public class KycFacadeImpl implements KycFacade {
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
-
+			Set<String> langCodes = (Set<String>) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES);
 			if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				response = kycService.retrieveKycInfo(kycAuthRequestDTO.getAllowedKycAttributes(),
-						kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
+						langCodes, idInfo);
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 				response.setKycStatus(authResponse.isAuthStatus());

@@ -2,8 +2,10 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +31,6 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -96,20 +97,20 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return demoNormalizer;
 	}
 
-	/**
-	 * Fetch language code from properties.
-	 *
-	 * @param langType            - the language code
-	 * @return the language code
-	 */
-	@Override
-	public String getLanguageCode(LanguageType langType) {
-		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
-		} else {
-			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE);
-		}
-	}
+//	/**
+//	 * Fetch language code from properties.
+//	 *
+//	 * @param langType            - the language code
+//	 * @return the language code
+//	 */
+//	@Override
+//	public String getLanguageCode(LanguageType langType) {
+//		if (langType == LanguageType.PRIMARY_LANG) {
+//			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
+//		} else {
+//			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE);
+//		}
+//	}
 
 	/**
 	 * Gets the language name.
@@ -222,11 +223,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	public boolean checkLanguageType(String languageFromInput, String languageFromEntity) {
 		if (languageFromInput == null || languageFromEntity == null || languageFromEntity.isEmpty()
 				|| languageFromEntity.equalsIgnoreCase("null")) {
-			return languageFromInput == null
-					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageFromInput);
-		} else {
-			return languageFromInput.equalsIgnoreCase(languageFromEntity);
+			return languageFromInput == null;
+
 		}
+		return languageFromInput.equalsIgnoreCase(languageFromEntity);
 	}
 
 	/**
@@ -469,4 +469,29 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return demoMatcherUtil;
 	}
 
+	/**
+	 * Gets the template default language codes
+	 */
+	@Override
+	public Set<String> getTemplatesDefaultLanguageCodes() {
+		return new HashSet<>(Arrays.asList(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(",")));
+	}
+
+	/**
+	 * Gets the system supported languages. 
+	 * Combination of mandatory and optional languages.
+	 */
+	@Override
+	public Set<String> getSystemSupportedLanguageCodes() {
+		Set<String> systemSupportedLanguges;
+		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
+				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);
+		if (null != languages && languages.contains(",")) {
+			systemSupportedLanguges = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+		} else {
+			systemSupportedLanguges = new HashSet<>();
+			systemSupportedLanguges.add(languages);
+		}
+		return systemSupportedLanguges;
+	}
 }

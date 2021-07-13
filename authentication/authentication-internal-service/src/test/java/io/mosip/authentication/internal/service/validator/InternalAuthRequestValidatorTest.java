@@ -93,7 +93,7 @@ public class InternalAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
-		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
+		//ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
 
 	@Test
