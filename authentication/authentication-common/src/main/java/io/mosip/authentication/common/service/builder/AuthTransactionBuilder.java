@@ -288,7 +288,7 @@ public class AuthTransactionBuilder {
 			}
 			
 			// Will remove this column after discussion.
-			autnTxn.setLangCode("NA");
+			autnTxn.setLangCode(IdAuthCommonConstants.NA);
 
 			if (isInternal) {
 				autnTxn.setEntitytype(TransactionType.INTERNAL.getType());

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -111,7 +112,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 		authtypeLock.setCrDTimes(currentDtime);
-		authtypeLock.setLangCode("NA");
+		authtypeLock.setLangCode(IdAuthCommonConstants.NA);
 		return authtypeLock;
 	}
 
