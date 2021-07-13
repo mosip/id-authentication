@@ -97,21 +97,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return demoNormalizer;
 	}
 
-//	/**
-//	 * Fetch language code from properties.
-//	 *
-//	 * @param langType            - the language code
-//	 * @return the language code
-//	 */
-//	@Override
-//	public String getLanguageCode(LanguageType langType) {
-//		if (langType == LanguageType.PRIMARY_LANG) {
-//			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
-//		} else {
-//			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE);
-//		}
-//	}
-
 	/**
 	 * Gets the language name.
 	 *
