@@ -7,7 +7,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -199,8 +201,9 @@ public class KycFacadeImpl implements KycFacade {
 
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
-			ResponseDTO authResponse = authResponseDTO.getResponse();
-			Set<String> langCodes = (Set<String>) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES);
+			ResponseDTO authResponse = authResponseDTO.getResponse();	
+			Set<String> langCodes = new HashSet<>(
+					Arrays.asList(kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES).toString()));			
 			if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				response = kycService.retrieveKycInfo(kycAuthRequestDTO.getAllowedKycAttributes(),
 						langCodes, idInfo);
