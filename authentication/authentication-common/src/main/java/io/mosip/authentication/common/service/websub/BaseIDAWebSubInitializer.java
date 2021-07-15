@@ -36,6 +36,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public abstract class BaseIDAWebSubInitializer implements ApplicationListener<ApplicationReadyEvent>{
 	
+	private static final String REGISTER_TOPICS = "registerTopics";
+
+	private static final String REGISTER_TOPICS2 = REGISTER_TOPICS;
+
+	private static final String REGISTER_TOPICS22 = REGISTER_TOPICS2;
+
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
@@ -138,12 +144,12 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	 */
 	private boolean registerTopics() {
 		try {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registering Topics..");
+			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "", "Registering Topics..");
 			doRegisterTopics();
-			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registered subscribptions.");
+			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "", "Registered subscribptions.");
 			return true;
 		} catch (Exception e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, "registerTopics", "",
+			logger.error(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "",
 					"Topics registration failed: " + e.getMessage());
 			return false;
 		}

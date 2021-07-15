@@ -49,6 +49,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public abstract class IdAuthValidator implements Validator {
 	
+	private static final String INCORRECT_IDTYPE = "INCORRECT_IDTYPE - ";
+
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
@@ -368,14 +370,14 @@ public abstract class IdAuthValidator implements Validator {
 					}
 				} else {
 					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-							"INCORRECT_IDTYPE - " + idTypeOrAlias);
+							INCORRECT_IDTYPE + idTypeOrAlias);
 					errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { IDV_ID_TYPE },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
 			} else {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						"INCORRECT_IDTYPE - " + idTypeOrAlias);
+						INCORRECT_IDTYPE + idTypeOrAlias);
 				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { IDV_ID_TYPE },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
@@ -393,7 +395,7 @@ public abstract class IdAuthValidator implements Validator {
 						IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED.getErrorMessage());
 			} else {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						"INCORRECT_IDTYPE - " + idTypeOrAlias);
+						INCORRECT_IDTYPE + idTypeOrAlias);
 				errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { IDV_ID_TYPE },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
