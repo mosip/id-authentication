@@ -65,6 +65,8 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Component
 public class CredentialStoreServiceImpl implements CredentialStoreService {
 
+	private static final String PROCESS_CREDENTIAL_STORE_EVENT = "processCredentialStoreEvent";
+
 	/** The Constant BIO_KEY. */
 	private static final String BIO_KEY = "bioEncryptedRandomKey";
 
@@ -181,12 +183,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		} catch (RuntimeException e) {
 			// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
+					PROCESS_CREDENTIAL_STORE_EVENT, "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, false, statusCode);
 			throw e;
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
-					"processCredentialStoreEvent", "Error in Processing credential store event: " + e.getMessage());
+					PROCESS_CREDENTIAL_STORE_EVENT, "Error in Processing credential store event: " + e.getMessage());
 			updateEventProcessingStatus(credentialEventStore, false, true, statusCode);
 			throw e;
 		}
@@ -329,7 +331,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), PROCESS_CREDENTIAL_STORE_EVENT,
 					"Processing credential store event: " + objectMapper.writeValueAsString(credentialEventStore));
 			
 			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);

@@ -29,11 +29,7 @@ public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitial
 	/** The credential status update topic. */
 	@Value("${" + CREDENTIAL_STATUS_UPDATE_TOPIC + "}")
 	private String credentialStatusUpdateTopic;
-	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
-
+		
 	/**
 	 * Do subscribe.
 	 */

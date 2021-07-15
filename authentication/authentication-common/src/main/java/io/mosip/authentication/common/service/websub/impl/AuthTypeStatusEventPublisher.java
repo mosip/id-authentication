@@ -30,9 +30,6 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
 	private String authTypeStatusAcknlowedgeTopic;
 	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
 
 	/**
 	 * Do subscribe.

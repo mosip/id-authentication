@@ -31,11 +31,7 @@ public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializ
 	/** The credential status update topic. */
 	@Value("${" + AUTH_FRAUD_ANALYSIS_TOPIC + "}")
 	private String fraudAnalysisTopic;
-	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
-
+		
 	@Autowired
 	private ObjectMapper objectMapper;
 	
