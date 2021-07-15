@@ -1,4 +1,4 @@
-package io.mosip.idauth.core.common.dto;
+package io.mosip.authentication.internal.service.dto;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "mosip.role.idauth")
 @Getter
 @Setter
-public class AuthorizedRolesDTO {
+public class AuthorizedRolesDto {
 
 
     private List<String> postauth;
