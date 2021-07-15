@@ -26,20 +26,33 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+/**
+ * A factory for creating MosipAuthFilter objects.
+ * 
+ * @author Loganathan Sekar
+ * 
+ */
 @Configuration
 public class MosipAuthFilterFactory {
 	
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(MosipAuthFilterFactory.class);
 	
+	/** The mosip auth filter classes. */
 	@Value("${" + IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER + "}")
 	private String [] mosipAuthFilterClasses;
 
+	/** The auth filters. */
 	private List<IMosipAuthFilter> authFilters;
 	
+	/** The bean factory. */
 	@Autowired
 	private AutowireCapableBeanFactory beanFactory;
 
 	
+	/**
+	 * Initializes the auth filters
+	 */
 	@PostConstruct
 	public void init() {
 		if(mosipAuthFilterClasses.length == 0) {
@@ -55,6 +68,13 @@ public class MosipAuthFilterFactory {
 		
 	}
 	
+	/**
+	 * Gets the auth filter instance.
+	 *
+	 * @param authFilterClassName the auth filter class name
+	 * @return the auth filter instance
+	 * @throws IdAuthUncheckedException the id auth unchecked exception
+	 */
 	private IMosipAuthFilter getAuthFilterInstance(String authFilterClassName) throws IdAuthUncheckedException {
 		 try {
 			return doGetAuthFilterInstance(authFilterClassName);
@@ -65,6 +85,19 @@ public class MosipAuthFilterFactory {
 		}
 	}
 
+	/**
+	 * Do get auth filter instance.
+	 *
+	 * @param authFilterClassName the auth filter class name
+	 * @return the i mosip auth filter
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 * @throws IdAuthenticationFilterException the id authentication filter exception
+	 * @throws InvalidAuthFilterJarSignatureException the invalid auth filter jar signature exception
+	 */
 	private IMosipAuthFilter doGetAuthFilterInstance(String authFilterClassName) throws ClassNotFoundException, InstantiationException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException, IdAuthenticationFilterException, InvalidAuthFilterJarSignatureException {
 		Class<?> clazz = Class.forName(authFilterClassName);
@@ -85,10 +118,21 @@ public class MosipAuthFilterFactory {
 		}
 	}
 	
+	/**
+	 * Validate trust.
+	 *
+	 * @param object the object
+	 * @throws InvalidAuthFilterJarSignatureException the invalid auth filter jar signature exception
+	 */
 	private void validateTrust(Class<?> object) throws InvalidAuthFilterJarSignatureException{
 		// TODO Validate the signature of the jar of the class
 	}
 
+	/**
+	 * Gets the enabled auth filters.
+	 *
+	 * @return the enabled auth filters
+	 */
 	public List<IMosipAuthFilter> getEnabledAuthFilters() {
 		return authFilters;
 	}
