@@ -181,7 +181,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> processDecipheredReqeuest(Map<String, Object> decipheredRequest) {
 		Map<String, Object> request = (Map<String, Object>) decipheredRequest.get(REQUEST);
-		if (request.get(DEMOGRAPHICS) instanceof Map) {
+		if (request != null && request.get(DEMOGRAPHICS) instanceof Map) {
 			setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
 		}
 		return decipheredRequest;

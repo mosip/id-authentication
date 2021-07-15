@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.filter;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEMOGRAPHICS;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
