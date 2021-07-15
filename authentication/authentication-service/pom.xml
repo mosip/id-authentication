@@ -28,6 +28,11 @@
 			<version>${authentication-common.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-authtypelockfilter-impl</artifactId>
+			<version>${authentication-authtypelockfilter-impl}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
 			<version>${kernel-pinvalidator.version}</version>

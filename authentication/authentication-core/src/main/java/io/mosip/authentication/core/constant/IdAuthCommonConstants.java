@@ -31,10 +31,8 @@ public final class IdAuthCommonConstants {
 	public static final String IDENTITY_DATA = "IDENTITY_DATA";
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
-	
-	private IdAuthCommonConstants() {
 
-	}
+	public static final String TOKEN = "TOKEN";
 
 	public static final String INTERNAL = "INTERNAL";
 
@@ -296,6 +294,10 @@ public final class IdAuthCommonConstants {
 	public static final String INDIVIDUAL_ID = "individualId";
 
 	public static final String IDA = "IDA";
+	
+	
+	private IdAuthCommonConstants() {
+	}
 
 
 }

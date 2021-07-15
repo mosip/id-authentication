@@ -6,6 +6,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
+import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
+import io.mosip.authentication.common.service.factory.MosipAuthFilterFactory;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -29,6 +33,7 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
@@ -82,6 +87,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Allowed domainUris
 	 */
 	private List<String> allowedDomainUris;
+	
+	@Autowired
+	private MosipAuthFilterFactory mosipAuthFilterFactory;
 	
 	@PostConstruct
 	public void initialize() {
@@ -543,5 +551,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			return values.stream().anyMatch(value::equalsIgnoreCase);
 		}
 		return false;
+	}
+	
+	public void validateAuthFilters(AuthRequestDTO authRequestDto, 
+			           Map<String, List<IdentityInfoDTO>> identityData,
+			           Map<String, Object> properties) throws IdAuthenticationFilterException {
+		List<IMosipAuthFilter> enabledAuthFilters = mosipAuthFilterFactory.getEnabledAuthFilters();
+		for (IMosipAuthFilter authFilter : enabledAuthFilters) {
+			// This will run auth filter validate one by one and any exception thrown from
+			// one filter will skip the execution of the rest.
+			authFilter.validate(authRequestDto, identityData, properties);
+		}
 	}
 }

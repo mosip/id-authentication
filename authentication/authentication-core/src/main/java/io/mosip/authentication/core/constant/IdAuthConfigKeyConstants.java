@@ -152,6 +152,8 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String ALLOWED_DOMAIN_URIS="mosip.ida.allowed.domain.uris";
 
+	public static final String IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.auth.filter.classes.in.execution.order";
+
 
 
 }
