@@ -43,7 +43,10 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Transactional
 public class PartnerServiceManager {
 
-	/** The Constant API_KEY_DATA. */
+	private static final String ACTIVE = "ACTIVE";
+
+			
+			/** The Constant API_KEY_DATA. */
 	private static final String API_KEY_DATA = "apiKeyData";
 
 	/** The Constant PARTNER_DATA. */
@@ -108,7 +111,7 @@ public class PartnerServiceManager {
 		response.setPolicyName(policyData.getPolicyName());
 		response.setPolicy(mapper.convertValue(policyData.getPolicy(), PolicyDTO.class));
 		response.setPolicyDescription(policyData.getPolicyDescription());
-		response.setPolicyStatus(policyData.getPolicyStatus().contentEquals("ACTIVE"));
+		response.setPolicyStatus(policyData.getPolicyStatus().contentEquals(ACTIVE));
 		response.setPartnerId(partnerData.getPartnerId());
 		response.setPartnerName(partnerData.getPartnerName());
 		if (certificateNeeded) {
@@ -135,7 +138,7 @@ public class PartnerServiceManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 			}
-			if (!partnerMapping.getPartnerData().getPartnerStatus().contentEquals("ACTIVE")) {
+			if (!partnerMapping.getPartnerData().getPartnerStatus().contentEquals(ACTIVE)) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
 			}
@@ -143,7 +146,7 @@ public class PartnerServiceManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorMessage());
 			}
-			if (!partnerMapping.getPolicyData().getPolicyStatus().contentEquals("ACTIVE")) {
+			if (!partnerMapping.getPolicyData().getPolicyStatus().contentEquals(ACTIVE)) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
@@ -158,7 +161,7 @@ public class PartnerServiceManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 			}
-			if (!partnerMapping.getApiKeyData().getApiKeyStatus().contentEquals("ACTIVE")) {
+			if (!partnerMapping.getApiKeyData().getApiKeyStatus().contentEquals(ACTIVE)) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
 			}
@@ -173,7 +176,7 @@ public class PartnerServiceManager {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
 				}
-				if (!mispLicenseData.getMispStatus().contentEquals("ACTIVE")) {
+				if (!mispLicenseData.getMispStatus().contentEquals(ACTIVE)) {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
 							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage());

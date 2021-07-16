@@ -27,6 +27,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitializer {
 
+	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT = "tryRegisterTopicHotlistEvent";
+
+		
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(AuthTransactionStatusEventPublisher.class);
 
@@ -50,13 +53,13 @@ public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitial
 	 */
 	private void tryRegisterTopic() {
 		try {
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.debug(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Trying to register topic: " + authTransactionStatusTopic);
 			webSubHelper.registerTopic(authTransactionStatusTopic);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Registered topic: " + authTransactionStatusTopic);
 		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", e.getClass().toString(),
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, e.getClass().toString(),
 					"Error registering topic: " + authTransactionStatusTopic + "\n" + e.getMessage());
 		}
 	}
