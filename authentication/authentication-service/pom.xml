@@ -30,7 +30,12 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-authtypelockfilter-impl</artifactId>
-			<version>${authentication-authtypelockfilter-impl}</version>
+			<version>${authentication-authtypelockfilter-impl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-hotlistfilter-impl</artifactId>
+			<version>${authentication-hotlistfilter-impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

@@ -1,5 +1,5 @@
 package io.mosip.authentication.common.service.factory;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,9 +11,7 @@ import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.util.ReflectionUtils;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
@@ -32,16 +30,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Loganathan Sekar
  * 
  */
-@Configuration
-public class MosipAuthFilterFactory {
+public abstract class MosipAuthFilterFactory {
 	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(MosipAuthFilterFactory.class);
 	
-	/** The mosip auth filter classes. */
-	@Value("${" + IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER + "}")
-	private String [] mosipAuthFilterClasses;
-
 	/** The auth filters. */
 	private List<IMosipAuthFilter> authFilters;
 	
@@ -55,19 +48,20 @@ public class MosipAuthFilterFactory {
 	 */
 	@PostConstruct
 	public void init() {
-		if(mosipAuthFilterClasses.length == 0) {
-			logger.error("Missing configuration: {}", IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER);
+		if(getMosipAuthFilterClasses().length == 0) {
+			String message = "Missing Auth Filter Classes configuration.";
+			logger.error(message);
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					String.format("%s : Missing configuration %s",
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(),
-							IDA_MOSIP_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER));
+					message);
 		}
-		authFilters = Stream.of(mosipAuthFilterClasses)
+		authFilters = Stream.of(getMosipAuthFilterClasses())
 				.map(this::getAuthFilterInstance)
 				.collect(Collectors.toUnmodifiableList());
 		
 	}
 	
+	protected abstract String[] getMosipAuthFilterClasses();
+
 	/**
 	 * Gets the auth filter instance.
 	 *

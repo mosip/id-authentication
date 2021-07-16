@@ -62,6 +62,7 @@
 		<module>authentication-filter-api</module>
 		<module>authentication-common</module>
 		<module>authentication-authtypelockfilter-impl</module>
+		<module>authentication-hotlistfilter-impl</module>
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
@@ -73,7 +74,8 @@
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
 		<authentication-filter-api.version>${authentication.parent.version}</authentication-filter-api.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
-		<authentication-authtypelockfilter-impl>${authentication.parent.version}</authentication-authtypelockfilter-impl>
+		<authentication-authtypelockfilter-impl.version>${authentication.parent.version}</authentication-authtypelockfilter-impl.version>
+		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->

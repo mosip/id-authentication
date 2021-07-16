@@ -1,12 +1,12 @@
 package io.mosip.authentication.authfilter.exception;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 
 /**
  * The Class IdAuthenticationFilterException.
  */
-public class IdAuthenticationFilterException extends IdAuthenticationBusinessException{
+public class IdAuthenticationFilterException extends IDDataValidationException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 8961194021036317286L;

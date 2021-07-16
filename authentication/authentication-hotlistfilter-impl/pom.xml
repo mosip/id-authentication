@@ -7,9 +7,9 @@
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 	<version>1.2.0-SNAPSHOT</version>
-	<artifactId>authentication-authtypelockfilter-impl</artifactId>
-	<name>authentication-authtypelockfilter-impl</name>
-	<description>ID Authentication Filter Implementation for Auth Type Lock validation</description>
+	<artifactId>authentication-hotlistfilter-impl</artifactId>
+	<name>authentication-hotlistfilter-impl</name>
+	<description>ID Authentication Filter Implementation for Hotlist validation</description>
 	<url>https://github.com/mosip/commons</url>
 	<packaging>jar</packaging>
 

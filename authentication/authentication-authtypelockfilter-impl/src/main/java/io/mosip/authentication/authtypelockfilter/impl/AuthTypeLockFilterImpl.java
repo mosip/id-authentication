@@ -21,9 +21,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 
 /**
- * The Interface IMosipAuthFilter - to implement a filter predicate on the
- * authentication request and identity data to proceed further or on based on
- * the test condition.
+ * The Class AuthTypeLockFilterImpl - implementation of auth filter for
+ * validating AuthType locked/unlocked status for an individual in the
+ * authentication request.
  * 
  * @author Loganathan Sekar
  */
