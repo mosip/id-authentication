@@ -25,6 +25,8 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 @Component
 public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicRegistrar, WebSubEventSubcriber {
 	
+	private static final String TRY_REGISTER_TOPIC_EVENT = "tryRegisterTopicEvent";
+
 	private static final Logger logger = IdaLogger.getLogger(BaseWebSubEventsInitializer.class);
 	
 	/** The Constant EVENT_TYPE_PLACEHOLDER. */
@@ -84,13 +86,13 @@ public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicReg
 	
 	protected void tryRegisterTopicEvent(String eventTopic) {
 		try {
-			logger.debug(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", "",
+			logger.debug(this.getClass().getCanonicalName(), TRY_REGISTER_TOPIC_EVENT, "",
 					"Trying to register topic: " + eventTopic);
 			webSubHelper.registerTopic(eventTopic);
-			logger.info(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", "",
+			logger.info(this.getClass().getCanonicalName(), TRY_REGISTER_TOPIC_EVENT, "",
 					"Registered topic: " + eventTopic);
 		} catch (Exception e) {
-			logger.info(this.getClass().getCanonicalName(), "tryRegisterTopicEvent", e.getClass().toString(),
+			logger.info(this.getClass().getCanonicalName(), TRY_REGISTER_TOPIC_EVENT, e.getClass().toString(),
 					"Error registering topic: " + eventTopic + "\n" + e.getMessage());
 		}
 	}
