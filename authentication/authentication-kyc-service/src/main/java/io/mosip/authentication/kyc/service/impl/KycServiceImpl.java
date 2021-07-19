@@ -45,6 +45,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class KycServiceImpl implements KycService {
 	
+	private static final String GET_ENTITY_FOR_MATCH_TYPE = "getEntityForMatchType";
+
 	/** The Constant KYC_ATTRIB_LANGCODE_SEPERATOR. */
 	private static final String KYC_ATTRIB_LANGCODE_SEPERATOR="_";
 
@@ -225,7 +227,7 @@ public class KycServiceImpl implements KycService {
 		try {
 			return idInfoHelper.getEntityInfoAsString(matchType, filteredIdentityInfo);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GET_ENTITY_FOR_MATCH_TYPE,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 		}
 		return null;
@@ -243,7 +245,7 @@ public class KycServiceImpl implements KycService {
 		try {
 			return idInfoHelper.getEntityInfoAsString(matchType, langCode, filteredIdentityInfo);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GET_ENTITY_FOR_MATCH_TYPE,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 		}
 		return null;
@@ -266,7 +268,7 @@ public class KycServiceImpl implements KycService {
 					.map(Entry::getValue)
 					.orElse(null);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GET_ENTITY_FOR_MATCH_TYPE,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 		}
 		return null;

@@ -20,6 +20,10 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class HotlistScheduledCleanupJob {
 	
+	private static final String HOTLIST_SCHEDULED_CLEANUP_JOB = "HotlistScheduledCleanupJob";
+
+	private static final String CLEANUP_UNBLOCKED_IDS = "cleanupUnblockedIds";
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(HotlistScheduledCleanupJob.class);
 
@@ -36,11 +40,11 @@ public class HotlistScheduledCleanupJob {
 	@Scheduled(fixedDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-delay-in-hours}}")
 	public void cleanupUnblockedIds() {
 		try {
-			mosipLogger.info(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
+			mosipLogger.info(securityManager.getUser(), HOTLIST_SCHEDULED_CLEANUP_JOB, CLEANUP_UNBLOCKED_IDS,
 					"INITIATED CLEANUP OF UNBLOCKED IDs");
 			hotlistRepo.findByStatus(HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
-			mosipLogger.warn(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
+			mosipLogger.warn(securityManager.getUser(), HOTLIST_SCHEDULED_CLEANUP_JOB, CLEANUP_UNBLOCKED_IDS,
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
 		}
 
@@ -52,11 +56,11 @@ public class HotlistScheduledCleanupJob {
 	@Scheduled(fixedDelayString = "#{60 * 60 * 1000 * ${mosip.hotlist.cleanup-schedule.fixed-delay-in-hours}}")
 	public void cleanupExpiredIds() {
 		try {
-			mosipLogger.info(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
+			mosipLogger.info(securityManager.getUser(), HOTLIST_SCHEDULED_CLEANUP_JOB, "cleanupExpiredIds",
 					"INITIATED CLEANUP OF EXPIRED IDs");
 			hotlistRepo.findByExpiryDTimesLessThan(DateUtils.getUTCCurrentDateTime()).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
-			mosipLogger.warn(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
+			mosipLogger.warn(securityManager.getUser(), HOTLIST_SCHEDULED_CLEANUP_JOB, CLEANUP_UNBLOCKED_IDS,
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
 		}
 	}

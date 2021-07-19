@@ -22,6 +22,8 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 @Component
 public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 	
+	private static final String TRY_REGISTER_TOPIC_CREDENTIAL_ISSUEANCE_EVENTS = "tryRegisterTopicCredentialIssueanceEvents";
+
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(IdChangeEventsInitializer.class);
 	
@@ -62,11 +64,11 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 		Arrays.stream(ID_CHANGE_EVENTS).forEach(eventType -> {
 			String topic = topicPrefix + eventType.toString();
 			try {
-				logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Trying to register topic: " + topic);
+				logger.debug(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_CREDENTIAL_ISSUEANCE_EVENTS, "", "Trying to register topic: " + topic);
 				webSubHelper.registerTopic(topic);
-				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents", "", "Registered topic: " + topic);
+				logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_CREDENTIAL_ISSUEANCE_EVENTS, "", "Registered topic: " + topic);
 			} catch (Exception e) {
-				logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicCredentialIssueanceEvents",  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
+				logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_CREDENTIAL_ISSUEANCE_EVENTS,  e.getClass().toString(), "Error registering topic: "+ topic +"\n" + e.getMessage());
 			}
 		});
 			

@@ -59,6 +59,8 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Component
 public class FailedWebsubMessageProcessor {
 
+	private static final String EVENT_RECEIVED = "EVENT RECEIVED";
+
 	/** The mosip logger. */
 	private static final Logger mosipLogger = IdaLogger.getLogger(FailedWebsubMessageProcessor.class);
 
@@ -355,7 +357,7 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processHotlistEvent(FailedMessageEntity failedMessage) throws IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "processHotlistEvent",
-				"EVENT RECEIVED");
+				EVENT_RECEIVED);
 		Optional<EventModel> eventModel = getEventModel(failedMessage);
 		if (eventModel.isPresent()) {
 			hotlistService.handlingHotlistingEvent(eventModel.get());
@@ -369,7 +371,7 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processMasterdataTemplatesEvent(FailedMessageEntity failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(),
-				"processMasterdataTemplatesEvent", "EVENT RECEIVED");
+				"processMasterdataTemplatesEvent", EVENT_RECEIVED);
 		Optional<EventModel> eventModel = getEventModel(failedMessage);
 		if (eventModel.isPresent()) {
 			masterDataCacheUpdateService.updateTemplates(eventModel.get());
@@ -383,7 +385,7 @@ public class FailedWebsubMessageProcessor {
 	 */
 	public void processMasterdataTitlesEvent(FailedMessageEntity failedMessage) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(),
-				"processMasterdataTitlesEvent", "EVENT RECEIVED");
+				"processMasterdataTitlesEvent", EVENT_RECEIVED);
 		Optional<EventModel> eventModel = getEventModel(failedMessage);
 		if (eventModel.isPresent()) {
 			masterDataCacheUpdateService.updateTemplates(eventModel.get());
@@ -401,7 +403,7 @@ public class FailedWebsubMessageProcessor {
 	public void processPartnerCACertEvent(FailedMessageEntity failedMessage)
 			throws RestServiceException, IdAuthenticationBusinessException {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(),
-				"processPartnerCACertEvent", "EVENT RECEIVED");
+				"processPartnerCACertEvent", EVENT_RECEIVED);
 		Optional<EventModel> eventModel = getEventModel(failedMessage);
 		if (eventModel.isPresent()) {
 			partnerCACertEventService.handleCACertEvent(eventModel.get());

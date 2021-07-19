@@ -47,6 +47,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class InternalAuthController {
 
+	private static final String AUTHENTICATE_APPLICANT = "authenticateApplicant";
+
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
@@ -121,7 +123,7 @@ public class InternalAuthController {
 					DEFAULT_PARTNER_API_KEY, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 			return authResponseDTO;
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE_APPLICANT,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
@@ -129,7 +131,7 @@ public class InternalAuthController {
 
 			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE_APPLICANT,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
@@ -180,7 +182,7 @@ public class InternalAuthController {
 					DEFAULT_PARTNER_API_KEY, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
 			return authResponseDTO;
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE_APPLICANT,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
@@ -188,7 +190,7 @@ public class InternalAuthController {
 
 			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE_APPLICANT,
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,

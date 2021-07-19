@@ -18,6 +18,8 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 @Component
 public class HotlistEventInitializer extends BaseWebSubEventsInitializer {
 
+	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT = "tryRegisterTopicHotlistEvent";
+
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(HotlistEventInitializer.class);
 
@@ -47,13 +49,13 @@ public class HotlistEventInitializer extends BaseWebSubEventsInitializer {
 	 */
 	private void tryRegisterTopicHotlistEvent() {
 		try {
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.debug(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Trying to register topic: " + hotlistEventTopic);
 			webSubHelper.registerTopic(hotlistEventTopic);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Registered topic: " + hotlistEventTopic);
 		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", e.getClass().toString(),
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, e.getClass().toString(),
 					"Error registering topic: " + hotlistEventTopic + "\n" + e.getMessage());
 		}
 	}

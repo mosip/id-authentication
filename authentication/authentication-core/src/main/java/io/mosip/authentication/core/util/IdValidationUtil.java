@@ -23,6 +23,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdValidationUtil {
 
+	private static final String VALIDATE = "VALIDATE";
+
 	/**
 	 * IdValidationUtil logger
 	 */
@@ -68,7 +70,7 @@ public class IdValidationUtil {
 		 * 
 		 */
 		if (id.length() != uinLength) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "VALIDATE",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"UIN length should be as per configuration");
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
@@ -83,7 +85,7 @@ public class IdValidationUtil {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "VALIDATE",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"UIN should match checksum.");
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
@@ -127,7 +129,7 @@ public class IdValidationUtil {
 		 * 
 		 */
 		if (id.length() != vidLength) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "VALIDATE",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"VID length should be as per configuration");
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.VID_VAL_ILLEGAL_LENGTH.getErrorCode(),
@@ -142,7 +144,7 @@ public class IdValidationUtil {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "VALIDATE",
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"VID should match checksum.");
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),

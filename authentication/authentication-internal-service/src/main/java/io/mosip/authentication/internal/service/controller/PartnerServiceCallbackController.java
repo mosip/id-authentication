@@ -36,6 +36,8 @@ import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyInte
 @RestController
 public class PartnerServiceCallbackController {
 
+	private static final String PARTNER_SERVICE_CALLBACK_CONTROLLER = "PartnerServiceCallbackController";
+
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceCallbackController.class);
 
 	/** The controller delegate. */
@@ -51,11 +53,11 @@ public class PartnerServiceCallbackController {
 					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
 	public void handleApiKeyApprovedEvent(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleApiKeyApprovedEvent",
 					APIKEY_APPROVED + " EVENT RECEIVED");
 			partnerManager.handleApiKeyApproved(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleApiKeyApprovedEvent",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}
@@ -66,11 +68,11 @@ public class PartnerServiceCallbackController {
 					+ PARTNER_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED + "}")
 	public void handlePartnerUpdated(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerUpdated",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePartnerUpdated",
 					PARTNER_UPDATED_EVENT_NAME + " EVENT RECEIVED");
 			partnerManager.updatePartnerData(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerUpdated",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePartnerUpdated",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}
@@ -81,11 +83,11 @@ public class PartnerServiceCallbackController {
 					+ POLICY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED + "}")
 	public void handlePolicyUpdated(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePolicyUpdated",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePolicyUpdated",
 					POLICY_UPDATED_EVENT_NAME + " EVENT RECEIVED");
 			partnerManager.updatePolicyData(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePolicyUpdated",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePolicyUpdated",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}
@@ -96,11 +98,11 @@ public class PartnerServiceCallbackController {
 					+ PARTNER_API_KEY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED + "}")
 	public void handlePartnerApiKeyUpdated(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePartnerApiKeyUpdated",
 					PARTNER_API_KEY_UPDATED_EVENT_NAME + " EVENT RECEIVED");
 			partnerManager.handleApiKeyUpdated(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handlePartnerApiKeyUpdated",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}
@@ -111,11 +113,11 @@ public class PartnerServiceCallbackController {
 					+ MISP_LICENSE_GENERATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED + "}")
 	public void handleMispLicenseGeneratedEvent(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispLicenseGeneratedEvent",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleMispLicenseGeneratedEvent",
 					MISP_LICENSE_GENERATED + " EVENT RECEIVED");
 			partnerManager.updateMispLicenseData(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispLicenseGeneratedEvent",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleMispLicenseGeneratedEvent",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}
@@ -126,11 +128,11 @@ public class PartnerServiceCallbackController {
 					+ MISP_LICENSE_UPDATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED + "}")
 	public void handleMispUpdatedEvent(@RequestBody EventModel eventModel) {
 		try {
-			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
+			logger.debug(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleMispUpdatedEvent",
 					MISP_LICENSE_UPDATED + " EVENT RECEIVED");
 			partnerManager.updateMispLicenseData(eventModel);
 		} catch (Exception e) {
-			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
+			logger.error(securityManager.getUser(), PARTNER_SERVICE_CALLBACK_CONTROLLER, "handleMispUpdatedEvent",
 					StringUtils.arrayToDelimitedString(ExceptionUtils.getRootCauseStackTrace(e), "\n"));
 		}
 	}

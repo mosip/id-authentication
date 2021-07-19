@@ -20,6 +20,8 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 @Component
 public class PartnerCACertEventInitializer extends BaseWebSubEventsInitializer {
 
+	private static final String TRY_REGISTER_TOPIC_PARTNER_CERT_EVENT = "tryRegisterTopicPartnerCertEvent";
+
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(PartnerCACertEventInitializer.class);
 
@@ -49,13 +51,13 @@ public class PartnerCACertEventInitializer extends BaseWebSubEventsInitializer {
 	 */
 	private void tryRegisterTopicPartnerCertEvents() {
 		try {
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerCertEvent", "",
+			logger.debug(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_PARTNER_CERT_EVENT, "",
 					"Trying to register topic: " + partnerCertEventTopic);
 			webSubHelper.registerTopic(partnerCertEventTopic);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerCertEvent", "",
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_PARTNER_CERT_EVENT, "",
 					"Registered topic: " + partnerCertEventTopic);
 		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicPartnerCertEvent", e.getClass().toString(),
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_PARTNER_CERT_EVENT, e.getClass().toString(),
 					"Error registering topic: " + partnerCertEventTopic + "\n" + e.getMessage());
 		}
 	}
