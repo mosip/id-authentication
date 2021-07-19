@@ -24,14 +24,13 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -43,18 +42,14 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
-import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
-import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -108,19 +103,16 @@ public class AuthFacadeImpl implements AuthFacade {
 	private TokenIdManager tokenIdManager;
 
 	@Autowired
-	private AuthtypeStatusService authTypeStatusService;
-
-	@Autowired
 	private IdAuthSecurityManager securityManager;
 
 	@Autowired
 	private PartnerService partnerService;
 
 	@Autowired
-	private IdInfoFetcher idInfoFetcher;
-
-	@Autowired
 	private AuthTransactionHelper authTransactionHelper;
+	
+	@Autowired
+	private AuthRequestValidator authRequestValidator;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,7 +133,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				isBiometricDataNeeded(authRequestDTO), markVidConsumed);
 		
 		String token = idService.getToken(idResDTO);
-		validateAuthTypeStatus(authRequestDTO, token);
+		
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -156,6 +148,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
+			
+			authRequestDTO.getMetadata().putIfAbsent(IdAuthCommonConstants.TOKEN, token);
+			authRequestValidator.validateAuthFilters(authRequestDTO, idInfo, authRequestDTO.getMetadata());
 			
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId, authTxnBuilder);
@@ -225,61 +220,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private String createRandomToken(String transactionId) throws IdAuthenticationBusinessException {
 		return securityManager.createRandomToken(transactionId.getBytes());
-	}
-
-	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, String token) throws IdAuthenticationBusinessException {
-		List<AuthtypeStatus> authtypeStatusList = authTypeStatusService
-				.fetchAuthtypeStatus(token);
-		if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
-			for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
-				validateAuthTypeStatus(authRequestDTO, authTypeStatus);
-			}
-		}
-	}
-
-	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus)
-			throws IdAuthenticationBusinessException {
-		if (authTypeStatus.getLocked()) {
-			if (authRequestDTO.getRequestedAuth().isDemo()
-					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.DEMO.getType()));
-			}
-
-			else if (authRequestDTO.getRequestedAuth().isBio()
-					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
-					if (authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
-						if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
-							throw new IdAuthenticationBusinessException(
-									IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-									String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-											MatchType.Category.BIO.getType() + "-" + authType.getType()));
-						} else {
-							break;
-						}
-					}
-				}
-			}
-
-			else if (authRequestDTO.getRequestedAuth().isOtp()
-					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.OTP.getType()));
-			}
-
-			else if (authRequestDTO.getRequestedAuth().isPin()
-					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.SPIN.getType()));
-			}
-		}
 	}
 
 	/**

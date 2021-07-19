@@ -6,6 +6,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -19,23 +20,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
+import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
+import io.mosip.authentication.common.service.factory.MosipAuthFilterFactory;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.function.FunctionWithThrowable;
-import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
-import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -69,10 +69,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
-	/** The hotlist service. */
-	@Autowired
-	private HotlistService hotlistService;	
-	
 	/**
 	 * Allowed environments
 	 */
@@ -82,6 +78,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Allowed domainUris
 	 */
 	private List<String> allowedDomainUris;
+	
+	@Autowired
+	private MosipAuthFilterFactory mosipAuthFilterFactory;
 	
 	@PostConstruct
 	public void initialize() {
@@ -155,9 +154,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
-			if (!errors.hasErrors()) {
-				validateHotlistedIds(errors, authRequestDto);
-			}
 			if (!errors.hasErrors() && authRequestDto.getRequestedAuth().isBio()) {
 				validateBiometricTimestamps(authRequestDto.getRequest().getBiometrics(), errors);
 			}
@@ -224,23 +220,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
-	}
-
-	/**
-	 * Validate hotlisted ids.
-	 *
-	 * @param errors         the errors
-	 * @param authRequestDto the auth request dto
-	 */
-	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
-		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
-
-		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
-
-		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
-			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-		}
 	}
 
 	/**
@@ -427,91 +406,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Checks if is individual id hotlisted.
-	 *
-	 * @param individualId     the individual id
-	 * @param individualIdType the individual id type
-	 * @param errors           the errors
-	 */
-	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
-		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)) {
-			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), individualIdType);
-			if ((Objects.isNull(hotlistStatus.getExpiryDTimes()) && hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED))
-					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-							&& hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
-						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), individualIdType));
-			}
-		}
-	}
-
-	/**
-	 * Checks if is devices hotlisted.
-	 *
-	 * @param biometrics the biometrics
-	 * @param errors     the errors
-	 */
-	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
-								.getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
-								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
-						HotlistIdTypes.DEVICE);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
-			}).forEach(
-					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE))));
-		}
-	}
-
-	/**
-	 * Checks if is device provider hotlisted.
-	 *
-	 * @param biometrics the biometrics
-	 * @param errors     the errors
-	 */
-	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(0).getData().getDigitalId().getDp()
-								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
-						HotlistIdTypes.DEVICE_PROVIDER);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
-			}).forEach(
-					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE_PROVIDER))));
-		}
-	}
-
-	/**
-	 * Checks if is partner id hotlisted.
-	 *
-	 * @param metadata the metadata
-	 * @param errors   the errors
-	 */
-	protected void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
-		if (Objects.nonNull(metadata) && metadata.isPresent()) {
-			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
-					.getStatus().contentEquals(HotlistStatus.BLOCKED))
-					.ifPresent(partnerId -> errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									HotlistIdTypes.PARTNER_ID)));
-		}
-	}
-
-	/**
 	 * Biometric timestamp parser.
 	 *
 	 * @param timestamp the timestamp
@@ -543,5 +437,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			return values.stream().anyMatch(value::equalsIgnoreCase);
 		}
 		return false;
+	}
+	
+	public void validateAuthFilters(AuthRequestDTO authRequestDto, 
+			           Map<String, List<IdentityInfoDTO>> identityData,
+			           Map<String, Object> properties) throws IdAuthenticationFilterException {
+		List<IMosipAuthFilter> enabledAuthFilters = mosipAuthFilterFactory.getEnabledAuthFilters();
+		for (IMosipAuthFilter authFilter : enabledAuthFilters) {
+			// This will run auth filter validate one by one and any exception thrown from
+			// one filter will skip the execution of the rest.
+			authFilter.validate(authRequestDto, identityData, properties);
+		}
 	}
 }

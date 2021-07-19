@@ -40,18 +40,6 @@ public class InternalAuthRequestValidator extends AuthRequestValidator {
 		return FINGERPRINT_COUNT;
 	}
 	
-	protected void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
-		//Skipping partner id for internal auth
-	}
-	
-	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		//Skipping partner id for internal auth
-	}
-	
-	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		//Skipping partner id for internal auth
-	}
-	
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String format) {
 		// Skip for internal auth
 		

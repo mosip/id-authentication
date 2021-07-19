@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.websub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 
@@ -22,6 +23,9 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	
 	@Autowired
 	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
+	
+	@Autowired
+	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 
 	/**
 	 * Do init subscriptions.
@@ -38,6 +42,8 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	protected void doRegisterTopics() {
 		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
 		webSubHelper.initRegistrar(fraudEventPublisher);
+		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
+
 	}
 
 }
