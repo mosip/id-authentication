@@ -35,6 +35,6 @@ public interface HotlistCacheRepository extends BaseRepository<HotlistCache, Str
 	 * @param isDeleted the is deleted
 	 * @return the list
 	 */
-	List<HotlistCache> findByExpiryDTimesLessThan(LocalDateTime currentTimestamp);
+	List<HotlistCache> findByExpiryDTimesLessThanAndStatus(LocalDateTime currentTimestamp, String status);
 	
 }
