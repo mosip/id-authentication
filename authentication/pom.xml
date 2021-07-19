@@ -63,7 +63,6 @@
 		<module>authentication-common</module>
 		<module>authentication-authtypelockfilter-impl</module>
 		<module>authentication-hotlistfilter-impl</module>
-		<module>authentication-childauthfilter-impl</module>
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
