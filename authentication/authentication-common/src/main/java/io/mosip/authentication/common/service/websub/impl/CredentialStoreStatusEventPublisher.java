@@ -4,11 +4,9 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CRE
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStatusUpdateEvent;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -22,6 +20,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitializer {
+
+	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT = "tryRegisterTopicHotlistEvent";
 
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(CredentialStoreStatusEventPublisher.class);
@@ -43,13 +43,13 @@ public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitial
 	 */
 	private void tryRegisterTopicHotlistEvent() {
 		try {
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.debug(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Trying to register topic: " + credentialStatusUpdateTopic);
 			webSubHelper.registerTopic(credentialStatusUpdateTopic);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", "",
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, "",
 					"Registered topic: " + credentialStatusUpdateTopic);
 		} catch (Exception e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "tryRegisterTopicHotlistEvent", e.getClass().toString(),
+			logger.info(IdAuthCommonConstants.SESSION_ID, TRY_REGISTER_TOPIC_HOTLIST_EVENT, e.getClass().toString(),
 					"Error registering topic: " + credentialStatusUpdateTopic + "\n" + e.getMessage());
 		}
 	}

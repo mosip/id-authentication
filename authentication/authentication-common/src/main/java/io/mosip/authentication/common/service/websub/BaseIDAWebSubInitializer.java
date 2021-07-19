@@ -38,11 +38,7 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	
 	private static final String REGISTER_TOPICS = "registerTopics";
 
-	private static final String REGISTER_TOPICS2 = REGISTER_TOPICS;
-
-	private static final String REGISTER_TOPICS22 = REGISTER_TOPICS2;
-
-	/** The logger. */
+		/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
 	/** The retry count. */
@@ -144,12 +140,12 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	 */
 	private boolean registerTopics() {
 		try {
-			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "", "Registering Topics..");
+			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS, "", "Registering Topics..");
 			doRegisterTopics();
-			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "", "Registered subscribptions.");
+			logger.info(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS, "", "Registered subscribptions.");
 			return true;
 		} catch (Exception e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS22, "",
+			logger.error(IdAuthCommonConstants.SESSION_ID, REGISTER_TOPICS, "",
 					"Topics registration failed: " + e.getMessage());
 			return false;
 		}

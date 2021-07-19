@@ -27,10 +27,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class AuthTransactionStatusEventPublisher extends BaseWebSubEventsInitializer {
 
-	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT2 = "tryRegisterTopicHotlistEvent";
-
-
-	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT = TRY_REGISTER_TOPIC_HOTLIST_EVENT2;
+	
+	private static final String TRY_REGISTER_TOPIC_HOTLIST_EVENT = "tryRegisterTopicHotlistEvent";
 
 		
 	/** The Constant logger. */
