@@ -906,18 +906,20 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		if (demoMatchType.isMultiLanguage()
-				&& identityInfos.stream().anyMatch(identityInfo -> identityInfo.getLanguage() == null)) {
+		//Dynamic attributes validations are skipping here
+		//will be done in later stages 
+		if (!demoMatchType.isDynamic() && demoMatchType.isMultiLanguage() && identityInfos.stream().anyMatch(
+				identityInfo -> (identityInfo.getLanguage() == null || identityInfo.getLanguage().isEmpty()))) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER, "LanguageCode cannot be null");
+					IdAuthCommonConstants.MISSING_INPUT_PARAMETER, "LanguageCode cannot be null");
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { "LanguageCode" },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 
 		}
 
-		if (!errors.hasErrors() && demoMatchType.isMultiLanguage()) {
+		if (!demoMatchType.isDynamic() && !errors.hasErrors() && demoMatchType.isMultiLanguage()) {
 			Map<String, Long> langCount = identityInfos.stream()
 					.collect(Collectors.groupingBy(IdentityInfoDTO::getLanguage, Collectors.counting()));
 			

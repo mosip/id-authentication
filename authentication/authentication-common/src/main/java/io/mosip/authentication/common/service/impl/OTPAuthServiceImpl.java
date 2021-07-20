@@ -93,7 +93,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			boolean isValidRequest = validateTxnAndIdvidPartner(txnId, uin, IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType()), partnerId);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
-				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, idInfo);
 				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin,
 						partnerId);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
@@ -135,8 +135,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 *            the auth request DTO
 	 * @return the list
 	 */
-	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
+	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo) {
+		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values(), idInfo);
 	}
 
 	//

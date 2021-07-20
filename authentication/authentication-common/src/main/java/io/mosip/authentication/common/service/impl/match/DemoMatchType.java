@@ -123,6 +123,15 @@ public enum DemoMatchType implements MatchType {
 		public boolean isPropMultiLang(String propName, MappingConfig cfg) {
 			return true;
 		}
+		
+		@Override
+		public boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity) {
+			List<IdentityInfoDTO> infoDtos = identityEntity.get(propName);
+			if(infoDtos.stream().anyMatch(infoDto->infoDto.getLanguage() == null)) {
+				return false;
+			}
+			return isMultiLanguage();
+		}
 
 	},
 	

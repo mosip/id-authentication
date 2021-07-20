@@ -153,13 +153,20 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO nameIdentityInfoDTO = new IdentityInfoDTO();
+		nameIdentityInfoDTO.setLanguage("fra");
+		nameIdentityInfoDTO.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("fullName", nameList);
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR.getIdMapping().getIdname(), DemoMatchType.ADDR, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
-				AuthRequestDTO.class);
+				AuthRequestDTO.class, Map.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO);
+				authRequestDTO, demoEntity);
 		assertNotNull(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp, listMatchInputsActual);
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
@@ -244,6 +251,13 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO nameIdentityInfoObject = new IdentityInfoDTO();
+		nameIdentityInfoObject.setLanguage("fra");
+		nameIdentityInfoObject.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("fullName", nameList);
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1.getIdMapping().getIdname(), DemoMatchType.ADDR_LINE1,
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
@@ -259,10 +273,10 @@ public class DemoAuthServiceTest {
 				MatchingStrategyType.EXACT.getType(), 100, matchProperties, "fre"));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
-				AuthRequestDTO.class);
+				AuthRequestDTO.class,Map.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO);
+				authRequestDTO,demoEntity);
 		assertNotNull(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
@@ -311,6 +325,13 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		List<IdentityInfoDTO> namesList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Dinesh");
+		namesList.add(identityInfoDTO);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("fullName", namesList);
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
@@ -325,10 +346,10 @@ public class DemoAuthServiceTest {
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER.getIdMapping().getIdname(), DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
 				100, matchProperties, "fre"));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
-				AuthRequestDTO.class);
+				AuthRequestDTO.class,Map.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO);
+				authRequestDTO,demoEntity);
 		assertNotNull(listMatchInputsActual);
 //		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
@@ -345,14 +366,35 @@ public class DemoAuthServiceTest {
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPin(false);
 		authRequest.setRequestedAuth(authTypeDTO);
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("fullName", nameList);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		identityInfoDTO.setLanguage("fra");
+		identityInfoDTO.setValue("Manoj");
+		nameList.add(identityInfoDTO);
+		demographics.setName(nameList);
+		request.setDemographics(demographics);
+		authRequest.setRequest(request);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
-				AuthRequestDTO.class);
+				AuthRequestDTO.class,Map.class);
 		constructInputMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl,
-				authRequest);
-		assertTrue(listMatchInputsAct.isEmpty());
+				authRequest, demoEntity);
+		assertTrue(listMatchInputsAct.size()>0);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl, authRequestDTO);
+		RequestDTO emptyRequest = new RequestDTO();
+		IdentityDTO emptyDemographics = new IdentityDTO();
+		emptyRequest.setDemographics(emptyDemographics);
+		authRequestDTO.setRequest(emptyRequest);
+		
+		listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl, authRequestDTO,
+				demoEntity);
 		assertTrue(listMatchInputsAct.isEmpty());
 	}
 
