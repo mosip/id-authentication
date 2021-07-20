@@ -1,4 +1,5 @@
 package io.mosip.authentication.internal.service.config;
+
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.ItemProcessor;
@@ -29,6 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -41,6 +44,9 @@ import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
+import io.mosip.authentication.common.service.websub.BaseIDAWebSubInitializer;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -62,7 +68,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @EnableBatchProcessing
 @EnableScheduling
 public class DataProcessingBatchConfig {
-	
+
+	@Autowired
+	private BaseIDAWebSubInitializer webSubInitializer;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(DataProcessingBatchConfig.class);
@@ -74,7 +82,7 @@ public class DataProcessingBatchConfig {
 	/** The step builder factory. */
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
-	
+
 	/** The job registry. */
 	@Autowired
 	public JobRegistry jobRegistry;
@@ -86,29 +94,29 @@ public class DataProcessingBatchConfig {
 	/** The credential event repo. */
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
-	
+
 	@Autowired
 	private FailedMessagesRepo failedMessagesRepo;
-	
+
 	/** The credential store service. */
 	@Autowired
 	private CredentialStoreService credentialStoreService;
-	
+
 	@Autowired
 	private MissingCredentialsItemReader missingCredentialsItemReader;
-	
+
 	@Autowired
 	private FailedWebsubMessagesReader failedWebsubMessagesReader;
-	
+
 	@Autowired
 	private FailedWebsubMessageProcessor failedWebsubMessageProcessor;
-	
+
 	@Autowired
 	private RetryPolicy retryPolicy;
 
 	@Autowired
 	private BackOffPolicy backOffPolicy;
-	
+
 	/**
 	 * Credential store job.
 	 *
@@ -118,12 +126,8 @@ public class DataProcessingBatchConfig {
 	@Bean
 	@Qualifier("credentialStoreJob")
 	public Job credentialStoreJob(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("credentialStoreJob")
-				.incrementer(new RunIdIncrementer())
-				.listener(listener)
-				.flow(credentialStoreStep())
-				.end()
-				.build();
+		Job job = jobBuilderFactory.get("credentialStoreJob").incrementer(new RunIdIncrementer()).listener(listener)
+				.flow(credentialStoreStep()).end().build();
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
@@ -131,24 +135,35 @@ public class DataProcessingBatchConfig {
 		}
 		return job;
 	}
-	
+
 	@Bean
 	@Qualifier("pullFailedWebsubMessagesAndProcess")
 	public Job pullFailedWebsubMessagesAndProcess(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess")
-				.incrementer(new RunIdIncrementer())
+		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess").incrementer(new RunIdIncrementer())
 				.listener(listener)
-				.flow(pullFailedMessagesAndStore()) // First pull and store failed websub messages
+				.flow(validateWebSubInitialization()) // check if web sub subscribed to proceed
+				.next(pullFailedMessagesAndStore()) // First pull and store failed websub messages
 				.next(processFailedMessagesAndProcess()) // Then process failed websub messages
 				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
-				.end()
-				.build();
+				.end().build();
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
 			logger.warn("error in registering job: {}", e.getMessage(), e);
 		}
 		return job;
+	}
+
+	private TaskletStep validateWebSubInitialization() {
+		return stepBuilderFactory.get("validateWebSub")
+			.tasklet((contribution, chunkContext) -> {
+				webSubInitializer.registerTopics();
+				if (webSubInitializer.initSubsriptions() == HttpStatus.SERVICE_UNAVAILABLE.value()) {
+					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+				}
+				return null;
+			})
+		.build();
 	}
 
 	/**
@@ -158,72 +173,57 @@ public class DataProcessingBatchConfig {
 	 */
 	@Bean
 	public Step credentialStoreStep() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		Map<Class<? extends Throwable>, Boolean> exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
 		return stepBuilderFactory.get("credentialStoreStep")
-				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize)
-				.reader(credentialEventReader())
-				.processor(asyncCredentialStoreItemProcessor())
-				.writer(asyncCredentialStoreItemWriter())
+				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize).reader(credentialEventReader())
+				.processor(asyncCredentialStoreItemProcessor()).writer(asyncCredentialStoreItemWriter())
 				// Here Job level retry is not applied, because, event level retry is handled
 				// explicitly by the item processor
 				.faultTolerant()
 				// Skipping the processing of the event for this exception because it is thrown
 				// when retry was done before the retry interval
-				.skip(RetryingBeforeRetryIntervalException.class)
-				.skipLimit(Integer.MAX_VALUE)
-				.build();
+				.skip(RetryingBeforeRetryIntervalException.class).skipLimit(Integer.MAX_VALUE).build();
 	}
-	
+
 	@Bean
 	public Step retriggerMissingCredentialsStep() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		Map<Class<? extends Throwable>, Boolean> exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
 		return stepBuilderFactory.get("retriggerMissingCredentialsStep")
 				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
-				.reader(missingCredentialsItemReader)
-				.processor(asyncIdentityItemProcessor())
-				.writer(asyncMissingCredentialRetriggerItemWriter())
-				.faultTolerant()
+				.reader(missingCredentialsItemReader).processor(asyncIdentityItemProcessor())
+				.writer(asyncMissingCredentialRetriggerItemWriter()).faultTolerant()
 				// Applying common retry policy
 				.retryPolicy(retryPolicy)
 				// Applying common back-off policy
-				.backOffPolicy(backOffPolicy)
-				.build();
+				.backOffPolicy(backOffPolicy).build();
 	}
-	
+
 	@Bean
 	public Step pullFailedMessagesAndStore() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		Map<Class<? extends Throwable>, Boolean> exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
 		return stepBuilderFactory.get("pullFailedMessagesAndStore")
-				.<FailedMessage, Future<FailedMessage>>chunk(chunkSize)
-				.reader(failedWebsubMessagesReader)
-				.processor(asyncIdentityItemProcessor())
-				.writer(asyncFailedMessagesHandlerItemWriter())
-				.faultTolerant()
+				.<FailedMessage, Future<FailedMessage>>chunk(chunkSize).reader(failedWebsubMessagesReader)
+				.processor(asyncIdentityItemProcessor()).writer(asyncFailedMessagesHandlerItemWriter()).faultTolerant()
 				// Applying common retry policy
 				.retryPolicy(retryPolicy)
 				// Applying common back-off policy
-				.backOffPolicy(backOffPolicy)
-				.build();
+				.backOffPolicy(backOffPolicy).build();
 	}
-	
+
 	@Bean
 	public Step processFailedMessagesAndProcess() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		Map<Class<? extends Throwable>, Boolean> exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
 		return stepBuilderFactory.get("processFailedMessagesAndProcess")
-				.<FailedMessageEntity, Future<FailedMessageEntity>>chunk(chunkSize)
-				.reader(failedMessageReader())
-				.processor(asyncIdentityItemProcessor())
-				.writer(asyncFailedMessagesEntityItemWriter())
-				.faultTolerant()
+				.<FailedMessageEntity, Future<FailedMessageEntity>>chunk(chunkSize).reader(failedMessageReader())
+				.processor(asyncIdentityItemProcessor()).writer(asyncFailedMessagesEntityItemWriter()).faultTolerant()
 				// Applying common retry policy
 				.retryPolicy(retryPolicy)
 				// Applying common back-off policy
-				.backOffPolicy(backOffPolicy)
-				.build();
+				.backOffPolicy(backOffPolicy).build();
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class DataProcessingBatchConfig {
 	private ItemWriter<IdentityEntity> credentialStoreItemWriter() {
 		return credentialStoreService::storeIdentityEntity;
 	}
-	
+
 	/**
 	 * Item writer.
 	 *
@@ -243,47 +243,47 @@ public class DataProcessingBatchConfig {
 	private ItemWriter<CredentialRequestIdsDto> missingCredentialRetriggerItemWriter() {
 		return credentialStoreService::processMissingCredentialRequestId;
 	}
-	
+
 	private ItemWriter<FailedMessage> failedMessagesHandlerItemWriter() {
 		return failedWebsubMessageProcessor::storeFailedWebsubMessages;
 	}
-	
+
 	private ItemWriter<FailedMessageEntity> failedMessagesEntityItemWriter() {
 		return failedWebsubMessageProcessor::processFailedWebsubMessages;
 	}
-	
+
 	/**
 	 * Async writer.
 	 *
 	 * @return the async item writer
 	 */
 	@Bean
-    public AsyncItemWriter<IdentityEntity> asyncCredentialStoreItemWriter() {
-        AsyncItemWriter<IdentityEntity> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(credentialStoreItemWriter());
-        return asyncItemWriter;
-    }
-	
+	public AsyncItemWriter<IdentityEntity> asyncCredentialStoreItemWriter() {
+		AsyncItemWriter<IdentityEntity> asyncItemWriter = new AsyncItemWriter<>();
+		asyncItemWriter.setDelegate(credentialStoreItemWriter());
+		return asyncItemWriter;
+	}
+
 	@Bean
-    public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
-        AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
-        return asyncItemWriter;
-    }
-	
+	public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
+		AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
+		asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
+		return asyncItemWriter;
+	}
+
 	@Bean
-    public AsyncItemWriter<FailedMessage> asyncFailedMessagesHandlerItemWriter() {
-        AsyncItemWriter<FailedMessage> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(failedMessagesHandlerItemWriter());
-        return asyncItemWriter;
-    }
-	
+	public AsyncItemWriter<FailedMessage> asyncFailedMessagesHandlerItemWriter() {
+		AsyncItemWriter<FailedMessage> asyncItemWriter = new AsyncItemWriter<>();
+		asyncItemWriter.setDelegate(failedMessagesHandlerItemWriter());
+		return asyncItemWriter;
+	}
+
 	@Bean
-    public AsyncItemWriter<FailedMessageEntity> asyncFailedMessagesEntityItemWriter() {
-        AsyncItemWriter<FailedMessageEntity> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(failedMessagesEntityItemWriter());
-        return asyncItemWriter;
-    }
+	public AsyncItemWriter<FailedMessageEntity> asyncFailedMessagesEntityItemWriter() {
+		AsyncItemWriter<FailedMessageEntity> asyncItemWriter = new AsyncItemWriter<>();
+		asyncItemWriter.setDelegate(failedMessagesEntityItemWriter());
+		return asyncItemWriter;
+	}
 
 	/**
 	 * Item processor.
@@ -293,15 +293,15 @@ public class DataProcessingBatchConfig {
 	private ItemProcessor<CredentialEventStore, IdentityEntity> credentialStoreItemProcessor() {
 		return credentialStoreService::processCredentialStoreEvent;
 	}
-	
+
 	@Bean
 	public <T> AsyncItemProcessor<T, T> asyncIdentityItemProcessor() {
 		AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>();
-		    asyncItemProcessor.setDelegate(elem -> elem);
-		    asyncItemProcessor.setTaskExecutor(taskExecutor());
+		asyncItemProcessor.setDelegate(elem -> elem);
+		asyncItemProcessor.setTaskExecutor(taskExecutor());
 		return asyncItemProcessor;
 	}
-	
+
 	/**
 	 * Async item processor.
 	 *
@@ -310,11 +310,10 @@ public class DataProcessingBatchConfig {
 	@Bean
 	public AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncCredentialStoreItemProcessor() {
 		AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor = new AsyncItemProcessor<>();
-		    asyncItemProcessor.setDelegate(credentialStoreItemProcessor());
-		    asyncItemProcessor.setTaskExecutor(taskExecutor());
+		asyncItemProcessor.setDelegate(credentialStoreItemProcessor());
+		asyncItemProcessor.setTaskExecutor(taskExecutor());
 		return asyncItemProcessor;
 	}
-	
 
 	/**
 	 * Task executor.
@@ -322,15 +321,15 @@ public class DataProcessingBatchConfig {
 	 * @return the task executor
 	 */
 	@Bean
-    public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(chunkSize);
-        executor.setMaxPoolSize(chunkSize);
-        executor.setQueueCapacity(chunkSize);
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        executor.setThreadNamePrefix("MultiThreaded-");
-        return executor;
-    }
+	public TaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(chunkSize);
+		executor.setMaxPoolSize(chunkSize);
+		executor.setQueueCapacity(chunkSize);
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+		executor.setThreadNamePrefix("MultiThreaded-");
+		return executor;
+	}
 
 	/**
 	 * Credential event reader.
@@ -343,25 +342,24 @@ public class DataProcessingBatchConfig {
 		reader.setRepository(credentialEventRepo);
 		reader.setMethodName("findNewOrFailedEvents");
 		final Map<String, Sort.Direction> sorts = new HashMap<>();
-		    sorts.put("status_code", Direction.DESC); // NEW will be first processed than FAILED
-		    sorts.put("retry_count", Direction.ASC); // then try processing Least failed entries first
-		    sorts.put("cr_dtimes", Direction.ASC); // then, try processing old entries
+		sorts.put("status_code", Direction.DESC); // NEW will be first processed than FAILED
+		sorts.put("retry_count", Direction.ASC); // then try processing Least failed entries first
+		sorts.put("cr_dtimes", Direction.ASC); // then, try processing old entries
 		reader.setSort(sorts);
 		reader.setPageSize(chunkSize);
 		return reader;
 	}
-	
+
 	@Bean
 	public ItemReader<FailedMessageEntity> failedMessageReader() {
 		RepositoryItemReader<FailedMessageEntity> reader = new RepositoryItemReader<>();
 		reader.setRepository(failedMessagesRepo);
 		reader.setMethodName("findNewFailedMessages");
 		final Map<String, Sort.Direction> sorts = new HashMap<>();
-		    sorts.put("published_on_dtimes", Direction.ASC); // Sort the websub messages by published timestamp
+		sorts.put("published_on_dtimes", Direction.ASC); // Sort the websub messages by published timestamp
 		reader.setSort(sorts);
 		reader.setPageSize(chunkSize);
 		return reader;
 	}
-	
-	
+
 }

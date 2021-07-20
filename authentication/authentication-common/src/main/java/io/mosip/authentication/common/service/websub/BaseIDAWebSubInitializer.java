@@ -1,17 +1,16 @@
 package io.mosip.authentication.common.service.websub;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
-
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -39,10 +38,6 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
-	/** The retry count. */
-	@Value("${ida-websub-resubscription-retry-count:3}")
-	private int retryCount;
-
 	/**
 	 * Default is Zero which will disable the scheduling.
 	 */
@@ -55,12 +50,7 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	
 	/** The task scheduler. */
 	@Autowired
-	private ThreadPoolTaskScheduler taskScheduler;
-	
-	
-	/** The task subsctiption delay. */
-	@Value("${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}")
-	private int taskSubsctiptionDelay;
+	protected ThreadPoolTaskScheduler taskScheduler;
 	
 	/**
 	 * On application event.
@@ -69,14 +59,6 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	 */
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
-		taskScheduler.schedule(() -> {
-			//Invoke topic registrations. This is done only once.
-			registerTopics();
-			//Init topic subscriptions
-			initSubsriptions();
-		}, new Date(System.currentTimeMillis() + taskSubsctiptionDelay));
-		
 		if (reSubscriptionDelaySecs > 0) {
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "onApplicationEvent",
 					"Work around for web-sub notification issue after some time.");
@@ -95,22 +77,8 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	private void scheduleRetrySubscriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
 				"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
-		taskScheduler.scheduleAtFixedRate(this::retrySubscriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
+		taskScheduler.scheduleAtFixedRate(this::initSubsriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
 				Duration.ofSeconds(reSubscriptionDelaySecs));
-	}
-
-	/**
-	 * Retry subscriptions.
-	 */
-	private void retrySubscriptions() {
-		// Call Init Subscriptions for the count until no error in the subscription.
-		// This will execute once first for sure if retry count is 0 or more. If the
-		// subscription fails it will retry subscriptions up to given retry count.
-		for (int i = 0; i <= retryCount; i++) {
-			if (initSubsriptions()) {
-				return;
-			}
-		}
 	}
 
 	/**
@@ -118,16 +86,20 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	 *
 	 * @return true, if successful
 	 */
-	private boolean initSubsriptions() {
+	public int initSubsriptions() {
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initializing subscribptions..");
 			doInitSubscriptions();
 			logger.info(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "", "Initialized subscribptions.");
-			return true;
+			return HttpStatus.OK.value();
+		} catch (ResourceAccessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "FATAL: initSubsriptions", "",
+					"Initializing subscriptions failed: " + e.getMessage());
+			return HttpStatus.SERVICE_UNAVAILABLE.value();
 		} catch (Exception e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubsriptions", "",
-					"Initializing subscribptions failed: " + e.getMessage());
-			return false;
+			logger.error(IdAuthCommonConstants.SESSION_ID, "FATAL: initSubsriptions", "",
+					"Initializing subscriptions failed: " + e.getMessage());
+			return HttpStatus.INTERNAL_SERVER_ERROR.value();
 		}
 	}
 	
@@ -136,7 +108,7 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	 *
 	 * @return true, if successful
 	 */
-	private boolean registerTopics() {
+	public boolean registerTopics() {
 		try {
 			logger.info(IdAuthCommonConstants.SESSION_ID, "registerTopics", "", "Registering Topics..");
 			doRegisterTopics();
