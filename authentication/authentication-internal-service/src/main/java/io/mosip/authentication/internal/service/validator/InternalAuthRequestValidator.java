@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.validator;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -15,7 +14,6 @@ import io.mosip.authentication.core.indauth.dto.DigitalId;
  *
  */
 @Component
-@Primary
 public class InternalAuthRequestValidator extends AuthRequestValidator {
 
 	private static final int FINGERPRINT_COUNT = 10;
