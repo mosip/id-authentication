@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,7 +100,6 @@ public class WebSubHelper {
 	 *
 	 * @param subscriber the subscriber
 	 */
-	@Async
 	public void initSubscriber(WebSubEventSubcriber subscriber) {
 		initSubscriber(subscriber, null);
 	}
@@ -112,7 +110,6 @@ public class WebSubHelper {
 	 * @param subscriber the subscriber
 	 * @param enableTester the enable tester
 	 */
-	@Async
 	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
 		try {
 			subscriber.subscribe(enableTester);
