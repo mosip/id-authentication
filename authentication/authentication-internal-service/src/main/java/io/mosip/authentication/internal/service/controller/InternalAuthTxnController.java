@@ -60,7 +60,6 @@ public class InternalAuthTxnController {
 	private static final String AUTH_TXN_DETAILS = "getAuthTransactionDetails";
 
 	@Autowired
-	@Qualifier("authTxnValidator")
 	private AuthTxnValidator authTxnValidator;
 
 	@Autowired

@@ -26,7 +26,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -112,7 +112,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private AuthTransactionHelper authTransactionHelper;
 	
 	@Autowired
-	private AuthRequestValidator authRequestValidator;
+	private AuthFiltersValidator authFiltersValidator;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -150,7 +150,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
 			
 			authRequestDTO.getMetadata().putIfAbsent(IdAuthCommonConstants.TOKEN, token);
-			authRequestValidator.validateAuthFilters(authRequestDTO, idInfo, authRequestDTO.getMetadata());
+			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, authRequestDTO.getMetadata());
 			
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId, authTxnBuilder);
