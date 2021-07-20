@@ -14,9 +14,7 @@ import io.mosip.authentication.common.service.cache.MasterDataCacheInitializer;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
-import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
-import io.mosip.authentication.common.service.factory.MosipAuthFilterFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
@@ -24,8 +22,6 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
-import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
@@ -42,7 +38,6 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
@@ -83,9 +78,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 @Import(value = {IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
-		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
-		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
-		SwaggerConfig.class, AuditHelper.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,
+		IdAuthExceptionHandler.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
+		IdServiceImpl.class, AuditRequestFactory.class, TokenIdManager.class,
+		SwaggerConfig.class, AuditHelper.class, IdAuthExceptionHandler.class, PinValidatorImpl.class,
 		OTPServiceImpl.class, OTPRequestValidator.class, IdAuthSecurityManager.class, AuthtypeStatusImpl.class, CryptoCore.class,
 		PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
