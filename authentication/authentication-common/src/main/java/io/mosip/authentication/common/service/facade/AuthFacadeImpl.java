@@ -10,6 +10,7 @@ import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,8 +150,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
 			
-			authRequestDTO.getMetadata().putIfAbsent(IdAuthCommonConstants.TOKEN, token);
-			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, authRequestDTO.getMetadata());
+			LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
+			properties.put(IdAuthCommonConstants.TOKEN, token);
+			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
 			
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId, authTxnBuilder);
