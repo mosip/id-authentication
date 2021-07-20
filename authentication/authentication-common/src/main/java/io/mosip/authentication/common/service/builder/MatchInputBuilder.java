@@ -72,7 +72,8 @@ public class MatchInputBuilder {
 		return Stream.of(matchTypes).flatMap(matchType -> {
 			List<MatchInput> matchInputs = new ArrayList<>();			
 			if (matchType.isDynamic()) {
-				if (authRequestDTO.getRequest().getDemographics().getMetadata() != null) {
+				if (authRequestDTO.getRequest().getDemographics() != null
+						&& authRequestDTO.getRequest().getDemographics().getMetadata() != null) {
 					for (Entry<String, Object> entry : authRequestDTO.getRequest().getDemographics().getMetadata()
 							.entrySet()) {
 						String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO);
