@@ -39,10 +39,6 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BaseIDAWebSubInitializer.class);
 
-	/** The retry count. */
-	@Value("${ida-websub-resubscription-retry-count:3}")
-	private int retryCount;
-
 	/**
 	 * Default is Zero which will disable the scheduling.
 	 */
@@ -95,22 +91,8 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	private void scheduleRetrySubscriptions() {
 		logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "scheduleRetrySubscriptions",
 				"Scheduling re-subscription every " + reSubscriptionDelaySecs + " seconds");
-		taskScheduler.scheduleAtFixedRate(this::retrySubscriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
+		taskScheduler.scheduleAtFixedRate(this::initSubsriptions, Instant.now().plusSeconds(reSubscriptionDelaySecs),
 				Duration.ofSeconds(reSubscriptionDelaySecs));
-	}
-
-	/**
-	 * Retry subscriptions.
-	 */
-	private void retrySubscriptions() {
-		// Call Init Subscriptions for the count until no error in the subscription.
-		// This will execute once first for sure if retry count is 0 or more. If the
-		// subscription fails it will retry subscriptions up to given retry count.
-		for (int i = 0; i <= retryCount; i++) {
-			if (initSubsriptions()) {
-				return;
-			}
-		}
 	}
 
 	/**
@@ -152,11 +134,11 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 	/**
 	 * Do init subscriptions.
 	 */
-	protected abstract void doInitSubscriptions();
+	protected abstract int doInitSubscriptions();
 	
 	/**
 	 * Do register topics.
 	 */
-	protected abstract void doRegisterTopics();
+	protected abstract int doRegisterTopics();
 
 }
