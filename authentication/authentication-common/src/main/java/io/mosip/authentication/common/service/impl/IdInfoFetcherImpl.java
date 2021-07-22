@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -459,7 +458,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public Set<String> getTemplatesDefaultLanguageCodes() {
-		return new HashSet<>(Arrays.asList(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(",")));
+		return new HashSet<>(List.of(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(",")));
 	}
 
 	/**
@@ -472,7 +471,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
 				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);
 		if (null != languages && languages.contains(",")) {
-			systemSupportedLanguges = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
+			systemSupportedLanguges = new HashSet<>(List.of(languages.split(",")));
 		} else {
 			systemSupportedLanguges = new HashSet<>();
 			systemSupportedLanguges.add(languages);

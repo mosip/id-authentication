@@ -907,7 +907,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
 		//Dynamic attributes validations are skipping here
-		//will be done in later stages 
+		//will be done in match input building stage(MatchInputBuilder)
 		if (!demoMatchType.isDynamic() && demoMatchType.isMultiLanguage() && identityInfos.stream().anyMatch(
 				identityInfo -> (identityInfo.getLanguage() == null || identityInfo.getLanguage().isEmpty()))) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
