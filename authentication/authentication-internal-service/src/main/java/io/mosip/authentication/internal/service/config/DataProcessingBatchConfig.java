@@ -157,7 +157,7 @@ public class DataProcessingBatchConfig {
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage(), e);
+			logger.warn("error in registering job: {}", e.getMessage());
 		}
 		return job;
 	}
@@ -173,7 +173,7 @@ public class DataProcessingBatchConfig {
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage(), e);
+			logger.warn("error in registering job: {}", e.getMessage());
 		}
 		return job;
 	}
@@ -189,7 +189,7 @@ public class DataProcessingBatchConfig {
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage(), e);
+			logger.warn("error in registering job: {}", e.getMessage());
 		}
 		return job;
 	}
@@ -213,7 +213,7 @@ public class DataProcessingBatchConfig {
 						new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
 			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 					| JobParametersInvalidException e) {
-				logger.warn("error in validateWebSubInitialization doInitSubscriptions - {}", e.getMessage(), e);
+				logger.warn("error in rescheduleJob - {}", e.getMessage());
 			}
 		}, new Date(System.currentTimeMillis()
 				+ env.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l)));
