@@ -1,12 +1,17 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.apache.http.HttpStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -14,7 +19,11 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
@@ -27,14 +36,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.FailedMessageEntity;
@@ -43,7 +53,6 @@ import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
-import io.mosip.authentication.common.service.websub.BaseIDAWebSubInitializer;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -53,6 +62,7 @@ import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutio
 import io.mosip.authentication.internal.service.batch.FailedWebsubMessageProcessor;
 import io.mosip.authentication.internal.service.batch.FailedWebsubMessagesReader;
 import io.mosip.authentication.internal.service.batch.MissingCredentialsItemReader;
+import io.mosip.authentication.internal.service.listener.InternalAuthIdChangeEventsWebSubInitializer;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -115,7 +125,19 @@ public class DataProcessingBatchConfig {
 	private BackOffPolicy backOffPolicy;
 	
 	@Autowired
-	private BaseIDAWebSubInitializer webSubInitializer;
+	private InternalAuthIdChangeEventsWebSubInitializer idChangeWebSubInitializer;
+	
+	@Autowired
+	protected ThreadPoolTaskScheduler taskScheduler;
+	
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	private Environment env;
+	
+	@Autowired
+	private CredentialStoreJobExecutionListener listener;
 	
 	/**
 	 * Credential store job.
@@ -145,9 +167,23 @@ public class DataProcessingBatchConfig {
 	public Job pullFailedWebsubMessagesAndProcess(CredentialStoreJobExecutionListener listener) {
 		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess").incrementer(new RunIdIncrementer())
 				.listener(listener)
-				.flow(validateWebSubInitialization()) // check if web sub subscribed to proceed
-				.next(pullFailedMessagesAndStore()) // First pull and store failed websub messages
+				.flow(pullFailedMessagesAndStore()) // First pull and store failed websub messages
 				.next(processFailedMessagesAndProcess()) // Then process failed websub messages
+				.end().build();
+		try {
+			jobRegistry.register(new ReferenceJobFactory(job));
+		} catch (DuplicateJobException e) {
+			logger.warn("error in registering job: {}", e.getMessage(), e);
+		}
+		return job;
+	}
+	
+	@Bean
+	@Qualifier("retriggerMissingCredentials")
+	public Job retriggerMissingCredentials(CredentialStoreJobExecutionListener listener) {
+		Job job = jobBuilderFactory.get("retriggerMissingCredentials").incrementer(new RunIdIncrementer())
+				.listener(listener)
+				.flow(validateWebSubInitialization()) // check if web sub subscribed to proceed
 				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
 				.end().build();
 		try {
@@ -159,16 +195,28 @@ public class DataProcessingBatchConfig {
 	}
 
 	private TaskletStep validateWebSubInitialization() {
-		return stepBuilderFactory.get("validateWebSub")
-			.tasklet((contribution, chunkContext) -> {
-				webSubInitializer.registerTopics();
-				// Terminating job flow with exception when websub service not available
-				if (webSubInitializer.initSubsriptions() == HttpStatus.SERVICE_UNAVAILABLE.value()) {
-					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-				}
-				return null;
-			})
-		.build();
+		return stepBuilderFactory.get("validateWebSub").tasklet((contribution, chunkContext) -> {
+			// rescheduling job only when websub service is unavailable
+			if (idChangeWebSubInitializer.doRegisterTopics() == HttpStatus.SC_SERVICE_UNAVAILABLE
+					&& idChangeWebSubInitializer.doInitSubscriptions() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+				rescheduleJob(retriggerMissingCredentials(listener));
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+			return null;
+		}).build();
+	}
+
+	private void rescheduleJob(Job job) {
+		taskScheduler.schedule(() -> {
+			try {
+				jobLauncher.run(job,
+						new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
+			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+					| JobParametersInvalidException e) {
+				logger.warn("error in validateWebSubInitialization doInitSubscriptions - {}", e.getMessage(), e);
+			}
+		}, new Date(System.currentTimeMillis()
+				+ env.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l)));
 	}
 
 	/**

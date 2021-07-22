@@ -40,6 +40,10 @@ public class BatchJobSchedulerConfig {
 	@Qualifier("pullFailedWebsubMessagesAndProcess")
 	private Job pullFailedWebsubMessagesAndProcess;
 	
+	@Autowired
+	@Qualifier("retriggerMissingCredentials")
+	private Job retriggerMissingCredentials;
+	
 	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
@@ -63,13 +67,24 @@ public class BatchJobSchedulerConfig {
 	 * Scheduling to run only once in the startup.
 	 */
 	// Waiting for one more minute for the subscription to complete for credential event topic.
-	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
-			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
-	public void scheduleFaliedMessagesProcessJob() {
+	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}}", fixedDelay = Long.MAX_VALUE)
+	public void scheduleFailedMessagesProcessJob() {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 					.toJobParameters();
 			jobLauncher.run(pullFailedWebsubMessagesAndProcess, jobParameters);
+		} catch (Exception e) {
+			logger.error("unable to launch job pullFailedWebsubMessagesAndProcess: {}", e.getMessage(), e);
+		}
+	}
+	
+	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
+			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
+	public void retriggerMissingCredentialsJob() {
+		try {
+			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+					.toJobParameters();
+			jobLauncher.run(retriggerMissingCredentials, jobParameters);
 		} catch (Exception e) {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}
