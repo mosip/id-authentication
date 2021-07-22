@@ -269,7 +269,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 							actionMessage = actionArgs.get(i);
 						}
 					} else {
-						if(actionArgs != null) {
+						if(actionArgs != null && actionArgs.size() > (i + 1)) {
 							actionMessage = actionArgs.get(i);
 						} else {
 							actionMessage = null;

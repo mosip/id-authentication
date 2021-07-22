@@ -148,11 +148,11 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String ALLOWED_DOMAIN_URIS="mosip.ida.allowed.domain.uris";
 
-	public static final String DEFAULT_TEMPLATE_LANGUAGES = "mosip.default.template-languages";
-	
-	public static final String MOSIP_MANDATORY_LANGUAGES="mosip.mandatory-languages";
-	
+	public static final String DEFAULT_TEMPLATE_LANGUAGES = "mosip.default.template-languages";	
+	public static final String MOSIP_MANDATORY_LANGUAGES="mosip.mandatory-languages";	
 	public static final String MOSIP_OPTIONAL_LANGUAGES ="mosip.optional-languages"; 
 
-
+	public static final String IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.external.auth.filter.classes.in.execution.order";
+	public static final String IDA_MOSIP_INTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.internal.auth.filter.classes.in.execution.order";
+	public static final String IDA_MOSIP_KYC_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.kyc.auth.filter.classes.in.execution.order";
 }

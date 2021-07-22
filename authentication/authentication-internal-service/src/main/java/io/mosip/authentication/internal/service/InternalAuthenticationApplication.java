@@ -46,6 +46,7 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
+import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
@@ -121,7 +122,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class,
 		DemoNormalizer.class, DemoMatcherUtil.class, IdAuthFraudAnalysisEventManager.class,
-		IdAuthFraudAnalysisEventPublisher.class })
+		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
