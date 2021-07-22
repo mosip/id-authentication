@@ -33,7 +33,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.MaskedResponseDTO;
@@ -57,6 +56,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class OTPServiceImpl implements OTPService {
+	
+	/** The Constant NAME. */
+	private static final String NAME = "name";
 
 	/** The id auth service. */
 	@Autowired
@@ -157,18 +159,14 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
-			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			String priLang = getLanguagecode(LanguageType.PRIMARY_LANG);
-			String secLang = getLanguagecode(LanguageType.SECONDARY_LANG);
-			String namePri = getName(priLang, idInfo);
-			String nameSec = getName(secLang, idInfo);
-			String email = getEmail(idInfo);
-			String phoneNumber = getPhoneNumber(idInfo);
+			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
-			valueMap.put(IdAuthCommonConstants.PRIMARY_LANG, priLang);
-			valueMap.put(IdAuthCommonConstants.SECONDAY_LANG, secLang);
-			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
-			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
+			for (String lang : idInfoFetcher.getTemplatesDefaultLanguageCodes()) {
+				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
+			}
+
+			String email = getEmail(idInfo);
+			String phoneNumber = getPhoneNumber(idInfo);			
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap);
@@ -233,11 +231,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
 
-	}
-
-	private String getLanguagecode(LanguageType languageType) {
-		return idInfoFetcher.getLanguageCode(languageType);
-	}
+	}	
 
 	/**
 	 * Validate the number of request for OTP generation. Limit for the number of

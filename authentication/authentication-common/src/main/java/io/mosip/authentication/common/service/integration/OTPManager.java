@@ -51,8 +51,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class OTPManager {
 
-	/** The Constant NAME. */
-	private static final String NAME = "name";
 	/** The Constant TIME. */
 	private static final String TIME = "time";
 	/** The Constant DATE. */
@@ -195,11 +193,9 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-		values.put(NAME, valueMap.get(IdAuthCommonConstants.NAME_PRI));
-		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.PRIMARY_LANG),
-				valueMap.get(IdAuthCommonConstants.NAME_PRI));
-		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.SECONDAY_LANG),
-				valueMap.get(IdAuthCommonConstants.NAME_SEC));
+		values.putAll(valueMap);
+		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
+		values.remove(IdAuthCommonConstants.EMAIL);
 		return values;
 	}
 

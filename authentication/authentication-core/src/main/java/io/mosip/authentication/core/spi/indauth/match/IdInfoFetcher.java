@@ -13,7 +13,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
@@ -24,16 +23,22 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * classes involved in ID Info matching.
  *
  * @author Loganathan.Sekar
+ * @author Nagarjuna
  */
-public interface IdInfoFetcher {
+public interface IdInfoFetcher {	
 
 	/**
-	 * Get Language code for Language type.
-	 *
-	 * @param langType language type
-	 * @return language code
+	 * Gets the template default language codes
+	 * @return
 	 */
-	public String getLanguageCode(LanguageType langType);
+	public List<String> getTemplatesDefaultLanguageCodes();
+	
+	/**
+	 * Gets the system supported languages.
+	 * Combination of Mandatory and optional languages.
+	 * @return
+	 */
+	public List<String> getSystemSupportedLanguageCodes();
 
 	/**
 	 * To check language type.

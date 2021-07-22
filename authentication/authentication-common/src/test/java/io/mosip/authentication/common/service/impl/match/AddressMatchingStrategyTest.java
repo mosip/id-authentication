@@ -16,7 +16,6 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
@@ -102,8 +101,7 @@ public class AddressMatchingStrategyTest {
 
 	@Test
 	public void TestInvalidPrimaryLang() throws IdAuthenticationBusinessException {
-		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();		
 		int value = matchFunction.match(2, 2, matchProperties);
 		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);
 	}
@@ -119,13 +117,11 @@ public class AddressMatchingStrategyTest {
 
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(),Mockito.anyString())).thenReturn(100);
 		int value = matchFunction.match(2, 2, matchProperties);
-		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);
-
+		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);		
 		
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(),Mockito.anyString())).thenReturn(0);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);

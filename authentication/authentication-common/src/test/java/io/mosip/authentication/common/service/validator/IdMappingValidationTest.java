@@ -100,7 +100,6 @@ public class IdMappingValidationTest {
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
-		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
 
 	@Test
@@ -133,8 +132,8 @@ public class IdMappingValidationTest {
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
 				.thenReturn(pincodeList);
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB))
-		.thenReturn(dobList);
-		
+		.thenReturn(dobList);		
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}

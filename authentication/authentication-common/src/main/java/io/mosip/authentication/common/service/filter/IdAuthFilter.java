@@ -36,12 +36,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -421,12 +423,27 @@ public class IdAuthFilter extends BaseAuthFilter {
 		metadata.put("partnerId", partnerId);
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
 		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		metadata.put(IdAuthCommonConstants.KYC_LANGUAGES, validateAndGetKycLanguages(partnerServiceResponse.getPolicy().getKycLanguages()));
 		if (partnerCertificate != null) {
 			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
 		}
 		requestBody.put(METADATA, metadata);
 	}
 	
+	/**
+	 * Validates the kyc languages from policy.
+	 * Expecting at least one language should be supported by the system. 
+	 * Not matches found returns system supported languages.
+	 * @param kycLanguages
+	 * @return
+	 */
+	private Set<String> validateAndGetKycLanguages(Set<String> kycLanguages) {
+		Set<String> systemSupportedLanguages = getSystemSupportedLanguageCodes();
+		if(kycLanguages.stream().anyMatch(systemSupportedLanguages::contains)) {
+			return kycLanguages;
+		}
+		return systemSupportedLanguages;
+	}
 	/**
 	 * Creates the partner DTO.
 	 *
@@ -968,6 +985,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected boolean isTrustValidationRequired() {
 		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);
+	}
+	
+	/**
+	 * Gets the system supported languages
+	 * @return
+	 */
+	public Set<String> getSystemSupportedLanguageCodes() {
+		String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
+				+ env.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		return new HashSet<>(List.of(languages.split(",")));
 	}
 
 }

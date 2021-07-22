@@ -75,7 +75,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 
-		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, demoEntity);
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, demoEntity, partnerId);
 		// Using AND condition on the match output for Bio auth.
@@ -91,8 +91,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
-	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values());
+	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO,
+			Map<String, List<IdentityInfoDTO>> idInfo) {
+		return matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values(),
+				idInfo);
 	}
 
 }

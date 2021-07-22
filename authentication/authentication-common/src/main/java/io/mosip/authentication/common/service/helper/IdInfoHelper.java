@@ -4,34 +4,28 @@
 package io.mosip.authentication.common.service.helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -56,10 +50,6 @@ public class IdInfoHelper {
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
-
-	/** The environment. */
-	@Autowired
-	private Environment environment;
 
 	/** The id info fetcher. */
 	@Autowired
@@ -161,8 +151,7 @@ public class IdInfoHelper {
 	 */
 	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idEntity)
 			throws IdAuthenticationBusinessException {
-		String langCode = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
-		return getEntityInfoAsString(matchType, langCode, idEntity);
+		return getEntityInfoAsString(matchType, null, idEntity);
 	}
 
 	/**
@@ -496,22 +485,4 @@ public class IdInfoHelper {
 		}
 		return demoBuilder.toString();
 	}
-
-	/**
-	 * Extract allowed lang.
-	 *
-	 * @return the sets the
-	 */
-	public Set<String> getAllowedLang() {
-		Set<String> allowedLang;
-		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES);
-		if (null != languages && languages.contains(",")) {
-			allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
-		} else {
-			allowedLang = new HashSet<>();
-			allowedLang.add(languages);
-		}
-		return allowedLang;
-	}
-
 }

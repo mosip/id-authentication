@@ -29,8 +29,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String REST_TIMEOUT = ".rest.timeout";
 	public static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
-	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
-	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES = "authrequest.received-time-adjustment.minutes";
@@ -53,11 +51,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String APPLICATION_NAME = "application.name";
 	public static final String MOSIP_ERRORMESSAGES_DEFAULT_LANG = "ida.errormessages.default-lang";
 	public static final String USER_NAME = "user.name";
-	public static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 	public static final String DEFAULT_MATCH_VALUE = "ida.default.match.value";
 	public static final String MOSIP_PHONETIC_LANG = "mosip.phonetic.lang.";
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
-	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
 	public static final String PARTNER_REFERENCE_ID = "partner.reference.id";
 	public static final String PARTNER_BIO_REFERENCE_ID = "partner.biometric.reference.id";
 	public static final String SERVER_PORT = "server.port";
@@ -152,10 +148,11 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String ALLOWED_DOMAIN_URIS="mosip.ida.allowed.domain.uris";
 
+	public static final String DEFAULT_TEMPLATE_LANGUAGES = "mosip.default.template-languages";	
+	public static final String MOSIP_MANDATORY_LANGUAGES="mosip.mandatory-languages";	
+	public static final String MOSIP_OPTIONAL_LANGUAGES ="mosip.optional-languages"; 
+
 	public static final String IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.external.auth.filter.classes.in.execution.order";
 	public static final String IDA_MOSIP_INTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.internal.auth.filter.classes.in.execution.order";
 	public static final String IDA_MOSIP_KYC_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.kyc.auth.filter.classes.in.execution.order";
-
-
-
 }

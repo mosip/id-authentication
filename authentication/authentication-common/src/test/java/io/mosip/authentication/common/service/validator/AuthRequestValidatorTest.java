@@ -169,6 +169,7 @@ public class AuthRequestValidatorTest {
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}

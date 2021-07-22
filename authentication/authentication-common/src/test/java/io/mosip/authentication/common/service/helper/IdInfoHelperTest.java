@@ -34,13 +34,11 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
@@ -72,7 +70,6 @@ public class IdInfoHelperTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 	}
@@ -88,21 +85,7 @@ public class IdInfoHelperTest {
 		Optional<String> languageName = idInfoFetcherImpl.getLanguageName(langCode);
 		String value = languageName.get();
 		assertEquals("arabic", value);
-	}
-
-	@Test
-	public void TestgetLanguageCode() {
-		String priLangCode = "mosip.primary-language";
-		String secLangCode = "mosip.secondary-language";
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty(priLangCode, "ara");
-		mockenv.setProperty(secLangCode, "fra");
-		String languageCode = idInfoFetcherImpl.getLanguageCode(LanguageType.PRIMARY_LANG);
-		assertEquals("ara", languageCode);
-		String languageCode2 = idInfoFetcherImpl.getLanguageCode(LanguageType.SECONDARY_LANG);
-		assertEquals("fra", languageCode2);
-	}
+	}	
 
 	@Test
 	public void TestValidgetIdentityValuefromMap() {
@@ -219,7 +202,6 @@ public class IdInfoHelperTest {
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = DemoMatchType.PHONE;
 		MatchingStrategy strategy = null;
-		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
 					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
@@ -245,7 +227,6 @@ public class IdInfoHelperTest {
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = BioMatchType.FACE;
 		MatchingStrategy strategy = null;
-		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
 					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
@@ -271,7 +252,6 @@ public class IdInfoHelperTest {
 		EntityValueFetcher entityValueFetcher = null;
 		MatchType matchType = DemoMatchType.PHONE;
 		MatchingStrategy strategy = null;
-		Map<String, String> reqInfo = new HashMap<>();
 		try {
 			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
 					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
@@ -336,16 +316,7 @@ public class IdInfoHelperTest {
 	@Test
 	public void TestisMatchtypeEnabled() {
 		idInfoHelper.isMatchtypeEnabled(DemoMatchType.GENDER);
-	}
-
-	@Test
-	public void TestconcatValues() {
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES, "");
-		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
-		idInfoHelper.getAllowedLang();
-	}
+	}	
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestmappingInternal() throws IdAuthenticationBusinessException {

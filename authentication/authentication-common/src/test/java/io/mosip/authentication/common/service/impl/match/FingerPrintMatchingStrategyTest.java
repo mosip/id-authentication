@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 
 public class FingerPrintMatchingStrategyTest {
@@ -17,7 +16,7 @@ public class FingerPrintMatchingStrategyTest {
 	public void TestInValidMatchingStrategy() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FingerPrintMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match("dinesh karuppiah", 2, matchProperties);
 		assertEquals(0, value);
 	}

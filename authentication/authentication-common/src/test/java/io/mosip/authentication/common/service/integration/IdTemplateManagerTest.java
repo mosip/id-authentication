@@ -102,8 +102,6 @@ public class IdTemplateManagerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
-		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
@@ -144,18 +142,15 @@ public class IdTemplateManagerTest {
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "primary");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockenv.setProperty("mosip.default.template-languages", "eng");
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("test");
+		idTemplateManager.fetchTemplate("auth-sms");
 	}
 
 	@Test
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "BOTH");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockenv.merge(((AbstractEnvironment) environment));		
 		mockRestCalls();
 		idTemplateManager.fetchTemplate(AUTH_SMS);
 	}
@@ -164,10 +159,8 @@ public class IdTemplateManagerTest {
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "invalid");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("test");
+		idTemplateManager.fetchTemplate("auth-sms");
 	}
 
 	@Test
