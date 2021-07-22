@@ -69,15 +69,15 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
 	public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO, String token,
-			Map<String, List<IdentityInfoDTO>> idInfo, String partnerId) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> demoEntity, String partnerId) throws IdAuthenticationBusinessException {
 
-		if (idInfo == null || idInfo.isEmpty()) {
+		if (demoEntity == null || demoEntity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 
-		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, idInfo);
+		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, demoEntity);
 
-		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, idInfo, partnerId);
+		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, demoEntity, partnerId);
 		// Using AND condition on the match output for Bio auth.
 		boolean demoMatched = !listMatchOutputs.isEmpty() && listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 		return AuthStatusInfoBuilder.buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs,
