@@ -132,9 +132,8 @@ public class IdMappingValidationTest {
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
 				.thenReturn(pincodeList);
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB))
-		.thenReturn(dobList);
-		Set<String> languges = new HashSet<>(List.of("eng","fra","ara"));
-		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(languges);
+		.thenReturn(dobList);		
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}

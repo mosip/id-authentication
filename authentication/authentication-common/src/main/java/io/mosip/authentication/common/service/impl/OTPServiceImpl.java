@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -160,10 +159,9 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
-			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			Set<String> defaultTemplateLangs = idInfoFetcher.getTemplatesDefaultLanguageCodes();
+			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
-			for (String lang : defaultTemplateLangs) {
+			for (String lang : idInfoFetcher.getTemplatesDefaultLanguageCodes()) {
 				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
 			}
 

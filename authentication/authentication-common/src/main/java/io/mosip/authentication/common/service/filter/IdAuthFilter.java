@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -993,16 +992,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return
 	 */
 	public Set<String> getSystemSupportedLanguageCodes() {
-		Set<String> systemSupportedLanguges;
 		String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
-				+ env.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);
-		if (null != languages && languages.contains(",")) {
-			systemSupportedLanguges = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
-		} else {
-			systemSupportedLanguges = new HashSet<>();
-			systemSupportedLanguges.add(languages);
-		}
-		return systemSupportedLanguges;
+				+ env.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		return new HashSet<>(List.of(languages.split(",")));
 	}
 
 }

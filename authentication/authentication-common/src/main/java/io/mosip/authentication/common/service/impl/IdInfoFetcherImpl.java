@@ -4,7 +4,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -457,8 +456,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * Gets the template default language codes
 	 */
 	@Override
-	public Set<String> getTemplatesDefaultLanguageCodes() {
-		return new HashSet<>(List.of(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(",")));
+	public List<String> getTemplatesDefaultLanguageCodes() {
+		return List.of(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(","));
 	}
 
 	/**
@@ -466,16 +465,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * Combination of mandatory and optional languages.
 	 */
 	@Override
-	public Set<String> getSystemSupportedLanguageCodes() {
-		Set<String> systemSupportedLanguges;
+	public List<String> getSystemSupportedLanguageCodes() {
 		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
-				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);
-		if (null != languages && languages.contains(",")) {
-			systemSupportedLanguges = new HashSet<>(List.of(languages.split(",")));
-		} else {
-			systemSupportedLanguges = new HashSet<>();
-			systemSupportedLanguges.add(languages);
-		}
-		return systemSupportedLanguges;
+				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		return List.of(languages.split(","));
 	}
 }

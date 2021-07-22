@@ -31,14 +31,14 @@ public interface IdInfoFetcher {
 	 * Gets the template default language codes
 	 * @return
 	 */
-	public Set<String> getTemplatesDefaultLanguageCodes();
+	public List<String> getTemplatesDefaultLanguageCodes();
 	
 	/**
 	 * Gets the system supported languages.
 	 * Combination of Mandatory and optional languages.
 	 * @return
 	 */
-	public Set<String> getSystemSupportedLanguageCodes();
+	public List<String> getSystemSupportedLanguageCodes();
 
 	/**
 	 * To check language type.

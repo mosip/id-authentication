@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1615,8 +1614,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		Set<String> langugaes = new HashSet<>(List.of("eng","fra"));
-		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(langugaes);
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra"));
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}

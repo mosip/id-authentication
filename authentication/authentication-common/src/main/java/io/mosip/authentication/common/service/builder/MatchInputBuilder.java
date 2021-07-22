@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,7 +67,7 @@ public class MatchInputBuilder {
 	 */
 	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes, MatchType[] matchTypes,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
-		Set<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
+		List<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
 		return Stream.of(matchTypes).flatMap(matchType -> {
 			List<MatchInput> matchInputs = new ArrayList<>();			
 			if (matchType.isDynamic()) {
@@ -110,7 +109,7 @@ public class MatchInputBuilder {
 	 * @param supportedLanguages
 	 */
 	private void validateDynamicAttributeLanguage(String propName, MatchType matchType,
-			AuthRequestDTO authRequestDTO, Set<String> supportedLanguages) {		
+			AuthRequestDTO authRequestDTO, List<String> supportedLanguages) {		
 		Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, propName,
 				authRequestDTO.getRequest());
 		for (List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
@@ -124,7 +123,7 @@ public class MatchInputBuilder {
 	 * @param identityInfos
 	 * @param propertyName
 	 */
-	private void checkIdentityInfoLanguage(List<IdentityInfoDTO> identityInfos, String propertyName, Set<String> supportedLanguages) {
+	private void checkIdentityInfoLanguage(List<IdentityInfoDTO> identityInfos, String propertyName, List<String> supportedLanguages) {
 		for (IdentityInfoDTO identityInfoDTO : identityInfos) {
 			if (Objects.isNull(identityInfoDTO.getLanguage())) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),

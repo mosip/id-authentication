@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -80,9 +78,8 @@ public class NotificationServiceImpl implements NotificationService {
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		Map<String, Object> values = new HashMap<>();
-
-		Set<String> defualtTemplateLangs = Collections.synchronizedSortedSet(new TreeSet<>(idInfoFetcher.getTemplatesDefaultLanguageCodes()));
-		for (String lang : defualtTemplateLangs) {			
+		
+		for (String lang : idInfoFetcher.getTemplatesDefaultLanguageCodes()) {			
 			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
 		}
 

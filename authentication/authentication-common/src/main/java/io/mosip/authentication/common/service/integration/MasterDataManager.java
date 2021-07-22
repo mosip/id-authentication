@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,9 +158,8 @@ public class MasterDataManager {
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
-		Map<String, Map<String, String>> sortedMasterData = Collections
-				.synchronizedSortedMap(new TreeMap<>(masterData));
-		for (Iterator<Entry<String, Map<String, String>>> iterator = sortedMasterData.entrySet().iterator(); iterator
+		
+		for (Iterator<Entry<String, Map<String, String>>> iterator = masterData.entrySet().iterator(); iterator
 				.hasNext();) {
 			Entry<String, Map<String, String>> value = iterator.next();
 			Map<String, String> valueMap = value.getValue();
