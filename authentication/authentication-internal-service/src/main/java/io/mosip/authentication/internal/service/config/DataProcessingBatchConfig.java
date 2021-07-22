@@ -198,7 +198,7 @@ public class DataProcessingBatchConfig {
 		return stepBuilderFactory.get("validateWebSub").tasklet((contribution, chunkContext) -> {
 			// rescheduling job only when websub service is unavailable
 			if (idChangeWebSubInitializer.doRegisterTopics() == HttpStatus.SC_SERVICE_UNAVAILABLE
-					&& idChangeWebSubInitializer.doInitSubscriptions() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+					|| idChangeWebSubInitializer.doInitSubscriptions() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 				rescheduleJob(retriggerMissingCredentials(listener));
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
