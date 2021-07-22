@@ -78,7 +78,7 @@ public class MatchInputBuilder {
 							.entrySet()) {
 						String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO);
 						if (matchType.isMultiLanguage(propName, demoEntity)) {
-							validateDynamicAttributeLanguage(propName, matchType, authRequestDTO, demoEntity,
+							validateDynamicAttributeLanguage(propName, matchType, authRequestDTO,
 									languages);
 							for (String language : languages) {
 								addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
@@ -107,16 +107,14 @@ public class MatchInputBuilder {
 	 * @param propName
 	 * @param matchType
 	 * @param authRequestDTO
-	 * @param demoEntity
+	 * @param supportedLanguages
 	 */
 	private void validateDynamicAttributeLanguage(String propName, MatchType matchType,
-			AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> demoEntity, Set<String> supportedLanguages) {
-		List<IdentityInfoDTO> identityInfoDtos = new ArrayList<>();
+			AuthRequestDTO authRequestDTO, Set<String> supportedLanguages) {		
 		Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, propName,
 				authRequestDTO.getRequest());
 		for (List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
 			checkIdentityInfoLanguage(identityInfos, propName, supportedLanguages);
-			identityInfoDtos.addAll(identityInfos);
 		}		
 	}
 	
@@ -159,7 +157,7 @@ public class MatchInputBuilder {
 	}
 	
 	/**
-	 * 
+	 * Gets mapped attribute name 
 	 * @param matchType
 	 * @param authRequestDTO
 	 * @return
