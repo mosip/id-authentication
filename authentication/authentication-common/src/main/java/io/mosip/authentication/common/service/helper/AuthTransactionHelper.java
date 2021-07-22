@@ -281,10 +281,10 @@ public class AuthTransactionHelper {
 				if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
 					authTransactionBuilder.addRequestType(RequestType.FINGER_AUTH);
 				}
-				if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
+				if (AuthTransactionHelper.isIrisAuth(authRequestDTO)) {
 					authTransactionBuilder.addRequestType(RequestType.IRIS_AUTH);
 				}
-				if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
+				if (AuthTransactionHelper.isFaceAuth(authRequestDTO)) {
 					authTransactionBuilder.addRequestType(RequestType.FACE_AUTH);
 				}
 			}

@@ -500,12 +500,12 @@ public class AuthFacadeImpl implements AuthFacade {
 					authRequestDTO.getIndividualId(), idType, status);
 			authTxnBuilder.addRequestType(RequestType.FINGER_AUTH);
 		}
-		if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
+		if (AuthTransactionHelper.isIrisAuth(authRequestDTO)) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.IRIS_AUTH);
 		}
-		if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
+		if (AuthTransactionHelper.isFaceAuth(authRequestDTO)) {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
