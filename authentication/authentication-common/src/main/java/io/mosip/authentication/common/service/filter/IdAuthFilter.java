@@ -439,7 +439,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private Set<String> validateAndGetKycLanguages(Set<String> kycLanguages) {
 		Set<String> systemSupportedLanguages = getSystemSupportedLanguageCodes();
-		if(kycLanguages.stream().anyMatch(systemSupportedLanguages::contains)) {
+		if(kycLanguages != null && kycLanguages.stream().anyMatch(systemSupportedLanguages::contains)) {
 			return kycLanguages;
 		}
 		return systemSupportedLanguages;
