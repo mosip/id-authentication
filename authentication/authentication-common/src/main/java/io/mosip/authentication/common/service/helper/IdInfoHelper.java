@@ -241,7 +241,8 @@ public class IdInfoHelper {
 	}
 	
 	/**
-	 * This method returns used to list data capture languages
+	 * This method returns the list of  data capture languages.
+	 * These are used to send the notifications in data capture languages.
 	 * @param matchType
 	 * @param identityInfos
 	 * @return
@@ -252,8 +253,8 @@ public class IdInfoHelper {
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
 		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(identityInfos,
 				idInfoFetcher);
-		List<IdentityInfoDTO> identityInfoObjects = mappedIdEntity.get(propertyNames.get(0)).getValue();		
-		return identityInfoObjects.stream().map(IdentityInfoDTO::getLanguage).collect(Collectors.toList());
+		return mappedIdEntity.get(propertyNames.get(0)).getValue().stream().map(IdentityInfoDTO::getLanguage)
+				.collect(Collectors.toList());
 	}
 
 	/**
