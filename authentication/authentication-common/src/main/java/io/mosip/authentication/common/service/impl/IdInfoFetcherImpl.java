@@ -457,7 +457,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public List<String> getTemplatesDefaultLanguageCodes() {
-		return List.of(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES).split(","));
+		String languages = environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES);
+		if (languages != null) {
+			return List.of(languages.split(","));
+		}
+		return Collections.emptyList();
 	}
 
 	/**

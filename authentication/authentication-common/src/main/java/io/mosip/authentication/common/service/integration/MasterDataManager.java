@@ -23,7 +23,6 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -61,11 +60,7 @@ public class MasterDataManager {
 	private static final String TEMPLATES = "templates";
 
 	/** The Constant NAME_PLACEHOLDER. */
-	private static final String NAME_PLACEHOLDER = "$name";
-
-	/** The id info fetcher. */
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
+	private static final String NAME_PLACEHOLDER = "$name";	
 
 	/** IdTemplate Manager Logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
@@ -150,7 +145,8 @@ public class MasterDataManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
+	public String fetchTemplate(String templateName, List<String> templateLanguages)
+			throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
 		String finalTemplate = "";
 		StringBuilder template = new StringBuilder();
@@ -164,7 +160,7 @@ public class MasterDataManager {
 			Entry<String, Map<String, String>> value = iterator.next();
 			Map<String, String> valueMap = value.getValue();
 			String lang = value.getKey();
-			if (idInfoFetcher.getTemplatesDefaultLanguageCodes().contains(lang)) {
+			if (templateLanguages.contains(lang)) {
 				finalTemplate = (String) valueMap.get(templateName);
 				if (finalTemplate != null) {
 					finalTemplate = finalTemplate.replace(NAME_PLACEHOLDER, NAME_PLACEHOLDER + "_" + lang);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,13 +74,13 @@ public class IdTemplateManager {
 	 * @throws IOException                       Signals that an I/O exception has
 	 *                                           occurred.
 	 */
-	public String applyTemplate(String templateName, Map<String, Object> values)
+	public String applyTemplate(String templateName, Map<String, Object> values, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException, IOException {
 		Objects.requireNonNull(templateName);
 		Objects.requireNonNull(values);
 		StringWriter writer = new StringWriter();
 		InputStream templateValue;
-		String fetchedTemplate = fetchTemplate(templateName);
+		String fetchedTemplate = fetchTemplate(templateName, templateLanguages);
 		templateValue = templateManager
 				.merge(new ByteArrayInputStream(fetchedTemplate.getBytes(StandardCharsets.UTF_8)), values);
 		if (templateValue != null) {
@@ -99,9 +100,9 @@ public class IdTemplateManager {
 	 * @return the string
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {		
+	public String fetchTemplate(String templateName, List<String> templateLanguages) throws IdAuthenticationBusinessException {		
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(masterDataManager.fetchTemplate(templateName));
+		stringBuilder.append(masterDataManager.fetchTemplate(templateName, templateLanguages));
 		return stringBuilder.toString();
 	}
 

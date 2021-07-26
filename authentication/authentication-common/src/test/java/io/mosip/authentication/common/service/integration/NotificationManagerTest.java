@@ -97,7 +97,7 @@ public class NotificationManagerTest {
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IDDataValidationException idDataValidationException = new IDDataValidationException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		notificationManager.sendSmsNotification("1234567890", "test");
 	}
