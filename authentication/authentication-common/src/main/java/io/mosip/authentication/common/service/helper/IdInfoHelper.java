@@ -195,6 +195,7 @@ public class IdInfoHelper {
 		};
 		Function<? super String, ? extends String> valueMapper = propName -> getIdentityValueFromMap(propName,
 				languageCode, mappedIdEntity, matchType).findAny().orElse("");
+		
 		return propertyNames.stream()
 						.filter(propName -> mappedIdEntity.containsKey(propName))
 						.collect(
@@ -237,6 +238,22 @@ public class IdInfoHelper {
 		}
 		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
 		return matchType.getEntityInfoMapper().apply(identityValuesMap);
+	}
+	
+	/**
+	 * This method returns used to list data capture languages
+	 * @param matchType
+	 * @param identityInfos
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	public List<String> getDataCapturedLanguages(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos)
+			throws IdAuthenticationBusinessException {
+		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(identityInfos,
+				idInfoFetcher);
+		List<IdentityInfoDTO> identityInfoObjects = mappedIdEntity.get(propertyNames.get(0)).getValue();		
+		return identityInfoObjects.stream().map(IdentityInfoDTO::getLanguage).collect(Collectors.toList());
 	}
 
 	/**

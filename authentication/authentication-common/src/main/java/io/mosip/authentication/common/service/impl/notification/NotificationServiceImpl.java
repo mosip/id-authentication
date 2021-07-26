@@ -77,9 +77,12 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		Map<String, Object> values = new HashMap<>();
+		Map<String, Object> values = new HashMap<>();		
 		
-		for (String lang : idInfoFetcher.getTemplatesDefaultLanguageCodes()) {			
+		List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
+		List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
+		
+		for (String lang : templateLanguages) {
 			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
 		}
 
@@ -133,7 +136,7 @@ public class NotificationServiceImpl implements NotificationService {
 			notificationType = NotificationType.NONE.getName();
 		}
 
-		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
+		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
 	}
 
 	/**
@@ -149,7 +152,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 
 	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
-			String notificationProperty) throws IdAuthenticationBusinessException {
+			String notificationProperty, List<String> templateLanguages) throws IdAuthenticationBusinessException {
 		String notificationtypeconfig = notificationProperty;
 		String notificationMobileNo = phoneNumber;
 		Set<NotificationType> notificationtype = new HashSet<>();
@@ -170,12 +173,11 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 		if (notificationtype.contains(NotificationType.SMS)) {
-			invokeSmsNotification(values, sender, notificationMobileNo);
+			invokeSmsNotification(values, sender, notificationMobileNo, templateLanguages);
 
 		}
 		if (notificationtype.contains(NotificationType.EMAIL)) {
-
-			invokeEmailNotification(values, emailId, sender);
+			invokeEmailNotification(values, emailId, sender, templateLanguages);
 
 		}
 
@@ -226,11 +228,11 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	private String applyTemplate(Map<String, Object> values, String templateName)
+	private String applyTemplate(Map<String, Object> values, String templateName, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
 		try {
 			Objects.requireNonNull(templateName);
-			return idTemplateManager.applyTemplate(templateName, values);
+			return idTemplateManager.applyTemplate(templateName, values, templateLanguages);
 		} catch (IOException e) {
 			// FIXME change the error code
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -247,7 +249,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo)
+	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
 		String authSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE);
 		String otpSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE);
@@ -258,7 +260,7 @@ public class NotificationServiceImpl implements NotificationService {
 			contentTemplate = otpSmsTemplate;
 		}
 
-		String smsTemplate = applyTemplate(values, contentTemplate);
+		String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
 		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
 	}
 
@@ -273,7 +275,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender)
+	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
 		String otpContentTemaplate = env.getProperty(IdAuthConfigKeyConstants.OTP_CONTENT_TEMPLATE);
 		String authEmailSubjectTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_SUBJECT_TEMPLATE);
@@ -290,9 +292,8 @@ public class NotificationServiceImpl implements NotificationService {
 			contentTemplate = otpContentTemaplate;
 		}
 
-		String mailSubject = applyTemplate(values, subjectTemplate);
-		String mailContent = applyTemplate(values, contentTemplate);
+		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
+		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
-
 }

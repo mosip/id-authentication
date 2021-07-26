@@ -161,7 +161,11 @@ public class OTPServiceImpl implements OTPService {
 			String transactionId = otpRequestDto.getTransactionID();
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
-			for (String lang : idInfoFetcher.getTemplatesDefaultLanguageCodes()) {
+			
+			List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
+			List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
+			
+			for (String lang : templateLanguages) {
 				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
 			}
 
@@ -169,7 +173,8 @@ public class OTPServiceImpl implements OTPService {
 			String phoneNumber = getPhoneNumber(idInfo);			
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
-			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap);
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap,
+					templateLanguages);
 
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());

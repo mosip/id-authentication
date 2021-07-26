@@ -98,16 +98,20 @@ public class IdTemplateManagerTest {
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
+	
+	List<String> templateLanguages = new ArrayList<String>();
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
-		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
+		templateLanguages.add("eng");
+		templateLanguages.add("ara");
+
 	}
 
 //	@Test(expected = IdAuthenticationBusinessException.class)
@@ -144,7 +148,7 @@ public class IdTemplateManagerTest {
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty("mosip.default.template-languages", "eng");
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("auth-sms");
+		idTemplateManager.fetchTemplate("auth-sms",templateLanguages);
 	}
 
 	@Test
@@ -152,7 +156,7 @@ public class IdTemplateManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));		
 		mockRestCalls();
-		idTemplateManager.fetchTemplate(AUTH_SMS);
+		idTemplateManager.fetchTemplate(AUTH_SMS,templateLanguages);
 	}
 
 	@Test
@@ -160,7 +164,7 @@ public class IdTemplateManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("auth-sms");
+		idTemplateManager.fetchTemplate("auth-sms", templateLanguages);
 	}
 
 	@Test
@@ -173,7 +177,7 @@ public class IdTemplateManagerTest {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("templates/otp-sms-template.txt");
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(is);
 		mockRestCalls();
-		assertNotNull(idTemplateManager.applyTemplate(AUTH_SMS, valueMap));
+		assertNotNull(idTemplateManager.applyTemplate(AUTH_SMS, valueMap, templateLanguages));
 	}
 
 	@Test(expected = FileNotFoundException.class)

@@ -76,12 +76,17 @@ public class OTPManagerTest {
 
 	@InjectMocks
 	private OTPManager otpManager;
+	
+	List<String> templateLanguages = new ArrayList<>();
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(otpManager, "environment", environment);
-		ReflectionTestUtils.setField(auditFactory, "env", environment);
+		ReflectionTestUtils.setField(auditFactory, "env", environment);		
+		templateLanguages.add("eng");
+		templateLanguages.add("ara");
+
 
 	}
 
@@ -107,7 +112,7 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 
 	}
 
@@ -134,7 +139,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -164,7 +169,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -194,7 +199,7 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
@@ -256,7 +261,7 @@ public class OTPManagerTest {
 		valuesMap.put("namePri", "Name in PrimaryLang");
 		valuesMap.put("nameSec", "Name in SecondaryLang");
 		try {
-			otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valuesMap);
+			otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valuesMap, templateLanguages);
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorCode(), ex.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorMessage(), ex.getErrorText());
@@ -432,7 +437,7 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap, templateLanguages);
 	}
 
 	@Ignore
@@ -460,7 +465,7 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap, templateLanguages);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -497,7 +502,7 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "123456", "UIN", valueMap, templateLanguages);
 	}
 
 	@Test
@@ -651,7 +656,7 @@ public class OTPManagerTest {
 		valueMap.put("secondayLang", "ara");
 		valueMap.put("namePri", "ida-otp-auth");
 		valueMap.put("nameSec", "ida-otp-auth");
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -665,7 +670,7 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap);
+		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap, templateLanguages);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
