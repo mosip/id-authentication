@@ -162,9 +162,7 @@ public class OTPServiceImpl implements OTPService {
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
 			
-			List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
-			List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
-			
+			List<String> templateLanguages = getTemplateLanguages(idInfo);			
 			for (String lang : templateLanguages) {
 				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
 			}
@@ -311,4 +309,40 @@ public class OTPServiceImpl implements OTPService {
 		return new SimpleDateFormat(format).format(date);
 	}
 
+	/**
+	 * This method gets the template languages in following order.
+	 * 1. Gets user preferred languages if not
+	 * 2. Gets default template languages from configuration if not
+	 * 3. Gets the data capture languages
+	 * @param idInfo
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException {
+		List<String> systemSupportedLanguages = idInfoFetcher.getSystemSupportedLanguageCodes();
+		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
+		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
+				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
+				: userPreferredLangs;
+		if (defaultTemplateLanguges.isEmpty()) {
+			List<String> dataCaptureLanguages = idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			dataCaptureLanguages.sort((langCode1, langCode2) -> {
+				int indexInSysSupportLang1 = systemSupportedLanguages.indexOf(langCode1);
+				int indexInSysSupportLang2 = systemSupportedLanguages.indexOf(langCode2);
+
+				if (indexInSysSupportLang1 < 0) {
+					indexInSysSupportLang1 = Integer.MAX_VALUE;
+				}
+				if (indexInSysSupportLang2 < 0) {
+					indexInSysSupportLang2 = Integer.MAX_VALUE;
+				}
+				return Integer.compare(indexInSysSupportLang1, indexInSysSupportLang2);
+			});
+			return dataCaptureLanguages;
+		}
+
+		return defaultTemplateLanguges;
+
+	}
 }

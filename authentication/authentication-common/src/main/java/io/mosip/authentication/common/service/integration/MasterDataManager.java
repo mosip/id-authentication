@@ -154,8 +154,24 @@ public class MasterDataManager {
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
+
+		// sorting the masterdata templates based on template languages
+		List<Entry<String, Map<String, String>>> entries = masterData.entrySet().stream().sorted((langCode1, langCode2) -> {			
+			String language1 = langCode1.getKey();
+			String langauge2 = langCode2.getKey();
+			int indexInSysSupportLang1 = templateLanguages.indexOf(language1);
+			int indexInSysSupportLang2 = templateLanguages.indexOf(langauge2);
+
+			if (indexInSysSupportLang1 < 0) {
+				indexInSysSupportLang1 = Integer.MAX_VALUE;
+			}
+			if (indexInSysSupportLang2 < 0) {
+				indexInSysSupportLang2 = Integer.MAX_VALUE;
+			}
+			return Integer.compare(indexInSysSupportLang1, indexInSysSupportLang2);
+		}).collect(Collectors.toList());
 		
-		for (Iterator<Entry<String, Map<String, String>>> iterator = masterData.entrySet().iterator(); iterator
+		for (Iterator<Entry<String, Map<String, String>>> iterator = entries.iterator(); iterator
 				.hasNext();) {
 			Entry<String, Map<String, String>> value = iterator.next();
 			Map<String, String> valueMap = value.getValue();

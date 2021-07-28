@@ -77,10 +77,8 @@ public class NotificationServiceImpl implements NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		Map<String, Object> values = new HashMap<>();		
-		
-		List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
-		List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
+		Map<String, Object> values = new HashMap<>();
+		List<String> templateLanguages = getTemplateLanguages(idInfo);
 		
 		for (String lang : templateLanguages) {
 			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
@@ -295,5 +293,42 @@ public class NotificationServiceImpl implements NotificationService {
 		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
 		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+	}
+	
+	/**
+	 * This method gets the template languages in following order.
+	 * 1. Gets user preferred languages if not
+	 * 2. Gets default template languages from configuration if not
+	 * 3. Gets the data capture languages
+	 * @param idInfo
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException {
+		List<String> systemSupportedLanguages = idInfoFetcher.getSystemSupportedLanguageCodes();
+		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
+		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
+				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
+				: userPreferredLangs;
+		if (defaultTemplateLanguges.isEmpty()) {
+			List<String> dataCaptureLanguages = infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			dataCaptureLanguages.sort((langCode1, langCode2) -> {
+				int indexInSysSupportLang1 = systemSupportedLanguages.indexOf(langCode1);
+				int indexInSysSupportLang2 = systemSupportedLanguages.indexOf(langCode2);
+
+				if (indexInSysSupportLang1 < 0) {
+					indexInSysSupportLang1 = Integer.MAX_VALUE;
+				}
+				if (indexInSysSupportLang2 < 0) {
+					indexInSysSupportLang2 = Integer.MAX_VALUE;
+				}
+				return Integer.compare(indexInSysSupportLang1, indexInSysSupportLang2);
+			});
+			return dataCaptureLanguages;
+		}
+
+		return defaultTemplateLanguges;
+
 	}
 }
