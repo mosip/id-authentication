@@ -45,9 +45,8 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
@@ -81,10 +80,7 @@ public class InternalAuthRequestValidatorTest {
 	IdInfoHelper idinfoHelper;
 
 	@Mock
-	UinValidatorImpl uinValidator;
-
-	@Mock
-	VidValidatorImpl vidValidator;
+	private IdValidationUtil idValidator;
 
 	@Autowired
 	Environment env;
@@ -97,7 +93,6 @@ public class InternalAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", env);
-		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
 
 	@Test

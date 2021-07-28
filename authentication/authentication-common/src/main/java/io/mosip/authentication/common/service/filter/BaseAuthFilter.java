@@ -94,6 +94,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		try {
 			requestWrapper.resetInputStream();
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
+			decipherRequest = processDecipheredReqeuest(decipherRequest);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
 //			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
@@ -102,6 +103,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
+	}
+
+	protected Map<String, Object> processDecipheredReqeuest(Map<String, Object> decipheredRequest) {
+		return decipheredRequest;
 	}
 
 	protected void verifyBioDataSignature(String jwsSignature) throws IdAuthenticationAppException {

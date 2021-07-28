@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.jayway.jsonpath.JsonPath;
@@ -23,9 +22,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -33,6 +30,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
+ * @author Nagarjuna
  */
 @Component
 public class MasterDataManager {
@@ -62,11 +60,7 @@ public class MasterDataManager {
 	private static final String TEMPLATES = "templates";
 
 	/** The Constant NAME_PLACEHOLDER. */
-	private static final String NAME_PLACEHOLDER = "$name";
-
-	/** The id info fetcher. */
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
+	private static final String NAME_PLACEHOLDER = "$name";	
 
 	/** IdTemplate Manager Logger. */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
@@ -151,7 +145,8 @@ public class MasterDataManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
+	public String fetchTemplate(String templateName, List<String> templateLanguages)
+			throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
 		String finalTemplate = "";
 		StringBuilder template = new StringBuilder();
@@ -159,27 +154,13 @@ public class MasterDataManager {
 		Map<String, Map<String, String>> masterData = fetchMasterData(
 				RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, params, TEMPLATES, TEMPLATE_TYPE_CODE,
 				FILE_TEXT);
-		// Sort the list of entries based on primary lang/secondary lang order.
-		// Here entry of primary lang should occur before secondary lang entry.
-		List<Entry<String, Map<String, String>>> entries = masterData.entrySet().stream().sorted((o1, o2) -> {
-			String lang1 = o1.getKey();
-			String lang2 = o2.getKey();
-			boolean lang1IsPrimary = lang1.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG));
-			boolean lang2IsPrimary = lang2.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG));
-			int val;
-			if (lang1IsPrimary == lang2IsPrimary) {
-				val = 0;
-			} else {
-				val = lang1IsPrimary ? -1 : 1;
-			}
-			return val;
-		}).collect(Collectors.toList());
-		for (Iterator<Entry<String, Map<String, String>>> iterator = entries.iterator(); iterator.hasNext();) {
+		
+		for (Iterator<Entry<String, Map<String, String>>> iterator = masterData.entrySet().iterator(); iterator
+				.hasNext();) {
 			Entry<String, Map<String, String>> value = iterator.next();
 			Map<String, String> valueMap = value.getValue();
 			String lang = value.getKey();
-			if (lang.equals(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG))
-					|| lang.equals(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG))) {
+			if (templateLanguages.contains(lang)) {
 				finalTemplate = (String) valueMap.get(templateName);
 				if (finalTemplate != null) {
 					finalTemplate = finalTemplate.replace(NAME_PLACEHOLDER, NAME_PLACEHOLDER + "_" + lang);

@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.websub.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STATUS_UPDATE_TOPIC;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

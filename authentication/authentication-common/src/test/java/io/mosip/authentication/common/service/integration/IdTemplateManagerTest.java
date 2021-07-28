@@ -98,18 +98,20 @@ public class IdTemplateManagerTest {
 
 	/** Class path. */
 	private static final String CLASSPATH = "classpath";
+	
+	List<String> templateLanguages = new ArrayList<String>();
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.setField(idTemplateManager, "environment", environment);
-		ReflectionTestUtils.setField(idTemplateManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
-		ReflectionTestUtils.setField(masterDataManager, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(masterDataManager, "masterDataCache", masterDataCache);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 		ReflectionTestUtils.setField(idTemplateManager, "templateManagerBuilder", templateManagerBuilder);
 		templateManagerBuilder.encodingType(ENCODE_TYPE).enableCache(false).resourceLoader(CLASSPATH).build();
+		templateLanguages.add("eng");
+		templateLanguages.add("ara");
+
 	}
 
 //	@Test(expected = IdAuthenticationBusinessException.class)
@@ -144,30 +146,25 @@ public class IdTemplateManagerTest {
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "primary");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockenv.setProperty("mosip.default.template-languages", "eng");
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("test");
+		idTemplateManager.fetchTemplate("auth-sms",templateLanguages);
 	}
 
 	@Test
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "BOTH");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
+		mockenv.merge(((AbstractEnvironment) environment));		
 		mockRestCalls();
-		idTemplateManager.fetchTemplate(AUTH_SMS);
+		idTemplateManager.fetchTemplate(AUTH_SMS,templateLanguages);
 	}
 
 	@Test
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty("mosip.notification.language-type", "invalid");
-		ReflectionTestUtils.setField(idTemplateManager, "environment", mockenv);
 		mockRestCalls();
-		idTemplateManager.fetchTemplate("test");
+		idTemplateManager.fetchTemplate("auth-sms", templateLanguages);
 	}
 
 	@Test
@@ -180,7 +177,7 @@ public class IdTemplateManagerTest {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("templates/otp-sms-template.txt");
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(is);
 		mockRestCalls();
-		assertNotNull(idTemplateManager.applyTemplate(AUTH_SMS, valueMap));
+		assertNotNull(idTemplateManager.applyTemplate(AUTH_SMS, valueMap, templateLanguages));
 	}
 
 	@Test(expected = FileNotFoundException.class)

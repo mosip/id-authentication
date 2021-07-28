@@ -2,7 +2,6 @@ package io.mosip.authentication.kyc.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +22,6 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -84,14 +82,16 @@ public class KycServiceImpl implements KycService {
 	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@Override
-	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, String secLangCode,
+	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		if (Objects.nonNull(identityInfo)) {
 			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 					null);
 			List<IdentityInfoDTO> bioValue = null;
-			String face = Objects.nonNull(faceEntityInfoMap) ? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()) : null;
+			String face = Objects.nonNull(faceEntityInfoMap)
+					? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
+					: null;
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				bioValue = new ArrayList<>();
 				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -99,20 +99,9 @@ public class KycServiceImpl implements KycService {
 				bioValue.add(identityInfoDTO);
 				identityInfo.put(IdAuthCommonConstants.PHOTO, bioValue);
 			}
-			
-			Set<String> allowedLang = idInfoHelper.getAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE)
-					: null;
-			String primaryLanguage = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
-			
-			Set<String> langCodes = new LinkedHashSet<>();
-			langCodes.add(primaryLanguage);
-			if(secondayLangCode != null) {
-				langCodes.add(secondayLangCode);
-			}
-			
-			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes, identityInfo, 
-					langCodes);
+
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes,
+					identityInfo, langCodes);
 			if (Objects.nonNull(filteredIdentityInfo)) {
 				setKycInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo, langCodes);
 			}

@@ -51,7 +51,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.indauth.dto.SenderType;
@@ -93,6 +92,8 @@ public class NotificationServiceImplTest {
 	private NotificationManager notificationManager;
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
+	
+	List<String> templateLanguages = new ArrayList<String>();
 
 	@Before
 	public void before() {
@@ -104,6 +105,8 @@ public class NotificationServiceImplTest {
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
+		templateLanguages.add("eng");
+		templateLanguages.add("ara");
 	}
 
 	@Test
@@ -136,13 +139,11 @@ public class NotificationServiceImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn("test");
 		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG)).thenReturn("fra");
-		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -192,14 +193,12 @@ public class NotificationServiceImplTest {
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
-		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG)).thenReturn("fra");
-		Mockito.when(idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG)).thenReturn("ara");
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -217,12 +216,6 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
-	}
-
-	private Map<String, Object> repoDetails() {
-		Map<String, Object> map = new HashMap<>();
-		map.put("registrationId", "863537");
-		return map;
 	}
 
 	@Ignore
@@ -253,7 +246,7 @@ public class NotificationServiceImplTest {
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
@@ -275,7 +268,7 @@ public class NotificationServiceImplTest {
 		Map<String, Object> values = new HashMap<>();
 		String notificationMobileNo = "1234567890";
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.OTP,
-				notificationMobileNo);
+				notificationMobileNo, templateLanguages);
 	}
 
 	@Test
@@ -284,7 +277,7 @@ public class NotificationServiceImplTest {
 		String notificationMobileNo = "1234567890";
 		SenderType senderType = null;
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, senderType,
-				notificationMobileNo);
+				notificationMobileNo, templateLanguages);
 	}
 
 	@Test
@@ -292,7 +285,7 @@ public class NotificationServiceImplTest {
 		Map<String, Object> values = new HashMap<>();
 		SenderType senderType = null;
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeEmailNotification", values, "abc@test.com",
-				senderType);
+				senderType, templateLanguages);
 	}
 
 	@Test
@@ -307,7 +300,7 @@ public class NotificationServiceImplTest {
 		Map<String, Object> values = new HashMap<>();
 		values.put("uin", "123456677890");
 		ReflectionTestUtils.invokeMethod(notificationService, "sendNotification", values, "abc@test.com", "1234567890",
-				SenderType.OTP, "email");
+				SenderType.OTP, "email", templateLanguages);
 	}
 
 	@Test
@@ -315,9 +308,9 @@ public class NotificationServiceImplTest {
 		Map<String, Object> values = new HashMap<>();
 		values.put("uin", "123456677890");
 		String contentTemplate = "test";
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenThrow(IOException.class);
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(IOException.class);
 		try {
-			ReflectionTestUtils.invokeMethod(notificationService, "applyTemplate", values, contentTemplate);
+			ReflectionTestUtils.invokeMethod(notificationService, "applyTemplate", values, contentTemplate, templateLanguages);
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getUndeclaredThrowable().getClass().equals(IdAuthenticationBusinessException.class));
 		}

@@ -10,40 +10,36 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 
 /**
  * @author Manoj SP
+ * @author Nagarjuna
  *
  */
 @Component
 public class IdTypeUtil {
 
-	@Autowired(required = false)
-	private UinValidator<String> uinValidator;
-
-	@Autowired(required = false)
-	private VidValidator<String> vidValidator;
+	@Autowired
+	IdValidationUtil idValidator;
 
 	public boolean validateUin(String uin) {
 		try {
-			if (Objects.nonNull(uinValidator))
-				return uinValidator.validateId(uin);
+			if (Objects.nonNull(idValidator))
+				return idValidator.validateUIN(uin);
 			else
 				return false;
-		} catch (InvalidIDException e) {
+		} catch (InvalidIDException  | IdAuthenticationBusinessException e) {
 			return false;
 		}
 	}
 
 	public boolean validateVid(String vid) {
 		try {
-			if (Objects.nonNull(vidValidator))
-				return vidValidator.validateId(vid);
+			if (Objects.nonNull(idValidator))
+				return idValidator.validateVID(vid);
 			else
 				return false;
-		} catch (InvalidIDException e) {
+		} catch (InvalidIDException | IdAuthenticationBusinessException e) {
 			return false;
 		}
 	}

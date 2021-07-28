@@ -156,6 +156,9 @@ public interface MatchType {
 		return false;
 	}
 
+	public default boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity) {
+		return isMultiLanguage();
+	}
 	/**
 	 * Returns the set of given matching strategies.
 	 *

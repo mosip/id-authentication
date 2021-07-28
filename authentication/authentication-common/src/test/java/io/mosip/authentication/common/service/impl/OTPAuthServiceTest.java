@@ -82,11 +82,10 @@ public class OTPAuthServiceTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
-		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 	}
 
 	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();

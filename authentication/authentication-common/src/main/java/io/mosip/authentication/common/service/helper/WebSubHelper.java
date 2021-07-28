@@ -4,26 +4,28 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
+import io.mosip.authentication.common.service.websub.dto.EventInterface;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
@@ -45,15 +47,23 @@ import lombok.Data;
 @Component
 public class WebSubHelper {
 	
+	/**
+	 * Instantiates a new failed message.
+	 */
 	@Data
 	public static class FailedMessage{
-		private String topic;
-		private String message;
-		private String timestamp;
 		
-		private ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer;
+		/** The topic. */
+		private String topic;
+		
+		/** The message. */
+		private String message;
+		
+		/** The timestamp. */
+		private String timestamp;
 	}
 	
+	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(WebSubHelper.class);
 	
 	/** The Constant PUBLISHER_IDA. */
@@ -71,15 +81,19 @@ public class WebSubHelper {
 	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
+	/** The failed message sync url. */
 	@Value("${"+ IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL +"}")
 	private String failedMessageSyncUrl;
 	
+	/** The subscription client. */
 	@Autowired
 	protected SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscriptionClient;
 	
+	/** The subscription extended client. */
 	@Autowired
 	protected SubscriptionExtendedClient<FailedContentResponse, FailedContentRequest> subscriptionExtendedClient;
 	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -87,10 +101,10 @@ public class WebSubHelper {
 	 * Inits the subscriber.
 	 *
 	 * @param subscriber the subscriber
+	 * @return 
 	 */
-	@Async
-	public void initSubscriber(WebSubEventSubcriber subscriber) {
-		initSubscriber(subscriber, null);
+	public int initSubscriber(WebSubEventSubcriber subscriber) {
+		return initSubscriber(subscriber, null);
 	}
 	
 	/**
@@ -98,14 +112,19 @@ public class WebSubHelper {
 	 *
 	 * @param subscriber the subscriber
 	 * @param enableTester the enable tester
+	 * @return 
 	 */
-	@Async
-	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
+	public int initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
 		try {
 			subscriber.subscribe(enableTester);
+			return HttpStatus.SC_OK;
+		} catch (ResourceAccessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "FATAL: Subscription failed for:" + subscriber.getClass().getCanonicalName());
+			return HttpStatus.SC_SERVICE_UNAVAILABLE;
 		} catch (Exception e) {
 			//Just logging the exception to avoid other further subscriptions failure
 			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "FATAL: Subscription failed for:" + subscriber.getClass().getCanonicalName());
+			return HttpStatus.SC_INTERNAL_SERVER_ERROR;
 		}
 	}
 	
@@ -113,9 +132,20 @@ public class WebSubHelper {
 	 * Inits the registrar.
 	 *
 	 * @param registrar the registrar
+	 * @return 
 	 */
-	public void initRegistrar(WebSubEventTopicRegistrar registrar) {
-		initRegistrar(registrar, null);
+	public int initRegistrar(WebSubEventTopicRegistrar registrar) {
+		try {
+			initRegistrar(registrar, null);
+			return HttpStatus.SC_OK;
+		} catch (ResourceAccessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "registration failed for:" + registrar.getClass().getCanonicalName());
+			return HttpStatus.SC_SERVICE_UNAVAILABLE;
+		} catch (Exception e) {
+			//Just logging the exception to avoid other further subscriptions failure
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "Subscription failed for:" + registrar.getClass().getCanonicalName());
+			return HttpStatus.SC_INTERNAL_SERVER_ERROR;
+		}
 	}
 	
 	/**
@@ -150,7 +180,9 @@ public class WebSubHelper {
 	 * @param event the event
 	 * @return the event model
 	 */
-	public <T,S> EventModel<T> createEventModel(String topic, T event) {
+	public <T extends EventInterface,S> EventModel<T> createEventModel(String topic, T event) {
+		String eventId = UUID.randomUUID().toString();
+		event.setId(eventId);
 		EventModel<T> eventModel = new EventModel<>();
 		eventModel.setEvent(event);
 		eventModel.setPublisher(PUBLISHER_IDA);
@@ -159,17 +191,60 @@ public class WebSubHelper {
 		return eventModel;
 	}
 	
+	/**
+	 * Creates the event model.
+	 *
+	 * @param topic the topic
+	 * @return the io.mosip.kernel.core.websub.model. event model
+	 */
+	public  io.mosip.kernel.core.websub.model.EventModel createEventModel(String topic) {
+		io.mosip.kernel.core.websub.model.Event event = new io.mosip.kernel.core.websub.model.Event();
+		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		event.setTimestamp(dateTime);
+		String eventId = UUID.randomUUID().toString();
+		event.setId(eventId);
+		
+		io.mosip.kernel.core.websub.model.EventModel eventModel = new io.mosip.kernel.core.websub.model.EventModel();
+		eventModel.setEvent(event);
+		eventModel.setPublisher(PUBLISHER_IDA);
+		eventModel.setPublishedOn(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		eventModel.setTopic(topic);
+		return eventModel;
+	}
+	
+	/**
+	 * Register topic.
+	 *
+	 * @param eventTopic the event topic
+	 */
 	public void registerTopic(String eventTopic) {
 		publisher.registerTopic(eventTopic, publisherUrl);
 	}
 	
+	/**
+	 * Subscribe.
+	 *
+	 * @param subscriptionRequest the subscription request
+	 * @return the subscription change response
+	 */
 	public SubscriptionChangeResponse subscribe(SubscriptionChangeRequest subscriptionRequest) {
 		subscriptionRequest.setHubURL(hubURL);
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
+	/**
+	 * Gets the failed messages.
+	 *
+	 * @param topic the topic
+	 * @param callbackUrl the callback url
+	 * @param messageCount the message count
+	 * @param secret the secret
+	 * @param timestamp the timestamp
+	 * @param pageIndex the page index
+	 * @return the failed messages
+	 */
 	@WithRetry
-	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, ConsumerWithThrowable<FailedMessage, Exception> failedMessageConsumer) {
+	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex) {
 		try {
 		FailedContentRequest failedContentRequest = new FailedContentRequest();
 		failedContentRequest.setHubURL(failedMessageSyncUrl);
@@ -178,12 +253,12 @@ public class WebSubHelper {
 		failedContentRequest.setMessageCount(messageCount);
 		failedContentRequest.setSecret(secret);
 		failedContentRequest.setTimestamp(timestamp);
+		failedContentRequest.setPaginationIndex(pageIndex);
 		FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
 		List<?> messages = failedContent.getFailedcontents();
 		return messages == null ? List.of() : messages.stream().map(obj -> {
 			FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
 			failedMessage.setTopic(topic);
-			failedMessage.setFailedMessageConsumer(failedMessageConsumer);
 			return failedMessage;
 		}).collect(Collectors.toList());
 		} catch(Exception e) {

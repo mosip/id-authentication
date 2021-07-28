@@ -3,9 +3,9 @@ package io.mosip.authentication.common.service.builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -25,6 +29,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -36,16 +41,15 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 @Component
 public class MatchInputBuilder {
 
+	private static Logger mosipLogger = IdaLogger.getLogger(MatchInputBuilder.class);
+	
 	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
 	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
 	public static final int DEFAULT_PARTIAL_MATCH_VALUE = DEFAULT_EXACT_MATCH_VALUE;
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
-
-	@Autowired
-	private IdInfoHelper idInfoHelper;
-
+	
 	/** The environment. */
 	@Autowired
 	private Environment environment;
@@ -61,21 +65,108 @@ public class MatchInputBuilder {
 	 * @param matchTypes     the match types
 	 * @return the list
 	 */
-	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
-			MatchType[] matchTypes) {
-		Set<String> languages = idInfoHelper.getAllowedLang();
+	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes, MatchType[] matchTypes,
+			Map<String, List<IdentityInfoDTO>> demoEntity) {
+		List<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
 		return Stream.of(matchTypes).flatMap(matchType -> {
-			List<MatchInput> matchInputs = new ArrayList<>();
-			if (matchType.isMultiLanguage()) {
-				for (String language : languages) {
-					addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
+			List<MatchInput> matchInputs = new ArrayList<>();			
+			if (matchType.isDynamic()) {
+				if (authRequestDTO.getRequest().getDemographics() != null
+						&& authRequestDTO.getRequest().getDemographics().getMetadata() != null) {
+					for (Entry<String, Object> entry : authRequestDTO.getRequest().getDemographics().getMetadata()
+							.entrySet()) {
+						String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO);
+						if (matchType.isMultiLanguage(propName, demoEntity)) {
+							validateDynamicAttributeLanguage(propName, matchType, authRequestDTO,
+									languages);
+							for (String language : languages) {
+								addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
+							}
+						} else {
+							addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, null);
+						}
+					}
 				}
 			} else {
-				addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, null);
+				if (matchType.isMultiLanguage()) {
+					for (String language : languages) {
+						addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
+					}
+				} else {
+					addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, null);
+				}
+
 			}
 			return matchInputs.stream();
 		}).filter(Objects::nonNull).collect(Collectors.toList());
-
+	}
+	
+	/**
+	 * Validates dynamic attribute language details
+	 * @param propName
+	 * @param matchType
+	 * @param authRequestDTO
+	 * @param supportedLanguages
+	 */
+	private void validateDynamicAttributeLanguage(String propName, MatchType matchType,
+			AuthRequestDTO authRequestDTO, List<String> supportedLanguages) {		
+		Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, propName,
+				authRequestDTO.getRequest());
+		for (List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
+			checkIdentityInfoLanguage(identityInfos, propName, supportedLanguages);
+		}		
+	}
+	
+	/**
+	 *  Checks for identityInfoDto object will have value for language or not 
+	 *  for a given dynamic attribute
+	 * @param identityInfos
+	 * @param propertyName
+	 */
+	private void checkIdentityInfoLanguage(List<IdentityInfoDTO> identityInfos, String propertyName, List<String> supportedLanguages) {
+		for (IdentityInfoDTO identityInfoDTO : identityInfos) {
+			if (Objects.isNull(identityInfoDTO.getLanguage())) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+								propertyName + " language"), "language cannot be null");
+				throw new IdAuthUncheckedException(
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+								propertyName + ": language"));
+			}
+			if(identityInfoDTO.getLanguage().isEmpty() || identityInfoDTO.getLanguage().isBlank()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								propertyName + " language"), "language cannot be empty");
+				throw new IdAuthUncheckedException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								propertyName + ": language"));				
+			}
+			if(!supportedLanguages.contains(identityInfoDTO.getLanguage())){
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+								propertyName + " language"), "language cannot be null");
+				throw new IdAuthUncheckedException(
+						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage(),
+								identityInfoDTO.getLanguage() + " for attribute " + propertyName));				
+			}
+		}
+	}
+	
+	/**
+	 * Gets mapped attribute name 
+	 * @param matchType
+	 * @param authRequestDTO
+	 * @return
+	 */
+	private String getMappedPropertyName(String inAttribute, MatchType matchType, AuthRequestDTO authRequestDTO) {
+		return idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet().stream()
+				.filter(idName -> idName.equals(inAttribute))
+				.filter(idName -> idInfoFetcher
+						.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(), null).size() > 0)
+				.findFirst().get();
 	}
 
 	/**
@@ -174,5 +265,4 @@ public class MatchInputBuilder {
 			return new MatchInput(authType, idName, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
 	}
-
 }

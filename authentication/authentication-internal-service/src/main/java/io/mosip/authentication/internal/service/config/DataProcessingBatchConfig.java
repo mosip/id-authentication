@@ -1,12 +1,17 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.apache.http.HttpStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -14,7 +19,12 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.ItemProcessor;
@@ -26,6 +36,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -33,12 +44,17 @@ import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
+import io.mosip.authentication.common.service.entity.FailedMessageEntity;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.WebSubHelper.FailedMessage;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.common.service.repository.FailedMessagesRepo;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -46,6 +62,7 @@ import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutio
 import io.mosip.authentication.internal.service.batch.FailedWebsubMessageProcessor;
 import io.mosip.authentication.internal.service.batch.FailedWebsubMessagesReader;
 import io.mosip.authentication.internal.service.batch.MissingCredentialsItemReader;
+import io.mosip.authentication.internal.service.listener.InternalAuthIdChangeEventsWebSubInitializer;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -85,6 +102,9 @@ public class DataProcessingBatchConfig {
 	@Autowired
 	private CredentialEventStoreRepository credentialEventRepo;
 	
+	@Autowired
+	private FailedMessagesRepo failedMessagesRepo;
+	
 	/** The credential store service. */
 	@Autowired
 	private CredentialStoreService credentialStoreService;
@@ -104,6 +124,21 @@ public class DataProcessingBatchConfig {
 	@Autowired
 	private BackOffPolicy backOffPolicy;
 	
+	@Autowired
+	private InternalAuthIdChangeEventsWebSubInitializer idChangeWebSubInitializer;
+	
+	@Autowired
+	protected ThreadPoolTaskScheduler taskScheduler;
+	
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	private Environment env;
+	
+	@Autowired
+	private CredentialStoreJobExecutionListener listener;
+	
 	/**
 	 * Credential store job.
 	 *
@@ -122,7 +157,7 @@ public class DataProcessingBatchConfig {
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage(), e);
+			logger.warn("error in registering job: {}", e.getMessage());
 		}
 		return job;
 	}
@@ -130,19 +165,58 @@ public class DataProcessingBatchConfig {
 	@Bean
 	@Qualifier("pullFailedWebsubMessagesAndProcess")
 	public Job pullFailedWebsubMessagesAndProcess(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess")
-				.incrementer(new RunIdIncrementer())
+		Job job = jobBuilderFactory.get("pullFailedWebsubMessagesAndProcess").incrementer(new RunIdIncrementer())
 				.listener(listener)
-				.flow(pullFailedMessagesAndProcess()) // First process failed websub messages
-				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
-				.end()
-				.build();
+				.flow(pullFailedMessagesAndStore()) // First pull and store failed websub messages
+				.next(processFailedMessagesAndProcess()) // Then process failed websub messages
+				.end().build();
 		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage(), e);
+			logger.warn("error in registering job: {}", e.getMessage());
 		}
 		return job;
+	}
+	
+	@Bean
+	@Qualifier("retriggerMissingCredentials")
+	public Job retriggerMissingCredentials(CredentialStoreJobExecutionListener listener) {
+		Job job = jobBuilderFactory.get("retriggerMissingCredentials").incrementer(new RunIdIncrementer())
+				.listener(listener)
+				.flow(validateWebSubInitialization()) // check if web sub subscribed to proceed
+				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
+				.end().build();
+		try {
+			jobRegistry.register(new ReferenceJobFactory(job));
+		} catch (DuplicateJobException e) {
+			logger.warn("error in registering job: {}", e.getMessage());
+		}
+		return job;
+	}
+
+	private TaskletStep validateWebSubInitialization() {
+		return stepBuilderFactory.get("validateWebSub").tasklet((contribution, chunkContext) -> {
+			// rescheduling job only when websub service is unavailable
+			if (idChangeWebSubInitializer.doRegisterTopics() == HttpStatus.SC_SERVICE_UNAVAILABLE
+					|| idChangeWebSubInitializer.doInitSubscriptions() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+				rescheduleJob(retriggerMissingCredentials(listener));
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+			return null;
+		}).build();
+	}
+
+	private void rescheduleJob(Job job) {
+		taskScheduler.schedule(() -> {
+			try {
+				jobLauncher.run(job,
+						new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
+			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+					| JobParametersInvalidException e) {
+				logger.warn("error in rescheduleJob - {}", e.getMessage());
+			}
+		}, new Date(System.currentTimeMillis()
+				+ env.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l)));
 	}
 
 	/**
@@ -187,14 +261,31 @@ public class DataProcessingBatchConfig {
 	}
 	
 	@Bean
-	public Step pullFailedMessagesAndProcess() {
+	public Step pullFailedMessagesAndStore() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
-		return stepBuilderFactory.get("pullMissingFailedMessagesAndProcess")
+		return stepBuilderFactory.get("pullFailedMessagesAndStore")
 				.<FailedMessage, Future<FailedMessage>>chunk(chunkSize)
 				.reader(failedWebsubMessagesReader)
 				.processor(asyncIdentityItemProcessor())
 				.writer(asyncFailedMessagesHandlerItemWriter())
+				.faultTolerant()
+				// Applying common retry policy
+				.retryPolicy(retryPolicy)
+				// Applying common back-off policy
+				.backOffPolicy(backOffPolicy)
+				.build();
+	}
+	
+	@Bean
+	public Step processFailedMessagesAndProcess() {
+		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		exceptions.put(IdAuthenticationBusinessException.class, false);
+		return stepBuilderFactory.get("processFailedMessagesAndProcess")
+				.<FailedMessageEntity, Future<FailedMessageEntity>>chunk(chunkSize)
+				.reader(failedMessageReader())
+				.processor(asyncIdentityItemProcessor())
+				.writer(asyncFailedMessagesEntityItemWriter())
 				.faultTolerant()
 				// Applying common retry policy
 				.retryPolicy(retryPolicy)
@@ -222,6 +313,10 @@ public class DataProcessingBatchConfig {
 	}
 	
 	private ItemWriter<FailedMessage> failedMessagesHandlerItemWriter() {
+		return failedWebsubMessageProcessor::storeFailedWebsubMessages;
+	}
+	
+	private ItemWriter<FailedMessageEntity> failedMessagesEntityItemWriter() {
 		return failedWebsubMessageProcessor::processFailedWebsubMessages;
 	}
 	
@@ -248,6 +343,13 @@ public class DataProcessingBatchConfig {
     public AsyncItemWriter<FailedMessage> asyncFailedMessagesHandlerItemWriter() {
         AsyncItemWriter<FailedMessage> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(failedMessagesHandlerItemWriter());
+        return asyncItemWriter;
+    }
+	
+	@Bean
+    public AsyncItemWriter<FailedMessageEntity> asyncFailedMessagesEntityItemWriter() {
+        AsyncItemWriter<FailedMessageEntity> asyncItemWriter = new AsyncItemWriter<>();
+        asyncItemWriter.setDelegate(failedMessagesEntityItemWriter());
         return asyncItemWriter;
     }
 
@@ -312,6 +414,18 @@ public class DataProcessingBatchConfig {
 		    sorts.put("status_code", Direction.DESC); // NEW will be first processed than FAILED
 		    sorts.put("retry_count", Direction.ASC); // then try processing Least failed entries first
 		    sorts.put("cr_dtimes", Direction.ASC); // then, try processing old entries
+		reader.setSort(sorts);
+		reader.setPageSize(chunkSize);
+		return reader;
+	}
+	
+	@Bean
+	public ItemReader<FailedMessageEntity> failedMessageReader() {
+		RepositoryItemReader<FailedMessageEntity> reader = new RepositoryItemReader<>();
+		reader.setRepository(failedMessagesRepo);
+		reader.setMethodName("findNewFailedMessages");
+		final Map<String, Sort.Direction> sorts = new HashMap<>();
+		    sorts.put("published_on_dtimes", Direction.ASC); // Sort the websub messages by published timestamp
 		reader.setSort(sorts);
 		reader.setPageSize(chunkSize);
 		return reader;

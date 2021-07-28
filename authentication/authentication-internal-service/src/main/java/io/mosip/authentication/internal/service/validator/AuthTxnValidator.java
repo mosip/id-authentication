@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service.validator;
 
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -14,6 +15,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
  * @author Dinesh Karuppiah.T
  */
 @Component
+@Qualifier("authTxnValidator")
 public class AuthTxnValidator extends InternalAuthRequestValidator {
 
 	@Override

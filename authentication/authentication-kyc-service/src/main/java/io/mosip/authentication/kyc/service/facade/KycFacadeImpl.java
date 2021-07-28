@@ -13,11 +13,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
@@ -96,7 +99,10 @@ public class KycFacadeImpl implements KycFacade {
 	private PartnerService partnerService;
 	
 	@Autowired
-	private IdAuthFraudAnalysisEventManager fraudEventManager;
+	private IdAuthFraudAnalysisEventManager fraudEventManager;	
+	
+	@Autowired
+	private ObjectMapper mapper;
 	
 	/*
 	 * (non-Javadoc)
@@ -180,9 +186,11 @@ public class KycFacadeImpl implements KycFacade {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private Entry<KycAuthResponseDTO, Boolean> doProcessKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId, Map<String, Object> idResDTO, String token)
 			throws IdAuthenticationBusinessException, IDDataValidationException {
+
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
 		String resTime = null;
@@ -199,10 +207,12 @@ public class KycFacadeImpl implements KycFacade {
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
-
+			Set<String> langCodes = mapper
+					.convertValue(kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES), Set.class);
 			if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				response = kycService.retrieveKycInfo(kycAuthRequestDTO.getAllowedKycAttributes(),
-						kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
+						langCodes
+						, idInfo);
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 				response.setKycStatus(authResponse.isAuthStatus());

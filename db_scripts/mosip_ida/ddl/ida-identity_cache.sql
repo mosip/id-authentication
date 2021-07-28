@@ -11,6 +11,7 @@
 -- Sep-2020             Sadanandegowda DM    Added token_id
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
 -- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+-- Jul-2021		Ram Bhatt	    Adding a new nullable column identity_expiry in IDA table identity_cache
 -- ------------------------------------------------------------------------------------------
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
@@ -27,6 +28,7 @@ CREATE TABLE ida.identity_cache(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
+	identity_expiry timestamp,
 	CONSTRAINT pk_idcache_id PRIMARY KEY (id)
 
 );

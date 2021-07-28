@@ -180,7 +180,6 @@ public class KycControllerTest {
 		kycAuthReqDTO.setRequest(request);
 		kycAuthReqDTO.setRequestedAuth(authTypeDTO);
 		kycAuthReqDTO.setRequest(request);
-		kycAuthReqDTO.setSecondaryLangCode("fra");
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()

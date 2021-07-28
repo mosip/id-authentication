@@ -7,10 +7,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 
 public class MultiFingerPrintMatchingStratergyTest {
@@ -24,7 +21,7 @@ public class MultiFingerPrintMatchingStratergyTest {
 		entityValues.put("leftIndex", "Test");
 		entityValues.put("rightIndex", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}

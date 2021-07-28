@@ -1,13 +1,11 @@
 package io.mosip.authentication.common.service.validator;
+
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -27,7 +25,6 @@ import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -692,7 +689,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 *            the errors
 	 */
-	protected void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {
+	protected void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {		
 		AuthType[] authTypes = DemoAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		boolean hasMatch = false;
@@ -909,20 +906,37 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		String priLangCode = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
+		//Dynamic attributes validations are skipping here
+		//will be done in match input building stage(MatchInputBuilder)
+		if (!demoMatchType.isDynamic() && demoMatchType.isMultiLanguage() && identityInfos.stream().anyMatch(
+				identityInfo -> (identityInfo.getLanguage() == null || identityInfo.getLanguage().isEmpty()))) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.MISSING_INPUT_PARAMETER, "LanguageCode cannot be null");
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { "LanguageCode" },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 
-		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
-			String language = idInfo.getLanguage();
-			if (language == null) {
-				language = priLangCode;
+		}
+
+		if (!demoMatchType.isDynamic() && !errors.hasErrors() && demoMatchType.isMultiLanguage()) {
+			Map<String, Long> langCount = identityInfos.stream()
+					.collect(Collectors.groupingBy(IdentityInfoDTO::getLanguage, Collectors.counting()));
+			
+			langCount.keySet().forEach(langCode -> validateLangCode(langCode, errors, REQUEST));
+
+			for (long value : langCount.values()) {
+				if (value > 1) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.INVALID_INPUT_PARAMETER, "Invalid or Multiple language code");
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "LanguageCode" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
 			}
-			return new SimpleEntry<>(language, idInfo);
-		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
 
-		langCount.keySet().forEach(langCode -> validateLangCode(langCode, errors, REQUEST));
-
-		for (long value : langCount.values()) {
-			if (value > 1) {
+			if (langCount.keySet().size() > 1 && !demoMatchType.isMultiLanguage()) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.INVALID_INPUT_PARAMETER, "Invalid or Multiple language code");
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -930,15 +944,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { "LanguageCode" },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
-		}
-
-		if (langCount.keySet().size() > 1 && !demoMatchType.isMultiLanguage()) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER, "Invalid or Multiple language code");
-			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "LanguageCode" },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -1046,28 +1051,16 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC
+	 * validates langauges
 	 * request.
 	 *
-	 * @param langCode
-	 *            the lang code
-	 * @param errors
-	 *            the errors
-	 * @param field
-	 *            the field
+	 * @param langCode the lang code
+	 * @param errors   the errors
+	 * @param field    the field
 	 */
 	protected void validateLangCode(String langCode, Errors errors, String field) {
 		if (Objects.nonNull(langCode)) {
-			Set<String> allowedLang;
-			String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES);
-			if (null != languages && languages.contains(",")) {
-				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
-			} else {
-				allowedLang = new HashSet<>();
-				allowedLang.add(languages);
-			}
-
-			if (!allowedLang.contains(langCode)) {
+			if (!idInfoFetcher.getSystemSupportedLanguageCodes().contains(langCode)) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 						IdAuthCommonConstants.INVALID_INPUT_PARAMETER + field + " : " + langCode);
 				errors.rejectValue(field, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),

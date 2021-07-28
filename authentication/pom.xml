@@ -59,7 +59,10 @@
 	</repositories>
 	<modules>
 		<module>authentication-core</module>
+		<module>authentication-filter-api</module>
 		<module>authentication-common</module>
+		<module>authentication-authtypelockfilter-impl</module>
+		<module>authentication-hotlistfilter-impl</module>
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
@@ -69,7 +72,10 @@
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
 		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
+		<authentication-filter-api.version>${authentication.parent.version}</authentication-filter-api.version>
 		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
+		<authentication-authtypelockfilter-impl.version>${authentication.parent.version}</authentication-authtypelockfilter-impl.version>
+		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
@@ -77,8 +83,6 @@
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
-		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
-		<kernel-idvalidator-vid.version>${kernel.parent.version}</kernel-idvalidator-vid.version>
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
@@ -92,7 +96,8 @@
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
 		<id-repository-core.version>1.2.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel-demoapi.version>1.2.0-SNAPSHOT</kernel-demoapi.version>
+		<kernel-demoapi.version>${kernel.parent.version}</kernel-demoapi.version>
+		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>

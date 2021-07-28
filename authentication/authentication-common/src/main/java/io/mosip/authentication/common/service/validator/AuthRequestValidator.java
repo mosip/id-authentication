@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.validator;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,15 +13,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -28,11 +28,8 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.function.FunctionWithThrowable;
-import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
-import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -66,9 +63,23 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
-	/** The hotlist service. */
-	@Autowired
-	private HotlistService hotlistService;
+	/**
+	 * Allowed environments
+	 */
+	private List<String> allowedEnvironments;
+	
+	/**
+	 * Allowed domainUris
+	 */
+	private List<String> allowedDomainUris;
+	
+	@PostConstruct
+	public void initialize() {
+		allowedEnvironments = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((",")))
+				.map(String::trim).collect(Collectors.toList());
+		allowedDomainUris = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((",")))
+				.map(String::trim).collect(Collectors.toList());
+	}
 
 	/**
 	 * Supports.
@@ -133,9 +144,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
-			}
-			if (!errors.hasErrors()) {
-				validateHotlistedIds(errors, authRequestDto);
 			}
 			if (!errors.hasErrors() && authRequestDto.getRequestedAuth().isBio()) {
 				validateBiometricTimestamps(authRequestDto.getRequest().getBiometrics(), errors);
@@ -206,62 +214,49 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validate hotlisted ids.
-	 *
-	 * @param errors         the errors
-	 * @param authRequestDto the auth request dto
-	 */
-	protected void validateHotlistedIds(Errors errors, AuthRequestDTO authRequestDto) {
-		isIndividualIdHotlisted(authRequestDto.getIndividualId(), authRequestDto.getIndividualIdType(), errors);
-
-		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"), errors);
-
-		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
-			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics(), errors);
-		}
-	}
-
-	/**
-	 * Validate domain UR iand env.
+	 * Validate domain URI and env.
 	 *
 	 * @param authRequestDto the auth request dto
 	 * @param errors         the errors
 	 */
-	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {
+	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {		
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getDomainUri() == null) {
 								// It is error if domain URI in request is not null but in biometrics it is null
-								return authRequestDto.getDomainUri() != null;
+								return (authRequestDto.getDomainUri() != null										
+										|| isValuesContainsIgnoreCase(allowedDomainUris, authRequestDto.getDomainUri()));
 							} else {
 								// It is error if domain URI in biometrics is not null and the same in request
 								// is not null or they both are not equal
-								return authRequestDto.getDomainUri() == null
+								return authRequestDto.getDomainUri() == null										
+										|| !isValuesContainsIgnoreCase(allowedDomainUris, bio.getData().getDomainUri())
 										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					"request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
 		}
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
 							if (bio.getData().getEnv() == null) {
 								// It is error if env in request is not null but in biometrics it is null
-								return authRequestDto.getEnv() != null;
+								return ((authRequestDto.getEnv() != null)
+										|| isValuesContainsIgnoreCase(allowedEnvironments,authRequestDto.getEnv()));
 							} else {
 								// It is error if env in biometrics is not null and the same in request
 								// is not null or they both are not equal
 								return authRequestDto.getEnv() == null
+										|| !isValuesContainsIgnoreCase(allowedEnvironments, bio.getData().getEnv())
 										|| !bio.getData().getEnv().contentEquals(authRequestDto.getEnv());
 							}
 						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					"request env is no matching against bio env");
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "request env is no matching against bio env");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "env", "env"));
 		}
@@ -402,90 +397,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Checks if is individual id hotlisted.
-	 *
-	 * @param individualId     the individual id
-	 * @param individualIdType the individual id type
-	 * @param errors           the errors
-	 */
-	private void isIndividualIdHotlisted(String individualId, String individualIdType, Errors errors) {
-		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)) {
-			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), individualIdType);
-			if (hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
-						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), individualIdType));
-			}
-		}
-	}
-
-	/**
-	 * Checks if is devices hotlisted.
-	 *
-	 * @param biometrics the biometrics
-	 * @param errors     the errors
-	 */
-	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
-								.getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
-								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
-						HotlistIdTypes.DEVICE);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
-			}).forEach(
-					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE))));
-		}
-	}
-
-	/**
-	 * Checks if is device provider hotlisted.
-	 *
-	 * @param biometrics the biometrics
-	 * @param errors     the errors
-	 */
-	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(0).getData().getDigitalId().getDp()
-								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
-						HotlistIdTypes.DEVICE_PROVIDER);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
-			}).forEach(
-					index -> errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, index, HotlistIdTypes.DEVICE_PROVIDER))));
-		}
-	}
-
-	/**
-	 * Checks if is partner id hotlisted.
-	 *
-	 * @param metadata the metadata
-	 * @param errors   the errors
-	 */
-	protected void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
-		if (Objects.nonNull(metadata) && metadata.isPresent()) {
-			metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
-					.getStatus().contentEquals(HotlistStatus.BLOCKED))
-					.ifPresent(partnerId -> errors.rejectValue(REQUEST,
-							IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									HotlistIdTypes.PARTNER_ID)));
-		}
-	}
-
-	/**
 	 * Biometric timestamp parser.
 	 *
 	 * @param timestamp the timestamp
@@ -504,5 +415,18 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			return this.requestTimeParser(timestamp);
 		}
 	}
-
+	
+	/**
+	 * Checks the list of Strings contains given string or not by ignoring the case
+	 * 
+	 * @param values
+	 * @param value
+	 * @return
+	 */
+	private boolean isValuesContainsIgnoreCase(List<String> values, String value) {
+		if (value != null) {
+			return values.stream().anyMatch(value::equalsIgnoreCase);
+		}
+		return false;
+	}
 }

@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -30,8 +31,29 @@ public interface CredentialEventStoreRepository extends BaseRepository<Credentia
 			, nativeQuery = true)
 	Page<CredentialEventStore> findNewOrFailedEvents(Pageable pageable);
 	
+	/**
+	 * Find max cr D times by status code.
+	 *
+	 * @param statusCode the status code
+	 * @return the optional
+	 */
 	@Query(value = "SELECT  MAX(crDTimes) from CredentialEventStore where statusCode = :statusCode")
 	Optional<LocalDateTime> findMaxCrDTimesByStatusCode(@Param("statusCode")String statusCode);
 
+	/**
+	 * Find top 1 by credential transaction id order by cr D times desc.
+	 *
+	 * @param requestId the request id
+	 * @return the optional
+	 */
 	Optional<CredentialEventStore> findTop1ByCredentialTransactionIdOrderByCrDTimesDesc(String requestId);
+	
+	/**
+	 * Find credential transaction id by credential transaction id order by cr D times desc.
+	 *
+	 * @param requestIds the request ids
+	 * @return the list
+	 */
+	@Query(value = "SELECT DISTINCT(credentialTransactionId) FROM CredentialEventStore WHERE credentialTransactionId IN (:requestIds)")
+	List<String> findDistictCredentialTransactionIdsInList(@Param("requestIds") List<String> requestIds);
 }

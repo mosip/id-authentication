@@ -41,6 +41,7 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
+import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
@@ -50,6 +51,7 @@ import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsIn
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
@@ -63,8 +65,6 @@ import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
@@ -85,7 +85,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
@@ -102,7 +102,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, DemoMatcherUtil.class, DemoNormalizer.class,
-		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class })
+		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.kyc.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))

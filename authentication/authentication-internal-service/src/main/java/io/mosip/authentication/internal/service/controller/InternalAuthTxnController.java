@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,6 +60,7 @@ public class InternalAuthTxnController {
 	private static final String AUTH_TXN_DETAILS = "getAuthTransactionDetails";
 
 	@Autowired
+	@Qualifier("authTxnValidator")
 	private AuthTxnValidator authTxnValidator;
 
 	@Autowired

@@ -287,8 +287,8 @@ public class AuthTransactionBuilder {
 				autnTxn.setToken(IdAuthCommonConstants.UNKNOWN);
 			}
 			
-			// Setting primary code only
-			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+			// Will remove this column after discussion.
+			autnTxn.setLangCode(IdAuthCommonConstants.NA);
 
 			if (isInternal) {
 				autnTxn.setEntitytype(TransactionType.INTERNAL.getType());

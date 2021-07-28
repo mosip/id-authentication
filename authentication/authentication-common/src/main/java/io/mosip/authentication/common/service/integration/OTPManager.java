@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -51,8 +52,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class OTPManager {
 
-	/** The Constant NAME. */
-	private static final String NAME = "name";
 	/** The Constant TIME. */
 	private static final String TIME = "time";
 	/** The Constant DATE. */
@@ -98,7 +97,7 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap)
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
 
 		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
@@ -137,7 +136,8 @@ public class OTPManager {
 				.collect(Collectors.joining("|"));
 
 		notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
-				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty);
+				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
+				templateLanguages);
 
 		return true;
 	}
@@ -195,11 +195,9 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-		values.put(NAME, valueMap.get(IdAuthCommonConstants.NAME_PRI));
-		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.PRIMARY_LANG),
-				valueMap.get(IdAuthCommonConstants.NAME_PRI));
-		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.SECONDAY_LANG),
-				valueMap.get(IdAuthCommonConstants.NAME_SEC));
+		values.putAll(valueMap);
+		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
+		values.remove(IdAuthCommonConstants.EMAIL);
 		return values;
 	}
 

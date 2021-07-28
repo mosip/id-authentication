@@ -26,9 +26,9 @@
 			<version>${kernel-core.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator-uin</artifactId>
-			<version>${kernel-idvalidator-uin.version}</version>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-filter-api</artifactId>
+			<version>${authentication-filter-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -70,13 +70,7 @@
 					<artifactId>kernel-auth-adapter</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<!-- Kernel Id Validator VID -->
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idvalidator-vid</artifactId>
-			<version>${kernel-idvalidator-vid.version}</version>
-		</dependency>
+		</dependency>		
 		<!-- Sprint Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
