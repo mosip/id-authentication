@@ -8,12 +8,13 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -100,10 +101,10 @@ public class WebSubHelper {
 	 * Inits the subscriber.
 	 *
 	 * @param subscriber the subscriber
+	 * @return 
 	 */
-	@Async
-	public void initSubscriber(WebSubEventSubcriber subscriber) {
-		initSubscriber(subscriber, null);
+	public int initSubscriber(WebSubEventSubcriber subscriber) {
+		return initSubscriber(subscriber, null);
 	}
 	
 	/**
@@ -111,14 +112,19 @@ public class WebSubHelper {
 	 *
 	 * @param subscriber the subscriber
 	 * @param enableTester the enable tester
+	 * @return 
 	 */
-	@Async
-	public void initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
+	public int initSubscriber(WebSubEventSubcriber subscriber, Supplier<Boolean> enableTester) {
 		try {
 			subscriber.subscribe(enableTester);
+			return HttpStatus.SC_OK;
+		} catch (ResourceAccessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "FATAL: Subscription failed for:" + subscriber.getClass().getCanonicalName());
+			return HttpStatus.SC_SERVICE_UNAVAILABLE;
 		} catch (Exception e) {
 			//Just logging the exception to avoid other further subscriptions failure
 			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "FATAL: Subscription failed for:" + subscriber.getClass().getCanonicalName());
+			return HttpStatus.SC_INTERNAL_SERVER_ERROR;
 		}
 	}
 	
@@ -126,9 +132,20 @@ public class WebSubHelper {
 	 * Inits the registrar.
 	 *
 	 * @param registrar the registrar
+	 * @return 
 	 */
-	public void initRegistrar(WebSubEventTopicRegistrar registrar) {
-		initRegistrar(registrar, null);
+	public int initRegistrar(WebSubEventTopicRegistrar registrar) {
+		try {
+			initRegistrar(registrar, null);
+			return HttpStatus.SC_OK;
+		} catch (ResourceAccessException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "registration failed for:" + registrar.getClass().getCanonicalName());
+			return HttpStatus.SC_SERVICE_UNAVAILABLE;
+		} catch (Exception e) {
+			//Just logging the exception to avoid other further subscriptions failure
+			logger.error(IdAuthCommonConstants.SESSION_ID, "initSubscriber",  this.getClass().getSimpleName(), "Subscription failed for:" + registrar.getClass().getCanonicalName());
+			return HttpStatus.SC_INTERNAL_SERVER_ERROR;
+		}
 	}
 	
 	/**

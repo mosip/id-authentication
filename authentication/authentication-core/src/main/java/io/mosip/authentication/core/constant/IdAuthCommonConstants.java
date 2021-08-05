@@ -32,9 +32,9 @@ public final class IdAuthCommonConstants {
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
 	
-	private IdAuthCommonConstants() {
-
-	}
+	public static final String KYC_LANGUAGES = "KYC_LANGUAGES";
+  
+	public static final String TOKEN = "TOKEN";
 
 	public static final String INTERNAL = "INTERNAL";
 
@@ -296,6 +296,11 @@ public final class IdAuthCommonConstants {
 	public static final String INDIVIDUAL_ID = "individualId";
 
 	public static final String IDA = "IDA";
+	
 
+	public static final String NA ="NA";
 
+	
+	private IdAuthCommonConstants() {
+	}
 }

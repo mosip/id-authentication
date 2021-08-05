@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.HotlistCache;
 import io.mosip.authentication.common.service.repository.HotlistCacheRepository;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.util.DateUtils;
@@ -118,6 +120,10 @@ public class HotlistServiceImpl implements HotlistService {
 			if (validateHotlistEventData(eventData) && idTypes.contains(eventData.get(ID_TYPE))) {
 				String id = (String) eventData.get(ID);
 				String idType = (String) eventData.get(ID_TYPE);
+				if(idType.equalsIgnoreCase(IdType.UIN.getType())
+						|| idType.equalsIgnoreCase(IdType.VID.getType())) {
+					idType = IdAuthCommonConstants.INDIVIDUAL_ID;
+				}
 				String status = (String) eventData.get(STATUS);
 				String expiryTimestamp = (String) eventData.get(EXPIRY_TIMESTAMP);
 				if (status.contentEquals(BLOCKED)) {

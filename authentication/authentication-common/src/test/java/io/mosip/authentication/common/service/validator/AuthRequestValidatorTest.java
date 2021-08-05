@@ -11,9 +11,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,7 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
@@ -54,7 +51,6 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.util.IdValidationUtil;
-import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -173,6 +169,7 @@ public class AuthRequestValidatorTest {
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -1675,143 +1672,4 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
 
-	@Test
-	public void testIsIndividualIdHotlisted() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.BLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isIndividualIdHotlisted", "", "", errors);
-		assertTrue(errors.hasErrors());
-		assertTrue(errors.getAllErrors().get(0).getCode()
-				.contentEquals(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode()));
-		assertTrue(errors.getAllErrors().get(0).getDefaultMessage().contentEquals(
-				String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), "")));
-	}
-
-	@Test
-	public void testIsIndividualIdHotlistedUnblocked() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.UNBLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isIndividualIdHotlisted", "", "", errors);
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void testIsDevicesHotlisted() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.BLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		BioIdentityInfoDTO biometric = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		data.setDigitalId(digitalId);
-		biometric.setData(data);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isDevicesHotlisted",
-				Collections.singletonList(biometric), errors);
-		assertTrue(errors.hasErrors());
-		assertTrue(errors.getAllErrors().get(0).getCode()
-				.contentEquals(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode()));
-		assertTrue(errors.getAllErrors().get(0).getDefaultMessage()
-				.contentEquals(String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-						String.format(IdAuthCommonConstants.BIO_PATH, "0", HotlistIdTypes.DEVICE))));
-	}
-
-	@Test
-	public void testIsDevicesHotlistedUnblocked() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.UNBLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		BioIdentityInfoDTO biometric = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		data.setDigitalId(digitalId);
-		biometric.setData(data);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isDevicesHotlisted",
-				Collections.singletonList(biometric), errors);
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void testIsDeviceProviderHotlisted() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.BLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		BioIdentityInfoDTO biometric = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		data.setDigitalId(digitalId);
-		biometric.setData(data);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isDeviceProviderHotlisted",
-				Collections.singletonList(biometric), errors);
-		assertTrue(errors.hasErrors());
-		assertTrue(errors.getAllErrors().get(0).getCode()
-				.contentEquals(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode()));
-		assertTrue(errors.getAllErrors().get(0).getDefaultMessage()
-				.contentEquals(String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-						String.format(IdAuthCommonConstants.BIO_PATH, "0", HotlistIdTypes.DEVICE_PROVIDER))));
-	}
-
-	@Test
-	public void testIsDeviceProviderHotlistedUnblocked() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.UNBLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		BioIdentityInfoDTO biometric = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		data.setDigitalId(digitalId);
-		biometric.setData(data);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isDeviceProviderHotlisted",
-				Collections.singletonList(biometric), errors);
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void testIsPartnerIdHotlisted() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.BLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isPartnerIdHotlisted", Optional.of(""), errors);
-		assertTrue(errors.hasErrors());
-		assertTrue(errors.getAllErrors().get(0).getCode()
-				.contentEquals(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode()));
-		assertTrue(errors.getAllErrors().get(0).getDefaultMessage().contentEquals(String
-				.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), HotlistIdTypes.PARTNER_ID)));
-	}
-
-	@Test
-	public void testIsPartnerIdHotlistedUnblocked() {
-		HotlistDTO result = new HotlistDTO();
-		result.setStatus(HotlistStatus.UNBLOCKED);
-		when(hotlistService.getHotlistStatus(Mockito.any(), Mockito.any())).thenReturn(result);
-		Errors errors = new BeanPropertyBindingResult(new AuthRequestDTO(), "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "isPartnerIdHotlisted", Optional.of(""), errors);
-		assertFalse(errors.hasErrors());
-	}
 }

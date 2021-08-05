@@ -25,11 +25,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 
 @Component
-public class KycAuthRequestValidator extends AuthRequestValidator {
-	
-	/** The Constant SECONDARY_LANG_CODE. */
-	private static final String SECONDARY_LANG_CODE = "secondaryLangCode";
-	
+public class KycAuthRequestValidator extends AuthRequestValidator {	
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
@@ -66,11 +62,7 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateConsentReq(kycAuthRequestDTO.isConsentObtained(), errors);
 			}
-
-			if (!errors.hasErrors()) {
-				validateLangCode(kycAuthRequestDTO.getSecondaryLangCode(), errors, SECONDARY_LANG_CODE);
-			}
-
+			
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);

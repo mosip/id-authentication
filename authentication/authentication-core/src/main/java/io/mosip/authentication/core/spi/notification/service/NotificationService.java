@@ -21,6 +21,6 @@ public interface NotificationService {
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException;
 	
 	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
-			String notificationProperty) throws IdAuthenticationBusinessException;
+			String notificationProperty, List<String> templateLanguages) throws IdAuthenticationBusinessException;
 
 }

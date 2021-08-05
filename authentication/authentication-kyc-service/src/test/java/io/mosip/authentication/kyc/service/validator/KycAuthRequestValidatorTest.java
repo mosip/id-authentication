@@ -54,8 +54,6 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class KycAuthRequestValidatorTest {
 
-	private static final String MOSIP_SECONDARY_LANG_CODE = "mosip.secondary-language";
-
 	@Mock
 	private SpringValidatorAdapter validator;
 
@@ -88,7 +86,7 @@ public class KycAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
+		//ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
 
 	}
@@ -108,7 +106,6 @@ public class KycAuthRequestValidatorTest {
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
@@ -132,7 +129,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -168,7 +165,7 @@ public class KycAuthRequestValidatorTest {
 	public void testInvalidAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
@@ -192,7 +189,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -280,14 +277,14 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		kycAuthRequestDTO.setIndividualIdType("D");
 		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		
 		RequestDTO reqDTO = new RequestDTO();
 		String otp = "123456";
 		reqDTO.setOtp(otp);
@@ -337,14 +334,14 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		kycAuthRequestDTO.setIndividualIdType("D");
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
@@ -391,14 +388,14 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
 		idDTO.setDobType(idInfoLists);
 		kycAuthRequestDTO.setIndividualIdType("D");
 		kycAuthRequestDTO.setConsentObtained(Boolean.FALSE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
@@ -416,7 +413,7 @@ public class KycAuthRequestValidatorTest {
 	public void testForIsValidAuthtype() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
-		kycAuthRequestDTO.setSecondaryLangCode("fra");
+		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
@@ -442,7 +439,7 @@ public class KycAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(env.getProperty(MOSIP_SECONDARY_LANG_CODE));
+		idInfoDTOs.setLanguage("fra");
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);

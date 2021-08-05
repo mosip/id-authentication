@@ -1,8 +1,10 @@
 package io.mosip.authentication.common.service.websub;
 
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 
@@ -16,28 +18,33 @@ import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventI
 
 @Component
 public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitializer {
-	
+
 	@Autowired
 	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
-	
+
 	@Autowired
 	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
+
+	@Autowired
+	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 
 	/**
 	 * Do init subscriptions.
 	 */
 	@Override
-	protected void doInitSubscriptions() {
-		webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
+	protected int doInitSubscriptions() {
+		return webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
 	}
 
 	/**
 	 * Do register topics.
 	 */
 	@Override
-	protected void doRegisterTopics() {
+	protected int doRegisterTopics() {
 		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
 		webSubHelper.initRegistrar(fraudEventPublisher);
+		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
+		return HttpStatus.SC_OK;
 	}
 
 }

@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import io.mosip.authentication.common.service.impl.match.PinMatchingStrategy;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -78,7 +77,7 @@ public class PinMatchingStrategyTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match(2, "2", matchProperties);
@@ -90,7 +89,7 @@ public class PinMatchingStrategyTest {
 	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
-		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}

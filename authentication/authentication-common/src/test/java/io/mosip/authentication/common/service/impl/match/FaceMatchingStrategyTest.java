@@ -12,7 +12,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 
@@ -34,7 +33,7 @@ public class FaceMatchingStrategyTest {
 		Map<String, String> entityValues = new HashMap<>();
 		entityValues.put("face", "Test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}
@@ -43,7 +42,7 @@ public class FaceMatchingStrategyTest {
 	public void TestInValidMatchingStrategy2() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FaceMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		int value = matchFunction.match(1, 2, matchProperties);
 		assertEquals(0, value);
 	}
@@ -54,7 +53,7 @@ public class FaceMatchingStrategyTest {
 		reqValues.put("face", "test");
 		MatchFunction matchFunction = FaceMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		assertEquals(0, matchFunction.match(reqValues, 2, matchProperties));
 	}
 
@@ -66,7 +65,7 @@ public class FaceMatchingStrategyTest {
 		Map<String, String> entityValues = new HashMap<>();
 		entityValues.put("face", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		matchProperties.put(IdaIdMapping.FACE.getIdname(),
 				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double>) (o1, o2, o3) -> 100.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
@@ -82,7 +81,7 @@ public class FaceMatchingStrategyTest {
 		Map<String, String> entityValues = new HashMap<>();
 		entityValues.put("face", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		
 		matchProperties.put(IdaIdMapping.FACE.getIdname(),
 				(TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, String>, Double>) (o1, o2, o3) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);

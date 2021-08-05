@@ -1,14 +1,10 @@
 package io.mosip.authentication.internal.service.validator;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 
 /**
@@ -38,18 +34,6 @@ public class InternalAuthRequestValidator extends AuthRequestValidator {
 	@Override
 	protected int getMaxFingerCount() {
 		return FINGERPRINT_COUNT;
-	}
-	
-	protected void isPartnerIdHotlisted(Optional<Object> metadata, Errors errors) {
-		//Skipping partner id for internal auth
-	}
-	
-	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		//Skipping partner id for internal auth
-	}
-	
-	protected void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics, Errors errors) {
-		//Skipping partner id for internal auth
 	}
 	
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String format) {

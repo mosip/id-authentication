@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +51,7 @@ public class InternalUpdateAuthTypeController {
 	private ObjectMapper mapper;
 	
 	@Autowired
+	@Qualifier("subscriptionExtendedClient")
 	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
 	
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")

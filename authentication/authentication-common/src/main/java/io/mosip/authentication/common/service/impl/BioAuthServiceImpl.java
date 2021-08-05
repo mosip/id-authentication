@@ -117,7 +117,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 //			if (isAuth) {
 //				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
 //			}
-			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, bioIdentity);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);
 			// Using OR condition on the match output for Bio auth.
@@ -227,8 +227,8 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
-	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		return matchInputBuilder.buildMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values());
+	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> bioIdentity) {
+		return matchInputBuilder.buildMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values(), bioIdentity);
 	}
 
 	/**

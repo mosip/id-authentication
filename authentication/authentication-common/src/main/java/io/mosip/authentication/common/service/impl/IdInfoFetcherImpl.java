@@ -29,7 +29,6 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -94,21 +93,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public DemoNormalizer getDemoNormalizer() {
 		return demoNormalizer;
-	}
-
-	/**
-	 * Fetch language code from properties.
-	 *
-	 * @param langType            - the language code
-	 * @return the language code
-	 */
-	@Override
-	public String getLanguageCode(LanguageType langType) {
-		if (langType == LanguageType.PRIMARY_LANG) {
-			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
-		} else {
-			return environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE);
-		}
 	}
 
 	/**
@@ -222,11 +206,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	public boolean checkLanguageType(String languageFromInput, String languageFromEntity) {
 		if (languageFromInput == null || languageFromEntity == null || languageFromEntity.isEmpty()
 				|| languageFromEntity.equalsIgnoreCase("null")) {
-			return languageFromInput == null
-					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageFromInput);
-		} else {
-			return languageFromInput.equalsIgnoreCase(languageFromEntity);
+			return languageFromInput == null;
+
 		}
+		return languageFromInput.equalsIgnoreCase(languageFromEntity);
 	}
 
 	/**
@@ -469,4 +452,26 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		return demoMatcherUtil;
 	}
 
+	/**
+	 * Gets the template default language codes
+	 */
+	@Override
+	public List<String> getTemplatesDefaultLanguageCodes() {
+		String languages = environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES);
+		if (languages != null) {
+			return List.of(languages.split(","));
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Gets the system supported languages. 
+	 * Combination of mandatory and optional languages.
+	 */
+	@Override
+	public List<String> getSystemSupportedLanguageCodes() {
+		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
+				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		return List.of(languages.split(","));
+	}
 }
