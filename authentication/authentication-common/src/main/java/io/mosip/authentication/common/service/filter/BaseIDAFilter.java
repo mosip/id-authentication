@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,6 +43,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
@@ -107,6 +109,9 @@ public abstract class BaseIDAFilter implements Filter {
 	protected IdService<AutnTxn> idService;
 	
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
+	
+	@Autowired
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseIDAFilter.class);
@@ -126,6 +131,7 @@ public abstract class BaseIDAFilter implements Filter {
 		keyManager = context.getBean(KeyManager.class);
 		idService = context.getBean(IdService.class);
 		authTransactionStatusEventPublisher = context.getBean(AuthTransactionStatusEventPublisher.class);
+		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
 	}
 
 	/*
@@ -162,8 +168,9 @@ public abstract class BaseIDAFilter implements Filter {
 				// super.flushBuffer();
 			}
 		};
+		Map<String, Object> requestBody = null;
 		try {
-			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
@@ -180,6 +187,10 @@ public abstract class BaseIDAFilter implements Filter {
 		} catch (IdAuthenticationAppException  e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					"\n" + ExceptionUtils.getStackTrace(e));
+			if(requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
+				String errorMessage = e.getErrorText();
+				fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestBody, errorMessage);
+			}
 			requestWrapper.resetInputStream();
 			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e);
 		} finally {
