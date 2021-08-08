@@ -63,7 +63,7 @@ public enum IdAuthenticationErrorConstants {
 	IDVID_DEACTIVATED_BLOCKED("IDA-MLC-022", "%s is blocked"),	
 	INVALID_BIO_TIMESTAMP("IDA-MLC-030", "Biometrics captured after %s seconds of previous biometrics",
 			"Please capture biometrics within %s seconds of previous biometric capture"),
-	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-030", "DigitalId of Biometrics captured after %s seconds of previous biometrics",
+	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics captured after %s seconds of previous biometrics",
 			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
 	
 	
