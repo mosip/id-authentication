@@ -98,6 +98,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String DATA = "data";
 
+	public static final String BIO_TXN_ID_PATH = "data/transactionId";
+
 	public static final String NAME_SEC = "nameSec";
 
 	public static final String NAME_PRI = "namePri";

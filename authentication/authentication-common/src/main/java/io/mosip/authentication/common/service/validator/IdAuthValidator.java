@@ -53,10 +53,10 @@ public abstract class IdAuthValidator implements Validator {
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
-	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
+	protected static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
 
 	/** The Constant VALIDATE. */
-	private static final String VALIDATE = "VALIDATE";
+	protected static final String VALIDATE = "VALIDATE";
 
 	/** The Constant A_Z0_9_10. */
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Za-z0-9]{10}");
