@@ -30,7 +30,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS = "authrequest.received-time-allowed.seconds";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS = "authrequest.received-time-adjustment.seconds";
 	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";

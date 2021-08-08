@@ -313,7 +313,7 @@ public class ValidatorTest {
 		MockEnvironment mockEnv = new MockEnvironment();
 		mockEnv.setProperty("auth.types.allowed", "demo,otp");
 		mockEnv.setProperty("datetime.pattern","yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		mockEnv.setProperty("authrequest.received-time-allowed.minutes", "30");
+		mockEnv.setProperty("authrequest.received-time-allowed.seconds", "30");
 		ReflectionTestUtils.setField(authRequestValidator, "env", mockEnv);
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");

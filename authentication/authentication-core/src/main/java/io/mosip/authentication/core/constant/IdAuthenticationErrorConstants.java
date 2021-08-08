@@ -32,7 +32,7 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_ID_MISMATCH("IDA-OTA-011", "Input Partner-ID does not match Partner-ID of OTP Request"),
 
 
-	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
+	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s seconds",
 			"Please send the request within %s minutes"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
