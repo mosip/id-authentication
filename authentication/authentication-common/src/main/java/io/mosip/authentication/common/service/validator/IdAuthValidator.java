@@ -235,7 +235,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the current time plus adjutsment time
 	 */
 	private Date getCurrentTimePlusAdjutsmentTime() {
-		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusMinutes);
+		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusSeconds);
 	}
 	
 	/**
@@ -246,8 +246,8 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the adjustment time
 	 */
 	private Date getAdjustmentTime(LocalDateTime originalLdt, BiFunction<LocalDateTime, Long, LocalDateTime> adjustmentFunc) {
-		long adjustmentMins = getRequestTimeAdjustmentMins();
-		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentMins);
+		long adjustmentSeconds = getRequestTimeAdjustmentSeconds();
+		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentSeconds);
 		Date plusAdjustmentTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
 		return plusAdjustmentTime;
 	}
@@ -257,8 +257,8 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @return the request time adjustment mins
 	 */
-	private Long getRequestTimeAdjustmentMins() {
-		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS);
+	private Long getRequestTimeAdjustmentSeconds() {
+		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_SECONDS);
 	}
 	
 	/**
@@ -288,7 +288,7 @@ public abstract class IdAuthValidator implements Validator {
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Long reqDateMaxTimeLong = env
 					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			Long adjustmentMins = getRequestTimeAdjustmentMins();
+			Long adjustmentMins = getRequestTimeAdjustmentSeconds();
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong + adjustmentMins, ChronoUnit.MINUTES);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
