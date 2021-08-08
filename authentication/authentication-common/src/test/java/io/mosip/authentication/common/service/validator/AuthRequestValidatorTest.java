@@ -1393,6 +1393,7 @@ public class AuthRequestValidatorTest {
 		data.setDigitalId(digitalId);
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
+		data.setTransactionId("1234567890");
 		// data.setDomainUri("localhost2");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
@@ -1442,6 +1443,7 @@ public class AuthRequestValidatorTest {
 		digitalId.setDeviceProvider("");
 		digitalId.setDeviceProviderId("");
 		data.setDigitalId(digitalId);
+		data.setTransactionId("1234567890");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
@@ -1601,6 +1603,7 @@ public class AuthRequestValidatorTest {
 		digitalId.setDeviceProvider("");
 		digitalId.setDeviceProviderId("");
 		data.setDigitalId(digitalId);
+		data.setTransactionId("1234567890");
 		// data.setEnv("Staging");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
@@ -1650,6 +1653,7 @@ public class AuthRequestValidatorTest {
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		data.setEnv("Staging");
+		data.setTransactionId("1234567890");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);

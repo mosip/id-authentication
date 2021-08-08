@@ -216,11 +216,19 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	private void validateBioTxnId(String authTxnId, Errors errors, int i, String bioTxnId) {
+	private void validateBioTxnId(String authTxnId, Errors errors, int index, String bioTxnId) {
+		// authTxnId validation is already done at this point
+		if (Objects.isNull(bioTxnId)) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { String.format(BIO_PATH, index, IdAuthCommonConstants.BIO_TXN_ID_PATH) },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			
+		} else
 		if(!authTxnId.contentEquals(bioTxnId)) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { String.format(BIO_PATH, i, IdAuthCommonConstants.BIO_TXN_ID_PATH) },
+					new Object[] { String.format(BIO_PATH, index, IdAuthCommonConstants.BIO_TXN_ID_PATH) },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}

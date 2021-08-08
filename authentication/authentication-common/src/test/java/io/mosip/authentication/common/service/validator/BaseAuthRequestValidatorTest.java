@@ -77,9 +77,6 @@ public class BaseAuthRequestValidatorTest {
 	@Mock
 	private PinValidatorImpl pinValidator;
 
-	/** The validation. */
-	private Map<String, String> validation;
-
 	/** The auth request DTO. */
 	@Mock
 	AuthRequestDTO authRequestDTO;
@@ -104,10 +101,6 @@ public class BaseAuthRequestValidatorTest {
 
 	/** The error. */
 	Errors error;
-
-	public void setValidation(Map<String, String> validation) {
-		this.validation = validation;
-	}
 
 	/**
 	 * Before.
@@ -2345,6 +2338,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2356,13 +2350,14 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setTransactionID("");
 		RequestDTO request = new RequestDTO();
 		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
 		bioInfo.setData(dataDTO);
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/timestamp"), error.getFieldErrors().get(0).getArguments()[0]);
 		
 	}
@@ -2372,6 +2367,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2391,8 +2387,9 @@ public class BaseAuthRequestValidatorTest {
 		bioInfo.setData(dataDTO);
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
+		authRequestDTO.setTransactionID("");
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 		
 	}
@@ -2402,6 +2399,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2413,6 +2411,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("1");
 		dataDTO.setDigitalId(digitalId);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setTransactionID("");
 		RequestDTO request = new RequestDTO();
 		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
 		bioInfo.setData(dataDTO);
@@ -2423,7 +2422,7 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
 		dataDTO.setTimestamp(timestamp);
 		
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 
