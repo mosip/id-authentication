@@ -125,12 +125,12 @@ public class KycAuthFilter extends IdAuthFilter {
 	
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.kyc.signing-required", Boolean.class, true);
+		return true;
 	}
 
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.kyc.signature-verification-required", Boolean.class, true);
+		return true;
 	}
 
 	//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
@@ -141,7 +141,7 @@ public class KycAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.kyc.trust-validation-required", Boolean.class, true);
+		return true;
 	}
 
 }
