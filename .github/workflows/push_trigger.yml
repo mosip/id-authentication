@@ -47,7 +47,6 @@ jobs:
     - name: Setup the settings file for ossrh server
       run: echo "<settings> <servers>  <server>  <id>ossrh</id>    <username>${{secrets.ossrh_user}}</username> <password>${{secrets.ossrh_secret}}</password> </server> </servers> <profiles> <profile>     <id>ossrh</id> <activation> <activeByDefault>true</activeByDefault> </activation>  <properties> <gpg.executable>gpg2</gpg.executable> <gpg.passphrase>${{secrets.gpg_secret}}</gpg.passphrase> </properties> </profile> <profile> <id>allow-snapshots</id>       <activation><activeByDefault>true</activeByDefault></activation> <repositories> <repository>        <id>snapshots-repo</id> <url>https://oss.sonatype.org/content/repositories/snapshots</url> <releases><enabled>false</enabled></releases> <snapshots><enabled>true</enabled></snapshots> </repository>  <repository>         <id>releases-repo</id>  <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>         <releases><enabled>true</enabled></releases>         <snapshots><enabled>false</enabled></snapshots> </repository> </repositories>  </profile> <profile> <id>sonar</id> <properties>  <sonar.sources>.</sonar.sources> <sonar.host.url>https://sonarcloud.io</sonar.host.url>  </properties> <activation> <activeByDefault>false</activeByDefault> </activation> </profile> </profiles> </settings>" > $GITHUB_WORKSPACE/settings.xml
 
-
     - name: Build with Maven
       run: |
         cd authentication
@@ -128,7 +127,7 @@ jobs:
         status: ${{ job.status }}
         fields: repo,message,commit,workflow,job # selectable (default: repo,message)
       env:
-        SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
       if: failure() # Pick up events even if the job fails or is canceled.
 
   docker-authentication-otp-service:
@@ -189,7 +188,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,workflow,job # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
 
   docker-authentication-internal-service:
@@ -250,7 +249,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,workflow,job # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
 
   docker-authentication-kyc-service:
@@ -311,7 +310,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,workflow,job # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
 
   docker-authentication-service:
@@ -372,7 +371,7 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,workflow,job # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
   sonar_analysis:
 
@@ -420,6 +419,6 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,workflow,job # selectable (default: repo,message)
         env:
-          SLACK_WEBHOOK_URL: ${{ SLACK_DEVOPS_WEBHOOK }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
 
