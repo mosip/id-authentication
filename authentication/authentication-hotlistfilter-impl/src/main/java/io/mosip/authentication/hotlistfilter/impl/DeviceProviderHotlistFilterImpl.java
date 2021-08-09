@@ -73,7 +73,7 @@ public class DeviceProviderHotlistFilterImpl implements IMosipAuthFilter {
 			if(indexOpt.isPresent()) {
 				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE_PROVIDER.toLowerCase())));
+									String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE_PROVIDER)));
 			}
 			
 		}
