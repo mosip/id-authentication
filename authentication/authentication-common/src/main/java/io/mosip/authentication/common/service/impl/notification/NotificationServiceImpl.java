@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +38,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 
 /***
@@ -313,18 +315,7 @@ public class NotificationServiceImpl implements NotificationService {
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
 			List<String> dataCaptureLanguages = infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
-			dataCaptureLanguages.sort((langCode1, langCode2) -> {
-				int indexInSysSupportLang1 = systemSupportedLanguages.indexOf(langCode1);
-				int indexInSysSupportLang2 = systemSupportedLanguages.indexOf(langCode2);
-
-				if (indexInSysSupportLang1 < 0) {
-					indexInSysSupportLang1 = Integer.MAX_VALUE;
-				}
-				if (indexInSysSupportLang2 < 0) {
-					indexInSysSupportLang2 = Integer.MAX_VALUE;
-				}
-				return Integer.compare(indexInSysSupportLang1, indexInSysSupportLang2);
-			});
+			Collections.sort(dataCaptureLanguages, new LanguageComparator(systemSupportedLanguages));
 			return dataCaptureLanguages;
 		}
 

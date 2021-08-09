@@ -43,6 +43,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -327,18 +328,7 @@ public class OTPServiceImpl implements OTPService {
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
 			List<String> dataCaptureLanguages = idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
-			dataCaptureLanguages.sort((langCode1, langCode2) -> {
-				int indexInSysSupportLang1 = systemSupportedLanguages.indexOf(langCode1);
-				int indexInSysSupportLang2 = systemSupportedLanguages.indexOf(langCode2);
-
-				if (indexInSysSupportLang1 < 0) {
-					indexInSysSupportLang1 = Integer.MAX_VALUE;
-				}
-				if (indexInSysSupportLang2 < 0) {
-					indexInSysSupportLang2 = Integer.MAX_VALUE;
-				}
-				return Integer.compare(indexInSysSupportLang1, indexInSysSupportLang2);
-			});
+			Collections.sort(dataCaptureLanguages, new LanguageComparator(systemSupportedLanguages));
 			return dataCaptureLanguages;
 		}
 
