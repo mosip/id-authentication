@@ -248,18 +248,23 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 			}
 
-			// Both are not null and they both are not equal
-			if (authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
-					.anyMatch(bio -> bio.getData().getDomainUri() != null && authRequestDto.getDomainUri() != null
-							&& !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
+			// Both are not null and they both are not equal			
+			String requestAndBioDomainUrisNotSame = IntStream
+					.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() != null
+							&& authRequestDto.getDomainUri() != null
+							&& !authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri()
+									.contentEquals(authRequestDto.getDomainUri()))
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if(!requestAndBioDomainUrisNotSame.isEmpty()) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(),
-								"request/biometrics/0/data/domainUri", "request/domainUri"));
-
+								"request/biometrics/" + requestAndBioDomainUrisNotSame + "/data/domainUri", "request/domainUri"));
 			}
-
+			
 			// bio domain uri is not null and not matching with configurations
 			String notMatchingBioDomainsUris = IntStream.range(0, authRequestDto.getRequest().getBiometrics().size())
 					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
