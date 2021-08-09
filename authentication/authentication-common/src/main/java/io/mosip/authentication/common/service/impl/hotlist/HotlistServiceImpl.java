@@ -133,10 +133,11 @@ public class HotlistServiceImpl implements HotlistService {
 				String expiryTimestamp = (String) eventData.get(EXPIRY_TIMESTAMP);
 				if (status.contentEquals(UNBLOCKED) && Objects.isNull(expiryTimestamp)) {
 					unblock(id, idType);
+				} else {
+					updateHotlist(id, idType, status,
+							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
+									: null);
 				}
-				updateHotlist(id, idType, status,
-						StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
-								: null);
 			}
 		}
 	}
