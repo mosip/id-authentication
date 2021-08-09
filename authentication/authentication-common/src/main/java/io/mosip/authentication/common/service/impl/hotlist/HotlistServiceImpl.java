@@ -57,7 +57,7 @@ public class HotlistServiceImpl implements HotlistService {
 	private HotlistCacheRepository hotlistCacheRepo;
 
 	@Override
-	public void block(String id, String idType, String status, LocalDateTime expiryTimestamp)
+	public void updateHotlist(String id, String idType, String status, LocalDateTime expiryTimestamp)
 			throws IdAuthenticationBusinessException {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
@@ -104,9 +104,17 @@ public class HotlistServiceImpl implements HotlistService {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
 			HotlistCache hotlistCache = hotlistData.get();
-			dto.setStatus(hotlistCache.getStatus());
 			dto.setStartDTimes(hotlistCache.getStartDTimes());
 			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
+			if (Objects.nonNull(hotlistCache.getExpiryDTimes())
+					&& hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+				if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					dto.setStatus(HotlistStatus.UNBLOCKED);
+				else
+					dto.setStatus(HotlistStatus.BLOCKED);
+			} else {
+				dto.setStatus(hotlistCache.getStatus());
+			}
 		} else {
 			dto.setStatus(HotlistStatus.UNBLOCKED);
 		}
@@ -127,7 +135,7 @@ public class HotlistServiceImpl implements HotlistService {
 				String status = (String) eventData.get(STATUS);
 				String expiryTimestamp = (String) eventData.get(EXPIRY_TIMESTAMP);
 				if (status.contentEquals(BLOCKED)) {
-					block(id, idType, status,
+					updateHotlist(id, idType, status,
 							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
 									: null);
 				} else if (status.contentEquals(UNBLOCKED)) {
