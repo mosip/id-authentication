@@ -90,12 +90,10 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			requestWrapper.resetInputStream();
-			Map<String, Object> decipherRequest;
-			decipherRequest = decipherRequest(requestBody);
+			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 			decipherRequest = processDecipheredReqeuest(decipherRequest);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, ExceptionUtils.getStackTrace(e));
