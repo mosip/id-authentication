@@ -220,26 +220,75 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors         the errors
 	 */
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {		
-		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
-				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
-						.anyMatch(bio -> {
-							if (bio.getData().getDomainUri() == null) {
-								// It is error if domain URI in request is not null but in biometrics it is null
-								return (authRequestDto.getDomainUri() != null										
-										|| isValuesContainsIgnoreCase(allowedDomainUris, authRequestDto.getDomainUri()));
-							} else {
-								// It is error if domain URI in biometrics is not null and the same in request
-								// is not null or they both are not equal
-								return authRequestDto.getDomainUri() == null										
-										|| !isValuesContainsIgnoreCase(allowedDomainUris, bio.getData().getDomainUri())
-										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
-							}
-						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+		if (Objects.nonNull(authRequestDto.getRequest())
+				&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())) {
+
+			// It is error if domain URI in request is not null but in biometrics it is null
+			String nullBioDomainUris = IntStream.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() == null
+							&& authRequestDto.getDomainUri() != null)
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if (!nullBioDomainUris.isEmpty()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "bio domain uri is null");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/biometrics/" + nullBioDomainUris + "/data/domainUri"));
+			}
+
+			// It is error if domain URI in biometrics is not null and null in the request
+			if (authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
+					.anyMatch(bio -> bio.getData().getDomainUri() != null && authRequestDto.getDomainUri() == null)) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "request domainUri is null");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/domainUri"));
+
+			}
+
+			// Both are not null and they both are not equal
+			if (authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
+					.anyMatch(bio -> bio.getData().getDomainUri() != null && authRequestDto.getDomainUri() != null
+							&& !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri()))) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(),
+								"request/biometrics/0/data/domainUri", "request/domainUri"));
+
+			}
+
+			// bio domain uri is not null and not matching with configurations
+			String notMatchingBioDomainsUris = IntStream.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() != null
+							&& !isValuesContainsIgnoreCase(allowedDomainUris,
+									authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri()))
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if (!notMatchingBioDomainsUris.isEmpty()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "bio domain uri is not matching with configured domain uris");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/biometrics/" + notMatchingBioDomainsUris + "/data/domainUri"));
+
+			}
+
+			// request domain uri is not null and not matching with configurations
+			if (authRequestDto.getDomainUri() != null
+					&& !isValuesContainsIgnoreCase(allowedDomainUris, authRequestDto.getDomainUri())) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE,
+						"request domain uri is not matching with configured domain uris");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/domainUri"));
+			}
+
 		}
+		
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {

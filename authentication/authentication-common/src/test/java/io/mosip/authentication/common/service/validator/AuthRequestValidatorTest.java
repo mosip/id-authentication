@@ -1275,6 +1275,13 @@ public class AuthRequestValidatorTest {
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		bioIdentityDto.setData(data);
+		
+		BioIdentityInfoDTO bioIdentityDto1 = new BioIdentityInfoDTO();
+		DataDTO data1 = new DataDTO();
+		data1.setBioValue("adsadas");
+		data1.setBioType("Face");
+		bioIdentityDto1.setData(data1);
+		biometrics.add(bioIdentityDto1);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
 
@@ -1290,7 +1297,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
 	}
 
 	@Test
@@ -1327,7 +1334,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
 	}
 
 	@Test
