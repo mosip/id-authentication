@@ -9,9 +9,11 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSA
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +28,6 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -56,20 +56,18 @@ public class IdAuthFraudAnalysisEventManager {
 	private ObjectMapper mapper;
 
 	@Async
-	public void analyseDigitalSignatureFailure(String uri, String authRequest)
+	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage)
 			throws JsonParseException, JsonMappingException, IOException {
 		List<String> pathSegments = Arrays.asList(uri.split("/"));
 		String authType = null;
 		if (pathSegments.size() > 4) {
-			Map<String, Object> request = mapper.readValue(authRequest, new TypeReference<Map<String, Object>>() {
-			});
 			String idvIdHash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
 			String txnId = (String) request.get(TRANSACTION_ID);
 			String partnerId = pathSegments.get(4);
 			LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
 			authType = getAuthType(pathSegments, authType, request);
 			IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType, requestTime, "N",
-					IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage());
+					errorMessage);
 			publisher.publishEvent(eventData);
 			this.analyseRequestFlooding(eventData);
 		}
@@ -122,21 +120,27 @@ public class IdAuthFraudAnalysisEventManager {
 	}
 
 	private String getAuthType(List<String> pathSegments, String authType, Map<String, Object> request) {
-		if (pathSegments.get(2).contentEquals(OTP)) {
+		String contextSuffix = pathSegments.get(3);
+		if (contextSuffix.contentEquals(OTP)) {
 			authType = RequestType.OTP_REQUEST.getRequestType();
-		} else if (pathSegments.get(2).contentEquals(KYC)) {
+		} else if (contextSuffix.contentEquals(KYC)) {
 			authType = RequestType.KYC_AUTH_REQUEST.getRequestType();
-		} else if (pathSegments.get(2).contentEquals("auth")) {
+		} else if (contextSuffix.contentEquals("auth")) {
 			AuthTypeDTO authTypeDTO = mapper.convertValue(request.get(REQUESTEDAUTH), AuthTypeDTO.class);
+			List<String> authTypesList = new ArrayList<>(5);
 			if (authTypeDTO.isBio()) {
-				authType = "BIO-AUTH";
-			} else if (authTypeDTO.isDemo()) {
-				authType = RequestType.DEMO_AUTH.getRequestType();
-			} else if (authTypeDTO.isOtp()) {
-				authType = RequestType.OTP_AUTH.getRequestType();
-			} else if (authTypeDTO.isPin()) {
-				authType = RequestType.STATIC_PIN_AUTH.getRequestType();
+				authTypesList.add("BIO-AUTH");
+			} 
+			if (authTypeDTO.isDemo()) {
+				authTypesList.add(RequestType.DEMO_AUTH.getRequestType());
+			} 
+			if (authTypeDTO.isOtp()) {
+				authTypesList.add(RequestType.OTP_AUTH.getRequestType());
+			} 
+			if (authTypeDTO.isPin()) {
+				authTypesList.add(RequestType.STATIC_PIN_AUTH.getRequestType());
 			}
+			authType = authTypesList.stream().collect(Collectors.joining(","));
 		}
 		return authType;
 	}

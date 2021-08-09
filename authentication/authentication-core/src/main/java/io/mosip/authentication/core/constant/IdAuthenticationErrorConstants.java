@@ -98,7 +98,7 @@ public enum IdAuthenticationErrorConstants {
 	PIN_MISMATCH("IDA-SPA-001", "Pin value did not match", "Please re-enter your pin"),
 	PIN_NOT_STORED("IDA-SPA-002", "Could not store the static pin of the individual"),
 
-	DSIGN_FALIED("IDA-MPA-001", "Digital signature verification failed"),
+	DSIGN_FALIED("IDA-MPA-001", "Digital signature verification failed for %s"),
 	INVALID_CERTIFICATE("IDA-MPA-002", "Invalid certificate in digital signature"),
 	INVALID_ENCRYPTION("IDA-MPA-003", "Unable to decrypt Request"),
 	PUBLICKEY_EXPIRED("IDA-MPA-004", "MOSIP Public key expired"),

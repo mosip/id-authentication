@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -39,6 +38,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public abstract class BaseAuthFilter extends BaseIDAFilter {
 
+	private static final String SIGNATURE_HEADER = "signature header";
+
 	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
 
@@ -51,16 +52,12 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
-	@Autowired
-	private IdAuthFraudAnalysisEventManager fraudEventManager;
-
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		securityManager = context.getBean(IdAuthSecurityManager.class);
-		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
 	}
 
 	/*
@@ -97,7 +94,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			decipherRequest = processDecipheredReqeuest(decipherRequest);
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-//			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + requestAsString);
 			requestWrapper.replaceData(requestAsString.getBytes());
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, ExceptionUtils.getStackTrace(e));
@@ -109,10 +105,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		return decipheredRequest;
 	}
 
-	protected void verifyBioDataSignature(String jwsSignature) throws IdAuthenticationAppException {
+	protected void verifyBioDataSignature(String jwsSignature, int index) throws IdAuthenticationAppException {
 		if (!verifySignature(jwsSignature, null, DomainType.JWT_DATA.getType())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, BASE_AUTH_FILTER, "verifyJwsData", "Invalid certificate in biometrics>data");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage(),
+							"request/biometrics/" + index + "/data"));
 		}
 	}
 
@@ -183,7 +182,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-									"signature - header"));
+									SIGNATURE_HEADER));
 				} else {
 					String requestData = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
 					requestWrapper.resetInputStream();
@@ -192,8 +191,11 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 							DomainType.AUTH.getType())) {
 						mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 								"signature header verification failed");
-						fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestData);
-						throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED);
+						String errorMessage = String.format(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage(),
+								SIGNATURE_HEADER);
+						throw new IdAuthenticationAppException(
+								IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode(),
+								errorMessage);
 					}
 				}
 				requestWrapper.resetInputStream();
