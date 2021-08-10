@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,11 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Autowired
 	private NotificationManager notificationManager;
-
+	
+	@Autowired
+	@Qualifier("NotificationLangComparator")
+	private LanguageComparator languageComparator;
+	
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
@@ -308,14 +313,13 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
-		List<String> systemSupportedLanguages = idInfoFetcher.getSystemSupportedLanguageCodes();
 		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
 		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
 			List<String> dataCaptureLanguages = infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
-			Collections.sort(dataCaptureLanguages, new LanguageComparator(systemSupportedLanguages));
+			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}
 

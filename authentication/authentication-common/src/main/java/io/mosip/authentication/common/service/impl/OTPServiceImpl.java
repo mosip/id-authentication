@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +99,10 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
+	
+	@Autowired
+	@Qualifier("NotificationLangComparator")
+	private LanguageComparator languageComparator;	
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -320,15 +325,14 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
-			throws IdAuthenticationBusinessException {
-		List<String> systemSupportedLanguages = idInfoFetcher.getSystemSupportedLanguageCodes();
+			throws IdAuthenticationBusinessException {		
 		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
 		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
 			List<String> dataCaptureLanguages = idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
-			Collections.sort(dataCaptureLanguages, new LanguageComparator(systemSupportedLanguages));
+			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}
 
