@@ -140,6 +140,12 @@ public interface IdInfoFetcher {
 	 */
 	public DemoNormalizer getDemoNormalizer();
 	
+	/**
+	 * Gets the user preferred language attribute 
+	 * @return
+	 */
+	public List<String> getUserPreferredLanguages(Map<String, List<IdentityInfoDTO>> idInfo);
+	
 	
 	/**
 	 * Gets the match function.
@@ -190,18 +196,19 @@ public interface IdInfoFetcher {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) {
-		return idResponseDTO.entrySet().stream()
-				.flatMap(entry -> {
-					if(entry.getValue() instanceof Map) {
-						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
-					} else {
-						return Stream.of(entry);
-					}
-				})
-				.collect(Collectors.toMap(t -> t.getKey(), entry -> {
-					Object val = entry.getValue();
-					if (val instanceof List) {
-						List<Map> arrayList = (List) val;
+		return idResponseDTO.entrySet().stream().flatMap(entry -> {
+			if (entry.getValue() instanceof Map) {
+				return ((Map<String, Object>) entry.getValue()).entrySet().stream();
+			} else {
+				return Stream.of(entry);
+			}
+		}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
+			Object val = entry.getValue();
+			if (val instanceof List) {
+				List<? extends Object> arrayList = (List) val;
+				if (!arrayList.isEmpty()) {
+					Object object = arrayList.get(0);
+					if (object instanceof Map) {
 						return arrayList.stream().filter(elem -> elem instanceof Map)
 								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
 									String value = String.valueOf(map1.get("value"));
@@ -213,15 +220,22 @@ public interface IdInfoFetcher {
 									return idInfo;
 								}).collect(Collectors.toList());
 
-					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
-							|| val instanceof Integer || val instanceof Double || val instanceof Float) {
-						IdentityInfoDTO idInfo = new IdentityInfoDTO();
-						idInfo.setValue(String.valueOf(val));
-						return Stream.of(idInfo).collect(Collectors.toList());
+					} else if (object instanceof String) {
+						return arrayList.stream().map(string -> {
+							String value = (String) string;
+							IdentityInfoDTO idInfo = new IdentityInfoDTO();
+							idInfo.setValue(value);
+							return idInfo;
+						}).collect(Collectors.toList());
 					}
-					return Collections.emptyList();
-				}));
-
+				}
+			} else if (val instanceof Boolean || val instanceof String || val instanceof Long || val instanceof Integer
+					|| val instanceof Double || val instanceof Float) {
+				IdentityInfoDTO idInfo = new IdentityInfoDTO();
+				idInfo.setValue(String.valueOf(val));
+				return Stream.of(idInfo).collect(Collectors.toList());
+			}
+			return Collections.emptyList();
+		}));
 	}
-
 }

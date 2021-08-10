@@ -127,12 +127,12 @@ public enum DemoMatchType implements MatchType {
 		@Override
 		public boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity) {
 			List<IdentityInfoDTO> infoDtos = identityEntity.get(propName);
-			if(infoDtos.stream().anyMatch(infoDto->infoDto.getLanguage() == null)) {
+			if (infoDtos != null && infoDtos.stream().anyMatch(infoDto -> infoDto.getLanguage() == null)) {
 				return false;
 			}
+			
 			return isMultiLanguage();
 		}
-
 	},
 	
 	/** The Constant DATE_PATTERN. */

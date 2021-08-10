@@ -474,4 +474,21 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
 		return List.of(languages.split(","));
 	}
+
+	/**
+	 * Gets the user preferred languages
+	 */
+	@Override
+	public List<String> getUserPreferredLanguages(Map<String, List<IdentityInfoDTO>> idInfo) {
+		String userPreferredLangAttribute = environment
+				.getProperty(IdAuthConfigKeyConstants.USER_PREFFRRED_LANG_ATTRIBUTE_NAME);		
+		if (userPreferredLangAttribute != null) {
+			List<IdentityInfoDTO> identityInfoList = idInfo.get(userPreferredLangAttribute);
+			if (identityInfoList != null) {
+				return identityInfoList.stream().map(IdentityInfoDTO::getValue).collect(Collectors.toList());
+			}
+			return Collections.emptyList();
+		}
+		return Collections.emptyList();
+	}
 }
