@@ -51,7 +51,7 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isSigningRequired() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return false;
+		return true;
 	}
 	
 	@Override
