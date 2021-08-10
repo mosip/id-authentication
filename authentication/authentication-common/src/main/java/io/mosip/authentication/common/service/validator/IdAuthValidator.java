@@ -53,10 +53,10 @@ public abstract class IdAuthValidator implements Validator {
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
-	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
+	protected static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
 
 	/** The Constant VALIDATE. */
-	private static final String VALIDATE = "VALIDATE";
+	protected static final String VALIDATE = "VALIDATE";
 
 	/** The Constant A_Z0_9_10. */
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Za-z0-9]{10}");
@@ -215,7 +215,7 @@ public abstract class IdAuthValidator implements Validator {
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, plusAdjustmentTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS, Long.class);
 			String message;
 			if (paramName == null) {
 				message = IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage();
@@ -235,7 +235,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the current time plus adjutsment time
 	 */
 	private Date getCurrentTimePlusAdjutsmentTime() {
-		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusMinutes);
+		return getAdjustmentTime(LocalDateTime.now(), LocalDateTime::plusSeconds);
 	}
 	
 	/**
@@ -246,19 +246,19 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the adjustment time
 	 */
 	private Date getAdjustmentTime(LocalDateTime originalLdt, BiFunction<LocalDateTime, Long, LocalDateTime> adjustmentFunc) {
-		long adjustmentMins = getRequestTimeAdjustmentMins();
-		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentMins);
+		long adjustmentSeconds = getRequestTimeAdjustmentSeconds();
+		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentSeconds);
 		Date plusAdjustmentTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
 		return plusAdjustmentTime;
 	}
 
 	/**
-	 * Gets the request time adjustment mins.
+	 * Gets the request time adjustment seconds.
 	 *
-	 * @return the request time adjustment mins
+	 * @return the request time adjustment seconds
 	 */
-	private Long getRequestTimeAdjustmentMins() {
-		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS);
+	private Long getRequestTimeAdjustmentSeconds() {
+		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_SECONDS);
 	}
 	
 	/**
@@ -287,18 +287,18 @@ public abstract class IdAuthValidator implements Validator {
 					VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
 			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
-			Long adjustmentMins = getRequestTimeAdjustmentMins();
-			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong + adjustmentMins, ChronoUnit.MINUTES);
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS, Long.class);
+			Long adjustmentSeconds = getRequestTimeAdjustmentSeconds();
+			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong + adjustmentSeconds, ChronoUnit.SECONDS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						VALIDATE_REQUEST_TIMED_OUT,
-						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
+						"Time difference in sec : " + Duration.between(reqTimeInstance, now).toSeconds());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- "
 								+ String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
-										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
+										Duration.between(reqTimeInstance, now).toSeconds() - reqDateMaxTimeLong));
 				String message;
 				if (paramName == null) {
 					message = IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage();

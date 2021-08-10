@@ -252,7 +252,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
 		}
 		
-		verifyBioDataSignature(dataOpt.get());
+		verifyBioDataSignature(dataOpt.get(), index);
 
 		if (!getStringValue(map, SESSION_KEY).isPresent()) {
 			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
@@ -277,7 +277,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (jwsSignatureObj instanceof String) {
 				String jwsSignature = (String) jwsSignatureObj;
 				if (StringUtils.isNotEmpty(jwsSignature)) {
-					verifyDigitalIdSignature(jwsSignature);
+					verifyDigitalIdSignature(jwsSignature, index);
 					data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
 				}
 			}
@@ -316,12 +316,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * This method validates the digitalID signature.
 	 *
 	 * @param jwsSignature the jws signature
+	 * @param index 
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
+	private void verifyDigitalIdSignature(String jwsSignature, int index) throws IdAuthenticationAppException {
 		if (!verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "verifyDigitalIdSignature", "Invalid certificate in biometrics>data>digitalId");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage(),
+							"request/biometrics/" + index + "/data/digitalId"));
 		}
 	}
 
@@ -952,7 +956,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.auth.signing-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -962,7 +966,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.auth.signature-verification-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -984,7 +988,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);
+		return true;
 	}
 	
 	/**

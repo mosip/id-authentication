@@ -30,8 +30,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES = "authrequest.received-time-adjustment.minutes";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS = "authrequest.received-time-allowed.seconds";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS = "authrequest.received-time-adjustment.seconds";
 	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";
 	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "ida.auth.mail.subject.template";
@@ -155,6 +155,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.external.auth.filter.classes.in.execution.order";
 	public static final String IDA_MOSIP_INTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.internal.auth.filter.classes.in.execution.order";
 	public static final String IDA_MOSIP_KYC_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.kyc.auth.filter.classes.in.execution.order";
-	
+  
 	public static final String USER_PREFFRRED_LANG_ATTRIBUTE_NAME="mosip.default.user-preferred-language-attribute";
+
+	public static final String BIO_SEGMENT_TIME_DIFF_ALLOWED = "authrequest.biometrics.allowed-segment-time-difference-in-seconds";
+
 }
