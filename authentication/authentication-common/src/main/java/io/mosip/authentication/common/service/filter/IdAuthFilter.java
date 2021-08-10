@@ -956,7 +956,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.auth.signing-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -966,7 +966,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.auth.signature-verification-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -988,7 +988,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);
+		return true;
 	}
 	
 	/**
