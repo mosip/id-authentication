@@ -22,7 +22,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class DeviceHotlistFilterImpl - implementation of auth filter for
@@ -70,9 +69,7 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 								.getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
 								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
 						HotlistIdTypes.DEVICE);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
+				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
 			}).findAny();
 			if(indexOpt.isPresent()) {
 				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
