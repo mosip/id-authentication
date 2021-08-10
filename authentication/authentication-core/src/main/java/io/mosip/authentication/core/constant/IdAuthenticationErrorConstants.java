@@ -32,8 +32,8 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_ID_MISMATCH("IDA-OTA-011", "Input Partner-ID does not match Partner-ID of OTP Request"),
 
 
-	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
-			"Please send the request within %s minutes"),
+	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s seconds",
+			"Please send the request within %s seconds"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "Please retry with correct VID"),
@@ -60,7 +60,11 @@ public enum IdAuthenticationErrorConstants {
 	VID_EXPIRED_DEACTIVATED_REVOKED("IDA-MLC-023", "VID is expired/deactivated"),
 	INPUT_MISMATCH("IDA-MLC-024", "%s of request is not matching with %s of biometrics"),
 	PARTNER_CERT_NOT_AVAILABLE("IDA-MLC-025", "Partner Certificate is not available"),
-	IDVID_DEACTIVATED_BLOCKED("IDA-MLC-022", "%s is blocked"),
+	IDVID_DEACTIVATED_BLOCKED("IDA-MLC-022", "%s is blocked"),	
+	INVALID_BIO_TIMESTAMP("IDA-MLC-030", "Biometrics captured after %s seconds of previous biometrics",
+			"Please capture biometrics within %s seconds of previous biometric capture"),
+	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics captured after %s seconds of previous biometrics",
+			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
