@@ -212,7 +212,7 @@ public class HotlistFilterImplTest {
 			assertTrue(filterException.getErrorCode()
 					.contentEquals(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode()));
 			assertTrue(filterException.getErrorText().contentEquals(String
-					.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), HotlistIdTypes.PARTNER_ID)));
+					.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), "partnerId")));
 			return;
 		}
 		fail();
