@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -57,13 +58,16 @@ public class PartnerIdHotlistFilterImpl implements IMosipAuthFilter {
 	 */
 	protected void isPartnerIdHotlisted(Optional<Object> metadata) throws IdAuthenticationFilterException {
 		if (Objects.nonNull(metadata) && metadata.isPresent()) {
-			Optional<Object> blockedOpt = metadata.filter(partnerId -> hotlistService.getHotlistStatus((String) partnerId, HotlistIdTypes.PARTNER_ID)
-					.getStatus().contentEquals(HotlistStatus.BLOCKED));
+			Optional<Object> blockedOpt = metadata
+					.filter(partnerId -> hotlistService
+							.getHotlistStatus(IdAuthSecurityManager.generateHashAndDigestAsPlainText(
+									((String) partnerId).getBytes()), HotlistIdTypes.PARTNER_ID)
+							.getStatus().contentEquals(HotlistStatus.BLOCKED));
 			if(blockedOpt.isPresent()) {
 				throw new IdAuthenticationFilterException(
 						IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-								HotlistIdTypes.PARTNER_ID));
+								"partnerId"));
 			}
 		}
 	}
