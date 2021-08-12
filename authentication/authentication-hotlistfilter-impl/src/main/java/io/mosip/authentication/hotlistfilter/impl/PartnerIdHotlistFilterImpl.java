@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -67,7 +68,7 @@ public class PartnerIdHotlistFilterImpl implements IMosipAuthFilter {
 				throw new IdAuthenticationFilterException(
 						IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-								"partnerId"));
+								IdAuthCommonConstants.PARTNER_ID));
 			}
 		}
 	}
@@ -80,7 +81,7 @@ public class PartnerIdHotlistFilterImpl implements IMosipAuthFilter {
 	 * @throws IdAuthenticationFilterException 
 	 */
 	private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
-		isPartnerIdHotlisted(authRequestDto.getMetadata("partnerId"));
+		isPartnerIdHotlisted(authRequestDto.getMetadata(IdAuthCommonConstants.PARTNER_ID));
 	}
 	
 }
