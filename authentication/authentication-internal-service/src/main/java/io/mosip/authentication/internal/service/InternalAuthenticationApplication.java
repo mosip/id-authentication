@@ -67,7 +67,6 @@ import io.mosip.authentication.internal.service.manager.InternalAuthSecurityMana
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
-import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_1_2;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.retry.RetryAspect;
 import io.mosip.kernel.core.retry.RetryConfig;
@@ -108,7 +107,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthExceptionHandler.class, AuthFacadeImpl.class, OTPAuthServiceImpl.class, IdInfoHelper.class, CbeffImpl.class,
 		IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
 		SwaggerConfig.class, AuditHelper.class, PinValidatorImpl.class, BioMatcherUtil.class, BioAPIFactory.class,
-		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, BioProviderImpl_V_1_2.class, OTPServiceImpl.class,
+		BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class, OTPServiceImpl.class,
 		OTPRequestValidator.class, InternalAuthSecurityManager.class, AuthTxnServiceImpl.class, AuthtypeStatusImpl.class,
 		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class, CryptomanagerUtils.class,
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, IdChangeEventHandlerServiceImpl.class, SignatureServiceImpl.class,
