@@ -1,4 +1,4 @@
-\c mosip_ida 
+\c mosip_ida
 
 \ir ddl/ida-auth_transaction.sql
 \ir ddl/ida-uin_auth_lock.sql
@@ -20,4 +20,9 @@
 \ir ddl/ida-batch_step_execution.sql
 \ir ddl/ida-batch_step_execution_context.sql
 \ir ddl/ida-fk.sql
-
+\ir ddl/ida-api_key_data.sql
+\ir ddl/ida-partner_data.sql
+\ir ddl/ida-partner_mapping.sql
+\ir ddl/ida-policy_data.sql
+\ir ddl/ida-misp_license_data.sql
+\ir ddl/ida-failed_message_store.sql
