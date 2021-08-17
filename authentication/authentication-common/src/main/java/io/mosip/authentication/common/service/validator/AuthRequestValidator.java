@@ -48,6 +48,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
+	private static final String DATE_TIME = "dateTime";
+
 	private static final String DATA_TIMESTAMP = "data/timestamp";
 
 	/** The Constant DIGITAL_ID. */
@@ -203,16 +205,21 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode(), new Object[] { allowedTimeDiffInSeconds },
 						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage());
 			}
-			long digitalIdTimestampDiffInSeconds = Duration.between(DateUtils.parseToLocalDateTime(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()),
-					DateUtils.parseToLocalDateTime(biometrics.get(index - 1).getData().getDigitalId().getDateTime()))
-					.toSeconds();
-			if (digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-						IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP);
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode(), new Object[] { allowedTimeDiffInSeconds },
-						IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage());
-			}
+			validateSuccessiveDigitalIdTimestamp(biometrics, errors, index, bioIdentityInfoDTO, allowedTimeDiffInSeconds);
+		}
+	}
+
+	protected void validateSuccessiveDigitalIdTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
+			BioIdentityInfoDTO bioIdentityInfoDTO, Long allowedTimeDiffInSeconds) {
+		long digitalIdTimestampDiffInSeconds = Duration.between(DateUtils.parseToLocalDateTime(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()),
+				DateUtils.parseToLocalDateTime(biometrics.get(index - 1).getData().getDigitalId().getDateTime()))
+				.toSeconds();
+		if (digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP);
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode(), new Object[] { allowedTimeDiffInSeconds },
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage());
 		}
 	}
 
@@ -235,12 +242,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private void validateBiometricTimestampAndDigitalIdTimestamp(int biometricSize, Errors errors, int index,
 			DataDTO dataDTO) {
-		// validating null check on bio timestamps and digitialId timestamps except last
-		// segment
+		
 		String paramName = String.format(BIO_PATH, index, DATA_TIMESTAMP);
-		if (index != biometricSize) {
-			nullCheckOnBioTimestampAndDigitalIdTimestamp(errors, index, dataDTO, paramName);
-		} else {
+		if (index == biometricSize) {
 			// validating future datetime check and other checks on last segment of bio and
 			// digitalId
 			validateReqTime(dataDTO.getTimestamp(), errors, paramName, this::biometricTimestampParser);
@@ -248,6 +252,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDigitalIdTimestamp(dataDTO.getDigitalId(), errors, String.format(BIO_PATH, index, DIGITAL_ID));
 			}
+		} else {
+			// validating null check on bio timestamps and digitialId timestamps except last
+			// segment
+			nullCheckOnBioTimestampAndDigitalIdTimestamp(errors, index, dataDTO, paramName);
 		}
 	}
 
@@ -260,7 +268,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 		// null check only on digitalId and digitalId timestamp
-		validateDigitalId(dataDTO.getDigitalId(), errors, String.format(BIO_PATH, i, DIGITAL_ID));
+		nullCheckDigitalIdAndTimestamp(dataDTO.getDigitalId(), errors, String.format(BIO_PATH, i, DIGITAL_ID));
 	}
 
 	/**
@@ -271,18 +279,18 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param field     the field
 	 */
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
-		final String dateTimeField = field + "dateTime";
-		if (validateDigitalId(digitalId, errors, field)) {
+		final String dateTimeField = field + DATE_TIME;
+		if (nullCheckDigitalIdAndTimestamp(digitalId, errors, field)) {
 			validateReqTime(digitalId.getDateTime(), errors, dateTimeField, this::biometricTimestampParser);
 		}
 
 	}
 
-	private boolean validateDigitalId(DigitalId digitalId, Errors errors, String field) {
+	protected boolean nullCheckDigitalIdAndTimestamp(DigitalId digitalId, Errors errors, String field) {
 		if (digitalId != null) {
 			if (digitalId.getDateTime() == null) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { field + "dateTime" },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { field + DATE_TIME },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				return false;
 			}
