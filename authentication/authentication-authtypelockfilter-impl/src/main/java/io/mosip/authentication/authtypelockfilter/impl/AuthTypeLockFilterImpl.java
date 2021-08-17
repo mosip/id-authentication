@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -73,7 +74,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus)
 			throws IdAuthenticationFilterException {
 		if (authTypeStatus.getLocked()) {
-			if (authRequestDTO.getRequestedAuth().isDemo()
+			if (AuthTypeUtil.isDemo(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())) {
 				throw new IdAuthenticationFilterException(
 						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
@@ -81,7 +82,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 								MatchType.Category.DEMO.getType()));
 			}
 
-			else if (authRequestDTO.getRequestedAuth().isBio()
+			else if (AuthTypeUtil.isBio(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
 				for (AuthType authType : BioAuthType.getSingleBioAuthTypes().toArray(s -> new AuthType[s])) {
 					if (authType.getType().equalsIgnoreCase(authTypeStatus.getAuthSubType())) {
@@ -97,7 +98,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 				}
 			}
 
-			else if (authRequestDTO.getRequestedAuth().isOtp()
+			else if (AuthTypeUtil.isOtp(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
 				throw new IdAuthenticationFilterException(
 						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
@@ -105,7 +106,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 								MatchType.Category.OTP.getType()));
 			}
 
-			else if (authRequestDTO.getRequestedAuth().isPin()
+			else if (AuthTypeUtil.isPin(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
 				throw new IdAuthenticationFilterException(
 						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),

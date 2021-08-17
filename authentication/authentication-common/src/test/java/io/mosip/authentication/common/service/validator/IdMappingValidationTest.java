@@ -42,7 +42,6 @@ import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -105,9 +104,6 @@ public class IdMappingValidationTest {
 	@Test
 	public void checkInvalidDemoAuth() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(false);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
@@ -161,9 +157,6 @@ public class IdMappingValidationTest {
 	@Test
 	public void TestInValidAdditionalFactorsinOtp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
 		request.setOtp(null);
 		authRequestDTO.setRequest(request);
@@ -177,9 +170,6 @@ public class IdMappingValidationTest {
 	@Test
 	public void TestInValidAdditionalFactorsinSPin() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setPin(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(null);
 		authRequestDTO.setRequest(request);
@@ -239,9 +229,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getFaceDetails() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
@@ -269,9 +256,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getIrisDetails() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
@@ -299,9 +283,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getBioFingerDetails() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
@@ -379,9 +360,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getOtpRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setOtp("123456");
 		authRequestDTO.setRequest(requestDTO);
@@ -390,9 +368,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getSPinRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setStaticPin("123456");
 		authRequestDTO.setRequest(requestDTO);
@@ -401,9 +376,6 @@ public class IdMappingValidationTest {
 
 	private AuthRequestDTO getAuthRequestDtoValue() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		/* Name */

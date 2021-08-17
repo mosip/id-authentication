@@ -61,13 +61,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -680,26 +681,26 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
 		try {
-			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
-					AuthTypeDTO.class);
-			if (authType.isDemo() && !isAllowedAuthType(MatchType.Category.DEMO.getType(), authPolicies)) {
+			AuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					AuthRequestDTO.class);
+			if (AuthTypeUtil.isDemo(authRequestDTO) && !isAllowedAuthType(MatchType.Category.DEMO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 								MatchType.Category.DEMO.name()));
 			}
 
-			if (authType.isBio()) {
+			if (AuthTypeUtil.isBio(authRequestDTO)) {
 				checkAllowedAuthTypeForBio(requestBody, authPolicies);
 			}
 
-			if (authType.isPin() && !isAllowedAuthType(MatchType.Category.SPIN.getType(), authPolicies)) {
+			if (AuthTypeUtil.isPin(authRequestDTO) && !isAllowedAuthType(MatchType.Category.SPIN.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 								MatchType.Category.SPIN.name()));
 			}
-			if (authType.isOtp() && !isAllowedAuthType(MatchType.Category.OTP.getType(), authPolicies)) {
+			if (AuthTypeUtil.isOtp(authRequestDTO) && !isAllowedAuthType(MatchType.Category.OTP.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
@@ -830,8 +831,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		try {
-			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
-					AuthTypeDTO.class);
+			AuthRequestDTO authRequestDto = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					AuthRequestDTO.class);
 			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
 					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
@@ -844,7 +845,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				bioTypeList.add("FINGER");
 			}
 			for (AuthPolicy mandatoryAuthPolicy : mandatoryAuthPolicies) {
-				validateAuthPolicy(requestBody, authType, bioTypeList, mandatoryAuthPolicy);
+				validateAuthPolicy(requestBody, authRequestDto, bioTypeList, mandatoryAuthPolicy);
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -860,24 +861,25 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param mandatoryAuthPolicy the mandatory auth policy
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateAuthPolicy(Map<String, Object> requestBody, AuthTypeDTO authType, List<String> bioTypeList,
+	private void validateAuthPolicy(Map<String, Object> requestBody, AuthRequestDTO authRequestDTO, List<String> bioTypeList,
 			AuthPolicy mandatoryAuthPolicy) throws IdAuthenticationAppException {
-		if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType()) && !authType.isOtp()) {
+		if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType()) && 
+				!AuthTypeUtil.isOtp(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.OTP.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())
-				&& !authType.isDemo()) {
+				&& !AuthTypeUtil.isDemo(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.DEMO.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())
-				&& !authType.isPin()) {
+				&& !AuthTypeUtil.isPin(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.SPIN.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-			if (!authType.isBio()) {
+			if (!AuthTypeUtil.isBio(authRequestDTO)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 								MatchType.Category.BIO.getType()));

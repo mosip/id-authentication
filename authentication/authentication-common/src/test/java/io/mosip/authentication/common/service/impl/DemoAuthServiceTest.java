@@ -48,7 +48,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -121,9 +120,6 @@ public class DemoAuthServiceTest {
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("426789089018");
 		RequestDTO requestDTO = new RequestDTO();
@@ -186,12 +182,6 @@ public class DemoAuthServiceTest {
 		fingerValue.setData(dataDTOFinger);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
 
 		RequestDTO requestDTO = new RequestDTO();
@@ -297,12 +287,6 @@ public class DemoAuthServiceTest {
 		fingerValue.setData(dataDTOFinger);
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
 		fingerIdentityInfoDtoList.add(fingerValue);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
@@ -360,12 +344,6 @@ public class DemoAuthServiceTest {
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequest = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequest.setRequestedAuth(authTypeDTO);
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		identityInfoDTO.setLanguage("fra");
@@ -449,12 +427,6 @@ public class DemoAuthServiceTest {
 	private AuthRequestDTO generateData() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthRequestDTO authRequest = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequest.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("IDA");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
@@ -494,12 +466,6 @@ public class DemoAuthServiceTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -547,9 +513,6 @@ public class DemoAuthServiceTest {
 		String individualId = "274390482564";
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -582,9 +545,6 @@ public class DemoAuthServiceTest {
 		String individualId = "274390482564";
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -631,9 +591,6 @@ public class DemoAuthServiceTest {
 		String individualId = "274390482564";
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
@@ -697,12 +654,6 @@ public class DemoAuthServiceTest {
 	@Test
 	public void TestgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPin(false);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -733,9 +684,6 @@ public class DemoAuthServiceTest {
 		String individualId = "274390482564";
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");

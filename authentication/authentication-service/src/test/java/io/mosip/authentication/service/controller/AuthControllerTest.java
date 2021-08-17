@@ -38,7 +38,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -108,12 +107,6 @@ public class AuthControllerTest {
 	public void showRequestValidator()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(true);
-		requestedAuth.setPin(true);
-		authReqDTO.setRequestedAuth(requestedAuth);
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
@@ -126,12 +119,6 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(true);
-		requestedAuth.setPin(true);
-		authReqDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
@@ -142,12 +129,6 @@ public class AuthControllerTest {
 	public void authenticationSuccess()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(true);
-		requestedAuth.setPin(true);
-		authReqDTO.setRequestedAuth(requestedAuth);
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true)).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567");
@@ -158,9 +139,6 @@ public class AuthControllerTest {
 	public void TestValidOtpRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
@@ -168,9 +146,6 @@ public class AuthControllerTest {
 	public void TestValidDemoRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
@@ -178,9 +153,6 @@ public class AuthControllerTest {
 	public void TestValidPinRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setPin(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567");
 	}
 
@@ -188,9 +160,6 @@ public class AuthControllerTest {
 	public void TestValidBioFingerPrintRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> bioIdentityList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();

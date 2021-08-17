@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 
 /**
  * Auth type interface
@@ -58,9 +57,7 @@ public interface AuthType {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
 
-	public default boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return false;
-	}
+	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO);
 
 	/**
 	 * Gets the match properties.
@@ -134,8 +131,7 @@ public interface AuthType {
 	 * @return true, if is auth type info available
 	 */
 	public default boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth)
-				.filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
+		return Optional.of(authReq).filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
 	}
 
 	/**
@@ -152,7 +148,7 @@ public interface AuthType {
 	 *
 	 * @return the auth type predicate
 	 */
-	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
+	public default Predicate<? super AuthRequestDTO> getAuthTypePredicate() {
 		return getAuthTypeImpl().getAuthTypePredicate();
 	}
 

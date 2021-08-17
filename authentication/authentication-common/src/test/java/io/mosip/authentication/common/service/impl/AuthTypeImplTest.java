@@ -15,7 +15,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 
@@ -33,13 +32,17 @@ public class AuthTypeImplTest {
 				return new AuthTypeImpl("address",
 						AuthType.setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
 								DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3,
-								DemoMatchType.PINCODE),
-						AuthTypeDTO::isDemo, "Address");
+								DemoMatchType.PINCODE), "Address");
 			}
 
 			@Override
 			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 				return true;
+			}
+
+			@Override
+			public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+				return false;
 			}
 		};
 

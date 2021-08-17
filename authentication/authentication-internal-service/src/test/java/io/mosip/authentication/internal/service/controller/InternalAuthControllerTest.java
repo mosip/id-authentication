@@ -40,7 +40,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -107,8 +106,6 @@ public class InternalAuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
-		AuthTypeDTO request = new AuthTypeDTO();
-		authReqestsDTO.setRequestedAuth(request);
 		authReqestsDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqestsDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
@@ -128,8 +125,6 @@ public class InternalAuthControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		authReqestDTO.setRequestedAuth(requestedAuth);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
@@ -149,8 +144,6 @@ public class InternalAuthControllerTest {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		authReqestDTO.setRequestedAuth(requestedAuth);
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		ResponseDTO response = new ResponseDTO();
@@ -168,8 +161,6 @@ public class InternalAuthControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		authReqestDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 		authController.authenticate(authReqestDTO, error);
@@ -180,8 +171,6 @@ public class InternalAuthControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		authReqestDTO.setRequestedAuth(requestedAuth);
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error);
@@ -191,9 +180,6 @@ public class InternalAuthControllerTest {
 	public void TestValidOtpRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
@@ -209,9 +195,6 @@ public class InternalAuthControllerTest {
 	public void TestValidDemoRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
@@ -226,9 +209,6 @@ public class InternalAuthControllerTest {
 	public void TestValidPinRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setPin(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		authRequestDTO.setIndividualId("5134256294");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
@@ -247,9 +227,6 @@ public class InternalAuthControllerTest {
 	public void TestValidBioFingerPrintRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> bioIdentityList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();

@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.indauth.dto;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlValue;
@@ -20,22 +19,19 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum EkycAuthType {
 
 	/** For demo */
-	DEMO("demo", AuthTypeDTO::isDemo),
+	DEMO("demo"),
 
 	/** For bio */
-	BIO("bio", AuthTypeDTO::isBio),
+	BIO("bio"),
 
 	/** For Pin */
-	PIN("pin", AuthTypeDTO::isPin),
+	PIN("pin"),
 
 	/** For OTP */
-	OTP("otp", AuthTypeDTO::isOtp);
+	OTP("otp");
 
 	/** The EkycAuthType type */
 	private String type;
-
-	/** The authTypePredicate */
-	private Predicate<AuthTypeDTO> authTypePredicate;
 
 	/**
 	 * Instantiates a new EkycAuthType.
@@ -43,9 +39,8 @@ public enum EkycAuthType {
 	 * @param type the type
 	 * @param type the authTypePredicate
 	 */
-	private EkycAuthType(String type, Predicate<AuthTypeDTO> authTypePredicate) {
+	private EkycAuthType(String type) {
 		this.type = type;
-		this.authTypePredicate = authTypePredicate;
 	}
 
 	/**
@@ -70,13 +65,5 @@ public enum EkycAuthType {
 
 	}
 
-	/**
-	 * Get the predicate to check the auth type
-	 * 
-	 * @return the predicate
-	 */
-	public Predicate<AuthTypeDTO> getAuthTypePredicate() {
-		return authTypePredicate;
-	}
 
 }

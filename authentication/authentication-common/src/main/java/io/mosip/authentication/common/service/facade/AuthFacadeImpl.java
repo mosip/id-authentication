@@ -27,6 +27,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -188,7 +189,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
 
 	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
-		return authRequestDTO.getRequestedAuth().isBio() || containsPhotoKYCAttribute(authRequestDTO);
+		return AuthTypeUtil.isBio(authRequestDTO) || containsPhotoKYCAttribute(authRequestDTO);
 	}
 
 	private boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
@@ -296,7 +297,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId, AuthTransactionBuilder authTxnBuilder)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getRequestedAuth().isBio()) {
+		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			AuthStatusInfo bioValidationStatus;
 			try {
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, token, idInfo, partnerId, isAuth);
@@ -341,7 +342,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId, AuthTransactionBuilder authTxnBuilder)
 			throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
-		if (authRequestDTO.getRequestedAuth().isDemo()) {
+		if (AuthTypeUtil.isDemo(authRequestDTO)) {
 			AuthStatusInfo demoValidationStatus;
 			try {
 				demoValidationStatus = demoAuthService.authenticate(authRequestDTO, token, idInfo, partnerId);
@@ -389,7 +390,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String token, boolean isAuth,
 			List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId, AuthTransactionBuilder authTxnBuilder)
 			throws IdAuthenticationBusinessException {
-		if (authRequestDTO.getRequestedAuth().isOtp()) {
+		if (AuthTypeUtil.isOtp(authRequestDTO)) {
 			AuthStatusInfo otpValidationStatus = null;
 			try {
 				otpValidationStatus = otpAuthService.authenticate(authRequestDTO, token, Collections.emptyMap(),
