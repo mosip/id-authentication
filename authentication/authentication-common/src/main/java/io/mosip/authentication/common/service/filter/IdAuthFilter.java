@@ -741,6 +741,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		OptionalInt nodeviceTypeIndex = IntStream.range(0, listBioInfo.size()).filter(i -> {
 			BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
 			return Objects.nonNull(bioIdInfoDto.getData())
+					&& Objects.nonNull(bioIdInfoDto.getData().getDigitalId())
 					&& StringUtils.isEmpty(bioIdInfoDto.getData().getDigitalId().getType());
 		}).findFirst();
 
