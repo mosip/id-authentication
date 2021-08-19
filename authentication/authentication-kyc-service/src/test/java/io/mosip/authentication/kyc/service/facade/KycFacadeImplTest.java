@@ -51,7 +51,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -159,9 +158,6 @@ public class KycFacadeImplTest {
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -247,9 +243,6 @@ public class KycFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(false);
-		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -267,7 +260,6 @@ public class KycFacadeImplTest {
 		request.setOtp("456789");
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequest(request);
-		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();

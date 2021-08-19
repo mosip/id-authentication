@@ -17,9 +17,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AuthRequestDTO extends BaseAuthRequestDTO implements ObjectWithMetadata {
 
-	/** The value for requestedAuth*/
-	private AuthTypeDTO requestedAuth;
-
 	/** The value for request*/
 	private RequestDTO request;
 

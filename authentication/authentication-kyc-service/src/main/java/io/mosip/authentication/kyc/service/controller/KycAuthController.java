@@ -17,15 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -111,10 +110,7 @@ public class KycAuthController {
 					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
 			kycAuthRequestDTO.setIndividualIdType(idType);
 			kycReqValidator.validateIdvId(kycAuthRequestDTO.getIndividualId(), idType, errors);
-			if(Optional.of(kycAuthRequestDTO)
-					.map(AuthRequestDTO::getRequestedAuth)
-					.filter(AuthTypeDTO::isBio)
-					.isPresent()) {
+			if(AuthTypeUtil.isBio(kycAuthRequestDTO)) {
 				kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
 			}
 			DataValidationUtil.validate(errors);

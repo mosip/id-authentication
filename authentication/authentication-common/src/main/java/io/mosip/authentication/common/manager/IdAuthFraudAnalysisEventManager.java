@@ -3,7 +3,6 @@ package io.mosip.authentication.common.manager;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OTP;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUESTEDAUTH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 
@@ -27,10 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -126,18 +126,18 @@ public class IdAuthFraudAnalysisEventManager {
 		} else if (contextSuffix.contentEquals(KYC)) {
 			authType = RequestType.KYC_AUTH_REQUEST.getRequestType();
 		} else if (contextSuffix.contentEquals("auth")) {
-			AuthTypeDTO authTypeDTO = mapper.convertValue(request.get(REQUESTEDAUTH), AuthTypeDTO.class);
+			AuthRequestDTO authRequestDto = mapper.convertValue(request, AuthRequestDTO.class);
 			List<String> authTypesList = new ArrayList<>(5);
-			if (authTypeDTO.isBio()) {
+			if (AuthTypeUtil.isBio(authRequestDto)) {
 				authTypesList.add("BIO-AUTH");
 			} 
-			if (authTypeDTO.isDemo()) {
+			if (AuthTypeUtil.isDemo(authRequestDto)) {
 				authTypesList.add(RequestType.DEMO_AUTH.getRequestType());
 			} 
-			if (authTypeDTO.isOtp()) {
+			if (AuthTypeUtil.isOtp(authRequestDto)) {
 				authTypesList.add(RequestType.OTP_AUTH.getRequestType());
 			} 
-			if (authTypeDTO.isPin()) {
+			if (AuthTypeUtil.isPin(authRequestDto)) {
 				authTypesList.add(RequestType.STATIC_PIN_AUTH.getRequestType());
 			}
 			authType = authTypesList.stream().collect(Collectors.joining(","));

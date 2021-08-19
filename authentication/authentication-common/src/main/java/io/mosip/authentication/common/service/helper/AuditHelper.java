@@ -5,7 +5,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +18,7 @@ import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -28,7 +28,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -153,19 +152,19 @@ public class AuditHelper {
 
 	private List<AuditModules> getAuditModules(AuthRequestDTO authRequestDTO) {
 		List<AuditModules> auditModules = new ArrayList<>(5);
-		if (Optional.ofNullable(authRequestDTO.getRequestedAuth()).filter(AuthTypeDTO::isOtp).isPresent()) {
+		if (AuthTypeUtil.isOtp(authRequestDTO)) {
 			auditModules.add(AuditModules.OTP_AUTH);
 		}
 
-		if (Optional.ofNullable(authRequestDTO.getRequestedAuth()).filter(AuthTypeDTO::isDemo).isPresent()) {
+		if (AuthTypeUtil.isDemo(authRequestDTO)) {
 			auditModules.add(AuditModules.DEMO_AUTH);
 		}
 
-		if (Optional.ofNullable(authRequestDTO.getRequestedAuth()).filter(AuthTypeDTO::isPin).isPresent()) {
+		if (AuthTypeUtil.isPin(authRequestDTO)) {
 			auditModules.add(AuditModules.PIN_AUTH);
 		}
 
-		if (Optional.ofNullable(authRequestDTO.getRequestedAuth()).filter(AuthTypeDTO::isBio).isPresent()) {
+		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			if (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getBiometrics() != null) {
 				if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 						.anyMatch(bioInfo -> BioAuthType.FGR_IMG.getType().equals(bioInfo.getBioType())

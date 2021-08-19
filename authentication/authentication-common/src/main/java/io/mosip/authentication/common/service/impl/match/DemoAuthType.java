@@ -1,15 +1,20 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.common.service.impl.DynamicDemoAuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -27,17 +32,15 @@ public enum DemoAuthType implements AuthType {
 	/** The address. */
 	ADDRESS("address",
 			AuthType.setOf(DemoMatchType.ADDR_LINE1, DemoMatchType.ADDR_LINE2, DemoMatchType.ADDR_LINE3,
-					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3, DemoMatchType.PINCODE),
-			AuthTypeDTO::isDemo, "Address"),
+					DemoMatchType.LOCATION1, DemoMatchType.LOCATION2, DemoMatchType.LOCATION3, DemoMatchType.PINCODE), "Address"),
 
 	/** The pi pri. */
 	PERSONAL_IDENTITY("personalIdentity",
 			AuthType.setOf(DemoMatchType.NAME, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
-					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
-			AuthTypeDTO::isDemo, "Personal Identity"),
+					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER), "Personal Identity"),
 
 	/** The full address. */
-	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address"),
+	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), "Full Address"),
 	
 	/** The dynamic. */
 	DYNAMIC("demographics", AuthType.setOf(DemoMatchType.DYNAMIC)){
@@ -50,6 +53,8 @@ public enum DemoAuthType implements AuthType {
 		
 	;
 
+
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	// @formatter:on
 	
@@ -67,9 +72,8 @@ public enum DemoAuthType implements AuthType {
 	 * @param authTypePredicate    the auth type predicate
 	 * @param displayName          the display name
 	 */
-	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes,
-			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
-		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, authTypePredicate, displayName);
+	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName) {
+		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, displayName);
 	}
 	
 	/**
@@ -121,5 +125,5 @@ public enum DemoAuthType implements AuthType {
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;
 	}
-
+	
 }

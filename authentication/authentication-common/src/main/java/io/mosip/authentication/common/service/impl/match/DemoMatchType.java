@@ -107,7 +107,7 @@ public enum DemoMatchType implements MatchType {
 		@Override
 		public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 			return req -> {
-				if(req.getDemographics() != null && req.getDemographics().getMetadata() != null) {
+				if(req != null && req.getDemographics() != null && req.getDemographics().getMetadata() != null) {
 					Map<String, Object> dynamicAttributes = req.getDemographics().getMetadata();
 					return IdInfoFetcher.getIdInfo(dynamicAttributes);
 				}
@@ -171,7 +171,7 @@ public enum DemoMatchType implements MatchType {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = (RequestDTO identityDTO) -> {
 			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
-			if(identityDTO.getDemographics() != null) {
+			if(identityDTO != null && identityDTO.getDemographics() != null) {
 				map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO.getDemographics()));
 			}
 			return map;

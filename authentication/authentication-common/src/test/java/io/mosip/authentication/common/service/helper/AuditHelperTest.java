@@ -32,7 +32,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -110,30 +109,12 @@ public class AuditHelperTest {
 		
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
-		AuthTypeDTO requestedAuth = authRequestDTO.getRequestedAuth();
-				
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(true);
-		requestedAuth.setOtp(false);
-		requestedAuth.setPin(false);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(false);
-		requestedAuth.setOtp(true);
-		requestedAuth.setPin(false);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
-		requestedAuth.setBio(false);
-		requestedAuth.setDemo(false);
-		requestedAuth.setOtp(false);
-		requestedAuth.setPin(true);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
-		requestedAuth.setBio(true);
-		requestedAuth.setDemo(false);
-		requestedAuth.setOtp(false);
-		requestedAuth.setPin(false);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 
 		when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(true);
@@ -157,12 +138,6 @@ public class AuditHelperTest {
 	
 	private AuthRequestDTO createAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		requestedAuth.setDemo(true);
-		requestedAuth.setOtp(true);
-		requestedAuth.setPin(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();

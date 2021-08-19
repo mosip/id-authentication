@@ -20,11 +20,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -137,7 +137,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
-				validateAuthType(authRequestDto.getRequestedAuth(), errors);
+				validateAuthType(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
@@ -149,7 +149,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
-			if (!errors.hasErrors() && authRequestDto.getRequestedAuth().isBio()) {
+			if (!errors.hasErrors() && AuthTypeUtil.isBio(authRequestDto)) {
 				validateBiometrics(authRequestDto.getRequest().getBiometrics(), authRequestDto.getTransactionID(), errors);
 			}
 		} else {
@@ -444,10 +444,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors      the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		AuthTypeDTO authType = authRequest.getRequestedAuth();
-		if (authType.isDemo()) {
+		if (AuthTypeUtil.isDemo(authRequest)) {
 			checkDemoAuth(authRequest, errors);
-		} else if (authType.isBio()) {
+		} else if (AuthTypeUtil.isBio(authRequest)) {
 			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 		}

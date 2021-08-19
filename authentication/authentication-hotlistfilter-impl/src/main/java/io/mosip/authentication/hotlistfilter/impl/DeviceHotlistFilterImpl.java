@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
@@ -87,7 +88,7 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 	 * @throws IdAuthenticationFilterException 
 	 */
 	private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
-		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
+		if (AuthTypeUtil.isBio(authRequestDto)) {
 			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics());
 		}
 	}

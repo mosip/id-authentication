@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -29,7 +30,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -269,24 +269,21 @@ public class AuthTransactionHelper {
 	 */
 	private void addAuthTypes(ObjectWithMetadata requestDTO, AuthTransactionBuilder authTransactionBuilder,
 			AuthRequestDTO authRequestDTO) {
-		AuthTypeDTO requestedAuth = authRequestDTO.getRequestedAuth();
-		if(requestedAuth != null) {
-			if(requestedAuth.isOtp()) {
-				authTransactionBuilder.addRequestType(RequestType.OTP_AUTH);
+		if(AuthTypeUtil.isOtp(authRequestDTO)) {
+			authTransactionBuilder.addRequestType(RequestType.OTP_AUTH);
+		}
+		if(AuthTypeUtil.isDemo(authRequestDTO)) {
+			authTransactionBuilder.addRequestType(RequestType.DEMO_AUTH);
+		}
+		if(AuthTypeUtil.isBio(authRequestDTO)) {
+			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
+				authTransactionBuilder.addRequestType(RequestType.FINGER_AUTH);
 			}
-			if(requestedAuth.isDemo()) {
-				authTransactionBuilder.addRequestType(RequestType.DEMO_AUTH);
+			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
+				authTransactionBuilder.addRequestType(RequestType.IRIS_AUTH);
 			}
-			if(requestedAuth.isBio()) {
-				if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
-					authTransactionBuilder.addRequestType(RequestType.FINGER_AUTH);
-				}
-				if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
-					authTransactionBuilder.addRequestType(RequestType.IRIS_AUTH);
-				}
-				if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
-					authTransactionBuilder.addRequestType(RequestType.FACE_AUTH);
-				}
+			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
+				authTransactionBuilder.addRequestType(RequestType.FACE_AUTH);
 			}
 		}
 		if(requestDTO instanceof KycAuthRequestDTO) {

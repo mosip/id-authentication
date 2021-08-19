@@ -65,9 +65,9 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 			
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUESTEDAUTH);
-			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), IdAuthCommonConstants.REQUESTEDAUTH));
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUEST);
+			errors.rejectValue(IdAuthCommonConstants.REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), IdAuthCommonConstants.REQUEST));
 		}
 
 	}

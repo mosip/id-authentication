@@ -40,7 +40,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils2;
@@ -102,9 +101,6 @@ public class OTPAuthServiceTest {
 	public void TestIDDataValidationException() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setOtp(true);
-		authreqdto.setRequestedAuth(authType);
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123455");
 		authreqdto.setRequest(request);
@@ -124,9 +120,6 @@ public class OTPAuthServiceTest {
 	@Test
 	public void TestValidValidateOtp() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setOtp(true);
-		authreqdto.setRequestedAuth(authType);
 		authreqdto.setTransactionID("1234567890");
 		authreqdto.setRequestTime("2019-02-18T18:17:48.923+05:30");
 		authreqdto.setIndividualId("123456");
@@ -350,9 +343,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setIndividualId("426789089018");
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setOtp(true);
-		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
@@ -381,9 +371,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setIndividualId("12345");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setOtp(true);
-		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",

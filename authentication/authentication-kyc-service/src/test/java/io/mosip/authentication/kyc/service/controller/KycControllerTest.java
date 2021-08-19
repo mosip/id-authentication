@@ -46,7 +46,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -156,11 +155,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(false);
-		authTypeDTO.setBio(false);
-		authTypeDTO.setDemo(false);
-		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -178,7 +172,6 @@ public class KycControllerTest {
 		request.setOtp("456789");
 		request.setDemographics(idDTO);
 		kycAuthReqDTO.setRequest(request);
-		kycAuthReqDTO.setRequestedAuth(authTypeDTO);
 		kycAuthReqDTO.setRequest(request);
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -229,9 +222,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(false);
-		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -249,7 +239,6 @@ public class KycControllerTest {
 		request.setOtp("456789");
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequest(request);
-		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
 
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
