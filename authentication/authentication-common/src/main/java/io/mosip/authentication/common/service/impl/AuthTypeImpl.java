@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -80,14 +79,6 @@ public class AuthTypeImpl implements AuthType {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAuthTypePredicate()
-	 */
-	@Override
-	public Predicate<? super AuthRequestDTO> getAuthTypePredicate() {
-		return this::isAuthTypeInfoAvailable;
-	}
-
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAuthTypeImpl()
 	 */

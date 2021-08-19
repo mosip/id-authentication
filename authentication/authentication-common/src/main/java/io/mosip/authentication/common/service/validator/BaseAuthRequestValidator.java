@@ -202,9 +202,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
 			Set<String> allowedAuthType) {
-
-		if (AuthTypeUtil.isBio(authRequestDTO)) {
-
 			List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
 
 			if (bioInfo == null || bioInfo.isEmpty() || bioInfo.stream().anyMatch(bioDto -> bioDto.getData() == null)) {
@@ -220,8 +217,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				validateBioData(bioData, errors);
 				validateCount(authRequestDTO, errors, bioData);
 			}
-		}
-
 	}
 
 	/**
@@ -957,7 +952,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				|| AuthTypeUtil.isBio(authRequestDto) 
 				|| AuthTypeUtil.isOtp(authRequestDto) 
 				|| AuthTypeUtil.isPin(authRequestDto))) {
-			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
 		}
@@ -1015,7 +1010,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			if (allowedAuthType.contains(MatchType.Category.DEMO.getType())) {
 				checkDemoAuth(requestDTO, errors);
 			} else {
-				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						new Object[] { MatchType.Category.DEMO.getType() },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());

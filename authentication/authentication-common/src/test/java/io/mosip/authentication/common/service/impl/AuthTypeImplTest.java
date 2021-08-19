@@ -49,7 +49,6 @@ public class AuthTypeImplTest {
 		assertEquals("Address", authType.getDisplayName());
 		assertEquals("address", authType.getType());
 		assertNotNull(authType.getAssociatedMatchTypes());
-		assertNotNull(authType.getAuthTypePredicate());
 		assertTrue(authType.isAuthTypeEnabled(new AuthRequestDTO(), null));
 		assertEquals("E", authType.getMatchingStrategy(new AuthRequestDTO(), null).get());
 		assertFalse(authType.isAssociatedMatchType(DemoMatchType.ADDR));

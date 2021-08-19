@@ -31,13 +31,13 @@ public enum PinMatchType implements MatchType {
 
 	/** Primary Pin Match Type. */
 	SPIN(IdaIdMapping.PIN, Category.SPIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
-		String staticPin = authReqDTO.getRequest().getStaticPin();
-		return Objects.nonNull(staticPin)? staticPin : "";
+		return (Objects.nonNull(authReqDTO.getRequest())  && 
+				Objects.nonNull(authReqDTO.getRequest().getStaticPin()) )? authReqDTO.getRequest().getStaticPin() : "";
 	}),
 	OTP(IdaIdMapping.OTP, Category.OTP, setOf(OtpMatchingStrategy.EXACT), 
 		authReqDTO -> {
-			String tOtp = authReqDTO.getRequest().getOtp();
-			return Objects.nonNull(tOtp)? tOtp : "";
+			return (Objects.nonNull(authReqDTO.getRequest())  && 
+					Objects.nonNull(authReqDTO.getRequest().getOtp()) )? authReqDTO.getRequest().getOtp() : "";
 		});
 
 	/** The allowed matching strategy. */

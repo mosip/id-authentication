@@ -1,16 +1,19 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 
 /**
  * Auth type interface
@@ -57,7 +60,54 @@ public interface AuthType {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
 
-	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO);
+	public default boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
+		Set<MatchType> associatedMatchTypes = getAssociatedMatchTypes();
+		return associatedMatchTypes.stream()
+				.anyMatch(matchType -> {
+					Supplier<Map<String, String>> reqInfoSupplier = () -> {
+						Map<String, String> info = null;
+						if(authRequestDTO != null) {
+							info = matchType.getReqestInfoFunction()
+									.apply(authRequestDTO);
+						}
+						return info == null ? Collections.emptyMap() : info;
+					};
+					Supplier<Map<String, List<IdentityInfoDTO>>> identityInfoSupplier = () -> {
+						Map<String, List<IdentityInfoDTO>> info = null;
+						if(authRequestDTO != null && authRequestDTO.getRequest() != null) {
+							info = matchType.getIdentityInfoFunction()
+																	.apply(authRequestDTO.getRequest());
+						}
+						return info == null ? Collections.emptyMap() : info;
+					};
+					return hasRequestData(reqInfoSupplier.get()) ||
+							hasIdentityData(identityInfoSupplier.get());
+				});
+	}
+	
+	private static boolean hasRequestData(Map<String, String> identityData) {
+		return identityData != null &&
+				!identityData.isEmpty() && 
+				identityData.values()
+					.stream()
+					.anyMatch(val -> {
+						return Objects.nonNull(val) && 
+								(!(val instanceof String) || !((String)val).isEmpty());
+					}
+			);
+	}
+
+	private static boolean hasIdentityData(Map<String, List<IdentityInfoDTO>> identityData) {
+		return identityData != null &&
+				!identityData.isEmpty() && 
+				identityData.values()
+					.stream()
+					.anyMatch(val -> {
+						return Objects.nonNull(val) && 
+								(!(val instanceof List) || !((List)val).isEmpty());
+					}
+			);
+	}
 
 	/**
 	 * Gets the match properties.
@@ -131,7 +181,11 @@ public interface AuthType {
 	 * @return true, if is auth type info available
 	 */
 	public default boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
+		return Optional.of(authReq)
+				.filter(
+						authRequestDto -> this.isAuthTypeInfoAvailable(authRequestDto)
+						)
+				.isPresent();
 	}
 
 	/**
@@ -141,15 +195,6 @@ public interface AuthType {
 	 */
 	public default Set<MatchType> getAssociatedMatchTypes() {
 		return Collections.unmodifiableSet(getAuthTypeImpl().getAssociatedMatchTypes());
-	}
-
-	/**
-	 * Gets the auth type predicate.
-	 *
-	 * @return the auth type predicate
-	 */
-	public default Predicate<? super AuthRequestDTO> getAuthTypePredicate() {
-		return getAuthTypeImpl().getAuthTypePredicate();
 	}
 
 	public default String getDisplayName(AuthRequestDTO authReq, IdInfoFetcher helper) {

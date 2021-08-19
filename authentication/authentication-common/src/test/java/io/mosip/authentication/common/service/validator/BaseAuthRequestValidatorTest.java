@@ -298,7 +298,7 @@ public class BaseAuthRequestValidatorTest {
 	 * Test validate bio details if bio info is not null but bio info is empty.
 	 */
 	@Test
-	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty() {
+	public void testValidateBioDetails_IfBioInfoIsNotNullButBioTypeIsEmpty() {
 
 		authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
@@ -330,7 +330,7 @@ public class BaseAuthRequestValidatorTest {
 		Set<String> allowedAuthtype = new HashSet<>();
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
-		assertFalse(error.hasErrors());
+		assertTrue(error.hasErrors());
 
 	}
 

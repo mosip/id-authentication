@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
@@ -21,20 +20,7 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
  */
 public enum PinAuthType implements AuthType {
 
-	SPIN("pin", AuthType.setOf(PinMatchType.SPIN), "PIN") {
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
-		 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
-		 * AuthRequestDTO)
-		 */
-		@Override
-		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-			return Objects.nonNull(authRequestDTO.getRequest()) &&
-					Objects.nonNull(authRequestDTO.getRequest().getStaticPin());
-		}
-	},
+	SPIN("pin", AuthType.setOf(PinMatchType.SPIN), "PIN"),
 	OTP("otp", AuthType.setOf(PinMatchType.OTP), "OTP") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
@@ -47,18 +33,6 @@ public enum PinAuthType implements AuthType {
 			return valueMap;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
-		 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
-		 * AuthRequestDTO)
-		 */
-		@Override
-		public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-			return Objects.nonNull(authRequestDTO.getRequest())
-					&& Objects.nonNull(authRequestDTO.getRequest().getOtp());
-		}
 	};
 
 	private AuthTypeImpl authTypeImpl;

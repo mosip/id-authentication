@@ -12,9 +12,8 @@ import java.util.stream.Stream;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -192,7 +191,7 @@ public enum BioAuthType implements AuthType {
 
 		@Override
 		public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-			return isAuthTypeInfoAvailable(authReq) && hasMultiModalBiometrics(authReq, helper);
+			return AuthTypeUtil.isBio(authReq) && hasMultiModalBiometrics(authReq, helper);
 		}
 		
 		@Override
@@ -329,7 +328,7 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-		return isAuthTypeInfoAvailable(authReq)
+		return AuthTypeUtil.isBio(authReq)
 				&& countPredicate.test(getBioIdentityValuesCount(authReq, helper).intValue())
 				// here, it is assumed that MULTI_MODAL.isAuthTypeEnabled has been overridden,
 				// otherwise will result in recursion
@@ -351,20 +350,6 @@ public enum BioAuthType implements AuthType {
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String languageInfoFetcher,
 			Environment environment, IdInfoFetcher idInfoFetcher) {
 		return idInfoFetcher.getMatchingThreshold(getThresholdConfigKey().toLowerCase().concat(SINGLE_THRESHOLD));
-	}
-
-	/*
-	 * Checks is Authtype information available based on authreqest
-	 */
-	@Override
-	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		Set<String> typesLower = Stream.of(getTypes()).map(String::toLowerCase)
-			.collect(Collectors.toSet());
-		return Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getBiometrics)
-				.flatMap(list -> list.stream().map(BioIdentityInfoDTO::getData)
-						.filter(bioInfo -> typesLower.contains(bioInfo.getBioType().toLowerCase())).findAny())
-				.isPresent();
 	}
 
 	private static String getFingerprintName() {

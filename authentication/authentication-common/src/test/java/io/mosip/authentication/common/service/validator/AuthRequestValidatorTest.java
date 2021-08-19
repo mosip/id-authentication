@@ -1196,11 +1196,6 @@ public class AuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
-		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		data.setBioValue("adsadas");
-		data.setBioType("Face");
-		bioIdentityDto.setData(data);
 		
 		BioIdentityInfoDTO bioIdentityDto1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
@@ -1208,7 +1203,6 @@ public class AuthRequestValidatorTest {
 		data1.setBioType("Face");
 		bioIdentityDto1.setData(data1);
 		biometrics.add(bioIdentityDto1);
-		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
 
 		authRequestDTO.setConsentObtained(true);

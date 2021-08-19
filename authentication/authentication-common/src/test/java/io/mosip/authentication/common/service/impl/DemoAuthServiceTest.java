@@ -409,13 +409,13 @@ public class DemoAuthServiceTest {
 		infoDTO.setLanguage("fre");
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
-		entityInfo.put("firstName", identityInfoList);
+		entityInfo.put("fullName", identityInfoList);
 		//Mockito.when(IdInfoFetcher.getIdInfo(Mockito.anyMap())).thenReturn(entityInfo);
 		AuthRequestDTO authRequestDTO = generateData();
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
-		list.add(new IdentityInfoDTO("en", "mosip"));
+		list.add(new IdentityInfoDTO("fre", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		idInfo.put("name", list);
+		idInfo.put("fullName", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		AuthStatusInfo authStatusInfovalue = new AuthStatusInfo();

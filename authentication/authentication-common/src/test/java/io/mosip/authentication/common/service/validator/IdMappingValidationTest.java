@@ -102,12 +102,12 @@ public class IdMappingValidationTest {
 	}
 
 	@Test
-	public void checkInvalidDemoAuth() {
+	public void checkNoDemoAuth() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(false);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
-		assertTrue(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class IdMappingValidationTest {
 	}
 
 	@Test
-	public void TestInValidAdditionalFactorsinOtp() {
+	public void TestNoValidAdditionalFactorsinOtp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setOtp(null);
@@ -164,11 +164,11 @@ public class IdMappingValidationTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				errors);
-		assertTrue(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
-	public void TestInValidAdditionalFactorsinSPin() {
+	public void TestNoValidAdditionalFactorsinSPin() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(null);
@@ -178,7 +178,7 @@ public class IdMappingValidationTest {
 		Mockito.when(pinValidator.validatePin(Mockito.anyString())).thenReturn(false);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				errors);
-		assertTrue(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test

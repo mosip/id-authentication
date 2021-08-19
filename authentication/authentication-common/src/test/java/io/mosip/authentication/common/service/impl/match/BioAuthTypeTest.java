@@ -45,6 +45,7 @@ public class BioAuthTypeTest {
 		
 		DataDTO data = new DataDTO();
 		data.setBioType(bioType);
+		data.setBioSubType("UNKNOWN");
 		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 		biometrics.add(bioIdentity);
 		
@@ -119,11 +120,13 @@ public class BioAuthTypeTest {
 		
 		DataDTO data = new DataDTO();
 		data.setBioType("Finger");
+		data.setBioSubType("UNKNOWN");
 		BioIdentityInfoDTO bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 		biometrics.add(bioIdentity);
 		
 		data = new DataDTO();
 		data.setBioType("Iris");
+		data.setBioSubType("UNKNOWN");
 		bioIdentity = new BioIdentityInfoDTO(data, "", "", "", null);
 			biometrics.add(bioIdentity);
 		

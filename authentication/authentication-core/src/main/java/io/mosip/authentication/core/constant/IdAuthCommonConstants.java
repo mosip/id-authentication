@@ -55,8 +55,6 @@ public final class IdAuthCommonConstants {
 
 	public static final String UTF_8 = "utf-8";
 
-	public static final String REQUESTEDAUTH = "requestedAuth";
-
 	public static final String UNKNOWN = "UNKNOWN";
 	
 	public static final String UNKNOWN_BIO = "UNKNOWN";

@@ -215,6 +215,9 @@ public enum BioMatchType implements MatchType {
 	 * @return the id info from bio id info
 	 */
 	private Map<String, List<IdentityInfoDTO>> getIdInfoFromBioIdInfo(List<BioIdentityInfoDTO> biometrics) {
+		if(biometrics == null) {
+			return Collections.emptyMap();
+		}
 		AtomicInteger count = new AtomicInteger(0);
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
