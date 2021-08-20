@@ -23,4 +23,7 @@ public class KycResponseDTO {
 
 	/** The Variable to hold value of identity */
 	private String identity;
+	
+	/** The session key. */
+	private String sessionKey;
 }
