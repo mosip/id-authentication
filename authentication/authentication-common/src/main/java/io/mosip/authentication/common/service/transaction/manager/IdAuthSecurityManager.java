@@ -397,7 +397,7 @@ public class IdAuthSecurityManager {
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		Tuple2<byte[], byte[]> encryptedData = encrypt(publicKey, data);
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.encodeBase64(encryptedData.getT1()), CryptoUtil.encodeBase64(encryptedData.getT2()), CryptoUtil.encodeBase64(certificateThumbprint));
+		return Tuples.of(CryptoUtil.encodeBase64(encryptedData.getT1()), CryptoUtil.encodeBase64(encryptedData.getT2()), digestAsPlainText(certificateThumbprint));
 	}
 
 	/**
