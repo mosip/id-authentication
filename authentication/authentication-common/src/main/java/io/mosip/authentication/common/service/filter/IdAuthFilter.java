@@ -582,7 +582,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		byte[] currentHash = getHash(bdb);
 		
-		byte[] finalConcat = contatBytes(previousHash, currentHash);
+		byte[] finalConcat = concatBytes(previousHash, currentHash);
 		
 		byte[] finalHash = getHash(finalConcat);
 		String finalHashDigest = digest(finalHash);
@@ -603,7 +603,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param currentHash the current hash
 	 * @return the byte[]
 	 */
-	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
+	private static byte[] concatBytes(byte[] previousHash, byte[] currentHash) {
 		byte[] finalHash = new byte[currentHash.length + previousHash.length];
 		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
 		System.arraycopy(currentHash, 0, finalHash, previousHash.length, currentHash.length);
