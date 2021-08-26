@@ -582,9 +582,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		byte[] currentHash = getHash(bdb);
 		
-		byte[] finalHash = contatBytes(previousHash, currentHash);
+		byte[] finalConcat = contatBytes(previousHash, currentHash);
 		
-		String finalHashDigest = digest(getHash(finalHash));
+		byte[] finalHash = getHash(finalConcat);
+		String finalHashDigest = digest(finalHash);
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
