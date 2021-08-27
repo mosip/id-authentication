@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -46,6 +47,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * 
  */
 @Component
+@Primary
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String DATE_TIME = "dateTime";
