@@ -40,7 +40,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 

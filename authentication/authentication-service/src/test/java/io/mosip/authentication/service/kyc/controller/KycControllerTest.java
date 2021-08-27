@@ -55,7 +55,6 @@ import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.util.IdTypeUtil;
-import io.mosip.authentication.service.kyc.controller.KycAuthController;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;

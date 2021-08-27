@@ -48,7 +48,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
-import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 
 /**

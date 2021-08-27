@@ -66,7 +66,6 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
-import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
