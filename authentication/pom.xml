@@ -65,7 +65,6 @@
 		<module>authentication-hotlistfilter-impl</module>
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
-		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
 	</modules>
 
