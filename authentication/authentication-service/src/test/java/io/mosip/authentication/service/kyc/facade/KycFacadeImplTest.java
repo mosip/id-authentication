@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.authentication.kyc.service.facade;
+package io.mosip.authentication.service.kyc.facade;
 
 import static org.junit.Assert.assertNotNull;
 

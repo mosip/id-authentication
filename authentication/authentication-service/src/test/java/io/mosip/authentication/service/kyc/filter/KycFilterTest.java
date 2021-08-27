@@ -1,4 +1,4 @@
-package io.mosip.authentication.kyc.service.filter;
+package io.mosip.authentication.service.kyc.filter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

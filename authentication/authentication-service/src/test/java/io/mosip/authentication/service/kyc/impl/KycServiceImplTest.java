@@ -1,4 +1,4 @@
-package io.mosip.authentication.kyc.service.impl;
+package io.mosip.authentication.service.kyc.impl;
 
 import static org.junit.Assert.assertNotNull;
 

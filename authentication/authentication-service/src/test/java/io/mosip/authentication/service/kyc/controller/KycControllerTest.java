@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.authentication.kyc.service.controller;
+package io.mosip.authentication.service.kyc.controller;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;

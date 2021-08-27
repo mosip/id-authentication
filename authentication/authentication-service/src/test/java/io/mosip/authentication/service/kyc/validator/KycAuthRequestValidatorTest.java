@@ -1,4 +1,4 @@
-package io.mosip.authentication.kyc.service.validator;
+package io.mosip.authentication.service.kyc.validator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
