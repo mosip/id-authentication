@@ -8,9 +8,12 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -81,8 +84,6 @@ public class WebSubHelper {
 	@Value("${"+ IDA_WEBSUB_PUBLISHER_URL +"}")
 	private String publisherUrl;
 	
-	/** The failed message sync url. */
-	@Value("${"+ IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL +"}")
 	private String failedMessageSyncUrl;
 	
 	/** The subscription client. */
@@ -96,6 +97,14 @@ public class WebSubHelper {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
+	private Environment env;
+	
+	@PostConstruct
+	public void postConstruct() {
+		failedMessageSyncUrl = env.getProperty(IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL);	
+	}
 
 	/**
 	 * Inits the subscriber.
@@ -245,24 +254,29 @@ public class WebSubHelper {
 	 */
 	@WithRetry
 	public List<FailedMessage> getFailedMessages(String topic, String callbackUrl, int messageCount, String secret, String timestamp, int pageIndex) {
-		try {
-		FailedContentRequest failedContentRequest = new FailedContentRequest();
-		failedContentRequest.setHubURL(failedMessageSyncUrl);
-		failedContentRequest.setTopic(topic);
-		failedContentRequest.setCallbackURL(callbackUrl);
-		failedContentRequest.setMessageCount(messageCount);
-		failedContentRequest.setSecret(secret);
-		failedContentRequest.setTimestamp(timestamp);
-		failedContentRequest.setPaginationIndex(pageIndex);
-		FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
-		List<?> messages = failedContent.getFailedcontents();
-		return messages == null ? List.of() : messages.stream().map(obj -> {
-			FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
-			failedMessage.setTopic(topic);
-			return failedMessage;
-		}).collect(Collectors.toList());
-		} catch(Exception e) {
-			throw new IdAuthRetryException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		if(failedMessageSyncUrl != null) {
+			try {
+			FailedContentRequest failedContentRequest = new FailedContentRequest();
+			failedContentRequest.setHubURL(failedMessageSyncUrl);
+			failedContentRequest.setTopic(topic);
+			failedContentRequest.setCallbackURL(callbackUrl);
+			failedContentRequest.setMessageCount(messageCount);
+			failedContentRequest.setSecret(secret);
+			failedContentRequest.setTimestamp(timestamp);
+			failedContentRequest.setPaginationIndex(pageIndex);
+			FailedContentResponse failedContent = subscriptionExtendedClient.getFailedContent(failedContentRequest);
+			List<?> messages = failedContent.getFailedcontents();
+			return messages == null ? List.of() : messages.stream().map(obj -> {
+				FailedMessage failedMessage = mapper.convertValue(obj, FailedMessage.class);
+				failedMessage.setTopic(topic);
+				return failedMessage;
+			}).collect(Collectors.toList());
+			} catch(Exception e) {
+				throw new IdAuthRetryException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			}
+		} else {
+			logger.info("websub.failed.messages.sync.url property is not configured. Returning empty falied messages list.");
+			return List.of();
 		}
 	}
 	
