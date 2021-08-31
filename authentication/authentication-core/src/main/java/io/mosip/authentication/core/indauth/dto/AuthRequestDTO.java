@@ -26,9 +26,6 @@ public class AuthRequestDTO extends BaseAuthRequestDTO implements ObjectWithMeta
 	/** The value for requestHMAC*/
 	private String requestHMAC;
 	
-	/** The value for keyIndex*/
-	private String keyIndex;
-	
 	/** The value for requestSessionKey*/
 	private String requestSessionKey;
 	

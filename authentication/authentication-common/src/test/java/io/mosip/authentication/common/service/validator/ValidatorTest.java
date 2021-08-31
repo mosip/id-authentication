@@ -838,7 +838,6 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
@@ -876,7 +875,6 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
@@ -915,7 +913,6 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
