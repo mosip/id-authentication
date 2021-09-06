@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -196,9 +197,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private void validateSuccessiveBioSegmentTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
 			BioIdentityInfoDTO bioIdentityInfoDTO) {
 		if (!errors.hasErrors() && index != 0) {
-			long bioTimestampDiffInSeconds = Duration.between(DateUtils.parseToLocalDateTime(bioIdentityInfoDTO.getData().getTimestamp()),
-					DateUtils.parseToLocalDateTime(biometrics.get(index - 1).getData().getTimestamp()))
-					.toSeconds();
+			LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+					this.biometricTimestampParser(bioIdentityInfoDTO.getData().getTimestamp()));
+			LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+					this.biometricTimestampParser((biometrics.get(index - 1).getData().getTimestamp())));
+			long bioTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
 			Long allowedTimeDiffInSeconds = env.getProperty(IdAuthConfigKeyConstants.BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L);
 			if (bioTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
@@ -213,9 +216,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	protected void validateSuccessiveDigitalIdTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
 			BioIdentityInfoDTO bioIdentityInfoDTO, Long allowedTimeDiffInSeconds) {
-		long digitalIdTimestampDiffInSeconds = Duration.between(DateUtils.parseToLocalDateTime(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()),
-				DateUtils.parseToLocalDateTime(biometrics.get(index - 1).getData().getDigitalId().getDateTime()))
-				.toSeconds();
+		LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+				this.biometricTimestampParser(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()));
+		LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+				this.biometricTimestampParser(biometrics.get(index - 1).getData().getDigitalId().getDateTime()));
+		long digitalIdTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
 		if (digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP);
