@@ -133,6 +133,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STATUS_UPDATE_TOPIC = "ida-topic-credential-status-update";
 	public static final String AUTH_TYPE_STATUS_ACK_TOPIC = "ida-topic-auth-type-status-update-acknowledge";
 	public static final String AUTH_TRANSACTION_STATUS_TOPIC = "ida-topic-auth-transaction-status";
+	public static final String AUTH_ANANYMOUS_PROFILE_TOPIC = "ida-topic-auth-ananymous-profile";
 	public static final String AUTH_FRAUD_ANALYSIS_TOPIC = "ida-topic-fraud-analysis";
 
 	public static final String IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS = "ida-max-credential-pull-window-days";
