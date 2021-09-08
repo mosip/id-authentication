@@ -12,22 +12,22 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.impl.idevent.AnanymousAuthenticationProfile;
+import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticationProfile;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
- * The Class AuthAnanymouseEventPublisher.
+ * The Class AuthAnonymouseEventPublisher.
  * 
  * @author Loganathan Sekar
  */
 @Component
-public class AuthAnanymouseEventPublisher extends BaseWebSubEventsInitializer {
+public class AuthAnonymouseEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(AuthAnanymouseEventPublisher.class);
+	private static final Logger logger = IdaLogger.getLogger(AuthAnonymouseEventPublisher.class);
 
 	/** The credential status update topic. */
 	@Value("${" + AUTH_ANANYMOUS_PROFILE_TOPIC + "}")
@@ -69,7 +69,7 @@ public class AuthAnanymouseEventPublisher extends BaseWebSubEventsInitializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void publishEvent(AnanymousAuthenticationProfile credentialStatusUpdateEvent) {
+	public void publishEvent(AnonymousAuthenticationProfile credentialStatusUpdateEvent) {
 		EventModel eventModel = webSubHelper.createEventModel(authAnanymousProfileTopic);
 		TypeReference<Map<String,Object>> typeReference = new TypeReference<Map<String, Object>>() {};
 		eventModel.getEvent().setData((java.util.Map<String, Object>) objectMapper.convertValue(credentialStatusUpdateEvent, typeReference));

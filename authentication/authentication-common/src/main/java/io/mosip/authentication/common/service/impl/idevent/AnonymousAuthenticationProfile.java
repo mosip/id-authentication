@@ -12,13 +12,13 @@ import lombok.Data;
  */
 
 @Data
-public class AnanymousAuthenticationProfile {
+public class AnonymousAuthenticationProfile {
 	
 	/** The id. */
 	private String partnerName;
 	
 	/** The timestamp. */
-	private LocalDate date;
+	private String date;
 	
 	/** The transaction id. */
 	private String yearOfBirth;

@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.impl.AuthAnonymousProfileServiceImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
@@ -45,6 +46,7 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
+import io.mosip.authentication.common.service.websub.impl.AuthAnonymouseEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
@@ -103,7 +105,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, DemoNormalizer.class, DemoMatcherUtil.class,
-		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class })
+		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class,
+		AuthAnonymousProfileServiceImpl.class, AuthAnonymouseEventPublisher.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))

@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-@Table(name = "ananymous_profile", schema = "ida")
+@Table(name = "anonymous_profile", schema = "ida")
 @Entity
-public class AnanymousProfileEntity {
+public class AnonymousProfileEntity {
 	
 	@Id
 	@NotNull
