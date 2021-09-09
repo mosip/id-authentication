@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Data;
