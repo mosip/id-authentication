@@ -23,6 +23,7 @@ import io.mosip.authentication.common.service.entity.AnonymousProfileEntity;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticationProfile;
+import io.mosip.authentication.common.service.impl.idevent.BiometricProfileInfo;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
@@ -41,6 +42,21 @@ import io.mosip.kernel.core.util.DateUtils;
 @Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
+	private static final String BIO_TYPE = "bioType";
+
+
+	private static final String BIO_SUB_TYPE = "bioSubType";
+
+
+	private static final String DIGITAL_ID = "digitalId";
+
+
+	private static final String BIOMETRICS = "biometrics";
+
+
+	private static final String REQUEST = "request";
+
+
 	private static final String AUTH_STATUS = "authStatus";
 
 
@@ -114,7 +130,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		
 		Map<String, List<IdentityInfoDTO>> idInfo = getMapOfIdentityInfoDTOList(responseMetadata);
 
-		if(idInfo != null) {
+		if(idInfo != null && !idInfo.isEmpty()) {
 			setYearOfBirth(ananymousProfile, idInfo);
 			
 			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttrib);
@@ -134,7 +150,8 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 				}
 			}
 			
-//			ananymousProfile.setBiometricInfo(biometricInfo);
+			List<BiometricProfileInfo> biometricInfos = getBiometricInfos(requestBody);
+			ananymousProfile.setBiometricInfo(biometricInfos);
 
 		}
 		
@@ -151,6 +168,49 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return ananymousProfile;
 	}
 
+	private List<BiometricProfileInfo> getBiometricInfos(Map<String, Object> requestBody) {
+		Object requestObj = requestBody.get(REQUEST);
+		if(requestObj instanceof Map) {
+			Object biometricsObj = ((Map<String, Object>) requestObj).get(BIOMETRICS);
+			if(biometricsObj instanceof List) {
+				return ((List<Object>) biometricsObj).stream()
+												.filter(obj -> obj instanceof Map)
+												.map(obj -> ((Map<String, Object>)obj).get("data"))
+												.filter(obj -> obj instanceof Map)
+												.map(obj -> (Map<String, Object>)obj)
+												.map(map -> getBiometricProfileInfo(map))
+												.collect(Collectors.toList());
+				
+			}
+			
+		}
+		return List.of();
+	}
+
+	private BiometricProfileInfo getBiometricProfileInfo(Map<String, Object> bioDataMap) {
+		BiometricProfileInfo biometricProfileInfo = new BiometricProfileInfo();
+		Object bioTypeObj = bioDataMap.get(BIO_TYPE);
+		if(bioTypeObj instanceof String) {
+			biometricProfileInfo.setType((String) bioTypeObj);
+		}
+		
+		Object bioSubType = bioDataMap.get(BIO_SUB_TYPE);
+		if(bioSubType instanceof String) {
+			biometricProfileInfo.setSubtype((String) bioSubType);
+		}
+		
+		Object digitalIdObj = bioDataMap.get(DIGITAL_ID);
+		if(digitalIdObj instanceof Map) {
+			try {
+				biometricProfileInfo.setDigitalId(mapper.writeValueAsString(digitalIdObj));
+			} catch (JsonProcessingException e) {
+				logger.error("Error fetching %s for anonymous profile: %s", DIGITAL_ID, ExceptionUtils.getStackTrace(e));
+			}
+		}
+		
+		return biometricProfileInfo;
+	}
+
 	private void setYearOfBirth(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo) {
 		// Year of Birth is Mandatory, rest are optional and will be set if fetched as
 		// part of authentication / kyc request processing
@@ -161,8 +221,9 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			String langCode) {
 		Optional<String> genderInfo = getEntityInfoString(DemoMatchType.GENDER, idInfo,langCode);
 		if(genderInfo.isEmpty()) {
-			getEntityInfoString(DemoMatchType.GENDER, idInfo).ifPresent(ananymousProfile::setGender);
+			genderInfo = getEntityInfoString(DemoMatchType.GENDER, idInfo);
 		}
+		genderInfo.ifPresent(ananymousProfile::setGender);
 	}
 
 	private String getProfileDataLangCode(Map<String, List<IdentityInfoDTO>> idInfo, String preferredLang) {
@@ -201,14 +262,18 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 
 	private Map<String, List<IdentityInfoDTO>> getMapOfIdentityInfoDTOList(Map<String, Object> responseMetadata) {
 		Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
-		return mapOfObject.entrySet()
-						.stream()
-						.filter(entry -> entry.getValue() instanceof List)
-						.collect(Collectors.toMap(Entry::getKey, 
-								entry -> ((List<Object>)entry.getValue())
-												.stream()
-												.map(elem -> mapper.convertValue(elem, IdentityInfoDTO.class))
-												.collect(Collectors.toList())));
+		if(mapOfObject != null) {
+			return mapOfObject.entrySet()
+							.stream()
+							.filter(entry -> entry.getValue() instanceof List)
+							.collect(Collectors.toMap(Entry::getKey, 
+									entry -> ((List<Object>)entry.getValue())
+													.stream()
+													.map(elem -> mapper.convertValue(elem, IdentityInfoDTO.class))
+													.collect(Collectors.toList())));
+		}
+		
+		return Map.of();
 	}
 
 	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
