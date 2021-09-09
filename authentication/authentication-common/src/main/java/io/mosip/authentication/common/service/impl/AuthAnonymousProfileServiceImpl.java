@@ -47,6 +47,9 @@ import io.mosip.kernel.core.util.DateUtils;
 @Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
+	private static final String PREFERRED_LANGUAGE_MAPPING_JSON_ATTRIBUTE_KEY = "preferredLanguage";
+
+
 	private static final String BIO_TYPE = "bioType";
 
 
@@ -90,9 +93,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	
 	@Value("${" + IdAuthConfigKeyConstants.DATE_TIME_PATTERN + "}")
 	private String dateTimePattern;
-	
-	@Value("${" + IdAuthConfigKeyConstants.PREFERRED_LANG_ATTRIB + "}")
-	private String preferredLangAttrib;
 	
 	@Value("${" + IdAuthConfigKeyConstants.LOCATION_PROFILE_ATTRIB + "}")
 	private String locationProfileAttrib;
@@ -138,7 +138,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		if(idInfo != null && !idInfo.isEmpty()) {
 			setYearOfBirth(ananymousProfile, idInfo);
 			
-			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttrib);
+			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, PREFERRED_LANGUAGE_MAPPING_JSON_ATTRIBUTE_KEY);
 			if(preferredLang != null) {
 				ananymousProfile.setPreferredLanguages(List.of(preferredLang));
 			}
