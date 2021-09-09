@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -176,6 +177,7 @@ public class WebSubHelper {
 	 * @param eventModel the event model
 	 */
 	@WithRetry
+	@Async
 	public <U> void publishEvent(String eventTopic, U eventModel) {
 		publisher.publishUpdate(eventTopic, eventModel, MediaType.APPLICATION_JSON_VALUE, null, publisherUrl);
 	}
