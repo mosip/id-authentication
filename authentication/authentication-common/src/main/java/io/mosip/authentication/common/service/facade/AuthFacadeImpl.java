@@ -34,6 +34,7 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -116,6 +117,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	
 	@Autowired
 	private AuthFiltersValidator authFiltersValidator;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,6 +149,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata().get(AuthTransactionBuilder.class.getSimpleName());
 		authTxnBuilder.withToken(token);
 		
+		ObjectWithMetadata objectWithMetadata = null;
+		
 		try {
 			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
@@ -159,7 +163,11 @@ public class AuthFacadeImpl implements AuthFacade {
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
 					partnerId, authTxnBuilder);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
-		} finally {
+		} catch (IdAuthenticationBusinessException e) {
+			objectWithMetadata = e;
+			throw e;
+		} 
+		finally {
 			// Set response token
 			if (authTokenRequired) {
 				authResponseDTO = authResponseBuilder.build(authTokenId);
@@ -167,14 +175,21 @@ public class AuthFacadeImpl implements AuthFacade {
 				authResponseDTO = authResponseBuilder.build(null);
 			}
 			
+			if(objectWithMetadata == null) {
+				// In catch block this is assigned with exception, if null, assign with response
+				// DTO
+				objectWithMetadata = authResponseDTO;
+			}
+			
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);
 			
 			// This is sent back for the consumption by the caller for example
 			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
-			authResponseDTO.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			objectWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			objectWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
 			
-			authTransactionHelper.setAuthTransactionEntityMetadata(authResponseDTO, authTxnBuilder);
+			authTransactionHelper.setAuthTransactionEntityMetadata(objectWithMetadata, authTxnBuilder);
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());

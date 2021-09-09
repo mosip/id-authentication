@@ -133,7 +133,7 @@ public class KycServiceImpl implements KycService {
 										.stream()
 										.map(Entry::getKey)
 										.flatMap(idName -> {
-											return getEntityForLangCodesAndIdName(filteredIdentityInfo, langCodes, demoMatchType, idName);
+											return getDynamicEntityInfoStream(filteredIdentityInfo, langCodes, idName);
 										});
 						} else {
 							return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
@@ -176,14 +176,14 @@ public class KycServiceImpl implements KycService {
 	 * @param idName the id name
 	 * @return the entity for lang codes and id name
 	 */
-	private Stream<? extends SimpleEntry<String, String>> getEntityForLangCodesAndIdName(
-			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, DemoMatchType demoMatchType,
+	private Stream<? extends SimpleEntry<String, String>> getDynamicEntityInfoStream(
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes,
 			String idName) {
 		return langCodes.stream()
 				.map(langCode -> new SimpleEntry<>(
 						idName + KYC_ATTRIB_LANGCODE_SEPERATOR
 								+ langCode,
-						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode, idName)));
+						idInfoHelper.getDynamicEntityInfo(filteredIdentityInfo, langCode, idName)));
 	}
 
 	/**
@@ -238,29 +238,6 @@ public class KycServiceImpl implements KycService {
 		return null;
 	}
 	
-	/**
-	 * Gets the entity for match type.
-	 *
-	 * @param matchType the match type
-	 * @param filteredIdentityInfo the filtered identity info
-	 * @param langCode the lang code
-	 * @param idName the id name
-	 * @return the entity for match type
-	 */
-	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
-		try {
-			return idInfoHelper.getIdEntityInfoMap(matchType, filteredIdentityInfo, langCode, idName).entrySet()
-					.stream()
-					.findFirst()
-					.map(Entry::getValue)
-					.orElse(null);
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-		}
-		return null;
-	}
-
 	/**
 	 * Construct identity info - Method to filter the details to be printed.
 	 *
