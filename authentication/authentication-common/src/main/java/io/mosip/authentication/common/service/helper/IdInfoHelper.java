@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -519,5 +520,28 @@ public class IdInfoHelper {
 			}
 		}
 		return demoBuilder.toString();
+	}
+	
+	/**
+	 * Gets the dynamic entity info for ID Name.
+	 *
+	 * @param matchType the match type
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCode the lang code
+	 * @param idName the id name
+	 * @return the entity for match type
+	 */
+	public String getDynamicEntityInfo(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+		try {
+			return getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
+					.stream()
+					.findFirst()
+					.map(Entry::getValue)
+					.orElse(null);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+		}
+		return null;
 	}
 }

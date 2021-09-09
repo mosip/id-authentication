@@ -1,9 +1,11 @@
 package io.mosip.authentication.common.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,13 +23,15 @@ import io.mosip.authentication.common.service.entity.AnonymousProfileEntity;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticationProfile;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -65,8 +70,14 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	@Value("${" + IdAuthConfigKeyConstants.DATE_TIME_PATTERN + "}")
 	private String dateTimePattern;
 	
+	@Value("${" + IdAuthConfigKeyConstants.PREFERRED_LANG_ATTRIB + "}")
+	private String preferredLangAttrib;
+	
+	@Value("${" + IdAuthConfigKeyConstants.LOCATION_PROFILE_ATTRIB + "}")
+	private String locationProfileAttrib;
+	
 	@Autowired
-	private PartnerService partnerService;
+	private Environment env;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -101,20 +112,30 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
 		
-		Map<String, List<IdentityInfoDTO>> idInfo = (Map<String, List<IdentityInfoDTO>>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
+		Map<String, List<IdentityInfoDTO>> idInfo = getMapOfIdentityInfoDTOList(responseMetadata);
 
 		if(idInfo != null) {
-			// Year of Birth is Mandatory, rest are optional and will be set if fetched as
-			// part of authentication / kyc request processing
-			//String yearOfBirth = idInfoHelper.getIdEntityInfo(null, null)
-			//ananymousProfile.setYearOfBirth(yearOfBirth);
-
+			setYearOfBirth(ananymousProfile, idInfo);
+			
+			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttrib);
+			if(preferredLang != null) {
+				ananymousProfile.setPreferredLanguages(List.of(preferredLang));
+			}
+			
+			String langCode = getProfileDataLangCode(idInfo, preferredLang);
+			if(langCode != null) {
+				setGender(ananymousProfile, idInfo, langCode);
+				
+				try {
+					Map<String, String> locationInfo = idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttrib);
+					ananymousProfile.setLocation(new ArrayList<>(locationInfo.values()));
+				} catch (IdAuthenticationBusinessException e) {
+					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttrib, ExceptionUtils.getStackTrace(e));
+				}
+			}
+			
 //			ananymousProfile.setBiometricInfo(biometricInfo);
-			
-//			ananymousProfile.setGender(gender);
-//			ananymousProfile.setLocation(location);
-			
-//			ananymousProfile.setPreferredLanguages(preferredLanguages);
+
 		}
 		
 		setAuthFactors(responseMetadata, ananymousProfile);
@@ -128,6 +149,66 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		setStatus(responseBody, ananymousProfile);
 		
 		return ananymousProfile;
+	}
+
+	private void setYearOfBirth(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo) {
+		// Year of Birth is Mandatory, rest are optional and will be set if fetched as
+		// part of authentication / kyc request processing
+		getEntityInfoString(DemoMatchType.DOB, idInfo).ifPresent(ananymousProfile::setYearOfBirth);
+	}
+
+	private void setGender(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo,
+			String langCode) {
+		Optional<String> genderInfo = getEntityInfoString(DemoMatchType.GENDER, idInfo,langCode);
+		if(genderInfo.isEmpty()) {
+			getEntityInfoString(DemoMatchType.GENDER, idInfo).ifPresent(ananymousProfile::setGender);
+		}
+	}
+
+	private String getProfileDataLangCode(Map<String, List<IdentityInfoDTO>> idInfo, String preferredLang) {
+		Optional<String> mandatoryLang = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES).split(","))
+				.filter(str -> str.trim().length() > 0)
+				.findFirst();
+		return mandatoryLang.orElse(preferredLang);
+	}
+
+	private Optional<String> getEntityInfoString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idInfo) {
+		return getEntityInfoString(matchType, idInfo, null);
+	}
+	
+	private Optional<String> getEntityInfoString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idInfo, String langCode) {
+		if(langCode == null) {
+			try {
+				String entityInfoAsString = idInfoHelper.getEntityInfoAsString(matchType, idInfo);
+				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
+					return Optional.of(entityInfoAsString);
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error("Error fetching %s for anonymous profile: %s", matchType.getIdMapping().getIdname(), ExceptionUtils.getStackTrace(e));
+			}
+		} else {
+			try {
+				String entityInfoAsString = idInfoHelper.getEntityInfoAsString(matchType, langCode, idInfo);
+				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
+					return Optional.of(entityInfoAsString);
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error("Error fetching %s for anonymous profile: %s", matchType.getIdMapping().getIdname(), ExceptionUtils.getStackTrace(e));
+			}
+		}
+		return Optional.empty();
+	}
+
+	private Map<String, List<IdentityInfoDTO>> getMapOfIdentityInfoDTOList(Map<String, Object> responseMetadata) {
+		Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
+		return mapOfObject.entrySet()
+						.stream()
+						.filter(entry -> entry.getValue() instanceof List)
+						.collect(Collectors.toMap(Entry::getKey, 
+								entry -> ((List<Object>)entry.getValue())
+												.stream()
+												.map(elem -> mapper.convertValue(elem, IdentityInfoDTO.class))
+												.collect(Collectors.toList())));
 	}
 
 	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
