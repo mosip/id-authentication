@@ -159,6 +159,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String USER_PREFFRRED_LANG_ATTRIBUTE_NAME="mosip.default.user-preferred-language-attribute";
 
 	public static final String BIO_SEGMENT_TIME_DIFF_ALLOWED = "authrequest.biometrics.allowed-segment-time-difference-in-seconds";
-	public static final String LOCATION_PROFILE_ATTRIB = "mosip.location.profile.attribute";
+	public static final String PREFERRED_LANG_ATTRIB_NAME = "mosip.preferred.language.attribute.name";
+	public static final String LOCATION_PROFILE_ATTRIB_NAME = "mosip.location.profile.attribute.name";
 
 }

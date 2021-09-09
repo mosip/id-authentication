@@ -47,9 +47,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
-	private static final String PREFERRED_LANGUAGE_MAPPING_JSON_ATTRIBUTE_KEY = "preferredLanguage";
-
-
 	private static final String BIO_TYPE = "bioType";
 
 
@@ -94,8 +91,11 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	@Value("${" + IdAuthConfigKeyConstants.DATE_TIME_PATTERN + "}")
 	private String dateTimePattern;
 	
-	@Value("${" + IdAuthConfigKeyConstants.LOCATION_PROFILE_ATTRIB + "}")
-	private String locationProfileAttrib;
+	@Value("${" + IdAuthConfigKeyConstants.PREFERRED_LANG_ATTRIB_NAME + "}")
+	private String preferredLangAttribName;
+	
+	@Value("${" + IdAuthConfigKeyConstants.LOCATION_PROFILE_ATTRIB_NAME + "}")
+	private String locationProfileAttribName;
 	
 	@Autowired
 	private Environment env;
@@ -138,7 +138,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		if(idInfo != null && !idInfo.isEmpty()) {
 			setYearOfBirth(ananymousProfile, idInfo);
 			
-			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, PREFERRED_LANGUAGE_MAPPING_JSON_ATTRIBUTE_KEY);
+			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttribName);
 			if(preferredLang != null) {
 				ananymousProfile.setPreferredLanguages(List.of(preferredLang));
 			}
@@ -148,10 +148,10 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 				setGender(ananymousProfile, idInfo, langCode);
 				
 				try {
-					Map<String, String> locationInfo = idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttrib);
+					Map<String, String> locationInfo = idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
 					ananymousProfile.setLocation(new ArrayList<>(locationInfo.values()));
 				} catch (IdAuthenticationBusinessException e) {
-					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttrib, ExceptionUtils.getStackTrace(e));
+					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttribName, ExceptionUtils.getStackTrace(e));
 				}
 			}
 			
