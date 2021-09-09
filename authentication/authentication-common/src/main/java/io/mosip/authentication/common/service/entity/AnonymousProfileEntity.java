@@ -11,6 +11,11 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author Loganathan Sekar
+ *
+ */
 @NoArgsConstructor
 @Data
 @Table(name = "anonymous_profile", schema = "ida")
