@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,7 +34,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -269,26 +269,8 @@ public class AuthTransactionHelper {
 	 */
 	private void addAuthTypes(ObjectWithMetadata requestDTO, AuthTransactionBuilder authTransactionBuilder,
 			AuthRequestDTO authRequestDTO) {
-		if(AuthTypeUtil.isOtp(authRequestDTO)) {
-			authTransactionBuilder.addRequestType(RequestType.OTP_AUTH);
-		}
-		if(AuthTypeUtil.isDemo(authRequestDTO)) {
-			authTransactionBuilder.addRequestType(RequestType.DEMO_AUTH);
-		}
-		if(AuthTypeUtil.isBio(authRequestDTO)) {
-			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
-				authTransactionBuilder.addRequestType(RequestType.FINGER_AUTH);
-			}
-			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
-				authTransactionBuilder.addRequestType(RequestType.IRIS_AUTH);
-			}
-			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
-				authTransactionBuilder.addRequestType(RequestType.FACE_AUTH);
-			}
-		}
-		if(requestDTO instanceof KycAuthRequestDTO) {
-			authTransactionBuilder.addRequestType(RequestType.KYC_AUTH_REQUEST);
-		}
+		List<RequestType> findAutRequestTypes = AuthTypeUtil.findAutRequestTypes(authRequestDTO, env);
+		findAutRequestTypes.forEach(authTransactionBuilder::addRequestType);
 	}
 
 	/**

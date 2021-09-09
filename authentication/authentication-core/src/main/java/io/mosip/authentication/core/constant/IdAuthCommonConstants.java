@@ -29,6 +29,8 @@ public final class IdAuthCommonConstants {
 	public static final boolean CONSUME_VID_DEFAULT = true;
 
 	public static final String IDENTITY_DATA = "IDENTITY_DATA";
+	
+	public static final String IDENTITY_INFO = "IDENTITY_INFO";
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
 	
