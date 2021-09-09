@@ -8,11 +8,9 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSA
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,16 +19,13 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -39,6 +34,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdAuthFraudAnalysisEventManager {
+
+	private static final String AUTH = "AUTH";
 
 	@Value("${ida.fraud-analysis.request-flooding.time-diff-in-sec:1}")
 	private int requestFloodingTimeDiff;
@@ -51,9 +48,6 @@ public class IdAuthFraudAnalysisEventManager {
 
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
-
-	@Autowired
-	private ObjectMapper mapper;
 
 	@Async
 	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage)
@@ -126,21 +120,7 @@ public class IdAuthFraudAnalysisEventManager {
 		} else if (contextSuffix.contentEquals(KYC)) {
 			authType = RequestType.KYC_AUTH_REQUEST.getRequestType();
 		} else if (contextSuffix.contentEquals("auth")) {
-			AuthRequestDTO authRequestDto = mapper.convertValue(request, AuthRequestDTO.class);
-			List<String> authTypesList = new ArrayList<>(5);
-			if (AuthTypeUtil.isBio(authRequestDto)) {
-				authTypesList.add("BIO-AUTH");
-			} 
-			if (AuthTypeUtil.isDemo(authRequestDto)) {
-				authTypesList.add(RequestType.DEMO_AUTH.getRequestType());
-			} 
-			if (AuthTypeUtil.isOtp(authRequestDto)) {
-				authTypesList.add(RequestType.OTP_AUTH.getRequestType());
-			} 
-			if (AuthTypeUtil.isPin(authRequestDto)) {
-				authTypesList.add(RequestType.STATIC_PIN_AUTH.getRequestType());
-			}
-			authType = authTypesList.stream().collect(Collectors.joining(","));
+			authType = AUTH;
 		}
 		return authType;
 	}
