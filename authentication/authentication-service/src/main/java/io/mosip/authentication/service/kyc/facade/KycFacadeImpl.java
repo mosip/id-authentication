@@ -50,7 +50,6 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
@@ -136,9 +135,11 @@ public class KycFacadeImpl implements KycFacade {
 		try {
 			Map<String, Object> idResDTO = (Map<String, Object>) authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA);
 			token = idService.getToken(idResDTO);
+			
+			Map<String, List<IdentityInfoDTO>> idInfo = (Map<String, List<IdentityInfoDTO>>) authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_INFO);
 
 			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
-					idResDTO, token);
+					idInfo, token);
 			kycAuthResponseDTO = kycAuthResponse.getKey();
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO);
@@ -188,7 +189,7 @@ public class KycFacadeImpl implements KycFacade {
 
 	@SuppressWarnings("unchecked")
 	private Entry<KycAuthResponseDTO, Boolean> doProcessKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
-			String partnerId, Map<String, Object> idResDTO, String token)
+			String partnerId, Map<String, List<IdentityInfoDTO>> idInfo, String token)
 			throws IdAuthenticationBusinessException, IDDataValidationException {
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -204,12 +205,11 @@ public class KycFacadeImpl implements KycFacade {
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 
-			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
 			Set<String> langCodes = mapper
 					.convertValue(kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES), Set.class);
-			if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
+			if (Objects.nonNull(idInfo) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				response = kycService.retrieveKycInfo(kycAuthRequestDTO.getAllowedKycAttributes(),
 						langCodes
 						, idInfo);

@@ -13,18 +13,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AnonymousProfileEntity;
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticationProfile;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
-import io.mosip.authentication.common.service.websub.impl.AuthAnonymouseEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -32,16 +36,28 @@ import io.mosip.kernel.core.util.DateUtils;
 @Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
+	private static final String AUTH_STATUS = "authStatus";
+
+
+	private static final String SUCCESS = "success";
+
+
+	private static final String FAILURE = "failure";
+
+
+	private static final String RESPONSE = "response";
+
+
 	private Logger logger = IdaLogger.getLogger(AuthAnonymousProfileServiceImpl.class);
 
 	
 	private static final String IDA = "IDA";
 
 	@Autowired
-	private IdInfoFetcher idInfoFetcher;
+	private IdInfoHelper idInfoHelper;
 	
 	@Autowired
-	private AuthAnonymouseEventPublisher authAnonymouseEventPublisher;
+	private AuthAnonymousEventPublisher authAnonymousEventPublisher;
 	
 	@Autowired
 	private AuthAnonymousProfileRepository authAnonymousProfileRepository;
@@ -57,55 +73,71 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	
 
 	@Override
-	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> metadata) {
-		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, responseBody, metadata);
+	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
+		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, responseBody, requestMetadata, responseMetadata);
 		storeAnanymousProfile(ananymousProfile);
-		authAnonymouseEventPublisher.publishEvent(ananymousProfile);
+		authAnonymousEventPublisher.publishEvent(ananymousProfile);
 	}
 
 	private void storeAnanymousProfile(AnonymousAuthenticationProfile ananymousProfile) {
-		AnonymousProfileEntity auuthAnanymousProfileEntity = new AnonymousProfileEntity();
+		AnonymousProfileEntity authAnonymousProfileEntity = new AnonymousProfileEntity();
 		String id = UUID.randomUUID().toString();
-		auuthAnanymousProfileEntity.setId(id);
-		auuthAnanymousProfileEntity.setCrBy(IDA);
+		authAnonymousProfileEntity.setId(id);
+		authAnonymousProfileEntity.setCrBy(IDA);
 		LocalDateTime crDTimes = DateUtils.getUTCCurrentDateTime();
-		auuthAnanymousProfileEntity.setCrDTimes(crDTimes);
-		authAnonymousProfileRepository.save(auuthAnanymousProfileEntity);
+		authAnonymousProfileEntity.setCrDTimes(crDTimes);
+		
+		try {
+			authAnonymousProfileEntity.setProfile(mapper.writeValueAsString(ananymousProfile));
+		} catch (JsonProcessingException e) {
+			logger.error("Error saving anonymous profile. %s", ExceptionUtils.getStackTrace(e));
+		}
+		
+		authAnonymousProfileRepository.save(authAnonymousProfileEntity);
 		authAnonymousProfileRepository.flush();
 	}
 
-	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> metadata) {
+	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody,
+			Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
 		
-		setAuthFactors(metadata, ananymousProfile);
-//		ananymousProfile.setBiometricInfo(biometricInfo);
+		Map<String, List<IdentityInfoDTO>> idInfo = (Map<String, List<IdentityInfoDTO>>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
+
+		if(idInfo != null) {
+			// Year of Birth is Mandatory, rest are optional and will be set if fetched as
+			// part of authentication / kyc request processing
+			//String yearOfBirth = idInfoHelper.getIdEntityInfo(null, null)
+			//ananymousProfile.setYearOfBirth(yearOfBirth);
+
+//			ananymousProfile.setBiometricInfo(biometricInfo);
+			
+//			ananymousProfile.setGender(gender);
+//			ananymousProfile.setLocation(location);
+			
+//			ananymousProfile.setPreferredLanguages(preferredLanguages);
+		}
+		
+		setAuthFactors(responseMetadata, ananymousProfile);
 		
 		setDate(ananymousProfile);
 		
 		setErrorCodes(responseBody, ananymousProfile);
 		
-		setPartnerName(metadata, ananymousProfile);
+		setPartnerName(requestMetadata, ananymousProfile);
 
-		
-//		ananymousProfile.setGender(gender);
-//		ananymousProfile.setLocation(location);
-		
-//		ananymousProfile.setPreferredLanguages(preferredLanguages);
-		
 		setStatus(responseBody, ananymousProfile);
 		
-//		ananymousProfile.setYearOfBirth(yearOfBirth);
 		return ananymousProfile;
 	}
 
 	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
 		String status;
-		if(responseBody != null && responseBody.get("response") instanceof Map) {
-			status = String.valueOf(((Map<String, Object>)responseBody.get("response")).get("authStatus"));
+		if(responseBody != null && responseBody.get(RESPONSE) instanceof Map) {
+			status = String.valueOf(((Map<String, Object>)responseBody.get(RESPONSE)).get(AUTH_STATUS));
 		} else {
 			status = String.valueOf(false);
 		}
-		ananymousProfile.setStatus(status);
+		ananymousProfile.setStatus(Boolean.valueOf(status) ? SUCCESS : FAILURE);
 	}
 
 	private void setDate(AnonymousAuthenticationProfile ananymousProfile) {
@@ -113,12 +145,14 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		ananymousProfile.setDate(requestDateTime.toLocalDate().toString());
 	}
 
-	private void setAuthFactors(Map<String, Object> metadata, AnonymousAuthenticationProfile ananymousProfile) {
-		if(metadata != null) {
-			Object authTxnObj = metadata.get(AutnTxn.class.getSimpleName());
+	private void setAuthFactors(Map<String, Object> responseMetadata, AnonymousAuthenticationProfile ananymousProfile) {
+		if(responseMetadata != null) {
+			Object authTxnObj = responseMetadata.get(AutnTxn.class.getSimpleName());
 			if(authTxnObj != null) {
 				AutnTxn autnTxn = mapper.convertValue(authTxnObj, AutnTxn.class);
-				List<String> authFactors = Arrays.asList(autnTxn.getAuthTypeCode().split(","));
+				List<String> authFactors = Arrays.stream(autnTxn.getAuthTypeCode().split(","))
+											.distinct()
+											.collect(Collectors.toList());
 				ananymousProfile.setAuthFactors(authFactors);
 			}
 		}
@@ -134,13 +168,18 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		ananymousProfile.setErrorCode(errorCodes);
 	}
 
-	private void setPartnerName(Map<String, Object> metadata, AnonymousAuthenticationProfile ananymousProfile) {
-		if(metadata.get(AutnTxn.class.getSimpleName()) instanceof Map) {
-			Map<String, Object> txn = (Map<String, Object>) metadata.get(AutnTxn.class.getSimpleName());
-			String partnerName = (String) txn.get("entityName");
-			ananymousProfile.setPartnerName(partnerName);
+	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
+		Object partnerIdObj = requestMetadata.get("partnerId");
+		if(partnerIdObj instanceof String) {
+			String partnerId = (String) partnerIdObj;
+			Object partnerObj = requestMetadata.get(partnerId);
+			if(partnerObj instanceof Map) {
+				Object partnerNameObj = ((Map<String, Object>)partnerObj).get("partnerName");
+				if(partnerNameObj instanceof String) {
+					ananymousProfile.setPartnerName((String) partnerNameObj);
+				}
+			}
 		}
-
 	}
 
 }

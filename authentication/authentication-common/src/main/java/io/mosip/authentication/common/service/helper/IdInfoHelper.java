@@ -256,6 +256,23 @@ public class IdInfoHelper {
 		return mappedIdEntity.get(propertyNames.get(0)).getValue().stream().map(IdentityInfoDTO::getLanguage)
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Get the ID Entity Info for all languages for the given match type from the
+	 * identity infos map
+	 * 
+	 * @param matchType
+	 * @param identityInfos
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	public Map<String, List<IdentityInfoDTO>> getIdEntityInfo(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos)
+			throws IdAuthenticationBusinessException {
+		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
+		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(identityInfos,
+				idInfoFetcher);
+		return propertyNames.stream().collect(Collectors.toMap(Function.identity(), prop -> mappedIdEntity.get(prop).getValue()));
+	}
 
 	/**
 	 * Gets the filtered prop names for id name.

@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface AuthAnonymousProfileService {
 	
-	void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> metadata);
+	void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata);
 
 }

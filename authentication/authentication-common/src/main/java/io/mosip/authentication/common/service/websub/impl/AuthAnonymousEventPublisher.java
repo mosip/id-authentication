@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.websub.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_ANANYMOUS_PROFILE_TOPIC;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +18,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
- * The Class AuthAnonymouseEventPublisher.
+ * The Class AuthAnonymousEventPublisher.
  * 
  * @author Loganathan Sekar
  */
 @Component
-public class AuthAnonymouseEventPublisher extends BaseWebSubEventsInitializer {
+public class AuthAnonymousEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(AuthAnonymouseEventPublisher.class);
+	private static final Logger logger = IdaLogger.getLogger(AuthAnonymousEventPublisher.class);
 
 	/** The credential status update topic. */
 	@Value("${" + AUTH_ANANYMOUS_PROFILE_TOPIC + "}")
