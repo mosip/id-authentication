@@ -119,7 +119,8 @@ public class KycAuthController {
 			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 			if (authResponseDTO != null && 
 					authResponseDTO.getMetadata() != null && 
-					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null) {
+					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
+					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
 				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}
 			return kycAuthResponseDTO;
