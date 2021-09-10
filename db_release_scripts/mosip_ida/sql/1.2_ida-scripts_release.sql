@@ -10,6 +10,7 @@
 -- Apr-2021		Ram Bhatt	    create tables to store partner details
 -- Jul-2021		Ram Bhatt	    creation of failed message store table
 -- Jul-2021		Ram Bhatt	    Adding a new nullable column identity_expiry in IDA table identity_cache
+-- Sep-2021		Loganathan Sekar	    Adding Anonymous Profile Table
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
@@ -32,7 +33,7 @@ ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 
 \ir ../ddl/ida-failed_message_store.sql
 ------------------------------------------------------------------------------------------------------------
-
+\ir ../ddl/ida-anonymous_profile.sql
 
 ALTER TABLE ida.identity_cache ADD COLUMN identity_expiry timestamp;
 --------------------------------------------------------------------------------------------------------------
