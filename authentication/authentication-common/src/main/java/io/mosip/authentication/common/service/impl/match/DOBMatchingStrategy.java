@@ -3,7 +3,10 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
+
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -29,7 +32,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			Date reqInfoDate;
 			try {
-				reqInfoDate = DateUtils.parseToDate((String) reqInfo, getDateFormat());
+				reqInfoDate = DateUtils.parseToDate((String) reqInfo, getDateOfBirthFormat(props));
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
 				throw new IdAuthenticationBusinessException(
@@ -41,8 +44,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 			
 			Date entityInfoDate;
 			try {
-				entityInfoDate = DateUtils.parseToDate((String) entityInfo,
-						getDateFormat());
+				entityInfoDate = DateUtils.parseToDate((String) entityInfo, getDateOfBirthFormat(props));
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -71,8 +73,17 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	private static String getDateFormat() {
-		return IdAuthCommonConstants.DOB_PATTERN;
+	private static String getDateOfBirthFormat(Map<String, Object> props) {
+		Object envObj = props.get("env");
+		String dobFormat;
+		if(envObj instanceof Environment) {
+			Environment env = (Environment) envObj;
+			dobFormat = env.getProperty(IdAuthConfigKeyConstants.MOSIP_DATE_OF_BIRTH_PATTERN, IdAuthCommonConstants.DEFAULT_DOB_PATTERN);
+			
+		} else {
+			dobFormat =  IdAuthCommonConstants.DEFAULT_DOB_PATTERN;
+		}
+		return dobFormat;
 	}
 
 	/*
