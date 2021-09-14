@@ -73,7 +73,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel-core.version>1.1.5.3</kernel-core.version>
+		<kernel-core.version>1.1.5.5-SNAPSHOT</kernel-core.version>
 		<kernel-keymanager-service.version>1.1.5.3</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.1.5.3</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>1.1.5.4</kernel-idvalidator-uin.version>
