@@ -124,7 +124,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
 			IdentityEntity entity = new IdentityEntity();
 			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
-			byte[] bioData = CryptoUtil.encodeBase64Bytes("fingreprintdata".getBytes()).getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
 			entity.setDemographicData(demoData);
 			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
 			List<Object[]> data = new ArrayList<>();
@@ -154,7 +154,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
 			IdentityEntity entity = new IdentityEntity();
 			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
-			byte[] bioData = CryptoUtil.encodeBase64Bytes("fingreprintdata".getBytes()).getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
 			entity.setDemographicData(demoData);
 			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
 			List<Object[]> data = new ArrayList<>();

@@ -278,10 +278,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] xorBytes = BytesUtil.getXOR(timestamp, transactionId);
 			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
-			String salt = CryptoUtil.urlEncodeBase64Bytes(saltLastBytes);
+			String salt = CryptoUtil.encodeBase64Url(saltLastBytes);
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
-			String aad = CryptoUtil.urlEncodeBase64Bytes(aadLastBytes);
+			String aad = CryptoUtil.encodeBase64Url(aadLastBytes);
 			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
@@ -483,7 +483,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
 				}
 
-				byte[] bdb = CryptoUtil.decodeBase64Plain(bioValueOpt.get());
+				byte[] bdb = CryptoUtil.decodeBase64(bioValueOpt.get());
 
 				previousHash = validateHashBytes(bdb, hashOpt.get(), previousHash);
 			}

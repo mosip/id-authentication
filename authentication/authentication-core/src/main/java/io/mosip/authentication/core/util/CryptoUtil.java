@@ -7,9 +7,8 @@ import java.util.Base64;
 /**
  * Crypto Util for common methods in various module
  * 
- * @author Urvil Joshi
+ * @author Loganathan Sekar
  *
- * @since 1.0.0
  */
 public class CryptoUtil {
 
@@ -67,11 +66,11 @@ public class CryptoUtil {
 	 * @param data data to encode
 	 * @return encoded data
 	 */
-	public static String encodeBase64Bytes(byte[] data) {
+	public static String encodeBase64(byte[] data) {
 		return Base64.getEncoder().encodeToString(data);
 	}
 	
-	public static String urlEncodeBase64Bytes(byte[] data) {
+	public static String encodeBase64Url(byte[] data) {
 		return Base64.getUrlEncoder().encodeToString(data);
 	}
 
@@ -91,7 +90,7 @@ public class CryptoUtil {
 	 * @param data data to decode
 	 * @return decoded data
 	 */
-	public static byte[] decodeBase64Plain(String data) {
+	public static byte[] decodeBase64(String data) {
 		return Base64.getDecoder().decode(data.getBytes());
 	}
 	

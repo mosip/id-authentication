@@ -61,7 +61,7 @@ public class IdAuthSecurityManagerTest {
 	@Test
 	public void testEncrypt() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.encrypt(Mockito.any()))
-				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64Bytes("abcd".getBytes())));
+				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
 		byte[] encrypt = authSecurityManager.encrypt("Hello", "20190101", null, null);
 		assertEquals("abcd", new String(encrypt));
 	}
@@ -81,7 +81,7 @@ public class IdAuthSecurityManagerTest {
 	@Test
 	public void testDecrypt() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.decrypt(Mockito.any()))
-				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64Bytes("abcd".getBytes())));
+				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
 		byte[] decrypt = authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 		assertEquals("abcd", new String(decrypt));
 	}

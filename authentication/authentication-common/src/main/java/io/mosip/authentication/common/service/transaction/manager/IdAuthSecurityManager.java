@@ -302,7 +302,7 @@ public class IdAuthSecurityManager {
 		// TODO: check whether any exception will be thrown
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
 		request.setApplicationId(signApplicationid);
-		request.setDataToSign(CryptoUtil.urlEncodeBase64Bytes(data.getBytes()));
+		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
 		request.setIncludeCertHash(true);
 		request.setIncludeCertificate(true);
 		request.setIncludePayload(false);
@@ -325,7 +325,7 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
 		if (Objects.nonNull(requestData)) {
-			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.urlEncodeBase64Bytes(requestData.getBytes()));
+			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64Url(requestData.getBytes()));
 		}
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
@@ -396,7 +396,7 @@ public class IdAuthSecurityManager {
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		byte[] encryptedData = encrypt(publicKey, data);
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.urlEncodeBase64Bytes(encryptedData), CryptoUtil.urlEncodeBase64Bytes(certificateThumbprint));
+		return Tuples.of(CryptoUtil.encodeBase64Url(encryptedData), CryptoUtil.encodeBase64Url(certificateThumbprint));
 	}
 
 	/**

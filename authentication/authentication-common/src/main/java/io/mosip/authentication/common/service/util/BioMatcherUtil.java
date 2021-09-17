@@ -285,7 +285,7 @@ public class BioMatcherUtil {
 	 * @return the byte[]
 	 */
 	private static byte[] decodeValue(String value) {
-		return CryptoUtil.decodeBase64Plain(value);
+		return CryptoUtil.decodeBase64(value);
 	}
 	
 	/* (non-Javadoc)

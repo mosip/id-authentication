@@ -190,7 +190,7 @@ public class KeyManager {
 		}
 		try {
 			String encodedIdentity = CryptoUtil
-					.urlEncodeBase64Bytes(securityManager.decrypt(CryptoUtil.urlEncodeBase64Bytes(data), refId, aad, salt,
+					.encodeBase64Url(securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
 							isThumbprintEnabled));
 			if (decode) {
 				decryptedRequest = new String(CryptoUtil.decodeBase64Url(encodedIdentity), StandardCharsets.UTF_8);
@@ -247,8 +247,8 @@ public class KeyManager {
 		if (Objects.nonNull(identity)) {
 			try {
 				String encodedData = CryptoUtil
-						.urlEncodeBase64Bytes(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil.urlEncodeBase64Bytes(securityManager.encrypt(encodedData, partnerId, null, null));
+						.encodeBase64Url(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
+				return CryptoUtil.encodeBase64Url(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());
