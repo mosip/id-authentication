@@ -47,7 +47,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 
 /**
  * IdAuthServiceImplTest test class.
@@ -124,7 +124,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
 			IdentityEntity entity = new IdentityEntity();
 			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
-			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64Bytes("fingreprintdata".getBytes()).getBytes();
 			entity.setDemographicData(demoData);
 			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
 			List<Object[]> data = new ArrayList<>();
@@ -154,7 +154,7 @@ public class IdAuthServiceImplTest {
 			Mockito.when(identityRepo.existsById(idvId)).thenReturn(true);
 			IdentityEntity entity = new IdentityEntity();
 			byte[] demoData = ("{\"UIN\":" + idvId + "}").getBytes();
-			byte[] bioData = CryptoUtil.encodeBase64("fingreprintdata".getBytes()).getBytes();
+			byte[] bioData = CryptoUtil.encodeBase64Bytes("fingreprintdata".getBytes()).getBytes();
 			entity.setDemographicData(demoData);
 			Mockito.when(identityRepo.getOne(idvId)).thenReturn(entity);
 			List<Object[]> data = new ArrayList<>();

@@ -26,7 +26,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -81,7 +81,7 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
+			byte[] encryptedSessionkey = CryptoUtil.decodeBase64Plain((String) requestBody.get(SESSION_KEY));
 			request = decipherData(mapper, thumbprint, encryptedSessionkey, encryptedRequest, refId,
 					isThumbprintEnabled, dataValidator);
 		} catch (IOException e) {
@@ -190,10 +190,10 @@ public class KeyManager {
 		}
 		try {
 			String encodedIdentity = CryptoUtil
-					.encodeBase64(securityManager.decrypt(CryptoUtil.encodeBase64(data), refId, aad, salt,
+					.encodeBase64Bytes(securityManager.decrypt(CryptoUtil.encodeBase64Bytes(data), refId, aad, salt,
 							isThumbprintEnabled));
 			if (decode) {
-				decryptedRequest = new String(CryptoUtil.decodeBase64(encodedIdentity), StandardCharsets.UTF_8);
+				decryptedRequest = new String(CryptoUtil.decodeBase64Plain(encodedIdentity), StandardCharsets.UTF_8);
 			} else {
 				decryptedRequest = encodedIdentity;
 			}
@@ -247,8 +247,8 @@ public class KeyManager {
 		if (Objects.nonNull(identity)) {
 			try {
 				String encodedData = CryptoUtil
-						.encodeBase64(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
+						.encodeBase64Bytes(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
+				return CryptoUtil.encodeBase64Bytes(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());

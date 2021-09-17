@@ -7,9 +7,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.authentication.common.service.filter.BaseAuthFilter;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 
 
 @RunWith(PowerMockRunner.class)
@@ -20,7 +19,7 @@ public class BaseAuthFilterStaticTest {
 	public void decodetest() throws IdAuthenticationAppException {
 		PowerMockito.mockStatic(CryptoUtil.class);
 		String stringToDecode = "assad";
-		Mockito.when(CryptoUtil.decodeBase64(stringToDecode)).thenThrow(new IllegalArgumentException());
+		Mockito.when(CryptoUtil.decodeBase64Plain(stringToDecode)).thenThrow(new IllegalArgumentException());
 		BaseAuthFilter.decode(stringToDecode);
 	}
 }

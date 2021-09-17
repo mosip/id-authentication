@@ -22,13 +22,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
-import io.mosip.kernel.signature.dto.SignatureResponseDto;
 
 /**
  * 
@@ -62,7 +61,7 @@ public class IdAuthSecurityManagerTest {
 	@Test
 	public void testEncrypt() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.encrypt(Mockito.any()))
-				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
+				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64Bytes("abcd".getBytes())));
 		byte[] encrypt = authSecurityManager.encrypt("Hello", "20190101", null, null);
 		assertEquals("abcd", new String(encrypt));
 	}
@@ -82,7 +81,7 @@ public class IdAuthSecurityManagerTest {
 	@Test
 	public void testDecrypt() throws IdAuthenticationBusinessException {
 		when(cryptomanagerService.decrypt(Mockito.any()))
-				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
+				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64Bytes("abcd".getBytes())));
 		byte[] decrypt = authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 		assertEquals("abcd", new String(decrypt));
 	}
