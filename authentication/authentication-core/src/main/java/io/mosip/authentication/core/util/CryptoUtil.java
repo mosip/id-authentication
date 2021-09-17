@@ -35,7 +35,7 @@ public class CryptoUtil {
 	}
 
 	/**
-	 * Encodes to BASE64 URL Safe
+	 * Encodes to BASE64
 	 * 
 	 * @param data data to encode
 	 * @return encoded data
@@ -44,6 +44,12 @@ public class CryptoUtil {
 		return Base64.getEncoder().encodeToString(data);
 	}
 	
+	/**
+	 * Encodes to BASE64 URL Safe
+	 * 
+	 * @param data data to encode
+	 * @return encoded data
+	 */
 	public static String encodeBase64Url(byte[] data) {
 		return Base64.getUrlEncoder().encodeToString(data);
 	}
@@ -69,7 +75,7 @@ public class CryptoUtil {
 	}
 	
 	/**
-	 * Decodes from BASE64
+	 * Decodes from BASE64 URL
 	 * 
 	 * @param data data to decode
 	 * @return decoded data
