@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.util;
 
-import static java.util.Arrays.copyOfRange;
-
 import java.util.Base64;
 
 /**
@@ -34,30 +32,6 @@ public class CryptoUtil {
 		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length, keySplitterBytes.length);
 		System.arraycopy(data, 0, combinedArray, key.length + keySplitterBytes.length, data.length);
 		return combinedArray;
-	}
-
-	/**
-	 * Get splitter index for detaching key splitter from key and data
-	 * 
-	 * @param encryptedData     whole encrypted data
-	 * @param keyDemiliterIndex keySplitterindex initialization value
-	 * @param keySplitter       keysplitter value
-	 * @return keyDemiliterIndex
-	 */
-	public static int getSplitterIndex(byte[] encryptedData, int keyDemiliterIndex, String keySplitter) {
-		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
-		final int keySplitterLength = keySplitter.length();
-		for (byte data : encryptedData) {
-			if (data == keySplitterFirstByte) {
-				final String keySplit = new String(
-						copyOfRange(encryptedData, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
-				if (keySplitter.equals(keySplit)) {
-					break;
-				}
-			}
-			keyDemiliterIndex++;
-		}
-		return keyDemiliterIndex;
 	}
 
 	/**
