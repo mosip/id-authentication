@@ -81,7 +81,7 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			byte[] encryptedSessionkey = CryptoUtil.decodeBase64Plain((String) requestBody.get(SESSION_KEY));
+			byte[] encryptedSessionkey = CryptoUtil.decodeBase64Url((String) requestBody.get(SESSION_KEY));
 			request = decipherData(mapper, thumbprint, encryptedSessionkey, encryptedRequest, refId,
 					isThumbprintEnabled, dataValidator);
 		} catch (IOException e) {
@@ -190,10 +190,10 @@ public class KeyManager {
 		}
 		try {
 			String encodedIdentity = CryptoUtil
-					.encodeBase64Bytes(securityManager.decrypt(CryptoUtil.encodeBase64Bytes(data), refId, aad, salt,
+					.urlEncodeBase64Bytes(securityManager.decrypt(CryptoUtil.urlEncodeBase64Bytes(data), refId, aad, salt,
 							isThumbprintEnabled));
 			if (decode) {
-				decryptedRequest = new String(CryptoUtil.decodeBase64Plain(encodedIdentity), StandardCharsets.UTF_8);
+				decryptedRequest = new String(CryptoUtil.decodeBase64Url(encodedIdentity), StandardCharsets.UTF_8);
 			} else {
 				decryptedRequest = encodedIdentity;
 			}
@@ -247,8 +247,8 @@ public class KeyManager {
 		if (Objects.nonNull(identity)) {
 			try {
 				String encodedData = CryptoUtil
-						.encodeBase64Bytes(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil.encodeBase64Bytes(securityManager.encrypt(encodedData, partnerId, null, null));
+						.urlEncodeBase64Bytes(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
+				return CryptoUtil.urlEncodeBase64Bytes(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());

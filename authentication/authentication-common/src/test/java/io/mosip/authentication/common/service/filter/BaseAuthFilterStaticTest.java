@@ -18,8 +18,8 @@ public class BaseAuthFilterStaticTest {
 	@Test(expected=IdAuthenticationAppException.class)
 	public void decodetest() throws IdAuthenticationAppException {
 		PowerMockito.mockStatic(CryptoUtil.class);
-		String stringToDecode = "assad";
-		Mockito.when(CryptoUtil.decodeBase64Plain(stringToDecode)).thenThrow(new IllegalArgumentException());
+		String stringToDecode = "YWJjZA==";
+		Mockito.when(CryptoUtil.decodeBase64Url(stringToDecode)).thenThrow(new IllegalArgumentException());
 		BaseAuthFilter.decode(stringToDecode);
 	}
 }

@@ -166,7 +166,7 @@ public class IdAuthSecurityManager {
 			request.setReferenceId(refId);
 			request.setAad(aad);
 			request.setSalt(saltToEncrypt);
-			return CryptoUtil.decodeBase64Plain(cryptomanagerService.encrypt(request).getData());
+			return CryptoUtil.decodeBase64Url(cryptomanagerService.encrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
 			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
@@ -203,7 +203,7 @@ public class IdAuthSecurityManager {
 			request.setAad(aad);
 			request.setSalt(saltToDecrypt);
 			request.setPrependThumbprint(isThumbprintEnabled);
-			return CryptoUtil.decodeBase64Plain(cryptomanagerService.decrypt(request).getData());
+			return CryptoUtil.decodeBase64Url(cryptomanagerService.decrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
 			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
@@ -302,7 +302,7 @@ public class IdAuthSecurityManager {
 		// TODO: check whether any exception will be thrown
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
 		request.setApplicationId(signApplicationid);
-		request.setDataToSign(CryptoUtil.encodeBase64Bytes(data.getBytes()));
+		request.setDataToSign(CryptoUtil.urlEncodeBase64Bytes(data.getBytes()));
 		request.setIncludeCertHash(true);
 		request.setIncludeCertificate(true);
 		request.setIncludePayload(false);
@@ -325,7 +325,7 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
 		if (Objects.nonNull(requestData)) {
-			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64Bytes(requestData.getBytes()));
+			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.urlEncodeBase64Bytes(requestData.getBytes()));
 		}
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
@@ -396,7 +396,7 @@ public class IdAuthSecurityManager {
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		byte[] encryptedData = encrypt(publicKey, data);
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.encodeBase64Bytes(encryptedData), CryptoUtil.encodeBase64Bytes(certificateThumbprint));
+		return Tuples.of(CryptoUtil.urlEncodeBase64Bytes(encryptedData), CryptoUtil.urlEncodeBase64Bytes(certificateThumbprint));
 	}
 
 	/**
@@ -510,7 +510,7 @@ public class IdAuthSecurityManager {
 		} catch (DecoderException e) {
 			try {
 				//Then try decoding with base64
-				return CryptoUtil.decodeBase64Plain(thumbprint);
+				return CryptoUtil.decodeBase64Url(thumbprint);
 			} catch (Exception ex) {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 			}

@@ -116,10 +116,10 @@ public class MasterDataCache implements ApplicationListener<ApplicationReadyEven
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		try {
-			loadMasterData();
-		} catch (IdAuthenticationBusinessException e) {
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
-		}		
+//		try {
+//			loadMasterData();
+//		} catch (IdAuthenticationBusinessException e) {
+//			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
+//		}		
 	}
 }

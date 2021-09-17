@@ -198,7 +198,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected static Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
 			if (Objects.nonNull(stringToDecode)) {
-				return CryptoUtil.decodeBase64Plain(stringToDecode);
+				return CryptoUtil.decodeBase64Url(stringToDecode);
 			} else {
 				return stringToDecode;
 			}
