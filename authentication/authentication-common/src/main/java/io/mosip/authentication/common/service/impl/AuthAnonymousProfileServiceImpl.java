@@ -266,16 +266,18 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private Map<String, List<IdentityInfoDTO>> getMapOfIdentityInfoDTOList(Map<String, Object> responseMetadata) {
-		Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
-		if(mapOfObject != null) {
-			return mapOfObject.entrySet()
-							.stream()
-							.filter(entry -> entry.getValue() instanceof List)
-							.collect(Collectors.toMap(Entry::getKey, 
-									entry -> ((List<Object>)entry.getValue())
-													.stream()
-													.map(elem -> mapper.convertValue(elem, IdentityInfoDTO.class))
-													.collect(Collectors.toList())));
+		if(responseMetadata != null) {
+			Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
+			if(mapOfObject != null) {
+				return mapOfObject.entrySet()
+								.stream()
+								.filter(entry -> entry.getValue() instanceof List)
+								.collect(Collectors.toMap(Entry::getKey, 
+										entry -> ((List<Object>)entry.getValue())
+														.stream()
+														.map(elem -> mapper.convertValue(elem, IdentityInfoDTO.class))
+														.collect(Collectors.toList())));
+			}
 		}
 		
 		return Map.of();
