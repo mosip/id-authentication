@@ -10,6 +10,7 @@
 -- ------------------------------------------------------------------------------------------
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false 
 -- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+-- Sep-2021		Ram Bhatt	    Added index to cr_dtimes column
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.credential_event_store | type: TABLE --
@@ -33,6 +34,9 @@ CREATE TABLE ida.credential_event_store(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+--index section ends------
 COMMENT ON TABLE ida.credential_event_store IS 'Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure';
 -- ddl-end --
 COMMENT ON COLUMN ida.credential_event_store.event_id IS 'Event ID: Event id of the credential request';
