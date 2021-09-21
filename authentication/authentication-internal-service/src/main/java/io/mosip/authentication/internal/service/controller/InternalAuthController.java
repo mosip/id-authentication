@@ -63,7 +63,7 @@ public class InternalAuthController {
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
-	
+
 	@Autowired
 	private AuthTransactionHelper authTransactionHelper;
 
@@ -96,7 +96,8 @@ public class InternalAuthController {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostauth())")
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
@@ -112,8 +113,8 @@ public class InternalAuthController {
 					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 			authRequestDTO.setIndividualIdType(idType);
 			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
-			
-			
+
+
 			DataValidationUtil.validate(errors);
 			String partnerId = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT,"");
 			AuthResponseDTO authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, isAuth,
@@ -139,10 +140,10 @@ public class InternalAuthController {
 		}
 
 	}
-	
+
 	/**
 	 * Authenticate tsp.
-	 * 
+	 *
 	 * @since 1.2.0
 	 *
 	 * @param authRequestDTO the auth request DTO
@@ -152,10 +153,11 @@ public class InternalAuthController {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
-	 * 
-	 * 
+	 *
+	 *
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostverifyidentity())")
 	@PostMapping(path = "/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
@@ -171,8 +173,8 @@ public class InternalAuthController {
 					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 			authRequestDTO.setIndividualIdType(idType);
 			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
-			
-			
+
+
 			DataValidationUtil.validate(errors);
 			String partnerId = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT,"");
 			AuthResponseDTO authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, isAuth,
