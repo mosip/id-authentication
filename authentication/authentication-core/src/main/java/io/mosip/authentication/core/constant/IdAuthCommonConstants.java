@@ -29,6 +29,8 @@ public final class IdAuthCommonConstants {
 	public static final boolean CONSUME_VID_DEFAULT = true;
 
 	public static final String IDENTITY_DATA = "IDENTITY_DATA";
+	
+	public static final String IDENTITY_INFO = "IDENTITY_INFO";
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
 	
@@ -54,8 +56,6 @@ public final class IdAuthCommonConstants {
 	public static final String HASH = "hash";
 
 	public static final String UTF_8 = "utf-8";
-
-	public static final String REQUESTEDAUTH = "requestedAuth";
 
 	public static final String UNKNOWN = "UNKNOWN";
 	
@@ -97,6 +97,8 @@ public final class IdAuthCommonConstants {
 	public static final String KER_USER_ID_NOTEXIST_ERRORMSG = "User not found";
 
 	public static final String DATA = "data";
+
+	public static final String BIO_TXN_ID_PATH = "data/transactionId";
 
 	public static final String NAME_SEC = "nameSec";
 
@@ -271,7 +273,7 @@ public final class IdAuthCommonConstants {
 
 	public static final String CREDENTIAL_SUBJECT = "credentialSubject";
 
-	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_MINS = 5L;
+	public static final long DEFAULT_REQUEST_TIME_ADJUSTMENT_SECONDS = 30L;
 
 	public static final String PARTNER_UPDATED_EVENT_NAME = "partner_updated";
 

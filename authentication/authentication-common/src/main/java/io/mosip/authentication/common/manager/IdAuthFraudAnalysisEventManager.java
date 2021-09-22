@@ -3,7 +3,6 @@ package io.mosip.authentication.common.manager;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDV_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OTP;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUESTEDAUTH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 
@@ -19,18 +18,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -39,6 +34,8 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdAuthFraudAnalysisEventManager {
+
+	private static final String AUTH = "AUTH";
 
 	@Value("${ida.fraud-analysis.request-flooding.time-diff-in-sec:1}")
 	private int requestFloodingTimeDiff;
@@ -52,24 +49,19 @@ public class IdAuthFraudAnalysisEventManager {
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
 
-	@Autowired
-	private ObjectMapper mapper;
-
 	@Async
-	public void analyseDigitalSignatureFailure(String uri, String authRequest)
+	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage)
 			throws JsonParseException, JsonMappingException, IOException {
 		List<String> pathSegments = Arrays.asList(uri.split("/"));
 		String authType = null;
 		if (pathSegments.size() > 4) {
-			Map<String, Object> request = mapper.readValue(authRequest, new TypeReference<Map<String, Object>>() {
-			});
 			String idvIdHash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
 			String txnId = (String) request.get(TRANSACTION_ID);
 			String partnerId = pathSegments.get(4);
 			LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
 			authType = getAuthType(pathSegments, authType, request);
 			IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType, requestTime, "N",
-					IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage());
+					errorMessage);
 			publisher.publishEvent(eventData);
 			this.analyseRequestFlooding(eventData);
 		}
@@ -122,21 +114,13 @@ public class IdAuthFraudAnalysisEventManager {
 	}
 
 	private String getAuthType(List<String> pathSegments, String authType, Map<String, Object> request) {
-		if (pathSegments.get(2).contentEquals(OTP)) {
+		String contextSuffix = pathSegments.get(3);
+		if (contextSuffix.contentEquals(OTP)) {
 			authType = RequestType.OTP_REQUEST.getRequestType();
-		} else if (pathSegments.get(2).contentEquals(KYC)) {
+		} else if (contextSuffix.contentEquals(KYC)) {
 			authType = RequestType.KYC_AUTH_REQUEST.getRequestType();
-		} else if (pathSegments.get(2).contentEquals("auth")) {
-			AuthTypeDTO authTypeDTO = mapper.convertValue(request.get(REQUESTEDAUTH), AuthTypeDTO.class);
-			if (authTypeDTO.isBio()) {
-				authType = "BIO-AUTH";
-			} else if (authTypeDTO.isDemo()) {
-				authType = RequestType.DEMO_AUTH.getRequestType();
-			} else if (authTypeDTO.isOtp()) {
-				authType = RequestType.OTP_AUTH.getRequestType();
-			} else if (authTypeDTO.isPin()) {
-				authType = RequestType.STATIC_PIN_AUTH.getRequestType();
-			}
+		} else if (contextSuffix.contentEquals("auth")) {
+			authType = AUTH;
 		}
 		return authType;
 	}

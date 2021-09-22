@@ -61,13 +61,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -252,7 +253,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
 		}
 		
-		verifyBioDataSignature(dataOpt.get());
+		verifyBioDataSignature(dataOpt.get(), index);
 
 		if (!getStringValue(map, SESSION_KEY).isPresent()) {
 			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
@@ -277,7 +278,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			if (jwsSignatureObj instanceof String) {
 				String jwsSignature = (String) jwsSignatureObj;
 				if (StringUtils.isNotEmpty(jwsSignature)) {
-					verifyDigitalIdSignature(jwsSignature);
+					verifyDigitalIdSignature(jwsSignature, index);
 					data.replace(DIGITAL_ID, decipherDigitalId(jwsSignature));
 				}
 			}
@@ -316,12 +317,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * This method validates the digitalID signature.
 	 *
 	 * @param jwsSignature the jws signature
+	 * @param index 
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
+	private void verifyDigitalIdSignature(String jwsSignature, int index) throws IdAuthenticationAppException {
 		if (!verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "verifyDigitalIdSignature", "Invalid certificate in biometrics>data>digitalId");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE);
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorMessage(),
+							"request/biometrics/" + index + "/data/digitalId"));
 		}
 	}
 
@@ -577,9 +582,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		byte[] currentHash = getHash(bdb);
 		
-		byte[] finalHash = contatBytes(previousHash, currentHash);
+		byte[] finalConcat = concatBytes(previousHash, currentHash);
 		
-		String finalHashDigest = digest(getHash(finalHash));
+		byte[] finalHash = getHash(finalConcat);
+		String finalHashDigest = digest(finalHash);
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
@@ -597,7 +603,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param currentHash the current hash
 	 * @return the byte[]
 	 */
-	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
+	private static byte[] concatBytes(byte[] previousHash, byte[] currentHash) {
 		byte[] finalHash = new byte[currentHash.length + previousHash.length];
 		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
 		System.arraycopy(currentHash, 0, finalHash, previousHash.length, currentHash.length);
@@ -676,26 +682,26 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
 		try {
-			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
-					AuthTypeDTO.class);
-			if (authType.isDemo() && !isAllowedAuthType(MatchType.Category.DEMO.getType(), authPolicies)) {
+			AuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					AuthRequestDTO.class);
+			if (AuthTypeUtil.isDemo(authRequestDTO) && !isAllowedAuthType(MatchType.Category.DEMO.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 								MatchType.Category.DEMO.name()));
 			}
 
-			if (authType.isBio()) {
+			if (AuthTypeUtil.isBio(authRequestDTO)) {
 				checkAllowedAuthTypeForBio(requestBody, authPolicies);
 			}
 
-			if (authType.isPin() && !isAllowedAuthType(MatchType.Category.SPIN.getType(), authPolicies)) {
+			if (AuthTypeUtil.isPin(authRequestDTO) && !isAllowedAuthType(MatchType.Category.SPIN.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 								MatchType.Category.SPIN.name()));
 			}
-			if (authType.isOtp() && !isAllowedAuthType(MatchType.Category.OTP.getType(), authPolicies)) {
+			if (AuthTypeUtil.isOtp(authRequestDTO) && !isAllowedAuthType(MatchType.Category.OTP.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
@@ -737,6 +743,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		OptionalInt nodeviceTypeIndex = IntStream.range(0, listBioInfo.size()).filter(i -> {
 			BioIdentityInfoDTO bioIdInfoDto = listBioInfo.get(i);
 			return Objects.nonNull(bioIdInfoDto.getData())
+					&& Objects.nonNull(bioIdInfoDto.getData().getDigitalId())
 					&& StringUtils.isEmpty(bioIdInfoDto.getData().getDigitalId().getType());
 		}).findFirst();
 
@@ -825,8 +832,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		try {
-			AuthTypeDTO authType = mapper.readValue(mapper.writeValueAsBytes(requestBody.get("requestedAuth")),
-					AuthTypeDTO.class);
+			AuthRequestDTO authRequestDto = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					AuthRequestDTO.class);
 			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
 					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
@@ -839,7 +846,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				bioTypeList.add("FINGER");
 			}
 			for (AuthPolicy mandatoryAuthPolicy : mandatoryAuthPolicies) {
-				validateAuthPolicy(requestBody, authType, bioTypeList, mandatoryAuthPolicy);
+				validateAuthPolicy(requestBody, authRequestDto, bioTypeList, mandatoryAuthPolicy);
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -855,24 +862,25 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param mandatoryAuthPolicy the mandatory auth policy
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateAuthPolicy(Map<String, Object> requestBody, AuthTypeDTO authType, List<String> bioTypeList,
+	private void validateAuthPolicy(Map<String, Object> requestBody, AuthRequestDTO authRequestDTO, List<String> bioTypeList,
 			AuthPolicy mandatoryAuthPolicy) throws IdAuthenticationAppException {
-		if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType()) && !authType.isOtp()) {
+		if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType()) && 
+				!AuthTypeUtil.isOtp(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.OTP.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.DEMO.getType())
-				&& !authType.isDemo()) {
+				&& !AuthTypeUtil.isDemo(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.DEMO.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())
-				&& !authType.isPin()) {
+				&& !AuthTypeUtil.isPin(authRequestDTO)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 							MatchType.Category.SPIN.getType()));
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(MatchType.Category.BIO.getType())) {
-			if (!authType.isBio()) {
+			if (!AuthTypeUtil.isBio(authRequestDTO)) {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 								MatchType.Category.BIO.getType()));
@@ -952,7 +960,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.auth.signing-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -962,7 +970,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.auth.signature-verification-required", Boolean.class, true);
+		return true;
 	}
 
 	/**
@@ -984,7 +992,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);
+		return true;
 	}
 	
 	/**

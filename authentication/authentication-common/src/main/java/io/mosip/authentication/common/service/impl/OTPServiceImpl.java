@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -97,6 +99,10 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
+	
+	@Autowired
+	@Qualifier("NotificationLangComparator")
+	private LanguageComparator languageComparator;	
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -162,9 +168,7 @@ public class OTPServiceImpl implements OTPService {
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
 			
-			List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
-			List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
-			
+			List<String> templateLanguages = getTemplateLanguages(idInfo);			
 			for (String lang : templateLanguages) {
 				valueMap.put(NAME + "_" + lang, getName(lang, idInfo));
 			}
@@ -311,4 +315,28 @@ public class OTPServiceImpl implements OTPService {
 		return new SimpleDateFormat(format).format(date);
 	}
 
+	/**
+	 * This method gets the template languages in following order.
+	 * 1. Gets user preferred languages if not
+	 * 2. Gets default template languages from configuration if not
+	 * 3. Gets the data capture languages
+	 * @param idInfo
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException {		
+		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
+		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
+				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
+				: userPreferredLangs;
+		if (defaultTemplateLanguges.isEmpty()) {
+			List<String> dataCaptureLanguages = idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			Collections.sort(dataCaptureLanguages, languageComparator);
+			return dataCaptureLanguages;
+		}
+
+		return defaultTemplateLanguges;
+
+	}
 }

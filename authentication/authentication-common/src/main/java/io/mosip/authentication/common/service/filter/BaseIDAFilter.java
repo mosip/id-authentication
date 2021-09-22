@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,6 +43,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
@@ -56,6 +58,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -107,6 +110,10 @@ public abstract class BaseIDAFilter implements Filter {
 	protected IdService<AutnTxn> idService;
 	
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
+	
+	private IdAuthFraudAnalysisEventManager fraudEventManager;
+	
+	private AuthAnonymousProfileService authAnonymousProfileService;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseIDAFilter.class);
@@ -126,6 +133,13 @@ public abstract class BaseIDAFilter implements Filter {
 		keyManager = context.getBean(KeyManager.class);
 		idService = context.getBean(IdService.class);
 		authTransactionStatusEventPublisher = context.getBean(AuthTransactionStatusEventPublisher.class);
+		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
+		try {
+			authAnonymousProfileService = context.getBean(AuthAnonymousProfileService.class);
+		} catch (NoSuchBeanDefinitionException e) {
+			//Only for external auth servie the bean will be present.
+			mosipLogger.info("AuthAnonymousProfileService bean not present.");
+		}
 	}
 
 	/*
@@ -162,8 +176,9 @@ public abstract class BaseIDAFilter implements Filter {
 				// super.flushBuffer();
 			}
 		};
+		Map<String, Object> requestBody = null;
 		try {
-			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
+			requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
@@ -180,6 +195,10 @@ public abstract class BaseIDAFilter implements Filter {
 		} catch (IdAuthenticationAppException  e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 					"\n" + ExceptionUtils.getStackTrace(e));
+			if(requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
+				String errorMessage = e.getErrorText();
+				fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestBody, errorMessage);
+			}
 			requestWrapper.resetInputStream();
 			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e);
 		} finally {
@@ -516,6 +535,7 @@ public abstract class BaseIDAFilter implements Filter {
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
 			storeAuthTransaction(metadata, requestSignature, responseSignature);
+			storeAnonymousProfile(requestBody, responseBody,(Map<String, Object>) requestBody.get(METADATA), metadata);
 			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
@@ -524,6 +544,13 @@ public abstract class BaseIDAFilter implements Filter {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			//throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			return respStr;
+		}
+	}
+
+	private void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody,
+			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
+		if(authAnonymousProfileService != null) {
+			authAnonymousProfileService.storeAnonymousProfile(requestBody, responseBody, requestMetadata, responseMetadata);
 		}
 	}
 
@@ -578,12 +605,13 @@ public abstract class BaseIDAFilter implements Filter {
 			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME)
 					: DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 			responseBody.remove("responsetime");// Handled for forbidden error scenario
-			responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
-											// attached for auth transaction
+
 			responseBody.put(RES_TIME,
 					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)));
+			responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
+			// attached for auth transaction
 			return responseBody;
 		} else {
 			return responseBody;

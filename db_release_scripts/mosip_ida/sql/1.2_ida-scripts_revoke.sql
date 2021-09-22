@@ -8,6 +8,7 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 -- Apr-2021		Ram Bhatt	    create tables to store partner details
+-- Sep-2021		Loganathan Sekar	    create anonymous_profile table
 -------------------------------------------------------------------------------------------------
 
 \c mosip_ida sysadmin
@@ -29,3 +30,5 @@ DROP TABLE IF EXISTS ida.misp_license_data;
 DROP TABLE IF EXISTS ida.failed_message_store;
 
 -----------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ida.anonymous_profile;

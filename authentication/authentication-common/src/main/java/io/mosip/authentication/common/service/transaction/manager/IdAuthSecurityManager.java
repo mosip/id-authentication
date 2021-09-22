@@ -54,6 +54,7 @@ import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoRequestDto;
 import io.mosip.kernel.zkcryptoservice.dto.ZKCryptoResponseDto;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 import reactor.util.function.Tuples;
 
 /**
@@ -391,12 +392,12 @@ public class IdAuthSecurityManager {
 	 * @return the tuple 2
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public Tuple2<String, String> encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
+	public Tuple3<String, String, String> encryptData(byte[] data, String partnerCertificate) throws IdAuthenticationBusinessException {
 		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
 		PublicKey publicKey = x509Certificate.getPublicKey();
-		byte[] encryptedData = encrypt(publicKey, data);
+		Tuple2<byte[], byte[]> encryptedData = encrypt(publicKey, data);
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.encodeBase64(encryptedData), CryptoUtil.encodeBase64(certificateThumbprint));
+		return Tuples.of(CryptoUtil.encodeBase64(encryptedData.getT1()), CryptoUtil.encodeBase64(encryptedData.getT2()), digestAsPlainText(certificateThumbprint));
 	}
 
 	/**
@@ -406,11 +407,11 @@ public class IdAuthSecurityManager {
 	 * @param dataToEncrypt the data to encrypt
 	 * @return the byte[]
 	 */
-	public byte[] encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
+	public Tuple2<byte[], byte[]> encrypt(PublicKey publicKey, byte[] dataToEncrypt) {
 		SecretKey secretKey = keyGenerator.getSymmetricKey();
 		byte[] encryptedData = cryptoCore.symmetricEncrypt(secretKey, dataToEncrypt, null);
 		byte[] encryptedSymmetricKey = cryptoCore.asymmetricEncrypt(publicKey, secretKey.getEncoded());
-		return combineDataToEncrypt(encryptedData, encryptedSymmetricKey);
+		return Tuples.of(encryptedSymmetricKey,encryptedData);
 	}
 
 	/**

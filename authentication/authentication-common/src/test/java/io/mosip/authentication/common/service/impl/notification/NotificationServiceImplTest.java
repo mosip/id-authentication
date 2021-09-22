@@ -49,7 +49,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
@@ -113,9 +112,6 @@ public class NotificationServiceImplTest {
 	public void TestValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setDemo(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
@@ -171,9 +167,6 @@ public class NotificationServiceImplTest {
 
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setDemo(true);
-		authRequestDTO.setRequestedAuth(authType);
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");

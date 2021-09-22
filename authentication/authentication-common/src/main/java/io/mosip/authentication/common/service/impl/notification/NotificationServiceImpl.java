@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 
 /***
@@ -73,14 +76,16 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Autowired
 	private NotificationManager notificationManager;
-
+	
+	@Autowired
+	@Qualifier("NotificationLangComparator")
+	private LanguageComparator languageComparator;
+	
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		Map<String, Object> values = new HashMap<>();		
-		
-		List<String> defaultTemplateLanguges = idInfoFetcher.getTemplatesDefaultLanguageCodes();
-		List<String> templateLanguages = defaultTemplateLanguges.isEmpty() ? infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo) : defaultTemplateLanguges;
+		Map<String, Object> values = new HashMap<>();
+		List<String> templateLanguages = getTemplateLanguages(idInfo);
 		
 		for (String lang : templateLanguages) {
 			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
@@ -295,5 +300,30 @@ public class NotificationServiceImpl implements NotificationService {
 		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
 		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+	}
+	
+	/**
+	 * This method gets the template languages in following order.
+	 * 1. Gets user preferred languages if not
+	 * 2. Gets default template languages from configuration if not
+	 * 3. Gets the data capture languages
+	 * @param idInfo
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private List<String> getTemplateLanguages(Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException {
+		List<String> userPreferredLangs = idInfoFetcher.getUserPreferredLanguages(idInfo);
+		List<String> defaultTemplateLanguges = userPreferredLangs.isEmpty()
+				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
+				: userPreferredLangs;
+		if (defaultTemplateLanguges.isEmpty()) {
+			List<String> dataCaptureLanguages = infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			Collections.sort(dataCaptureLanguages, languageComparator);
+			return dataCaptureLanguages;
+		}
+
+		return defaultTemplateLanguges;
+
 	}
 }

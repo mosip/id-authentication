@@ -8,7 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
-
+-- Sep-2021		Ram Bhatt	    Added index to license_key column
 -- ------------------------------------------------------------------------------------------
 
 -- DROP TABLE IF EXISTS ida.misp_license_data CASCADE;
@@ -28,4 +28,7 @@ CREATE TABLE ida.misp_license_data (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_mld_lk ON ida.misp_license_data (license_key);
+--index section ends------
 

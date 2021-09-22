@@ -11,7 +11,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  */
 public interface HotlistService {
 
-	void block(String id, String idType, String status, LocalDateTime expiryTimestamp) throws IdAuthenticationBusinessException;
+	void updateHotlist(String id, String idType, String status, LocalDateTime expiryTimestamp) throws IdAuthenticationBusinessException;
 	
 	void unblock(String id, String idType) throws IdAuthenticationBusinessException;
 

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
@@ -22,7 +23,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class DeviceProviderHotlistFilterImpl - implementation of auth filter for
@@ -69,9 +69,7 @@ public class DeviceProviderHotlistFilterImpl implements IMosipAuthFilter {
 						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(0).getData().getDigitalId().getDp()
 								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
 						HotlistIdTypes.DEVICE_PROVIDER);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-						|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-								&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()));
+				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
 			}).findFirst();
 			if(indexOpt.isPresent()) {
 				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
@@ -90,7 +88,7 @@ public class DeviceProviderHotlistFilterImpl implements IMosipAuthFilter {
 	 * @throws IdAuthenticationFilterException 
 	 */
 	private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
-		if (Objects.nonNull(authRequestDto.getRequestedAuth()) && authRequestDto.getRequestedAuth().isBio()) {
+		if (AuthTypeUtil.isBio(authRequestDto)) {
 			isDeviceProviderHotlisted(authRequestDto.getRequest().getBiometrics());
 		}
 	}

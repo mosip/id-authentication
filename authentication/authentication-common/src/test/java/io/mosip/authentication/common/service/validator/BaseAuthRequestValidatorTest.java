@@ -45,7 +45,6 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -77,9 +76,6 @@ public class BaseAuthRequestValidatorTest {
 	@Mock
 	private PinValidatorImpl pinValidator;
 
-	/** The validation. */
-	private Map<String, String> validation;
-
 	/** The auth request DTO. */
 	@Mock
 	AuthRequestDTO authRequestDTO;
@@ -104,10 +100,6 @@ public class BaseAuthRequestValidatorTest {
 
 	/** The error. */
 	Errors error;
-
-	public void setValidation(Map<String, String> validation) {
-		this.validation = validation;
-	}
 
 	/**
 	 * Before.
@@ -166,9 +158,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateBioDetails_IfBioInfoIsNull_hasError() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> bioInfo = new ArrayList<BioIdentityInfoDTO>();
@@ -192,9 +181,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty_hasError() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
@@ -233,9 +219,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateBioDetail_ForFMR_Enabled_NoError() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 		
 		Environment env = Mockito.mock(Environment.class);
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
@@ -275,9 +258,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateBioDetail_ForFMR_NotEnabled_NoError() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 		
 		Environment env = Mockito.mock(Environment.class);
 		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
@@ -318,12 +298,9 @@ public class BaseAuthRequestValidatorTest {
 	 * Test validate bio details if bio info is not null but bio info is empty.
 	 */
 	@Test
-	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty() {
+	public void testValidateBioDetails_IfBioInfoIsNotNullButBioTypeIsEmpty() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(false);
-		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
@@ -353,7 +330,7 @@ public class BaseAuthRequestValidatorTest {
 		Set<String> allowedAuthtype = new HashSet<>();
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
-		assertFalse(error.hasErrors());
+		assertTrue(error.hasErrors());
 
 	}
 
@@ -364,9 +341,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateBioDetails() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
@@ -1067,9 +1041,6 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
@@ -1464,8 +1435,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
 		idInfoDTO.setValue("John");
@@ -1487,7 +1456,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDobType(idInfoLists);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
@@ -1505,8 +1473,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(environment.getProperty("mosip.secondary-language"));
 		idInfoDTO.setValue("John");
@@ -1528,7 +1494,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDobType(idInfoLists);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
@@ -1546,8 +1511,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(null);
 		idInfoDTO.setValue(null);
@@ -1569,7 +1532,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDobType(idInfoLists);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
@@ -1587,9 +1549,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authTypeDTO.setBio(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("eng");
 		idInfoDTO.setValue("John");
@@ -1612,7 +1571,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra"));
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
@@ -1761,10 +1719,7 @@ public class BaseAuthRequestValidatorTest {
 	 */
 	@Test
 	public void testValidateAdandFullAdd() {
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		availableAuthTypeInfos.add("address");
 		availableAuthTypeInfos.add("fullAddress");
@@ -1788,9 +1743,6 @@ public class BaseAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setAge("25");
@@ -1803,7 +1755,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDobType(idInfoLists);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertFalse(error.hasErrors());
@@ -1821,9 +1772,6 @@ public class BaseAuthRequestValidatorTest {
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setAge("25/01/1998");
@@ -1836,7 +1784,6 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDobType(idInfoLists);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertTrue(error.hasErrors());
@@ -1850,9 +1797,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String pin = "456789";
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
@@ -1869,9 +1813,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String pin = "";
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
@@ -1888,9 +1829,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String pin = null;
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
@@ -1907,9 +1845,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String pin = "123e45";
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
@@ -1926,9 +1861,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String otp = "123445";
 		RequestDTO request = new RequestDTO();
 		request.setOtp(otp);
@@ -1945,9 +1877,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		String otp = null;
 		RequestDTO request = new RequestDTO();
 		request.setOtp(otp);
@@ -1988,9 +1917,6 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 
 		List<IdentityInfoDTO> dobType = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -2013,9 +1939,6 @@ public class BaseAuthRequestValidatorTest {
 	public void testInValidateBioDetails_DeviceProviderID() {
 
 		authRequestDTO = getAuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setBio(true);
-		authRequestDTO.setRequestedAuth(authType);
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO = new DataDTO();
@@ -2105,9 +2028,6 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void TestInvalidPinException() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setPin(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin("123456");
 		authRequestDTO.setRequest(request);
@@ -2121,9 +2041,6 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void TestInvalidPinExceptionForOTP() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123456");
 		authRequestDTO.setRequest(request);
@@ -2345,6 +2262,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2356,13 +2274,14 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setTransactionID("");
 		RequestDTO request = new RequestDTO();
 		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
 		bioInfo.setData(dataDTO);
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/timestamp"), error.getFieldErrors().get(0).getArguments()[0]);
 		
 	}
@@ -2372,6 +2291,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2391,8 +2311,9 @@ public class BaseAuthRequestValidatorTest {
 		bioInfo.setData(dataDTO);
 		List<BioIdentityInfoDTO> biometrics = Collections.singletonList(bioInfo);
 		request.setBiometrics(biometrics);
+		authRequestDTO.setTransactionID("");
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 		
 	}
@@ -2402,6 +2323,7 @@ public class BaseAuthRequestValidatorTest {
 		DataDTO dataDTO = new DataDTO();
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
+		dataDTO.setTransactionId("");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("1");
 		digitalId.setMake("1");
@@ -2413,6 +2335,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("1");
 		dataDTO.setDigitalId(digitalId);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setTransactionID("");
 		RequestDTO request = new RequestDTO();
 		BioIdentityInfoDTO bioInfo = new BioIdentityInfoDTO();
 		bioInfo.setData(dataDTO);
@@ -2423,7 +2346,7 @@ public class BaseAuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
 		dataDTO.setTimestamp(timestamp);
 		
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometricTimestamps", biometrics, error);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
 		assertEquals(String.format(BIO_PATH, 0, "data/digitalId/dateTime"), error.getFieldErrors().get(0).getArguments()[0]);
 	}
 

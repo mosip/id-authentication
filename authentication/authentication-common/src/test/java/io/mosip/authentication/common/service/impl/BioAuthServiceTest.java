@@ -48,7 +48,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -131,9 +130,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -190,9 +186,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -247,9 +240,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -325,9 +315,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -394,9 +381,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -452,9 +436,6 @@ public class BioAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -505,9 +486,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -562,9 +540,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -621,9 +596,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -700,9 +672,6 @@ public class BioAuthServiceTest {
 		authRequestDTO.setIndividualId(individualId);
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> biometricsList = new ArrayList<>();
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
@@ -759,9 +728,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -816,9 +782,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -873,9 +836,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -932,9 +892,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -988,9 +945,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("274390482564");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -1043,9 +997,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("2812936903");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -1098,9 +1049,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("2812936903");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -1178,9 +1126,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("2812936903");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -1278,9 +1223,6 @@ public class BioAuthServiceTest {
 		RequestDTO request = new RequestDTO();
 		request.setDemographics(identity);
 		authRequestDTO.setIndividualId("2812936903");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
@@ -1332,308 +1274,4 @@ public class BioAuthServiceTest {
 		}
 	}
 
-	@Test
-	public void testVerifyBiometricDeviceDeviceNotExist() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_DOES_NOT_EXIST, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(),
-					cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceRevoked() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_REVOKED_OR_RETIRED, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(),
-					cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceProviderNotExist() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_NOT_EXIST, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(),
-					cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceProviderInactive() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.DEVICE_PROVIDER_INACTIVE, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.DEVICE_VERIFICATION_FAILED.getErrorCode(),
-					cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceMDSNotExist() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_DOES_NOT_EXIST, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceMDSInactive() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(Collections.singletonList(new ServiceError(IdAuthCommonConstants.MDS_INACTIVE_STATE, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceSWNotMatch() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.SW_ID_VERIFICATION_FAILED, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.MDS_VERIFICATION_FAILED.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceProviderDeviceCodeNotMatch()
-			throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(Collections
-				.singletonList(new ServiceError(IdAuthCommonConstants.FIELD_VALIDATION_FAILED, "Error on field type")));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceOtherErrors() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		ResponseWrapper<String> response = new ResponseWrapper<>();
-		response.setErrors(
-				Collections.singletonList(new ServiceError(IdAuthCommonConstants.KER_DECRYPTION_FAILURE, null)));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, response));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceResponseError() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, null, null));
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), cause.getErrorCode());
-		}
-	}
-
-	@Test
-	public void testVerifyBiometricDeviceRestValidationFailed() throws IDDataValidationException, RestServiceException {
-		DataDTO dataDTO = new DataDTO();
-		DigitalId digitalId = new DigitalId();
-		digitalId.setSerialNo("");
-		digitalId.setMake("");
-		digitalId.setModel("");
-		digitalId.setType("");
-		digitalId.setDeviceProvider("");
-		digitalId.setDeviceProviderId("");
-		digitalId.setDateTime("");
-		dataDTO.setDigitalId(digitalId);
-		dataDTO.setPurpose("AUTH");
-		List<BioIdentityInfoDTO> bioRequest = Collections
-				.singletonList(new BioIdentityInfoDTO(dataDTO, null, null, null, null));
-		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenThrow(new IDDataValidationException());
-		try {
-			ReflectionTestUtils.invokeMethod(bioAuthServiceImpl, "verifyBiometricDevice", bioRequest);
-		} catch (UndeclaredThrowableException e) {
-			IdAuthenticationBusinessException cause = (IdAuthenticationBusinessException) e.getCause();
-			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), cause.getErrorCode());
-		}
-	}
 }

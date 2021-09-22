@@ -30,8 +30,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 	public static final String RESPONSE_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
-	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_MINUTES = "authrequest.received-time-adjustment.minutes";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS = "authrequest.received-time-allowed.seconds";
+	public static final String AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS = "authrequest.received-time-adjustment.seconds";
 	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
 	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";
 	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "ida.auth.mail.subject.template";
@@ -133,6 +133,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STATUS_UPDATE_TOPIC = "ida-topic-credential-status-update";
 	public static final String AUTH_TYPE_STATUS_ACK_TOPIC = "ida-topic-auth-type-status-update-acknowledge";
 	public static final String AUTH_TRANSACTION_STATUS_TOPIC = "ida-topic-auth-transaction-status";
+	public static final String AUTH_ANONYMOUS_PROFILE_TOPIC = "ida-topic-auth-anonymous-profile";
 	public static final String AUTH_FRAUD_ANALYSIS_TOPIC = "ida-topic-fraud-analysis";
 
 	public static final String IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS = "ida-max-credential-pull-window-days";
@@ -154,5 +155,11 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.external.auth.filter.classes.in.execution.order";
 	public static final String IDA_MOSIP_INTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.internal.auth.filter.classes.in.execution.order";
-	public static final String IDA_MOSIP_KYC_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER = "ida.mosip.kyc.auth.filter.classes.in.execution.order";
+  
+	public static final String USER_PREFFRRED_LANG_ATTRIBUTE_NAME="mosip.default.user-preferred-language-attribute";
+
+	public static final String BIO_SEGMENT_TIME_DIFF_ALLOWED = "authrequest.biometrics.allowed-segment-time-difference-in-seconds";
+	public static final String PREFERRED_LANG_ATTRIB_NAME = "mosip.preferred.language.attribute.name";
+	public static final String LOCATION_PROFILE_ATTRIB_NAME = "mosip.location.profile.attribute.name";
+
 }

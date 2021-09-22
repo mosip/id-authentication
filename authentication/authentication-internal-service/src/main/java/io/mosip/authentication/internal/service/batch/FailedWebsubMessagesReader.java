@@ -11,6 +11,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_TOPIC;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HOTLIST_TOPIC;
@@ -299,13 +300,18 @@ public class FailedWebsubMessagesReader implements ItemReader<FailedMessage> {
 	 * @return the request ids iterator
 	 */
 	private Iterator<FailedMessage> getFailedMessagesIterator() {
-		Stream<FailedMessage> requestIdStream = Stream
-				.<List<FailedMessage>>iterate(
-						this.getNextPageItems(), 
-						list -> list != null && !list.isEmpty(),
-						list -> this.getNextPageItems())
-				.flatMap(List::stream);
-		return requestIdStream.iterator();
+		if(env.getProperty(IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL) != null) {
+			Stream<FailedMessage> requestIdStream = Stream
+					.<List<FailedMessage>>iterate(
+							this.getNextPageItems(), 
+							list -> list != null && !list.isEmpty(),
+							list -> this.getNextPageItems())
+					.flatMap(List::stream);
+			return requestIdStream.iterator();
+		} else {
+			mosipLogger.info("websub.failed.messages.sync.url property is not configured. Returning empty falied messages list.");
+			return List.<FailedMessage>of().iterator();
+		}
 	}
 
 	/**

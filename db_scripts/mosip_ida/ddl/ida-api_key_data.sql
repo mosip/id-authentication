@@ -9,7 +9,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- Sep-2021		Ram Bhatt	    Added index to api_key_id column
 -- ------------------------------------------------------------------------------------------
 -- object: ida.api_key_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.api_key_data CASCADE;
@@ -28,3 +28,6 @@ CREATE TABLE ida.api_key_data (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_akd_apkeyid ON ida.api_key_data (api_key_id);
+--index section ends------

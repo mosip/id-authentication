@@ -17,7 +17,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IndividualIdHotlistFilterImpl - implementation of auth filter for
@@ -62,10 +61,7 @@ public class IndividualIdHotlistFilterImpl implements IMosipAuthFilter {
 		if (Objects.nonNull(individualId) && Objects.nonNull(individualIdType)) {
 			HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
 					IdAuthSecurityManager.generateHashAndDigestAsPlainText(individualId.getBytes()), IdAuthCommonConstants.INDIVIDUAL_ID);
-			if ((Objects.isNull(hotlistStatus.getExpiryDTimes()) && hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED))
-					|| (Objects.nonNull(hotlistStatus.getExpiryDTimes())
-							&& hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)
-							&& hotlistStatus.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+			if (hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED)) {
 				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(), String
 						.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(), IdAuthCommonConstants.INDIVIDUAL_ID));
 			}

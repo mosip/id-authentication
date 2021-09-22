@@ -38,8 +38,6 @@ public class HotlistServiceImpl implements HotlistService {
 
 	private static final String UNBLOCKED = "UNBLOCKED";
 
-	private static final String BLOCKED = "BLOCKED";
-
 	private static final String EXPIRY_TIMESTAMP = "expiryTimestamp";
 
 	private static final String STATUS = "status";
@@ -57,7 +55,7 @@ public class HotlistServiceImpl implements HotlistService {
 	private HotlistCacheRepository hotlistCacheRepo;
 
 	@Override
-	public void block(String id, String idType, String status, LocalDateTime expiryTimestamp)
+	public void updateHotlist(String id, String idType, String status, LocalDateTime expiryTimestamp)
 			throws IdAuthenticationBusinessException {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
@@ -104,15 +102,23 @@ public class HotlistServiceImpl implements HotlistService {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
 			HotlistCache hotlistCache = hotlistData.get();
-			dto.setStatus(hotlistCache.getStatus());
 			dto.setStartDTimes(hotlistCache.getStartDTimes());
-			dto.setExpiryDTimes(hotlistCache.getExpiryDTimes());
+			if (Objects.nonNull(hotlistCache.getExpiryDTimes())
+					&& hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+				if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					dto.setStatus(HotlistStatus.UNBLOCKED);
+				else
+					dto.setStatus(HotlistStatus.BLOCKED);
+			} else {
+				dto.setStatus(hotlistCache.getStatus());
+			}
 		} else {
 			dto.setStatus(HotlistStatus.UNBLOCKED);
 		}
 		return dto;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void handlingHotlistingEvent(EventModel eventModel) throws IdAuthenticationBusinessException {
 		Map<String, Object> eventData = eventModel.getEvent().getData();
@@ -120,18 +126,17 @@ public class HotlistServiceImpl implements HotlistService {
 			if (validateHotlistEventData(eventData) && idTypes.contains(eventData.get(ID_TYPE))) {
 				String id = (String) eventData.get(ID);
 				String idType = (String) eventData.get(ID_TYPE);
-				if(idType.equalsIgnoreCase(IdType.UIN.getType())
-						|| idType.equalsIgnoreCase(IdType.VID.getType())) {
+				if (idType.equalsIgnoreCase(IdType.UIN.getType()) || idType.equalsIgnoreCase(IdType.VID.getType())) {
 					idType = IdAuthCommonConstants.INDIVIDUAL_ID;
 				}
 				String status = (String) eventData.get(STATUS);
 				String expiryTimestamp = (String) eventData.get(EXPIRY_TIMESTAMP);
-				if (status.contentEquals(BLOCKED)) {
-					block(id, idType, status,
+				if (status.contentEquals(UNBLOCKED) && Objects.isNull(expiryTimestamp)) {
+					unblock(id, idType);
+				} else {
+					updateHotlist(id, idType, status,
 							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
 									: null);
-				} else if (status.contentEquals(UNBLOCKED)) {
-					unblock(id, idType);
 				}
 			}
 		}

@@ -2,10 +2,8 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -27,23 +25,6 @@ public class AuthTypeImpl implements AuthType {
 	
 	/** The associated match types. */
 	private Set<MatchType> associatedMatchTypes;
-	
-	/** The auth type predicate. */
-	private Predicate<? super AuthTypeDTO> authTypePredicate;
-	
-	/**
-	 * Instantiates a new auth type impl.
-	 *
-	 * @param type the type
-	 * @param associatedMatchTypes the associated match types
-	 * @param authTypePredicate the auth type predicate
-	 * @param displayName the display name
-	 */
-	public AuthTypeImpl(String type, Set<MatchType> associatedMatchTypes,
-			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
-		this(type, associatedMatchTypes, displayName);
-		this.authTypePredicate = authTypePredicate;
-	}
 	
 	/**
 	 * Instantiates a new auth type impl.
@@ -98,14 +79,6 @@ public class AuthTypeImpl implements AuthType {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAuthTypePredicate()
-	 */
-	@Override
-	public Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
-		return authTypePredicate;
-	}
-
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAuthTypeImpl()
 	 */

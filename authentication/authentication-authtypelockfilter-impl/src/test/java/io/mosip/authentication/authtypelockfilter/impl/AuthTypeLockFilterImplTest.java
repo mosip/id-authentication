@@ -1,7 +1,9 @@
 package io.mosip.authentication.authtypelockfilter.impl;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -22,7 +24,10 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
@@ -60,9 +65,12 @@ public class AuthTypeLockFilterImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestvalidateAuthTypeStatusDemoLocked() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setDemo(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identityDto = new IdentityDTO();
+		identityDto.setDob("1998/01/01");
+		request.setDemographics(identityDto);
+		authRequestDTO.setRequest(request);
+		
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.DEMO.getType());
 		status.setLocked(true);
@@ -77,9 +85,16 @@ public class AuthTypeLockFilterImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestvalidateAuthTypeStatusBioLocked() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setBio(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		List<BioIdentityInfoDTO> list = new ArrayList<>();
+		BioIdentityInfoDTO bioId = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioType("Finger");
+		data.setBioSubType("UNKNOWN");
+		bioId.setData(data);
+		list.add(bioId);
+		request.setBiometrics(list);
+		authRequestDTO.setRequest(request);
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.BIO.getType());
 		status.setAuthSubType(BioAuthType.FACE_IMG.getType());
@@ -100,9 +115,9 @@ public class AuthTypeLockFilterImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestvalidateAuthTypeStatusOTPLocked() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setOtp(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		request.setOtp("123");
+		authRequestDTO.setRequest(request);
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.OTP.getType());
 		status.setLocked(true);
@@ -117,9 +132,9 @@ public class AuthTypeLockFilterImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestvalidateAuthTypeStatusPinLocked() throws Throwable {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO requestedAuth = new AuthTypeDTO();
-		requestedAuth.setPin(true);
-		authRequestDTO.setRequestedAuth(requestedAuth);
+		RequestDTO request = new RequestDTO();
+		request.setStaticPin("123");
+		authRequestDTO.setRequest(request);
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.SPIN.getType());
 		status.setLocked(true);

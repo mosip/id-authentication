@@ -2,7 +2,10 @@ package io.mosip.authentication.common.service.validator;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -15,14 +18,15 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -44,7 +48,10 @@ import io.mosip.kernel.core.util.StringUtils;
  * 
  */
 @Component
+@Primary
 public class AuthRequestValidator extends BaseAuthRequestValidator {
+
+	private static final String DATE_TIME = "dateTime";
 
 	private static final String DATA_TIMESTAMP = "data/timestamp";
 
@@ -133,7 +140,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
-				validateAuthType(authRequestDto.getRequestedAuth(), errors);
+				validateAuthType(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
@@ -145,8 +152,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
-			if (!errors.hasErrors() && authRequestDto.getRequestedAuth().isBio()) {
-				validateBiometricTimestamps(authRequestDto.getRequest().getBiometrics(), errors);
+			if (!errors.hasErrors() && AuthTypeUtil.isBio(authRequestDto)) {
+				validateBiometrics(authRequestDto.getRequest().getBiometrics(), authRequestDto.getTransactionID(), errors);
 			}
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
@@ -160,9 +167,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Validate biometric timestamps.
 	 *
 	 * @param biometrics the biometrics
+	 * @param authTxnId 
 	 * @param errors     the errors
 	 */
-	protected void validateBiometricTimestamps(List<BioIdentityInfoDTO> biometrics, Errors errors) {
+	protected void validateBiometrics(List<BioIdentityInfoDTO> biometrics, String authTxnId, Errors errors) {
 		if (biometrics != null) {
 			for (int i = 0; i < biometrics.size(); i++) {
 				BioIdentityInfoDTO bioIdentityInfoDTO = biometrics.get(i);
@@ -172,20 +180,102 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 							new Object[] { String.format(BIO_PATH, i, IdAuthCommonConstants.DATA) },
 							IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 				} else {
-					validateReqTime(bioIdentityInfoDTO.getData().getTimestamp(), errors,
-							String.format(BIO_PATH, i, DATA_TIMESTAMP), this::biometricTimestampParser);
-
-					if (!errors.hasErrors()) {
-						validateDigitalIdTimestamp(bioIdentityInfoDTO.getData().getDigitalId(), errors,
-								String.format(BIO_PATH, i, DIGITAL_ID));
-					}
+					validateBioTxnId(authTxnId, errors, i, bioIdentityInfoDTO.getData().getTransactionId());
+					validateBiometricTimestampAndDigitalIdTimestamp(biometrics.size() - 1, errors, i,
+							bioIdentityInfoDTO.getData());
+					validateSuccessiveBioSegmentTimestamp(biometrics, errors, i, bioIdentityInfoDTO);
 				}
 			}
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { "request/biometrics" },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { "request/biometrics" },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
+	}
+
+	private void validateSuccessiveBioSegmentTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
+			BioIdentityInfoDTO bioIdentityInfoDTO) {
+		if (!errors.hasErrors() && index != 0) {
+			LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+					this.biometricTimestampParser(bioIdentityInfoDTO.getData().getTimestamp()));
+			LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+					this.biometricTimestampParser((biometrics.get(index - 1).getData().getTimestamp())));
+			long bioTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
+			Long allowedTimeDiffInSeconds = env.getProperty(IdAuthConfigKeyConstants.BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L);
+			if (bioTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
+				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP);
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode(), new Object[] { allowedTimeDiffInSeconds },
+						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage());
+			}
+			validateSuccessiveDigitalIdTimestamp(biometrics, errors, index, bioIdentityInfoDTO, allowedTimeDiffInSeconds);
+		}
+	}
+
+	protected void validateSuccessiveDigitalIdTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
+			BioIdentityInfoDTO bioIdentityInfoDTO, Long allowedTimeDiffInSeconds) {
+		LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+				this.biometricTimestampParser(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()));
+		LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+				this.biometricTimestampParser(biometrics.get(index - 1).getData().getDigitalId().getDateTime()));
+		long digitalIdTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
+		if (digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP);
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode(), new Object[] { allowedTimeDiffInSeconds },
+					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage());
+		}
+	}
+
+	private void validateBioTxnId(String authTxnId, Errors errors, int index, String bioTxnId) {
+		// authTxnId validation is already done at this point
+		if (Objects.isNull(bioTxnId)) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { String.format(BIO_PATH, index, IdAuthCommonConstants.BIO_TXN_ID_PATH) },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			
+		} else
+		if(!authTxnId.contentEquals(bioTxnId)) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { String.format(BIO_PATH, index, IdAuthCommonConstants.BIO_TXN_ID_PATH) },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+	}
+
+	private void validateBiometricTimestampAndDigitalIdTimestamp(int biometricSize, Errors errors, int index,
+			DataDTO dataDTO) {
+		
+		String paramName = String.format(BIO_PATH, index, DATA_TIMESTAMP);
+		if (index == biometricSize) {
+			// validating future datetime check and other checks on last segment of bio and
+			// digitalId
+			validateReqTime(dataDTO.getTimestamp(), errors, paramName, this::biometricTimestampParser);
+
+			if (!errors.hasErrors()) {
+				validateDigitalIdTimestamp(dataDTO.getDigitalId(), errors, String.format(BIO_PATH, index, DIGITAL_ID));
+			}
+		} else {
+			// validating null check on bio timestamps and digitialId timestamps except last
+			// segment
+			nullCheckOnBioTimestampAndDigitalIdTimestamp(errors, index, dataDTO, paramName);
+		}
+	}
+
+	private void nullCheckOnBioTimestampAndDigitalIdTimestamp(Errors errors, int i, DataDTO dataDTO, String paramName) {
+		if (StringUtils.isEmpty(dataDTO.getTimestamp())) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
+					MISSING_INPUT_PARAMETER + paramName);
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { paramName },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		// null check only on digitalId and digitalId timestamp
+		nullCheckDigitalIdAndTimestamp(dataDTO.getDigitalId(), errors, String.format(BIO_PATH, i, DIGITAL_ID));
 	}
 
 	/**
@@ -196,21 +286,28 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param field     the field
 	 */
 	protected void validateDigitalIdTimestamp(DigitalId digitalId, Errors errors, String field) {
+		final String dateTimeField = field + DATE_TIME;
+		if (nullCheckDigitalIdAndTimestamp(digitalId, errors, field)) {
+			validateReqTime(digitalId.getDateTime(), errors, dateTimeField, this::biometricTimestampParser);
+		}
+
+	}
+
+	protected boolean nullCheckDigitalIdAndTimestamp(DigitalId digitalId, Errors errors, String field) {
 		if (digitalId != null) {
-			final String dateTimeField = field + "dateTime";
 			if (digitalId.getDateTime() == null) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { dateTimeField },
+						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { field + DATE_TIME },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else {
-				validateReqTime(digitalId.getDateTime(), errors, dateTimeField, this::biometricTimestampParser);
+				return false;
 			}
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] { field },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			return false;
 		}
-
+		return true;
 	}
 
 	/**
@@ -220,26 +317,80 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors         the errors
 	 */
 	private void validateDomainURIandEnv(AuthRequestDTO authRequestDto, Errors errors) {		
-		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
-				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
-						.anyMatch(bio -> {
-							if (bio.getData().getDomainUri() == null) {
-								// It is error if domain URI in request is not null but in biometrics it is null
-								return (authRequestDto.getDomainUri() != null										
-										|| isValuesContainsIgnoreCase(allowedDomainUris, authRequestDto.getDomainUri()));
-							} else {
-								// It is error if domain URI in biometrics is not null and the same in request
-								// is not null or they both are not equal
-								return authRequestDto.getDomainUri() == null										
-										|| !isValuesContainsIgnoreCase(allowedDomainUris, bio.getData().getDomainUri())
-										|| !bio.getData().getDomainUri().contentEquals(authRequestDto.getDomainUri());
-							}
-						})) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(), String
-					.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(), "domainUri", "domainUri"));
+		if (Objects.nonNull(authRequestDto.getRequest())
+				&& Objects.nonNull(authRequestDto.getRequest().getBiometrics())) {
+
+			// It is error if domain URI in request is not null but in biometrics it is null
+			String nullBioDomainUris = IntStream.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() == null
+							&& authRequestDto.getDomainUri() != null)
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if (!nullBioDomainUris.isEmpty()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "bio domain uri is null");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/biometrics/" + nullBioDomainUris + "/data/domainUri"));
+			}
+
+			// It is error if domain URI in biometrics is not null and null in the request
+			if (authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
+					.anyMatch(bio -> bio.getData().getDomainUri() != null && authRequestDto.getDomainUri() == null)) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "request domainUri is null");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/domainUri"));
+
+			}
+
+			// Both are not null and they both are not equal			
+			String requestAndBioDomainUrisNotSame = IntStream
+					.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() != null
+							&& authRequestDto.getDomainUri() != null
+							&& !authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri()
+									.contentEquals(authRequestDto.getDomainUri()))
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if(!requestAndBioDomainUrisNotSame.isEmpty()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "request domainUri is no matching against bio domainUri");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorMessage(),
+								"request/biometrics/" + requestAndBioDomainUrisNotSame + "/data/domainUri", "request/domainUri"));
+			}
+			
+			// bio domain uri is not null and not matching with configurations
+			String notMatchingBioDomainsUris = IntStream.range(0, authRequestDto.getRequest().getBiometrics().size())
+					.filter(i -> Objects.nonNull(authRequestDto.getRequest().getBiometrics().get(i).getData())
+							&& authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri() != null
+							&& !isValuesContainsIgnoreCase(allowedDomainUris,
+									authRequestDto.getRequest().getBiometrics().get(i).getData().getDomainUri()))
+					.mapToObj(String::valueOf).collect(Collectors.joining(","));
+			if (!notMatchingBioDomainsUris.isEmpty()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "bio domain uri is not matching with configured domain uris");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/biometrics/" + notMatchingBioDomainsUris + "/data/domainUri"));
+
+			}
+
+			// request domain uri is not null and not matching with configurations
+			if (authRequestDto.getDomainUri() != null
+					&& !isValuesContainsIgnoreCase(allowedDomainUris, authRequestDto.getDomainUri())) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE,
+						"request domain uri is not matching with configured domain uris");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/domainUri"));
+			}
+
 		}
+		
 		if (Objects.nonNull(authRequestDto.getRequest()) && Objects.nonNull(authRequestDto.getRequest().getBiometrics())
 				&& authRequestDto.getRequest().getBiometrics().stream().filter(bio -> Objects.nonNull(bio.getData()))
 						.anyMatch(bio -> {
@@ -300,10 +451,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param errors      the errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		AuthTypeDTO authType = authRequest.getRequestedAuth();
-		if (authType.isDemo()) {
+		if (AuthTypeUtil.isDemo(authRequest)) {
 			checkDemoAuth(authRequest, errors);
-		} else if (authType.isBio()) {
+		} else if (AuthTypeUtil.isBio(authRequest)) {
 			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 		}

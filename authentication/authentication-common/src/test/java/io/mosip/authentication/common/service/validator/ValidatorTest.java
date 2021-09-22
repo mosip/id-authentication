@@ -39,7 +39,6 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
@@ -313,7 +312,7 @@ public class ValidatorTest {
 		MockEnvironment mockEnv = new MockEnvironment();
 		mockEnv.setProperty("auth.types.allowed", "demo,otp");
 		mockEnv.setProperty("datetime.pattern","yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		mockEnv.setProperty("authrequest.received-time-allowed.minutes", "30");
+		mockEnv.setProperty("authrequest.received-time-allowed.seconds", "30");
 		ReflectionTestUtils.setField(authRequestValidator, "env", mockEnv);
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -324,7 +323,6 @@ public class ValidatorTest {
 	@Test
 	public void validateAllowedAuthTypes2() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		authRequestDTO.setRequestedAuth(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
@@ -333,7 +331,6 @@ public class ValidatorTest {
 	@Test
 	public void validateAuthType() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		authRequestDTO.setRequestedAuth(new AuthTypeDTO());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-008")));
@@ -352,9 +349,6 @@ public class ValidatorTest {
 	@Test
 	public void checkDemoAuth() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
@@ -371,9 +365,6 @@ public class ValidatorTest {
 	@Test
 	public void checkIdentityInfoValue() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
@@ -391,9 +382,6 @@ public class ValidatorTest {
 	@Test
 	public void checkLangaugeDetails() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setValue("adasd");
@@ -829,7 +817,6 @@ public class ValidatorTest {
 	@Test
 	public void validateAllowedAuthTypesNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		authRequestDTO.setRequestedAuth(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
@@ -838,7 +825,6 @@ public class ValidatorTest {
 	@Test
 	public void checkAuthRequest() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		authRequestDTO.setRequestedAuth(new AuthTypeDTO());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-008")));
@@ -852,14 +838,10 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
@@ -893,14 +875,10 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");
@@ -935,14 +913,10 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setKeyIndex("string");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setBio(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
 		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setDeviceCode("1");
 		dataDTO.setDeviceServiceVersion("1");

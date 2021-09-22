@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -26,7 +27,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
@@ -92,7 +92,7 @@ public class AuthController {
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@PostMapping(path = "/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/auth/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
@@ -110,10 +110,7 @@ public class AuthController {
 					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
 			authrequestdto.setIndividualIdType(idType);
 			authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
-			if(!errors.hasErrors() && Optional.of(authrequestdto)
-					.map(AuthRequestDTO::getRequestedAuth)
-					.filter(AuthTypeDTO::isBio)
-					.isPresent()) {
+			if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 			}
 			DataValidationUtil.validate(errors);

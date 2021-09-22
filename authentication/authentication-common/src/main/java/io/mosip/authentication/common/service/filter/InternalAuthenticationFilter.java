@@ -51,17 +51,17 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, true);
+		return true;
 	}
 
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, true);
+		return true;
 	}
 
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, true);
+		return true;
 	}
 	
 	@Override

@@ -26,7 +26,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
-import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -225,7 +224,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithMetadata) {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
 				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
-				exceptionWithMetadata.copyMetadataTo(responsWithMetadata, AutnTxn.class.getSimpleName());
+				if(exceptionWithMetadata.getMetadata() != null) {
+					exceptionWithMetadata.getMetadata().keySet().forEach(key -> exceptionWithMetadata.copyMetadataTo(responsWithMetadata, key));
+				}
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
