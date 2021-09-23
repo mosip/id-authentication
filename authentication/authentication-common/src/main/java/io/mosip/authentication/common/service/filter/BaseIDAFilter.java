@@ -535,6 +535,7 @@ public abstract class BaseIDAFilter implements Filter {
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
 			storeAuthTransaction(metadata, requestSignature, responseSignature);
+			if(requestBody != null)
 			storeAnonymousProfile(requestBody, responseBody,(Map<String, Object>) requestBody.get(METADATA), metadata);
 			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
