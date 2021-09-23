@@ -51,10 +51,9 @@ public class BioMatcherUtilTest {
 	private BioMatcherUtil bioMatcherUtil;
 
 	Map<String, String> valueMap = new HashMap<>();
-	private final String value = "YXNkZmdoamtxZXJ0eXVqa2xkZmdoamtzZGZnaGprbGNmdmdiaG5qbWthc2RmZ2hqa2x6eGN2Ym5t+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 	@Before
-	public void before() {
-		//valueMap.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
+	public void before() {		
 		ReflectionTestUtils.setField(bioMatcherUtil, "bdbProcessedLevel", "Raw");
 	}
 
