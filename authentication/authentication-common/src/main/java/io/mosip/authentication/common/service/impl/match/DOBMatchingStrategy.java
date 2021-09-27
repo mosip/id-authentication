@@ -31,8 +31,9 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			Date reqInfoDate;
+			String dateOfBirthFormat = getDateOfBirthFormat(props);
 			try {
-				reqInfoDate = DateUtils.parseToDate((String) reqInfo, getDateOfBirthFormat(props));
+				reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateOfBirthFormat);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
 				throw new IdAuthenticationBusinessException(
@@ -44,7 +45,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 			
 			Date entityInfoDate;
 			try {
-				entityInfoDate = DateUtils.parseToDate((String) entityInfo, getDateOfBirthFormat(props));
+				entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateOfBirthFormat);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -79,7 +80,6 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 		if(envObj instanceof Environment) {
 			Environment env = (Environment) envObj;
 			dobFormat = env.getProperty(IdAuthConfigKeyConstants.MOSIP_DATE_OF_BIRTH_PATTERN, IdAuthCommonConstants.DEFAULT_DOB_PATTERN);
-			
 		} else {
 			dobFormat =  IdAuthCommonConstants.DEFAULT_DOB_PATTERN;
 		}
