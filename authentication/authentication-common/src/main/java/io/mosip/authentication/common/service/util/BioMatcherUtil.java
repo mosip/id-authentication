@@ -38,6 +38,7 @@ import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -125,8 +126,8 @@ public class BioMatcherUtil {
 					}
 				} catch (BiometricException e) {
 					logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction",
-							e.getClass().getSimpleName() + ": " + e.getMessage());
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO);
+							String.format("%s: %s", e.getClass().getSimpleName(), ExceptionUtils.getStackTrace(e)));
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO, e);
 				}
 			}
 		}

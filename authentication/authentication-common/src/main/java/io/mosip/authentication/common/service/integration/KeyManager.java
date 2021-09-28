@@ -136,7 +136,7 @@ public class KeyManager {
 	 */
 	public String kernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId, Boolean isThumbprintEnabled)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, true, isThumbprintEnabled);
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, false, isThumbprintEnabled);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class KeyManager {
 	 */
 	public String kernelDecrypt(String thumbprint, byte[] encryptedSessionKey,
 			byte[] encryptedData, String refId, String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, false, isThumbprintEnabled);
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, true, isThumbprintEnabled);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class KeyManager {
 	 */
 	private String internalKernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey,
 			byte[] encryptedData, String refId, String aad, String salt,
-			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+			Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		byte[] data;
 		if (isThumbprintEnabled) {
@@ -189,13 +189,12 @@ public class KeyManager {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 		}
 		try {
-			String encodedIdentity = CryptoUtil
-					.encodeBase64Url(securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
-							isThumbprintEnabled));
-			if (decode) {
-				decryptedRequest = new String(CryptoUtil.decodeBase64Url(encodedIdentity), StandardCharsets.UTF_8);
+			byte[] decrptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
+					isThumbprintEnabled);
+			if (encode) {
+				decryptedRequest = CryptoUtil.encodeBase64(decrptedIdentity);
 			} else {
-				decryptedRequest = encodedIdentity;
+				decryptedRequest = new String(decrptedIdentity, StandardCharsets.UTF_8);
 			}
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),

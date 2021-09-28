@@ -1,6 +1,9 @@
 package io.mosip.authentication.core.util;
 
 import java.util.Base64;
+import java.util.Base64.Encoder;
+
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Crypto Util for common methods in various module
@@ -9,6 +12,9 @@ import java.util.Base64;
  *
  */
 public class CryptoUtil {
+
+	private static final byte[] EMPTY_BYTES = new byte[0];
+	private static final Encoder URL_ENCODER_WITHOUT_PADDING = Base64.getUrlEncoder().withoutPadding();
 
 	/**
 	 * Private Constructor for this class
@@ -41,6 +47,9 @@ public class CryptoUtil {
 	 * @return encoded data
 	 */
 	public static String encodeBase64(byte[] data) {
+		if (EmptyCheckUtils.isNullEmpty(data)) {
+			return null;
+		}
 		return Base64.getEncoder().encodeToString(data);
 	}
 	
@@ -51,17 +60,10 @@ public class CryptoUtil {
 	 * @return encoded data
 	 */
 	public static String encodeBase64Url(byte[] data) {
-		return Base64.getUrlEncoder().encodeToString(data);
-	}
-
-	/**
-	 * Encodes to BASE64 String
-	 * 
-	 * @param data data to encode
-	 * @return encoded data
-	 */
-	public static String encodeToBase64String(byte[] data) {
-		return Base64.getEncoder().encodeToString(data);
+		if (EmptyCheckUtils.isNullEmpty(data)) {
+			return null;
+		}
+		return URL_ENCODER_WITHOUT_PADDING.encodeToString(data);
 	}
 
 	/**
@@ -71,6 +73,9 @@ public class CryptoUtil {
 	 * @return decoded data
 	 */
 	public static byte[] decodeBase64(String data) {
+		if (EmptyCheckUtils.isNullEmpty(data)) {
+			return EMPTY_BYTES;
+		}
 		return Base64.getDecoder().decode(data.getBytes());
 	}
 	
@@ -81,6 +86,9 @@ public class CryptoUtil {
 	 * @return decoded data
 	 */
 	public static byte[] decodeBase64Url(String data) {
+		if (EmptyCheckUtils.isNullEmpty(data)) {
+			return EMPTY_BYTES;
+		}
 		return Base64.getUrlDecoder().decode(data.getBytes());
 	}
 

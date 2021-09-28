@@ -8,6 +8,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAUL
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FAILURE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.QUALITY_SCORE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SUCCESS;
@@ -199,6 +200,12 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			} catch (JsonProcessingException e) {
 				logger.error("Error fetching %s for anonymous profile: %s", DIGITAL_ID, ExceptionUtils.getStackTrace(e));
 			}
+		}
+		
+		
+		Object qualityScoreObj = bioDataMap.get(QUALITY_SCORE);
+		if(qualityScoreObj instanceof Object) {
+			biometricProfileInfo.setQualityScore(String.valueOf(qualityScoreObj));
 		}
 		
 		return biometricProfileInfo;

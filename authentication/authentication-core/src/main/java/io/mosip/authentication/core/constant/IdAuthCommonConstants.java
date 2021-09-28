@@ -315,6 +315,8 @@ public final class IdAuthCommonConstants {
 	public static final String SUCCESS = "success";
 
 	public static final String FAILURE = "failure";
+	
+	public static final String QUALITY_SCORE = "qualityScore";
 
 
 	private IdAuthCommonConstants() {
