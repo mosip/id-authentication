@@ -163,6 +163,9 @@ public final class IdAuthConfigKeyConstants {
 	public static final String LOCATION_PROFILE_ATTRIB_NAME = "mosip.location.profile.attribute.name";
 	
 	public static final String MOSIP_DATE_OF_BIRTH_PATTERN = "mosip.date-of-birth.pattern";
+	
+	public static final String MOSIP_DATE_OF_BIRTH_ATTRIBUTE_NAME = "mosip.date-of-birth.attribute.name";
+
 
 
 }
