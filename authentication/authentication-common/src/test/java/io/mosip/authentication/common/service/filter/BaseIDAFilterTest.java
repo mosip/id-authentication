@@ -98,7 +98,7 @@ public class BaseIDAFilterTest {
 		@Override
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			// TODO Auto-generated method stub
-			return null;
+			return "";
 		}
 	};
 

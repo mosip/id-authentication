@@ -75,7 +75,7 @@ public class FilterValidatorTest {
 		@Override
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			// TODO Auto-generated method stub
-			return null;
+			return "";
 		}
 	};
 
@@ -113,7 +113,7 @@ public class FilterValidatorTest {
 		@Override
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			// TODO Auto-generated method stub
-			return null;
+			return "";
 		}
 	};
 
@@ -121,7 +121,7 @@ public class FilterValidatorTest {
 	PartnerService partnerService;
 
 	@InjectMocks
-	IdAuthFilter idAuthFilter;
+	ExternalAuthFilter idAuthFilter;
 
 	@Before
 	public void setUp() {
