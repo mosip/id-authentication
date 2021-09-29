@@ -71,6 +71,12 @@ public class FilterValidatorTest {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -102,6 +108,12 @@ public class FilterValidatorTest {
 		protected boolean isTrustValidationRequired() {
 			// TODO Auto-generated method stub
 			return false;
+		}
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	};
 

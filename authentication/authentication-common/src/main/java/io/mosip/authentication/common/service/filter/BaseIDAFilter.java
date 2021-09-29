@@ -421,16 +421,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string
 	 */
 
-	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
-		String id = null;
-		String contextPath = requestWrapper.getContextPath();
-		if (!StringUtils.isEmpty(contextPath)) {
-			String[] splitedContext = contextPath.split("/");
-			id = attribute + splitedContext[splitedContext.length - 1];
-		}
-		return id;
-
-	}
+	protected abstract String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute);
 
 	/**
 	 * validateVersion method is used to validate the version present in the request

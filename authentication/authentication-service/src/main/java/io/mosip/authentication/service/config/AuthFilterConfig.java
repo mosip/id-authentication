@@ -4,6 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.common.service.filter.ExternalAuthFilter;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 
 /**
@@ -23,7 +24,7 @@ public class AuthFilterConfig {
 	@Bean
 	public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
 		FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new IdAuthFilter());
+		registrationBean.setFilter(new ExternalAuthFilter());
 		registrationBean.addUrlPatterns("/auth/*");
 		return registrationBean;
 	}
