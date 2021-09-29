@@ -94,7 +94,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Nagarjuna K
  */
 @Component
-public class IdAuthFilter extends BaseAuthFilter {
+public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthFilter.class);
 
