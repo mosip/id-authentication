@@ -11,6 +11,7 @@
 -- Sep-2020             Sadanandegowda DM   Removed uin and uin_hash attribute and added token_id
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
 -- Feb-2021		Ram Bhatt	    Changed size of auth_type_code from 32 to 128
+-- Sep-2021		Ram Bhatt	    Added index to request_trn_id, request_dtimes, token_id columns
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.auth_transaction | type: TABLE --
@@ -43,6 +44,9 @@ CREATE TABLE ida.auth_transaction(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id);
+--index section ends------
 COMMENT ON TABLE ida.auth_transaction IS 'Authentication Transaction : To track all authentication transactions steps / stages in the process flow.';
 -- ddl-end --
 COMMENT ON COLUMN ida.auth_transaction.id IS 'ID: This is unique transaction id assigned for each authentication transaction';

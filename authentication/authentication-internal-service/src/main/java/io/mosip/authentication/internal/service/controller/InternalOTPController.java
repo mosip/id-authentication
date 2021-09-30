@@ -82,7 +82,8 @@ public class InternalOTPController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@PreAuthorize("hasAnyRole('RESIDENT')")
+	//@PreAuthorize("hasAnyRole('RESIDENT')")
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostotp())")
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {

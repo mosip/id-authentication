@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
+import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
@@ -22,6 +23,9 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
  */
 @Component
 public class OTPFilter extends IdAuthFilter {
+	
+	/** The Constant AUTH. */
+	private static final String OTP = "otp";
 
 	/** The Constant OTP_REQUEST. */
 	private static final String OTP_REQUEST = "otp-request";
@@ -88,6 +92,18 @@ public class OTPFilter extends IdAuthFilter {
 	@Override
 	protected boolean isTrustValidationRequired() {
 		return true;
+	}
+	
+	/**
+	 * Fetch id.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @param attribute the attribute
+	 * @return the string
+	 */
+	@Override
+	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+		return attribute + OTP;
 	}
 	
 }

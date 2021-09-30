@@ -16,7 +16,7 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -86,7 +86,7 @@ public class PolicyData {
 	public JSONObject getPolicy() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return mapper.readValue(CryptoUtil.decodeBase64(new String(this.policy)), JSONObject.class);
+			return mapper.readValue(CryptoUtil.decodeBase64Url(new String(this.policy)), JSONObject.class);
 		} catch (IOException e) {
 			// This block will never be executed
 			e.printStackTrace();
@@ -95,6 +95,6 @@ public class PolicyData {
 	}
 
 	public void setPolicy(JSONObject policy) {
-		this.policy = CryptoUtil.encodeBase64(policy.toJSONString().getBytes()).getBytes();
+		this.policy = CryptoUtil.encodeBase64Url(policy.toJSONString().getBytes()).getBytes();
 	}
 }
