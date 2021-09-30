@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -68,11 +68,11 @@ public class PartnerData {
 	private LocalDateTime delDTimes;
 	
 	public String getCertificateData() {
-		return new String(CryptoUtil.decodeBase64(new String(this.certificateData)));
+		return new String(CryptoUtil.decodeBase64Url(new String(this.certificateData)));
 	}
 
 	public void setCertificateData(String certificateData) {
-		this.certificateData = CryptoUtil.encodeBase64(certificateData.getBytes()).getBytes();
+		this.certificateData = CryptoUtil.encodeBase64Url(certificateData.getBytes()).getBytes();
 	}
 
 }

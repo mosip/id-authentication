@@ -9,7 +9,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- Sep-2021		Ram Bhatt	    Added index to policy_id column
 -- ------------------------------------------------------------------------------------------
 -- object: ida.policy_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.policy_data CASCADE;
@@ -31,3 +31,6 @@ CREATE TABLE ida.policy_data (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_pd_pid ON ida.policy_data (policy_id);
+--index section ends------

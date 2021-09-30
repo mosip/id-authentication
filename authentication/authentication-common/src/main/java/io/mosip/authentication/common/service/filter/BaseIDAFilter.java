@@ -421,16 +421,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string
 	 */
 
-	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
-		String id = null;
-		String contextPath = requestWrapper.getContextPath();
-		if (!StringUtils.isEmpty(contextPath)) {
-			String[] splitedContext = contextPath.split("/");
-			id = attribute + splitedContext[splitedContext.length - 1];
-		}
-		return id;
-
-	}
+	protected abstract String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute);
 
 	/**
 	 * validateVersion method is used to validate the version present in the request
@@ -539,6 +530,7 @@ public abstract class BaseIDAFilter implements Filter {
 				storeAnonymousProfile(requestBody, responseBody, (Map<String, Object>) requestBody.get(METADATA),
 						metadata);
 			}
+			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
 			return responseAsString;

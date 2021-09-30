@@ -72,7 +72,12 @@ public class IdAuthFilterTest {
 	private ObjectMapper mapper;
 
 	/** The filter. */
-	IdAuthFilter filter = new IdAuthFilter();
+	IdAuthFilter filter = new IdAuthFilter() {
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			return "";
+		}};
 
 	/** The request body. */
 	Map<String, Object> requestBody = new HashMap<>();

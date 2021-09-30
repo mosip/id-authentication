@@ -71,6 +71,12 @@ public class FilterValidatorTest {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			// TODO Auto-generated method stub
+			return "";
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -103,13 +109,19 @@ public class FilterValidatorTest {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			// TODO Auto-generated method stub
+			return "";
+		}
 	};
 
 	@Mock
 	PartnerService partnerService;
 
 	@InjectMocks
-	IdAuthFilter idAuthFilter;
+	ExternalAuthFilter idAuthFilter;
 
 	@Before
 	public void setUp() {

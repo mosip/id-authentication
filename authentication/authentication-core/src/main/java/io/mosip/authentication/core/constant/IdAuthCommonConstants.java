@@ -108,7 +108,14 @@ public final class IdAuthCommonConstants {
 
 	public static final String PRIMARY_LANG = "primaryLang";
 
+	/** The Constant OTP. */
 	public static final String OTP = "otp";
+
+	/** The Constant DEMO. */
+	public static final String DEMO = "demo";
+
+	/** The Constant BIO. */
+	public static final String BIO = "bio";
 
 	public static final String INTERNAL_URL = "/internal";
 
@@ -132,7 +139,9 @@ public final class IdAuthCommonConstants {
 
 	public static final String UIN_MODULO_SPLITTER = "_";
 
-	public static final String DOB_PATTERN = "yyyy/MM/dd";
+	public static final String DEFAULT_DOB_PATTERN = "yyyy/MM/dd";
+	
+	public static final String DEFAULT_DATE_OF_BIRTH_ATTRIBUTE = "dateOfBirth";
 
 	public static final String DEVICE_DOES_NOT_EXIST = "ADM-DPM-001";
 
@@ -298,11 +307,18 @@ public final class IdAuthCommonConstants {
 	public static final String INDIVIDUAL_ID = "individualId";
 
 	public static final String IDA = "IDA";
-	
 
 	public static final String NA ="NA";
 
+	public static final String AUTH_STATUS = "authStatus";
+
+	public static final String SUCCESS = "success";
+
+	public static final String FAILURE = "failure";
 	
+	public static final String QUALITY_SCORE = "qualityScore";
+
+
 	private IdAuthCommonConstants() {
 	}
 }

@@ -11,6 +11,7 @@
 -- Jul-2021		Ram Bhatt	    creation of failed message store table
 -- Jul-2021		Ram Bhatt	    Adding a new nullable column identity_expiry in IDA table identity_cache
 -- Sep-2021		Loganathan Sekar	    Adding Anonymous Profile Table
+-- Sep-2021		Ram Bhatt	    Adding indices to multiple tables
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
@@ -37,4 +38,20 @@ ALTER TABLE ida.uin_auth_lock ADD COLUMN unlock_expiry_datetime timestamp;
 
 ALTER TABLE ida.identity_cache ADD COLUMN identity_expiry timestamp;
 --------------------------------------------------------------------------------------------------------------
+
+CREATE INDEX ind_akd_apkeyid ON ida.api_key_data (api_key_id);
+CREATE INDEX ind_pm_pid ON ida.partner_mapping (partner_id);
+CREATE INDEX ind_pd_pid ON ida.partner_data (partner_id);
+CREATE INDEX ind_mld_lk ON ida.misp_license_data (license_key);
+CREATE INDEX ind_pd_pid ON ida.policy_data (policy_id);
+CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id);
+CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+CREATE INDEX ind_hc_idhsh_etp ON ida.hotlist_cache (id_hash, expiry_timestamp);
+CREATE INDEX ind_id ON ida.identity_cache (id);
+CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash);
+CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);
+CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
+
+
+
 

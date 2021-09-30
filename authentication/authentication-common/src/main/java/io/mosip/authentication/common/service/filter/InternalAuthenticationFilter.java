@@ -13,6 +13,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Loganathan Sekar
  */
 public class InternalAuthenticationFilter extends IdAuthFilter {
+	
+	private static final String INTERNAL = "internal";
 
 	/*
 	 * (non-Javadoc)
@@ -74,6 +76,11 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		//No decryption to be performed
 		return requestBody;
+	}
+	
+	@Override
+	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+		return attribute + INTERNAL;
 	}
 
 }
