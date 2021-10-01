@@ -189,12 +189,12 @@ public class KeyManager {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 		}
 		try {
-			byte[] decrptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
+			byte[] decryptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
 					isThumbprintEnabled);
 			if (encode) {
-				decryptedRequest = CryptoUtil.encodeBase64(decrptedIdentity);
+				decryptedRequest = CryptoUtil.encodeBase64(decryptedIdentity);
 			} else {
-				decryptedRequest = new String(decrptedIdentity, StandardCharsets.UTF_8);
+				decryptedRequest = new String(decryptedIdentity, StandardCharsets.UTF_8);
 			}
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
