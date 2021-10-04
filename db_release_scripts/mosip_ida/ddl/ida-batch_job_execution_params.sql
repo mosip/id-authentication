@@ -2,7 +2,7 @@
 
 -- DROP TABLE ida.batch_job_execution_params;
 
-CREATE TABLE ida.batch_job_execution_params  (
+CREATE TABLE IF NOT EXISTS ida.batch_job_execution_params  (
 	JOB_EXECUTION_ID BIGINT NOT NULL ,
 	TYPE_CD VARCHAR(6) NOT NULL ,
 	KEY_NAME VARCHAR(100) NOT NULL ,
