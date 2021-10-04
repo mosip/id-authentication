@@ -2,7 +2,7 @@
 
 -- DROP TABLE ida.batch_job_execution;
 
-CREATE TABLE ida.batch_job_execution  (
+CREATE TABLE IF NOT EXISTS ida.batch_job_execution  (
   JOB_EXECUTION_ID BIGINT  PRIMARY KEY ,
   VERSION BIGINT,
   JOB_INSTANCE_ID BIGINT NOT NULL,

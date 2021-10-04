@@ -2,7 +2,7 @@
 
 -- DROP TABLE ida.batch_step_execution;
 
-CREATE TABLE ida.batch_step_execution  (
+CREATE TABLE IF NOT EXISTS ida.batch_step_execution  (
   STEP_EXECUTION_ID BIGINT  PRIMARY KEY ,
   VERSION BIGINT NOT NULL,
   STEP_NAME VARCHAR(100) NOT NULL,
