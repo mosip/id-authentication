@@ -2,7 +2,7 @@
 
 -- DROP TABLE IF EXISTS ida.hotlist_cache CASCADE;
 
-CREATE TABLE ida.hotlist_cache (
+CREATE TABLE IF NOT EXISTS ida.hotlist_cache (
 	id_hash character varying(128) NOT NULL,
 	id_type character varying(128) NOT NULL,
 	status character varying(64),

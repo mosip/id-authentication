@@ -6,14 +6,14 @@
 -- Create By   	: Sadanandegowda DM
 -- Created Date	: Jan-2021
 -- 
--- Modified Date        Modified By         Comments / Remarks
+-- Modified Date        Modified By         	Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- Sept-2021		Chandra Keshav Mishra	Added If not exist for release scripts
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.credential_event_store | type: TABLE --
 -- DROP TABLE IF EXISTS ida.credential_event_store CASCADE;
-CREATE TABLE ida.credential_event_store(
+CREATE TABLE IF NOT EXISTS ida.credential_event_store(
 	event_id character varying(36) NOT NULL,
 	event_topic character varying(256) NOT NULL,
 	credential_transaction_id character varying(36) NOT NULL,
