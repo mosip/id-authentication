@@ -237,9 +237,21 @@ public class IdInfoHelper {
 		} else {
 			filteredPropNames = propertyNames;
 		}
-		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
+		
+		Map<String, String> identityValuesMap = new LinkedHashMap<>();
+		Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
+		Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, filteredPropNames, null, identityInfos);
+		mergeNonNullValues(identityValuesMap, identityValuesMapWithLang);
+		mergeNonNullValues(identityValuesMap, identityValuesMapWithoutLang);
 		Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
 		return matchType.getEntityInfoMapper().apply(identityValuesMap, props);
+	}
+
+	private void mergeNonNullValues(Map<String, String> identityValuesMap, Map<String, String> identityValuesMapWithoutLang) {
+		identityValuesMapWithoutLang.entrySet()
+			.stream()
+			.filter(entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty())
+			.forEach(entry -> identityValuesMap.put(entry.getKey(), entry.getValue()));
 	}
 	
 	/**
