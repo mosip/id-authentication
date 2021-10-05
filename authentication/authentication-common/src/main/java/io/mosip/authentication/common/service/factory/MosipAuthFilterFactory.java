@@ -53,7 +53,7 @@ public abstract class MosipAuthFilterFactory {
 			authFilters = Stream.of(getMosipAuthFilterClasses())
 					.map(this::getAuthFilterInstance)
 					.collect(Collectors.toUnmodifiableList());
-			logger.info("Auth Filter Classes configured count: %s", authFilters.size());
+			logger.info("Auth Filter Classes configured count: {}", authFilters.size());
 		}
 		
 	}

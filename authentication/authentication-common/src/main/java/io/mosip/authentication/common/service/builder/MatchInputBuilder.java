@@ -75,9 +75,9 @@ public class MatchInputBuilder {
 						&& authRequestDTO.getRequest().getDemographics().getMetadata() != null) {
 					for (Entry<String, Object> entry : authRequestDTO.getRequest().getDemographics().getMetadata()
 							.entrySet()) {
-						String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO);
-						if (matchType.isMultiLanguage(propName, demoEntity)) {
-							validateDynamicAttributeLanguage(propName, matchType, authRequestDTO,
+						Optional<String> propNameOpt = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO, languages);
+						if (propNameOpt.isPresent() && matchType.isMultiLanguage(propNameOpt.get(), demoEntity, idInfoFetcher.getMappingConfig())) {
+							validateDynamicAttributeLanguage(propNameOpt.get(), matchType, authRequestDTO,
 									languages);
 							for (String language : languages) {
 								addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, language);
@@ -159,14 +159,23 @@ public class MatchInputBuilder {
 	 * Gets mapped attribute name 
 	 * @param matchType
 	 * @param authRequestDTO
+	 * @param languages 
 	 * @return
 	 */
-	private String getMappedPropertyName(String inAttribute, MatchType matchType, AuthRequestDTO authRequestDTO) {
+	private Optional<String> getMappedPropertyName(String inAttribute, MatchType matchType, AuthRequestDTO authRequestDTO, List<String> languages) {
 		return idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet().stream()
 				.filter(idName -> idName.equals(inAttribute))
-				.filter(idName -> idInfoFetcher
-						.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(), null).size() > 0)
-				.findFirst().get();
+				.filter(idName -> {
+					if(languages != null && !languages.isEmpty()) {
+						return languages.stream()
+									.anyMatch(language -> idInfoFetcher
+								.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(), language).size() > 0);
+					} else {
+						return idInfoFetcher
+								.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(), null).size() > 0;
+					}
+				})
+				.findFirst();
 	}
 
 	/**

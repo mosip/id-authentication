@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -120,7 +121,7 @@ public interface MatchType {
 	 *
 	 * @return the Entity info mapper function
 	 */
-	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper();
+	public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper();
 
 	/**
 	 * Get the category of this MatchType.
@@ -156,7 +157,7 @@ public interface MatchType {
 		return false;
 	}
 
-	public default boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity) {
+	public default boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity, MappingConfig mappingConfig) {
 		return isMultiLanguage();
 	}
 	/**

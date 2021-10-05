@@ -238,7 +238,8 @@ public class IdInfoHelper {
 			filteredPropNames = propertyNames;
 		}
 		Map<String, String> identityValuesMap = getIdentityValuesMap(matchType, filteredPropNames, language, identityInfos);
-		return matchType.getEntityInfoMapper().apply(identityValuesMap);
+		Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
+		return matchType.getEntityInfoMapper().apply(identityValuesMap, props);
 	}
 	
 	/**

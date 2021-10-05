@@ -99,7 +99,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
+			public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
 				return null;
 			}
 
@@ -186,7 +186,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
+			public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
 				return null;
 			}
 
