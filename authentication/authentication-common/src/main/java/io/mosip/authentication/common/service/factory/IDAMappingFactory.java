@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.factory;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +27,9 @@ import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
  */
 public class IDAMappingFactory implements PropertySourceFactory {
 
+	private static final String VALUE = "value";
+	private static final String IDENTITY = "identity";
+
 	/**
 	 * To create Mapping Factory class for IDA Mapping Configuration.
 	 *
@@ -38,10 +42,25 @@ public class IDAMappingFactory implements PropertySourceFactory {
 	@Override
 	public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
 		Map<?, ?> readValue = new ObjectMapper().readValue(resource.getInputStream(), Map.class);
-		Map<String, Object> propertiesMap = new LinkedHashMap<>((Map<String, Object>) readValue.get("ida-mapping"));
-		propertiesMap.put("dynamicAttributes", getDynamicAttributes(propertiesMap));
+		Map<String, Object> propertiesMap = new LinkedHashMap<>((Map<String, Object>) readValue.get(IDENTITY));
+		Map<String, Object> propertiesListMap = propertiesMap.entrySet().stream()
+						.collect(Collectors.toMap(Entry::getKey, entry -> {
+							Object value = entry.getValue();
+							if(value instanceof Map) {
+								Map<String, Object> valueMap = (Map<String, Object>) value;
+								Object val = valueMap.get(VALUE);
+								if(val instanceof String) {
+									return Stream.of( ((String)val).split(","))
+												.map(String::trim)
+												.filter(str -> !str.isEmpty())
+												.collect(Collectors.toList());
+								}
+							}
+							return Collections.emptyList();
+						}));
+		propertiesListMap.put("dynamicAttributes", getDynamicAttributes(propertiesListMap));
 		Map<String, Object> unmodifiableMap = Collections
-				.unmodifiableMap(propertiesMap);
+				.unmodifiableMap(propertiesListMap);
 		return new MapPropertySource("json-property", unmodifiableMap);
 	}
 
