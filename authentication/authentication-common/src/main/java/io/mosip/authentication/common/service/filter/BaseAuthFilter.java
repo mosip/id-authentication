@@ -221,7 +221,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 			}
 		} catch (IllegalArgumentException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, e.getMessage());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DSIGN_FALIED, e);
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 

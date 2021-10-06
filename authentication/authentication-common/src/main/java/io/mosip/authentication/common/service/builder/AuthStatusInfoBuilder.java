@@ -127,7 +127,7 @@ public class AuthStatusInfoBuilder {
 
 	private static void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder,
 			IDAMappingConfig idMappingConfig) {
-		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage();
+		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage() && matchOutput.getLanguage() != null;
 
 		Optional<AuthType> authTypeForMatchType;
 		AuthType[] authTypes;

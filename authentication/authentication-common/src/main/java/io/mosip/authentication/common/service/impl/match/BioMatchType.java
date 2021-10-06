@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -282,8 +283,8 @@ public enum BioMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-		return Function.identity();
+	public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
+		return (entity, props) -> entity;
 	}
 
 	/*
