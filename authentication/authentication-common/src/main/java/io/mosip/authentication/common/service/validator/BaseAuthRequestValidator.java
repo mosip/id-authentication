@@ -695,7 +695,12 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 							hasMatch = checkIdentityInfoAndLanguageDetails(errors, availableAuthTypeInfos, hasMatch, authType, matchType,
 									identityInfos);
 						} else {
-							Set<String> dynamicAttributeNames = idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet();
+							Set<String> dynamicAttributeNames = new HashSet<>(idInfoFetcher.getMappingConfig().getDynamicAttributes().keySet());
+							Optional.ofNullable(authRequest.getRequest())
+									.map(RequestDTO::getDemographics)
+									.map(IdentityDTO::getMetadata)
+									.map(Map::keySet)
+									.ifPresent(dynamicAttributeNames::addAll);
 							for(String idName : dynamicAttributeNames) {
 								Map<String, List<IdentityInfoDTO>> identityInfosMap = idInfoFetcher.getIdentityInfo(matchType, idName, authRequest.getRequest());
 								for(List<IdentityInfoDTO> identityInfos : identityInfosMap.values()) {
