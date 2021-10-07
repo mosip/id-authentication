@@ -139,8 +139,19 @@ public class KycServiceImpl implements KycService {
 							return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
 						}
 					} else {
-						return Stream.of(new SimpleEntry<>(demoMatchType.getIdMapping().getIdname(),
-								getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+						String idname = demoMatchType.getIdMapping().getIdname();
+						//Need special handling for age since it is mapped to Date of Birth which will conflict with actual date of birth
+						if(demoMatchType.equals(DemoMatchType.AGE)) {
+							if(allowedkycAttributes.contains(IdaIdMapping.AGE.getIdname())) {
+								return Stream.of(new SimpleEntry<>(IdaIdMapping.AGE.getIdname(),
+										getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+							}
+						} else {
+							return Stream.of(new SimpleEntry<>(idname,
+									getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+						}
+						
+						return Stream.empty();
 					}
 				})
 				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
@@ -192,6 +203,7 @@ public class KycServiceImpl implements KycService {
 	 * @param filteredIdentityInfo the filtered identity info
 	 * @param langCodes the lang codes
 	 * @param demoMatchType the demo match type
+	 * @param allowedkycAttributes 
 	 * @return the entity for lang codes
 	 */
 	private Stream<SimpleEntry<String, String>> getEntityForLangCodes(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
