@@ -1,68 +1,120 @@
 {
-	"ida-mapping": {
-		"name": [
-			"fullName"
-		],
-		"dob": [
-			"dateOfBirth"
-		],
-		"dobType": [],
-		"age": [
-			"dateOfBirth"
-		],
-		"gender": [
-			"gender"
-		],
-		"phoneNumber": [
-			"phone"
-		],
-		"emailId": [
-			"email"
-		],
-		"addressLine1": [
-			"addressLine1"
-		],
-		"addressLine2": [
-			"addressLine2"
-		],
-		"addressLine3": [
-			"addressLine3"
-		],
-		"location1": [
-			"city"
-		],
-		"location2": [
-			"region"
-		],
-		"location3": [
-			"province"
-		],
-		"postalCode": [
-			"postalCode"
-		],
-		"fullAddress": [
-			"addressLine1",
-			"addressLine2",
-			"addressLine3",
-			"city",
-			"region",
-			"province",
-			"postalCode"
-		],
-		"otp": [
-			"otp"
-		],
-		"pin": [
-			"pin"
-		],
-		"iris": [
-			"CBEFF"
-		],
-		"fingerprint": [
-			"CBEFF"
-		],
-		"face": [
-			"CBEFF"
-		]
+	"identity": {
+		"IDSchemaVersion": {
+			"value": "IDSchemaVersion"
+		},
+		"name": {
+			"value": "fullName"
+		},
+		"gender": {
+			"value": "gender"
+		},
+		"dob": {
+			"value": "dateOfBirth"
+		},
+		"age": {
+			"value": "age"
+		},
+		"introducerRID": {
+			"value": "introducerRID"
+		},
+		"introducerUIN": {
+			"value": "introducerUIN"
+		},
+		"introducerVID": {
+			"value": "introducerVID"
+		},
+		"introducerName": {
+			"value": "introducerName"
+		},
+		"phone": {
+			"value": "phone"
+		},
+		"phoneNumber": {
+			"value": "phone"
+		},
+		"email": {
+			"value": "email"
+		},
+		"emailId": {
+			"value": "email"
+		},
+		"uin": {
+			"value": "UIN"
+		},
+		"individualBiometrics": {
+			"value": "individualBiometrics"
+		},
+		"introducerBiometrics": {
+			"value": "introducerBiometrics"
+		},
+		"individualAuthBiometrics": {
+			"value": "individualAuthBiometrics"
+		},
+		"officerBiometricFileName": {
+			"value": "officerBiometricFileName"
+		},
+		"supervisorBiometricFileName": {
+			"value": "supervisorBiometricFileName"
+		},
+		"residenceStatus": {
+			"value": "residenceStatus"
+		},
+		"preferredLanguage": {
+			"value": "preferredLang"
+		},
+		"locationHierarchyForProfiling": {
+			"value": "zone,postalCode"
+		},
+		"addressLine1": {
+			"value": "addressLine1"
+		},
+		"addressLine2": {
+			"value": "addressLine2"
+		},
+		"addressLine3": {
+			"value": "addressLine3"
+		},
+		"location1": {
+			"value": "city"
+		},
+		"location2": {
+			"value": "region"
+		},
+		"location3": {
+			"value": "province"
+		},
+		"postalCode": {
+			"value": "postalCode"
+		},
+		"location4": {
+			"value": "zone"
+		},
+		"fullAddress": {
+			"value": "addressLine1,addressLine2,addressLine3,city,region,province,postalCode"
+		}
+	},
+	"metaInfo": {
+		"value": "metaInfo"
+	},
+	"audits": {
+		"value": "audits"
+	},
+	"documents": {
+		"poa": {
+			"value": "proofOfAddress"
+		},
+		"poi": {
+			"value": "proofOfIdentity"
+		},
+		"por": {
+			"value": "proofOfRelationship"
+		},
+		"pob": {
+			"value": "proofOfDateOfBirth"
+		},
+		"poe": {
+			"value": "proofOfException"
+		}
 	}
 }
