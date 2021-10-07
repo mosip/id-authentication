@@ -67,17 +67,6 @@
 		</repository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>ossrh</id>
-			<name>Central Repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-filter-api</module>
