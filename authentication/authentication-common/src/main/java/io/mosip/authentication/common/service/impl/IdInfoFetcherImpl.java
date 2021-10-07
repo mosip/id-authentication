@@ -207,13 +207,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		boolean isEntityLangNull = languageFromEntity == null || languageFromEntity.isEmpty()
 				|| languageFromEntity.equalsIgnoreCase("null");
 		if (languageFromInput == null) {
+			//Since languageFromInput is null entity language also should be null.
 			return isEntityLangNull;
 		}
 		
 		if (isEntityLangNull) {
-			return languageFromInput == null;
-
+			//Since languageFromInput is not null return false.
+			return false;
 		}
+		
 		return languageFromInput.equalsIgnoreCase(languageFromEntity);
 	}
 
