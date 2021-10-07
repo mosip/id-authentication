@@ -50,7 +50,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd authentication
-        mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        mvn -B package -DskipTests -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
     
     - name: Ready the springboot artifacts
       run: find -name '*.jar' -executable -type f  -exec zip release.zip {} +
@@ -114,7 +114,7 @@ jobs:
     - name: Build with Maven
       run: |
         cd authentication
-        mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+        mvn -B package -DskipTests -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
         
     - name: Publish the maven package
       run: |
@@ -344,7 +344,7 @@ jobs:
       - name: Build with Maven
         run: |
           cd authentication
-          mvn -B package -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
+          mvn -B package -DskipTests -s $GITHUB_WORKSPACE/settings.xml --file pom.xml
 
       - name: Analyze with SonarCloud
         run: |
