@@ -88,7 +88,7 @@
 		<kernel-auth-adapter.version>1.1.5.3</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>1.1.5.3</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.1.5.3</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.1.5.3</kernel-websubclient-api.version>
+		<kernel-websubclient-api.version>1.1.5.5-SNAPSHOT</kernel-websubclient-api.version>
 		<id-repository-core.version>1.1.5.2</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
