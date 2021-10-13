@@ -13,9 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
@@ -49,12 +53,12 @@ public enum DemoMatchType implements MatchType {
 	DOBTYPE(IdaIdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDobType, false),
 
 	/** Secondary Date of Birth Type Match. */
-	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()), false,
-			entityInfoMap -> {
+	AGE(IdaIdMapping.DOB, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()), false,
+			(entityInfoMap, props) -> {
 				Optional<String> valueOpt = entityInfoMap.values().stream().findFirst();
 				if (valueOpt.isPresent()) {
 					String value = valueOpt.get();
-					int age = Period.between(DateUtils.parseToDate(value, getDatePattern()).toInstant()
+					int age = Period.between(DateUtils.parseToDate(value, getDatePattern(props)).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 
 					Map<String, String> map = new LinkedHashMap<>();
@@ -125,8 +129,21 @@ public enum DemoMatchType implements MatchType {
 		}
 		
 		@Override
-		public boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity) {
-			List<IdentityInfoDTO> infoDtos = identityEntity.get(propName);
+		public boolean isMultiLanguage(String propName, Map<String, List<IdentityInfoDTO>> identityEntity,  MappingConfig mappingConfig) {
+			Map<String, List<String>> dynamicAttributes = mappingConfig.getDynamicAttributes();
+			List<String> propValues = dynamicAttributes.get(propName);
+			List<IdentityInfoDTO> infoDtos;
+			if(propValues != null && !propValues.isEmpty()) {
+				//If mapping is there, use the mapping values to fetch the record
+				infoDtos = identityEntity.entrySet()
+						.stream()
+						.filter(entry -> propValues.contains(entry.getKey()))
+						.flatMap(entry -> entry.getValue().stream())
+						.collect(Collectors.toList());
+			} else {
+				//Otherwise use the property name itself to fetch the record
+				infoDtos = identityEntity.get(propName);
+			}
 			if (infoDtos != null && infoDtos.stream().anyMatch(infoDto -> infoDto.getLanguage() == null)) {
 				return false;
 			}
@@ -139,13 +156,11 @@ public enum DemoMatchType implements MatchType {
 	// @formatter:on
 	;
 
-	private static final String DATE_PATTERN = "yyyy/MM/dd";
-
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
 	/** The entity info. */
-	private Function<Map<String, String>, Map<String, String>> entityInfoFetcher;
+	private BiFunction<Map<String, String>, Map<String, Object>,  Map<String, String>> entityInfoFetcher;
 	
 	/** The identity info function. */
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
@@ -167,7 +182,7 @@ public enum DemoMatchType implements MatchType {
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage,
-			Function<Map<String, String>, Map<String, String>> entityInfoFetcher) {
+			BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> entityInfoFetcher) {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = (RequestDTO identityDTO) -> {
 			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
@@ -203,7 +218,7 @@ public enum DemoMatchType implements MatchType {
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, Function.identity());
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, (entity, prop) -> entity);
 	}
 	
 	/**
@@ -213,17 +228,24 @@ public enum DemoMatchType implements MatchType {
 	 * @param allowedMatchingStrategy the allowed matching strategy
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
-		this(idMapping, allowedMatchingStrategy, null, true, Function.identity());
+		this(idMapping, allowedMatchingStrategy, null, true, (entity, prop) -> entity);
 	}
 	
 	/**
 	 * Gets the date pattern.
+	 * @param props 
 	 *
 	 * @return the date pattern
 	 */
-	private static String getDatePattern() {
-		// FIXME get from env.
-		return DATE_PATTERN;
+	private static String getDatePattern(Map<String, Object> props) {
+		if(props != null) {
+			Object object = props.get(IdInfoFetcher.class.getSimpleName());
+			if(object instanceof IdInfoFetcher) {
+				IdInfoFetcher idInfoFetcher = (IdInfoFetcher) object;
+				return idInfoFetcher.getEnvironment().getProperty(IdAuthConfigKeyConstants.MOSIP_DATE_OF_BIRTH_PATTERN, IdAuthCommonConstants.DEFAULT_DOB_PATTERN);
+			}
+		}
+		return IdAuthCommonConstants.DEFAULT_DOB_PATTERN;
 	}
 
 	/**
@@ -259,7 +281,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
+	public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
 		return entityInfoFetcher;
 	}
 

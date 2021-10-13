@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -88,8 +89,8 @@ public enum PinMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-		return Function.identity();
+	public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
+		return (entity, props) -> entity;
 	}
 
 	/*
