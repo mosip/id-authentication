@@ -235,12 +235,25 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
+				for (Entry<String, String> str : bioDataMap.entrySet()) {
+					System.out.println("bio attributes : " + str.getKey());
+				}
+				
 				if (!bioFilterAttributes.isEmpty()) {
+					for (String string : bioFilterAttributes) {
+						System.out.println("Bio filter attribute: " + string);
+					}
 					Map<String, String> bioDataMapPostFilter = new HashMap<>();
 					bioFilterAttributes.forEach(attribute -> Optional.ofNullable(bioDataMap.get(attribute))
 							.ifPresent(value -> bioDataMapPostFilter.put(attribute, value)));
+					for (Entry<String, String> str : bioDataMapPostFilter.entrySet()) {
+						System.out.println("To be decrypted bio attribute post filter : " + str.getKey());
+					}
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
 				} else {
+					for (Entry<String, String> str : bioDataMap.entrySet()) {
+						System.out.println("To be decrypted bio attribute with out filter : " + str.getKey());
+					}
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
 				}
 			}

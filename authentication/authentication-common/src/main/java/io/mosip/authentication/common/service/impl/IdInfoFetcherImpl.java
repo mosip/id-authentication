@@ -272,6 +272,15 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * @return
 	 */
 	private String getSubType(CbeffDocType type, MatchType matchType) {
+		if(matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString())) {
+			return "Finger_UNKNOWN";
+		}
+		if(matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString())) {
+			return "Finger_UNKNOWN";
+		}
+		if(matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
+			return "Iris_UNKNOWN";
+		}
 		return type.getType().value() + "_" + matchType.getIdMapping().getSubType();
 	}
 
