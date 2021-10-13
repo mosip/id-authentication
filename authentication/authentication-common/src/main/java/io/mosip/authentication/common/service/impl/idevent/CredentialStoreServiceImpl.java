@@ -51,6 +51,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
@@ -444,9 +445,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @return the map[]
 	 */
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
-		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
-				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(credentialBiometricAttribute)));
-
+		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream()
+				.collect(Collectors.partitioningBy(entry -> entry.getKey().startsWith(BiometricType.FINGER.value())
+						|| entry.getKey().startsWith(BiometricType.IRIS.value())
+						|| entry.getKey().startsWith(BiometricType.FACE.value())
+						|| entry.getKey().equalsIgnoreCase(credentialBiometricAttribute)));
+		
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		Map<String, Object> bioData = bioOrDemoData.get(true).stream()
