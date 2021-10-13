@@ -1,12 +1,12 @@
 package io.mosip.authentication.common.service.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,12 +76,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
-	
-	/**
-	 * Biometric attribute name in credential data
-	 */
-	@Value("${"+ CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME  +"}")
-	private String credentialBiometricAttribute;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -91,8 +85,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(uin, isBio);
+	public Map<String, Object> getIdByUin(String uin, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(uin, isBio, bioFilterAttributes);
 	}
 
 	/*
@@ -103,8 +97,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(vid, isBio, IdType.VID);
+	public Map<String, Object> getIdByVid(String vid, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(vid, isBio, IdType.VID, bioFilterAttributes);
 	}
 	
 	/**
@@ -119,19 +113,19 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, List<String> bioFilterAttributes)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdByUin(idvId, isBio);
+				idResDTO = getIdByUin(idvId, isBio, bioFilterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else if(idvIdType.equals(IdType.VID.getType())) {
 			try {
-				idResDTO = getIdByVid(idvId, isBio);
+				idResDTO = getIdByVid(idvId, isBio, bioFilterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -170,33 +164,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.map(obj -> (Map<String, Object>) obj)
 								.orElseGet(Collections::emptyMap);
 	}
-	
-	/**
-	 * Gets the bio data.
-	 *
-	 * @param identity the identity
-	 * @return the bio data
-	 */
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getBioData(Map<String, Object> identity) {
-		return Optional.ofNullable(identity.get("response"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> ((Map<String, Object>)obj).get("documents"))
-								.filter(obj -> obj instanceof List)
-								.flatMap(obj -> 
-										((List<Map<String, Object>>)obj)
-											.stream()
-											.filter(map -> map.containsKey("category") 
-															&& map.get("category").toString().equalsIgnoreCase(credentialBiometricAttribute)
-															&& map.containsKey("value"))
-											.map(map -> (String)map.get("value"))
-											.findAny())
-								.map(encodedBioCbeff -> Map.<String, Object>of(credentialBiometricAttribute, encodedBioCbeff))
-								.orElseGet(Collections::emptyMap);
-	}
 
-	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(id, isBio, IdType.UIN);
+	public Map<String, Object> getIdentity(String id, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(id, isBio, IdType.UIN, bioFilterAttributes);
 	}
 
 	/**
@@ -211,7 +181,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *             the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
 		
 		String hashedId;
 		try {
@@ -265,7 +235,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
-				responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
+				if (!bioFilterAttributes.isEmpty()) {
+					Map<String, String> bioDataMapPostFilter = new HashMap<>();
+					bioFilterAttributes.forEach(attribute -> Optional.ofNullable(bioDataMap.get(attribute))
+							.ifPresent(value -> bioDataMapPostFilter.put(attribute, value)));
+					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
+				} else {
+					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
+				}
 			}
 			responseMap.put(TOKEN, entity.getToken());
 			return responseMap;

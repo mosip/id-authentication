@@ -255,18 +255,24 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
-		Optional<String> identityValue = getIdentityValue(environment.getProperty(IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME), null, idEntity)
-				.findAny();
-		if (identityValue.isPresent()) {
-			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
-			for (CbeffDocType type : types) {
-				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
-			}
-			return cbeffValuesForTypes;
-
-		} else {
-			return Collections.emptyMap();
+		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
+		for (CbeffDocType type : types) {
+			Optional<String> identityValue = getIdentityValue(getSubType(type,matchType), null, idEntity)
+					.findAny();			
+			cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 		}
+		return cbeffValuesForTypes;
+
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param matchType
+	 * @return
+	 */
+	private String getSubType(CbeffDocType type, MatchType matchType) {
+		return type.getType().value() + "_" + matchType.getIdMapping().getSubType();
 	}
 
 	/**

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -25,6 +26,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -40,9 +42,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
@@ -134,8 +139,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
 				idvIdType + "-" + idvid);
 
-		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-				isBiometricDataNeeded(authRequestDTO), markVidConsumed);
+		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, isBiometricDataNeeded(authRequestDTO),
+				markVidConsumed, buildBioFilters(authRequestDTO));
+
 		
 		String token = idService.getToken(idResDTO);
 		
@@ -472,6 +478,52 @@ public class AuthFacadeImpl implements AuthFacade {
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
 		}
+	}
+	
+	private List<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
+		List<String> bioFilters = new ArrayList<String>();
+		if (AuthTypeUtil.isBio(authRequestDTO)) {
+			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
+				List<BioIdentityInfoDTO> bioFingerInfo = getBioIds(authRequestDTO, BioAuthType.FGR_IMG.getType());
+				if (!bioFingerInfo.isEmpty()) {
+					List<DataDTO> bioFingerData = bioFingerInfo.stream().map(BioIdentityInfoDTO::getData)
+							.collect(Collectors.toList());
+					bioFilters.addAll(
+							bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+									.collect(Collectors.toList()));
+				}
+			}
+
+			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
+				List<BioIdentityInfoDTO> bioIrisInfo = getBioIds(authRequestDTO, BioAuthType.IRIS_IMG.getType());
+				if (!bioIrisInfo.isEmpty()) {
+					List<DataDTO> bioIrisData = bioIrisInfo.stream().map(BioIdentityInfoDTO::getData)
+							.collect(Collectors.toList());
+					bioFilters
+					.addAll(bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+							.collect(Collectors.toList()));
+					}
+			}
+			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
+				List<BioIdentityInfoDTO> bioFaceInfo = getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
+				List<DataDTO> bioFaceData = bioFaceInfo.stream().map(BioIdentityInfoDTO::getData)
+						.collect(Collectors.toList());
+				bioFilters.addAll(bioFaceData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+						.collect(Collectors.toList()));
+			}
+			return bioFilters;
+		}
+		return Collections.emptyList();
+	}
+	
+	private List<BioIdentityInfoDTO> getBioIds(AuthRequestDTO authRequestDTO, String type) {
+		List<BioIdentityInfoDTO> identity = Optional.ofNullable(authRequestDTO.getRequest())
+				.map(RequestDTO::getBiometrics).orElseGet(Collections::emptyList);
+		if (!identity.isEmpty()) {
+			return identity.stream().filter(Objects::nonNull)
+					.filter(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type)).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 }
