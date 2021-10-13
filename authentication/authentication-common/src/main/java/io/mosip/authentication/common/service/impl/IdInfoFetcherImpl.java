@@ -257,8 +257,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
 		for (CbeffDocType type : types) {
+			System.out.println("SubType : " + getSubType(type, matchType));
 			Optional<String> identityValue = getIdentityValue(getSubType(type,matchType), null, idEntity)
 					.findAny();			
+			if(identityValue.isEmpty()) {
+				System.out.println("No value present for " + getSubType(type, matchType));
+			}			
 			cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 		}
 		return cbeffValuesForTypes;
