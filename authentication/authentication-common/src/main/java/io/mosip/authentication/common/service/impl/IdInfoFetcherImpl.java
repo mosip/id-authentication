@@ -262,8 +262,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 					.findAny();			
 			if(identityValue.isEmpty()) {
 				System.out.println("No value present for " + getSubType(type, matchType));
-			}
-			System.out.println("value for subtype " + getSubType(type, matchType) + "= " + identityValue.get());
+			}			
 			cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 		}
 		return cbeffValuesForTypes;
