@@ -285,7 +285,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		if(matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString())) {
 			return "Finger_UNKNOWN";
 		}
+		if(matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
+			return "Finger_UNKNOWN";
+		}
 		if(matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
+			return "Iris_UNKNOWN";
+		}
+		if(matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
 			return "Iris_UNKNOWN";
 		}
 		if(matchType.toString().equals(BioMatchType.FACE.toString())) {
