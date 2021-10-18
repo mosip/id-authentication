@@ -288,6 +288,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		if(matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
 			return "Iris_UNKNOWN";
 		}
+		if(matchType.toString().equals(BioMatchType.FACE.toString())) {
+			return "Face";
+		}
 		return type.getType().value() + "_" + matchType.getIdMapping().getSubType();
 	}
 

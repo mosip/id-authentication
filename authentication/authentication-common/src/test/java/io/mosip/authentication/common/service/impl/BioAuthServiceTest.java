@@ -923,8 +923,6 @@ public class BioAuthServiceTest {
 		assertTrue(validateBioDetails.isStatus());
 	}
 
-	//FIXME
-	@Ignore
 	@Test
 	public void TestValidFaceAuthentication() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -984,9 +982,7 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
-
-	//FIXME
-	@Ignore
+	
 	@Test
 	public void TestInvalidFaceDetails() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1038,8 +1034,6 @@ public class BioAuthServiceTest {
 		}
 	}
 
-	//FIXME
-	@Ignore
 	@Test
 	public void TestFaceDetailsMatched() throws Exception {
 
