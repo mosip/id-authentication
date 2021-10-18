@@ -39,6 +39,7 @@ import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
+import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.constant.BiometricType;
@@ -319,7 +320,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.get().getBytes(), type.getName(),
+			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64Url(identityValue.get()), type.getName(),
 					null);
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
