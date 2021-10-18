@@ -257,13 +257,16 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
 		for (CbeffDocType type : types) {
-			System.out.println("SubType : " + getSubType(type, matchType));
-			Optional<String> identityValue = getIdentityValue(getSubType(type,matchType), null, idEntity)
-					.findAny();			
-			if(identityValue.isEmpty()) {
-				System.out.println("No value present for " + getSubType(type, matchType));
-			}			
-			cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+			Optional<String> identityValue = getIdentityValue(getBioAttributeName(type, matchType), null, idEntity)
+					.findAny();
+			if (!identityValue.isEmpty()) {
+				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+			} else {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
+								IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+
+			}
 		}
 		return cbeffValuesForTypes;
 
@@ -275,7 +278,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * @param matchType
 	 * @return
 	 */
-	private String getSubType(CbeffDocType type, MatchType matchType) {
+	private String getBioAttributeName(CbeffDocType type, MatchType matchType) {
 		if(matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString())) {
 			return "Finger_UNKNOWN";
 		}
