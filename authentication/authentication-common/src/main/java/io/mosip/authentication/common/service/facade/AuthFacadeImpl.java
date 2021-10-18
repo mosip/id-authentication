@@ -59,6 +59,8 @@ import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -448,6 +450,12 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 	}
 
+	/**
+	 * To build the bio filters. 
+	 * These are used to decrypt only required bio attributes
+	 * @param authRequestDTO
+	 * @return
+	 */
 	private List<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
 		List<String> bioFilters = new ArrayList<String>();
 		if (AuthTypeUtil.isBio(authRequestDTO)) {
@@ -456,9 +464,10 @@ public class AuthFacadeImpl implements AuthFacade {
 				if (!bioFingerInfo.isEmpty()) {
 					List<DataDTO> bioFingerData = bioFingerInfo.stream().map(BioIdentityInfoDTO::getData)
 							.collect(Collectors.toList());
-					if (!bioFingerData.isEmpty() && bioFingerData.size() > 1) {
-						bioFilters.add("Finger_UNKNOWN");
-					} else {
+					// for UNKNOWN getting all the subtypes
+					if(bioFingerData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
+						bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
+					}else {
 						bioFilters.addAll(
 								bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
 										.collect(Collectors.toList()));
@@ -471,11 +480,13 @@ public class AuthFacadeImpl implements AuthFacade {
 				if (!bioIrisInfo.isEmpty()) {
 					List<DataDTO> bioIrisData = bioIrisInfo.stream().map(BioIdentityInfoDTO::getData)
 							.collect(Collectors.toList());
-					if (!bioIrisData.isEmpty() && bioIrisData.size() > 1) {
-						bioFilters.add("Iris_UNKNOWN");
+					// for UNKNOWN getting all the subtypes
+					if(bioIrisData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
+						bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
 					}else {
-						bioFilters.addAll(bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-							.collect(Collectors.toList()));
+						bioFilters.addAll(
+								bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+										.collect(Collectors.toList()));
 					}
 				}
 			}
@@ -483,11 +494,9 @@ public class AuthFacadeImpl implements AuthFacade {
 				List<BioIdentityInfoDTO> bioFaceInfo = getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
 				List<DataDTO> bioFaceData = bioFaceInfo.stream().map(BioIdentityInfoDTO::getData)
 						.collect(Collectors.toList());
-				if (!bioFaceData.isEmpty() && bioFaceData.size() > 1) {
-					bioFilters.add("Face_UNKNOWN");
-				}else {
-					bioFilters.addAll(bioFaceData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-						.collect(Collectors.toList()));
+				if (!bioFaceData.isEmpty()) {
+					bioFilters.addAll(bioFaceData.stream().map(bio -> (bio.getBioType()))
+							.collect(Collectors.toList()));
 				}
 			}
 			return bioFilters;
@@ -504,5 +513,49 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		return Collections.emptyList();
 	}
-
+	
+	/**
+	 * to get all bio subtypes for given type
+	 * @param type
+	 * @return
+	 */
+	public List<String> getBioSubTypes(BiometricType type) {
+		switch (type) {
+		case FACE:
+			return getFingerSubTypes(type);
+		case IRIS:
+			return getIrisSubTypes(type);
+		default:
+			Collections.emptyList();
+		}
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * Construct and returns finger type along with all the sub types
+	 * @param type
+	 * @return
+	 */
+	private List<String> getFingerSubTypes(BiometricType type){
+		return List.of(type + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value());
+	}
+	
+	/**
+	 * Construct and returns finger type along with all the sub types
+	 * @param type
+	 * @return
+	 */
+	private List<String> getIrisSubTypes(BiometricType type){
+		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value());
+	}
 }

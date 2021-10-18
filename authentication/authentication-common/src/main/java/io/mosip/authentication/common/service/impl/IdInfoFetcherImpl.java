@@ -42,6 +42,7 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 
 /**
@@ -257,19 +258,19 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
 		for (CbeffDocType type : types) {
-			Optional<String> identityValue = getIdentityValue(getBioAttributeName(type, matchType), null, idEntity)
-					.findAny();
-			if (!identityValue.isEmpty()) {
-				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
-			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
-								IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
-
+			List<String> identityBioAttributes = getBioAttributeNames(type, matchType, idEntity);
+			for (String bioAttribute : identityBioAttributes) {
+				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
+				if (!identityValue.isEmpty()) {
+					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+				} else {
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
+									IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+				}				
 			}
 		}
 		return cbeffValuesForTypes;
-
 	}
 	
 	/**
@@ -278,26 +279,32 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * @param matchType
 	 * @return
 	 */
-	private String getBioAttributeName(CbeffDocType type, MatchType matchType) {
-		if(matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString())) {
-			return "Finger_UNKNOWN";
+	private List<String> getBioAttributeNames(CbeffDocType type, MatchType matchType,
+			Map<String, List<IdentityInfoDTO>> idEntity) {
+		if (matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString())) {
+			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
+					.collect(Collectors.toList());
 		}
-		if(matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString())) {
-			return "Finger_UNKNOWN";
+		if (matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString())) {
+			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
+					.collect(Collectors.toList());
 		}
-		if(matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
-			return "Finger_UNKNOWN";
+		if (matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
+					.collect(Collectors.toList());
 		}
-		if(matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
-			return "Iris_UNKNOWN";
+		if (matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
+			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.IRIS.value().toString()))
+					.collect(Collectors.toList());
 		}
-		if(matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
-			return "Iris_UNKNOWN";
+		if (matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.IRIS.value().toString()))
+					.collect(Collectors.toList());
 		}
-		if(matchType.toString().equals(BioMatchType.FACE.toString())) {
-			return "Face";
+		if (matchType.toString().equals(BioMatchType.FACE.toString())) {
+			return List.of("Face");
 		}
-		return type.getType().value() + "_" + matchType.getIdMapping().getSubType();
+		return List.of(type.getType().value() + "_" + matchType.getIdMapping().getSubType());
 	}
 
 	/**

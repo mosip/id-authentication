@@ -910,7 +910,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("Finger_UNKNOWN", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));

@@ -372,5 +372,4 @@ public enum BioMatchType implements MatchType {
 	public SingleAnySubtypeType getSingleAnySubtype() {
 		return singleAnySubtype;
 	}
-
 }
