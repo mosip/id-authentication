@@ -482,7 +482,7 @@ public class AuthFacadeImpl implements AuthFacade {
 							.collect(Collectors.toList());
 					// for UNKNOWN getting all the subtypes
 					if(bioIrisData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
-						bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
+						bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
 					}else {
 						bioFilters.addAll(
 								bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
