@@ -3,6 +3,7 @@ package io.mosip.authentication.service.kyc.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -35,9 +36,12 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -48,6 +52,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Nagarjuna K
  */
 @RestController
+@Tag(name = "kyc-auth-controller", description = "Kyc Auth Controller")
 public class KycAuthController {
 
 	/** The mosipLogger. */
@@ -94,8 +99,14 @@ public class KycAuthController {
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
 	@PostMapping(path = "/kyc/{MISP-LK}/{eKYC-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	@Operation(summary = "eKyc Request", description = "eKyc Request", tags = { "kyc-auth-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK,@PathVariable("eKYC-Partner-ID") String partnerId,
 			@PathVariable("API-Key") String partnerApiKey)
