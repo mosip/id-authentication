@@ -521,7 +521,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	public List<String> getBioSubTypes(BiometricType type) {
 		switch (type) {
-		case FACE:
+		case FINGER:
 			return getFingerSubTypes(type);
 		case IRIS:
 			return getIrisSubTypes(type);
