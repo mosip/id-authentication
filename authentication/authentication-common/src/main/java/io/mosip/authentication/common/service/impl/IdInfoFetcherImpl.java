@@ -281,28 +281,19 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	private List<String> getBioAttributeNames(CbeffDocType type, MatchType matchType,
 			Map<String, List<IdentityInfoDTO>> idEntity) {
-		if (matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString())) {
-			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
+		if (matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString()) ||
+				matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString()) || 
+				matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(bio -> bio.startsWith(BiometricType.FINGER.value().toString()))
 					.collect(Collectors.toList());
 		}
-		if (matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString())) {
-			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
-					.collect(Collectors.toList());
-		}
-		if (matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
-			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.FINGER.value().toString()))
-					.collect(Collectors.toList());
-		}
-		if (matchType.toString().equals(BioMatchType.IRIS_COMP.toString())) {
-			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.IRIS.value().toString()))
-					.collect(Collectors.toList());
-		}
-		if (matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
-			return idEntity.keySet().stream().filter(k -> k.startsWith(BiometricType.IRIS.value().toString()))
+		if (matchType.toString().equals(BioMatchType.IRIS_COMP.toString()) ||
+				matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(bio -> bio.startsWith(BiometricType.IRIS.value().toString()))
 					.collect(Collectors.toList());
 		}
 		if (matchType.toString().equals(BioMatchType.FACE.toString())) {
-			return List.of("Face");
+			return List.of(BiometricType.FACE.value());
 		}
 		return List.of(type.getType().value() + "_" + matchType.getIdMapping().getSubType());
 	}
