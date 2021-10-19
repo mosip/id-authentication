@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +31,19 @@ import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
 import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
 import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * The InternalUpdateAuthTypeController use to fetch Auth Transaction.
  *
  * @author Dinesh Karuppiah.T
  */
 @RestController
+@Tag(name = "internal-update-auth-type-controller", description = "Internal Update Auth Type Controller")
 public class InternalUpdateAuthTypeController {
 
 	/** The logger. */
@@ -52,9 +60,16 @@ public class InternalUpdateAuthTypeController {
 	
 	@Autowired
 	@Qualifier("subscriptionExtendedClient")
-	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe; 
-	
+	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
+
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
+	@Operation(summary = "updateAuthtypeStatus", description = "updateAuthtypeStatus", tags = { "internal-update-auth-type-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET +"}", callback = "/idauthentication/v1/internal/callback/authTypeCallback/{partnerId}", topic = "${ida-topic-auth-type-status-updated}")
 	public void updateAuthtypeStatus(@RequestBody EventModel eventModel, @PathVariable("partnerId") String partnerId)
 			throws IdAuthenticationAppException, IDDataValidationException {

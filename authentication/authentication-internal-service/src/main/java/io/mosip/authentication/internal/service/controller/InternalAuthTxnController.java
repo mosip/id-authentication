@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -43,9 +44,12 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The {@code InternalAuthTxnController} use to fetch Auth Transaction
@@ -53,6 +57,7 @@ import io.swagger.annotations.ApiResponses;
  * @author Dinesh Karuppiah.T
  */
 @RestController
+@Tag(name = "internal-auth-txn-controller", description = "Internal Auth Txn Controller")
 public class InternalAuthTxnController {
 
 	private static Logger logger = IdaLogger.getLogger(InternalAuthTxnController.class);
@@ -92,11 +97,16 @@ public class InternalAuthTxnController {
 	 * @throws IdAuthenticationBusinessException 
 	 */
 	//@PreAuthorize("hasAnyRole('RESIDENT')")
-	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetauthtransactionsindividualid())")
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-			@ApiResponse(code = 400, message = "No Records Found") })
+	@Operation(summary = "Auth Transaction Request", description = "Auth Transaction Request", tags = { "internal-auth-txn-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "400", description = "No Records Found" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(
 			@RequestParam(name = "IDType", required = false) String individualIdType,
 			@PathVariable("ID") String individualId,
