@@ -28,12 +28,20 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * The Class PartnerServiceCallbackController.
  * 
  * @author Manoj SP
  */
 @RestController
+@Tag(name = "partner-service-callback-controller", description = "Partner Service Callback Controller")
 public class PartnerServiceCallbackController {
 
 	private static final Logger logger = IdaLogger.getLogger(PartnerServiceCallbackController.class);
@@ -46,6 +54,13 @@ public class PartnerServiceCallbackController {
 	private IdAuthSecurityManager securityManager;
 
 	@PostMapping(value = "/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
+	@Operation(summary = "handleApiKeyApprovedEvent", description = "handleApiKeyApprovedEvent", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
@@ -61,6 +76,13 @@ public class PartnerServiceCallbackController {
 	}
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_UPDATED_EVENT_NAME, consumes = "application/json")
+	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ PARTNER_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED + "}")
@@ -76,6 +98,13 @@ public class PartnerServiceCallbackController {
 	}
 
 	@PostMapping(value = "/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
+	@Operation(summary = "handlePolicyUpdated", description = "handlePolicyUpdated", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ POLICY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED + "}")
@@ -91,6 +120,13 @@ public class PartnerServiceCallbackController {
 	}
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_API_KEY_UPDATED_EVENT_NAME, consumes = "application/json")
+	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ PARTNER_API_KEY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED + "}")
@@ -106,6 +142,13 @@ public class PartnerServiceCallbackController {
 	}
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_GENERATED, consumes = "application/json")
+	@Operation(summary = "handleMispLicenseGeneratedEvent", description = "handleMispLicenseGeneratedEvent", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ MISP_LICENSE_GENERATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED + "}")
@@ -121,6 +164,13 @@ public class PartnerServiceCallbackController {
 	}
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_UPDATED, consumes = "application/json")
+	@Operation(summary = "handleMispUpdatedEvent", description = "handleMispUpdatedEvent", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
 			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
 					+ MISP_LICENSE_UPDATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED + "}")
