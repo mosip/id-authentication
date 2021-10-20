@@ -526,9 +526,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		case IRIS:
 			return getIrisSubTypes(type);
 		default:
-			Collections.emptyList();
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
 	}
 	
 	/**
@@ -537,7 +536,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @return
 	 */
 	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.THUMB.value(),
+		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.THUMB.value(),
 				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
 				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
 				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),

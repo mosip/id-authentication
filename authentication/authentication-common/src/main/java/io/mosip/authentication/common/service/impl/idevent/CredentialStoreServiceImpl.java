@@ -439,9 +439,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
 		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream()
-				.collect(Collectors.partitioningBy(entry -> entry.getKey().startsWith(BiometricType.FINGER.value())
-						|| entry.getKey().startsWith(BiometricType.IRIS.value())
-						|| entry.getKey().startsWith(BiometricType.FACE.value())));
+				.collect(Collectors.partitioningBy(entry -> entry.getKey().toLowerCase().startsWith(BiometricType.FINGER.value().toLowerCase())
+						|| entry.getKey().toLowerCase().startsWith(BiometricType.IRIS.value().toLowerCase())
+						|| entry.getKey().toLowerCase().startsWith(BiometricType.FACE.value().toLowerCase())));
 		
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));

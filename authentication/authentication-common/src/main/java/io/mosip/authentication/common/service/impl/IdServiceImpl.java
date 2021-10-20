@@ -6,7 +6,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -235,10 +234,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!bioFilterAttributes.isEmpty()) {
-					Map<String, String> bioDataMapPostFilter = new HashMap<>();
-					bioFilterAttributes.forEach(attribute -> Optional.ofNullable(bioDataMap.get(attribute))
-							.ifPresent(value -> bioDataMapPostFilter.put(attribute, value)));
+				if (!bioFilterAttributes.isEmpty()) {					
+					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
+							.filter(bio -> bioFilterAttributes.contains(bio.getKey()))
+							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
 				} else {
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
