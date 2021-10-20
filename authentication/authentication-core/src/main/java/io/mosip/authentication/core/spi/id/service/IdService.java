@@ -1,13 +1,8 @@
 package io.mosip.authentication.core.spi.id.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 
 /**
  * The Interface IdAuthService.
@@ -27,7 +22,7 @@ public interface IdService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByUin(String uin, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID.
@@ -38,7 +33,7 @@ public interface IdService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByVid(String vid, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Process id type.
@@ -50,7 +45,7 @@ public interface IdService<T> {
 	 * @return the map
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, List<String> bioFilterAttributes)
 			throws IdAuthenticationBusinessException;
 
 	/**
@@ -69,14 +64,6 @@ public interface IdService<T> {
 	 * @return the demo data
 	 */
 	Map<String, Object> getDemoData(Map<String, Object> identity);
-	
-	/**
-	 * Gets the bio data.
-	 *
-	 * @param identity the identity
-	 * @return the bio data
-	 */
-	Map<String, Object> getBioData(Map<String, Object> identity);
 
 	/**
 	 * Gets the token .
