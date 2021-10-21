@@ -312,12 +312,8 @@ public class IdAuthServiceImplTest {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
-			idRepo.put("uin", vid);
-			new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			idRepo.put("uin", vid);			
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -330,12 +326,7 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.INVALID_UIN);
-
-			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -348,12 +339,7 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
-
- 			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
