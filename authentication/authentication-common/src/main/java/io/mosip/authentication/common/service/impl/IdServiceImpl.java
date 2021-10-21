@@ -234,7 +234,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
 			if (!filterAttributes.isEmpty()) {					
 				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
-						.filter(bio -> filterAttributes.contains(bio.getKey()))
+						.filter(demo -> filterAttributes.contains(demo.getKey()))
 						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
 			} else {
