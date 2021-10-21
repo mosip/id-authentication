@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,8 +85,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByUin(String uin, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
-		return getIdentity(uin, isBio, bioFilterAttributes);
+	public Map<String, Object> getIdByUin(String uin, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(uin, isBio, filterAttributes);
 	}
 
 	/*
@@ -96,8 +97,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByVid(String vid, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
-		return getIdentity(vid, isBio, IdType.VID, bioFilterAttributes);
+	public Map<String, Object> getIdByVid(String vid, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(vid, isBio, IdType.VID, filterAttributes);
 	}
 	
 	/**
@@ -112,19 +113,19 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, List<String> bioFilterAttributes)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdByUin(idvId, isBio, bioFilterAttributes);
+				idResDTO = getIdByUin(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else if(idvIdType.equals(IdType.VID.getType())) {
 			try {
-				idResDTO = getIdByVid(idvId, isBio, bioFilterAttributes);
+				idResDTO = getIdByVid(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -164,8 +165,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.orElseGet(Collections::emptyMap);
 	}
 
-	public Map<String, Object> getIdentity(String id, boolean isBio, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
-		return getIdentity(id, isBio, IdType.UIN, bioFilterAttributes);
+	public Map<String, Object> getIdentity(String id, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(id, isBio, IdType.UIN, filterAttributes);
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *             the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, List<String> bioFilterAttributes) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
 		
 		String hashedId;
 		try {
@@ -231,16 +232,20 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
+			if (!filterAttributes.isEmpty()) {					
+				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
+						.filter(demo -> filterAttributes.contains(demo.getKey()))
+						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
+			}
+			
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!bioFilterAttributes.isEmpty()) {					
+				if (!filterAttributes.isEmpty()) {					
 					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
-							.filter(bio -> bioFilterAttributes.contains(bio.getKey()))
+							.filter(bio -> filterAttributes.contains(bio.getKey()))
 							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
-				} else {
-					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
 				}
 			}
 			responseMap.put(TOKEN, entity.getToken());

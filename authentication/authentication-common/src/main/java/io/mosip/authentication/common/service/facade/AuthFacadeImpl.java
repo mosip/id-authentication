@@ -10,11 +10,13 @@ import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,14 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
+import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -54,6 +60,7 @@ import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
@@ -124,6 +131,12 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	private AuthFiltersValidator authFiltersValidator;
+	
+	@Autowired
+	public MatchInputBuilder matchInputBuilder;
+	
+	@Autowired
+	public IdInfoHelper idInfoHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -141,8 +154,12 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
 				idvIdType + "-" + idvid);
 
+		Set<String> filterAttributes = new HashSet<>();
+		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
+		filterAttributes.addAll(buildBioFilters(authRequestDTO));		
+		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, isBiometricDataNeeded(authRequestDTO),
-				markVidConsumed, buildBioFilters(authRequestDTO));
+				markVidConsumed, filterAttributes);
 
 		String token = idService.getToken(idResDTO);
 
@@ -456,8 +473,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param authRequestDTO
 	 * @return
 	 */
-	private List<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
-		List<String> bioFilters = new ArrayList<String>();
+	private Set<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
+		Set<String> bioFilters = new HashSet<String>();
 		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
 				List<BioIdentityInfoDTO> bioFingerInfo = getBioIds(authRequestDTO, BioAuthType.FGR_IMG.getType());
@@ -501,7 +518,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 			return bioFilters;
 		}
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 	private List<BioIdentityInfoDTO> getBioIds(AuthRequestDTO authRequestDTO, String type) {
@@ -557,4 +574,20 @@ public class AuthFacadeImpl implements AuthFacade {
 		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value(),
 				type.value() + "_" + SingleAnySubtypeType.RIGHT.value());
 	}
+	
+	/**
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 * @throws IdAuthenticationBusinessException 
+	 */
+	private Set<String> buildDemoAttributeFilters(AuthRequestDTO authRequestDTO)
+			throws IdAuthenticationBusinessException {		
+		Set<MatchInput> defaultFilterAttributes = idInfoHelper.buildDefaultFilterAttributes();
+		if (AuthTypeUtil.isDemo(authRequestDTO)) {
+			defaultFilterAttributes.addAll(
+					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values()));
+		}
+		return idInfoHelper.getAttributesFromMatchInput(defaultFilterAttributes);
+	}	
 }

@@ -126,7 +126,9 @@ public class OTPServiceImpl implements OTPService {
 			String individualIdType = IdType.getIDTypeStrOrDefault(otpRequestDto.getIndividualIdType());
 			String individualId = otpRequestDto.getIndividualId();
 
-			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false, false, Collections.emptyList());
+			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false, false,
+					idInfoHelper.getAttributesFromMatchInput(idInfoHelper.buildDefaultFilterAttributes()));
+			
 			token = idAuthService.getToken(idResDTO);
 
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
