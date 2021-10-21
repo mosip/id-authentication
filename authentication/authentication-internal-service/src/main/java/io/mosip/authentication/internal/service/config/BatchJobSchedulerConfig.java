@@ -35,11 +35,6 @@ public class BatchJobSchedulerConfig {
 	@Qualifier("credentialStoreJob")
 	private Job credentialStoreJob;
 	
-	/** The retrigger missing credential issuances job. */
-	@Autowired
-	@Qualifier("pullFailedWebsubMessagesAndProcess")
-	private Job pullFailedWebsubMessagesAndProcess;
-	
 	@Autowired
 	@Qualifier("retriggerMissingCredentials")
 	private Job retriggerMissingCredentials;
@@ -59,22 +54,6 @@ public class BatchJobSchedulerConfig {
 			jobLauncher.run(credentialStoreJob, jobParameters);
 		} catch (Exception e) {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
-		}
-	}
-	
-	/**
-	 * Schedule missing credential retrigger job.
-	 * Scheduling to run only once in the startup.
-	 */
-	// Waiting for one more minute for the subscription to complete for credential event topic.
-	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000}}", fixedDelay = Long.MAX_VALUE)
-	public void scheduleFailedMessagesProcessJob() {
-		try {
-			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-					.toJobParameters();
-			jobLauncher.run(pullFailedWebsubMessagesAndProcess, jobParameters);
-		} catch (Exception e) {
-			logger.error("unable to launch job pullFailedWebsubMessagesAndProcess: {}", e.getMessage(), e);
 		}
 	}
 	
