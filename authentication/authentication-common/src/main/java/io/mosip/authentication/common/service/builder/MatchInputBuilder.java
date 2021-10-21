@@ -102,6 +102,23 @@ public class MatchInputBuilder {
 	}
 	
 	/**
+	 * Construct match input.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param authTypes      the auth types
+	 * @param matchTypes     the match types
+	 * @return the list
+	 */
+	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
+			MatchType[] matchTypes) {		
+		return Stream.of(matchTypes).flatMap(matchType -> {
+			List<MatchInput> matchInputs = new ArrayList<>();
+			addMatchInput(authRequestDTO, authTypes, matchType, matchInputs, null);
+			return matchInputs.stream();
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+	}
+	
+	/**
 	 * Validates dynamic attribute language details
 	 * @param propName
 	 * @param matchType
