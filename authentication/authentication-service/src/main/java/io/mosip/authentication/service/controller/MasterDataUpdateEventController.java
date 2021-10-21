@@ -7,6 +7,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,6 +45,8 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/templates", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTemplatesUpdate", description = "handleMasterdataTemplatesUpdate", tags = { "master-data-update-event-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -63,6 +67,8 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/titles", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTitlesUpdate", description = "handleMasterdataTitlesUpdate", tags = { "master-data-update-event-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
