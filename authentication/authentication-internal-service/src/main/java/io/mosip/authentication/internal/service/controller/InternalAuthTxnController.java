@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,6 +102,7 @@ public class InternalAuthTxnController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetauthtransactionsindividualid())")
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Auth Transaction Request", description = "Auth Transaction Request", tags = { "internal-auth-txn-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
 					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),

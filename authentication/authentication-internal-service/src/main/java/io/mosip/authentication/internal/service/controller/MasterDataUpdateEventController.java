@@ -5,6 +5,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_MASTERDATA_TITLES_TOPIC;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +50,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/templates", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTemplatesUpdate", description = "handleMasterdataTemplatesUpdate", tags = { "master-data-update-event-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -68,6 +71,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/titles", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTitlesUpdate", description = "handleMasterdataTitlesUpdate", tags = { "master-data-update-event-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
