@@ -604,12 +604,9 @@ public abstract class BaseIDAFilter implements Filter {
 					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)));
-			responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
-			// attached for auth transaction
-			return responseBody;
-		} else {
-			return responseBody;
 		}
+		responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
+		return responseBody;
 	}
 
 	/**
@@ -655,7 +652,7 @@ public abstract class BaseIDAFilter implements Filter {
 			DateUtils.parseToDate(date, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 			return true;
 		} catch (ParseException e) {
-			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.warn("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}

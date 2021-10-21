@@ -225,7 +225,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
 				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
 				if(exceptionWithMetadata.getMetadata() != null) {
-					exceptionWithMetadata.getMetadata().keySet().forEach(key -> exceptionWithMetadata.copyMetadataTo(responsWithMetadata, key));
+					exceptionWithMetadata.copyAllMetadaTo(responsWithMetadata);
 				}
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),

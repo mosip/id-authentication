@@ -3,6 +3,9 @@ package io.mosip.authentication.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -34,9 +37,13 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -47,6 +54,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Nagarjuna K
  */
 @RestController
+@Tag(name = "auth-controller", description = "Auth Controller")
 public class AuthController {
 
 	/** The mosipLogger. */
@@ -93,8 +101,16 @@ public class AuthController {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	@PostMapping(path = "/auth/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	@Operation(summary = "Authenticate Request", description = "Authenticate Request", tags = { "auth-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@Parameter(in = ParameterIn.HEADER, name = "signature")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("API-Key") String partnerApiKey)
