@@ -31,6 +31,9 @@ public class MatchInput {
 
 	/** The match type. */
 	private AuthType authType;
+	
+	/** The match type. */
+	private String idName;
 
 	/** The match type. */
 	private MatchType matchType;

@@ -14,7 +14,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 /**
@@ -62,7 +61,6 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerServiceCache.evictPartnerPolicy(key);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_POLICY_ID);
 		}
-		
 		return partnerPolicyResponseDTO;
 	}
 
@@ -71,9 +69,9 @@ public class PartnerServiceImpl implements PartnerService {
 	}
 
 	@Override
-	public Optional<PolicyDTO> getPolicyForPartner(String partnerId, String partnerApiKey, Map<String, Object> metadata)
+	public Optional<PartnerPolicyResponseDTO> getPolicyForPartner(String partnerId, String partnerApiKey, Map<String, Object> metadata)
 			throws IdAuthenticationBusinessException {
 		String key = partnerId + partnerApiKey;
-		return Optional.ofNullable(mapper.convertValue(metadata.get(key), PolicyDTO.class));
+		return Optional.ofNullable(mapper.convertValue(metadata.get(key), PartnerPolicyResponseDTO.class));
 	}
 }

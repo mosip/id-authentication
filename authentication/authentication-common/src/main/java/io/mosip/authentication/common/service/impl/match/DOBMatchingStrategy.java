@@ -26,16 +26,29 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
+			Date reqInfoDate;
 			try {
-				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo,
+				reqInfoDate = DateUtils.parseToDate((String) reqInfo, getDateFormat());
+			} catch (ParseException e) {
+				logError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								"request/demographics/" + IdaIdMapping.DOB.getIdname()),
+						e);
+			}
+			
+			Date entityInfoDate;
+			try {
+				entityInfoDate = DateUtils.parseToDate((String) entityInfo,
 						getDateFormat());
-				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo,
-						getDateFormat());
-				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 			}
+			
+			return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
+
 		}
 		return 0;
 	});

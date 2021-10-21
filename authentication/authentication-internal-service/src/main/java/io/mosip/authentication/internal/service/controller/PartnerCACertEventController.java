@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.partnercertservice.dto.CACertificateRequestDto;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;

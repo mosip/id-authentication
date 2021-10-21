@@ -7,11 +7,9 @@ import static io.mosip.authentication.core.constant.AuthTokenType.PARTNER;
 import static io.mosip.authentication.core.constant.AuthTokenType.POLICY;
 import static io.mosip.authentication.core.constant.AuthTokenType.POLICY_GROUP;
 import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,10 +23,9 @@ import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.repository.UinEncryptSaltRepo;
-import io.mosip.authentication.common.service.repository.UinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -41,12 +38,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.partner.dto.PartnerDTO;
-import io.mosip.authentication.core.partner.dto.Policies;
+import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
@@ -117,12 +113,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	private TokenIdManager tokenIdManager;
 
 	@Autowired
-	private UinEncryptSaltRepo uinEncryptSaltRepo;
-
-	@Autowired
-	private UinHashSaltRepo uinHashSaltRepo;
-
-	@Autowired
 	private AuthtypeStatusService authTypeStatusService;
 
 	@Autowired
@@ -134,6 +124,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	@Autowired
+	private AuthTransactionHelper authTransactionHelper;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -151,7 +143,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				idvIdType + "-" + idvid);
 
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-				authRequestDTO.getRequestedAuth().isBio(), markVidConsumed);
+				isBiometricDataNeeded(authRequestDTO), markVidConsumed);
 		
 		String token = idService.getToken(idResDTO);
 		validateAuthTypeStatus(authRequestDTO, token);
@@ -162,10 +154,11 @@ public class AuthFacadeImpl implements AuthFacade {
 		String authTokenId = null;
 		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
 		
-		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(authRequestDTO, token, authTokenId,
-				!isAuth, partnerId);
+		AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata().get(AuthTransactionBuilder.class.getSimpleName());
+		authTxnBuilder.withToken(token);
+		
 		try {
-			idInfo = idService.getIdInfo(idResDTO);
+			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token) : null;
 			
@@ -183,15 +176,11 @@ public class AuthFacadeImpl implements AuthFacade {
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);
 			
-			Map<String, Object> metadata = authResponseDTO.getMetadata();
-			if(metadata == null) {
-				metadata = new HashMap<>();
-				authResponseDTO.setMetadata(metadata);
-			}
 			// This is sent back for the consumption by the caller for example
 			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
-			metadata.put(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			metadata.put(AutnTxn.class.getSimpleName(), authTxnBuilder.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager));
+			authResponseDTO.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			
+			authTransactionHelper.setAuthTransactionEntityMetadata(authResponseDTO, authTxnBuilder);
 			
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
@@ -205,10 +194,22 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
+	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
+		return authRequestDTO.getRequestedAuth().isBio() || containsPhotoKYCAttribute(authRequestDTO);
+	}
+
+	private boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
+		return (authRequestDTO instanceof KycAuthRequestDTO)
+				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO)
+						.getAllowedKycAttributes()).orElse(List.of())
+						.contains(IdAuthCommonConstants.PHOTO);
+	}
+
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid, String token)
 			throws IdAuthenticationBusinessException {
-		Optional<PolicyDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
-		Optional<String> authTokenTypeOpt = policyForPartner.map(PolicyDTO::getPolicies).map(Policies::getAuthTokenType);
+		Optional<PartnerPolicyResponseDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId, partnerApiKey, authRequestDTO.getMetadata());
+		Optional<String> authTokenTypeOpt = policyForPartner.map(PartnerPolicyResponseDTO::getPolicy)
+				.map(PolicyDTO::getAuthTokenType);
 		if (authTokenTypeOpt.isPresent()) {
 			String authTokenType = authTokenTypeOpt.get();
 			if (authTokenType.equalsIgnoreCase(RANDOM.getType())) {
@@ -216,7 +217,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			} else if (authTokenType.equalsIgnoreCase(PARTNER.getType())) {
 				return tokenIdManager.generateTokenId(token, partnerId);
 			} else if(authTokenType.equalsIgnoreCase(POLICY.getType())){
-				Optional<String> policyId = policyForPartner.map(PolicyDTO::getPolicyId);
+				Optional<String> policyId = policyForPartner.map(PartnerPolicyResponseDTO::getPolicyId);
 				if (policyId.isPresent()) {
 					return tokenIdManager.generateTokenId(token, policyId.get());
 				}
@@ -549,53 +550,21 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String token, IdType idType, boolean isStatus,
 			String authTokenId, boolean isInternal, String partnerId, AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
 		String status = "authenticateApplicant status : " + isStatus;
-		if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
-				bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || (FMR_ENABLED_TEST.test(env)
-						&& bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))))) {
-
+		if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(!isInternal),
 					authRequestDTO.getIndividualId(), idType, status);
 			authTxnBuilder.addRequestType(RequestType.FINGER_AUTH);
 		}
-		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType()))) {
+		if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.IRIS_AUTH);
 		}
-		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()))) {
+		if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
 			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(!isInternal), authRequestDTO.getIndividualId(),
 					idType, status);
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
 		}
-	}
-
-	/**
-	 * Fetch auth txn.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param token
-	 *            the uin
-	 * @param isStatus
-	 *            the is status
-	 * @param authTokenId
-	 *            the response token id
-	 * @return the autn txn
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
-	 */
-	private AuthTransactionBuilder createAuthTxnBuilder(AuthRequestDTO authRequestDTO, String token, String authTokenId,
-			boolean isInternal, String partnerId) throws IdAuthenticationBusinessException {
-		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
-
-		return AuthTransactionBuilder.newInstance()
-				.withToken(token)
-				.withAuthRequest(authRequestDTO)
-				.withAuthToken(authTokenId)
-				.withInternal(isInternal)
-				.withPartner(partner);
 	}
 
 }

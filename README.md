@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.com/mosip/id-authentication.svg?branch=master)](https://travis-ci.com/mosip/id-authentication)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication)
 
 # ID-Authentication
 This repository contains the source code and design documents for MOSIP ID-Authentication module. ID-Authentication module enables a Partner to authenticate an individual. To know more about MOSIP, its architecture, external integrations, releases, etc..., please check the [Platform Documentation](https://github.com/mosip/mosip-docs/wiki)

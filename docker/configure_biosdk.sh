@@ -3,17 +3,36 @@
 #installs the pkcs11 libraries.
 set -e
 
-mkdir -p /biosdk
-cd /biosdk
+DEFAULT_ZIP_PATH=artifactory/libs-release-local/biosdk/mock/0.9/biosdk.zip
+[ -z "$biosdk_zip_file_path" ] && zip_path="$DEFAULT_ZIP_PATH" || zip_path="$biosdk_zip_file_path"
 
 echo "Download the biosdk from $artifactory_url_env"
-wget $artifactory_url_env/artifactory/libs-release-local/biosdk/$bio_sdk_folder_env/biosdk.zip -O biosdk.zip
-echo "Downloaded $artifactory_url_env"
+wget -q --show-progress "$artifactory_url_env/$zip_path"
+echo "Downloaded $artifactory_url_env/$zip_path"
 
-unzip biosdk.zip
-echo "Attempting to install biosdk"
-source ./install.sh 
-echo "Installation of biosdk complete"
+FILE_NAME=${zip_path##*/}
 
-cd /
-rm -rf /biosdk
+DIR_NAME=$biosdk_local_dir_name
+
+has_parent=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | wc -l)
+if test "$has_parent" -eq 1; then
+  echo "Zip has a parent directory inside"
+  dirname=$(zipinfo -1 "$FILE_NAME" | awk '{split($NF,a,"/");print a[1]}' | sort -u | head -n 1)
+  echo "Unzip directory"
+  unzip $FILE_NAME
+  echo "Renaming directory"
+  mv -v $dirname $DIR_NAME
+else
+  echo "Zip has no parent directory inside"
+  echo "Creating destination directory"
+  mkdir "$DIR_NAME"
+  echo "Unzip to destination directory"
+  unzip -d "$DIR_NAME" $FILE_NAME
+fi
+
+echo "Attempting to install"
+cd ./$DIR_NAME && chmod +x install.sh && sudo ./install.sh
+echo "Installation complete"
+cd $work_dir
+
+exec "$@"

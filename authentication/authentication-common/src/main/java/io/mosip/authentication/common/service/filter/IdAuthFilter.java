@@ -1,5 +1,4 @@
 package io.mosip.authentication.common.service.filter;
-
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
@@ -13,6 +12,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VA
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_AAD_LAST_BYTES_NUM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_SALT_LAST_BYTES_NUM;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEMOGRAPHICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH_INPUT_PARAM;
@@ -27,6 +27,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSIO
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BIO_HASH_VALIDATION_DISABLED;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -46,7 +48,6 @@ import java.util.stream.Stream;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.DomainType;
@@ -70,13 +72,11 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
-import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -91,16 +91,31 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	/** The Constant THUMBPRINT. */
 	private static final String THUMBPRINT = "thumbprint";
+	
+	/** The Constant TRANSACTION_ID. */
 	private static final String TRANSACTION_ID = "transactionId";
+	
+	/** The partner service. */
 	protected PartnerService partnerService;
-
+	
+	/** The id mapping config. */
+	private IDAMappingConfig idMappingConfig;
+	
+	/**
+	 * Initialize the filter.
+	 *
+	 * @param filterConfig the filter config
+	 * @throws ServletException the servlet exception
+	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 
+		idMappingConfig = context.getBean(IDAMappingConfig.class);
 		// Internal auth is not depending on partner service
 		try {
 			partnerService = context.getBean(PartnerService.class);
@@ -109,13 +124,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseAuthFilter#decodedRequest(java.
-	 * util.Map)
+	/**
+	 * Decipher request.
+	 *
+	 * @param requestBody the request body
+	 * @return the map
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
@@ -125,14 +141,12 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(REQUEST_HMAC);
 				} else {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
-					Object encryptedSessionkey = decode((String) requestBody.get(REQUEST_SESSION_KEY));
-					byte[] requestToDecrypt = CryptoUtil.combineByteArray((byte[]) requestBody.get(REQUEST_HMAC),
-							(byte[]) encryptedSessionkey, env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
+					byte[] encryptedSessionkey = (byte[]) decode((String) requestBody.get(REQUEST_SESSION_KEY));
+					byte[] encryptedHmac = (byte[]) requestBody.get(REQUEST_HMAC);
 					String thumbprint = Objects.nonNull(requestBody.get(THUMBPRINT))
 							? String.valueOf(requestBody.get(THUMBPRINT))
 							: null;
-					String reqHMAC = keyManager.kernelDecryptAndDecode(thumbprint,
-							CryptoUtil.encodeBase64(requestToDecrypt), fetchReferenceId(),
+					String reqHMAC = keyManager.kernelDecryptAndDecode(thumbprint, encryptedSessionkey, encryptedHmac, fetchReferenceId(),
 							isThumbprintValidationRequired());
 					Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId(),
 							thumbprint, isThumbprintValidationRequired(),
@@ -140,8 +154,16 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 					// If biometrics is present validate and decipher it.
 					if (request.get(BIOMETRICS) != null) {
-						validateBioDataInRequest(request);
+						
 						decipherBioData(request);
+						
+						if(!isBiometricHashValidationDisabled()) {
+							validateHashWithDecryptedBdbInRequest(request);
+						}
+					}
+					
+					if (request.get(DEMOGRAPHICS) instanceof Map) {
+						setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
 					}
 
 					requestBody.replace(REQUEST, request);
@@ -154,6 +176,29 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+	}
+
+	/**
+	 * Checks if is hash based on biometric data block.
+	 *
+	 * @return true, if is hash based on biometric data block
+	 */
+	protected boolean isBiometricHashValidationDisabled() {
+		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
+	}
+
+	/**
+	 * Sets the dymanic demograpic data.
+	 *
+	 * @param demographics the demographics
+	 */
+	private void setDymanicDemograpicData(Map<String, Object> demographics) {
+		Map<String, List<String>> dynamicAttributes = idMappingConfig.getDynamicAttributes();
+		Map<String, Object> metadata = demographics.entrySet()
+												.stream()
+												.filter(entry -> dynamicAttributes.containsKey(entry.getKey()))
+												.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		demographics.put(METADATA, metadata);
 	}
 
 	/**
@@ -182,7 +227,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * Decipher bio data.
 	 *
 	 * @param obj   the obj
-	 * @param index
+	 * @param index the index
 	 * @return the map
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -191,18 +236,19 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 		Map<String, Object> map = (Map<String, Object>) obj;
 
-		if (!getStringValue(map, DATA).isPresent()) {
+		Optional<String> dataOpt = getStringValue(map, DATA);
+		if (!dataOpt.isPresent()) {
 			throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, index));
 		}
+		
+		verifyJwsData(dataOpt.get());
 
 		if (!getStringValue(map, SESSION_KEY).isPresent()) {
 			throwMissingInputParameter(String.format(BIO_SESSIONKEY_INPUT_PARAM, index));
 		}
 
 		try {
-			byte[] decodedData = Objects.nonNull(map.get(DATA))
-					? CryptoUtil.decodeBase64(getPayloadFromJwsSingature((String) map.get(DATA)))
-					: new byte[0];
+			byte[] decodedData = CryptoUtil.decodeBase64(extractBioData((String) map.get(DATA)));
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 
 			if (!getStringValue(data, BIO_VALUE).isPresent()) {
@@ -236,8 +282,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
-			String combinedData = combineDataForDecryption(String.valueOf(bioValue), String.valueOf(sessionKey));
-			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), combinedData, getBioRefId(),
+			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64(String.valueOf(sessionKey)), CryptoUtil.decodeBase64(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
@@ -247,16 +292,20 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Gets the bio ref id.
+	 *
+	 * @return the bio ref id
+	 */
 	protected String getBioRefId() {
 		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_BIO_REFERENCE_ID);
 	}
 
 	/**
 	 * This method validates the digitalID signature.
-	 * 
-	 * @param data
-	 * @return
-	 * @throws IdAuthenticationAppException
+	 *
+	 * @param jwsSignature the jws signature
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void verifyDigitalIdSignature(String jwsSignature) throws IdAuthenticationAppException {
 		if (!super.verifySignature(jwsSignature, null, DomainType.DIGITAL_ID.getType())) {
@@ -266,10 +315,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	/**
 	 * This method deciphers the digitalId from jws.
-	 * 
-	 * @param data
-	 * @return
-	 * @throws IdAuthenticationAppException
+	 *
+	 * @param jwsSignature the jws signature
+	 * @return the digital id
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected DigitalId decipherDigitalId(String jwsSignature) throws IdAuthenticationAppException {
 		try {
@@ -277,19 +326,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-	}
-
-	/**
-	 * Combine data for decryption.
-	 *
-	 * @param bioValue   the bio value
-	 * @param sessionKey the session key
-	 * @return the string
-	 */
-	private String combineDataForDecryption(String bioValue, String sessionKey) {
-		byte[] combineByteArray = CryptoUtil.combineByteArray(CryptoUtil.decodeBase64(bioValue),
-				CryptoUtil.decodeBase64(sessionKey), env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER));
-		return CryptoUtil.encodeBase64(combineByteArray);
 	}
 
 	/**
@@ -301,6 +337,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
 	}
 
+	/**
+	 * Validate deciphered request.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @param requestBody the request body
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -319,16 +362,31 @@ public class IdAuthFilter extends BaseAuthFilter {
 		if (partnerId != null && licenseKey != null) {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey, licenseKey,
 					isPartnerCertificateNeeded());
-			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse.getPolicy(), requestBody);
+			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse, requestBody);
 			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse,
 					partnerServiceResponse.getCertificateData());
 		}
 	}
 
+	/**
+	 * Checks if is partner certificate needed.
+	 *
+	 * @return true, if is partner certificate needed
+	 */
 	protected boolean isPartnerCertificateNeeded() {
 		return false;
 	}
 
+	/**
+	 * Gets the partner policy info.
+	 *
+	 * @param partnerId the partner id
+	 * @param partnerApiKey the partner api key
+	 * @param licenseKey the license key
+	 * @param certificateNeeded the certificate needed
+	 * @return the partner policy info
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey,
 			boolean certificateNeeded) throws IdAuthenticationAppException {
 		try {
@@ -338,6 +396,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
+	/**
+	 * Adds the metadata.
+	 *
+	 * @param requestBody the request body
+	 * @param partnerId the partner id
+	 * @param partnerApiKey the partner api key
+	 * @param partnerServiceResponse the partner service response
+	 * @param partnerCertificate the partner certificate
+	 */
 	private void addMetadata(Map<String, Object> requestBody, String partnerId, String partnerApiKey,
 			PartnerPolicyResponseDTO partnerServiceResponse, String partnerCertificate) {
 		Map<String, Object> metadata = new HashMap<>();
@@ -348,7 +415,14 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 		requestBody.put(METADATA, metadata);
 	}
-
+	
+	/**
+	 * Creates the partner DTO.
+	 *
+	 * @param partnerPolicyDTO the partner policy DTO
+	 * @param partnerApiKey the partner api key
+	 * @return the partner DTO
+	 */
 	private PartnerDTO createPartnerDTO(PartnerPolicyResponseDTO partnerPolicyDTO, String partnerApiKey) {
 		PartnerDTO partnerDTO = new PartnerDTO();
 		partnerDTO.setPartnerId(partnerPolicyDTO.getPartnerId());
@@ -365,13 +439,22 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
+	private void validateHashWithDecryptedBdbInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		validateHashWithDecryptedBdbInSegments(getBiometricsSegmentsList(requestBody));
+	}
+
+	/**
+	 * Gets the biometrics segments list.
+	 *
+	 * @param requestBody the request body
+	 * @return the biometrics segments list
+	 */
 	@SuppressWarnings("unchecked")
-	private void validateBioDataInRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	private List<Map<String, Object>> getBiometricsSegmentsList(Map<String, Object> requestBody) {
 		List<Map<String, Object>> biometricsList = Optional.ofNullable(requestBody.get(BIOMETRICS))
 				.filter(obj -> obj instanceof List).map(obj -> (List<Map<String, Object>>) obj)
 				.orElse(Collections.emptyList());
-
-		validateBioData(biometricsList);
+		return biometricsList;
 	}
 
 	/**
@@ -380,16 +463,18 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param biometricsList the biometrics list
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateBioData(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
+	@SuppressWarnings("unchecked")
+	private void validateHashWithDecryptedBdbInSegments(List<Map<String, Object>> biometricsList) throws IdAuthenticationAppException {
 		try {
-			String previousHash = digest(getHash(""));
+			byte[] previousHash = getHash("");
 
 			for (int i = 0; i < biometricsList.size(); i++) {
 				Map<String, Object> biometricData = biometricsList.get(i);
-				Optional<String> dataOpt = getStringValue(biometricData, DATA);
+				Map<String, Object> dataMap = (Map<String, Object>)biometricData.get(DATA);
 
-				if (!dataOpt.isPresent()) {
-					throwMissingInputParameter(String.format(BIO_DATA_INPUT_PARAM, i));
+				Optional<String> bioValueOpt = getStringValue(dataMap, BIO_VALUE);
+				if (!bioValueOpt.isPresent()) {
+					throwMissingInputParameter(String.format(BIO_VALUE_INPUT_PARAM, i));
 				}
 
 				Optional<String> hashOpt = getStringValue(biometricData, HASH);
@@ -398,23 +483,29 @@ public class IdAuthFilter extends BaseAuthFilter {
 					throwMissingInputParameter(String.format(HASH_INPUT_PARAM, i));
 				}
 
-				String dataFieldValue = dataOpt.get();
-				String data = extractBioData(dataFieldValue);
+				byte[] bdb = CryptoUtil.decodeBase64(bioValueOpt.get());
 
-				previousHash = validateHash(data, hashOpt.get(), previousHash);
+				previousHash = validateHashBytes(bdb, hashOpt.get(), previousHash);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-
+	
+	
 	protected String extractBioData(String dataFieldValue) throws IdAuthenticationAppException {
-		verifyJwsData(dataFieldValue);
 		return getPayloadFromJwsSingature(dataFieldValue);
 	}
 
+	/**
+	 * Digest.
+	 *
+	 * @param hash the hash
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private String digest(byte[] hash) throws IdAuthenticationAppException {
-			return IdAuthSecurityManager.digestAsPlainText(hash);
+		return IdAuthSecurityManager.digestAsPlainText(hash);
 	}
 
 	/**
@@ -423,7 +514,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param string the string
 	 * @return the hash
 	 * @throws UnsupportedEncodingException      the unsupported encoding exception
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private byte[] getHash(String string) throws UnsupportedEncodingException, IdAuthenticationAppException {
 		return getHash(string.getBytes(UTF_8));
@@ -434,11 +525,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @param bytes the bytes
 	 * @return the hash
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private byte[] getHash(byte[] bytes) throws IdAuthenticationAppException {
 		try {
-			return HMACUtils2.generateHash(bytes);
+			return IdAuthSecurityManager.generateHash(bytes);
 		} catch (NoSuchAlgorithmException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
@@ -447,25 +538,42 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Validate hash.
 	 *
-	 * @param biometricData the biometric data
+	 * @param bdb the bdb
+	 * @param inputHashDigest the input hash digest
 	 * @param previousHash  the previous hash
 	 * @return the byte[]
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private String validateHash(String data, String inputHashDigest, String previousHash)
+	private byte[] validateHashBytes(byte[] bdb, String inputHashDigest, byte[] previousHash)
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
-		String currentHash = digest(getHash(CryptoUtil.decodeBase64(data)));
-		String concatenatedHash = previousHash + currentHash;
-		byte[] finalHash = getHash(concatenatedHash);
-		String finalHashDigest = digest(finalHash);
+		byte[] currentHash = getHash(bdb);
+		
+		byte[] finalHash = contatBytes(previousHash, currentHash);
+		
+		String finalHashDigest = digest(getHash(finalHash));
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
 		}
 
-		return finalHashDigest;
+		return finalHash;
 
+	}
+	
+
+	/**
+	 * Contat bytes.
+	 *
+	 * @param previousHash the previous hash
+	 * @param currentHash the current hash
+	 * @return the byte[]
+	 */
+	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
+		byte[] finalHash = new byte[currentHash.length + previousHash.length];
+		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
+		System.arraycopy(currentHash, 0, finalHash, previousHash.length, currentHash.length);
+		return finalHash;
 	}
 
 	/**
@@ -509,15 +617,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/**
 	 * Check allowed auth type based on policy.
 	 *
-	 * @param policyId    the policy id
+	 * @param partnerPolicyResponseDTO the partner policy response DTO
 	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected void checkAllowedAuthTypeBasedOnPolicy(PolicyDTO policies, Map<String, Object> requestBody)
+	protected void checkAllowedAuthTypeBasedOnPolicy(PartnerPolicyResponseDTO partnerPolicyResponseDTO, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
-		if (policies != null) {
-			List<AuthPolicy> authPolicies = policies.getPolicies().getAuthPolicies();
-			List<KYCAttributes> allowedKycAttributes = policies.getPolicies().getAllowedKycAttributes();
+		if (partnerPolicyResponseDTO != null) {
+			List<AuthPolicy> authPolicies = partnerPolicyResponseDTO.getPolicy().getAllowedAuthTypes();
+			List<KYCAttributes> allowedKycAttributes = partnerPolicyResponseDTO.getPolicy().getAllowedKycAttributes();
 			List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes).stream()
 					.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 			requestBody.put("allowedKycAttributes", allowedTypeList);
@@ -629,6 +737,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 *
 	 * @param authPolicies the auth policies
 	 * @param bioTypeList  the bio type list
+	 * @param deviceTypeList the device type list
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList,
@@ -667,10 +776,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	/**
-	 * 
-	 * @param bioType
-	 * @param subTypeList
-	 * @return
+	 * Checks if is device type bio type same.
+	 *
+	 * @param bioType the bio type
+	 * @param deviceTypeList the device type list
+	 * @return true, if is device type bio type same
 	 */
 	private boolean isDeviceTypeBioTypeSame(String bioType, List<String> deviceTypeList) {
 		return deviceTypeList.stream().anyMatch(subType -> subType.equalsIgnoreCase(bioType));
@@ -791,39 +901,59 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
 		Map<String, String> params = new HashMap<>();
-		if (requestWrapper instanceof HttpServletRequestWrapper) {
-			String url = requestWrapper.getRequestURL().toString();
-			String contextPath = requestWrapper.getContextPath();
-			if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
-				String[] splitedUrlByContext = url.split(contextPath);
-				String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
-						.toArray(size -> new String[size]);
+		String url = requestWrapper.getRequestURL().toString();
+		String contextPath = requestWrapper.getContextPath();
+		if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
+			String[] splitedUrlByContext = url.split(contextPath);
+			String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
+					.toArray(size -> new String[size]);
 
-				if (paramsArray.length >= 3) {
-					params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
-					params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
-					params.put(API_KEY, paramsArray[paramsArray.length - 1]);
-				}
+			if (paramsArray.length >= 3) {
+				params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
+				params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
+				params.put(API_KEY, paramsArray[paramsArray.length - 1]);
 			}
 		}
 		return params;
 	}
 
+	/**
+	 * Checks if is signing required.
+	 *
+	 * @return true, if is signing required
+	 */
 	@Override
 	protected boolean isSigningRequired() {
 		return env.getProperty("mosip.ida.auth.signing-required", Boolean.class, true);
 	}
 
+	/**
+	 * Checks if is signature verification required.
+	 *
+	 * @return true, if is signature verification required
+	 */
 	@Override
 	protected boolean isSignatureVerificationRequired() {
 		return env.getProperty("mosip.ida.auth.signature-verification-required", Boolean.class, true);
 	}
 
+	/**
+	 * Checks if is thumbprint validation required.
+	 *
+	 * @return true, if is thumbprint validation required
+	 */
 	@Override
-	protected boolean isThumbprintValidationRequired() {
-		return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
+	protected final boolean isThumbprintValidationRequired() {
+		//return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
+		//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
+		return true;
 	}
 
+	/**
+	 * Checks if is trust validation required.
+	 *
+	 * @return true, if is trust validation required
+	 */
 	@Override
 	protected boolean isTrustValidationRequired() {
 		return env.getProperty("mosip.ida.auth.trust-validation-required", Boolean.class, true);

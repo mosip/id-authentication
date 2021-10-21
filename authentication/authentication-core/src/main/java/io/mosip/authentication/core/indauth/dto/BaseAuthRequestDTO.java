@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The Class For holding id and version
@@ -10,13 +11,8 @@ import lombok.Data;
  *
  */
 @Data
-public class BaseAuthRequestDTO {
-	
-	/** The value for Id*/
-	private String id;
-	
-	/** The value for version*/
-	private String version;
+@EqualsAndHashCode(callSuper=true)
+public class BaseAuthRequestDTO extends BaseRequestDTO {
 	
 	private String specVersion;
 	

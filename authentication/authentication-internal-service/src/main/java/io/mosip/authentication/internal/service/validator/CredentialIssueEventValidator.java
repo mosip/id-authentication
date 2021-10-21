@@ -5,8 +5,8 @@ import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.idrepository.core.dto.Event;
-import io.mosip.idrepository.core.dto.EventModel;
+import io.mosip.kernel.core.websub.model.Event;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 @Component
 public class CredentialIssueEventValidator extends IdAuthValidator {

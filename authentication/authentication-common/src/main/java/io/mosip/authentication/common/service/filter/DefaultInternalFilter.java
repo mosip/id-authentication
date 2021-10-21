@@ -22,7 +22,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Manoj SP
  */
 @Component
-public class DefaultInternalFilter extends IdAuthFilter {
+public class DefaultInternalFilter extends InternalAuthFilter {
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.filter.BaseAuthFilter#decipherAndValidateRequest(io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest, java.util.Map)

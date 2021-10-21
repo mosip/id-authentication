@@ -192,5 +192,9 @@ public interface MatchType {
 	public default boolean isPropMultiLang(String propName, MappingConfig cfg) {
 		return false;
 	}
+	
+	public default boolean isDynamic() {
+		return false;
+	}
 
 }

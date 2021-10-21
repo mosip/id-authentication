@@ -19,11 +19,11 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.idevent.service.CredentialStoreService;
+import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.authentication.internal.service.validator.CredentialIssueEventValidator;
-import io.mosip.idrepository.core.dto.EventModel;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,7 +43,7 @@ public class CredentialIssueanceCallbackController {
 	
 	/** The id change event handler service. */
 	@Autowired
-	private CredentialStoreService credentialStoreService;
+	private IdChangeEventHandlerService credentialStoreService;
 
 	/** The validator. */
 	@Autowired

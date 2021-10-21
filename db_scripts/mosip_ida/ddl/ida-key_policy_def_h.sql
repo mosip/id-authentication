@@ -8,7 +8,8 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+-- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false 
+-- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_policy_def_h | type: TABLE --
@@ -22,7 +23,7 @@ CREATE TABLE ida.key_policy_def_h(
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
 	upd_dtimes timestamp,
-	is_deleted boolean,
+	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
 	CONSTRAINT pk_keypdefh_id PRIMARY KEY (app_id,eff_dtimes)
 

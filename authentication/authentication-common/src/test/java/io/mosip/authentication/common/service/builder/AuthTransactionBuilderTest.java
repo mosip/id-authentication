@@ -24,12 +24,12 @@ public class AuthTransactionBuilderTest {
 	
 	@Test
 	public void withOtpRequestTest() {
-		assertNotNull(authTransactionBuilder.withOtpRequest(new OtpRequestDTO()));
+		assertNotNull(authTransactionBuilder.withRequest(new OtpRequestDTO()));
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest() throws IdAuthenticationBusinessException {
-		ReflectionTestUtils.setField(authTransactionBuilder, "otpRequestDTO", null);
+		ReflectionTestUtils.setField(authTransactionBuilder, "requestDTO", null);
 	authTransactionBuilder.build(env,null,null,null);
 	}
 	

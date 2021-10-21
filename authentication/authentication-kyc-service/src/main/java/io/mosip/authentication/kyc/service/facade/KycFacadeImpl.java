@@ -47,9 +47,11 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.util.DateUtils;
+import reactor.util.function.Tuple2;
 
 /**
  * 
@@ -168,13 +170,12 @@ public class KycFacadeImpl implements KycFacade {
 					kycAuthResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
 				}
 			} else {
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
+				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)
 						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
 						.withInternal(false).withPartner(partner).withToken(token)
 						.build(env, uinEncryptSaltRepo, uinHashSaltRepo, securityManager);
 				idService.saveAutnTxn(authTxn);
 			}
-			
 		}
 	}
 
@@ -194,7 +195,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 
-			Map<String, List<IdentityInfoDTO>> idInfo = idService.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
 
@@ -207,7 +208,10 @@ public class KycFacadeImpl implements KycFacade {
 				response.setAuthToken(authResponse.getAuthToken());
 				
 				if(Objects.nonNull(response.getIdentity())) {
-					response.setIdentity(encryptKycResponse(response.getIdentity(),(String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE)));
+					String partnerCertificate = (String) kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
+					Tuple2<String, String> encryptKycResponse = encryptKycResponse(response.getIdentity(),partnerCertificate);
+					response.setIdentity(encryptKycResponse.getT1());
+					response.setThumbprint(encryptKycResponse.getT2());
 				}
 				
 				kycAuthResponseDTO.setResponse(response);
@@ -223,7 +227,7 @@ public class KycFacadeImpl implements KycFacade {
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
 	}
 
-	private String encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {
+	private Tuple2<String, String> encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {
 		try {
 			return securityManager.encryptData(identity.getBytes(), partnerCertificate);
 		} catch (IdAuthenticationBusinessException e) {

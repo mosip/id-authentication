@@ -9,6 +9,8 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 -- Sep-2020             Sadanandegowda DM    Added token_id
+-- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
+-- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
 -- ------------------------------------------------------------------------------------------
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
@@ -23,7 +25,7 @@ CREATE TABLE ida.identity_cache(
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
 	upd_dtimes timestamp,
-	is_deleted boolean,
+	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
 	CONSTRAINT pk_idcache_id PRIMARY KEY (id)
 

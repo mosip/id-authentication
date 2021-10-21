@@ -157,7 +157,7 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
-			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			String priLang = getLanguagecode(LanguageType.PRIMARY_LANG);
 			String secLang = getLanguagecode(LanguageType.SECONDARY_LANG);
 			String namePri = getName(priLang, idInfo);
@@ -213,7 +213,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-				.withOtpRequest(otpRequestDto)
+				.withRequest(otpRequestDto)
 				.addRequestType(RequestType.OTP_REQUEST)
 				.withAuthToken(authTokenId)
 				.withStatus(status)
