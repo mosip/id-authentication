@@ -237,9 +237,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 						.filter(demo -> filterAttributes.contains(demo.getKey()))
 						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
-			} else {
-				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
-			}			
+			}
+			
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
 				if (!filterAttributes.isEmpty()) {					
@@ -247,8 +246,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 							.filter(bio -> filterAttributes.contains(bio.getKey()))
 							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
-				} else {
-					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
 				}
 			}
 			responseMap.put(TOKEN, entity.getToken());

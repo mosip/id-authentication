@@ -102,7 +102,7 @@ public class MatchInputBuilder {
 	}
 	
 	/**
-	 * Construct match input.
+	 * This method is used to get match input attributes to filter  
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param authTypes      the auth types
