@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS;
@@ -51,6 +50,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
@@ -129,12 +129,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/** The retry interval. */
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS + ":60000}")
 	private long retryInterval;
-	
-	/**
-	 * Biometric attribute name in credential data
-	 */
-	@Value("${"+ CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME  +"}")
-	private String credentialBiometricAttribute;
 
 	/** The credential event repo. */
 	@Autowired
@@ -444,9 +438,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @return the map[]
 	 */
 	private Map<String, Object>[] splitDemoBioData(Map<String, Object> credentialData) {
-		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream().collect(Collectors
-				.partitioningBy(entry -> entry.getKey().equalsIgnoreCase(credentialBiometricAttribute)));
-
+		Map<Boolean, List<Entry<String, Object>>> bioOrDemoData = credentialData.entrySet().stream()
+				.collect(Collectors.partitioningBy(entry -> entry.getKey().toLowerCase().startsWith(BiometricType.FINGER.value().toLowerCase())
+						|| entry.getKey().toLowerCase().startsWith(BiometricType.IRIS.value().toLowerCase())
+						|| entry.getKey().toLowerCase().startsWith(BiometricType.FACE.value().toLowerCase())));
+		
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		Map<String, Object> bioData = bioOrDemoData.get(true).stream()

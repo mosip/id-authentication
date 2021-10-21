@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -136,7 +137,7 @@ public class AuthTransactionHelper {
 					idvIdType + "-" + idvid);
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-					false, false);
+					false, false, Collections.emptyList());
 			
 			String token = idService.getToken(idResDTO);
 			return token;
