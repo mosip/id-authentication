@@ -9,6 +9,8 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 -- Sep-2020             Sadanandegowda DM   Removed uin and uin_hash attribute and added token_id
+-- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
+-- Feb-2021		Ram Bhatt	    Changed size of auth_type_code from 32 to 128
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.auth_transaction | type: TABLE --
@@ -18,7 +20,7 @@ CREATE TABLE ida.auth_transaction(
 	request_dtimes timestamp NOT NULL,
 	response_dtimes timestamp NOT NULL,
 	request_trn_id character varying(64),
-	auth_type_code character varying(36) NOT NULL,
+	auth_type_code character varying(128) NOT NULL,
 	status_code character varying(36) NOT NULL,
 	status_comment character varying(1024),
 	lang_code character varying(3) NOT NULL,
@@ -35,7 +37,7 @@ CREATE TABLE ida.auth_transaction(
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
 	upd_dtimes timestamp,
-	is_deleted boolean,
+	is_deleted boolean NOT NULL DEFAULT FALSE,
 	del_dtimes timestamp,
 	CONSTRAINT pk_authtrn_id PRIMARY KEY (id)
 

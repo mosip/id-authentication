@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
@@ -48,6 +49,10 @@ import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.retry.RetryAspect;
+import io.mosip.kernel.core.retry.RetryConfig;
+import io.mosip.kernel.core.retry.RetryListenerImpl;
+import io.mosip.kernel.core.util.RetryUtil;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
@@ -88,7 +93,9 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class, TokenIDGenerator.class,
 		PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class, KeyStoreImpl.class,
 		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class, PartnerServiceEventsSubscriber.class })
+		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class,
+		PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
+		RetryAspect.class, AuthTransactionHelper.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {

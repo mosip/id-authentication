@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;

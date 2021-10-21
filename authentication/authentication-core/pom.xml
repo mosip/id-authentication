@@ -6,10 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.4</version>
+		<version>1.1.5.4</version>
 	</parent>
-	<version>1.1.4</version>
-
+	<version>1.1.5.4</version>
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
 
@@ -28,6 +27,14 @@
 					<artifactId>
 						spring-boot-starter-security
 					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -81,6 +88,14 @@
 					<artifactId>
 						spring-boot-starter-security
 					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

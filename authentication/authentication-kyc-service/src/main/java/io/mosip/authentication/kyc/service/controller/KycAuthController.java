@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -29,6 +30,8 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.kyc.service.facade.KycFacadeImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
@@ -64,6 +67,12 @@ public class KycAuthController {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
+	
+	@Autowired
+	private AuthTransactionHelper authTransactionHelper;
+	
+	@Autowired
+	private PartnerService partnerService;
 
 	/**
 	 *
@@ -92,8 +101,11 @@ public class KycAuthController {
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK,@PathVariable("eKYC-Partner-ID") String partnerId,
 			@PathVariable("API-Key") String partnerApiKey)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		AuthResponseDTO authResponseDTO = null;
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+		boolean isAuth = true;
+		Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
+		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+				.createAndSetAuthTxnBuilderMetadataToRequest(kycAuthRequestDTO, !isAuth, partner);
+		
 		try {
 			String idType = Objects.nonNull(kycAuthRequestDTO.getIndividualIdType()) ? kycAuthRequestDTO.getIndividualIdType()
 					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
@@ -107,29 +119,29 @@ public class KycAuthController {
 			}
 			DataValidationUtil.validate(errors);
 			
-			authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
+			AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
+			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 			if (authResponseDTO != null && 
 					authResponseDTO.getMetadata() != null && 
 					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null) {
 				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
 			}
+			return kycAuthResponseDTO;
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
 			
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
 			
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
 		}
-		
-		return kycAuthResponseDTO;
 	}
 
 }

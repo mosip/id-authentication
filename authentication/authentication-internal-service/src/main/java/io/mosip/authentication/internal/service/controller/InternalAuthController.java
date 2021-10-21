@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -26,6 +28,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
@@ -60,6 +63,9 @@ public class InternalAuthController {
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	@Autowired
+	private AuthTransactionHelper authTransactionHelper;
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
@@ -83,7 +89,7 @@ public class InternalAuthController {
 	 * Authenticate tsp.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @param e              the e
+	 * @param errors              the e
 	 * @return authResponseDTO the auth response DTO
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationBusinessException the id authentication business
@@ -94,36 +100,44 @@ public class InternalAuthController {
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
-	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e)
+	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		AuthResponseDTO authResponseDTO = null;
+		boolean isAuth = false;
+		Optional<PartnerDTO> partner = Optional.empty();
+		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+				.createAndSetAuthTxnBuilderMetadataToRequest(authRequestDTO, !isAuth, partner);
+
 		try {
 			String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 					: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 			authRequestDTO.setIndividualIdType(idType);
-			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, e);
-			DataValidationUtil.validate(e);
-			authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, false,
-					securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT, ""),
+			internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
+			
+			
+			DataValidationUtil.validate(errors);
+			String partnerId = securityManager.getUser().replace(IdAuthCommonConstants.SERVICE_ACCOUNT,"");
+			AuthResponseDTO authResponseDTO = authFacade.authenticateIndividual(authRequestDTO, isAuth,
+					partnerId,
 					DEFAULT_PARTNER_API_KEY, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
-		} catch (IDDataValidationException e1) {
+			return authResponseDTO;
+		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
-					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
-					e1);
+					e);
 
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
-		} catch (IdAuthenticationBusinessException e1) {
+			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
+		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
-					e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 
 			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
-					e1);
+					e);
 
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e1);
+			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
 		}
 
-		return authResponseDTO;
 	}
+
 }

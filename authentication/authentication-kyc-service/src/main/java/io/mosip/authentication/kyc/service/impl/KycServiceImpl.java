@@ -2,6 +2,7 @@ package io.mosip.authentication.kyc.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,14 +37,17 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The implementation of Kyc Authentication service which retrieves the identity
- * information of the individual id and construct the KYC information
- * 
+ * information of the individual id and construct the KYC information.
+ *
  * @author Sanjay Murali
  */
 
 @Service
 public class KycServiceImpl implements KycService {
 	
+	/** The Constant KYC_ATTRIB_LANGCODE_SEPERATOR. */
+	private static final String KYC_ATTRIB_LANGCODE_SEPERATOR="_";
+
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
 
@@ -59,9 +63,19 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private MappingConfig mappingConfig;
 	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/**
+	 * Retrieve kyc info.
+	 *
+	 * @param allowedkycAttributes the allowedkyc attributes
+	 * @param secLangCode the sec lang code
+	 * @param identityInfo the identity info
+	 * @return the kyc response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -85,10 +99,22 @@ public class KycServiceImpl implements KycService {
 				bioValue.add(identityInfoDTO);
 				identityInfo.put(IdAuthCommonConstants.PHOTO, bioValue);
 			}
-			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes, identityInfo,
-					secLangCode);
+			
+			Set<String> allowedLang = idInfoHelper.getAllowedLang();
+			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE)
+					: null;
+			String primaryLanguage = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
+			
+			Set<String> langCodes = new LinkedHashSet<>();
+			langCodes.add(primaryLanguage);
+			if(secondayLangCode != null) {
+				langCodes.add(secondayLangCode);
+			}
+			
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes, identityInfo, 
+					langCodes);
 			if (Objects.nonNull(filteredIdentityInfo)) {
-				setKycInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo);
+				setKycInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo, langCodes);
 			}
 		}
 		return kycResponseDTO;
@@ -102,22 +128,41 @@ public class KycServiceImpl implements KycService {
 	 * @param bioValue the bio value
 	 * @param face the face
 	 * @param filteredIdentityInfo the filtered identity info
-	 * @throws IdAuthenticationBusinessException 
+	 * @param langCodes the lang codes
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
-			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) throws IdAuthenticationBusinessException {
+			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) throws IdAuthenticationBusinessException {
 		// Getting allowed demographic data - key will be the ID Name (from ID Mapping),
 		// value will be the ID Entity value from ID Name
 		Map<String, Object> idMappingIdentityInfo = Stream.of(DemoMatchType.values())
-				.map(demoMatchType -> new SimpleEntry<>(demoMatchType.getIdMapping().getIdname(),
-						getEntityForMatchType(demoMatchType, filteredIdentityInfo)))
+				.flatMap(demoMatchType -> {
+					if(demoMatchType.isMultiLanguage()) {
+						if(demoMatchType.equals(DemoMatchType.DYNAMIC)) {
+							Map<String, List<String>> dynamicAttributes = mappingConfig.getDynamicAttributes();
+							return dynamicAttributes.entrySet()
+										.stream()
+										.map(Entry::getKey)
+										.flatMap(idName -> {
+											return getEntityForLangCodesAndIdName(filteredIdentityInfo, langCodes, demoMatchType, idName);
+										});
+						} else {
+							return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
+						}
+					} else {
+						return Stream.of(new SimpleEntry<>(demoMatchType.getIdMapping().getIdname(),
+								getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+					}
+				})
 				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
 		//Set null value to the idnames which don't have entry in filtered Identity Info map
 		for (String kycAttribute : allowedkycAttributes) {
 			String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
-			if (!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
+			if (!(idname.isEmpty() || !idMappingIdentityInfo.containsKey(idname) 
+					|| idMappingIdentityInfo.keySet().stream()
+							.anyMatch(attributeName -> attributeName.toLowerCase().startsWith(idname.toLowerCase())))) {
 				idMappingIdentityInfo.put(idname, null);
 			}
 		}
@@ -132,10 +177,94 @@ public class KycServiceImpl implements KycService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+
+	/**
+	 * Gets the entity for lang codes and id name.
+	 *
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCodes the lang codes
+	 * @param demoMatchType the demo match type
+	 * @param idName the id name
+	 * @return the entity for lang codes and id name
+	 */
+	private Stream<? extends SimpleEntry<String, String>> getEntityForLangCodesAndIdName(
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, DemoMatchType demoMatchType,
+			String idName) {
+		return langCodes.stream()
+				.map(langCode -> new SimpleEntry<>(
+						idName + KYC_ATTRIB_LANGCODE_SEPERATOR
+								+ langCode,
+						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode, idName)));
+	}
+
+	/**
+	 * Gets the entity for lang codes.
+	 *
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCodes the lang codes
+	 * @param demoMatchType the demo match type
+	 * @return the entity for lang codes
+	 */
+	private Stream<SimpleEntry<String, String>> getEntityForLangCodes(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
+			Set<String> langCodes, DemoMatchType demoMatchType) {
+		return langCodes.stream()
+				.map(langCode -> new SimpleEntry<>(
+						demoMatchType.getIdMapping().getIdname() + KYC_ATTRIB_LANGCODE_SEPERATOR
+								+ langCode,
+						getEntityForMatchType(demoMatchType, filteredIdentityInfo, langCode)));
+	}
 	
+	/**
+	 * Gets the entity for match type.
+	 *
+	 * @param matchType the match type
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @return the entity for match type
+	 */
 	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
 		try {
 			return idInfoHelper.getEntityInfoAsString(matchType, filteredIdentityInfo);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the entity for match type.
+	 *
+	 * @param matchType the match type
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCode the lang code
+	 * @return the entity for match type
+	 */
+	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode) {
+		try {
+			return idInfoHelper.getEntityInfoAsString(matchType, langCode, filteredIdentityInfo);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the entity for match type.
+	 *
+	 * @param matchType the match type
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCode the lang code
+	 * @param idName the id name
+	 * @return the entity for match type
+	 */
+	private String getEntityForMatchType(MatchType matchType, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+		try {
+			return idInfoHelper.getIdEntityInfoMap(matchType, filteredIdentityInfo, langCode, idName).entrySet()
+					.stream()
+					.findFirst()
+					.map(Entry::getValue)
+					.orElse(null);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -148,12 +277,11 @@ public class KycServiceImpl implements KycService {
 	 *
 	 * @param allowedKycType the attributes defined as per policy
 	 * @param identity       the identity information of the resident
-	 * @param secLangCode    the secondary language code to retrieve identity
-	 *                       information detail in secondary language
+	 * @param langCodes the lang codes
 	 * @return the map returns filtered information defined as per policy
 	 */
 	private Map<String, List<IdentityInfoDTO>> filterIdentityInfo(List<String> allowedKycType,
-			Map<String, List<IdentityInfoDTO>> identity, String secLangCode) {
+			Map<String, List<IdentityInfoDTO>> identity, Set<String> langCodes) {
 		Map<String, List<IdentityInfoDTO>> identityInfo = null;
 		Map<String, List<IdentityInfoDTO>> identityInfos = null;
 		if (Objects.nonNull(allowedKycType)) {
@@ -161,16 +289,11 @@ public class KycServiceImpl implements KycService {
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		if (Objects.nonNull(identityInfo)) {
-			Set<String> allowedLang = idInfoHelper.getAllowedLang();
-			String secondayLangCode = allowedLang.contains(secLangCode) ? env.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE)
-					: null;
-			String primaryLanguage = env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE);
 			identityInfos = identityInfo.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry
 					.getValue().stream()
 					.filter((IdentityInfoDTO info) -> Objects.isNull(info.getLanguage())
 							|| info.getLanguage().equalsIgnoreCase("null")
-							|| info.getLanguage().equalsIgnoreCase(primaryLanguage)
-							|| (secondayLangCode != null && info.getLanguage().equalsIgnoreCase(secondayLangCode)))
+							|| langCodes.stream().anyMatch(code -> code.equalsIgnoreCase(info.getLanguage())))
 					.collect(Collectors.toList())));
 		}
 		return identityInfos;

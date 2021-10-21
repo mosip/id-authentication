@@ -34,7 +34,6 @@ public final class IdAuthCommonConstants {
 	public static final String IDENTITY_DATA = "IDENTITY_DATA";
 
 	public static final String BDB_DEAULT_PROCESSED_LEVEL = "Raw";
-
 	private IdAuthCommonConstants() {
 
 	}
@@ -60,6 +59,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String REQUESTEDAUTH = "requestedAuth";
 
+	public static final String UNKNOWN = "UNKNOWN";
+	
 	public static final String UNKNOWN_BIO = "UNKNOWN";
 
 	public static final String UNKNOWN_COUNT_PLACEHOLDER = "%s";
@@ -116,6 +117,8 @@ public final class IdAuthCommonConstants {
 	public static final String AUTH_TYPE = "authtypes";
 
 	public static final String BIOMETRICS = "biometrics";
+	
+	public static final String DEMOGRAPHICS = "demographics";
 
 	public static final String IDENTITY = "identity";
 
@@ -145,7 +148,9 @@ public final class IdAuthCommonConstants {
 
 	public static final String FIELD_VALIDATION_FAILED = "ADM-DPM-008";
 
-	public static final String BIO_PATH = "request/biometrics/%s/%s";
+	public static final String BIOMETRIC_DATA = "request/biometrics/%s/data";
+	
+	public static final String BIO_PATH = BIOMETRIC_DATA + "/%s";
 
 	public static final String DIGITAL_ID = "digitalId";
 

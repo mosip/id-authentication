@@ -16,6 +16,7 @@ import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.helper.WebSubSubscriptionHelper;
@@ -28,10 +29,13 @@ import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
+import io.mosip.authentication.common.service.impl.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
 import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
+import io.mosip.authentication.common.service.integration.DataShareManager;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
@@ -40,18 +44,23 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.integration.dto.DataShareManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventsSubscriber;
+import io.mosip.authentication.common.service.websub.impl.HotlistEventSubscriber;
 import io.mosip.authentication.common.service.websub.impl.IdChangeEventsSubscriber;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventSubscriber;
 import io.mosip.authentication.core.util.IdTypeUtil;
+import io.mosip.authentication.internal.service.batch.CredentialStoreJobExecutionListener;
 import io.mosip.authentication.internal.service.manager.InternalAuthSecurityManager;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_8;
 import io.mosip.kernel.biosdk.provider.impl.BioProviderImpl_V_0_9;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.retry.RetryAspect;
+import io.mosip.kernel.core.retry.RetryConfig;
+import io.mosip.kernel.core.retry.RetryListenerImpl;
+import io.mosip.kernel.core.util.RetryUtil;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.controller.CryptomanagerController;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
@@ -98,9 +107,11 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		ZKCryptoManagerServiceImpl.class, PartnerServiceManager.class, DataShareManager.class, TokenIDGenerator.class,
 		IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, WebSubSubscriptionHelper.class,
 		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
-		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class,
-		SignatureController.class, CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
-		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class })
+		AuthTypeStatusEventsSubscriber.class, IdChangeEventsSubscriber.class, SignatureController.class,
+		CryptomanagerController.class, KeymanagerController.class, CACertificateStore.class,
+		PartnerCACertEventSubscriber.class, PartnerCertManagerController.class, RetryConfig.class, RetryUtil.class,
+		RetryListenerImpl.class, RetryAspect.class, CredentialStoreService.class,
+		CredentialStoreJobExecutionListener.class, HotlistServiceImpl.class, HotlistEventSubscriber.class, AuthTransactionHelper.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })

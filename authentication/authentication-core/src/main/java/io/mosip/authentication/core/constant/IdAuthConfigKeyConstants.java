@@ -23,6 +23,7 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String APPLICATION_ID = "application.id";
 	public static final String DATE_TIME_PATTERN = "datetime.pattern";
+	public static final String BIO_DATE_TIME_PATTERN = "biometrics.datetime.pattern";
 	public static final String REST_URI = ".rest.uri";
 	public static final String REST_HTTP_METHOD = ".rest.httpMethod";
 	public static final String REST_TIMEOUT = ".rest.timeout";
@@ -90,6 +91,7 @@ public final class IdAuthConfigKeyConstants {
 
 
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_SECRET = "ida-websub-ca-certificate-callback-secret";
+	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_SECRET = "ida-websub-hotlist-callback-secret";
 	public static final String IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET = "ida-websub-authtype-callback-secret";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET = "ida-websub-partner-service-callback-secret";
 	public static final String IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET = "ida-websub-credential-issue-callback-secret";
@@ -99,6 +101,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_URL = "ida-websub-ca-cert-callback-url";
+	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_URL = "ida-websub-hotlist-callback-url";
 	
 	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
 
@@ -111,5 +114,14 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED = "ida-topic-pmp-policy-updated";
 	public static final String IDA_WEBSUB_CA_CERT_TOPIC = "ida-topic-pmp-ca-certificate-uploaded";
+	public static final String IDA_WEBSUB_HOTLIST_TOPIC = "ida-topic-hotlist";
+	public static final String CREDENTIAL_STORE_JOB_DELAY = "ida.batch.credential.store.job.delay";
+	public static final String CREDENTIAL_STORE_CHUNK_SIZE = "ida.batch.credential.store.chunk.size";
+	public static final String CREDENTIAL_STORE_RETRY_MAX_LIMIT = "ida.credential.store.retry.max.limit";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.interval.millisecs";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER = "ida.credential.store.retry.backoff.exponential.multiplier";
+	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.exponential.max.interval.millisecs";
+	
+	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
 
 }

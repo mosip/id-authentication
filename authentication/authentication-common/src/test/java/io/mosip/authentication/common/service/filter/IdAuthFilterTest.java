@@ -57,6 +57,7 @@ import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
@@ -139,7 +140,7 @@ public class IdAuthFilterTest {
 		String dicipheredreq = "{\"authType\":{\"address\":\"true\",\"bio\":\"true\",\"face\":\"true\",\"fingerprint\":\"true\",\"fullAddress\":\"true\",\"iris\":\"true\",\"otp\":\"true\",\"personalIdentity\":\"true\",\"pin\":\"true\"}}";
 		Mockito.when(keyManager.requestData(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any())).thenReturn(new ObjectMapper().readValue(dicipheredreq.getBytes(), Map.class));
-		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+		Mockito.when(keyManager.kernelDecryptAndDecode(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn("B93ACCB8D7A0B005864F684FB1F53A833BAF547ED4D610C5057DE6B55A4EF76C");
 		Map<String, Object> decipherRequest = filter.decipherRequest(requestBody);
 		decipherRequest.remove("requestHMAC");
@@ -202,8 +203,6 @@ public class IdAuthFilterTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void mandatoryAuthPolicyTestOTPcheck() throws IdAuthenticationAppException {
-		PolicyDTO policy = new PolicyDTO();
-		policy.setPolicyId("92834787293");
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
 				+ "                             \"demo\": false,\r\n"
 				+ "                             \"otp\": false,\r\n" + "                             \"pin\": false\r\n"
@@ -812,13 +811,11 @@ public class IdAuthFilterTest {
 
 	}
 
-	private PolicyDTO getPolicyFor92834787293() {
-		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp-request\", \"mandatory\": false }, { \"authType\": \"otp\", \"mandatory\": false }, { \"authType\": \"demo\", \"mandatory\": false }, { \"authType\": \"kyc\", \"mandatory\": false }, { \"authType\": \"pin\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
-		String policyId = "92834787293";
-		PolicyDTO polictDto = null;
+	private PartnerPolicyResponseDTO getPolicyFor92834787293() {
+		String policy = "{	\"policyId\": \"92834787293\",	\"policyName\": \"Auth Policy1\",	\"policyDescription\": \"Auth Policy Group1\",	\"policyStatus\": true,	\"policy\": {		\"authTokenType\": \"policy\",		\"allowedKycAttributes\": [{			\"attributeName\": \"fullName\",			\"required\": true		}, {			\"attributeName\": \"dateOfBirth\",			\"required\": true		}, {			\"attributeName\": \"gender\",			\"required\": true		}, {			\"attributeName\": \"phone\",			\"required\": true		}, {			\"attributeName\": \"email\",			\"required\": true		}, {			\"attributeName\": \"addressLine1\",			\"required\": true		}, {			\"attributeName\": \"addressLine2\",			\"required\": true		}, {			\"attributeName\": \"addressLine3\",			\"required\": true		}, {			\"attributeName\": \"region\",			\"required\": true		}, {			\"attributeName\": \"province\",			\"required\": true		}, {			\"attributeName\": \"city\",			\"required\": true		}, {			\"attributeName\": \"postalCode\",			\"required\": false		}, {			\"attributeName\": \"photo\",			\"required\": true		}],		\"allowedAuthTypes\": [{			\"authType\": \"otp-request\",			\"mandatory\": false		}, {			\"authType\": \"otp\",			\"mandatory\": false		}, {			\"authType\": \"demo\",			\"mandatory\": false		}, {			\"authType\": \"kyc\",			\"mandatory\": false		}, {			\"authType\": \"pin\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FINGER\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"IRIS\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FACE\",			\"mandatory\": false		}]	},	\"partnerId\": \"1111\",	\"partnerName\": \"Airtekibop\",	\"mispExpiresOn\": \"2021-05-19T05:58:23.32448\",	\"apiKeyExpiresOn\": \"2021-05-19T05:53:52.633968\",	\"policyExpiresOn\": \"2021-08-17T05:52:56.953157\",	\"certificateData\": null}";
+		PartnerPolicyResponseDTO policyDto = null;
 		try {
-			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
-			polictDto.setPolicyId(policyId);
+			policyDto = mapper.readValue(policy.getBytes(UTF_8), PartnerPolicyResponseDTO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -833,17 +830,15 @@ public class IdAuthFilterTest {
 			e.printStackTrace();
 		}
 
-		return polictDto;
+		return policyDto;
 
 	}
 
-	private PolicyDTO getPolicyFor0983222() {
-		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"otp\", \"mandatory\": true }, { \"authType\": \"pin\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
-		String policyId = "92834787293";
-		PolicyDTO polictDto = null;
+	private PartnerPolicyResponseDTO getPolicyFor0983222() {
+		String policy = "{	\"policyId\": \"92834787293\",	\"policyName\": \"Auth Policy1\",	\"policyDescription\": \"Auth Policy Group1\",	\"policyStatus\": true,	\"policy\": {		\"authTokenType\": \"policy\",		\"allowedKycAttributes\": [{			\"attributeName\": \"fullName\",			\"required\": true		}, {			\"attributeName\": \"dateOfBirth\",			\"required\": true		}, {			\"attributeName\": \"gender\",			\"required\": true		}, {			\"attributeName\": \"phone\",			\"required\": true		}, {			\"attributeName\": \"email\",			\"required\": true		}, {			\"attributeName\": \"addressLine1\",			\"required\": true		}, {			\"attributeName\": \"addressLine2\",			\"required\": true		}, {			\"attributeName\": \"addressLine3\",			\"required\": true		}, {			\"attributeName\": \"region\",			\"required\": true		}, {			\"attributeName\": \"province\",			\"required\": true		}, {			\"attributeName\": \"city\",			\"required\": true		}, {			\"attributeName\": \"postalCode\",			\"required\": false		}, {			\"attributeName\": \"photo\",			\"required\": true		}],		\"allowedAuthTypes\": [{			\"authType\": \"otp-request\",			\"mandatory\": false		}, {			\"authType\": \"otp\",			\"mandatory\": false		}, {			\"authType\": \"demo\",			\"mandatory\": false		}, {			\"authType\": \"kyc\",			\"mandatory\": false		}, {			\"authType\": \"pin\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FINGER\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"IRIS\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FACE\",			\"mandatory\": false		}]	},	\"partnerId\": \"1111\",	\"partnerName\": \"Airtekibop\",	\"mispExpiresOn\": \"2021-05-19T05:58:23.32448\",	\"apiKeyExpiresOn\": \"2021-05-19T05:53:52.633968\",	\"policyExpiresOn\": \"2021-08-17T05:52:56.953157\",	\"certificateData\": null}";
+		PartnerPolicyResponseDTO policyDto = null;
 		try {
-			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
-			polictDto.setPolicyId(policyId);
+			policyDto = mapper.readValue(policy.getBytes(UTF_8), PartnerPolicyResponseDTO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -858,20 +853,18 @@ public class IdAuthFilterTest {
 			e.printStackTrace();
 		}
 
-		return polictDto;
+		return policyDto;
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	private PolicyDTO getPolicyFor0983252() {
-		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"pin\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
-		String policyId = "92834787293";
-		PolicyDTO polictDto = null;
+	private PartnerPolicyResponseDTO getPolicyFor0983252() {
+		String policy = "{	\"policyId\": \"92834787293\",	\"policyName\": \"Auth Policy1\",	\"policyDescription\": \"Auth Policy Group1\",	\"policyStatus\": true,	\"policy\": {		\"authTokenType\": \"policy\",		\"allowedKycAttributes\": [{			\"attributeName\": \"fullName\",			\"required\": true		}, {			\"attributeName\": \"dateOfBirth\",			\"required\": true		}, {			\"attributeName\": \"gender\",			\"required\": true		}, {			\"attributeName\": \"phone\",			\"required\": true		}, {			\"attributeName\": \"email\",			\"required\": true		}, {			\"attributeName\": \"addressLine1\",			\"required\": true		}, {			\"attributeName\": \"addressLine2\",			\"required\": true		}, {			\"attributeName\": \"addressLine3\",			\"required\": true		}, {			\"attributeName\": \"region\",			\"required\": true		}, {			\"attributeName\": \"province\",			\"required\": true		}, {			\"attributeName\": \"city\",			\"required\": true		}, {			\"attributeName\": \"postalCode\",			\"required\": false		}, {			\"attributeName\": \"photo\",			\"required\": true		}],		\"allowedAuthTypes\": [{			\"authType\": \"otp-request\",			\"mandatory\": false		}, {			\"authType\": \"otp\",			\"mandatory\": false		}, {			\"authType\": \"demo\",			\"mandatory\": false		}, {			\"authType\": \"kyc\",			\"mandatory\": false		}, {			\"authType\": \"pin\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FINGER\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"IRIS\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FACE\",			\"mandatory\": false		}]	},	\"partnerId\": \"1111\",	\"partnerName\": \"Airtekibop\",	\"mispExpiresOn\": \"2021-05-19T05:58:23.32448\",	\"apiKeyExpiresOn\": \"2021-05-19T05:53:52.633968\",	\"policyExpiresOn\": \"2021-08-17T05:52:56.953157\",	\"certificateData\": null}";
+		PartnerPolicyResponseDTO policyDto = null;
 		try {
-			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
-			polictDto.setPolicyId(policyId);
+			policyDto = mapper.readValue(policy.getBytes(UTF_8), PartnerPolicyResponseDTO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -886,20 +879,18 @@ public class IdAuthFilterTest {
 			e.printStackTrace();
 		}
 
-		return polictDto;
+		return policyDto;
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	private PolicyDTO getPolicyFor0983754() {
-		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
-		String policyId = "92834787293";
-		PolicyDTO polictDto = null;
+	private PartnerPolicyResponseDTO getPolicyFor0983754() {
+		String policy = "{	\"policyId\": \"92834787293\",	\"policyName\": \"Auth Policy1\",	\"policyDescription\": \"Auth Policy Group1\",	\"policyStatus\": true,	\"policy\": {		\"authTokenType\": \"policy\",		\"allowedKycAttributes\": [{			\"attributeName\": \"fullName\",			\"required\": true		}, {			\"attributeName\": \"dateOfBirth\",			\"required\": true		}, {			\"attributeName\": \"gender\",			\"required\": true		}, {			\"attributeName\": \"phone\",			\"required\": true		}, {			\"attributeName\": \"email\",			\"required\": true		}, {			\"attributeName\": \"addressLine1\",			\"required\": true		}, {			\"attributeName\": \"addressLine2\",			\"required\": true		}, {			\"attributeName\": \"addressLine3\",			\"required\": true		}, {			\"attributeName\": \"region\",			\"required\": true		}, {			\"attributeName\": \"province\",			\"required\": true		}, {			\"attributeName\": \"city\",			\"required\": true		}, {			\"attributeName\": \"postalCode\",			\"required\": false		}, {			\"attributeName\": \"photo\",			\"required\": true		}],		\"allowedAuthTypes\": [{			\"authType\": \"otp-request\",			\"mandatory\": false		}, {			\"authType\": \"otp\",			\"mandatory\": false		}, {			\"authType\": \"demo\",			\"mandatory\": false		}, {			\"authType\": \"kyc\",			\"mandatory\": false		}, {			\"authType\": \"pin\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FINGER\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"IRIS\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FACE\",			\"mandatory\": false		}]	},	\"partnerId\": \"1111\",	\"partnerName\": \"Airtekibop\",	\"mispExpiresOn\": \"2021-05-19T05:58:23.32448\",	\"apiKeyExpiresOn\": \"2021-05-19T05:53:52.633968\",	\"policyExpiresOn\": \"2021-08-17T05:52:56.953157\",	\"certificateData\": null}";
+		PartnerPolicyResponseDTO policyDto = null;
 		try {
-			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
-			polictDto.setPolicyId(policyId);
+			policyDto = mapper.readValue(policy.getBytes(UTF_8), PartnerPolicyResponseDTO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -914,20 +905,18 @@ public class IdAuthFilterTest {
 			e.printStackTrace();
 		}
 
-		return polictDto;
+		return policyDto;
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	private PolicyDTO getPolicyFor0123456() {
-		String policy = "{ \"policies\": { \"authPolicies\": [ { \"authType\": \"demo\", \"mandatory\": true }, { \"authType\": \"bio\", \"authSubType\": \"FINGER\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"IRIS\", \"mandatory\": false }, { \"authType\": \"bio\", \"authSubType\": \"FACE\", \"mandatory\": false } ], \"allowedKycAttributes\": [ { \"attributeName\": \"UIN\", \"required\": false, \"masked\": true }, { \"attributeName\": \"fullName\", \"required\": true }, { \"attributeName\": \"dateOfBirth\", \"required\": true }, { \"attributeName\": \"gender\", \"required\": true }, { \"attributeName\": \"phone\", \"required\": true }, { \"attributeName\": \"email\", \"required\": true }, { \"attributeName\": \"addressLine1\", \"required\": true }, { \"attributeName\": \"addressLine2\", \"required\": true }, { \"attributeName\": \"addressLine3\", \"required\": true }, { \"attributeName\": \"region\", \"required\": true }, { \"attributeName\": \"province\", \"required\": true }, { \"attributeName\": \"city\", \"required\": true }, { \"attributeName\": \"postalCode\", \"required\": false }, { \"attributeName\": \"photo\", \"required\": true } ] } }";
-		String policyId = "92834787293";
-		PolicyDTO polictDto = null;
+	private PartnerPolicyResponseDTO getPolicyFor0123456() {
+		String policy = "{	\"policyId\": \"92834787293\",	\"policyName\": \"Auth Policy1\",	\"policyDescription\": \"Auth Policy Group1\",	\"policyStatus\": true,	\"policy\": {		\"authTokenType\": \"policy\",		\"allowedKycAttributes\": [{			\"attributeName\": \"fullName\",			\"required\": true		}, {			\"attributeName\": \"dateOfBirth\",			\"required\": true		}, {			\"attributeName\": \"gender\",			\"required\": true		}, {			\"attributeName\": \"phone\",			\"required\": true		}, {			\"attributeName\": \"email\",			\"required\": true		}, {			\"attributeName\": \"addressLine1\",			\"required\": true		}, {			\"attributeName\": \"addressLine2\",			\"required\": true		}, {			\"attributeName\": \"addressLine3\",			\"required\": true		}, {			\"attributeName\": \"region\",			\"required\": true		}, {			\"attributeName\": \"province\",			\"required\": true		}, {			\"attributeName\": \"city\",			\"required\": true		}, {			\"attributeName\": \"postalCode\",			\"required\": false		}, {			\"attributeName\": \"photo\",			\"required\": true		}],		\"allowedAuthTypes\": [{			\"authType\": \"otp-request\",			\"mandatory\": false		}, {			\"authType\": \"otp\",			\"mandatory\": false		}, {			\"authType\": \"demo\",			\"mandatory\": false		}, {			\"authType\": \"kyc\",			\"mandatory\": false		}, {			\"authType\": \"pin\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FINGER\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"IRIS\",			\"mandatory\": false		}, {			\"authType\": \"bio\",			\"authSubType\": \"FACE\",			\"mandatory\": false		}]	},	\"partnerId\": \"1111\",	\"partnerName\": \"Airtekibop\",	\"mispExpiresOn\": \"2021-05-19T05:58:23.32448\",	\"apiKeyExpiresOn\": \"2021-05-19T05:53:52.633968\",	\"policyExpiresOn\": \"2021-08-17T05:52:56.953157\",	\"certificateData\": null}";
+		PartnerPolicyResponseDTO policyDto = null;
 		try {
-			polictDto = mapper.readValue(policy.getBytes(UTF_8), PolicyDTO.class);
-			polictDto.setPolicyId(policyId);
+			policyDto = mapper.readValue(policy.getBytes(UTF_8), PartnerPolicyResponseDTO.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -942,6 +931,6 @@ public class IdAuthFilterTest {
 			e.printStackTrace();
 		}
 
-		return polictDto;
+		return policyDto;
 	}
 }
