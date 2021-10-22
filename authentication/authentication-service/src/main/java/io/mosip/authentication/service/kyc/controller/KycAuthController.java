@@ -3,6 +3,8 @@ package io.mosip.authentication.service.kyc.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -100,6 +102,8 @@ public class KycAuthController {
 	 */
 	@PostMapping(path = "/kyc/{MISP-LK}/{eKYC-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "eKyc Request", description = "eKyc Request", tags = { "kyc-auth-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
 					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
