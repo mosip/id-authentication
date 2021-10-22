@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.5.6-SNAPSHOT</version>
+		<version>1.1.5.5-SNAPSHOT</version>
 	</parent>
-	<version>1.1.5.6-SNAPSHOT</version>
+	<version>1.1.5.5-SNAPSHOT</version>
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
 
