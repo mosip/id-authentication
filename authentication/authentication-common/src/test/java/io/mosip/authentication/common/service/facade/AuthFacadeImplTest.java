@@ -289,9 +289,9 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyList()))
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(idRepo);
-		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyList())).thenReturn(repoDetails());
+		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(repoDetails());
 		// Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		Mockito.when(idService.getToken(idRepo)).thenReturn(uin);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -514,9 +514,9 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyList()))
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(idRepo);
-		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyList())).thenReturn(repoDetails());
+		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(repoDetails());
 		// Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
@@ -595,9 +595,9 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(authStatusInfo);
-		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyList()))
+		Mockito.when(idService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(idRepo);
-		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyList())).thenReturn(repoDetails());
+		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(repoDetails());
 		// Mockito.when(IdInfoFetcher.getIdInfo(Mockito.any())).thenReturn(idInfo);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();

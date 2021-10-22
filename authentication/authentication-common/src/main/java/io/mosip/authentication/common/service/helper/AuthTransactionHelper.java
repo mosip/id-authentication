@@ -137,7 +137,7 @@ public class AuthTransactionHelper {
 					idvIdType + "-" + idvid);
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-					false, false, Collections.emptyList());
+					false, false, Collections.emptySet());
 			
 			String token = idService.getToken(idResDTO);
 			return token;
