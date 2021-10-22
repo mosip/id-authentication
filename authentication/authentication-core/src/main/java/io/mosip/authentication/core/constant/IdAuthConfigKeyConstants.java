@@ -94,7 +94,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET = "ida-websub-masterdata-titles-callback-secret";
 	public static final String IDA_WEBSUB_HUB_URL = IdRepoConstants.WEB_SUB_HUB_URL;
 	public static final String IDA_WEBSUB_PUBLISHER_URL = IdRepoConstants.WEB_SUB_PUBLISH_URL;
-	public static final String IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL = "websub.failed.messages.sync.url";
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
@@ -103,7 +102,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL = "ida-websub-masterdata-templates-callback-url";
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL = "ida-websub-masterdata-titles-callback-url";
 	
-	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
+	public static final String IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-unencrypted-credential-attributes";
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup_millisecs";
@@ -142,8 +141,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
 	
 	public static final String IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE = "ida.fetch.failed.websub.messages.chunk.size";
-	
-	public static final String CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME = "mosip.ida.credential.biometric.attribute.name";
 	
 	public static final String ALLOWED_ENVIRONMENTS="mosip.ida.allowed.enviromemnts";
 	

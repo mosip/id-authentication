@@ -39,9 +39,9 @@ import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
-import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
+import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 
 /**
@@ -255,18 +255,46 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
 			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
-		Optional<String> identityValue = getIdentityValue(environment.getProperty(IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME), null, idEntity)
-				.findAny();
-		if (identityValue.isPresent()) {
-			Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
-			for (CbeffDocType type : types) {
-				cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
+		for (CbeffDocType type : types) {
+			List<String> identityBioAttributes = getBioAttributeNames(type, matchType, idEntity);
+			for (String bioAttribute : identityBioAttributes) {
+				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
+				if (!identityValue.isEmpty()) {
+					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+				} else {
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
+									IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+				}				
 			}
-			return cbeffValuesForTypes;
-
-		} else {
-			return Collections.emptyMap();
 		}
+		return cbeffValuesForTypes;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param matchType
+	 * @return
+	 */
+	private List<String> getBioAttributeNames(CbeffDocType type, MatchType matchType,
+			Map<String, List<IdentityInfoDTO>> idEntity) {
+		if (matchType.toString().equals(BioMatchType.FGRIMG_COMPOSITE.toString()) ||
+				matchType.toString().equals(BioMatchType.FGRMIN_COMPOSITE.toString()) || 
+				matchType.toString().equals(BioMatchType.FGRIMG_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(bio -> bio.startsWith(BiometricType.FINGER.value().toString()))
+					.collect(Collectors.toList());
+		}
+		if (matchType.toString().equals(BioMatchType.IRIS_COMP.toString()) ||
+				matchType.toString().equals(BioMatchType.IRIS_UNKNOWN.toString())) {
+			return idEntity.keySet().stream().filter(bio -> bio.startsWith(BiometricType.IRIS.value().toString()))
+					.collect(Collectors.toList());
+		}
+		if (matchType.toString().equals(BioMatchType.FACE.toString())) {
+			return List.of(BiometricType.FACE.value());
+		}
+		return List.of(type.getType().value() + "_" + matchType.getIdMapping().getSubType());
 	}
 
 	/**
@@ -282,7 +310,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(CryptoUtil.decodeBase64Url(identityValue.get()), type.getName(),
+			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.get().getBytes(), type.getName(),
 					null);
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),

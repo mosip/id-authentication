@@ -1,8 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,17 +71,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
-	@Value("${" + IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
-	private String zkEncryptedCredAttribs;
+	@Value("${" + IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
+	private String zkUnEncryptedCredAttribs;
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
-	
-	/**
-	 * Biometric attribute name in credential data
-	 */
-	@Value("${"+ CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME  +"}")
-	private String credentialBiometricAttribute;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
@@ -91,8 +85,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(uin, isBio);
+	public Map<String, Object> getIdByUin(String uin, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(uin, isBio, filterAttributes);
 	}
 
 	/*
@@ -103,8 +97,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(vid, isBio, IdType.VID);
+	public Map<String, Object> getIdByVid(String vid, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(vid, isBio, IdType.VID, filterAttributes);
 	}
 	
 	/**
@@ -119,19 +113,19 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdByUin(idvId, isBio);
+				idResDTO = getIdByUin(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else if(idvIdType.equals(IdType.VID.getType())) {
 			try {
-				idResDTO = getIdByVid(idvId, isBio);
+				idResDTO = getIdByVid(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -170,33 +164,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.map(obj -> (Map<String, Object>) obj)
 								.orElseGet(Collections::emptyMap);
 	}
-	
-	/**
-	 * Gets the bio data.
-	 *
-	 * @param identity the identity
-	 * @return the bio data
-	 */
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getBioData(Map<String, Object> identity) {
-		return Optional.ofNullable(identity.get("response"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> ((Map<String, Object>)obj).get("documents"))
-								.filter(obj -> obj instanceof List)
-								.flatMap(obj -> 
-										((List<Map<String, Object>>)obj)
-											.stream()
-											.filter(map -> map.containsKey("category") 
-															&& map.get("category").toString().equalsIgnoreCase(credentialBiometricAttribute)
-															&& map.containsKey("value"))
-											.map(map -> (String)map.get("value"))
-											.findAny())
-								.map(encodedBioCbeff -> Map.<String, Object>of(credentialBiometricAttribute, encodedBioCbeff))
-								.orElseGet(Collections::emptyMap);
-	}
 
-	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(id, isBio, IdType.UIN);
+	public Map<String, Object> getIdentity(String id, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(id, isBio, IdType.UIN, filterAttributes);
 	}
 
 	/**
@@ -211,7 +181,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *             the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
 		
 		String hashedId;
 		try {
@@ -262,10 +232,21 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
+			if (!filterAttributes.isEmpty()) {					
+				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
+						.filter(demo -> filterAttributes.contains(demo.getKey()))
+						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
+			}
+			
 			if (entity.getBiometricData() != null) {
-				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
-				responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
+				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
+				if (!filterAttributes.isEmpty()) {					
+					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
+							.filter(bio -> filterAttributes.contains(bio.getKey()))
+							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
+				}
 			}
 			responseMap.put(TOKEN, entity.getToken());
 			return responseMap;
@@ -284,12 +265,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-		List<String> zkEncryptedAttributes = getZkEncryptedAttributes()
+		List<String> zkUnEncryptedAttributes = getZkUnEncryptedAttributes()
 				.stream().map(String::toLowerCase).collect(Collectors.toList());
 		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
 				.stream()
 				.collect(Collectors.partitioningBy(entry -> 
-							zkEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
 				Collectors.toMap(Entry::getKey, Entry::getValue)));
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);
@@ -316,11 +297,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	}
 	
 	/**
-	 * Get the list of attributes to encrypt from config. Returns empty if no config is there
+	 * Get the list of attributes not to decrypt from config. Returns empty if no config is there
 	 * @return
 	 */
-	private List<String> getZkEncryptedAttributes() {
-		return Optional.ofNullable(zkEncryptedCredAttribs).stream()
+	private List<String> getZkUnEncryptedAttributes() {
+		return Optional.ofNullable(zkUnEncryptedCredAttribs).stream()
 				.flatMap(str -> Stream.of(str.split(",")))
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toList());

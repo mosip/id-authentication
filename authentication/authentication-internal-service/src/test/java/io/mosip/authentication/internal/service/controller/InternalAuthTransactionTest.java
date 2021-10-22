@@ -108,7 +108,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
@@ -122,7 +122,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
@@ -136,7 +136,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
@@ -148,7 +148,7 @@ public class InternalAuthTransactionTest {
 	public void TestIdrepoListisNull() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -160,7 +160,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		value.put("invalid", "invalidvalue");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
@@ -172,7 +172,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
@@ -188,7 +188,7 @@ public class InternalAuthTransactionTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestBusinessException() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenThrow(new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 						IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage()));
