@@ -3,6 +3,9 @@ package io.mosip.authentication.internal.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,9 +36,12 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -45,6 +51,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Prem Kumar
  */
 @RestController
+@Tag(name = "internal-auth-controller", description = "Internal Auth Controller")
 public class InternalAuthController {
 
 	/** The auth facade. */
@@ -99,8 +106,15 @@ public class InternalAuthController {
 	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostauth())")
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		boolean isAuth = false;
@@ -159,8 +173,15 @@ public class InternalAuthController {
 	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostverifyidentity())")
 	@PostMapping(path = "/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully") })
+	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
+	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public AuthResponseDTO authenticateInternal(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		boolean isAuth = false;
