@@ -102,7 +102,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL = "ida-websub-masterdata-templates-callback-url";
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL = "ida-websub-masterdata-titles-callback-url";
 	
-	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
+	public static final String IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-unencrypted-credential-attributes";
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup_millisecs";
