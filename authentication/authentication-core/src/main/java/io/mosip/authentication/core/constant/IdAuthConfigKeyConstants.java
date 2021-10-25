@@ -102,7 +102,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL = "ida-websub-masterdata-templates-callback-url";
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL = "ida-websub-masterdata-titles-callback-url";
 	
-	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
+	public static final String IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-unencrypted-credential-attributes";
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup_millisecs";
@@ -128,6 +128,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER = "ida.credential.store.retry.backoff.exponential.multiplier";
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.exponential.max.interval.millisecs";
 	
+	public static final String IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES = "ida-default-identity-filter-attributes";
 
 	public static final String CREDENTIAL_STATUS_UPDATE_TOPIC = "ida-topic-credential-status-update";
 	public static final String AUTH_TYPE_STATUS_ACK_TOPIC = "ida-topic-auth-type-status-update-acknowledge";

@@ -1,7 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -71,8 +71,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
-	@Value("${" + IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
-	private String zkEncryptedCredAttribs;
+	@Value("${" + IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
+	private String zkUnEncryptedCredAttribs;
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
@@ -265,12 +265,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-		List<String> zkEncryptedAttributes = getZkEncryptedAttributes()
+		List<String> zkUnEncryptedAttributes = getZkUnEncryptedAttributes()
 				.stream().map(String::toLowerCase).collect(Collectors.toList());
 		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
 				.stream()
 				.collect(Collectors.partitioningBy(entry -> 
-							zkEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
 				Collectors.toMap(Entry::getKey, Entry::getValue)));
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);
@@ -297,11 +297,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	}
 	
 	/**
-	 * Get the list of attributes to encrypt from config. Returns empty if no config is there
+	 * Get the list of attributes not to decrypt from config. Returns empty if no config is there
 	 * @return
 	 */
-	private List<String> getZkEncryptedAttributes() {
-		return Optional.ofNullable(zkEncryptedCredAttribs).stream()
+	private List<String> getZkUnEncryptedAttributes() {
+		return Optional.ofNullable(zkUnEncryptedCredAttribs).stream()
 				.flatMap(str -> Stream.of(str.split(",")))
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toList());
