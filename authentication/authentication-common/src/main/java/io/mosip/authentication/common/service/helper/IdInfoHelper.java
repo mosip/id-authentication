@@ -3,6 +3,8 @@
  */
 package io.mosip.authentication.common.service.helper;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,10 +21,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -31,7 +33,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -62,6 +63,9 @@ public class IdInfoHelper {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
+	
+	@Value("${" + IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES + ":#{null}" + "}")
+	private String defaultIdentiyFilterAttributes;
 
 	/**
 	 * Get Authrequest Info.
@@ -563,24 +567,14 @@ public class IdInfoHelper {
 	}
 	
 	/**
-	 * Construct the default attributes
+	 * Gets the default identity filter attributes from configuration
 	 * @return
 	 */
-	public Set<MatchInput> buildDefaultFilterAttributes() {
-		Set<MatchInput> defaultDemoFiltersAttributes = new HashSet<>();
-		defaultDemoFiltersAttributes
-				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.NAME, DemoAuthType.values()).get(),
-						DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME,
-						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
-		defaultDemoFiltersAttributes
-				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.PHONE, DemoAuthType.values()).get(),
-						DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
-						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
-		defaultDemoFiltersAttributes
-				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.EMAIL, DemoAuthType.values()).get(),
-						DemoMatchType.EMAIL.getIdMapping().getIdname(), DemoMatchType.EMAIL,
-						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
-		return defaultDemoFiltersAttributes;
+	public Set<String> getDefaultFilterAttributes() {
+		return Optional.ofNullable(defaultIdentiyFilterAttributes).stream()
+				.flatMap(str -> Stream.of(str.split(",")))
+				.filter(str -> !str.isEmpty())
+				.collect(Collectors.toSet());
 	}
 	
 	/**
