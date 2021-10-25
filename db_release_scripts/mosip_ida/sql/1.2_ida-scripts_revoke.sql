@@ -25,10 +25,6 @@ DROP TABLE IF EXISTS ida.partner_mapping;
 
 DROP TABLE IF EXISTS ida.misp_license_data;
 
------------------------------------------------------------------------------------------------------
-
-DROP TABLE IF EXISTS ida.failed_message_store;
-
 -----------------------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS ida.anonymous_profile;
