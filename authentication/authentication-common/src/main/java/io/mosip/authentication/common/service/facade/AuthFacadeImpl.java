@@ -153,8 +153,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
 				idvIdType + "-" + idvid);
 
-		Set<String> filterAttributes = new HashSet<>();
-		filterAttributes.addAll(idInfoHelper.getDefaultFilterAttributes());
+		Set<String> filterAttributes = new HashSet<>();		
 		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
 		filterAttributes.addAll(buildBioFilters(authRequestDTO));		
 		
@@ -583,10 +582,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	private Set<String> buildDemoAttributeFilters(AuthRequestDTO authRequestDTO)
 			throws IdAuthenticationBusinessException {
+		Set<String> defaultFilterAttributes = idInfoHelper.getDefaultFilterAttributes();
 		if (AuthTypeUtil.isDemo(authRequestDTO)) {
-			return idInfoHelper.getAttributesFromMatchInput(new HashSet<>(
-					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values())));
+			defaultFilterAttributes.addAll(idInfoHelper.getAttributesFromMatchInput(new HashSet<>(
+					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values()))));
 		}
-		return Collections.emptySet();
+		return defaultFilterAttributes;
 	}	
 }
