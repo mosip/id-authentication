@@ -60,7 +60,6 @@ import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
@@ -154,7 +153,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
 				idvIdType + "-" + idvid);
 
-		Set<String> filterAttributes = new HashSet<>();
+		Set<String> filterAttributes = new HashSet<>();		
 		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
 		filterAttributes.addAll(buildBioFilters(authRequestDTO));		
 		
@@ -579,15 +578,15 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * 
 	 * @param authRequestDTO
 	 * @return
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	private Set<String> buildDemoAttributeFilters(AuthRequestDTO authRequestDTO)
-			throws IdAuthenticationBusinessException {		
-		Set<MatchInput> defaultFilterAttributes = idInfoHelper.buildDefaultFilterAttributes();
+			throws IdAuthenticationBusinessException {
+		Set<String> defaultFilterAttributes = idInfoHelper.getDefaultFilterAttributes();
 		if (AuthTypeUtil.isDemo(authRequestDTO)) {
-			defaultFilterAttributes.addAll(
-					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values()));
+			defaultFilterAttributes.addAll(idInfoHelper.getAttributesFromMatchInput(new HashSet<>(
+					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values()))));
 		}
-		return idInfoHelper.getAttributesFromMatchInput(defaultFilterAttributes);
+		return defaultFilterAttributes;
 	}	
 }
