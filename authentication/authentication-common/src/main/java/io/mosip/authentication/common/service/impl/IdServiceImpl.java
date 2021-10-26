@@ -290,19 +290,21 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
-			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);			
-			if (!filterAttributes.isEmpty()) {					
+			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
+			Set<String> filterAttributesInLowercase = filterAttributes.stream().map(String::toLowerCase)
+							.collect(Collectors.toSet());
+			if (!filterAttributesInLowercase.isEmpty()) {					
 				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
-						.filter(demo -> filterAttributes.contains(demo.getKey()))
+						.filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
 						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
 			}
 			
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!filterAttributes.isEmpty()) {					
+				if (!filterAttributesInLowercase.isEmpty()) {					
 					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
-							.filter(bio -> filterAttributes.contains(bio.getKey()))
+							.filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
 							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
 				}
@@ -338,21 +340,26 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		finalDataStr.putAll(plainData);
 		finalDataStr.putAll(decryptedData);
 		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(), 
-								entry -> {
-									String val = entry.getValue();
-									if(val.trim().startsWith("[") || val.trim().startsWith("{")) {
-										try {
-											return mapper.readValue(val.getBytes(), Object.class);
-										} catch (IOException e) {
-											logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
-													ExceptionUtils.getStackTrace(e));
-											return val;
-										}
-									} else {
-										return val;
-									}
+					entry -> {
+						Object valObject = entry.getValue();
+						if (valObject instanceof String) {
+							String val = (String) valObject;
+							if (val.trim().startsWith("[") || val.trim().startsWith("{")) {
+								try {
+									return mapper.readValue(val.getBytes(), Object.class);
+								} catch (IOException e) {
+									logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+											"decryptConfiguredAttributes", ExceptionUtils.getStackTrace(e));
+									return val;
 								}
-								));
+							} else {
+								return val;
+							}
+						} else {
+							return valObject;
+						}
+					}));
+
 	}
 	
 	/**
