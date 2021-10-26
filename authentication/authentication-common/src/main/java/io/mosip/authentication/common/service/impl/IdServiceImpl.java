@@ -231,10 +231,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-			Set<String> filterAttributesInLowercase = filterAttributes.stream().map(String::toLowerCase)
-					.collect(Collectors.toSet());
+			Set<String> filterAttributesInLowercase = filterAttributes.isEmpty() ? Set.of()
+					: filterAttributes.stream().map(String::toLowerCase).collect(Collectors.toSet());
 			
-			if (!filterAttributes.isEmpty()) {		
+			if (!filterAttributesInLowercase.isEmpty()) {		
 				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
 						.filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
 						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
@@ -243,7 +243,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!filterAttributes.isEmpty()) {					
+				if (!filterAttributesInLowercase.isEmpty()) {					
 					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
 							.filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
 							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
