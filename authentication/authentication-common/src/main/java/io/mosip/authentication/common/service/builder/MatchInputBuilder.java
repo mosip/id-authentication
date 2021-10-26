@@ -31,7 +31,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
  * Builder class to match Inputs.
  *
