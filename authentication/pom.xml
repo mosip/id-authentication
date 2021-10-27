@@ -197,6 +197,10 @@
 						spring-boot-starter-security
 					</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
