@@ -50,6 +50,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -144,9 +145,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
 				idvIdType + "-" + idvid);
 
-		Set<String> filterAttributes = new HashSet<>();		
+		Set<String> filterAttributes = new HashSet<>();
 		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
-		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));		
+		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
+		// In case of ekyc request and photo also needed we need to add face to get it
+		// filtered
+		if(containsPhotoKYCAttribute(authRequestDTO)) {
+			filterAttributes.add(CbeffDocType.FACE.getType().value());
+		}
 		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, isBiometricDataNeeded(authRequestDTO),
 				markVidConsumed, filterAttributes);
