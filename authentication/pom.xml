@@ -206,6 +206,14 @@
 						spring-boot-starter-security
 					</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>
