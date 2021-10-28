@@ -180,6 +180,9 @@ public class IdInfoHelper {
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
+		if(entityInfoMap == null) {
+			entityInfoMap = Map.of();
+		}
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
 
