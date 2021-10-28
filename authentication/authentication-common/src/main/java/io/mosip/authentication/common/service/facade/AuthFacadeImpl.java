@@ -46,7 +46,6 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
@@ -150,11 +149,11 @@ public class AuthFacadeImpl implements AuthFacade {
 		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
 		// In case of ekyc request and photo also needed we need to add face to get it
 		// filtered
-		if(containsPhotoKYCAttribute(authRequestDTO)) {
+		if(idInfoHelper.containsPhotoKYCAttribute(authRequestDTO)) {
 			filterAttributes.add(CbeffDocType.FACE.getType().value());
 		}
 		
-		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, isBiometricDataNeeded(authRequestDTO),
+		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),
 				markVidConsumed, filterAttributes);
 
 		String token = idService.getToken(idResDTO);
@@ -222,16 +221,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
-	}
-
-	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
-		return AuthTypeUtil.isBio(authRequestDTO) || containsPhotoKYCAttribute(authRequestDTO);
-	}
-
-	private boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
-		return (authRequestDTO instanceof KycAuthRequestDTO)
-				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO).getAllowedKycAttributes()).orElse(List.of())
-						.contains(IdAuthCommonConstants.PHOTO);
 	}
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid,
