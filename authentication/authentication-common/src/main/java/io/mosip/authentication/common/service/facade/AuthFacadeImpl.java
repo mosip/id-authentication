@@ -155,8 +155,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				idvIdType + "-" + idvid);
 
 		Set<String> filterAttributes = new HashSet<>();
-		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
-		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
+		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
+		filterAttributes.addAll(buildBioFilters(authRequestDTO));
 		// In case of ekyc request and photo also needed we need to add face to get it
 		// filtered
 		if(containsPhotoKYCAttribute(authRequestDTO)) {
@@ -478,7 +478,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param authRequestDTO
 	 * @return
 	 */
-	private Set<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
+	public Set<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
 		Set<String> bioFilters = new HashSet<String>();
 		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
