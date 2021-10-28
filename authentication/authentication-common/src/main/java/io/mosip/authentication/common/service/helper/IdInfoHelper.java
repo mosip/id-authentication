@@ -40,6 +40,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
@@ -629,48 +630,52 @@ public class IdInfoHelper {
 	 */
 	public Set<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
 		Set<String> bioFilters = new HashSet<String>();
-		if (AuthTypeUtil.isBio(authRequestDTO)) {
-			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioFingerInfo = getBioIds(authRequestDTO, BioAuthType.FGR_IMG.getType());
-				if (!bioFingerInfo.isEmpty()) {
-					List<DataDTO> bioFingerData = bioFingerInfo.stream().map(BioIdentityInfoDTO::getData)
-							.collect(Collectors.toList());
-					// for UNKNOWN getting all the subtypes
-					if(bioFingerData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
-						bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
-					}else {
-						bioFilters.addAll(
-								bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-										.collect(Collectors.toList()));
+		if (authRequestDTO.getRequest().getBiometrics() != null) {
+			if (isBiometricDataNeeded(authRequestDTO)) {
+				if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
+					List<BioIdentityInfoDTO> bioFingerInfo = getBioIds(authRequestDTO, BioAuthType.FGR_IMG.getType());
+					if (!bioFingerInfo.isEmpty()) {
+						List<DataDTO> bioFingerData = bioFingerInfo.stream().map(BioIdentityInfoDTO::getData)
+								.collect(Collectors.toList());
+						// for UNKNOWN getting all the subtypes
+						if (bioFingerData.stream()
+								.anyMatch(bio -> bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
+							bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
+						} else {
+							bioFilters.addAll(
+									bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+											.collect(Collectors.toList()));
+						}
 					}
 				}
-			}
 
-			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioIrisInfo = getBioIds(authRequestDTO, BioAuthType.IRIS_IMG.getType());
-				if (!bioIrisInfo.isEmpty()) {
-					List<DataDTO> bioIrisData = bioIrisInfo.stream().map(BioIdentityInfoDTO::getData)
-							.collect(Collectors.toList());
-					// for UNKNOWN getting all the subtypes
-					if(bioIrisData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
-						bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
-					}else {
-						bioFilters.addAll(
-								bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-										.collect(Collectors.toList()));
+				if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
+					List<BioIdentityInfoDTO> bioIrisInfo = getBioIds(authRequestDTO, BioAuthType.IRIS_IMG.getType());
+					if (!bioIrisInfo.isEmpty()) {
+						List<DataDTO> bioIrisData = bioIrisInfo.stream().map(BioIdentityInfoDTO::getData)
+								.collect(Collectors.toList());
+						// for UNKNOWN getting all the subtypes
+						if (bioIrisData.stream()
+								.anyMatch(bio -> bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
+							bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
+						} else {
+							bioFilters.addAll(
+									bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+											.collect(Collectors.toList()));
+						}
 					}
 				}
-			}
-			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioFaceInfo = getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
-				List<DataDTO> bioFaceData = bioFaceInfo.stream().map(BioIdentityInfoDTO::getData)
-						.collect(Collectors.toList());
-				if (!bioFaceData.isEmpty()) {
-					bioFilters.addAll(bioFaceData.stream().map(bio -> (bio.getBioType()))
-							.collect(Collectors.toList()));
+				if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
+					List<BioIdentityInfoDTO> bioFaceInfo = getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
+					List<DataDTO> bioFaceData = bioFaceInfo.stream().map(BioIdentityInfoDTO::getData)
+							.collect(Collectors.toList());
+					if (!bioFaceData.isEmpty()) {
+						bioFilters.addAll(
+								bioFaceData.stream().map(bio -> (bio.getBioType())).collect(Collectors.toList()));
+					}
 				}
+				return bioFilters;
 			}
-			return bioFilters;
 		}
 		return Collections.emptySet();
 	}
@@ -793,5 +798,15 @@ public class IdInfoHelper {
 			}
 		}
 		return propNames;
+	}
+	
+	public boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
+		return AuthTypeUtil.isBio(authRequestDTO) || containsPhotoKYCAttribute(authRequestDTO);
+	}
+
+	public boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
+		return (authRequestDTO instanceof KycAuthRequestDTO)
+				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO).getAllowedKycAttributes()).orElse(List.of())
+						.contains(IdAuthCommonConstants.PHOTO);
 	}
 }
