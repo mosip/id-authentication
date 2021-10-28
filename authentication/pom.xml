@@ -74,7 +74,7 @@
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.1.4</kernel.parent.version>
-		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
+		<kernel-core.version>1.1.4.6-SNAPSHOT</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>${kernel.parent.version}</kernel-idvalidator-uin.version>
