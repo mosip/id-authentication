@@ -755,7 +755,7 @@ public class IdInfoHelper {
 		String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
 		List<String> propertyNames;
 		if (!matchType.isDynamic()) {
-			if(matchType.getIdMapping().getIdname().equals(idName)) {
+			if(matchType.getIdMapping().getIdname().equals(propertyName)) {
 				try {
 					propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
 				} catch (IdAuthenticationBusinessException e) {
