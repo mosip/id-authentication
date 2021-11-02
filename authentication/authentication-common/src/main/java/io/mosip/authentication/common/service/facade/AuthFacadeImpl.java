@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -30,9 +29,6 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.impl.match.DemoAuthType;
-import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -48,15 +44,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -65,8 +58,6 @@ import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
-import io.mosip.kernel.biometrics.constant.BiometricType;
-import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -154,10 +145,15 @@ public class AuthFacadeImpl implements AuthFacade {
 				idvIdType + "-" + idvid);
 
 		Set<String> filterAttributes = new HashSet<>();
-		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
-		filterAttributes.addAll(buildBioFilters(authRequestDTO));		
+		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
+		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
+		// In case of ekyc request and photo also needed we need to add face to get it
+		// filtered
+		if(idInfoHelper.containsPhotoKYCAttribute(authRequestDTO)) {
+			filterAttributes.add(CbeffDocType.FACE.getType().value());
+		}
 		
-		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, isBiometricDataNeeded(authRequestDTO),
+		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),
 				markVidConsumed, filterAttributes);
 
 		String token = idService.getToken(idResDTO);
@@ -225,16 +221,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
-	}
-
-	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
-		return AuthTypeUtil.isBio(authRequestDTO) || containsPhotoKYCAttribute(authRequestDTO);
-	}
-
-	private boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
-		return (authRequestDTO instanceof KycAuthRequestDTO)
-				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO).getAllowedKycAttributes()).orElse(List.of())
-						.contains(IdAuthCommonConstants.PHOTO);
 	}
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid,
@@ -465,128 +451,5 @@ public class AuthFacadeImpl implements AuthFacade {
 			authTxnBuilder.addRequestType(RequestType.FACE_AUTH);
 		}
 	}
-
-	/**
-	 * To build the bio filters. 
-	 * These are used to decrypt only required bio attributes
-	 * @param authRequestDTO
-	 * @return
-	 */
-	private Set<String> buildBioFilters(AuthRequestDTO authRequestDTO) {
-		Set<String> bioFilters = new HashSet<String>();
-		if (AuthTypeUtil.isBio(authRequestDTO)) {
-			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioFingerInfo = getBioIds(authRequestDTO, BioAuthType.FGR_IMG.getType());
-				if (!bioFingerInfo.isEmpty()) {
-					List<DataDTO> bioFingerData = bioFingerInfo.stream().map(BioIdentityInfoDTO::getData)
-							.collect(Collectors.toList());
-					// for UNKNOWN getting all the subtypes
-					if(bioFingerData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
-						bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
-					}else {
-						bioFilters.addAll(
-								bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-										.collect(Collectors.toList()));
-					}
-				}
-			}
-
-			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioIrisInfo = getBioIds(authRequestDTO, BioAuthType.IRIS_IMG.getType());
-				if (!bioIrisInfo.isEmpty()) {
-					List<DataDTO> bioIrisData = bioIrisInfo.stream().map(BioIdentityInfoDTO::getData)
-							.collect(Collectors.toList());
-					// for UNKNOWN getting all the subtypes
-					if(bioIrisData.stream().anyMatch(bio->bio.getBioSubType().equals(IdAuthCommonConstants.UNKNOWN_BIO))) {
-						bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
-					}else {
-						bioFilters.addAll(
-								bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
-										.collect(Collectors.toList()));
-					}
-				}
-			}
-			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
-				List<BioIdentityInfoDTO> bioFaceInfo = getBioIds(authRequestDTO, BioAuthType.FACE_IMG.getType());
-				List<DataDTO> bioFaceData = bioFaceInfo.stream().map(BioIdentityInfoDTO::getData)
-						.collect(Collectors.toList());
-				if (!bioFaceData.isEmpty()) {
-					bioFilters.addAll(bioFaceData.stream().map(bio -> (bio.getBioType()))
-							.collect(Collectors.toList()));
-				}
-			}
-			return bioFilters;
-		}
-		return Collections.emptySet();
-	}
-
-	private List<BioIdentityInfoDTO> getBioIds(AuthRequestDTO authRequestDTO, String type) {
-		List<BioIdentityInfoDTO> identity = Optional.ofNullable(authRequestDTO.getRequest())
-				.map(RequestDTO::getBiometrics).orElseGet(Collections::emptyList);
-		if (!identity.isEmpty()) {
-			return identity.stream().filter(Objects::nonNull)
-					.filter(bioId -> bioId.getData().getBioType().equalsIgnoreCase(type)).collect(Collectors.toList());
-		}
-		return Collections.emptyList();
-	}
 	
-	/**
-	 * to get all bio subtypes for given type
-	 * @param type
-	 * @return
-	 */
-	public List<String> getBioSubTypes(BiometricType type) {
-		switch (type) {
-		case FINGER:
-			return getFingerSubTypes(type);
-		case IRIS:
-			return getIrisSubTypes(type);
-		default:
-			return Collections.emptyList();
-		}
-	}
-	
-	/**
-	 * Construct and returns finger type along with all the sub types
-	 * @param type
-	 * @return
-	 */
-	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value());
-	}
-	
-	/**
-	 * Construct and returns finger type along with all the sub types
-	 * @param type
-	 * @return
-	 */
-	private List<String> getIrisSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value());
-	}
-	
-	/**
-	 * 
-	 * @param authRequestDTO
-	 * @return
-	 * @throws IdAuthenticationBusinessException 
-	 */
-	private Set<String> buildDemoAttributeFilters(AuthRequestDTO authRequestDTO)
-			throws IdAuthenticationBusinessException {
-		Set<String> defaultFilterAttributes = idInfoHelper.getDefaultFilterAttributes();
-		if (AuthTypeUtil.isDemo(authRequestDTO)) {
-			defaultFilterAttributes.addAll(idInfoHelper.getAttributesFromMatchInput(new HashSet<>(
-					matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values()))));
-		}
-		return defaultFilterAttributes;
-	}	
 }

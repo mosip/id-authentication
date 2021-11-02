@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.DomainType;
@@ -206,11 +208,23 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private void setDymanicDemograpicData(Map<String, Object> demographics) {
 		Map<String, List<String>> dynamicAttributes = idMappingConfig.getDynamicAttributes();
+		
 		Map<String, Object> metadata = demographics.entrySet()
 												.stream()
 												.filter(entry -> dynamicAttributes.containsKey(entry.getKey()))
-												.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+												.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (m1, m2) -> m1 , () -> new LinkedHashMap<>()));
+		
+		Set<String> staticIdNames = Stream.of(IdaIdMapping.values())
+											.map(IdaIdMapping::getIdname)
+											.collect(Collectors.toSet());
+		
+		metadata.putAll(demographics.entrySet()
+			.stream()
+			.filter(entry -> !staticIdNames.contains(entry.getKey()))
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+		
 		demographics.put(METADATA, metadata);
+
 	}
 
 	/**
