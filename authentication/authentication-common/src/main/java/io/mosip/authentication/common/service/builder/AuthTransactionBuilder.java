@@ -244,7 +244,7 @@ public class AuthTransactionBuilder {
 
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
 			AutnTxn autnTxn = new AutnTxn();
-			autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
+			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
 			String id = createId(token, env);
 			autnTxn.setToken(token);
