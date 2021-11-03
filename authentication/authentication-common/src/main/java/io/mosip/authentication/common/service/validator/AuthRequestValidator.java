@@ -140,9 +140,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				validateAllowedAuthTypes(authRequestDto, errors);
 			}
 			if (!errors.hasErrors()) {
-				validateAuthType(authRequestDto, errors);
-			}
-			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 
 				if (!errors.hasErrors()) {
@@ -152,9 +149,15 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateDomainURIandEnv(authRequestDto, errors);
 			}
+			
+			if (!errors.hasErrors()) {
+				validateAuthType(authRequestDto, errors);
+			}
+			
 			if (!errors.hasErrors() && AuthTypeUtil.isBio(authRequestDto)) {
 				validateBiometrics(authRequestDto.getRequest().getBiometrics(), authRequestDto.getTransactionID(), errors);
 			}
+			
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
@@ -453,7 +456,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		if (AuthTypeUtil.isDemo(authRequest)) {
 			checkDemoAuth(authRequest, errors);
-		} else if (AuthTypeUtil.isBio(authRequest)) {
+		} 
+		if (!errors.hasErrors()) {
 			Set<String> allowedAuthType = getAllowedAuthTypes();
 			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
 		}
