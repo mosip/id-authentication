@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -134,11 +133,20 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 
 			if (!errors.hasErrors()) {
+				validateDomainURIandEnv(authRequestDto, errors);
+			}
+			
+			if (!errors.hasErrors()) {
 				validateTxnId(authRequestDto.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 			}
 			if (!errors.hasErrors()) {
 				validateAllowedAuthTypes(authRequestDto, errors);
 			}
+			
+			if (!errors.hasErrors()) {
+				validateBiometrics(authRequestDto.getRequest().getBiometrics(), authRequestDto.getTransactionID(), errors);
+			}
+			
 			if (!errors.hasErrors()) {
 				super.validate(target, errors);
 
@@ -146,16 +154,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					checkAuthRequest(authRequestDto, errors);
 				}
 			}
-			if (!errors.hasErrors()) {
-				validateDomainURIandEnv(authRequestDto, errors);
-			}
 			
 			if (!errors.hasErrors()) {
 				validateAuthType(authRequestDto, errors);
-			}
-			
-			if (!errors.hasErrors() && AuthTypeUtil.isBio(authRequestDto)) {
-				validateBiometrics(authRequestDto.getRequest().getBiometrics(), authRequestDto.getTransactionID(), errors);
 			}
 			
 		} else {
@@ -189,11 +190,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					validateSuccessiveBioSegmentTimestamp(biometrics, errors, i, bioIdentityInfoDTO);
 				}
 			}
-		} else {
-			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "request/biometrics" },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -457,10 +453,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (AuthTypeUtil.isDemo(authRequest)) {
 			checkDemoAuth(authRequest, errors);
 		} 
-		if (!errors.hasErrors()) {
-			Set<String> allowedAuthType = getAllowedAuthTypes();
-			validateBioMetadataDetails(authRequest, errors, allowedAuthType);
-		}
 	}
 
 	/**
