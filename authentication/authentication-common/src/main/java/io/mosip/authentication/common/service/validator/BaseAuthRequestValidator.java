@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,21 +204,28 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
 			Set<String> allowedAuthType) {
+		if (authRequestDTO.getRequest() != null) {
 			List<BioIdentityInfoDTO> bioInfo = authRequestDTO.getRequest().getBiometrics();
 
-			if (bioInfo == null || bioInfo.isEmpty() || bioInfo.stream().anyMatch(bioDto -> bioDto.getData() == null)) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "missing biometric request");
-				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
-						new Object[] { Category.BIO.getType() },
-						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
-			} else {
-				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-				validateBioType(bioData, errors, allowedAuthType);
-				validateBioData(bioData, errors);
-				validateCount(authRequestDTO, errors, bioData);
+			if (bioInfo != null && !bioInfo.isEmpty()) {
+				OptionalInt nullDataIndex = IntStream.range(0, bioInfo.size())
+						.filter(index -> bioInfo.get(index).getData() == null).findAny();
+				if (nullDataIndex.isPresent()) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.VALIDATE, "missing biometric request");
+					errors.rejectValue(IdAuthCommonConstants.REQUEST,
+							IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+							new Object[] { Category.BIO.getType() + "/*/data" },
+							IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
+				} else {
+					List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData)
+							.collect(Collectors.toList());
+					validateBioType(bioData, errors, allowedAuthType);
+					validateBioData(bioData, errors);
+					validateCount(authRequestDTO, errors, bioData);
+				}
 			}
+		}
 	}
 
 	/**
@@ -991,10 +1000,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validateAuthType(AuthRequestDTO requestDTO, Errors errors,
 			Set<String> allowedAuthType) {
 		checkAllowedAuthType(requestDTO, errors, allowedAuthType);
-
-		if (AuthTypeUtil.isBio(requestDTO)) {
-			validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
-		}
+		validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 	}
 
 	/**
