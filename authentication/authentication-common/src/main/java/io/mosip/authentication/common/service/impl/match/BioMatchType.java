@@ -222,7 +222,7 @@ public enum BioMatchType implements MatchType {
 		AtomicInteger count = new AtomicInteger(0);
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
-			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
+			if (authType.isPresent() && bioId.getData() != null && bioId.getData().getBioType() != null && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
 				return authType.get() == BioAuthType.FACE_IMG || 
 						(bioId.getData().getBioSubType() != null && 
 						bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getSubType()));

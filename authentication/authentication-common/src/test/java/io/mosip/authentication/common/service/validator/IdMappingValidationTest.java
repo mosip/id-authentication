@@ -251,6 +251,7 @@ public class IdMappingValidationTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		return authRequestDTO;
 	}
 
@@ -278,6 +279,7 @@ public class IdMappingValidationTest {
 		fingerIdentityInfoDtoList.add(irisValue);
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		return authRequestDTO;
 	}
 
