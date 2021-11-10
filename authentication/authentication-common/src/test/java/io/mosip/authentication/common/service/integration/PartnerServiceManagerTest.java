@@ -253,16 +253,9 @@ public class PartnerServiceManagerTest {
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-007 --> License key does not belong to a registered MISP
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void validateAndGetPolicyMispException3Test() throws IdAuthenticationBusinessException, Exception {
-		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2021-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2021-12-11T06:12:52.994Z\"}}";
-		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2021-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
-		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
-		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
+		Optional<PartnerMapping> partnerMappingDataOptional = Optional.empty();
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
 				.thenReturn(partnerMappingDataOptional);
-		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
-		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
-		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ"))
-				.thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856",
 				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
 	}
