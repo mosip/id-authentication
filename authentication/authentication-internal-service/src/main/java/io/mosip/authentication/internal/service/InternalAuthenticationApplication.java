@@ -82,6 +82,7 @@ import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
+import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
@@ -121,7 +122,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class,
 		DemoNormalizer.class, DemoMatcherUtil.class, IdAuthFraudAnalysisEventManager.class,
-		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class })
+		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class, SessionKeyDecrytorHelper.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
