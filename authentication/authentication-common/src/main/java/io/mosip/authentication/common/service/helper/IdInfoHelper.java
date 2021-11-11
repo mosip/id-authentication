@@ -259,7 +259,7 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language, String idName) throws IdAuthenticationBusinessException {
-		List<String> propertyNames = getPropertyNamesForMatchType(matchType, idName);
+		List<String> propertyNames = getIdentityAttributesForMatchType(matchType, idName);
 		Map<String, String> identityValuesMap = new LinkedHashMap<>();
 		Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
 		Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
@@ -601,7 +601,7 @@ public class IdInfoHelper {
 														.collect(Collectors.toList());
 			for (String attrib : inputMappedAttributes) {
 				if(!attrib.equals(IdAuthCommonConstants.METADATA)) {
-					demoAttributesFromReq.addAll(getPropertyNamesForIdName(attrib, false));
+					demoAttributesFromReq.addAll(getIdentityAttributesForIdName(attrib, false));
 				}
 			}
 			
@@ -611,7 +611,7 @@ public class IdInfoHelper {
 				Set<String> inputUnmappedAttributes = dynamicAttributes.keySet();
 				for (String attrib : inputUnmappedAttributes) {
 					if(dynamicAttributes.get(attrib) != null) {
-						demoAttributesFromReq.addAll(getPropertyNamesForIdName(attrib, true));
+						demoAttributesFromReq.addAll(getIdentityAttributesForIdName(attrib, true));
 					}
 				}
 			}
@@ -751,7 +751,7 @@ public class IdInfoHelper {
 	 * @param idName the id name
 	 * @return the property names for match type
 	 */
-	public List<String> getPropertyNamesForMatchType(MatchType matchType, String idName) {
+	public List<String> getIdentityAttributesForMatchType(MatchType matchType, String idName) {
 		String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
 		List<String> propertyNames;
 		if (!matchType.isDynamic()) {
@@ -777,25 +777,34 @@ public class IdInfoHelper {
 		return propertyNames;
 	}
 	
+	public List<String> getIdentityAttributesForIdName(String idName)
+			throws IdAuthenticationBusinessException {
+		boolean isDynamic = idMappingConfig.getDynamicAttributes().keySet().contains(idName);
+		return getIdentityAttributesForIdName(idName, isDynamic);
+	}
+	
 	/**
-	 * Gets the property names for id name.
+	 * Gets the identity attributes for id name.
 	 *
 	 * @param idName the id name
 	 * @param isDynamic the is dynamic
 	 * @return the property names for id name
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public List<String> getPropertyNamesForIdName(String idName, boolean isDynamic)
+	public List<String> getIdentityAttributesForIdName(String idName, boolean isDynamic)
 			throws IdAuthenticationBusinessException {
 		DemoMatchType[] demoMatchTypes = DemoMatchType.values();
 		List<String> propNames = new ArrayList<>();
 		for (DemoMatchType demoMatchType : demoMatchTypes) {
 			if(isDynamic == demoMatchType.isDynamic()) {
-				List<String> propertyNamesForMatchType = this.getPropertyNamesForMatchType(demoMatchType, idName);
+				List<String> propertyNamesForMatchType = this.getIdentityAttributesForMatchType(demoMatchType, idName);
 				if(!propertyNamesForMatchType.isEmpty()) {
 					propNames.addAll(propertyNamesForMatchType);
 				}
 			}
+		}
+		if(propNames.isEmpty()) {
+			propNames.add(idName);
 		}
 		return propNames;
 	}
@@ -806,7 +815,11 @@ public class IdInfoHelper {
 
 	public boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
 		return (authRequestDTO instanceof KycAuthRequestDTO)
-				&& Optional.ofNullable(((KycAuthRequestDTO) authRequestDTO).getAllowedKycAttributes()).orElse(List.of())
-						.contains(IdAuthCommonConstants.PHOTO);
+				&& isKycAttributeHasPhoto((KycAuthRequestDTO) authRequestDTO);
+	}
+
+	public boolean isKycAttributeHasPhoto(KycAuthRequestDTO authRequestDTO) {
+		return Optional.ofNullable(authRequestDTO.getAllowedKycAttributes()).orElse(List.of())
+				.contains(IdAuthCommonConstants.PHOTO);
 	}
 }
