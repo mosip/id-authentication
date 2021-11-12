@@ -170,11 +170,12 @@ public class KycFacadeImpl implements KycFacade {
 				Object authTxnObj = authResponseDTO.getMetadata().get(AutnTxn.class.getSimpleName());
 				if(authTxnObj instanceof AutnTxn) {
 					AutnTxn autnTxn = (AutnTxn) authTxnObj;
-					autnTxn.setAuthTypeCode(RequestType.KYC_AUTH_REQUEST.getRequestType() +
-							AuthTransactionBuilder.REQ_TYPE_DELIM +  autnTxn.getAuthTypeCode());
-					autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() +
-							AuthTransactionBuilder.REQ_TYPE_MSG_DELIM +  autnTxn.getStatusComment());
-
+					if(!autnTxn.getAuthTypeCode().contains(RequestType.KYC_AUTH_REQUEST.getRequestType())) {
+						autnTxn.setAuthTypeCode(RequestType.KYC_AUTH_REQUEST.getRequestType() +
+								AuthTransactionBuilder.REQ_TYPE_DELIM +  autnTxn.getAuthTypeCode());
+						autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() +
+								AuthTransactionBuilder.REQ_TYPE_MSG_DELIM +  autnTxn.getStatusComment());
+					}
 					kycAuthResponseDTO.putAllMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
 				}
 			} else {
