@@ -381,26 +381,26 @@ public class IdInfoHelperTest {
 	public void getPropertyNamesForMatchTypeTest() {
 		List<String> list = new ArrayList<String>();
 		list.add("fullName");
-		assertEquals(list, idInfoHelper.getPropertyNamesForMatchType(DemoMatchType.NAME, "name"));
+		assertEquals(list, idInfoHelper.getIdentityAttributesForMatchType(DemoMatchType.NAME, "name"));
 	}
 	
 	@Test
 	public void getPropertyNamesForMatchTypeTest1() {
 		List<String> list = new ArrayList<String>();
 		list.add("fullName");
-		assertEquals(list, idInfoHelper.getPropertyNamesForMatchType(DemoMatchType.DYNAMIC, "fullName"));
+		assertEquals(list, idInfoHelper.getIdentityAttributesForMatchType(DemoMatchType.DYNAMIC, "fullName"));
 	}
 	
 	@Test
 	public void getPropertyNamesForMatchTypeTest2() {
-		 idInfoHelper.getPropertyNamesForMatchType(DemoMatchType.NAME, "");
+		 idInfoHelper.getIdentityAttributesForMatchType(DemoMatchType.NAME, "");
 	}
 	
 	@Test
 	public void getPropertyNamesForMatchTypeTest3() {
 		List<String> list = new ArrayList<String>();
 		list.add("preferredLang");
-		assertEquals(list, idInfoHelper.getPropertyNamesForMatchType(DemoMatchType.DYNAMIC, "preferredLanguage"));
+		assertEquals(list, idInfoHelper.getIdentityAttributesForMatchType(DemoMatchType.DYNAMIC, "preferredLanguage"));
 	}
 	
 	
@@ -563,7 +563,7 @@ public class IdInfoHelperTest {
 	
 	@Test
 	public void getPropertyNamesForIdNameTest() throws IdAuthenticationBusinessException {
-		idInfoHelper.getPropertyNamesForIdName("metadata", true);
+		idInfoHelper.getIdentityAttributesForIdName("metadata", true);
 	}
 	
 
