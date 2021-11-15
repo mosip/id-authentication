@@ -9,7 +9,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- 
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_mapping | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
@@ -27,3 +27,6 @@ CREATE TABLE ida.partner_mapping (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_pm_pid ON ida.partner_mapping (partner_id);
+--index section ends------

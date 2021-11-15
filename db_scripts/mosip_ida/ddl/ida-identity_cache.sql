@@ -8,10 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Sep-2020             Sadanandegowda DM    Added token_id
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
--- Jul-2021		Ram Bhatt	    Adding a new nullable column identity_expiry in IDA table identity_cache
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
@@ -33,6 +30,10 @@ CREATE TABLE ida.identity_cache(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_id ON ida.identity_cache (id);
+--index section ends------
+
 COMMENT ON TABLE ida.identity_cache IS 'Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.';
 -- ddl-end --
 COMMENT ON COLUMN ida.identity_cache.id IS 'ID: ID of an identity cache, This can be UIN or VID of an individuals for whom the authentication request is beeing made. Hash value is stored.';

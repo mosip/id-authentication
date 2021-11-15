@@ -28,4 +28,7 @@ CREATE TABLE ida.misp_license_data (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_mld_lk ON ida.misp_license_data (license_key);
+--index section ends------
 

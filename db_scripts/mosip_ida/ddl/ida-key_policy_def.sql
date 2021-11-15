@@ -8,8 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_policy_def | type: TABLE --
