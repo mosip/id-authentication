@@ -266,11 +266,13 @@ public class AuthTransactionBuilder {
 			autnTxn.setStatusCode(status);
 			
 			if (!requestTypes.isEmpty()) {
-				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
+				String authTypeCodes = requestTypes.stream()
+						.map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
 	
-				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+				String requestTypeMessages = requestTypes.stream()
+						.map(RequestType::getMessage)
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);
