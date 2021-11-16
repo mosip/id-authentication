@@ -116,6 +116,7 @@ public class CredentialStoreServiceImplTest {
     /**
      * This class tests the storeEventModel method
      *
+     *
      * @throws IOException
      */
     @Test
