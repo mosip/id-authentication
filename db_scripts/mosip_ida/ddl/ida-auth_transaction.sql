@@ -44,7 +44,7 @@ CREATE TABLE ida.auth_transaction(
 );
 -- ddl-end --
 --index section starts----
-CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id);
+CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id, cr_dtimes, auth_type_code);
 --index section ends------
 COMMENT ON TABLE ida.auth_transaction IS 'Authentication Transaction : To track all authentication transactions steps / stages in the process flow.';
 -- ddl-end --
