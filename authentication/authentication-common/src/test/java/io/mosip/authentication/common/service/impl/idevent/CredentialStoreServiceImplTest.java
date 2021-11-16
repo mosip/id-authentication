@@ -97,7 +97,6 @@ public class CredentialStoreServiceImplTest {
      *
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
-     * @throws IdAuthenticationDaoException
      * @throws SecurityException
      * @throws IOException
      */
