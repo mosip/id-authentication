@@ -101,7 +101,10 @@ public class MatchInputBuilder {
 
 			}
 			return matchInputs.stream();
-		}).filter(Objects::nonNull).collect(Collectors.toList());
+		})
+				.filter(Objects::nonNull)
+				.distinct()
+				.collect(Collectors.toList());
 	}
 	
 	/**
