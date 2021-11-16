@@ -33,7 +33,7 @@ CREATE TABLE ida.otp_transaction(
 );
 -- ddl-end --
 --index section starts----
-CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash);
+CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash, status_code);
 --index section ends-----
 COMMENT ON TABLE ida.otp_transaction IS 'OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.';
 -- ddl-end --
