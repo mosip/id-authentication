@@ -40,6 +40,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String OTP_CONTENT_TEMPLATE = "ida.otp.mail.content.template";
 	public static final String NOTIFICATION_DATE_FORMAT = "notification.date.format";
 	public static final String NOTIFICATION_TIME_FORMAT = "notification.time.format";
+	public static final String NOTIFICATION_TIME_ZONE = "mosip.notification.timezone";
 	public static final String UIN_MASKING_CHARCOUNT = "notification.uin.masking.charcount";
 	public static final String MOSIP_NOTIFICATIONTYPE = "mosip.notificationtype";
 	public static final String MOSIP_KERNEL_OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
