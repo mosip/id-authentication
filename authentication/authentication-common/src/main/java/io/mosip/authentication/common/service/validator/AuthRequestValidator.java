@@ -200,9 +200,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					this.biometricTimestampParser(bioIdentityInfoDTO.getData().getTimestamp()));
 			LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
 					this.biometricTimestampParser((biometrics.get(index - 1).getData().getTimestamp())));
-			long bioTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
+			long bioTimestampDiffInSeconds = Duration.between(previousIndexDateTime, currentIndexDateTime).toSeconds();
+			
 			Long allowedTimeDiffInSeconds = env.getProperty(IdAuthConfigKeyConstants.BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L);
-			if (bioTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
+			if (bioTimestampDiffInSeconds < 0 || bioTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP);
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -219,8 +220,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				this.biometricTimestampParser(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()));
 		LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
 				this.biometricTimestampParser(biometrics.get(index - 1).getData().getDigitalId().getDateTime()));
-		long digitalIdTimestampDiffInSeconds = Duration.between(currentIndexDateTime, previousIndexDateTime).toSeconds();
-		if (digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
+		long digitalIdTimestampDiffInSeconds = Duration.between(previousIndexDateTime, currentIndexDateTime).toSeconds();
+		if (digitalIdTimestampDiffInSeconds < 0 || digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP);
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,

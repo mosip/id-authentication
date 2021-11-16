@@ -155,6 +155,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.primary-language", "fra");
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
+		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
@@ -207,6 +208,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		mockenv.setProperty("mosip.primary-language", "fra");
 		mockenv.setProperty("mosip.secondary-language", "ara");
+		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
