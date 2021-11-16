@@ -9,6 +9,7 @@ import static io.mosip.authentication.core.constant.AuthTokenType.POLICY_GROUP;
 import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -46,6 +47,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
@@ -147,10 +149,16 @@ public class AuthFacadeImpl implements AuthFacade {
 		Set<String> filterAttributes = new HashSet<>();
 		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
 		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
-		// In case of ekyc request and photo also needed we need to add face to get it
-		// filtered
-		if(idInfoHelper.containsPhotoKYCAttribute(authRequestDTO)) {
-			filterAttributes.add(CbeffDocType.FACE.getType().value());
+		
+		if(authRequestDTO instanceof KycAuthRequestDTO) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+			// In case of ekyc request and photo also needed we need to add face to get it
+			// filtered
+			if(idInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
+				filterAttributes.add(CbeffDocType.FACE.getType().value());
+			}
+			
+			addKycPolicyAttributes(filterAttributes, kycAuthRequestDTO);
 		}
 		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),
@@ -221,6 +229,20 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
+	}
+
+	private void addKycPolicyAttributes(Set<String> filterAttributes, KycAuthRequestDTO kycAuthRequestDTO)
+			throws IdAuthenticationBusinessException {
+		List<String> allowedKycAttributes = kycAuthRequestDTO.getAllowedKycAttributes();
+		if(allowedKycAttributes != null && !allowedKycAttributes.isEmpty()) {
+			for (String attrib : allowedKycAttributes) {
+				filterAttributes.addAll(getIdSchemaAttributes(attrib));
+			}
+		}
+	}
+
+	private Collection<? extends String> getIdSchemaAttributes(String attrib) throws IdAuthenticationBusinessException {
+		return idInfoHelper.getIdentityAttributesForIdName(attrib);
 	}
 
 	private String getToken(AuthRequestDTO authRequestDTO, String partnerId, String partnerApiKey, String idvid,
