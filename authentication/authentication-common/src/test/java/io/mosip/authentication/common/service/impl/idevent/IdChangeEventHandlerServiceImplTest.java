@@ -13,7 +13,6 @@ import org.springframework.web.context.WebApplicationContext;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdChangeEventHandlerServiceImplTest {
-//	
 //	@Autowired
 //	private Environment env;
 //	
