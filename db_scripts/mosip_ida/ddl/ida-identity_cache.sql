@@ -31,6 +31,9 @@ CREATE TABLE ida.identity_cache(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_id ON ida.identity_cache (id);
+--index section ends------
 COMMENT ON TABLE ida.identity_cache IS 'Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.';
 -- ddl-end --
 COMMENT ON COLUMN ida.identity_cache.id IS 'ID: ID of an identity cache, This can be UIN or VID of an individuals for whom the authentication request is beeing made. Hash value is stored.';

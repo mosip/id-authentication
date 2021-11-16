@@ -66,4 +66,14 @@ ALTER TABLE ida.auth_transaction ALTER COLUMN auth_type_code TYPE character vary
 
 ----------------------------------------------------------------------------------------------------------
 
+CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id);
+CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+CREATE INDEX ind_hc_idhsh_etp ON ida.hotlist_cache (id_hash, expiry_timestamp);
+CREATE INDEX ind_id ON ida.identity_cache (id);
+CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash);
+CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);
+CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
+
+-----------------------------------------------------------------------------------------------------------
+
 
