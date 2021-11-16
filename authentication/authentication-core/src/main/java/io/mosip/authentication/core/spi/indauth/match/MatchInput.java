@@ -1,20 +1,20 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The Class MatchInput constructs the core match value of the  which has to be authorised.
  *
  * @author Arun Bose .
  */
-
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
-@Data
 
 /**
  * Instantiates a new match input.
@@ -26,6 +26,10 @@ import lombok.Data;
  * @param matchProperties the match properties
  * @param language the language
  */
+@Getter 
+@Setter 
+@RequiredArgsConstructor 
+@ToString 
 @AllArgsConstructor
 public class MatchInput {
 
@@ -49,5 +53,23 @@ public class MatchInput {
 
 	/** The language. */
 	private String language;
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authType, idName, language, matchType);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MatchInput other = (MatchInput) obj;
+		return Objects.equals(authType, other.authType) && Objects.equals(idName, other.idName)
+				&& Objects.equals(language, other.language) && Objects.equals(matchType, other.matchType);
+	}
 
 }
