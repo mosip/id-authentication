@@ -227,11 +227,11 @@ public class CredentialStoreServiceImplTest {
     @Test
     public void createIdentityEntityTest() throws RestServiceException, IdAuthenticationBusinessException, IOException {
         String dataShareUri = "http://datashare-service/v1/datashare/get/mpolicy-default-auth/mpartner-default-auth/mpartner-default-authmpolicy-default-auth20211102091850tkeYCJWZ";
-        Map<String, Object> credentialData = new HashMap<>();
         String idHash = "9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3";
         String token = "362737013453447806883457690320262449";
         Integer transactionLimit = null;
         String expiryTime = null;
+        Map<String, Object> credentialData = new HashMap<>();
         Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
         credentialData.put("credentialSubject", map);
         System.out.println(credentialData);
