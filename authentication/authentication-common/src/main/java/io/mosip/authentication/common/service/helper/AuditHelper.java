@@ -23,13 +23,14 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
@@ -42,7 +43,7 @@ public class AuditHelper {
 
 	/** The rest helper. */
 	@Autowired
-	@Qualifier("external")
+	@Qualifier("withSelfTokenWebclient")
 	private RestHelper restHelper;
 
 	/** The audit factory. */
