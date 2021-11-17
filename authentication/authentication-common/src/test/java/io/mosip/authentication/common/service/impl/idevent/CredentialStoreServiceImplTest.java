@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
@@ -14,12 +12,10 @@ import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
-import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.exception.*;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.websub.model.EventModel;
+import org.apache.tomcat.jni.Local;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +47,9 @@ public class CredentialStoreServiceImplTest {
     /** The Credential Store Service impl. */
     @InjectMocks
     private CredentialStoreServiceImpl credentialStoreServiceImpl;
+
+    @Mock
+    private CredentialStoreServiceImpl credentialStoreServiceImplMock;
 
     @Mock
     private AuditHelper auditHelper;
@@ -119,6 +118,10 @@ public class CredentialStoreServiceImplTest {
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processCredentialStoreEvent", credentialEventStore);
     }
 
+    /**
+     * This class tests the processCredentialStoreEvent method for RuntimeException case
+     *
+     */
     @Test(expected = RuntimeException.class)
     public void RuntimeExceptionProcessCredentialStoreEventTest() {
         CredentialEventStore credentialEventStore = new CredentialEventStore();
@@ -171,7 +174,7 @@ public class CredentialStoreServiceImplTest {
      * @throws IOException
      */
     @Test(expected= UndeclaredThrowableException.class)
-    public void doProcessCredentialStoreEventTest() throws IOException, RestServiceException, IdAuthenticationBusinessException {
+    public void doProcessCredentialStoreEventTest1() throws IOException, RestServiceException, IdAuthenticationBusinessException {
         CredentialEventStore credentialEventStore = getCredentialEventStore();
         credentialEventStore.setEventObject("{\"publisher\":\"CREDENTIAL_SERVICE\",\"topic\":\"mpartner-default-auth/CREDENTIAL_ISSUED\",\"publishedOn\":\"2021-11-02T09:18:52.418Z\",\"event\":{\"id\":\"437ca068-702f-4b14-a21a-b3994c094d38\",\"transactionId\":\"a84f9af6-025d-4c68-a005-4da9cddb0874\",\"type\":{\"namespace\":\"mosip\",\"name\":\"mosip\"},\"timestamp\":\"2021-11-02T09:18:52.418Z\",\"dataShareUri\":null,\"data\":{\"SALT\":\"Q74F5OnTZdw5qiOFp6h6Ww\",\"MODULO\":\"943\",\"expiry_timestamp\":null,\"transaction_limit\":null,\"id_hash\":\"9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3\",\"TOKEN\":\"362737013453447806883457690320262449\",\"demoEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4GYkjXPjxZHR4MFHob_CKM9Wx0ZOpy0oA8Kcv-0kI1GEDfl070vppDaS0gG30P6QOUy5aEYY4nXffc0nqqrqdC4rzY4LdWbrxxkoyx1Q4BhNZHiA7Tm931-kjdC2YJkDFMHburu72N8CuI6wktAuhQPagWCGL2hGUkdbcFhvD8045Y9oggLfDYNH1Oaj9XIwEEvyAaHvH8mfJxQ5aiLp23mt6PA3QZ4uaVxMvprYBGR8CypGZIBKLfCCfamHsW01ae33mPFyQH1AKKIaJ1XaoeoIgJq9ocUZ292hl3rtgdOuj6eJmcrMOwpiOhHNMY0ndAuH1-RMWdY6CZ2FG-o5VI\",\"demoRankomKeyIndex\":\"4150\",\"bioEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4U5vX_6IU_5l5gi_ATfr1cgICFAViR06A9LrDq8J01i_ICoHaCMqmKMBVk3B4lJ8zAyyYDbM4ztLYIDK95ozZArJuB4i3aJp7lh2XhEqn4xpSzLXJRIjKGuHckq-81IxQmozgo1eE07NlJ3-7tt9thjWujgEmJABpir893tZnxG3br9yAecqUTbnjxrXpvNRdCJm7SgwgJ-tQyE49QvDeXWw_ucXnx1SyQ99eeDafMzgc4JffrQeFCWwryo0q6TzgJ9qAm8SITAy0sc3Q3BJgddCnFH0s1GHjKPBsJBxknb_N3b5zB2yXomVn3bsKV7V-bXiC8Gf9CNj0yZf9xV-Ns\",\"bioRankomKeyIndex\":\"8678\",\"proof\":{\"signature\":\"eyJ4NWMiOlsiTUlJRHRUQ0NBcDJnQXdJQkFnSUlzNkphZWlpZE1va3dEUVlKS29aSWh2Y05BUUVMQlFBd2NERUxNQWtHQTFVRUJoTUNTVTR4Q3pBSkJnTlZCQWdNQWt0Qk1SSXdFQVlEVlFRSERBbENRVTVIUVV4UFVrVXhEVEFMQmdOVkJBb01CRWxKVkVJeEdqQVlCZ05WQkFzTUVVMVBVMGxRTFZSRlEwZ3RRMFZPVkVWU01SVXdFd1lEVlFRRERBeDNkM2N1Ylc5emFYQXVhVzh3SGhjTk1qRXhNREkyTVRRd05EVTRXaGNOTWpReE1ESTFNVFF3TkRVNFdqQitNUXN3Q1FZRFZRUUdFd0pKVGpFTE1Ba0dBMVVFQ0F3Q1MwRXhFakFRQmdOVkJBY01DVUpCVGtkQlRFOVNSVEVOTUFzR0ExVUVDZ3dFU1VsVVFqRWpNQ0VHQTFVRUN3d2FUVTlUU1ZBdFZFVkRTQzFEUlU1VVJWSWdLRXRGVWs1RlRDa3hHakFZQmdOVkJBTU1FWGQzZHk1dGIzTnBjQzVwYnkxVFNVZE9NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXJYWDhYR2tscGxrOGMyRC8zTGhWelZucTVJVGJ1a21sV2ZORnRnWUNYY1Y3d2IzWUhhaUNudWI0STVkbDZmZGxLUEVUN2t6dTllYno3VTlVVUVXVzc5VWF0NHY0WFV0bEJ1ejJ6VmVjckZpcERtLytNTU5JNEMzSXpwbmVrVlB2NUl0VjBzSzVZcGVRck5HbFh3NFI4TzlTYk9NcUE4NElqQTZsanE2enFZZlpTRzZkSnJSbFVqQS9KczdweVV6Z0t4U0pBYXdmaVFWaThXK05WTnpPdjdUTEdESjhaR3BFT1lnUkdDbjVpU21UVldtVzF5UVNhTEQrT3BlTHhkUHJocE9ZbWtMbkd2alR6aHkxQm5RWVhmVGxyeVd1b2drVzM5NUZBTW9SOEI1ekZiK0FKbHlVVm9zMU5MUEU3cWM5UDIrSDZlbURmUHNhVDNRMjRrWXZCUUlEQVFBQm8wVXdRekFTQmdOVkhSTUJBZjhFQ0RBR0FRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTOHpQL0lTNDlrOGsxblJIb05HMGZNUVQ5elJUQU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIWWlqN3p4Sy84dGdrS1czMkhRejRUVFN2d0VqazZmY1dVMWFTbkJkVzFWS2w1TGlrTXZ6OC96M0hUOEpmOW4wdVgwdlFET0M5Mnh4SitNWmU3RTNoWUJ4SFNPRHVyL3FkQ1JGRFFYUnQyMzU4OWpmSXZBQjN6ejJyakFuZ1hzTUxQRldRV2tZdnU0clJFVWFVUHNQRmp0NkhUM3lZcUJrbHJXL0NaNGxDTW9vZ1VNOGRTS1drZ0ZlTHBKbXhIMVhhZGo0R0VCazhaSTZUaVU2cGZOQ0hRMnlLanVEdC85V1kwMzFsTTJmcGh6Mmw2OUJHV2Z5MWZQNEQ3Mjl2NVR0WEM3eGlvb2ZCV3hWL28wNm8xZXRxUTFKUVpmdS9zNWRRQjZ0UEZhbVlwOTBhTmFqYjMwLzI4bkJIdnN0bllhZjIzL0d1cnNYa1dYSzBOM1pJUXhINTA9Il0sIng1dCNTMjU2IjoiYmNaX3RKSm42SXFRVUhNVnNFTlNzS2JMOXlGUGxTTzVqempWdFpJa3AwOCIsImFsZyI6IlJTMjU2In0..muzYpaSxQyjIjOdloDxhMgWj5Ljs8MLPTgZiAtDiiBt_OuaCn3L939uJBREosodYCVlnQu54MDvUoeWPbBJYtJWpm6HceCfgLSzOBnI3gv7bblJ6fcK__HzSEL4gbRaysC3tkO5yx5C0v0JR3vk_pjZV2PFz9y3vpMdxiuaqxWhUpV9qLWM4Y7JVKbzEC2EOnIZAZtkLGxViczK29F9AK10r4Z5djZ4-FYXDXFO0m24a5n5-k7n5UMOL4YL9LslZX8Odd0H8orvAv7P_I3_AmnjKcJDuU7IlQGuD4Em-Id4eFi1pA4vNCr7pUMjb_rNDngnQ43XJbRh6yA2SrU_n_w\"},\"credentialType\":\"auth\",\"protectionKey\":null}}}");
         Map<String, Object> credentialData = new HashMap<>();
@@ -220,6 +223,14 @@ public class CredentialStoreServiceImplTest {
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", idEntitites);
     }
 
+    @Test(expected = UndeclaredThrowableException.class)
+    public void skipIfWaitingForRetryIntervalTest(){
+        CredentialEventStore credentialEventStore = new CredentialEventStore();
+        LocalDateTime now = LocalDateTime.now().plusYears(1).plusMonths(1).plusWeeks(1).plusDays(1);
+        ReflectionTestUtils.setField(credentialEventStore, "updDTimes", now);
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "skipIfWaitingForRetryInterval", credentialEventStore);
+    }
+
     /**
      * This class tests the createIdentityEntity method
      * when IdentityEntity isPresent()=true;
@@ -260,11 +271,11 @@ public class CredentialStoreServiceImplTest {
 //        credentialEventStore.setRetryCount(1);
 //        credentialEventStore.setStatusCode("FAILED");
         credentialEventStore.setEventObject(getEventModelJsonStr());
-        credentialEventStore.setCrBy("IDA");
-        credentialEventStore.setUpdBy("IDA");
         credentialEventStore.setCrDTimes(LocalDateTime.of(2021, 11, 2, 9, 18, 52));
         credentialEventStore.setPublishedOnDtimes(LocalDateTime.of(2021, 11, 2, 9, 18, 52));
         credentialEventStore.setUpdDTimes(LocalDateTime.of(2021, 11, 2, 9 , 18, 54));
+        credentialEventStore.setCrBy("IDA");
+        credentialEventStore.setUpdBy("IDA");
         ReflectionTestUtils.setField(credentialEventStore, "isDeleted", false);
         credentialEventStore.setDelDTimes(null);
         return credentialEventStore;
