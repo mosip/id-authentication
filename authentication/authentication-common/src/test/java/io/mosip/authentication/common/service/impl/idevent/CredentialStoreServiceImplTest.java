@@ -4,6 +4,7 @@ package io.mosip.authentication.common.service.impl.idevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
@@ -208,6 +209,12 @@ public class CredentialStoreServiceImplTest {
         Optional<CredentialEventStore> eventOptNotPresent = Optional.empty();
         Mockito.when(credentialEventRepo.findTop1ByCredentialTransactionIdOrderByCrDTimesDesc(dto.getRequestId())).thenReturn(eventOptNotPresent);
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processMissingCredentialRequestId", dto);
+    }
+
+    @Test
+    public void storeIdentityEntityTest(){
+        List<IdentityEntity> idEntitites = new ArrayList<IdentityEntity>();
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", idEntitites);
     }
 
     /**
