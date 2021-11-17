@@ -87,7 +87,7 @@ public class CredentialStoreServiceImplTest {
      */
     @Before
     public void before() {
-        ReflectionTestUtils.setField(credentialStoreServiceImpl, "intervalExponentialMultiplier", 1);
+        ReflectionTestUtils.setField(credentialStoreServiceImpl, "intervalExponentialMultiplier", 2);
         ReflectionTestUtils.setField(credentialStoreServiceImpl, "retryInterval", 3);
         ReflectionTestUtils.setField(credentialStoreServiceImpl, "maxRetryCount", 5);
         ReflectionTestUtils.setField(credentialStoreServiceImpl, "maxExponentialRetryIntervalLimitMillis", 4);
