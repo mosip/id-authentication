@@ -93,8 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String resTime = authResponseDTO.getResponseTime();
 
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getRequestTime());
-		ZoneId zone = zonedDateTime2.getZone();
+		ZoneId zone = ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
 
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
 		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);

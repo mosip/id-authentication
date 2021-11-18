@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -108,8 +109,9 @@ public class OTPManager {
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
-		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+		if (otpTxnOpt.isPresent()) {
+			OtpTransaction otpTxn = otpTxnOpt.get();
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
@@ -240,8 +242,10 @@ public class OTPManager {
 		String otpHash;
 		otpHash = IdAuthSecurityManager.digestAsPlainText(
 				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
-		if (otpRepo.existsByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS)) {
-			OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+		if (otpTxnOpt.isPresent()) {
+			OtpTransaction otpTxn = otpTxnOpt.get();
+			//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
 			otpRepo.save(otpTxn);
 			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {

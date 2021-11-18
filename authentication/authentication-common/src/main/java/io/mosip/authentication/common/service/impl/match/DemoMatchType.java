@@ -144,7 +144,7 @@ public enum DemoMatchType implements MatchType {
 				//Otherwise use the property name itself to fetch the record
 				infoDtos = identityEntity.get(propName);
 			}
-			if (infoDtos != null && infoDtos.stream().anyMatch(infoDto -> infoDto.getLanguage() == null)) {
+			if (infoDtos == null || infoDtos.stream().anyMatch(infoDto -> infoDto.getLanguage() == null)) {
 				return false;
 			}
 			

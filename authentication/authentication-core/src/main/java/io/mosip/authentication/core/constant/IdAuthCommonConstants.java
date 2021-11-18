@@ -311,6 +311,8 @@ public final class IdAuthCommonConstants {
 	public static final String NA ="NA";
 
 	public static final String AUTH_STATUS = "authStatus";
+	
+	public static final String KYC_STATUS = "kycStatus";
 
 	public static final String SUCCESS = "success";
 

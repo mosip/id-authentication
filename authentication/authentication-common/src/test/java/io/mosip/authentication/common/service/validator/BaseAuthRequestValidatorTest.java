@@ -207,7 +207,7 @@ public class BaseAuthRequestValidatorTest {
 		Set<String> allowedAuthtype = new HashSet<>();
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
-		assertTrue(error.hasErrors());
+		assertFalse(error.hasErrors());
 
 	}
 	
@@ -1974,6 +1974,7 @@ public class BaseAuthRequestValidatorTest {
 		fingerIdentityInfoDtoList.add(faceValue);
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
+		reqDTO.setBiometrics(fingerIdentityInfoDtoList);
 		Set<String> allowedAuthtype = new HashSet<>();
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);

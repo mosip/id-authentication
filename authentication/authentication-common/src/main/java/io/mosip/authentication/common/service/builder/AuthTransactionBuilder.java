@@ -244,7 +244,7 @@ public class AuthTransactionBuilder {
 
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
 			AutnTxn autnTxn = new AutnTxn();
-			autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
+			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
 			String id = createId(token, env);
 			autnTxn.setToken(token);
@@ -266,11 +266,13 @@ public class AuthTransactionBuilder {
 			autnTxn.setStatusCode(status);
 			
 			if (!requestTypes.isEmpty()) {
-				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
+				String authTypeCodes = requestTypes.stream()
+						.map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
 	
-				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+				String requestTypeMessages = requestTypes.stream()
+						.map(RequestType::getMessage)
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);

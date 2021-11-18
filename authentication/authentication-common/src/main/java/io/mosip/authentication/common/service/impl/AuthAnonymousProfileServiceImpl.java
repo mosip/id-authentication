@@ -8,6 +8,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAUL
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FAILURE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.QUALITY_SCORE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.RESPONSE;
@@ -283,10 +284,18 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Map.of();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
 		String status;
 		if(responseBody != null && responseBody.get(RESPONSE) instanceof Map) {
-			status = String.valueOf(((Map<String, Object>)responseBody.get(RESPONSE)).get(AUTH_STATUS));
+			String statusKey;
+			if (responseBody.get(IdAuthCommonConstants.ID) == null || !responseBody.get(IdAuthCommonConstants.ID).equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_ID_KYC))) {
+				statusKey = AUTH_STATUS;
+			} else {
+				statusKey = KYC_STATUS;
+			}
+			Map<String, Object> responseMap = (Map<String, Object>)responseBody.get(RESPONSE);
+			status = String.valueOf(responseMap.get(statusKey));
 		} else {
 			status = String.valueOf(false);
 		}
