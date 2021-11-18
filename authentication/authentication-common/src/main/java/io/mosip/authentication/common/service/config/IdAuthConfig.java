@@ -45,18 +45,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 		IdType.initializeAliases(environment);
 	}
 
-	
-	@Bean
-	@Primary
-	public RestHelper restHelper() {
-		return new RestHelper();
-	}
-
-	@Bean("withSelfTokenWebclient")
-	public RestHelper restHelperWithAuth(@Qualifier("selfTokenWebClient") WebClient webClient) {
-		return new RestHelper(webClient);
-	}
-	
 	/**
 	 * Locale resolver.
 	 *
