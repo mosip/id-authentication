@@ -39,7 +39,6 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
@@ -64,6 +63,7 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 /**
  * @author Dinesh Karuppiah.T
