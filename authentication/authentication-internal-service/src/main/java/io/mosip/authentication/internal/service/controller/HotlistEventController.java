@@ -38,7 +38,7 @@ public class HotlistEventController {
 
 	@PostMapping(value = "/callback/hotlist", consumes = "application/json")
 	@Operation(summary = "handleHotlisting", description = "handleHotlisting", tags = { "hotlist-event-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
