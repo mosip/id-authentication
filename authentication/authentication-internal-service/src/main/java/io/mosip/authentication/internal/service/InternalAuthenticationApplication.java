@@ -1,10 +1,13 @@
 package io.mosip.authentication.internal.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
@@ -59,6 +62,7 @@ import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitiali
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
@@ -130,7 +134,10 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
 		"io.mosip.kernel.keymanagerservice.repository.*" })
-public class InternalAuthenticationApplication {
+public class InternalAuthenticationApplication implements CommandLineRunner {
+	
+	@Autowired
+	private Environment env;
 
 	/**
 	 * The main method.
@@ -139,6 +146,13 @@ public class InternalAuthenticationApplication {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(InternalAuthenticationApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		IdaLogger.getLogger(InternalAuthenticationApplication.class).info("AUTHREQUEST.RECEIVED-TIME-ALLOWED.SECONDS ---->>> " + env.getProperty("authrequest.received-time-allowed.seconds"));
+		System.err.println(env.getProperty("authrequest.received-time-allowed.seconds"));
+		
 	}
 
 }
