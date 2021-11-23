@@ -57,7 +57,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
 	@Operation(summary = "handleApiKeyApprovedEvent", description = "handleApiKeyApprovedEvent", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -80,7 +80,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -103,7 +103,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePolicyUpdated", description = "handlePolicyUpdated", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -126,7 +126,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_API_KEY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -149,7 +149,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_GENERATED, consumes = "application/json")
 	@Operation(summary = "handleMispLicenseGeneratedEvent", description = "handleMispLicenseGeneratedEvent", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -172,7 +172,7 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_UPDATED, consumes = "application/json")
 	@Operation(summary = "handleMispUpdatedEvent", description = "handleMispUpdatedEvent", tags = { "partner-service-callback-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
