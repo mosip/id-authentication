@@ -14,20 +14,21 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.RestUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 @Component
 public class DataShareManager {
 	
 	@Autowired
-	@Qualifier("external")
+	@Qualifier("withSelfTokenWebclient")
 	private RestHelper restHelper;
 	
 	@Autowired
@@ -49,7 +50,7 @@ public class DataShareManager {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
-		Optional<Entry<String, Object>> errorOpt = restHelper.getError(responseStr, mapper);
+		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
 		byte[] data;
 		if(errorOpt.isEmpty()) {
 			if(decryptionRequred) {

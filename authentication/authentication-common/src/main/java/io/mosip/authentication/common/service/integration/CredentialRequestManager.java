@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
+import io.mosip.authentication.common.service.util.RestUtil;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -42,7 +42,7 @@ public class CredentialRequestManager {
 
 	/** The rest helper. */
 	@Autowired
-	@Qualifier("external")
+	@Qualifier("withSelfTokenWebclient")
 	private RestHelper restHelper;
 	
 	/** The rest request factory. */
@@ -87,7 +87,7 @@ public class CredentialRequestManager {
 					return requestIds;
 				}
 			} catch (RestServiceException e) {
-				List<ServiceError> errorList = RestHelperImpl.getErrorList(e.getResponseBodyAsString().orElse("{}"), objectMapper);
+				List<ServiceError> errorList = RestUtil.getErrorList(e.getResponseBodyAsString().orElse("{}"), objectMapper);
 				if(errorList.stream().anyMatch(err -> NO_RECORD_FOUND_ERR_CODE.equals(err.getErrorCode()))) {
 					//Reached end of pages.
 					return List.of();

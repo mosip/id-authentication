@@ -25,14 +25,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.AuditResponseDto;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 @Ignore

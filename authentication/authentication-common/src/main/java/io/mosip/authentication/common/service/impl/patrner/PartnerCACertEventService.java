@@ -1,7 +1,7 @@
 package io.mosip.authentication.common.service.impl.patrner;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
