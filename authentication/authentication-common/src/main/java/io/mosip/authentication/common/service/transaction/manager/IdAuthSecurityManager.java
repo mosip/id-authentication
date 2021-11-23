@@ -350,7 +350,7 @@ public class IdAuthSecurityManager {
 	 */
 	public String hash(String id) throws IdAuthenticationBusinessException {
 		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-		Integer idModulo = (int)(Long.parseLong(id) % saltModuloConstant);
+		Integer idModulo = getModulo(id, saltModuloConstant);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if (hashSaltValue != null) {
 			try {
@@ -363,6 +363,10 @@ public class IdAuthSecurityManager {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							SALT_FOR_THE_GIVEN_ID));
 		}
+	}
+
+	private int getModulo(String id, int saltModuloConstant) {
+		return (int)(Long.parseLong(id) % saltModuloConstant);
 	}
 
 	/**
