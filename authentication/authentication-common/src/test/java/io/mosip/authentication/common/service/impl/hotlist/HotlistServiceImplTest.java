@@ -140,6 +140,12 @@ public class HotlistServiceImplTest {
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
 //      when status = BLOCKED && hotlistEventData.containsKey(EXPIRY_TIMESTAMP)=true
         eventData.put("status", "BLOCKED");
+        eventData.put("expiryTimestamp" , null);
+        ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
+//        Objects.nonNull(eventData)=false && !((Map) eventData).isEmpty()=false
+        eventData.clear();
+        ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
+        eventData=null;
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
     }
 
