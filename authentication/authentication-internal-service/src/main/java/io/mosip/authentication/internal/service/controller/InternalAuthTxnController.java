@@ -102,7 +102,7 @@ public class InternalAuthTxnController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetauthtransactionsindividualid())")
 	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Auth Transaction Request", description = "Auth Transaction Request", tags = { "internal-auth-txn-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
 					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),

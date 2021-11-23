@@ -3,9 +3,6 @@ package io.mosip.authentication.service.kyc.controller;
 import java.util.Objects;
 import java.util.Optional;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -39,10 +36,17 @@ import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -55,6 +59,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 @Tag(name = "kyc-auth-controller", description = "Kyc Auth Controller")
+@SecurityScheme(in = SecuritySchemeIn.HEADER, scheme = "basic", type = SecuritySchemeType.APIKEY, name = "Authorization")
 public class KycAuthController {
 
 	/** The mosipLogger. */
@@ -102,7 +107,7 @@ public class KycAuthController {
 	 */
 	@PostMapping(path = "/kyc/{MISP-LK}/{eKYC-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "eKyc Request", description = "eKyc Request", tags = { "kyc-auth-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
