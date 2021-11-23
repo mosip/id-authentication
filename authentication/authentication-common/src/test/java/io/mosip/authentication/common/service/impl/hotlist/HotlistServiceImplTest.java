@@ -100,11 +100,6 @@ public class HotlistServiceImplTest {
         hotlistData.get().setStatus("BLOCKED");
         Mockito.when(hotlistCacheRepo.findByIdHashAndIdType(id, idType)).thenReturn(hotlistData);
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "getHotlistStatus", id,idType);
-        //when ExpiryDTimes is not null
-        now = LocalDateTime.now();
-        hotlistData.get().setExpiryDTimes(now);
-        Mockito.when(hotlistCacheRepo.findByIdHashAndIdType(id, idType)).thenReturn(hotlistData);
-        ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "getHotlistStatus", id,idType);
         //
         //status = UNBLOCKED
         hotlistData.get().setStatus("UNBLOCKED");
