@@ -100,6 +100,11 @@ public class HotlistServiceImplTest {
         hotlistData.get().setStatus("BLOCKED");
         Mockito.when(hotlistCacheRepo.findByIdHashAndIdType(id, idType)).thenReturn(hotlistData);
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "getHotlistStatus", id,idType);
+        //when ExpiryDTimes is not null
+        now = LocalDateTime.now();
+        hotlistData.get().setExpiryDTimes(now);
+        Mockito.when(hotlistCacheRepo.findByIdHashAndIdType(id, idType)).thenReturn(hotlistData);
+        ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "getHotlistStatus", id,idType);
         //
         //status = UNBLOCKED
         hotlistData.get().setStatus("UNBLOCKED");
@@ -131,6 +136,9 @@ public class HotlistServiceImplTest {
         idTypes.add("UNBLOCKED");
         ReflectionTestUtils.setField(hotlistServiceImpl, "idTypes", idTypes);
 //       when status=UNBLOCKED && id type =UIN
+        ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
+//        idTypes.contains(eventData.get(ID_TYPE)=false
+        eventData.put("idType", "DEVICE");
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
 //       when status=UNBLOCKED && id type =VID
         eventData.put("idType", "VID");
@@ -167,6 +175,8 @@ public class HotlistServiceImplTest {
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "validateHotlistEventData", eventData);
 //        when hotlistEventData.containsKey(STATUS)=false
         eventData.remove("status");
+        LocalDateTime now = LocalDateTime.now().plusYears(1).plusMonths(1).plusWeeks(1).plusDays(1);
+        eventData.put("expiryTimestamp", now);
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "validateHotlistEventData", eventData);
 //        when hotlistEventData.containsKey(EXPIRY_TIMESTAMP)=false
         eventData.remove("expiryTimestamp");
