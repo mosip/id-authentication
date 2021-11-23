@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.dto.AuditResponseDto;
-import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 @RestController
 public class AuditTestController {
