@@ -66,7 +66,7 @@ public class InternalUpdateAuthTypeController {
 
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
 	@Operation(summary = "updateAuthtypeStatus", description = "updateAuthtypeStatus", tags = { "internal-update-auth-type-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
