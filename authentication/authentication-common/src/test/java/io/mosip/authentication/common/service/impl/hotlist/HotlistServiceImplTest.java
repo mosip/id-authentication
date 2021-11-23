@@ -152,6 +152,10 @@ public class HotlistServiceImplTest {
         ReflectionTestUtils.invokeMethod(hotlistServiceImpl, "handlingHotlistingEvent", eventModel);
     }
 
+    /**
+     * This class tests the validateHotlistEvent method
+     * @throws IOException
+     */
     @Test
     public void validateHotlistEventTest() throws IOException {
         Map<String, Object> eventData = getEventData();
