@@ -50,7 +50,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/templates", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTemplatesUpdate", description = "handleMasterdataTemplatesUpdate", tags = { "master-data-update-event-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -71,7 +71,7 @@ public class MasterDataUpdateEventController {
 	 */
 	@PostMapping(value = "/callback/masterdata/titles", consumes = "application/json")
 	@Operation(summary = "handleMasterdataTitlesUpdate", description = "handleMasterdataTitlesUpdate", tags = { "master-data-update-event-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),

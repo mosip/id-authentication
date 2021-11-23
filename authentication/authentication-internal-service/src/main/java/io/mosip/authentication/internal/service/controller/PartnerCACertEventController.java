@@ -42,7 +42,7 @@ public class PartnerCACertEventController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + CA_CERT_EVENT, consumes = "application/json")
 	@Operation(summary = "handleCACertificate", description = "handleCACertificate", tags = { "partner-ca-cert-event-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),

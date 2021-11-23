@@ -7,7 +7,11 @@ import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -53,6 +57,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 @Tag(name = "otp-controller", description = "OTP Controller")
+@SecurityScheme(in = SecuritySchemeIn.HEADER, scheme = "basic", type = SecuritySchemeType.APIKEY, name = "Authorization")
 public class OTPController {
 
 	private static final String GENERATE_OTP = "generateOTP";
@@ -98,7 +103,7 @@ public class OTPController {
 	@PostMapping(path = "/{MISP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "generateOTP", description = "generateOTP"
 			, tags = { "otp-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
