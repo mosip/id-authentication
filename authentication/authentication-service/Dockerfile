@@ -48,6 +48,9 @@ ENV is_glowroot_env=${is_glowroot}
 # environment variable to pass artifactory url, at docker runtime
 ENV artifactory_url_env=${artifactory_url}
 
+# environment variable to pass iam_adapter url, at docker runtime
+ENV iam_adapter_url_env=${iam_adapter_url}
+
 #ENV bio_sdk_folder_env=${bio_sdk_folder}
 ENV biosdk_zip_file_path=${biosdk_zip_path}
 
