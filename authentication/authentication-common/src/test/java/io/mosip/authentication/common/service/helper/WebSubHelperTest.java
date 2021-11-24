@@ -34,9 +34,6 @@ public class WebSubHelperTest {
     private WebSubHelper webSubHelper;
 
     @Mock
-    private WebSubHelper webSubHelperMock;
-
-    @Mock
     private WebSubEventSubcriber subscriber;
 
     @Mock
@@ -65,6 +62,8 @@ public class WebSubHelperTest {
         webSubHelper.initRegistrar(registrar);
         Supplier<Boolean> enableTester=null;
         webSubHelper.initRegistrar(registrar, enableTester);
+        Mockito.doThrow(ResourceAccessException.class).when(registrar).register(enableTester);
+        webSubHelper.initRegistrar(registrar);
     }
 
     @Test(expected = Exception.class)
