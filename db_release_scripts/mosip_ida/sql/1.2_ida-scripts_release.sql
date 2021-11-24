@@ -54,7 +54,7 @@ CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
 
 -----------------------------------------------------------------------------------------------------------
 ALTER TABLE ida.key_alias ADD COLUMN cert_thumbprint character varying(100);
-ALTER TABLE ida.ca_cert_store ADD CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint);
+ALTER TABLE ida.ca_cert_store ADD CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain);
 
 
 
