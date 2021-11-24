@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,6 +43,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -52,6 +56,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 @Tag(name = "internal-auth-controller", description = "Internal Auth Controller")
+@SecurityScheme(in = SecuritySchemeIn.HEADER, scheme = "basic", type = SecuritySchemeType.APIKEY, name = "Authorization")
 public class InternalAuthController {
 
 	/** The auth facade. */
@@ -107,7 +112,7 @@ public class InternalAuthController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostauth())")
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
 					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
@@ -174,7 +179,7 @@ public class InternalAuthController {
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostverifyidentity())")
 	@PostMapping(path = "/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
-	@Parameter(in = ParameterIn.HEADER, name = "Authorization")
+	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
 					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),

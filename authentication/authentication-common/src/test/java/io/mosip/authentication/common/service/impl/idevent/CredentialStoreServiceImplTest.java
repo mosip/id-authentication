@@ -1,21 +1,15 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.authentication.common.service.entity.CredentialEventStore;
-import io.mosip.authentication.common.service.entity.IdentityEntity;
-import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.helper.WebSubHelper;
-import io.mosip.authentication.common.service.integration.CredentialRequestManager;
-import io.mosip.authentication.common.service.integration.DataShareManager;
-import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
-import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
-import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
-import io.mosip.authentication.core.exception.*;
-import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
-import io.mosip.kernel.core.websub.model.EventModel;
-import org.apache.tomcat.jni.Local;
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +24,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-import java.io.IOException;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
-
-import java.time.LocalDateTime;
+import io.mosip.authentication.common.service.entity.CredentialEventStore;
+import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.integration.CredentialRequestManager;
+import io.mosip.authentication.common.service.integration.DataShareManager;
+import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
+import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.kernel.core.websub.model.EventModel;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

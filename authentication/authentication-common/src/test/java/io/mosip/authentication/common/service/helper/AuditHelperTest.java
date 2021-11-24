@@ -36,6 +36,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 /**
  * @author Manoj SP
@@ -47,7 +48,7 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 public class AuditHelperTest {
 
 	@Mock
-	RestHelperImpl restHelper;
+	RestHelper restHelper;
 
 	@InjectMocks
 	AuditHelper auditHelper;
