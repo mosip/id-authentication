@@ -1,20 +1,20 @@
-\c mosip_ida sysadmin
+\c mosip_ida_1 sysadmin
 
 -- object: grant_b0ae4f0dce | type: PERMISSION --
 GRANT CREATE,CONNECT,TEMPORARY
-   ON DATABASE mosip_ida
+   ON DATABASE mosip_ida_1
    TO sysadmin;
 -- ddl-end --
 
 -- object: grant_99dd1cb062 | type: PERMISSION --
 GRANT CREATE,CONNECT,TEMPORARY
-   ON DATABASE mosip_ida
+   ON DATABASE mosip_ida_1
    TO appadmin;
 -- ddl-end --
 
 -- object: grant_18180691b7 | type: PERMISSION --
 GRANT CONNECT
-   ON DATABASE mosip_ida
+   ON DATABASE mosip_ida_1
    TO idauser;
 -- ddl-end --
 

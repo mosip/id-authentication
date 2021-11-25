@@ -1,6 +1,6 @@
-\c mosip_ida sysadmin
+\c mosip_ida_1 sysadmin
 
-\set CSVDataPath '\'/home/dbadmin/mosip_ida'
+\set CSVDataPath '\'/home/dbadmin/mosip_ida_1'
 
 -------------- Level 1 data load scripts ------------------------
 

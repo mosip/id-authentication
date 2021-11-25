@@ -13,7 +13,7 @@ echo "`date` : You logged on to DB deplyment server as : `whoami`"
 echo "`date` : MOSIP Database objects deployment started...."
 
 echo "=============================================================================================================="
-bash ./mosip_ida/mosip_ida_db_deploy.sh ./mosip_ida/mosip_ida_deploy.properties
+bash ./mosip_ida_1/mosip_ida_db_deploy.sh ./mosip_ida_1/mosip_ida_deploy.properties
 echo "=============================================================================================================="
 
 echo "`date` : MOSIP DB Deployment for IDA databases is completed, Please check the logs at respective logs directory for more information"

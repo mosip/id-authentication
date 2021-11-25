@@ -1,4 +1,4 @@
-\c mosip_ida sysadmin
+\c mosip_ida_1 sysadmin
 
 \ir ddl/ida-auth_transaction.sql
 \ir ddl/ida-uin_auth_lock.sql

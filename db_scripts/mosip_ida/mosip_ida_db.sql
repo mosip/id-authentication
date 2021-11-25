@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS mosip_ida;
-CREATE DATABASE mosip_ida
+DROP DATABASE IF EXISTS mosip_ida_1;
+CREATE DATABASE mosip_ida_1
 	ENCODING = 'UTF8'
 	LC_COLLATE = 'en_US.UTF-8'
 	LC_CTYPE = 'en_US.UTF-8'
@@ -7,10 +7,10 @@ CREATE DATABASE mosip_ida
 	OWNER = sysadmin
 	TEMPLATE  = template0;
 -- ddl-end --
-COMMENT ON DATABASE mosip_ida IS 'ID Authorization related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database';
+COMMENT ON DATABASE mosip_ida_1 IS 'ID Authorization related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database';
 -- ddl-end --
 
-\c mosip_ida sysadmin
+\c mosip_ida_1 sysadmin
 
 -- object: ida | type: SCHEMA --
 DROP SCHEMA IF EXISTS ida CASCADE;
@@ -19,7 +19,7 @@ CREATE SCHEMA ida;
 ALTER SCHEMA ida OWNER TO sysadmin;
 -- ddl-end --
 
-ALTER DATABASE mosip_ida SET search_path TO ida,pg_catalog,public;
+ALTER DATABASE mosip_ida_1 SET search_path TO ida,pg_catalog,public;
 -- ddl-end --
 
 -- REVOKECONNECT ON DATABASE mosip_ida FROM PUBLIC;
