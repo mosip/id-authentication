@@ -319,6 +319,9 @@ public final class IdAuthCommonConstants {
 	public static final String FAILURE = "failure";
 	
 	public static final String QUALITY_SCORE = "qualityScore";
+	
+	public static final String UIN_HASH_SALT = "uin_hash_salt";
+
 
 
 	private IdAuthCommonConstants() {

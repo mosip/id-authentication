@@ -32,8 +32,6 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
@@ -45,14 +43,16 @@ import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
@@ -63,7 +63,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
-		IDAMappingFactory.class, PartnerServiceImpl.class,PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelperImpl.class})
+		IDAMappingFactory.class, PartnerServiceImpl.class,PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelper.class})
 @WebMvcTest
 @Ignore
 public class OTPServiceImplTest {
@@ -210,7 +210,7 @@ public class OTPServiceImplTest {
 
 		
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
+				IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 

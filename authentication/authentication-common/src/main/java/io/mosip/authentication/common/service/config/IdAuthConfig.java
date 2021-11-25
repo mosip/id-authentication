@@ -7,18 +7,21 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -40,16 +43,6 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@PostConstruct
 	public void initialize() {
 		IdType.initializeAliases(environment);
-	}
-
-	/**
-	 * Rest template.
-	 *
-	 * @return the rest template
-	 */
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
 	}
 
 	/**

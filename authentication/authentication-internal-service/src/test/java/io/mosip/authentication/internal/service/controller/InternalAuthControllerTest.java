@@ -29,7 +29,6 @@ import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -47,6 +46,7 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
