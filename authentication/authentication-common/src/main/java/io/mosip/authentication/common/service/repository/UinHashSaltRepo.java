@@ -14,7 +14,7 @@ import io.mosip.authentication.common.service.entity.UinHashSalt;
  * @author Arun Bose S
  */
 @Repository
-public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Long> {
+public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Integer> {
 	
 	/**
 	 * The Query to retrieve salt by passing id as parameter.
