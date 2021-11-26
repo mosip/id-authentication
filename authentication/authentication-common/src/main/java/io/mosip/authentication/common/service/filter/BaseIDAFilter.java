@@ -181,7 +181,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
 				chain.doFilter(requestWrapper, responseWrapper);
-				String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
+				String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime, requestBody);
 				response.getWriter().write(responseAsString);
 				return;
 			}
@@ -190,7 +190,7 @@ public abstract class BaseIDAFilter implements Filter {
 			consumeRequest(requestWrapper, requestBody);
 			requestWrapper.resetInputStream();
 			chain.doFilter(requestWrapper, responseWrapper);
-			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
+			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime, requestBody);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException  e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
@@ -493,17 +493,15 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param responseWrapper {@link CharResponseWrapper}
 	 * @param requestTime     the request time
+	 * @param requestBody 
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
 	protected String mapResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper,
-			Temporal requestTime) throws IdAuthenticationAppException {
+			Temporal requestTime, Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		String respStr = responseWrapper.toString();
 		try {
-			requestWrapper.resetInputStream();
-			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
-			
 			Map<String, Object> responseBody = getResponseBody(respStr);
 			Map<String, Object> metadata = (Map<String, Object>) responseBody.get(METADATA);
 			Map<String, Object> responseMap = setResponseParams(requestBody, responseBody);
