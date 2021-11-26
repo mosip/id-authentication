@@ -23,7 +23,7 @@ public class UinHashSalt {
 	
 	/**  The Id value. */
 	@Id
-	private Integer id;
+	private int id;
 
 	/**  The salt value. */
 	@Column(name = "salt")
