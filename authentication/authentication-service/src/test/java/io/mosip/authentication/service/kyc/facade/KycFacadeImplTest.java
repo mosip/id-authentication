@@ -40,6 +40,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -47,6 +48,7 @@ import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
+import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -82,7 +84,7 @@ import reactor.util.function.Tuples;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class, PartnerServiceImpl.class,PartnerServiceImpl.class, PartnerServiceManager.class, RestRequestFactory.class,RestHelper.class,RestHelper.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @Import(IDAMappingConfig.class)
 @TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
 public class KycFacadeImplTest {
