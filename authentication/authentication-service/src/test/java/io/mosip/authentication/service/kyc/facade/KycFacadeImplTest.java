@@ -24,11 +24,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -37,10 +35,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
-import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
-import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -48,7 +44,6 @@ import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
-import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -74,8 +69,6 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
-import io.mosip.idrepository.core.helper.RestHelper;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import reactor.util.function.Tuples;
 
 /**
@@ -85,8 +78,6 @@ import reactor.util.function.Tuples;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
-@Import(IDAMappingConfig.class)
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties", "classpath:ida-mapping.json"})
 public class KycFacadeImplTest {
 
 	@InjectMocks
