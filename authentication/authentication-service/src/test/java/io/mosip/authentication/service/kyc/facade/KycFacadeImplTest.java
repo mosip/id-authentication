@@ -86,7 +86,7 @@ import reactor.util.function.Tuples;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @Import(IDAMappingConfig.class)
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
+@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties", "classpath:ida-mapping.json"})
 public class KycFacadeImplTest {
 
 	@InjectMocks
