@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.spi.indauth.facade;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -37,7 +38,7 @@ public interface KycFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey)
+	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
 }

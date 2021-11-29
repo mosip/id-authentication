@@ -19,10 +19,4 @@ public class InternalEventNotificationFilter extends DefaultInternalFilter {
 		// Skip ID and Version Validation
 	}
 	
-	@Override
-	protected void addIdAndVersionToResponse(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> responseMap) {
-		// Skip Adding ID and Version to response
-	}
-
 }

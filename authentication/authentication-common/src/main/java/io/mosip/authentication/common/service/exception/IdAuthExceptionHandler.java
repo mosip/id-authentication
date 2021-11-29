@@ -30,7 +30,6 @@ import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -221,13 +220,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
 			Object response = frameErrorResponse(requestReceived, type, errors);
-			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithMetadata) {
-				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
-				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
-				if(exceptionWithMetadata.getMetadata() != null) {
-					exceptionWithMetadata.copyAllMetadaTo(responsWithMetadata);
-				}
-			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
 			return response;

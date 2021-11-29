@@ -3,6 +3,7 @@ package io.mosip.authentication.otp.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,8 @@ import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -112,40 +115,49 @@ public class OTPController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
-			@PathVariable("MISP-LK") String mispLK,@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("API-Key") String apiKey )
+			@PathVariable("MISP-LK") String mispLK,@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("API-Key") String apiKey, HttpServletRequest request )
 			throws IdAuthenticationAppException, IDDataValidationException, IdAuthenticationBusinessException {
-		boolean isPartnerReq = true;
-		Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
-		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
-				.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
 		
-		try {
-			String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
-					: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
-			otpRequestDto.setIndividualIdType(idType);
-			otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
-			DataValidationUtil.validate(errors);
-			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId);
-			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
-					otpResponseDTO.getResponseTime());
+		if(request instanceof ObjectWithMetadata) {
+			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 			
-			boolean status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
-					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
-			return otpResponseDTO;
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
-					e.getErrorText());
-			auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
-					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
-			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
-		} catch (IdAuthenticationBusinessException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-			auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
-					IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
-			IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-			authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
-			throw authenticationAppException;
+			boolean isPartnerReq = true;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
+			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
+			
+			try {
+				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
+						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
+				otpRequestDto.setIndividualIdType(idType);
+				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
+				DataValidationUtil.validate(errors);
+				OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
+				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
+						otpResponseDTO.getResponseTime());
+				
+				boolean status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
+				auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
+				return otpResponseDTO;
+			} catch (IDDataValidationException e) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
+						e.getErrorText());
+				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
+						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
+				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
+						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
+				IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
+				authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
+				throw authenticationAppException;
+			}
+		
+		} else {
+			logger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
 

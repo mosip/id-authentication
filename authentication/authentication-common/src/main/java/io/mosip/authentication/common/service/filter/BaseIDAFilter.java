@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,7 +46,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
-import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -58,7 +57,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -113,8 +111,6 @@ public abstract class BaseIDAFilter implements Filter {
 	
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
 	
-	private AuthAnonymousProfileService authAnonymousProfileService;
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseIDAFilter.class);
 
@@ -134,12 +130,6 @@ public abstract class BaseIDAFilter implements Filter {
 		idService = context.getBean(IdService.class);
 		authTransactionStatusEventPublisher = context.getBean(AuthTransactionStatusEventPublisher.class);
 		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
-		try {
-			authAnonymousProfileService = context.getBean(AuthAnonymousProfileService.class);
-		} catch (NoSuchBeanDefinitionException e) {
-			//Only for external auth servie the bean will be present.
-			mosipLogger.info("AuthAnonymousProfileService bean not present.");
-		}
 	}
 
 	/*
@@ -176,6 +166,10 @@ public abstract class BaseIDAFilter implements Filter {
 				// super.flushBuffer();
 			}
 		};
+		Supplier<String> s = () -> "hello";
+		requestWrapper.putMetadata("testFunc", s);
+
+		
 		Map<String, Object> requestBody = null;
 		try {
 			requestBody = getRequestBody(requestWrapper.getInputStream());
@@ -190,6 +184,7 @@ public abstract class BaseIDAFilter implements Filter {
 			consumeRequest(requestWrapper, requestBody);
 			requestWrapper.resetInputStream();
 			chain.doFilter(requestWrapper, responseWrapper);
+			System.out.println(requestWrapper.getMetadata("testVal"));
 			String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime, requestBody);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException  e) {
@@ -204,6 +199,7 @@ public abstract class BaseIDAFilter implements Filter {
 		} finally {
 			logDataSize(responseWrapper.toString(), IdAuthCommonConstants.RESPONSE);
 		}
+		
 
 	}
 
@@ -504,107 +500,42 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			Map<String, Object> responseBody = getResponseBody(respStr);
 			Map<String, Object> metadata = (Map<String, Object>) responseBody.get(METADATA);
-			Map<String, Object> responseMap = setResponseParams(requestBody, responseBody);
+//			Map<String, Object> responseMap = setResponseParams(requestBody, responseBody);
 			requestWrapper.resetInputStream();
-			addIdAndVersionToResponse(requestWrapper, responseMap);
-			if (responseMap.containsKey(ERRORS)) {
-				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List
-						? (List<AuthError>) responseMap.get(ERRORS)
-						: Collections.emptyList();
-				if (errorList.isEmpty()) {
-					responseMap.put(ERRORS, null);
-				}
-			}
-			Map<String, Object> finalResponse = transformResponse(responseMap);
+//			addIdAndVersionToResponse(requestWrapper, responseMap);
+//			if (responseMap.containsKey(ERRORS)) {
+//				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List
+//						? (List<AuthError>) responseMap.get(ERRORS)
+//						: Collections.emptyList();
+//				if (errorList.isEmpty()) {
+//					responseMap.put(ERRORS, null);
+//				}
+//			}
+//			Map<String, Object> finalResponse = transformResponse(responseMap);
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
-			String responseAsString = mapper.writeValueAsString(finalResponse);
+//			String responseAsString = mapper.writeValueAsString(finalResponse);
+			String responseAsString = respStr;
 			String responseSignature = null;
 			if(isSigningRequired()) {
+//				responseSignature = keyManager.signResponse(responseAsString);
 				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
-			storeAuthTransaction(metadata, requestSignature, responseSignature);
-			if (requestBody != null) {
-				storeAnonymousProfile(requestBody, responseBody, (Map<String, Object>) requestBody.get(METADATA),
-						metadata);
-			}
+			
+//			storeAuthTransaction(metadata, requestSignature, responseSignature);
+//			if (requestBody != null) {
+//				storeAnonymousProfile(requestBody, responseBody, (Map<String, Object>) requestBody.get(METADATA),
+//						metadata);
+//			}
 			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
 			return responseAsString;
-		} catch (IdAuthenticationAppException | IOException e) {
+		} catch (IdAuthenticationAppException /*| IOException */ e ) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			//throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			return respStr;
 		}
-	}
-
-	private void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody,
-			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
-		if(authAnonymousProfileService != null) {
-			authAnonymousProfileService.storeAnonymousProfile(requestBody, responseBody, requestMetadata, responseMetadata);
-		}
-	}
-
-	private void storeAuthTransaction(Map<String, Object> metadata, String requestSignature,
-			String responseSignature) throws IdAuthenticationAppException {
-		if(metadata != null) {
-			Object authTxnObj = metadata.get(AutnTxn.class.getSimpleName());
-			if(authTxnObj != null) {
-				AutnTxn autnTxn = mapper.convertValue(authTxnObj, AutnTxn.class);
-				autnTxn.setRequestSignature(requestSignature);
-				autnTxn.setResponseSignature(responseSignature);
-				try {
-					idService.saveAutnTxn(autnTxn);
-					authTransactionStatusEventPublisher.publishEvent(AuthTxnServiceImpl.fetchAuthResponseDTO(autnTxn), autnTxn.getId(), autnTxn.getCrDTimes());
-				} catch (IdAuthenticationBusinessException e) {
-					mosipLogger.error("sessionId", BASE_IDA_FILTER, "storeAuthTransaction", "\n" + ExceptionUtils.getStackTrace(e));
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
-				}
-				
-			}
-		}
-	}
-
-	protected void addIdAndVersionToResponse(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> responseMap) {
-		responseMap.put(VERSION,
-				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
-		requestWrapper.resetInputStream();
-		responseMap.put(IdAuthCommonConstants.ID,
-				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
-	}
-
-	/**
-	 * setResponseParams method is set the transaction ID and response time based on
-	 * the request time zone
-	 *
-	 * @param requestBody  the request body
-	 * @param responseBody the response body
-	 * @return the map
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.TRANSACTION_ID))) {
-			responseBody.replace(IdAuthCommonConstants.TRANSACTION_ID,
-					requestBody.get(IdAuthCommonConstants.TRANSACTION_ID));
-		}
-
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.REQ_TIME))
-				&& isDate((String) requestBody.get(IdAuthCommonConstants.REQ_TIME))) {
-			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(IdAuthCommonConstants.REQ_TIME)).getZone();
-
-			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME)
-					: DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
-			responseBody.remove("responsetime");// Handled for forbidden error scenario
-
-			responseBody.put(RES_TIME,
-					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
-							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
-							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)));
-		}
-		responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
-		return responseBody;
 	}
 
 	/**

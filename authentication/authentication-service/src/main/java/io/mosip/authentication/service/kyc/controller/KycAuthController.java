@@ -3,6 +3,8 @@ package io.mosip.authentication.service.kyc.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -20,6 +22,8 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -118,46 +122,53 @@ public class KycAuthController {
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK,@PathVariable("eKYC-Partner-ID") String partnerId,
-			@PathVariable("API-Key") String partnerApiKey)
+			@PathVariable("API-Key") String partnerApiKey, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		boolean isAuth = true;
-		Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
-		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
-				.createAndSetAuthTxnBuilderMetadataToRequest(kycAuthRequestDTO, !isAuth, partner);
-		
-		try {
-			String idType = Objects.nonNull(kycAuthRequestDTO.getIndividualIdType()) ? kycAuthRequestDTO.getIndividualIdType()
-					: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
-			kycAuthRequestDTO.setIndividualIdType(idType);
-			kycReqValidator.validateIdvId(kycAuthRequestDTO.getIndividualId(), idType, errors);
-			if(AuthTypeUtil.isBio(kycAuthRequestDTO)) {
-				kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
+		if(request instanceof ObjectWithMetadata) {
+			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+
+			boolean isAuth = true;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
+			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(kycAuthRequestDTO, !isAuth, partner);
+			
+			try {
+				String idType = Objects.nonNull(kycAuthRequestDTO.getIndividualIdType()) ? kycAuthRequestDTO.getIndividualIdType()
+						: idTypeUtil.getIdType(kycAuthRequestDTO.getIndividualId()).getType();
+				kycAuthRequestDTO.setIndividualIdType(idType);
+				kycReqValidator.validateIdvId(kycAuthRequestDTO.getIndividualId(), idType, errors);
+				if(AuthTypeUtil.isBio(kycAuthRequestDTO)) {
+					kycReqValidator.validateDeviceDetails(kycAuthRequestDTO, errors);
+				}
+				DataValidationUtil.validate(errors);
+				
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey, requestWithMetadata);
+				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+				if (authResponseDTO != null && 
+						authResponseDTO.getMetadata() != null && 
+						authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
+						authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
+					kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
+				}
+				return kycAuthResponseDTO;
+			} catch (IDDataValidationException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
+						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
+				
+				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
+						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
+				
+				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
 			}
-			DataValidationUtil.validate(errors);
-			
-			AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(kycAuthRequestDTO, true, partnerId, partnerApiKey);
-			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-			if (authResponseDTO != null && 
-					authResponseDTO.getMetadata() != null && 
-					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
-					authResponseDTO.getMetadata().get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
-				kycAuthResponseDTO = kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId);
-			}
-			return kycAuthResponseDTO;
-		} catch (IDDataValidationException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			
-			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
-			
-			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
-					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-			
-			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
-			
-			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
+		} else {
+			mosipLogger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
 
