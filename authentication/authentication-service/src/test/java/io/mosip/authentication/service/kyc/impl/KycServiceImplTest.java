@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -59,8 +58,7 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@Import(IDAMappingConfig.class)
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties", "classpath:ida-mapping.json"})
+@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
 public class KycServiceImplTest {
 
 	@Autowired
@@ -68,18 +66,18 @@ public class KycServiceImplTest {
 
 	@Autowired
 	Environment environment;
+	
+	@Mock
+	private MappingConfig mappingConfig;
+	
+	@Mock
+	private IDAMappingConfig idMappingConfig;
 
 	@Mock
 	private IdInfoHelper idInfoHelper;
 	
 	@InjectMocks
 	private IdInfoHelper idInfoHelper2;
-
-	@Autowired
-	private IDAMappingConfig idMappingConfig;
-
-	@Autowired
-	private MappingConfig mappingConfig;
 
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
@@ -97,6 +95,7 @@ public class KycServiceImplTest {
 	String value;
 
 	Map<String, List<IdentityInfoDTO>> idInfo;
+	
 
 	@Before
 	public void before() throws IdAuthenticationDaoException {
@@ -104,14 +103,10 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(kycServiceImpl, "mappingConfig", mappingConfig);
 		ReflectionTestUtils.setField(kycServiceImpl2, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
-		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", mappingConfig);
 		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper2, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
