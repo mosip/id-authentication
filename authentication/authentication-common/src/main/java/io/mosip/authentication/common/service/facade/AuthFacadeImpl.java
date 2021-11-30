@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
-import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
@@ -33,6 +32,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -125,11 +125,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	private AuthFiltersValidator authFiltersValidator;
 	
 	@Autowired
-	public MatchInputBuilder matchInputBuilder;
+	private IdInfoHelper idInfoHelper;
 	
-	@Autowired
-	public IdInfoHelper idInfoHelper;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -191,6 +188,7 @@ public class AuthFacadeImpl implements AuthFacade {
 					partnerId, authTxnBuilder);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} catch (IdAuthenticationBusinessException e) {
+			IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 			throw e;
 		} finally {
 			// Set response token
@@ -199,6 +197,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			} else {
 				authResponseDTO = authResponseBuilder.build(null);
 			}
+			
+			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, authResponseDTO);
 
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);

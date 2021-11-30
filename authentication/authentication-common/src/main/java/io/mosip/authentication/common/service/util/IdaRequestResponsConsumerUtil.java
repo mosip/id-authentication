@@ -1,12 +1,11 @@
 package io.mosip.authentication.common.service.util;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERSION;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -15,18 +14,14 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
-import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
+import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithIdVersion;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.function.AnonymousProfileStoreFunction;
 import io.mosip.authentication.core.function.AuthTransactionStoreFunction;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdaRequestResponsConsumerUtil.
@@ -35,14 +30,15 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFunction, AnonymousProfileStoreFunction {
-
+	
 	@Autowired
 	private ObjectMapper mapper;
 	
 	@Lazy
 	@Autowired
 	private AuthAnonymousProfileService authAnonymousProfileService;
-
+	
+	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 	
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody,
@@ -106,12 +102,14 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 		return responseBody;
 	}
 	
-	protected void addIdAndVersionToResponse(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> responseMap) {
-//		responseMap.put(VERSION,
-//				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
-//		requestWrapper.resetInputStream();
-//		responseMap.put(IdAuthCommonConstants.ID,
-//				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
+	public static void setIdVersionToResponse(ObjectWithMetadata requestWithMetadata, ObjectWithIdVersion responseWithIdVersion) {
+		requestWithMetadata.getMetadata(VERSION, String.class).ifPresent(responseWithIdVersion::setVersion);
+		requestWithMetadata.getMetadata(ID, String.class).ifPresent(responseWithIdVersion::setId);
 	}
-
+	
+	public static void setIdVersionToObjectWithMetadata(ObjectWithMetadata requestWithMetadata, ObjectWithMetadata objectWithMetadata) {
+		requestWithMetadata.getMetadata(VERSION, String.class).ifPresent(version -> objectWithMetadata.putMetadata(VERSION, version));
+		requestWithMetadata.getMetadata(ID, String.class).ifPresent(id -> objectWithMetadata.putMetadata(ID, id));
+	}
+	
 }

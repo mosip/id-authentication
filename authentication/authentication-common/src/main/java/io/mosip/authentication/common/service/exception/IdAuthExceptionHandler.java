@@ -26,10 +26,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithIdVersion;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -220,6 +223,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
 			Object response = frameErrorResponse(requestReceived, type, errors);
+			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersion) {
+				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
+				ObjectWithIdVersion responsWithMetadata = (ObjectWithIdVersion) response;
+				if(exceptionWithMetadata.getMetadata() != null) {
+					IdaRequestResponsConsumerUtil.setIdVersionToResponse(exceptionWithMetadata, responsWithMetadata);
+				}
+			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
 			return response;

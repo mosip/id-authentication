@@ -26,6 +26,7 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -103,8 +104,8 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	@Qualifier("NotificationLangComparator")
-	private LanguageComparator languageComparator;	
-
+	private LanguageComparator languageComparator;
+	
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 
@@ -133,7 +134,8 @@ public class OTPServiceImpl implements OTPService {
 			token = idAuthService.getToken(idResDTO);
 
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
-			
+			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, otpResponseDTO);
+
 			status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
 			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, otpResponseDTO, requestWithMetadata);
 			
@@ -142,6 +144,7 @@ public class OTPServiceImpl implements OTPService {
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
 			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, null, null);
+			IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 			throw e;
 		}
 
@@ -196,6 +199,7 @@ public class OTPServiceImpl implements OTPService {
 					processChannel(channel, phoneNumber, email, maskedResponseDTO);
 				}
 				otpResponseDTO.setResponse(maskedResponseDTO);
+				
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 						" is OTP generated: " + isOtpGenerated);
 			} else {
