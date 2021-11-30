@@ -1,0 +1,10 @@
+﻿app_id,key_validity_duration,is_active,cr_by,cr_dtimes
+PRE_REGISTRATION,1095,TRUE,mosipadmin,now()
+REGISTRATION,1095,TRUE,mosipadmin,now()
+REGISTRATION_PROCESSOR,1095,TRUE,mosipadmin,now()
+IDA,1095,TRUE,mosipadmin,now()
+ID_REPO,1095,TRUE,mosipadmin,now()
+KERNEL,1095,TRUE,mosipadmin,now()
+ROOT,1826,TRUE,mosipadmin,now()
+BASE,730,TRUE,mosipadmin,now()
+PMS,1095,TRUE,mosipadmin,now()
