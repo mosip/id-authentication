@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.util;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERSION;
 
@@ -9,9 +8,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +19,23 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.function.AnonymousProfileStoreFunction;
 import io.mosip.authentication.core.function.AuthTransactionStoreFunction;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdaRequestResponsConsumerUtil.
  * 
@@ -39,23 +44,53 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFunction, AnonymousProfileStoreFunction {
 	
+	/** The mosip logger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(IdaRequestResponsConsumerUtil.class);
+	
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 	
+	/** The auth anonymous profile service. */
 	@Lazy
-	@Autowired
+	@Autowired(required = false)
 	private AuthAnonymousProfileService authAnonymousProfileService;
 	
+	/** The auth transaction status event publisher. */
+	@Autowired
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 	
+	/** The id service. */
+	@Autowired
+	private IdService<AutnTxn> idService;
+
+	
+	/**
+	 * Store anonymous profile.
+	 *
+	 * @param requestBody the request body
+	 * @param responseBody the response body
+	 * @param requestMetadata the request metadata
+	 * @param responseMetadata the response metadata
+	 * @param status 
+	 * @param errors 
+	 */
 	@Override
-	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody,
-			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
+	public void storeAnonymousProfile(Map<String, Object> requestBody,
+			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status, List<Object> errors) {
 		if(authAnonymousProfileService != null) {
-			authAnonymousProfileService.storeAnonymousProfile(requestBody, responseBody, requestMetadata, responseMetadata);
+			authAnonymousProfileService.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
 		}
 	}
 
+	/**
+	 * Store auth transaction.
+	 *
+	 * @param metadata the metadata
+	 * @param requestSignature the request signature
+	 * @param responseSignature the response signature
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@Override
 	public void storeAuthTransaction(Map<String, Object> metadata, String requestSignature,
 			String responseSignature) throws IdAuthenticationAppException {
@@ -65,65 +100,57 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 				AutnTxn autnTxn = mapper.convertValue(authTxnObj, AutnTxn.class);
 				autnTxn.setRequestSignature(requestSignature);
 				autnTxn.setResponseSignature(responseSignature);
-//				try {
-//					idService.saveAutnTxn(autnTxn);
-//					authTransactionStatusEventPublisher.publishEvent(AuthTxnServiceImpl.fetchAuthResponseDTO(autnTxn), autnTxn.getId(), autnTxn.getCrDTimes());
-//				} catch (IdAuthenticationBusinessException e) {
-//					mosipLogger.error("sessionId", BASE_IDA_FILTER, "storeAuthTransaction", "\n" + ExceptionUtils.getStackTrace(e));
-//					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
-//				}
+				try {
+					idService.saveAutnTxn(autnTxn);
+					authTransactionStatusEventPublisher.publishEvent(AuthTxnServiceImpl.fetchAuthResponseDTO(autnTxn), autnTxn.getId(), autnTxn.getCrDTimes());
+				} catch (IdAuthenticationBusinessException e) {
+					mosipLogger.error("sessionId", this.getClass().getSimpleName(), "storeAuthTransaction", "\n" + ExceptionUtils.getStackTrace(e));
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+				}
 				
 			}
 		}
 	}
 	
 	/**
-	 * setResponseParams method is set the transaction ID and response time based on
-	 * the request time zone
+	 * Sets the id version to response.
 	 *
-	 * @param requestBody  the request body
-	 * @param responseBody the response body
-	 * @return the map
-	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @param sourceRequestWithMetadata the source request with metadata
+	 * @param targetResponseWithIdVersion the target response with id version
 	 */
-	protected Map<String, Object> setResponseParams(Map<String, Object> requestBody, Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.TRANSACTION_ID))) {
-			responseBody.replace(IdAuthCommonConstants.TRANSACTION_ID,
-					requestBody.get(IdAuthCommonConstants.TRANSACTION_ID));
-		}
-
-//		if (Objects.nonNull(requestBody) && Objects.nonNull(requestBody.get(IdAuthCommonConstants.REQ_TIME))
-//				&& isDate((String) requestBody.get(IdAuthCommonConstants.REQ_TIME))) {
-//			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(IdAuthCommonConstants.REQ_TIME)).getZone();
-//
-//			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME)
-//					: DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
-//			responseBody.remove("responsetime");// Handled for forbidden error scenario
-//
-//			responseBody.put(RES_TIME,
-//					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
-//							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
-//							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)));
-//		}
-		responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
-		return responseBody;
-	}
-	
 	public static void setIdVersionToResponse(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithIdVersionTransactionID targetResponseWithIdVersion) {
 		sourceRequestWithMetadata.getMetadata(VERSION, String.class).ifPresent(targetResponseWithIdVersion::setVersion);
 		sourceRequestWithMetadata.getMetadata(ID, String.class).ifPresent(targetResponseWithIdVersion::setId);
 	}
 	
+	/**
+	 * Sets the transaction id to response.
+	 *
+	 * @param sourceRequestWithMetadata the source request with metadata
+	 * @param targetResponseWithIdVersion the target response with id version
+	 */
 	public static void setTransactionIdToResponse(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithIdVersionTransactionID targetResponseWithIdVersion) {
 		sourceRequestWithMetadata.getMetadata(TRANSACTION_ID, String.class).ifPresent(targetResponseWithIdVersion::setTransactionID);
 	}
 	
+	/**
+	 * Sets the id version to object with metadata.
+	 *
+	 * @param sourceRequestWithMetadata the source request with metadata
+	 * @param targetObjectWithMetadata the target object with metadata
+	 */
 	public static void setIdVersionToObjectWithMetadata(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithMetadata targetObjectWithMetadata) {
 		sourceRequestWithMetadata.getMetadata(VERSION, String.class).ifPresent(version -> targetObjectWithMetadata.putMetadata(VERSION, version));
 		sourceRequestWithMetadata.getMetadata(ID, String.class).ifPresent(id -> targetObjectWithMetadata.putMetadata(ID, id));
 	}
 	
+	/**
+	 * Gets the response time.
+	 *
+	 * @param requestTime the request time
+	 * @param dateTimePattern the date time pattern
+	 * @return the response time
+	 */
 	public static String getResponseTime(String requestTime, String dateTimePattern) {
 		String resTime;
 		ZoneId zone;

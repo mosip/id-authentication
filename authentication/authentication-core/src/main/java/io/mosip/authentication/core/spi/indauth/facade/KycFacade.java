@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.indauth.facade;
 
+import java.util.Map;
+
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -21,12 +23,13 @@ public interface KycFacade {
 	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
 	 * @param authResponseDTO   the auth response DTO
 	 * @param partnerId the partner id
+	 * @param metadata the metadata
 	 * @return the kyc auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
-			String partnerId) throws IdAuthenticationBusinessException;
+			String partnerId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
 	
 	/**
 	 * Authenticate individual.

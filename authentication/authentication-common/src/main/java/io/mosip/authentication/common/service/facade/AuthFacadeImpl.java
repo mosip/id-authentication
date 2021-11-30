@@ -136,7 +136,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	@Override
 	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId,
-			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException {
+			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata) throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
 		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
@@ -198,20 +198,22 @@ public class AuthFacadeImpl implements AuthFacade {
 				authResponseDTO = authResponseBuilder.build(null, authRequestDTO.getRequestTime());
 			}
 			
-			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, authResponseDTO);
+			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWrapperMetadata, authResponseDTO);
 			if(authResponseDTO.getTransactionID() == null && transactionID != null) {
 				authResponseDTO.setTransactionID(transactionID);
 			}
 
-			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
+			boolean authStatus = authResponseDTO.getResponse().isAuthStatus();
+			authTxnBuilder.withStatus(authStatus);
 			authTxnBuilder.withAuthToken(authTokenId);
 
 			// This is sent back for the consumption by the caller for example
-			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
-			requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
+			// KYCFacadeImpl, Base IDA Filter.
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.STATUS, authStatus);
 
-			authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
+			authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
 
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());

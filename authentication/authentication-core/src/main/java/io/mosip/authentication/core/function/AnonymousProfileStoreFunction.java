@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.function;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public interface AnonymousProfileStoreFunction {
 	 * @param requestMetadata the request metadata
 	 * @param responseMetadata the response metadata
 	 */
-	void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody,
-			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata);
+	void storeAnonymousProfile(Map<String, Object> requestBody,
+			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status, List<Object> errors);
 
 }

@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.filter;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ERRORS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SIGNATURE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERSION;
 
@@ -16,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
-import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
@@ -51,7 +51,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -88,8 +87,6 @@ public abstract class BaseIDAFilter implements Filter {
 	/** The key manager. */
 	protected KeyManager keyManager;
 
-	protected IdService<AutnTxn> idService;
-	
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
 	
 	/** The mosip logger. */
@@ -102,7 +99,6 @@ public abstract class BaseIDAFilter implements Filter {
 	 * 
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		WebApplicationContext context = WebApplicationContextUtils
@@ -110,7 +106,6 @@ public abstract class BaseIDAFilter implements Filter {
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
 		keyManager = context.getBean(KeyManager.class);
-		idService = context.getBean(IdService.class);
 		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
 		requestResponsConsumerUtil = context.getBean(IdaRequestResponsConsumerUtil.class);
 	}
@@ -149,9 +144,6 @@ public abstract class BaseIDAFilter implements Filter {
 				// super.flushBuffer();
 			}
 		};
-		Supplier<String> s = () -> "hello";
-		requestWrapper.putMetadata("testFunc", s);
-
 		
 		Map<String, Object> requestBody = null;
 		try {
@@ -227,7 +219,7 @@ public abstract class BaseIDAFilter implements Filter {
 			}
 		} catch (IdAuthenticationAppException e) {
 			//This request wrapper is used as a mutable object to pass the response metadata back
-			Optional<?> responseMetadata = requestWrapper.getMetadata(IdAuthCommonConstants.ERRORS, List.class);
+			Optional<?> responseMetadata = requestWrapper.getMetadata(ERRORS, List.class);
 			if (responseMetadata != null && responseMetadata.isPresent() && responseMetadata.get() instanceof List) {
 				List<Object> errors = (List<Object>) responseMetadata.get();
 				boolean hasUnableToProcessError = errors.stream().filter(obj -> obj instanceof Map)
@@ -283,19 +275,19 @@ public abstract class BaseIDAFilter implements Filter {
 	 * logTime method is used to log the response time between the request and
 	 * response processed
 	 *
-	 * @param time        the response time
+	 * @param timeInTheAllowedPattern        the response time
 	 * @param type        the type is response
-	 * @param requestTime
+	 * @param actualRequestTime
 	 */
-	private void logTime(String time, String type, Temporal requestTime) {
+	private void logTime(String timeInTheAllowedPattern, String type, Temporal actualRequestTime) {
 		String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
-		if (time == null || time.isEmpty()) {
-			time = IdaRequestResponsConsumerUtil.getResponseTime(null, dateTimePattern);
+		if (timeInTheAllowedPattern == null || timeInTheAllowedPattern.isEmpty()) {
+			timeInTheAllowedPattern = IdaRequestResponsConsumerUtil.getResponseTime(null, dateTimePattern);
 		}
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + timeInTheAllowedPattern);
 		long duration = Duration
-				.between(requestTime,
-						LocalDateTime.parse(time,
+				.between(actualRequestTime,
+						LocalDateTime.parse(timeInTheAllowedPattern,
 								DateTimeFormatter
 										.ofPattern(dateTimePattern)))
 				.toMillis();
@@ -447,39 +439,42 @@ public abstract class BaseIDAFilter implements Filter {
 	 *
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param requestTime     the request time
+	 * @param actualRequestTime     the request time
 	 * @param requestBody 
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	protected String consumeResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, String respStr,
-			Temporal requestTime, Map<String, Object> requestBody) throws IdAuthenticationAppException {
+	protected String consumeResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, String responseAsString,
+			Temporal actualRequestTime, Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			Map<String, Object> metadata = requestWrapper.getMetadata();
+			// The metadata from requestWrapper is actually response metadata which is
+			// mutated from with the controller so that the values can be obtained here from that.
+			// This is mainly used to pass the Auth transaction details and Identity Infos
+			// for storing auth transaction and anonymous profile.
+			Map<String, Object> responseMetadata = requestWrapper.getMetadata();
 			requestWrapper.resetInputStream();
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
-//			String responseAsString = mapper.writeValueAsString(finalResponse);
-			String responseAsString = respStr;
 			String responseSignature = null;
 			if(isSigningRequired()) {
-//				responseSignature = keyManager.signResponse(responseAsString);
 				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
 			
-//			storeAuthTransaction(metadata, requestSignature, responseSignature);
-//			if (requestBody != null) {
-//				storeAnonymousProfile(requestBody, responseBody, (Map<String, Object>) requestBody.get(METADATA),
-//						metadata);
-//			}
+			requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
+			if (requestBody != null) {
+				boolean status = Boolean.valueOf(String.valueOf(responseMetadata.get(IdAuthCommonConstants.STATUS)));
+				List<Object> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<Object>) responseMetadata.get(ERRORS) : List.of();
+				requestResponsConsumerUtil.storeAnonymousProfile(requestBody, (Map<String, Object>) requestBody.get(METADATA),
+						responseMetadata, status, errors);
+			}
 			
-//			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
-//					requestTime);
+			Object inputRequestTime = requestBody.get(IdAuthCommonConstants.REQ_TIME);
+			String inputReqTimeStr = inputRequestTime instanceof String? (String) inputRequestTime : null;
+			logTime(inputReqTimeStr, IdAuthCommonConstants.RESPONSE, actualRequestTime);
 			return responseAsString;
-		} catch (IdAuthenticationAppException /*| IOException */ e ) {
+		} catch (IdAuthenticationAppException e ) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-			//throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-			return respStr;
+			return responseAsString;
 		}
 	}
 

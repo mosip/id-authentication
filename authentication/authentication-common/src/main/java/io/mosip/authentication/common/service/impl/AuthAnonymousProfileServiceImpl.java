@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUTH_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUB_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -8,10 +7,8 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAUL
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FAILURE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.QUALITY_SCORE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.RESPONSE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SUCCESS;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_DATE_OF_BIRTH_PATTERN;
 
@@ -95,8 +92,9 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	
 
 	@Override
-	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
-		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, responseBody, requestMetadata, responseMetadata);
+	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
+			Map<String, Object> responseMetadata, boolean status, List<Object> errors) {
+		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
 		storeAnanymousProfile(ananymousProfile);
 		authAnonymousEventPublisher.publishEvent(ananymousProfile);
 	}
@@ -120,7 +118,8 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody,
-			Map<String, Object> responseBody, Map<String, Object> requestMetadata, Map<String, Object> responseMetadata) {
+			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status,
+			List<Object> errorCodes) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
 		
 		Map<String, List<IdentityInfoDTO>> idInfo = getMapOfIdentityInfoDTOList(responseMetadata);
@@ -154,11 +153,11 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		
 		setDate(ananymousProfile);
 		
-		setErrorCodes(responseBody, ananymousProfile);
+		setErrorCodes(errorCodes, ananymousProfile);
 		
 		setPartnerName(requestMetadata, ananymousProfile);
 
-		setStatus(responseBody, ananymousProfile);
+		setStatus(status, ananymousProfile);
 		
 		return ananymousProfile;
 	}
@@ -285,21 +284,8 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
-		String status;
-		if(responseBody != null && responseBody.get(RESPONSE) instanceof Map) {
-			String statusKey;
-			if (responseBody.get(IdAuthCommonConstants.ID) == null || !responseBody.get(IdAuthCommonConstants.ID).equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_ID_KYC))) {
-				statusKey = AUTH_STATUS;
-			} else {
-				statusKey = KYC_STATUS;
-			}
-			Map<String, Object> responseMap = (Map<String, Object>)responseBody.get(RESPONSE);
-			status = String.valueOf(responseMap.get(statusKey));
-		} else {
-			status = String.valueOf(false);
-		}
-		ananymousProfile.setStatus(Boolean.valueOf(status) ? SUCCESS : FAILURE);
+	private void setStatus(boolean status, AnonymousAuthenticationProfile ananymousProfile) {
+		ananymousProfile.setStatus(status ? SUCCESS : FAILURE);
 	}
 
 	private void setDate(AnonymousAuthenticationProfile ananymousProfile) {
@@ -320,13 +306,12 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
-	private void setErrorCodes(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
-		List<String> errorCodes = Optional.ofNullable((List<Map<String, Object>>)responseBody.get("errors"))
-										.map(list -> 
-												list.stream()
-													.map(map -> (String)map.get("errorCode"))
-													.collect(Collectors.toList()))
-										.orElseGet(List::of);
+	private void setErrorCodes(List<Object> errors, AnonymousAuthenticationProfile ananymousProfile) {
+		List<String> errorCodes = errors.stream()
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> (Map<String, Object>)obj)
+				.map(map -> (String)map.get("errorCode"))
+				.collect(Collectors.toList());
 		ananymousProfile.setErrorCode(errorCodes);
 	}
 

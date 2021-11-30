@@ -19,11 +19,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AuthResponseDTO extends BaseAuthResponseDTO implements ObjectWithMetadata, ObjectWithIdVersionTransactionID{
+public class AuthResponseDTO extends BaseAuthResponseDTO implements ObjectWithIdVersionTransactionID{
 
 	/** The Variable to hold response */
 	private ResponseDTO response;
 	
-	private Map<String, Object> metadata;
-
 }
