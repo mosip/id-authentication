@@ -2,10 +2,17 @@ package io.mosip.authentication.common.service.util;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERSION;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,12 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.dto.ObjectWithIdVersion;
+import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.function.AnonymousProfileStoreFunction;
 import io.mosip.authentication.core.function.AuthTransactionStoreFunction;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class IdaRequestResponsConsumerUtil.
@@ -102,14 +110,33 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 		return responseBody;
 	}
 	
-	public static void setIdVersionToResponse(ObjectWithMetadata requestWithMetadata, ObjectWithIdVersion responseWithIdVersion) {
-		requestWithMetadata.getMetadata(VERSION, String.class).ifPresent(responseWithIdVersion::setVersion);
-		requestWithMetadata.getMetadata(ID, String.class).ifPresent(responseWithIdVersion::setId);
+	public static void setIdVersionToResponse(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithIdVersionTransactionID targetResponseWithIdVersion) {
+		sourceRequestWithMetadata.getMetadata(VERSION, String.class).ifPresent(targetResponseWithIdVersion::setVersion);
+		sourceRequestWithMetadata.getMetadata(ID, String.class).ifPresent(targetResponseWithIdVersion::setId);
 	}
 	
-	public static void setIdVersionToObjectWithMetadata(ObjectWithMetadata requestWithMetadata, ObjectWithMetadata objectWithMetadata) {
-		requestWithMetadata.getMetadata(VERSION, String.class).ifPresent(version -> objectWithMetadata.putMetadata(VERSION, version));
-		requestWithMetadata.getMetadata(ID, String.class).ifPresent(id -> objectWithMetadata.putMetadata(ID, id));
+	public static void setTransactionIdToResponse(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithIdVersionTransactionID targetResponseWithIdVersion) {
+		sourceRequestWithMetadata.getMetadata(TRANSACTION_ID, String.class).ifPresent(targetResponseWithIdVersion::setTransactionID);
 	}
 	
+	public static void setIdVersionToObjectWithMetadata(ObjectWithMetadata sourceRequestWithMetadata, ObjectWithMetadata targetObjectWithMetadata) {
+		sourceRequestWithMetadata.getMetadata(VERSION, String.class).ifPresent(version -> targetObjectWithMetadata.putMetadata(VERSION, version));
+		sourceRequestWithMetadata.getMetadata(ID, String.class).ifPresent(id -> targetObjectWithMetadata.putMetadata(ID, id));
+	}
+	
+	public static String getResponseTime(String requestTime, String dateTimePattern) {
+		String resTime;
+		ZoneId zone;
+		if (requestTime != null) {
+			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
+			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(requestTime, isoPattern);
+			zone = zonedDateTime2.getZone();
+		} else {
+			zone = ZoneOffset.UTC;
+		}
+		resTime = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
+				dateTimePattern, TimeZone.getTimeZone(ZoneOffset.UTC)),
+				dateTimePattern, TimeZone.getTimeZone(zone));
+		return resTime;
+	}
 }

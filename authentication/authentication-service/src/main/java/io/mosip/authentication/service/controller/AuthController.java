@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -151,14 +152,16 @@ public class AuthController {
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
-				
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
-				
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				requestWithMetadata.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
 			} 
 		} else {

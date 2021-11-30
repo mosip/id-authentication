@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -137,6 +138,8 @@ public class InternalOTPController {
 						e.getErrorText());
 				auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, otpRequestDto.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
@@ -144,6 +147,8 @@ public class InternalOTPController {
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 				IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 				authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, authenticationAppException);
+				authenticationAppException.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, otpRequestDto.getTransactionID());
 				throw authenticationAppException;
 			}
 		} else {

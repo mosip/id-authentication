@@ -25,6 +25,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -154,7 +155,8 @@ public class InternalAuthController {
 	
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
 						e);
-	
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "authenticateApplicant",
@@ -162,7 +164,8 @@ public class InternalAuthController {
 	
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.INTERNAL_REQUEST_RESPONSE, authRequestDTO,
 						e);
-	
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
 			}
 		

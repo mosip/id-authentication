@@ -143,8 +143,8 @@ public class OTPServiceImpl implements OTPService {
 
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, null, null);
-			IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+			//FIXME check if for this condition auth transaction is stored, then remove below code
+			//saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, null, null);
 			throw e;
 		}
 
@@ -171,6 +171,9 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
+			otpResponseDTO.setId(otpRequestDto.getId());
+			otpResponseDTO.setTransactionID(transactionId);
+			
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
 			
@@ -183,14 +186,13 @@ public class OTPServiceImpl implements OTPService {
 			String phoneNumber = getPhoneNumber(idInfo);			
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
+			
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap,
 					templateLanguages);
 
 			if (isOtpGenerated) {
-				otpResponseDTO.setId(otpRequestDto.getId());
-				otpResponseDTO.setErrors(Collections.emptyList());
-				otpResponseDTO.setTransactionID(transactionId);
-				String responseTime = formatDate(new Date(),
+				otpResponseDTO.setErrors(null);
+				String responseTime = IdaRequestResponsConsumerUtil.getResponseTime(otpRequestDto.getRequestTime(),
 						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();

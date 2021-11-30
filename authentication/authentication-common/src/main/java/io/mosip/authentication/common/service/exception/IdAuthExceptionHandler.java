@@ -31,7 +31,7 @@ import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.ObjectWithIdVersion;
+import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -222,12 +222,17 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
+			if(request instanceof ObjectWithMetadata) {
+				ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+				requestWithMetadata.putMetadata(IdAuthCommonConstants.ERRORS, errors);
+			}
 			Object response = frameErrorResponse(requestReceived, type, errors);
-			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersion) {
+			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
-				ObjectWithIdVersion responsWithMetadata = (ObjectWithIdVersion) response;
+				ObjectWithIdVersionTransactionID responsWithMetadata = (ObjectWithIdVersionTransactionID) response;
 				if(exceptionWithMetadata.getMetadata() != null) {
 					IdaRequestResponsConsumerUtil.setIdVersionToResponse(exceptionWithMetadata, responsWithMetadata);
+					IdaRequestResponsConsumerUtil.setTransactionIdToResponse(exceptionWithMetadata, responsWithMetadata);
 				}
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
@@ -339,10 +344,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		switch (requestReceived) {
 		case "kyc":
 			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-			//KycResponseDTO kycResponseDTO = new KycResponseDTO();
 			kycAuthResponseDTO.setErrors(errors);
 			kycAuthResponseDTO.setResponseTime(responseTime);
-			//kycAuthResponseDTO.setResponse(kycResponseDTO);
 			return kycAuthResponseDTO;
 		case "otp":
 			OtpResponseDTO otpResponseDTO = new OtpResponseDTO();

@@ -29,6 +29,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -199,16 +200,7 @@ public class KycFacadeImpl implements KycFacade {
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
-		String resTime = null;
 		if (kycAuthRequestDTO != null) {
-
-			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
-
-			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
-
-			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
-			ZoneId zone = zonedDateTime2.getZone();
-			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
 
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
@@ -236,12 +228,23 @@ public class KycFacadeImpl implements KycFacade {
 				kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
 				kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
 				kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
-				kycAuthResponseDTO.setResponseTime(resTime);
+				String responseTime = authResponseDTO.getResponseTime();
+				if(responseTime != null) {
+					kycAuthResponseDTO.setResponseTime(responseTime);
+				} else {
+					String resTime = getAuthResponseTime(kycAuthRequestDTO);
+					kycAuthResponseDTO.setResponseTime(resTime);
+				}
 			}
 
 			return new SimpleEntry<>(kycAuthResponseDTO, response.isKycStatus());
 		}
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
+	}
+
+	private String getAuthResponseTime(AuthRequestDTO kycAuthRequestDTO) {
+		String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
+		return IdaRequestResponsConsumerUtil.getResponseTime(kycAuthRequestDTO.getRequestTime(), dateTimePattern);
 	}
 
 	private Tuple3<String, String, String> encryptKycResponse(String identity, String partnerCertificate) throws IdAuthenticationBusinessException {

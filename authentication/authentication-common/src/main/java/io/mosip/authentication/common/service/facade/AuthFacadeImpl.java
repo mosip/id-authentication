@@ -174,9 +174,10 @@ public class AuthFacadeImpl implements AuthFacade {
 				.get(AuthTransactionBuilder.class.getSimpleName());
 		authTxnBuilder.withToken(token);
 
+		String transactionID = authRequestDTO.getTransactionID();
 		try {
 			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
+			authResponseBuilder.setTxnID(transactionID);
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
 					: null;
 
@@ -188,17 +189,19 @@ public class AuthFacadeImpl implements AuthFacade {
 					partnerId, authTxnBuilder);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} catch (IdAuthenticationBusinessException e) {
-			IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 			throw e;
 		} finally {
 			// Set response token
 			if (authTokenRequired) {
-				authResponseDTO = authResponseBuilder.build(authTokenId);
+				authResponseDTO = authResponseBuilder.build(authTokenId, authRequestDTO.getRequestTime());
 			} else {
-				authResponseDTO = authResponseBuilder.build(null);
+				authResponseDTO = authResponseBuilder.build(null, authRequestDTO.getRequestTime());
 			}
 			
 			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, authResponseDTO);
+			if(authResponseDTO.getTransactionID() == null && transactionID != null) {
+				authResponseDTO.setTransactionID(transactionID);
+			}
 
 			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
 			authTxnBuilder.withAuthToken(authTokenId);

@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -156,14 +157,16 @@ public class KycAuthController {
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
-				
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycAuthRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, kycAuthRequestDTO, e);
-				
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycAuthRequestDTO.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
 			}
 		} else {
