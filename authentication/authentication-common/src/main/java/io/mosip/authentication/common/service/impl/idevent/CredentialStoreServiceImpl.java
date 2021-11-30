@@ -318,6 +318,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+	@Transactional
 	private IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException {
 		
