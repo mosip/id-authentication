@@ -8,6 +8,7 @@ import java.util.Optional;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -127,7 +128,7 @@ public class AuthStatusInfoBuilder {
 
 	private static void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder,
 			IDAMappingConfig idMappingConfig) {
-		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage();
+		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage() && matchOutput.getLanguage() != null;
 
 		Optional<AuthType> authTypeForMatchType;
 		AuthType[] authTypes;
@@ -139,6 +140,10 @@ public class AuthStatusInfoBuilder {
 					matchOutput.getMatchType());
 			String idName = matchOutput.getIdName();
 			String name = mappings.contains(idName) ? ADDRESS_LINE_ITEMS : idName;
+			//Need special handling for age since it is mapped to Date of Birth , but error should say about age only.
+			if(matchOutput.getMatchType().equals(DemoMatchType.AGE)) {
+				name = IdaIdMapping.AGE.getIdname();
+			}
 
 			if (!multiLanguage) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);

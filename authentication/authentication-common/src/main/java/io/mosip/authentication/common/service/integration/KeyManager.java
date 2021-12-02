@@ -26,7 +26,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.function.ConsumerWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 
 /**
  * The Class KeyManager is used to decipher the request and returning the
@@ -81,7 +81,7 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			byte[] encryptedSessionkey = CryptoUtil.decodeBase64((String) requestBody.get(SESSION_KEY));
+			byte[] encryptedSessionkey = CryptoUtil.decodeBase64Url((String) requestBody.get(SESSION_KEY));
 			request = decipherData(mapper, thumbprint, encryptedSessionkey, encryptedRequest, refId,
 					isThumbprintEnabled, dataValidator);
 		} catch (IOException e) {
@@ -136,7 +136,7 @@ public class KeyManager {
 	 */
 	public String kernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId, Boolean isThumbprintEnabled)
 			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, true, isThumbprintEnabled);
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, false, isThumbprintEnabled);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class KeyManager {
 	 */
 	public String kernelDecrypt(String thumbprint, byte[] encryptedSessionKey,
 			byte[] encryptedData, String refId, String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, false, isThumbprintEnabled);
+		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, true, isThumbprintEnabled);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class KeyManager {
 	 */
 	private String internalKernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey,
 			byte[] encryptedData, String refId, String aad, String salt,
-			Boolean decode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+			Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		byte[] data;
 		if (isThumbprintEnabled) {
@@ -189,13 +189,12 @@ public class KeyManager {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 		}
 		try {
-			String encodedIdentity = CryptoUtil
-					.encodeBase64(securityManager.decrypt(CryptoUtil.encodeBase64(data), refId, aad, salt,
-							isThumbprintEnabled));
-			if (decode) {
-				decryptedRequest = new String(CryptoUtil.decodeBase64(encodedIdentity), StandardCharsets.UTF_8);
+			byte[] decryptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
+					isThumbprintEnabled);
+			if (encode) {
+				decryptedRequest = CryptoUtil.encodeBase64(decryptedIdentity);
 			} else {
-				decryptedRequest = encodedIdentity;
+				decryptedRequest = new String(decryptedIdentity, StandardCharsets.UTF_8);
 			}
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
@@ -247,8 +246,8 @@ public class KeyManager {
 		if (Objects.nonNull(identity)) {
 			try {
 				String encodedData = CryptoUtil
-						.encodeBase64(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil.encodeBase64(securityManager.encrypt(encodedData, partnerId, null, null));
+						.encodeBase64Url(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
+				return CryptoUtil.encodeBase64Url(securityManager.encrypt(encodedData, partnerId, null, null));
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 						e.getErrorText());

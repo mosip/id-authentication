@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -221,7 +222,7 @@ public enum BioMatchType implements MatchType {
 		AtomicInteger count = new AtomicInteger(0);
 		return biometrics.stream().filter(bioId -> {
 			Optional<AuthType> authType = AuthType.getAuthTypeForMatchType(this, BioAuthType.values());
-			if (authType.isPresent() && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
+			if (authType.isPresent() && bioId.getData() != null && bioId.getData().getBioType() != null && bioId.getData().getBioType().equalsIgnoreCase(authType.get().getType())) {
 				return authType.get() == BioAuthType.FACE_IMG || 
 						(bioId.getData().getBioSubType() != null && 
 						bioId.getData().getBioSubType().equalsIgnoreCase(getIdMapping().getSubType()));
@@ -282,8 +283,8 @@ public enum BioMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
-		return Function.identity();
+	public BiFunction<Map<String, String>, Map<String, Object>, Map<String, String>> getEntityInfoMapper() {
+		return (entity, props) -> entity;
 	}
 
 	/*
@@ -371,5 +372,4 @@ public enum BioMatchType implements MatchType {
 	public SingleAnySubtypeType getSingleAnySubtype() {
 		return singleAnySubtype;
 	}
-
 }

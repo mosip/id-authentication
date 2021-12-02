@@ -141,6 +141,7 @@ public class KycFacadeImpl implements KycFacade {
 			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
 					idInfo, token);
 			kycAuthResponseDTO = kycAuthResponse.getKey();
+			authResponseDTO.copyAllMetadaTo(kycAuthResponseDTO);
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO);
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
@@ -169,12 +170,15 @@ public class KycFacadeImpl implements KycFacade {
 				Object authTxnObj = authResponseDTO.getMetadata().get(AutnTxn.class.getSimpleName());
 				if(authTxnObj instanceof AutnTxn) {
 					AutnTxn autnTxn = (AutnTxn) authTxnObj;
-					autnTxn.setAuthTypeCode(RequestType.KYC_AUTH_REQUEST.getRequestType() +
-							AuthTransactionBuilder.REQ_TYPE_DELIM +  autnTxn.getAuthTypeCode());
-					autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() +
-							AuthTransactionBuilder.REQ_TYPE_MSG_DELIM +  autnTxn.getStatusComment());
-
-					kycAuthResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
+					String authTypeCode = autnTxn.getAuthTypeCode();
+					if (authTypeCode == null || !authTypeCode.contains(RequestType.KYC_AUTH_REQUEST.getRequestType())) {
+						autnTxn.setAuthTypeCode(RequestType.KYC_AUTH_REQUEST.getRequestType()
+								+ (authTypeCode == null ? "" : AuthTransactionBuilder.REQ_TYPE_DELIM + authTypeCode));
+						String statusComment = autnTxn.getStatusComment();
+						autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() + (statusComment == null ? ""
+								: AuthTransactionBuilder.REQ_TYPE_MSG_DELIM + statusComment));
+					}
+					kycAuthResponseDTO.putAllMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
 				}
 			} else {
 				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)

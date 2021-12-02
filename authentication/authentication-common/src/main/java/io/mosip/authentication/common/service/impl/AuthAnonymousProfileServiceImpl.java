@@ -1,8 +1,24 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUTH_STATUS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUB_TYPE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_DOB_PATTERN;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FAILURE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC_STATUS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.QUALITY_SCORE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.RESPONSE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SUCCESS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_DATE_OF_BIRTH_PATTERN;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,38 +63,9 @@ import io.mosip.kernel.core.util.DateUtils;
 @Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
-	private static final String BIO_TYPE = "bioType";
-
-
-	private static final String BIO_SUB_TYPE = "bioSubType";
-
-
-	private static final String DIGITAL_ID = "digitalId";
-
-
-	private static final String BIOMETRICS = "biometrics";
-
-
-	private static final String REQUEST = "request";
-
-
-	private static final String AUTH_STATUS = "authStatus";
-
-
-	private static final String SUCCESS = "success";
-
-
-	private static final String FAILURE = "failure";
-
-
-	private static final String RESPONSE = "response";
-
 
 	private Logger logger = IdaLogger.getLogger(AuthAnonymousProfileServiceImpl.class);
-
 	
-	private static final String IDA = "IDA";
-
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 	
@@ -96,6 +83,9 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	
 	@Value("${" + IdAuthConfigKeyConstants.LOCATION_PROFILE_ATTRIB_NAME + "}")
 	private String locationProfileAttribName;
+	
+	@Value("${" + MOSIP_DATE_OF_BIRTH_PATTERN + ":" + DEFAULT_DOB_PATTERN + "}")
+	private String dateOfBirthPattern;
 	
 	@Autowired
 	private Environment env;
@@ -213,13 +203,24 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			}
 		}
 		
+		
+		Object qualityScoreObj = bioDataMap.get(QUALITY_SCORE);
+		if(qualityScoreObj instanceof Object) {
+			biometricProfileInfo.setQualityScore(String.valueOf(qualityScoreObj));
+		}
+		
 		return biometricProfileInfo;
 	}
 
 	private void setYearOfBirth(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo) {
 		// Year of Birth is Mandatory, rest are optional and will be set if fetched as
 		// part of authentication / kyc request processing
-		getEntityInfoString(DemoMatchType.DOB, idInfo).ifPresent(ananymousProfile::setYearOfBirth);
+		getEntityInfoString(DemoMatchType.DOB, idInfo).ifPresent(dob -> ananymousProfile.setYearOfBirth(getYear(dob)));
+	}
+
+	private String getYear(String dob) {
+		Date date = DateUtils.parseToDate(dob, dateOfBirthPattern);
+		return String.valueOf(DateUtils.parseDateToLocalDateTime(date).getYear());
 	}
 
 	private void setGender(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo,
@@ -283,10 +284,18 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Map.of();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setStatus(Map<String, Object> responseBody, AnonymousAuthenticationProfile ananymousProfile) {
 		String status;
 		if(responseBody != null && responseBody.get(RESPONSE) instanceof Map) {
-			status = String.valueOf(((Map<String, Object>)responseBody.get(RESPONSE)).get(AUTH_STATUS));
+			String statusKey;
+			if (responseBody.get(IdAuthCommonConstants.ID) == null || !responseBody.get(IdAuthCommonConstants.ID).equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_ID_KYC))) {
+				statusKey = AUTH_STATUS;
+			} else {
+				statusKey = KYC_STATUS;
+			}
+			Map<String, Object> responseMap = (Map<String, Object>)responseBody.get(RESPONSE);
+			status = String.valueOf(responseMap.get(statusKey));
 		} else {
 			status = String.valueOf(false);
 		}

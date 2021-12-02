@@ -21,7 +21,6 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -35,6 +34,16 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.InternalOTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -43,6 +52,8 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Dinesh Karuppiah.T
  */
 @RestController
+@Tag(name = "internal-otp-controller", description = "Internal OTP Controller")
+@SecurityScheme(in = SecuritySchemeIn.HEADER, scheme = "basic", type = SecuritySchemeType.APIKEY, name = "Authorization")
 public class InternalOTPController {
 
 	private static final String GENERATE_OTP = "generateOTP";
@@ -85,6 +96,14 @@ public class InternalOTPController {
 	//@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostotp())")
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary = "generateOTP", description = "generateOTP", tags = { "internal-otp-controller" })
+	@SecurityRequirement(name = "Authorization")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		boolean isPartnerReq = false;

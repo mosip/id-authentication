@@ -4,9 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
 /**
- * The Interface ObjectWithMetadata - base interface for objects with metadata
- * 
+ * The Interface ObjectWithMetadata - base interface for objects with metadata.
+ *
  * @author Loganathan Sekar
  */
 public interface ObjectWithMetadata {
@@ -36,6 +37,15 @@ public interface ObjectWithMetadata {
 			setMetadata(new LinkedHashMap<>());
 		}
 		getMetadata().put(key, data);
+	}
+	
+	/**
+	 * Put all metadata.
+	 *
+	 * @param metadata the metadata
+	 */
+	default void putAllMetadata(Map<String, Object> metadata) {
+		metadata.forEach(this::putMetadata);
 	}
 
 	/**
@@ -73,4 +83,14 @@ public interface ObjectWithMetadata {
 	default void copyMetadataTo(ObjectWithMetadata target, String key) {
 		this.getMetadata(key).ifPresent(data -> target.putMetadata(key, data));
 	}
+	
+	/**
+	 * Copy all metada to.
+	 *
+	 * @param target the target
+	 */
+	default void copyAllMetadaTo(ObjectWithMetadata target) {
+		this.getMetadata().keySet().forEach(key -> this.copyMetadataTo(target, key));
+	}
+	
 }

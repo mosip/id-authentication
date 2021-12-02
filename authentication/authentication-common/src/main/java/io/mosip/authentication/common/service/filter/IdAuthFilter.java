@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.DomainType;
@@ -79,9 +81,9 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -94,7 +96,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Nagarjuna K
  */
 @Component
-public class IdAuthFilter extends BaseAuthFilter {
+public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthFilter.class);
 
@@ -206,11 +208,23 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private void setDymanicDemograpicData(Map<String, Object> demographics) {
 		Map<String, List<String>> dynamicAttributes = idMappingConfig.getDynamicAttributes();
+		
 		Map<String, Object> metadata = demographics.entrySet()
 												.stream()
 												.filter(entry -> dynamicAttributes.containsKey(entry.getKey()))
-												.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+												.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (m1, m2) -> m1 , () -> new LinkedHashMap<>()));
+		
+		Set<String> staticIdNames = Stream.of(IdaIdMapping.values())
+											.map(IdaIdMapping::getIdname)
+											.collect(Collectors.toSet());
+		
+		metadata.putAll(demographics.entrySet()
+			.stream()
+			.filter(entry -> !staticIdNames.contains(entry.getKey()))
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+		
 		demographics.put(METADATA, metadata);
+
 	}
 
 	/**
@@ -260,7 +274,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		try {
-			byte[] decodedData = CryptoUtil.decodeBase64(extractBioData((String) map.get(DATA)));
+			byte[] decodedData = CryptoUtil.decodeBase64Url(extractBioData((String) map.get(DATA)));
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 
 			if (!getStringValue(data, BIO_VALUE).isPresent()) {
@@ -294,7 +308,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
-			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64(String.valueOf(sessionKey)), CryptoUtil.decodeBase64(String.valueOf(bioValue)), getBioRefId(),
+			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
@@ -339,7 +353,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	protected DigitalId decipherDigitalId(String jwsSignature) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(CryptoUtil.decodeBase64(getPayloadFromJwsSingature(jwsSignature)), DigitalId.class);
+			return mapper.readValue(CryptoUtil.decodeBase64Url(getPayloadFromJwsSingature(jwsSignature)), DigitalId.class);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}

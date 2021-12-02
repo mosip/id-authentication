@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.builder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -243,7 +244,7 @@ public class AuthTransactionBuilder {
 
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
 			AutnTxn autnTxn = new AutnTxn();
-			autnTxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
+			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
 			String id = createId(token, env);
 			autnTxn.setToken(token);
@@ -251,19 +252,27 @@ public class AuthTransactionBuilder {
 			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			autnTxn.setAuthTknId(authTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
-			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
+			LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
+			try {
+				strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
+						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN))));
+			} catch (ParseException e) {
+				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
+						"Invalid Request Time - setting to current date time");
+			}
+			autnTxn.setRequestDTtimes(strUTCDate);
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
 			
 			if (!requestTypes.isEmpty()) {
-				String authTypeCodes = requestTypes.stream().map(RequestType::getRequestType)
+				String authTypeCodes = requestTypes.stream()
+						.map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
 	
-				String requestTypeMessages = requestTypes.stream().map(RequestType::getMessage)
+				String requestTypeMessages = requestTypes.stream()
+						.map(RequestType::getMessage)
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
 				autnTxn.setStatusComment(comment);

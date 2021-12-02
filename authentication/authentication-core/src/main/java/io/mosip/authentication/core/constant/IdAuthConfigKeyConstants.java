@@ -40,6 +40,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String OTP_CONTENT_TEMPLATE = "ida.otp.mail.content.template";
 	public static final String NOTIFICATION_DATE_FORMAT = "notification.date.format";
 	public static final String NOTIFICATION_TIME_FORMAT = "notification.time.format";
+	public static final String NOTIFICATION_TIME_ZONE = "mosip.notification.timezone";
 	public static final String UIN_MASKING_CHARCOUNT = "notification.uin.masking.charcount";
 	public static final String MOSIP_NOTIFICATIONTYPE = "mosip.notificationtype";
 	public static final String MOSIP_KERNEL_OTP_EXPIRY_TIME = "mosip.kernel.otp.expiry-time";
@@ -67,11 +68,11 @@ public final class IdAuthConfigKeyConstants {
 	public static final String INTERNAL_BIO_REFERENCE_ID = "internal.biometric.reference.id";
 	public static final String SIGN_RESPONSE = "mosip.signed.response.header";
 	public static final String MOSIP_IDA_API_ID = "ida.api.id.";
+	public static final String MOSIP_IDA_API_ID_KYC = "ida.api.id.kyc";
 	public static final String MOSIP_IDA_API_VERSION = "ida.api.version.";
 	public static final String IDA_BASIC_NORMALISER = "ida.demo.%s.normalization.regex.%s[%s]";
 	public static final String IDA_NORMALISER_SEP = "ida.norm.sep";
 	public static final String AUTH_TRANSACTION = "auth.transactions";
-	public static final String UIN_SALT_MODULO = "ida.uin.salt.modulo";
 	public static final String MOSIP_UTC_TIME= "mosip.utc-datetime-pattern";
 	
 	public static final String MOSIP_IDA_AUTH_CLIENTID="mosip.ida.auth.clientId";
@@ -94,7 +95,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET = "ida-websub-masterdata-titles-callback-secret";
 	public static final String IDA_WEBSUB_HUB_URL = IdRepoConstants.WEB_SUB_HUB_URL;
 	public static final String IDA_WEBSUB_PUBLISHER_URL = IdRepoConstants.WEB_SUB_PUBLISH_URL;
-	public static final String IDA_WEBSUB_FAILED_MESSAGES_SYNC_URL = "websub.failed.messages.sync.url";
 	public static final String IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL = "ida-websub-auth-type-callback-url";
 	public static final String IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_URL = "ida-websub-partner-service-callback-url";
 	public static final String IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL = "ida-websub-credential-issue-callback-url";
@@ -103,7 +103,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_URL = "ida-websub-masterdata-templates-callback-url";
 	public static final String IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_URL = "ida-websub-masterdata-titles-callback-url";
 	
-	public static final String IDA_ZERO_KNOWLEDGE_ENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-encrypted-credential-attributes";
+	public static final String IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES = "ida-zero-knowledge-unencrypted-credential-attributes";
 
 	public static final String IDA_AUTH_PARTNER_ID = "ida-auth-partner-id";
 	public static final String SUBSCRIPTIONS_DELAY_ON_STARTUP = "subscriptions-delay-on-startup_millisecs";
@@ -129,6 +129,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER = "ida.credential.store.retry.backoff.exponential.multiplier";
 	public static final String CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS = "ida.credential.store.retry.backoff.exponential.max.interval.millisecs";
 	
+	public static final String IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES = "ida-default-identity-filter-attributes";
 
 	public static final String CREDENTIAL_STATUS_UPDATE_TOPIC = "ida-topic-credential-status-update";
 	public static final String AUTH_TYPE_STATUS_ACK_TOPIC = "ida-topic-auth-type-status-update-acknowledge";
@@ -142,8 +143,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_BIO_HASH_VALIDATION_DISABLED = "ida.bio.hash.validation.disabled";
 	
 	public static final String IDA_FETCH_FAILED_WEBSUB_MESSAGES_CHUNK_SIZE = "ida.fetch.failed.websub.messages.chunk.size";
-	
-	public static final String CREDENTIAL_BIOMETRIC_ATTRIBUTE_NAME = "mosip.ida.credential.biometric.attribute.name";
 	
 	public static final String ALLOWED_ENVIRONMENTS="mosip.ida.allowed.enviromemnts";
 	
@@ -161,5 +160,11 @@ public final class IdAuthConfigKeyConstants {
 	public static final String BIO_SEGMENT_TIME_DIFF_ALLOWED = "authrequest.biometrics.allowed-segment-time-difference-in-seconds";
 	public static final String PREFERRED_LANG_ATTRIB_NAME = "mosip.preferred.language.attribute.name";
 	public static final String LOCATION_PROFILE_ATTRIB_NAME = "mosip.location.profile.attribute.name";
+	
+	public static final String MOSIP_DATE_OF_BIRTH_PATTERN = "mosip.date-of-birth.pattern";
+	
+	public static final String MOSIP_DATE_OF_BIRTH_ATTRIBUTE_NAME = "mosip.date-of-birth.attribute.name";
+
+
 
 }

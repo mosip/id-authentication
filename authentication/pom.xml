@@ -35,6 +35,27 @@
 		</developer>
 	</developers>
 
+    <repositories>
+        <repository>
+            <id>ossrh</id>
+            <name>CentralRepository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+            <snapshots>
+            <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>MavenCentral</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/maven2</url>
+            <snapshots>
+            <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -46,17 +67,6 @@
 		</repository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>ossrh</id>
-			<name>Central Repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-filter-api</module>
@@ -142,6 +152,8 @@
 		<io.micrometer.prometheus.version>1.4.2</io.micrometer.prometheus.version>
 
 		<objenesis.version>3.1</objenesis.version>
+
+		<springdoc.version>1.5.10</springdoc.version>
 	</properties>
 
 	<dependencies>
@@ -213,6 +225,22 @@
 					</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring.boot.version}</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<build>

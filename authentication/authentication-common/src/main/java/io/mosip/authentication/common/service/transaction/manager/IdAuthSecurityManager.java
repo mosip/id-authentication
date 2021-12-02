@@ -1,4 +1,6 @@
 package io.mosip.authentication.common.service.transaction.manager;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.DEFAULT_SALT_KEY_LENGTH;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.SALT_KEY_LENGTH;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
@@ -28,10 +30,11 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.idrepository.core.util.SaltUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -167,7 +170,7 @@ public class IdAuthSecurityManager {
 			request.setReferenceId(refId);
 			request.setAad(aad);
 			request.setSalt(saltToEncrypt);
-			return CryptoUtil.decodeBase64(cryptomanagerService.encrypt(request).getData());
+			return CryptoUtil.decodeBase64Url(cryptomanagerService.encrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
 			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
@@ -203,8 +206,8 @@ public class IdAuthSecurityManager {
 			request.setReferenceId(refId);
 			request.setAad(aad);
 			request.setSalt(saltToDecrypt);
-			request.setPrependThumbprint(isThumbprintEnabled);
-			return CryptoUtil.decodeBase64(cryptomanagerService.decrypt(request).getData());
+			//request.setPrependThumbprint(isThumbprintEnabled);
+			return CryptoUtil.decodeBase64Url(cryptomanagerService.decrypt(request).getData());
 		} catch (NoUniqueAliasException e) {
 			// TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
 			mosipLogger.error(getUser(), ID_AUTH_TRANSACTION_MANAGER, ENCRYPT_DECRYPT_DATA,
@@ -303,7 +306,7 @@ public class IdAuthSecurityManager {
 		// TODO: check whether any exception will be thrown
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
 		request.setApplicationId(signApplicationid);
-		request.setDataToSign(CryptoUtil.encodeBase64(data.getBytes()));
+		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
 		request.setIncludeCertHash(true);
 		request.setIncludeCertificate(true);
 		request.setIncludePayload(false);
@@ -326,7 +329,7 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);
 		if (Objects.nonNull(requestData)) {
-			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64(requestData.getBytes()));
+			jwtSignatureVerifyRequestDto.setActualData(CryptoUtil.encodeBase64Url(requestData.getBytes()));
 		}
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
@@ -349,8 +352,7 @@ public class IdAuthSecurityManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String hash(String id) throws IdAuthenticationBusinessException {
-		int saltModuloConstant = env.getProperty(IdAuthConfigKeyConstants.UIN_SALT_MODULO, Integer.class);
-		Integer idModulo = (int)(Long.parseLong(id) % saltModuloConstant);
+		Integer idModulo = getSaltKeyForId(id);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if (hashSaltValue != null) {
 			try {
@@ -397,7 +399,7 @@ public class IdAuthSecurityManager {
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		Tuple2<byte[], byte[]> encryptedData = encrypt(publicKey, data);
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
-		return Tuples.of(CryptoUtil.encodeBase64(encryptedData.getT1()), CryptoUtil.encodeBase64(encryptedData.getT2()), digestAsPlainText(certificateThumbprint));
+		return Tuples.of(CryptoUtil.encodeBase64Url(encryptedData.getT1()), CryptoUtil.encodeBase64Url(encryptedData.getT2()), digestAsPlainText(certificateThumbprint));
 	}
 
 	/**
@@ -511,11 +513,16 @@ public class IdAuthSecurityManager {
 		} catch (DecoderException e) {
 			try {
 				//Then try decoding with base64
-				return CryptoUtil.decodeBase64(thumbprint);
+				return CryptoUtil.decodeBase64Url(thumbprint);
 			} catch (Exception ex) {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, ex);
 			}
 		}
+	}
+	
+	public int getSaltKeyForId(String id) {
+		Integer saltKeyLength = env.getProperty(SALT_KEY_LENGTH, Integer.class, DEFAULT_SALT_KEY_LENGTH);
+		return SaltUtil.getIdvidModulo(id, saltKeyLength);
 	}
 	
 }

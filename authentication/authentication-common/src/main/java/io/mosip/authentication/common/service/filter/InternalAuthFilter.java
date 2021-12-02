@@ -14,6 +14,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Sanjay Murali
  */
 public class InternalAuthFilter extends IdAuthFilter {
+	
+	/** The Constant AUTH. */
+	private static final String INTERNAL = "internal";
 
 	/*
 	 * (non-Javadoc)
@@ -75,6 +78,18 @@ public class InternalAuthFilter extends IdAuthFilter {
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
 		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, true);
+	}
+	
+	/**
+	 * Fetch id.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @param attribute the attribute
+	 * @return the string
+	 */
+	@Override
+	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+		return attribute + INTERNAL;
 	}
 
 }

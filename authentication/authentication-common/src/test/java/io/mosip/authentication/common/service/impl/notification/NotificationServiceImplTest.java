@@ -39,7 +39,6 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
@@ -56,6 +55,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
@@ -155,6 +155,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.primary-language", "fra");
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
+		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
@@ -207,6 +208,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		mockenv.setProperty("mosip.primary-language", "fra");
 		mockenv.setProperty("mosip.secondary-language", "ara");
+		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}

@@ -421,16 +421,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string
 	 */
 
-	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
-		String id = null;
-		String contextPath = requestWrapper.getContextPath();
-		if (!StringUtils.isEmpty(contextPath)) {
-			String[] splitedContext = contextPath.split("/");
-			id = attribute + splitedContext[splitedContext.length - 1];
-		}
-		return id;
-
-	}
+	protected abstract String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute);
 
 	/**
 	 * validateVersion method is used to validate the version present in the request
@@ -535,7 +526,10 @@ public abstract class BaseIDAFilter implements Filter {
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
 			storeAuthTransaction(metadata, requestSignature, responseSignature);
-			storeAnonymousProfile(requestBody, responseBody,(Map<String, Object>) requestBody.get(METADATA), metadata);
+			if (requestBody != null) {
+				storeAnonymousProfile(requestBody, responseBody, (Map<String, Object>) requestBody.get(METADATA),
+						metadata);
+			}
 			
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE,
 					requestTime);
@@ -610,12 +604,9 @@ public abstract class BaseIDAFilter implements Filter {
 					DateUtils.formatDate(DateUtils.parseToDate(responseTime,
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)),
 							env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(zone)));
-			responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
-			// attached for auth transaction
-			return responseBody;
-		} else {
-			return responseBody;
 		}
+		responseBody.remove(METADATA);// Handled for forbidden error scenario, also to remove additional metadata
+		return responseBody;
 	}
 
 	/**
@@ -661,7 +652,7 @@ public abstract class BaseIDAFilter implements Filter {
 			DateUtils.parseToDate(date, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 			return true;
 		} catch (ParseException e) {
-			mosipLogger.error("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.warn("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}

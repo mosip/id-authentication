@@ -35,7 +35,6 @@ import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.hotlist.dto.HotlistResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
@@ -44,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -225,7 +225,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
 				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
 				if(exceptionWithMetadata.getMetadata() != null) {
-					exceptionWithMetadata.getMetadata().keySet().forEach(key -> exceptionWithMetadata.copyMetadataTo(responsWithMetadata, key));
+					exceptionWithMetadata.copyAllMetadaTo(responsWithMetadata);
 				}
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),

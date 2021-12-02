@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,16 +37,16 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
-import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 /**
  * IdAuthServiceImplTest test class.
@@ -126,8 +127,8 @@ public class IdAuthServiceImplTest {
 			Object[] iddata = new Object[] {idvId, demoData, null, null};
 			data.add(iddata);
 			Mockito.when(identityRepo.findDemoDataById(idvId)).thenReturn(data);
-			Map demoDataMap = mapper.readValue(demoData, Map.class);
-			Map bioDataMap = mapper.readValue(bioData, Map.class);
+			Map<String, String> demoDataMap = mapper.readValue(demoData, Map.class);
+			Map<String, String> bioDataMap = mapper.readValue(bioData, Map.class);
 			Mockito.when(securityManager.zkDecrypt(idvId, demoDataMap)).thenReturn(demoDataMap);
 			Mockito.when(securityManager.zkDecrypt(idvId, bioDataMap)).thenReturn(bioDataMap);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "processIdType", idvIdType, idvId, false);
@@ -156,8 +157,8 @@ public class IdAuthServiceImplTest {
 			Object[] iddata = new Object[] {idvId, demoData, null, null};
 			data.add(iddata);
 			Mockito.when(identityRepo.findDemoDataById(idvId)).thenReturn(data);
-			Map demoDataMap = mapper.readValue(demoData, Map.class);
-			Map bioDataMap = mapper.readValue(bioData, Map.class);
+			Map<String, String> demoDataMap = mapper.readValue(demoData, Map.class);
+			Map<String, String> bioDataMap = mapper.readValue(bioData, Map.class);
 			Mockito.when(securityManager.zkDecrypt(idvId, demoDataMap)).thenReturn(demoDataMap);
 			Mockito.when(securityManager.zkDecrypt(idvId, bioDataMap)).thenReturn(bioDataMap);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "processIdType", idvIdType, idvId, false);
@@ -171,11 +172,11 @@ public class IdAuthServiceImplTest {
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
 		String idvIdType = "VID";
 		String idvId = "875948796";
-		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+		new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 		
-		idServiceImpl.processIdType(idvIdType, idvId, false, true);
+		idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet());
 
 	}
 
@@ -189,9 +190,9 @@ public class IdAuthServiceImplTest {
 
 		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 
-		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenThrow(idBusinessException);
-		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true)).thenThrow(idBusinessException);
+		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet())).thenThrow(idBusinessException);
 
 	}
 
@@ -311,12 +312,8 @@ public class IdAuthServiceImplTest {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
-			idRepo.put("uin", vid);
-			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			idRepo.put("uin", vid);			
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -329,12 +326,7 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.INVALID_UIN);
-
-			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -347,12 +339,7 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
-
- 			// Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdRepoByVidAsRequest", vid, false);
-
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

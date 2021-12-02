@@ -1,6 +1,4 @@
 package io.mosip.authentication.common.service.factory;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MOSIP_EXTERNAL_AUTH_FILTER_CLASSES_IN_EXECUTION_ORDER;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -49,14 +47,14 @@ public abstract class MosipAuthFilterFactory {
 	@PostConstruct
 	public void init() {
 		if(getMosipAuthFilterClasses().length == 0) {
-			String message = "Missing Auth Filter Classes configuration.";
-			logger.error(message);
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					message);
+			logger.info("No Auth Filter Classes configured.");
+			authFilters = List.of();
+		} else {
+			authFilters = Stream.of(getMosipAuthFilterClasses())
+					.map(this::getAuthFilterInstance)
+					.collect(Collectors.toUnmodifiableList());
+			logger.info("Auth Filter Classes configured count: {}", authFilters.size());
 		}
-		authFilters = Stream.of(getMosipAuthFilterClasses())
-				.map(this::getAuthFilterInstance)
-				.collect(Collectors.toUnmodifiableList());
 		
 	}
 	

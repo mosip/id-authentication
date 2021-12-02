@@ -31,11 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
@@ -48,7 +48,7 @@ public class MasterDataManagerTest {
 	 * The Rest Helper
 	 */
 	@Mock
-	private RestHelperImpl restHelper;
+	private RestHelper restHelper;
 
 	/**
 	 * Id Info Helper

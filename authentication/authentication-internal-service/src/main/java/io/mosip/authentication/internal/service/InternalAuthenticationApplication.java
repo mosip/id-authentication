@@ -19,7 +19,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.helper.RestHelperImpl;
+import io.mosip.authentication.common.service.helper.InternalRestHelperConfig;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
@@ -82,6 +82,7 @@ import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
+import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
@@ -100,7 +101,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class, RestHelperImpl.class,
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
 		MasterDataCache.class, MasterDataCacheUpdateServiceImpl.class, MasterDataUpdateEventInitializer.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
@@ -121,7 +122,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class,
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class,
 		DemoNormalizer.class, DemoMatcherUtil.class, IdAuthFraudAnalysisEventManager.class,
-		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class })
+		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class, SessionKeyDecrytorHelper.class, InternalRestHelperConfig.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {

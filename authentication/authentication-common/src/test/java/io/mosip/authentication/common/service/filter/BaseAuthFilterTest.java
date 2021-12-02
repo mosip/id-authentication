@@ -115,6 +115,12 @@ public class BaseAuthFilterTest {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+			// TODO Auto-generated method stub
+			return "";
+		}
 	};
 
 	ObjectMapper mapper = new ObjectMapper();
