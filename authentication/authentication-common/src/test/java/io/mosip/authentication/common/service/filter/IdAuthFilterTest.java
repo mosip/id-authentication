@@ -99,19 +99,6 @@ public class IdAuthFilterTest {
 	}
 
 	/**
-	 * Test set txn id.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws ServletException             the servlet exception
-	 */
-	@Test
-	public void testSetTxnId() throws IdAuthenticationAppException, ServletException {
-		requestBody.put("txnId", null);
-		responseBody.put("txnId", "1234");
-		assertEquals(responseBody.toString(), filter.setResponseParams(requestBody, responseBody).toString());
-	}
-
-	/**
 	 * Test decoded request.
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
@@ -161,26 +148,6 @@ public class IdAuthFilterTest {
 		ReflectionTestUtils.setField(filter, "keyManager", keyManager);
 		requestBody.put("request", 123214214);
 		filter.decipherRequest(requestBody);
-	}
-
-	/**
-	 * Test encoded response.
-	 *
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws ServletException             the servlet exception
-	 */
-	@Test
-	public void testEncodedResponse() throws IdAuthenticationAppException, ServletException {
-		/*
-		 * requestBody.put("request",
-		 * "e2F1dGhUeXBlPXthZGRyZXNzPXRydWUsIGJpbz10cnVlLCBmYWNlPXRydWUsIGZpbmdlcnByaW50PXRydWUsIGZ1bGxBZGRyZXNzPXRydWUsIGlyaXM9dHJ1ZSwgb3RwPXRydWUsIHBlcnNvbmFsSWRlbnRpdHk9dHJ1ZSwgcGluPXRydWV9fQ=="
-		 * );
-		 */
-		requestBody.put("request",
-				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
-		responseBody.put("request",
-				"{authType={address=true, bio=true, face=true, fingerprint=true, fullAddress=true, iris=true, otp=true, personalIdentity=true, pin=true}}");
-		assertEquals(requestBody.toString(), filter.encipherResponse(responseBody).toString());
 	}
 
 	/**

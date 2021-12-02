@@ -38,6 +38,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -123,7 +124,7 @@ public class AuthTransactionHelperTest {
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
 		authTransactionBuilder.withRequest(baseRequestDTO);
 		IdAuthenticationBusinessException e = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		authTransactionHelper.createUnableToProcessException(authTransactionBuilder, e);
+		authTransactionHelper.createUnableToProcessException(authTransactionBuilder, e, new TestObjectWithMetadata());
 	}
 	
 	@Test
@@ -131,7 +132,7 @@ public class AuthTransactionHelperTest {
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
 		authTransactionBuilder.withRequest(baseRequestDTO);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
-		authTransactionHelper.createDataValidationException(authTransactionBuilder, e);
+		authTransactionHelper.createDataValidationException(authTransactionBuilder, e, new TestObjectWithMetadata());
 	}
 	
 	@Test

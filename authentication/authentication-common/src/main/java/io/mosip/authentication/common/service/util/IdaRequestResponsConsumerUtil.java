@@ -28,6 +28,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.function.AnonymousProfileStoreFunction;
 import io.mosip.authentication.core.function.AuthTransactionStoreFunction;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
@@ -77,7 +78,7 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 	 */
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody,
-			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status, List<Object> errors) {
+			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status, List<AuthError> errors) {
 		if(authAnonymousProfileService != null) {
 			authAnonymousProfileService.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
 		}

@@ -136,7 +136,9 @@ public class AuthResponseBuilder {
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		if(authErrors.length > 0) {
 			addErrors(authErrors);
-		} else {
+		}
+		
+		if(responseDTO.getErrors() != null && responseDTO.getErrors().isEmpty()) {
 			responseDTO.setErrors(null);
 		}
 

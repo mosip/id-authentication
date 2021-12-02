@@ -463,7 +463,7 @@ public abstract class BaseIDAFilter implements Filter {
 			requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
 			if (requestBody != null) {
 				boolean status = Boolean.valueOf(String.valueOf(responseMetadata.get(IdAuthCommonConstants.STATUS)));
-				List<Object> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<Object>) responseMetadata.get(ERRORS) : List.of();
+				List<AuthError> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<AuthError>) responseMetadata.get(ERRORS) : List.of();
 				requestResponsConsumerUtil.storeAnonymousProfile(requestBody, (Map<String, Object>) requestBody.get(METADATA),
 						responseMetadata, status, errors);
 			}

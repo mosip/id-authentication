@@ -68,110 +68,110 @@ public class KycFilterTest {
 		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			IOException, NoSuchMethodException, SecurityException {
-		Map<String, Object> reqValue = mapper.readValue(
-				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Map<String, Object> resValue = mapper.readValue(
-				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:11:05.840+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:11:05.566+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":null,\"ttl\":\"24\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
-		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
-		assertNotNull(decodeValue);
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testSetResponseParams() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Map<String, Object> reqValue = mapper.readValue(
-				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Map<String, Object> resValue = mapper.readValue(
-				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"response\":{\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null}},\"txnID\":null,\"ttl\":\"24\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
-		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
-		assertNotNull(decodeValue);
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testSetResponseParams2() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Map<String, Object> reqValue = mapper.readValue(
-				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Map<String, Object> resValue = mapper.readValue(
-				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"response\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null},\"txnID\":null,\"ttl\":\"24\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
-		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
-		assertNotNull(decodeValue);
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testSetResponseParams3() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, IOException, NoSuchMethodException, SecurityException, NoSuchFieldException,
-			InvalidKeySpecException, NoSuchAlgorithmException {
-		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
-		/*
-		 * Class<KycAuthFilter> myClass = (Class<KycAuthFilter>)
-		 * kycAuthFilter.getClass(); Field field =
-		 * myClass.getDeclaredField("publicKey"); field.setAccessible(true);
-		 * field.set("publicKey", pkey);
-		 */
-		Map<String, Object> reqValue = mapper.readValue(
-				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Map<String, Object> resValue = mapper.readValue(
-				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"response\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null},\"txnID\":null,\"ttl\":\"24\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
-		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
-		assertNotNull(decodeValue);
-
-	}
-
-	@Test
-	public void tesInValidtSetResponseParams() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Map<String, Object> reqValue = mapper.readValue(
-				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.0\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Map<String, Object> resValue = mapper.readValue(
-				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"response\":{\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null}},\"txnID\":null,\"ttl\":\"24\"}",
-				new TypeReference<Map<String, Object>>() {
-				});
-		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
-		txvIdMethod.setAccessible(true);
-		try {
-			txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
-		} catch (InvocationTargetException e) {
-			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationAppException.class));
-		}
-
-	}
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+//			IOException, NoSuchMethodException, SecurityException {
+//		Map<String, Object> reqValue = mapper.readValue(
+//				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Map<String, Object> resValue = mapper.readValue(
+//				"{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:11:05.840+05:30\",\"response\":{\"auth\":{\"status\":\"N\",\"err\":[{\"errorCode\":\"IDA-BIA-001\",\"errorMessage\":\"Biometric data - fgerMin did not match\"}],\"resTime\":\"2019-02-25T19:11:05.566+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000000000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":null},\"txnID\":null,\"ttl\":\"24\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
+//		txvIdMethod.setAccessible(true);
+//		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
+//		assertNotNull(decodeValue);
+//
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testSetResponseParams() throws IllegalAccessException, IllegalArgumentException,
+//			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+//		Map<String, Object> reqValue = mapper.readValue(
+//				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Map<String, Object> resValue = mapper.readValue(
+//				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"response\":{\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null}},\"txnID\":null,\"ttl\":\"24\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
+//		txvIdMethod.setAccessible(true);
+//		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
+//		assertNotNull(decodeValue);
+//
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testSetResponseParams2() throws IllegalAccessException, IllegalArgumentException,
+//			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+//		Map<String, Object> reqValue = mapper.readValue(
+//				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Map<String, Object> resValue = mapper.readValue(
+//				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"response\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null},\"txnID\":null,\"ttl\":\"24\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
+//		txvIdMethod.setAccessible(true);
+//		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
+//		assertNotNull(decodeValue);
+//
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testSetResponseParams3() throws IllegalAccessException, IllegalArgumentException,
+//			InvocationTargetException, IOException, NoSuchMethodException, SecurityException, NoSuchFieldException,
+//			InvalidKeySpecException, NoSuchAlgorithmException {
+//		PublicKey pkey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key));
+//		/*
+//		 * Class<KycAuthFilter> myClass = (Class<KycAuthFilter>)
+//		 * kycAuthFilter.getClass(); Field field =
+//		 * myClass.getDeclaredField("publicKey"); field.setAccessible(true);
+//		 * field.set("publicKey", pkey);
+//		 */
+//		Map<String, Object> reqValue = mapper.readValue(
+//				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.027+05:30\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Map<String, Object> resValue = mapper.readValue(
+//				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"response\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null},\"txnID\":null,\"ttl\":\"24\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
+//		txvIdMethod.setAccessible(true);
+//		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
+//		assertNotNull(decodeValue);
+//
+//	}
+//
+//	@Test
+//	public void tesInValidtSetResponseParams() throws IllegalAccessException, IllegalArgumentException,
+//			InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
+//		Map<String, Object> reqValue = mapper.readValue(
+//				"{\"authRequest\":{\"authType\":{\"address\":false,\"bio\":true,\"otp\":false,\"personalIdentity\":false,\"pin\":false},\"bioInfo\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"id\":\"mosip.identity.auth\",\"idvId\":\"5706274915\",\"idvIdType\":\"D\",\"tspID\":\"string\",\"key\":{\"publicKeyCert\":\"STRING\",\"sessionKey\":\"SymWG5RCZ5qOybMxrHEvD13kY55cG8iJEjods2RTqtw8zf7ux5ShHZpFiujZZuXO7Q49fc-5xPWjhxPR0NqiroCEzDfYSYLiI1mNE1LucdHOxu75tgZfOzrlmv4fU6kpZw6aqj4Nrf0vo5OATEKTWoPp_GTm-MFJmvRhnhi7xvwlrr8D0d8cMLU0ACs-PuOx_cnm0P0kJMOVV6huxDJy_Lr-o4IftUXfYwrrd3CRCWG9ZYoltCjMFitc4378MdnsDIbN_OL3ooAO6x5XO6oItz3ZfsKQeOvmLoUjv3FoU6EChyYZOZg0t4jqX05wZGb0tuxnERyaywd72-j3kvteaA\"},\"reqTime\":\"2019-02-25T15:15:23.0\",\"request\":{\"identity\":{\"leftIndex\":[{\"value\":\"Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA\"}],\"rightIndex\":[{\"value\":\"Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA\"}]}},\"txnID\":\"1234567890\",\"ver\":\"1.0\"},\"consentReq\":true,\"ekycAuthType\":\"F\",\"eprintReq\":false,\"id\":\"mosip.identity.kyc\",\"secLangReq\":false,\"ver\":\"1.0\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Map<String, Object> resValue = mapper.readValue(
+//				"{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.666+05:30\",\"response\":{\"auth\":{\"status\":\"Y\",\"err\":[],\"resTime\":\"2019-02-26T14:29:50.475+05:30\",\"info\":{\"idType\":\"D\",\"reqTime\":\"2019-02-26T13:15:23.027+05:30\",\"matchInfos\":[],\"bioInfos\":[{\"bioType\":\"fgrMin\",\"deviceInfo\":{\"deviceId\":\"123143\",\"make\":\"mantra\",\"model\":\"steel\"}}],\"usageData\":\"0x0000800000008000\"},\"txnID\":\"1234567890\",\"ver\":null,\"authToken\":\"550543405005021870151441274950230450\"},\"kyc\":{\"identity\":{\"gender\":[{\"language\":\"fra\",\"value\":\"mâle\"}],\"province\":[{\"language\":\"fra\",\"value\":\"Fès-Meknès\"}],\"city\":[{\"language\":\"fra\",\"value\":\"Casablanca\"}],\"phone\":[{\"language\":null,\"value\":\"9876543210\"}],\"postalCode\":[{\"language\":null,\"value\":\"570004\"}],\"addressLine1\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 1\"}],\"fullName\":[{\"language\":\"fra\",\"value\":\"Ibrahim Ibn Ali\"}],\"addressLine2\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"dateOfBirth\":[{\"language\":null,\"value\":\"1955/04/15\"}],\"addressLine3\":[{\"language\":\"fra\",\"value\":\"exemple d'adresse ligne 2\"}],\"region\":[{\"language\":\"fra\",\"value\":\"Tanger-Tétouan-Al Hoceima\"}],\"email\":[{\"language\":null,\"value\":\"abc@xyz.com\"}]},\"idvId\":\"XXXXXXXX15\",\"eprint\":null}},\"txnID\":null,\"ttl\":\"24\"}",
+//				new TypeReference<Map<String, Object>>() {
+//				});
+//		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParams", Map.class, Map.class);
+//		txvIdMethod.setAccessible(true);
+//		try {
+//			txvIdMethod.invoke(kycAuthFilter, reqValue, resValue);
+//		} catch (InvocationTargetException e) {
+//			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationAppException.class));
+//		}
+//
+//	}
 
 	@Test
 	public void checkAllowedAuthTypeBasedOnPolicyTest() {

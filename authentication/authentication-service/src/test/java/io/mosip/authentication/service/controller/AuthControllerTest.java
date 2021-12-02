@@ -30,6 +30,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -119,7 +120,7 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", null);
 
@@ -130,7 +131,7 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true)).thenReturn(new AuthResponseDTO());
+		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", null);
 
 	}

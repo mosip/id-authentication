@@ -43,6 +43,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPubl
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -93,7 +94,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
-			Map<String, Object> responseMetadata, boolean status, List<Object> errors) {
+			Map<String, Object> responseMetadata, boolean status, List<AuthError> errors) {
 		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
 		storeAnanymousProfile(ananymousProfile);
 		authAnonymousEventPublisher.publishEvent(ananymousProfile);
@@ -119,7 +120,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 
 	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody,
 			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status,
-			List<Object> errorCodes) {
+			List<AuthError> errorCodes) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
 		
 		Map<String, List<IdentityInfoDTO>> idInfo = getMapOfIdentityInfoDTOList(responseMetadata);
@@ -306,13 +307,13 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
-	private void setErrorCodes(List<Object> errors, AnonymousAuthenticationProfile ananymousProfile) {
-		List<String> errorCodes = errors.stream()
-				.filter(obj -> obj instanceof Map)
-				.map(obj -> (Map<String, Object>)obj)
-				.map(map -> (String)map.get("errorCode"))
-				.collect(Collectors.toList());
-		ananymousProfile.setErrorCode(errorCodes);
+	private void setErrorCodes(List<AuthError> errors, AnonymousAuthenticationProfile ananymousProfile) {
+		if(errors != null && errors.size() > 0) {
+			List<String> errorCodes = errors.stream()
+					.map(AuthError::getErrorCode)
+					.collect(Collectors.toList());
+			ananymousProfile.setErrorCode(errorCodes);
+		}
 	}
 
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
