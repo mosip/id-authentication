@@ -145,11 +145,10 @@ public class InternalOTPController {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
-				IdAuthenticationAppException authenticationAppException = new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-				authTransactionHelper.setAuthTransactionEntityMetadata(authenticationAppException, authTxnBuilder);
-				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, authenticationAppException);
-				authenticationAppException.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, otpRequestDto.getTransactionID());
-				throw authenticationAppException;
+				authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, otpRequestDto.getTransactionID());
+				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}
 		} else {
 			logger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");

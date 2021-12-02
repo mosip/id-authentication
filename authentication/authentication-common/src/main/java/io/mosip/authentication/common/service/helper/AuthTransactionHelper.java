@@ -216,9 +216,7 @@ public class AuthTransactionHelper {
 	public IdAuthenticationAppException createDataValidationException(AuthTransactionBuilder authTxnBuilder, IDDataValidationException e, ObjectWithMetadata targetObjectMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		setAuthTransactionEntityMetadata(e, authTxnBuilder, targetObjectMetadata);
-		IdAuthenticationAppException exception = new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		e.copyAllMetadaTo(exception);
-		return exception;
+		return new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 	}
 
 	/**
@@ -234,9 +232,7 @@ public class AuthTransactionHelper {
 	public IdAuthenticationAppException createUnableToProcessException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
-		IdAuthenticationAppException exception = new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		e.copyAllMetadaTo(exception);
-		return exception;
+		return new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 	}
 	
 	/**

@@ -149,9 +149,9 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
+				addIdAndVersionToRequestMetadate(requestWrapper);
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = responseWrapper.toString();
-				addIdAndVersionToRequestMetadate(requestWrapper);
 				consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 				response.getWriter().write(responseAsString);
 				return;
@@ -160,9 +160,9 @@ public abstract class BaseIDAFilter implements Filter {
 			requestWrapper.resetInputStream();
 			consumeRequest(requestWrapper, requestBody);
 			requestWrapper.resetInputStream();
+			addIdAndVersionToRequestMetadate(requestWrapper);
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = responseWrapper.toString();
-			addIdAndVersionToRequestMetadate(requestWrapper);
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException  e) {

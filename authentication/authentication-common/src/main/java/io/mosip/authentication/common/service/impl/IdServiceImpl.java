@@ -3,9 +3,16 @@ package io.mosip.authentication.common.service.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,23 +26,39 @@ import java.util.stream.Stream;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.biometrics.entities.BDBInfo;
+import io.mosip.kernel.biometrics.entities.BIR;
+import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -76,7 +99,32 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
+	
+	@Autowired
+	private CbeffUtil cbeffUtil;
+	
+	private static final String ERROR_CODE = "errorCode";
 
+	private static final String ERRORS = "errors";
+
+	/**
+	 * The Rest Helper
+	 */
+	@Autowired
+	private RestHelper restHelper;
+
+	/**
+	 * The Restrequest Factory
+	 */
+	@Autowired
+	private RestRequestFactory restRequestFactory;
+
+	/**
+	 * The Environment
+	 */
+	@Autowired
+	private Environment environment;
+	
 	/*
 	 * To get Identity data from IDRepo based on UIN
 	 * 
@@ -182,6 +230,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		Set<String> filterAttributesInLowercase = filterAttributes.stream().map(String::toLowerCase)
+				.collect(Collectors.toSet());
 		String hashedId;
 		try {
 			hashedId = securityManager.hash(id);
@@ -194,26 +244,37 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		
 		try {
 			IdentityEntity entity = null;
-			if (!identityRepo.existsById(hashedId)) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-						"Id not found in DB");
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
-								idType.getType()));
-			}
+//			if (!identityRepo.existsById(hashedId)) {
+//				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+//						"Id not found in DB");
+//				throw new IdAuthenticationBusinessException(
+//						IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+//						String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+//								idType.getType()));
+//			}
+			
+			//Map<String, Object> idData = loadIdentityFromFile("c:\\tmp\\4751396416-dev2-response.json");
+			
+			Map<String, Object> idData = loadIdentityFromIdRepo(id, isBio);
+			
+			String demodata = mapper.writeValueAsString(idData.get("demographics"));
+			entity = new IdentityEntity();
+			entity.setDemographicData(demodata.getBytes("UTF-8"));
 
 			if (isBio) {
-				entity = identityRepo.getOne(hashedId);
+				//entity = identityRepo.getOne(hashedId);
+				String biodata = mapper.writeValueAsString(idData.get("biometrics"));
+				entity.setBiometricData(biodata.getBytes("UTF-8"));
+
 			} else {
-				Object[] data = identityRepo.findDemoDataById(hashedId).get(0);
-				entity = new IdentityEntity();
-				entity.setId(String.valueOf(data[0]));
-				entity.setDemographicData((byte[]) data[1]);
-				entity.setExpiryTimestamp(Objects.nonNull(data[2]) ? LocalDateTime.parse(String.valueOf(data[2])) : null);
-				entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
-				entity.setToken(String.valueOf(data[4]));
+				//Object[] data = identityRepo.findDemoDataById(hashedId).get(0);
+				//entity = new IdentityEntity();
+				//entity.setId(String.valueOf(data[0]));
+				//entity.setExpiryTimestamp(Objects.nonNull(data[2]) ? LocalDateTime.parse(String.valueOf(data[2])) : null);
+				//entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
+				//entity.setToken(String.valueOf(data[4]));
 			}
+			entity.setToken("dummyToken");
 			
 			if (Objects.nonNull(entity.getExpiryTimestamp())
 					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
@@ -231,10 +292,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-			Set<String> filterAttributesInLowercase = filterAttributes.isEmpty() ? Set.of()
-					: filterAttributes.stream().map(String::toLowerCase).collect(Collectors.toSet());
-			
-			if (!filterAttributesInLowercase.isEmpty()) {		
+			if (!filterAttributes.isEmpty()) {		
 				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
 						.filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
 						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
@@ -243,7 +301,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			
 			if (entity.getBiometricData() != null) {
 				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!filterAttributesInLowercase.isEmpty()) {					
+				if (!filterAttributes.isEmpty()) {					
 					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
 							.filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
 							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
@@ -258,7 +316,151 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+	
+	private Map<String, Object> loadIdentityFromIdRepo(String id, boolean isBio) throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {
+		return loadIdentityFromInputStream(new ByteArrayInputStream(getIdByID(id, isBio).getBytes("UTF-8")));
+	}
 
+	/**
+	 * Gets the id by RID.
+	 *
+	 * @param id the reg ID
+	 * @param isBio the is bio
+	 * @return the id by RID
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IOException 
+	 * @throws UnsupportedEncodingException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@SuppressWarnings("unchecked")
+	public String getIdByID(String id, boolean isBio) throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {
+		RestRequestDTO buildRequest = null;
+		String idRepoResponse = null;
+		try {
+			Map<String, String> params = new HashMap<>();
+			params.put("rid", id);
+			if (isBio) {
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN, null, Map.class);
+				params.put("type", "bio");
+			} else {
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN_WITHOUT_TYPE, null,
+						String.class);
+			}
+			buildRequest.setPathVariables(params);
+			idRepoResponse = restHelper.requestSync(buildRequest);
+			Map<String, Object> idRepoResponseMap = mapper.readValue(idRepoResponse.getBytes("UTF-8"), Map.class);
+			if (!environment.getProperty(IdRepoConstants.ACTIVE_STATUS).equalsIgnoreCase(
+					(String) ((Map<String, Object>) idRepoResponseMap.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+			}
+		} catch (RestServiceException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+					e.getErrorText());
+			Optional<Object> responseBody = e.getResponseBody();
+			if (responseBody.isPresent()) {
+				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
+				if (idrepoMap.containsKey(ERRORS)) {
+					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
+
+					if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream()
+							.anyMatch(map -> map.containsKey(ERROR_CODE)
+									&& (IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode()
+											.equalsIgnoreCase((String) map.get(ERROR_CODE)))
+									|| IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode().equalsIgnoreCase((String)map.get(ERROR_CODE)))) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+								                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.UIN.getType()));
+					} else {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
+								e);
+					}
+				}
+			}
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		} catch (IDDataValidationException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+					e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		}
+		return idRepoResponse;
+	}
+
+	private Map<String, Object> loadIdentityFromFile(String identityJsonFilePath) {
+
+		try {
+			File inputJsonFile = new File(identityJsonFilePath);
+			FileInputStream fileInputStream = new FileInputStream(inputJsonFile);
+			return loadIdentityFromInputStream(fileInputStream);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Map.of();
+	}
+
+	private Map<String, Object> loadIdentityFromInputStream(InputStream fileInputStream) {
+		Map<String, Object> idMap = new HashMap<>();
+
+		try {
+			Map<String, Object> inputId = mapper.readValue(fileInputStream, Map.class);
+			Map<String, Object> respMap = (Map<String, Object>)inputId.get("response");
+			idMap.put("demographics", respMap.get("identity"));
+			List<Map<String, Object>> docsList = (List<Map<String,Object>>)respMap.get("documents");
+			
+			Optional<String> individualBioCbeff = docsList.stream()
+																.filter(map -> map.get("category") instanceof String && map.get("category").equals("individualBiometrics"))
+																.map(map -> (String)map.get("value"))
+																.map(cbeffEncoded -> new String(CryptoUtil.decodeBase64Url(cbeffEncoded)))
+																.findAny();
+			if(individualBioCbeff.isPresent()) {
+				List<BIR> birList = cbeffUtil.getBIRDataFromXML(individualBioCbeff.get().getBytes());
+				Map<String, Object> bioMap = new HashMap<>();
+
+				for (BIR bir : birList) {
+					List<BIR> birs = new ArrayList<>();
+					birs.add(bir);
+					BDBInfo bdbInfo = bir.getBdbInfo();
+					String type = bdbInfo.getType().get(0).value();
+					String subType = getSubType(bdbInfo.getSubtype());
+					if (subType != null) {
+						bioMap.put(type + "_" + subType, new String(cbeffUtil.createXML(birs)));
+					}
+				}
+				
+				List<BIR> faceBirList = birList.stream()
+						.filter(bir -> bir.getBdbInfo().getType().get(0).value().toLowerCase().startsWith(BiometricType.FACE.value().toLowerCase()))
+						.collect(Collectors.toList());
+				if (!faceBirList.isEmpty()) {
+					bioMap.put(BiometricType.FACE.value(), new String(cbeffUtil.createXML(faceBirList)));
+				}
+				
+				idMap.put("biometrics", bioMap);
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return idMap;
+	}
+
+	private String getSubType(List<String> bdbSubTypeList) {
+		String subType;
+		try {
+			if (bdbSubTypeList.size() == 1) {
+				subType = bdbSubTypeList.get(0);
+			} else {
+				subType = bdbSubTypeList.get(0) + " " + bdbSubTypeList.get(1);
+			}
+			return subType;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Decrypt the attributes as per configuration.
 	 * @param id
@@ -267,12 +469,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-		List<String> zkUnEncryptedAttributes = getZkUnEncryptedAttributes()
-				.stream().map(String::toLowerCase).collect(Collectors.toList());
+		List<String> zkUnEncryptedAttributes = List.of();//getZkUnEncryptedAttributes()
+				//.stream().map(String::toLowerCase).collect(Collectors.toList());
 		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
 				.stream()
 				.collect(Collectors.partitioningBy(entry -> 
-							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+							zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
 				Collectors.toMap(Entry::getKey, Entry::getValue)));
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);

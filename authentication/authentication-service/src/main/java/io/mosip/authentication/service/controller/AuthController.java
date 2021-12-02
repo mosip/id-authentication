@@ -161,7 +161,7 @@ public class AuthController {
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
-				requestWithMetadata.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
 			} 
 		} else {
