@@ -40,7 +40,7 @@ public class PartnerServiceCallbackControllerTest {
      *                  and handleMispUpdatedEvent
      */
     @Test
-    public void handleApiKeyApprovedEventTest(){
+    public void handleEventTest(){
         partnerServiceCallbackController.handleApiKeyApprovedEvent(eventModel);
         partnerServiceCallbackController.handlePartnerUpdated(eventModel);
         partnerServiceCallbackController.handlePolicyUpdated(eventModel);
@@ -59,7 +59,7 @@ public class PartnerServiceCallbackControllerTest {
      *                  when Exception is thrown
      */
     @Test
-    public void handleApiKeyApprovedEventExceptionTest(){
+    public void handleEventExceptionTest(){
         ReflectionTestUtils.setField(partnerServiceCallbackController, "partnerManager", null);
         partnerServiceCallbackController.handleApiKeyApprovedEvent(eventModel);
         partnerServiceCallbackController.handlePartnerUpdated(eventModel);
