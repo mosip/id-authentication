@@ -212,6 +212,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
 			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
 			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.STATUS, authStatus);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authResponseDTO.getErrors());
 
 			authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
 
