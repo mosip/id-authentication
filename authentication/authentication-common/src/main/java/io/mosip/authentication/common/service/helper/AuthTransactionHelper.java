@@ -31,6 +31,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -108,7 +109,9 @@ public class AuthTransactionHelper {
 	 */
 	public void setAuthTransactionEntityMetadata(IdAuthenticationBaseException exception , AuthTransactionBuilder authTxnBuilder, ObjectWithMetadata targetObjectMetadata) throws IdAuthenticationBusinessException {
 		try {
-			authTxnBuilder.withStatusComment(objectMapper.writeValueAsString(IdAuthExceptionHandler.getAuthErrors(exception)));
+			List<AuthError> authErrors = IdAuthExceptionHandler.getAuthErrors(exception);
+			targetObjectMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authErrors);
+			authTxnBuilder.withStatusComment(objectMapper.writeValueAsString(authErrors));
 		} catch (JsonProcessingException e) {
 			authTxnBuilder.withStatusComment(e.getMessage() == null ? IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() : e.getMessage());
 		}
@@ -231,7 +234,7 @@ public class AuthTransactionHelper {
 	 */
 	public IdAuthenticationAppException createUnableToProcessException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
-		setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
+		setAuthTransactionEntityMetadata(e, authTxnBuilder, requestWithMetadata);
 		return new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 	}
 	

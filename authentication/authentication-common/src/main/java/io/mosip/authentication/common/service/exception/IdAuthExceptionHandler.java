@@ -222,10 +222,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
-			if(request instanceof ObjectWithMetadata) {
-				ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
-				requestWithMetadata.putMetadata(IdAuthCommonConstants.ERRORS, errors);
-			}
 			Object response = frameErrorResponse(requestReceived, type, errors);
 			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
