@@ -54,7 +54,7 @@ echo `date "+%m/%d/%Y %H:%M:%S"` ": Database scripts are sourcing from :$BASEPAT
 #========================================DB Deployment process begins on IDA DB SERVER======================================
 
 echo `date "+%m/%d/%Y %H:%M:%S"` ": Database deployment on $MOSIP_DB_NAME database is started...." | tee -a $LOG 2>&1
-cd /$BASEPATH/$MOSIP_DB_NAME/
+cd /$BASEPATH/mosip_ida/
 VALUE=$(PGPASSWORD=$SU_USER_PWD  psql --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -t -c "select count(1) from pg_roles where rolname IN('sysadmin','appadmin','dbadmin')";exit; >> $LOG 2>&1)
      echo `date "+%m/%d/%Y %H:%M:%S"` ": Checking for existing users.... Count of existing users:"$VALUE | tee -a $LOG 2>&1
 if [ ${VALUE} == 0 ]
