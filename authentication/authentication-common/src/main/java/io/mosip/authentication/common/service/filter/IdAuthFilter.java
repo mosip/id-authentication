@@ -409,7 +409,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			PartnerPolicyResponseDTO partnerServiceResponse, String partnerCertificate) {
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
-		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		metadata.put(partnerId + partnerApiKey, partnerServiceResponse);
 		if (partnerCertificate != null) {
 			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
 		}
