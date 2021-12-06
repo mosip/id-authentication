@@ -1,13 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,11 +24,9 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
-import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
-import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
@@ -52,11 +44,6 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class OTPManager {
-
-	/** The Constant TIME. */
-	private static final String TIME = "time";
-	/** The Constant DATE. */
-	private static final String DATE = "date";
 
 	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
@@ -101,11 +88,9 @@ public class OTPManager {
 	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
 
-		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
-		otpTemplateValues.put("otp", otp);
 		String otpHash;
-		otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId().toString()
+		otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
@@ -134,12 +119,10 @@ public class OTPManager {
 		String notificationProperty = null;
 		notificationProperty = otpRequestDTO
 				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
-						.stream().map(type -> type.getName()).collect(Collectors.joining()))
+						.stream().map(NotificationType::getName).collect(Collectors.joining()))
 				.collect(Collectors.joining("|"));
 
-		notificationService.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
-				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
-				templateLanguages);
+		notificationService.sendOTPNotification(otpRequestDTO, idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty);
 
 		return true;
 	}
@@ -169,64 +152,6 @@ public class OTPManager {
 					IdAuthenticationErrorConstants.SERVER_ERROR.getErrorMessage());
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
-	}
-
-	/*
-	 * Send Otp Notification
-	 * 
-	 */
-	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String idvid, String idvidType,
-			Map<String, String> valueMap) {
-
-		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
-				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-		String date = dateAndTime.getKey();
-		String time = dateAndTime.getValue();
-
-		String maskedUin = null;
-		Map<String, Object> values = new HashMap<>();
-		String charCount = environment.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
-		if (charCount != null) {
-			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
-		}
-		values.put("idvid", maskedUin);
-		values.put("idvidType", idvidType);
-		Integer timeInSeconds = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
-				Integer.class);
-		int timeInMinutes = (timeInSeconds % 3600) / 60;
-		values.put("validTime", String.valueOf(timeInMinutes));
-		values.put(DATE, date);
-		values.put(TIME, time);
-		values.putAll(valueMap);
-		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
-		values.remove(IdAuthCommonConstants.EMAIL);
-		return values;
-	}
-
-	/**
-	 * Gets the date and time.
-	 *
-	 * @param requestTime the request time
-	 * @param pattern     the pattern
-	 * @return the date and time
-	 */
-	private static Entry<String, String> getDateAndTime(String requestTime, String pattern) {
-
-		String[] dateAndTime = new String[2];
-
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(pattern);
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(requestTime, isoPattern);
-		ZoneId zone = zonedDateTime2.getZone();
-		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
-		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);
-		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		dateAndTime[0] = date;
-		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-		dateAndTime[1] = time;
-
-		return new SimpleEntry<>(date, time);
-
 	}
 
 	/**

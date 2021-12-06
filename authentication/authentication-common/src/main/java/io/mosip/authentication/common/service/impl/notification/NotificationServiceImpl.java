@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,6 +38,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.indauth.dto.SenderType;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
@@ -93,10 +96,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String resTime = authResponseDTO.getResponseTime();
 
-		ZoneId zone = ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
-
 		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
-		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
+		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(getZone());
 		String changedDate = dateTimeConvertedToReqZone.format(
 				DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
 		String changedTime = dateTimeConvertedToReqZone.format(
@@ -141,6 +142,71 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
+	}
+
+	public void sendOTPNotification(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap,
+			List<String> templateLanguages, String otp, String notificationProperty)
+					throws IdAuthenticationBusinessException {
+		Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, idvid, idvidType, valueMap);
+		otpTemplateValues.put("otp", otp);
+		this.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
+				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
+				templateLanguages);
+	}
+
+	/*
+	 * Send Otp Notification
+	 * 
+	 */
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String idvid, String idvidType,
+			Map<String, String> valueMap) {
+
+		Entry<String, String> dateAndTime = getDateAndTime();
+		String date = dateAndTime.getKey();
+		String time = dateAndTime.getValue();
+
+		String maskedUin = null;
+		Map<String, Object> values = new HashMap<>();
+		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
+		if (charCount != null) {
+			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
+		}
+		values.put("idvid", maskedUin);
+		values.put("idvidType", idvidType);
+		Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME,
+				Integer.class);
+		int timeInMinutes = (timeInSeconds % 3600) / 60;
+		values.put("validTime", String.valueOf(timeInMinutes));
+		values.put(DATE, date);
+		values.put(TIME, time);
+		values.putAll(valueMap);
+		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
+		values.remove(IdAuthCommonConstants.EMAIL);
+		return values;
+	}
+
+	/**
+	 * Gets the date and time.
+	 *
+	 * @param requestTime the request time
+	 * @param pattern     the pattern
+	 * @return the date and time
+	 */
+	private Entry<String, String> getDateAndTime() {
+		String[] dateAndTime = new String[2];
+		ZoneId zone = getZone();
+		ZonedDateTime dateTimeWith = ZonedDateTime.now(zone);
+		ZonedDateTime dateTime = dateTimeWith.withZoneSameInstant(zone);
+		String date = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+		dateAndTime[0] = date;
+		String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		dateAndTime[1] = time;
+
+		return new SimpleEntry<>(date, time);
+	}
+
+	private ZoneId getZone() {
+		return ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
 	}
 
 	/**
