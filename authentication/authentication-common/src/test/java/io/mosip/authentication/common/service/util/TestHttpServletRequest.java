@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.util;
+package  io.mosip.authentication.common.service.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
