@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.builder;
 
+import static io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil.getResponseTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -73,18 +74,18 @@ public class AuthResponseBuilderTest {
 	@Test
 	public void testAuthResponseInfoBuilder() {
 		assertTrue(AuthResponseBuilder.newInstance(dateTimePattern)
-				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789")
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789", getResponseTime(null, dateTimePattern))
 				.getResponse().isAuthStatus());
 		assertFalse(AuthResponseBuilder.newInstance(dateTimePattern)
-				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789")
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789", getResponseTime(null, dateTimePattern))
 				.getResponse().isAuthStatus());
 
-		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789")
+		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789", getResponseTime(null, dateTimePattern))
 				.getTransactionID(), "1234567890");
 
 		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance(dateTimePattern)
 				.addErrors(new AuthError("101", "Error1"))
-				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build("123456789");
+				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build("123456789", getResponseTime(null, dateTimePattern));
 
 		assertTrue(authResponseDTO.getErrors().size() == 3
 				&& authResponseDTO.getErrors().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
@@ -107,7 +108,7 @@ public class AuthResponseBuilderTest {
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build();
 
 		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder.newInstance(dateTimePattern)
-				.addAuthStatusInfo(authStatusInfo1).addAuthStatusInfo(authStatusInfo2).build("123456789");
+				.addAuthStatusInfo(authStatusInfo1).addAuthStatusInfo(authStatusInfo2).build("123456789", getResponseTime(null, dateTimePattern));
 
 		/*
 		 * assertEquals(authResponseDTO2.getInfo().getMatchInfos().get(0).getAuthType(),
@@ -128,9 +129,9 @@ public class AuthResponseBuilderTest {
 	public void testAuthResponseBuilderMultipleTimes() {
 		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
 		statusInfoBuilder.setTxnID("1234567890");
-		statusInfoBuilder.build("123456789");
+		statusInfoBuilder.build("123456789", getResponseTime(null, dateTimePattern));
 
-		statusInfoBuilder.build("123456789");
+		statusInfoBuilder.build("123456789", getResponseTime(null, dateTimePattern));
 	}
 
 	@Test

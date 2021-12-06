@@ -1,17 +1,22 @@
 package io.mosip.authentication.common.service.builder;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The builder class of AuthResponseDTO.
@@ -19,9 +24,6 @@ import io.mosip.authentication.core.indauth.dto.ResponseDTO;
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
-
-	/** The date format to use */
-	private SimpleDateFormat dateFormat;
 
 	/** The built flag. */
 	private boolean built;
@@ -32,15 +34,17 @@ public class AuthResponseBuilder {
 	/** The auth status infos. */
 	private List<AuthStatusInfo> authStatusInfos;
 
+	private String dateTimePattern;
+
 	/**
 	 * Instantiates a new auth response builder.
 	 *
 	 * @param dateTimePattern the date time pattern
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
+		this.dateTimePattern = dateTimePattern;
 		responseDTO = new AuthResponseDTO();
 		authStatusInfos = new ArrayList<>();
-		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
 
 	/**
@@ -118,7 +122,7 @@ public class AuthResponseBuilder {
 	 * @param tokenID the auth token ID
 	 * @return the auth response DTO
 	 */
-	public AuthResponseDTO build(String tokenID) {
+	public AuthResponseDTO build(String tokenID, String requestTime) {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
 		ResponseDTO res = new ResponseDTO();
@@ -126,10 +130,17 @@ public class AuthResponseBuilder {
 		res.setAuthToken(tokenID);
 		responseDTO.setResponse(res);
 
-		responseDTO.setResponseTime(dateFormat.format(new Date()));
+		String resTime = IdaRequestResponsConsumerUtil.getResponseTime(requestTime, dateTimePattern);
+		responseDTO.setResponseTime(resTime);
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
-		addErrors(authErrors);
+		if(authErrors.length > 0) {
+			addErrors(authErrors);
+		}
+		
+		if(responseDTO.getErrors() != null && responseDTO.getErrors().isEmpty()) {
+			responseDTO.setErrors(null);
+		}
 
 		built = true;
 		return responseDTO;

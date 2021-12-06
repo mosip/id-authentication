@@ -106,4 +106,12 @@ public class OTPFilter extends IdAuthFilter {
 		return attribute + OTP;
 	}
 	
+	protected boolean needStoreAuthTransaction() {
+		return true;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return false;
+	}
+	
 }
