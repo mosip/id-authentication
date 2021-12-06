@@ -16,7 +16,7 @@ import lombok.Data;
  */
 
 @Data
-public class OtpResponseDTO implements ObjectWithMetadata, ObjectWithIdVersionTransactionID {
+public class OtpResponseDTO implements ObjectWithIdVersionTransactionID {
 
 	/** Variable to hold id */
 	private String id;
@@ -36,6 +36,4 @@ public class OtpResponseDTO implements ObjectWithMetadata, ObjectWithIdVersionTr
 	/** List to hold response */
 	private MaskedResponseDTO response;
 	
-	private Map<String, Object> metadata;
-
 }

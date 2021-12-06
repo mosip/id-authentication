@@ -210,6 +210,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
+		List<AuthError> errors = getAuthErrors(ex);
+		return buildExceptionResponse(ex, request, errors);
+	}
+
+	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request, List<AuthError> errors) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
 				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String type = null;
@@ -220,9 +225,19 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			String reqUrl = (request).getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
 		}
-		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
 			Object response = frameErrorResponse(requestReceived, type, errors);
+			//Try copying ID, version and transaction ID from request metadata
+			if(request instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
+				ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+				ObjectWithIdVersionTransactionID responsWithMetadata = (ObjectWithIdVersionTransactionID) response;
+				if(requestWithMetadata.getMetadata() != null) {
+					IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, responsWithMetadata);
+					IdaRequestResponsConsumerUtil.setTransactionIdToResponse(requestWithMetadata, responsWithMetadata);
+				}
+			}
+			
+			//Try copying ID, version and transaction ID from exception metadata
 			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
 				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
 				ObjectWithIdVersionTransactionID responsWithMetadata = (ObjectWithIdVersionTransactionID) response;
@@ -230,6 +245,12 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					IdaRequestResponsConsumerUtil.setIdVersionToResponse(exceptionWithMetadata, responsWithMetadata);
 					IdaRequestResponsConsumerUtil.setTransactionIdToResponse(exceptionWithMetadata, responsWithMetadata);
 				}
+			}
+			
+			if(ex instanceof ObjectWithMetadata) {
+				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
+				//This errors list is used some times by the caller for storing in auth transaction
+				exceptionWithMetadata.putMetadata(IdAuthCommonConstants.ERRORS, errors);
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());

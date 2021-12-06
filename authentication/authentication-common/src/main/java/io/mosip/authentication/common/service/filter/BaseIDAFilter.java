@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -149,18 +148,20 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
-				addIdAndVersionToRequestMetadate(requestWrapper);
+				addIdAndVersionToRequestMetadata(requestWrapper);
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = responseWrapper.toString();
 				consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 				response.getWriter().write(responseAsString);
 				return;
 			}
-
+			
+			addIdAndVersionToRequestMetadata(requestWrapper);
+			addTransactionIdToRequestMetadata(requestWrapper,requestBody);
+			
 			requestWrapper.resetInputStream();
 			consumeRequest(requestWrapper, requestBody);
 			requestWrapper.resetInputStream();
-			addIdAndVersionToRequestMetadate(requestWrapper);
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = responseWrapper.toString();
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
@@ -181,12 +182,17 @@ public abstract class BaseIDAFilter implements Filter {
 
 	}
 
-	private void addIdAndVersionToRequestMetadate(ResettableStreamHttpServletRequest requestWrapper) {
+	private void addIdAndVersionToRequestMetadata(ResettableStreamHttpServletRequest requestWrapper) {
 		requestWrapper.putMetadata(VERSION,
 				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 		requestWrapper.resetInputStream();
 		requestWrapper.putMetadata(IdAuthCommonConstants.ID,
 				env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
+	}
+	
+	private void addTransactionIdToRequestMetadata(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody) {
+		requestWrapper.putMetadata(IdAuthCommonConstants.TRANSACTION_ID,
+				requestBody.get(IdAuthCommonConstants.TRANSACTION_ID));
 	}
 
 	/**
@@ -203,38 +209,52 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the charResponseWrapper which consists of the response
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	@SuppressWarnings("unchecked")
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, CharResponseWrapper responseWrapper,
 			ResettableStreamHttpServletRequest requestWrapper, Temporal requestTime, IdAuthenticationBaseException ex, Map<String, Object> requestMap)
 			throws IOException {
 		IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapper, ex);
-		ex.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, requestMap.get(IdAuthCommonConstants.TRANSACTION_ID));
-		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(ex, requestWrapper);
+		List<AuthError> errors = IdAuthExceptionHandler.getAuthErrors(ex);
+		IdAuthenticationBaseException exception = ex;
+		//If the exception is not a validation exception we wrap it around unable to process exception
+		boolean hasUnableToProcessError = errors.stream()
+				.anyMatch(err -> err.getErrorCode()
+								.equals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode()));
+		if(!hasUnableToProcessError) {
+			exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), ex);
+		}
+		
+		exception.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, requestMap.get(IdAuthCommonConstants.TRANSACTION_ID));
+		Object responseObj = IdAuthExceptionHandler.buildExceptionResponse(exception, requestWrapper);
 		String responseAsString = mapper.writeValueAsString(responseObj);
-
+		String responseSignature = null;
+		
 		try {
 			if (isSigningRequired()) {
+				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
-						keyManager.signResponse(responseAsString));
+						responseSignature);
 			}
 		} catch (IdAuthenticationAppException e) {
-			//This request wrapper is used as a mutable object to pass the response metadata back
-			Optional<?> responseMetadata = requestWrapper.getMetadata(ERRORS, List.class);
-			if (responseMetadata != null && responseMetadata.isPresent() && responseMetadata.get() instanceof List) {
-				List<Object> errors = (List<Object>) responseMetadata.get();
-				boolean hasUnableToProcessError = errors.stream().filter(obj -> obj instanceof Map)
-						.map(obj -> (Map<String, Object>) obj)
-						.anyMatch(map -> map.containsKey(IdAuthCommonConstants.ERROR_CODE)
-								&& map.get(IdAuthCommonConstants.ERROR_CODE)
-										.equals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode()));
-
-				if (!hasUnableToProcessError) {
-					AuthError authError = new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-					String errStr = mapper.writeValueAsString(authError);
-					errors.add(mapper.readValue(errStr.getBytes(), Map.class));
-				}
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"\n" + ExceptionUtils.getStackTrace(e));
+		}
+		
+		//Try storing auth transaction
+		if(needStoreAuthTransaction()) {
+			try {
+				String requestSignature = requestWrapper.getHeader(SIGNATURE);
+				requestResponsConsumerUtil.storeAuthTransaction((Map<String, Object>) requestMap.get(METADATA), requestSignature, responseSignature);
+			} catch (IdAuthenticationAppException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"\n" + ExceptionUtils.getStackTrace(e));
 			}
+		}
+		
+		//Try storing anonymous profile
+		if(needStoreAnonymousProfile()) {
+			boolean status = false;
+			requestResponsConsumerUtil.storeAnonymousProfile(requestMap, (Map<String, Object>) requestMap.get(METADATA), exception.getMetadata(), status, errors);
 		}
 
 		response.getWriter().write(responseAsString);
@@ -295,27 +315,14 @@ public abstract class BaseIDAFilter implements Filter {
 				"Time difference between request and response in millis:" + duration
 						+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
-
-//	/**
-//	 * getResponseBody method used to retrieve the response body
-//	 *
-//	 * @param responseBody the output
-//	 * @return the response body
-//	 * @throws IdAuthenticationAppException the id authentication app exception
-//	 */
-//	@SuppressWarnings("unchecked")
-//	private Map<String, Object> getResponseBody(String responseBody) throws IdAuthenticationAppException {
-//		if (responseBody != null && !responseBody.isEmpty()) {
-//			try {
-//				return mapper.readValue(responseBody, Map.class);
-//			} catch (IOException | ClassCastException e) {
-//				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
-//				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-//			}
-//		} else {
-//			return new HashMap<>();
-//		}
-//	}
+	
+	protected boolean needStoreAuthTransaction() {
+		return false;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return false;
+	}
 
 	/**
 	 * consumeRequest method is used to manipulate the request where the request is
@@ -459,13 +466,16 @@ public abstract class BaseIDAFilter implements Filter {
 				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
 			}
-			
-			requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
-			if (requestBody != null) {
-				boolean status = Boolean.valueOf(String.valueOf(responseMetadata.get(IdAuthCommonConstants.STATUS)));
-				List<AuthError> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<AuthError>) responseMetadata.get(ERRORS) : List.of();
-				requestResponsConsumerUtil.storeAnonymousProfile(requestBody, (Map<String, Object>) requestBody.get(METADATA),
-						responseMetadata, status, errors);
+			if(needStoreAuthTransaction()) {
+				requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
+			}
+			if(needStoreAnonymousProfile()) {
+				if (requestBody != null) {
+					boolean status = Boolean.valueOf(String.valueOf(responseMetadata.get(IdAuthCommonConstants.STATUS)));
+					List<AuthError> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<AuthError>) responseMetadata.get(ERRORS) : List.of();
+					requestResponsConsumerUtil.storeAnonymousProfile(requestBody, (Map<String, Object>) requestBody.get(METADATA),
+							responseMetadata, status, errors);
+				}
 			}
 			
 			Object inputRequestTime = requestBody.get(IdAuthCommonConstants.REQ_TIME);

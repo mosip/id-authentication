@@ -142,5 +142,13 @@ public class KycAuthFilter extends IdAuthFilter {
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		return attribute + KYC;
 	}
+	
+	protected boolean needStoreAuthTransaction() {
+		return true;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return true;
+	}
 
 }

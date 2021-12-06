@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +52,6 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 	private ObjectMapper mapper;
 	
 	/** The auth anonymous profile service. */
-	@Lazy
 	@Autowired(required = false)
 	private AuthAnonymousProfileService authAnonymousProfileService;
 	

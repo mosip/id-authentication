@@ -173,7 +173,7 @@ public class KycFacadeImpl implements KycFacade {
 						autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() + (statusComment == null ? ""
 								: AuthTransactionBuilder.REQ_TYPE_MSG_DELIM + statusComment));
 					}
-					kycAuthResponseDTO.putAllMetadata(Map.of(AutnTxn.class.getSimpleName(), autnTxn));
+					metadata.put(AutnTxn.class.getSimpleName(), autnTxn);
 				}
 			} else {
 				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)

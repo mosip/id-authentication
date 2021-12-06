@@ -317,14 +317,16 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
-		Object partnerIdObj = requestMetadata.get("partnerId");
-		if(partnerIdObj instanceof String) {
-			String partnerId = (String) partnerIdObj;
-			Object partnerObj = requestMetadata.get(partnerId);
-			if(partnerObj instanceof Map) {
-				Object partnerNameObj = ((Map<String, Object>)partnerObj).get("partnerName");
-				if(partnerNameObj instanceof String) {
-					ananymousProfile.setPartnerName((String) partnerNameObj);
+		if(requestMetadata != null) {
+			Object partnerIdObj = requestMetadata.get("partnerId");
+			if(partnerIdObj instanceof String) {
+				String partnerId = (String) partnerIdObj;
+				Object partnerObj = requestMetadata.get(partnerId);
+				if(partnerObj instanceof Map) {
+					Object partnerNameObj = ((Map<String, Object>)partnerObj).get("partnerName");
+					if(partnerNameObj instanceof String) {
+						ananymousProfile.setPartnerName((String) partnerNameObj);
+					}
 				}
 			}
 		}
