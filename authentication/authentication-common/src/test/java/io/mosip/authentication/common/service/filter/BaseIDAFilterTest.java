@@ -48,6 +48,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -121,12 +122,16 @@ public class BaseIDAFilterTest {
 
 	@Mock
 	ByteArrayOutputStream output;
+	
+	@Mock
+	IdaRequestResponsConsumerUtil requestResponsConsumerUtil;
 
 	@Before
 	public void setup() {
 		ReflectionTestUtils.setField(baseIDAFilter, "env", env);
 		ReflectionTestUtils.setField(baseIDAFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseIDAFilter, "keyManager", keyManager);
+		ReflectionTestUtils.setField(baseIDAFilter, "requestResponsConsumerUtil", requestResponsConsumerUtil);
 	}
 
 	@Test
@@ -675,7 +680,7 @@ public class BaseIDAFilterTest {
 		IdAuthenticationAppException idex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
 		Mockito.when(requestWrapper.getServletPath()).thenReturn("/vid/zxd");
 		Mockito.when(keyManager.signResponse(Mockito.anyString())).thenReturn("signature");
-		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex);
+		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
 	@Test
@@ -1221,7 +1226,7 @@ public class BaseIDAFilterTest {
 		IdAuthenticationAppException idex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
 		Mockito.when(requestWrapper.getServletPath()).thenReturn("/vid/zxd");
 		Mockito.when(keyManager.signResponse(Mockito.anyString())).thenThrow(new IdAuthenticationAppException());
-		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex);
+		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
 	@Test

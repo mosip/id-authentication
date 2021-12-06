@@ -20,4 +20,12 @@ public class ExternalAuthFilter extends IdAuthFilter {
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		return attribute + AUTH;
 	}
+	
+	protected boolean needStoreAuthTransaction() {
+		return true;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return true;
+	}
 }
