@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -13,13 +14,15 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.util.StreamUtils;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
+
 /**
  * The request wrapper used in Auth filter that allows to re-read the request
  * body.
  *
  * @author Loganathan Sekar
  */
-public class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
+public class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper implements ObjectWithMetadata {
 
 	/** The raw data. */
 	private byte[] rawData;
@@ -29,7 +32,9 @@ public class ResettableStreamHttpServletRequest extends HttpServletRequestWrappe
 
 	/** The servlet stream. */
 	private ResettableServletInputStream servletStream;
-
+	
+	private Map<String, Object> metadata;
+	
 	/**
 	 * Instantiates a new resettable stream http servlet request.
 	 *
@@ -172,5 +177,17 @@ public class ResettableStreamHttpServletRequest extends HttpServletRequestWrappe
 			// Nothing to do
 		}
 	}
+
+	@Override
+	public Map<String, Object> getMetadata() {
+		return metadata;
+	}
+
+	@Override
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
+		
+	}	
+	
 
 }

@@ -99,6 +99,14 @@ public class DefaultInternalFilter extends InternalAuthFilter {
 		}
 		return id;
 	}
+	
+	protected boolean needStoreAuthTransaction() {
+		return false;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return false;
+	}
 
 
 }
