@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.integration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,8 +90,8 @@ public class OTPManager {
 			throws IdAuthenticationBusinessException {
 
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
-		String otpHash;
-		otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
+		LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
+		String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
 				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
 
@@ -99,8 +100,8 @@ public class OTPManager {
 			OtpTransaction otpTxn = otpTxnOpt.get();
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
-			otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-			otpTxn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+			otpTxn.setUpdDTimes(otpGenerationTime);
+			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(
 					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
 			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(otpTxn);
@@ -110,8 +111,8 @@ public class OTPManager {
 			txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
 			txn.setOtpHash(otpHash);
 			txn.setCrBy(securityManager.getUser());
-			txn.setCrDtimes(DateUtils.getUTCCurrentDateTime());
-			txn.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plusSeconds(
+			txn.setCrDtimes(otpGenerationTime);
+			txn.setExpiryDtimes(otpGenerationTime.plusSeconds(
 					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
 			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(txn);
@@ -122,7 +123,7 @@ public class OTPManager {
 						.stream().map(NotificationType::getName).collect(Collectors.joining()))
 				.collect(Collectors.joining("|"));
 
-		notificationService.sendOTPNotification(otpRequestDTO, idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty);
+		notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty, otpGenerationTime);
 
 		return true;
 	}

@@ -166,9 +166,8 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		String token = idService.getToken(idResDTO);
 
-		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
-				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		AuthResponseDTO authResponseDTO = null;
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String authTokenId = null;
 		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
@@ -194,7 +193,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} catch (IdAuthenticationBusinessException e) {
 			objectWithMetadata = e;
-			throw e;
+//			throw e;
 		} finally {
 			// Set response token
 			if (authTokenRequired) {

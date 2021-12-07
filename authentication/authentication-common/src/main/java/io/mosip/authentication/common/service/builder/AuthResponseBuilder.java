@@ -1,9 +1,7 @@
 package io.mosip.authentication.common.service.builder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -12,6 +10,7 @@ import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The builder class of AuthResponseDTO.
@@ -19,9 +18,8 @@ import io.mosip.authentication.core.indauth.dto.ResponseDTO;
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
-
-	/** The date format to use */
-	private SimpleDateFormat dateFormat;
+	
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/** The built flag. */
 	private boolean built;
@@ -37,10 +35,9 @@ public class AuthResponseBuilder {
 	 *
 	 * @param dateTimePattern the date time pattern
 	 */
-	private AuthResponseBuilder(String dateTimePattern) {
+	private AuthResponseBuilder() {
 		responseDTO = new AuthResponseDTO();
 		authStatusInfos = new ArrayList<>();
-		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
 
 	/**
@@ -83,7 +80,7 @@ public class AuthResponseBuilder {
 		return this;
 	}
 
-	public AuthResponseBuilder setId(String idType) {
+	public AuthResponseBuilder setId() {
 		responseDTO.setId("mosip.identity.auth");
 		return this;
 	}
@@ -126,7 +123,7 @@ public class AuthResponseBuilder {
 		res.setAuthToken(tokenID);
 		responseDTO.setResponse(res);
 
-		responseDTO.setResponseTime(dateFormat.format(new Date()));
+		responseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(UTC_DATETIME_PATTERN));
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		addErrors(authErrors);
@@ -150,8 +147,8 @@ public class AuthResponseBuilder {
 	 * @param dateTimePattern the date time pattern
 	 * @return the auth response builder
 	 */
-	public static AuthResponseBuilder newInstance(String dateTimePattern) {
-		return new AuthResponseBuilder(dateTimePattern);
+	public static AuthResponseBuilder newInstance() {
+		return new AuthResponseBuilder();
 	}
 
 }

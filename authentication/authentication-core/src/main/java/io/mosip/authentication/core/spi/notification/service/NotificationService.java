@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.spi.notification.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,6 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.SenderType;
-import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 
 /***
  * 
@@ -21,8 +21,8 @@ public interface NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException;
 	
-	public void sendOTPNotification(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap,
-			List<String> templateLanguages, String otp, String notificationProperty)
+	public void sendOTPNotification(String idvid, String idvidType, Map<String, String> valueMap,
+			List<String> templateLanguages, String otp, String notificationProperty, LocalDateTime otpGenerationTime)
 					throws IdAuthenticationBusinessException;
 	
 	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
