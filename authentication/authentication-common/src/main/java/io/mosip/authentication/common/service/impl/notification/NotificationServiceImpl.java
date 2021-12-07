@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl.notification;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +42,9 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
+import io.mosip.kernel.core.util.DateUtils;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 /***
  * 
@@ -90,20 +94,9 @@ public class NotificationServiceImpl implements NotificationService {
 		for (String lang : templateLanguages) {
 			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
 		}
-
-		String resTime = authResponseDTO.getResponseTime();
-
-		ZoneId zone = ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
-
-		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
-		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
-		String changedDate = dateTimeConvertedToReqZone.format(
-				DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
-		String changedTime = dateTimeConvertedToReqZone.format(
-				DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
-
-		values.put(DATE, changedDate);
-		values.put(TIME, changedTime);
+		Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
+		values.put(DATE, dateAndTime.getT1());
+		values.put(TIME, dateAndTime.getT2());
 		String maskedUin = "";
 		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
 		if (charCount != null && !charCount.isEmpty()) {
@@ -141,6 +134,64 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
+	}
+
+	public void sendOTPNotification(String idvid, String idvidType, Map<String, String> valueMap,
+			List<String> templateLanguages, String otp, String notificationProperty, LocalDateTime otpGenerationTime)
+			throws IdAuthenticationBusinessException {
+		Map<String, Object> otpTemplateValues = getOtpTemplateValues(idvid, idvidType, valueMap, otpGenerationTime);
+		otpTemplateValues.put("otp", otp);
+		this.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
+				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
+				templateLanguages);
+	}
+
+	/*
+	 * Send Otp Notification
+	 * 
+	 */
+	private Map<String, Object> getOtpTemplateValues(String idvid, String idvidType, Map<String, String> valueMap,
+			LocalDateTime otpGenerationTime) {
+
+		Tuple2<String, String> dateAndTime = getDateAndTime(otpGenerationTime);
+		String date = dateAndTime.getT1();
+		String time = dateAndTime.getT2();
+
+		String maskedUin = null;
+		Map<String, Object> values = new HashMap<>();
+		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
+		if (charCount != null) {
+			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
+		}
+		values.put("idvid", maskedUin);
+		values.put("idvidType", idvidType);
+		Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class);
+		int timeInMinutes = (timeInSeconds % 3600) / 60;
+		values.put("validTime", String.valueOf(timeInMinutes));
+		values.put(DATE, date);
+		values.put(TIME, time);
+		values.putAll(valueMap);
+		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
+		values.remove(IdAuthCommonConstants.EMAIL);
+		return values;
+	}
+
+	/**
+	 * Gets the date and time.
+	 *
+	 * @param requestTime the request time
+	 * @param pattern     the pattern
+	 * @return the date and time
+	 */
+	private Tuple2<String, String> getDateAndTime(LocalDateTime timestamp) {
+		ZonedDateTime dateTime = ZonedDateTime.of(timestamp, ZoneId.of("UTC")).withZoneSameInstant(getZone());
+		String date = dateTime.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
+		String time = dateTime.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
+		return Tuples.of(date, time);
+	}
+
+	private ZoneId getZone() {
+		return ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
 	}
 
 	/**
@@ -298,6 +349,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
 		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
+		System.err.println(mailContent);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
 	
