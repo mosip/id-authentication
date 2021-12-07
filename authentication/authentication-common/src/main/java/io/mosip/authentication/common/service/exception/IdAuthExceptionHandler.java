@@ -26,10 +26,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -208,6 +210,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
+		List<AuthError> errors = getAuthErrors(ex);
+		return buildExceptionResponse(ex, request, errors);
+	}
+
+	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request, List<AuthError> errors) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
 				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String type = null;
@@ -218,15 +225,32 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			String reqUrl = (request).getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
 		}
-		List<AuthError> errors = getAuthErrors(ex);
 		if (errors != null && !errors.isEmpty()) {
 			Object response = frameErrorResponse(requestReceived, type, errors);
-			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithMetadata) {
-				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
-				ObjectWithMetadata responsWithMetadata = (ObjectWithMetadata) response;
-				if(exceptionWithMetadata.getMetadata() != null) {
-					exceptionWithMetadata.copyAllMetadaTo(responsWithMetadata);
+			//Try copying ID, version and transaction ID from request metadata
+			if(request instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
+				ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+				ObjectWithIdVersionTransactionID responsWithMetadata = (ObjectWithIdVersionTransactionID) response;
+				if(requestWithMetadata.getMetadata() != null) {
+					IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, responsWithMetadata);
+					IdaRequestResponsConsumerUtil.setTransactionIdToResponse(requestWithMetadata, responsWithMetadata);
 				}
+			}
+			
+			//Try copying ID, version and transaction ID from exception metadata
+			if(ex instanceof ObjectWithMetadata && response instanceof ObjectWithIdVersionTransactionID) {
+				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
+				ObjectWithIdVersionTransactionID responsWithMetadata = (ObjectWithIdVersionTransactionID) response;
+				if(exceptionWithMetadata.getMetadata() != null) {
+					IdaRequestResponsConsumerUtil.setIdVersionToResponse(exceptionWithMetadata, responsWithMetadata);
+					IdaRequestResponsConsumerUtil.setTransactionIdToResponse(exceptionWithMetadata, responsWithMetadata);
+				}
+			}
+			
+			if(ex instanceof ObjectWithMetadata) {
+				ObjectWithMetadata exceptionWithMetadata = (ObjectWithMetadata) ex;
+				//This errors list is used some times by the caller for storing in auth transaction
+				exceptionWithMetadata.putMetadata(IdAuthCommonConstants.ERRORS, errors);
 			}
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
@@ -337,10 +361,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		switch (requestReceived) {
 		case "kyc":
 			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-			//KycResponseDTO kycResponseDTO = new KycResponseDTO();
 			kycAuthResponseDTO.setErrors(errors);
 			kycAuthResponseDTO.setResponseTime(responseTime);
-			//kycAuthResponseDTO.setResponse(kycResponseDTO);
 			return kycAuthResponseDTO;
 		case "otp":
 			OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
