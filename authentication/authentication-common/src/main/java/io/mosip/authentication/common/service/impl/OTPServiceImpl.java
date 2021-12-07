@@ -26,10 +26,12 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -102,8 +104,8 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	@Qualifier("NotificationLangComparator")
-	private LanguageComparator languageComparator;	
-
+	private LanguageComparator languageComparator;
+	
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 
@@ -117,7 +119,7 @@ public class OTPServiceImpl implements OTPService {
 	 *                                           exception
 	 */
 	@Override
-	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto, String partnerId)
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto, String partnerId, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException {
 		boolean isInternal = partnerId != null && partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL);
 		boolean status;
@@ -132,28 +134,30 @@ public class OTPServiceImpl implements OTPService {
 			token = idAuthService.getToken(idResDTO);
 
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
-			
+			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, otpResponseDTO);
+
 			status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, otpResponseDTO);
+			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, otpResponseDTO, requestWithMetadata);
 			
 			return otpResponseDTO;
 
 		} catch(IdAuthenticationBusinessException e) {
 			status = false;
-			saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, null);
+			//FIXME check if for this condition auth transaction is stored, then remove below code
+			//saveToTxnTable(otpRequestDto, isInternal, status, partnerId, token, null, null);
 			throw e;
 		}
 
 
 	}
 
-	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token, OtpResponseDTO otpResponseDTO)
+	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token, OtpResponseDTO otpResponseDTO, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException {
 		if (token != null) {
 			boolean authTokenRequired = !isInternal
 					&& env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, boolean.class, false);
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
-			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal, otpResponseDTO);
+			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal, otpResponseDTO, requestWithMetadata);
 		}
 	}
 
@@ -167,6 +171,9 @@ public class OTPServiceImpl implements OTPService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String transactionId = otpRequestDto.getTransactionID();
+			otpResponseDTO.setId(otpRequestDto.getId());
+			otpResponseDTO.setTransactionID(transactionId);
+			
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);			
 			Map<String, String> valueMap = new HashMap<>();
 			
@@ -179,14 +186,13 @@ public class OTPServiceImpl implements OTPService {
 			String phoneNumber = getPhoneNumber(idInfo);			
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
+			
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap,
 					templateLanguages);
 
 			if (isOtpGenerated) {
-				otpResponseDTO.setId(otpRequestDto.getId());
-				otpResponseDTO.setErrors(Collections.emptyList());
-				otpResponseDTO.setTransactionID(transactionId);
-				String responseTime = formatDate(new Date(),
+				otpResponseDTO.setErrors(null);
+				String responseTime = IdaRequestResponsConsumerUtil.getResponseTime(otpRequestDto.getRequestTime(),
 						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
@@ -195,6 +201,7 @@ public class OTPServiceImpl implements OTPService {
 					processChannel(channel, phoneNumber, email, maskedResponseDTO);
 				}
 				otpResponseDTO.setResponse(maskedResponseDTO);
+				
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
 						" is OTP generated: " + isOtpGenerated);
 			} else {
@@ -215,10 +222,11 @@ public class OTPServiceImpl implements OTPService {
 	 * @param authTokenId the auth token id
 	 * @param status        the status
 	 * @param otpResponseDTO 
+	 * @param requestWithMetadata 
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String authTokenId, boolean status, String partnerId, boolean isInternal, OtpResponseDTO otpResponseDTO)
+	private void saveTxn(OtpRequestDTO otpRequestDto, String token, String authTokenId, boolean status, String partnerId, boolean isInternal, OtpResponseDTO otpResponseDTO, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException {
 		Optional<PartnerDTO> partner = isInternal ? Optional.empty() : partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance()
@@ -231,8 +239,8 @@ public class OTPServiceImpl implements OTPService {
 				.withInternal(isInternal)
 				.build(env,uinHashSaltRepo,securityManager);
 		fraudEventManager.analyseEvent(authTxn);
-		if(otpResponseDTO != null) {
-			otpResponseDTO.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
+		if(requestWithMetadata != null) {
+			requestWithMetadata.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
 		} else {
 			idAuthService.saveAutnTxn(authTxn);
 		}

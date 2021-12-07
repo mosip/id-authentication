@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.facade;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -27,7 +28,7 @@ public interface AuthFacade {
 	 *                                           exception.
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean isAuth,String partnerId, String partnerApiKey, boolean markVidConsumed)
+	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean isAuth,String partnerId, String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
 }

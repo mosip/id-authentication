@@ -76,6 +76,9 @@ public final class IdAuthCommonConstants {
 	public static final String STATUS = "status";
 
 	public static final String ID = "id";
+	
+	/** The Constant VERSION. */
+	public static final String VERSION = "version";
 
 	public static final String RESPONSE = "response";
 
@@ -319,6 +322,9 @@ public final class IdAuthCommonConstants {
 	public static final String FAILURE = "failure";
 	
 	public static final String QUALITY_SCORE = "qualityScore";
+	
+	public static final String UIN_HASH_SALT = "uin_hash_salt";
+
 
 
 	private IdAuthCommonConstants() {
