@@ -91,5 +91,13 @@ public class InternalAuthFilter extends IdAuthFilter {
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		return attribute + INTERNAL;
 	}
+	
+	protected boolean needStoreAuthTransaction() {
+		return true;
+	}
+	
+	protected boolean needStoreAnonymousProfile() {
+		return false;
+	}
 
 }

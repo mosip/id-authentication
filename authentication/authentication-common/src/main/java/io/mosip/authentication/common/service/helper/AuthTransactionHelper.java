@@ -31,6 +31,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -103,11 +104,14 @@ public class AuthTransactionHelper {
 	 *
 	 * @param exception the exception
 	 * @param authTxnBuilder the auth txn builder
+	 * @param targetObjectMetadata 
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public void setAuthTransactionEntityMetadata(IdAuthenticationBaseException exception , AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
+	public void setAuthTransactionEntityMetadata(IdAuthenticationBaseException exception , AuthTransactionBuilder authTxnBuilder, ObjectWithMetadata targetObjectMetadata) throws IdAuthenticationBusinessException {
 		try {
-			authTxnBuilder.withStatusComment(objectMapper.writeValueAsString(IdAuthExceptionHandler.getAuthErrors(exception)));
+			List<AuthError> authErrors = IdAuthExceptionHandler.getAuthErrors(exception);
+			targetObjectMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authErrors);
+			authTxnBuilder.withStatusComment(objectMapper.writeValueAsString(authErrors));
 		} catch (JsonProcessingException e) {
 			authTxnBuilder.withStatusComment(e.getMessage() == null ? IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() : e.getMessage());
 		}
@@ -125,7 +129,7 @@ public class AuthTransactionHelper {
 			authTxnBuilder.withAuthTypeCode(IdAuthCommonConstants.UNKNOWN);
 		}
 		
-		setObjectToMetadata(exception, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
+		setObjectToMetadata(targetObjectMetadata, getAuthTransactionEntityKey(), buildAuthTransactionEntity(authTxnBuilder));
 	}
 
 	private String computeToken(AuthTransactionBuilder authTxnBuilder) throws IdAuthenticationBusinessException {
@@ -207,13 +211,14 @@ public class AuthTransactionHelper {
 	 *
 	 * @param authTxnBuilder the auth txn builder
 	 * @param e the e
+	 * @param targetObjectMetadata 
 	 * @return the id authentication app exception
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public IdAuthenticationAppException createDataValidationException(AuthTransactionBuilder authTxnBuilder, IDDataValidationException e)
+	public IdAuthenticationAppException createDataValidationException(AuthTransactionBuilder authTxnBuilder, IDDataValidationException e, ObjectWithMetadata targetObjectMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
-		setAuthTransactionEntityMetadata(e, authTxnBuilder);
+		setAuthTransactionEntityMetadata(e, authTxnBuilder, targetObjectMetadata);
 		return new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 	}
 
@@ -222,13 +227,14 @@ public class AuthTransactionHelper {
 	 *
 	 * @param authTxnBuilder the auth txn builder
 	 * @param e the e
+	 * @param requestWithMetadata 
 	 * @return the id authentication app exception
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public IdAuthenticationAppException createUnableToProcessException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e)
+	public IdAuthenticationAppException createUnableToProcessException(AuthTransactionBuilder authTxnBuilder, IdAuthenticationBusinessException e, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException {
-		setAuthTransactionEntityMetadata(e, authTxnBuilder);
+		setAuthTransactionEntityMetadata(e, authTxnBuilder, requestWithMetadata);
 		return new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 	}
 	

@@ -28,6 +28,7 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 
 @RunWith(SpringRunner.class)
@@ -95,7 +96,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -114,7 +115,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getDynamicEntityInfo(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -132,7 +133,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("F");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody,requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -156,7 +157,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -189,7 +190,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -203,7 +204,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	@Test
@@ -212,7 +213,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		partner.put("partnerName", "SyncByte");
 		requestMetadata.put("partnerId", "abc");
 		requestMetadata.put("abc", partner);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
 	
@@ -223,13 +224,9 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "");
 		responseBody.put("response", authResponse);
 		
-		List<Map<String, Object>>  errorsList = new ArrayList<Map<String,Object>>();
-		Map<String, Object> errorMap = new HashMap<>();
-		errorMap.put("errorCode", "IDA-MLC-007");
-		errorsList.add(errorMap);
-		responseBody.put("errors", errorsList);
-		
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, responseBody,requestMetadata, responseMetadata);
+		List<AuthError>  errorsList = new ArrayList<>();
+		errorsList.add(new AuthError("IDA-MLC-007",  "IDA-MLC-007"));
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, false, errorsList);
 	}
 
 }

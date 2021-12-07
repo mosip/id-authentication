@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,9 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.common.service.util.TestHttpServletRequest;
+import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -237,7 +241,6 @@ public class KycControllerTest {
 		HashMap<String, Object> respMetadata = new HashMap<String, Object>();
 		respMetadata.put("IDENTITY_DATA", new HashMap<String, Object>());
 		respMetadata.put("IDENTITY_INFO", new HashMap<String, Object>());
-		authResponseDTO.setMetadata(metadata);
 
 	}
 
@@ -253,12 +256,15 @@ public class KycControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(kycAuthReqDTO, !false, partner))
 				.thenReturn(authTxnBuilder);
 
-		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579"))
+		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");;
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
+		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata))
 				.thenReturn(authResponseDTO);
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579"))
+		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata()))
 				.thenReturn(kycAuthResponseDTO);
 		assertEquals(kycAuthResponseDTO,
-				kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579"));
+				kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata));
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -271,20 +277,22 @@ public class KycControllerTest {
 		
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(kycAuthReqDTO, false, Optional.empty()))
 				.thenReturn(authTxnBuilder);
-		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException());
-		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579")).thenReturn(authResponseDTO);
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579")).thenReturn(kycAuthResponseDTO);
-		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579");
+		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException());
+		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", new TestObjectWithMetadata())).thenReturn(authResponseDTO);
+		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", Collections.emptyMap())).thenReturn(kycAuthResponseDTO);
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
 	}
 	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void processKycFailure2() throws IdAuthenticationBusinessException, IdAuthenticationAppException,
 			IdAuthenticationDaoException, Exception {
 
-		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException());
+		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException());
 		
-		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579")).thenThrow(new IdAuthenticationBusinessException());
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579")).thenReturn(kycAuthResponseDTO);
-		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579");
+		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
+		requestWithMetadata.setMetadata(new HashMap<>());
+		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata)).thenThrow(new IdAuthenticationBusinessException());
+		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata())).thenReturn(kycAuthResponseDTO);
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata);
 	}
 }

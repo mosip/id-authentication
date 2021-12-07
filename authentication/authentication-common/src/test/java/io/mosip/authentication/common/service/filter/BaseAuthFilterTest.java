@@ -283,11 +283,6 @@ public class BaseAuthFilterTest {
 	}
 
 	@Test
-	public void transformResponseTest() throws IdAuthenticationAppException {
-		assertNull(baseAuthFilter.transformResponse(null));
-	}
-
-	@Test
 	public void requesthmacTest() throws IdAuthenticationAppException {
 		try {
 			baseAuthFilter.validateRequestHMAC("ED504CDE02EC2E3F9885C06CE5129D68833ADC97C869F21855B4BA4455601B3", "reqData");

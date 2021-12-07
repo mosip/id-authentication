@@ -76,6 +76,9 @@ public final class IdAuthCommonConstants {
 	public static final String STATUS = "status";
 
 	public static final String ID = "id";
+	
+	/** The Constant VERSION. */
+	public static final String VERSION = "version";
 
 	public static final String RESPONSE = "response";
 
