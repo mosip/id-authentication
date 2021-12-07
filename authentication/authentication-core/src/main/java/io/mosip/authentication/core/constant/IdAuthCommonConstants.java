@@ -325,7 +325,7 @@ public final class IdAuthCommonConstants {
 	
 	public static final String UIN_HASH_SALT = "uin_hash_salt";
 
-
+	public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private IdAuthCommonConstants() {
 	}

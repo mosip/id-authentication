@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -19,8 +20,6 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 public class AuthResponseBuilder {
 	
-	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
 	/** The built flag. */
 	private boolean built;
 
@@ -122,11 +121,16 @@ public class AuthResponseBuilder {
 		res.setAuthStatus(status);
 		res.setAuthToken(tokenID);
 		responseDTO.setResponse(res);
-
-		responseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(UTC_DATETIME_PATTERN));
+		responseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(IdAuthCommonConstants.UTC_DATETIME_PATTERN));
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
-		addErrors(authErrors);
+		if(authErrors.length > 0) {
+			addErrors(authErrors);
+		}
+		
+		if(responseDTO.getErrors() != null && responseDTO.getErrors().isEmpty()) {
+			responseDTO.setErrors(null);
+		}
 
 		built = true;
 		return responseDTO;

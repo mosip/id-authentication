@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
-import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
@@ -33,6 +32,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -125,11 +125,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	private AuthFiltersValidator authFiltersValidator;
 	
 	@Autowired
-	public MatchInputBuilder matchInputBuilder;
+	private IdInfoHelper idInfoHelper;
 	
-	@Autowired
-	public IdInfoHelper idInfoHelper;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -139,7 +136,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 */
 	@Override
 	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId,
-			String partnerApiKey, boolean markVidConsumed) throws IdAuthenticationBusinessException {
+			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata) throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
 		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
@@ -166,7 +163,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		String token = idService.getToken(idResDTO);
 
-		AuthResponseDTO authResponseDTO = null;
+		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String authTokenId = null;
@@ -176,11 +173,10 @@ public class AuthFacadeImpl implements AuthFacade {
 				.get(AuthTransactionBuilder.class.getSimpleName());
 		authTxnBuilder.withToken(token);
 
-		ObjectWithMetadata objectWithMetadata = null;
-
+		String transactionID = authRequestDTO.getTransactionID();
 		try {
 			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
+			authResponseBuilder.setTxnID(transactionID);
 			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
 					: null;
 
@@ -192,8 +188,7 @@ public class AuthFacadeImpl implements AuthFacade {
 					partnerId, authTxnBuilder);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} catch (IdAuthenticationBusinessException e) {
-			objectWithMetadata = e;
-//			throw e;
+			throw e;
 		} finally {
 			// Set response token
 			if (authTokenRequired) {
@@ -201,22 +196,24 @@ public class AuthFacadeImpl implements AuthFacade {
 			} else {
 				authResponseDTO = authResponseBuilder.build(null);
 			}
-
-			if (objectWithMetadata == null) {
-				// In catch block this is assigned with exception, if null, assign with response
-				// DTO
-				objectWithMetadata = authResponseDTO;
+			
+			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWrapperMetadata, authResponseDTO);
+			if(authResponseDTO.getTransactionID() == null && transactionID != null) {
+				authResponseDTO.setTransactionID(transactionID);
 			}
 
-			authTxnBuilder.withStatus(authResponseDTO.getResponse().isAuthStatus());
+			boolean authStatus = authResponseDTO.getResponse().isAuthStatus();
+			authTxnBuilder.withStatus(authStatus);
 			authTxnBuilder.withAuthToken(authTokenId);
 
 			// This is sent back for the consumption by the caller for example
-			// KYCFacadeImpl. Whole metadata will be removed at the end by filter.
-			objectWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			objectWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
+			// KYCFacadeImpl, Base IDA Filter.
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.STATUS, authStatus);
+			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authResponseDTO.getErrors());
 
-			authTransactionHelper.setAuthTransactionEntityMetadata(objectWithMetadata, authTxnBuilder);
+			authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
 
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
