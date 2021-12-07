@@ -238,32 +238,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	}
 
 	/**
-	 * encipherResponse method is used to encoded and encrypt the response received
-	 * while returning the KYC response.
-	 *
-	 * @param responseBody the response received after authentication
-	 * @return the map the final encoded and enciphered response
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	protected Map<String, Object> encipherResponse(Map<String, Object> responseBody)
-			throws IdAuthenticationAppException {
-		return responseBody;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.service.filter.BaseIDAFilter#transformResponse(java.
-	 * util.Map)
-	 */
-	@Override
-	protected Map<String, Object> transformResponse(Map<String, Object> responseMap)
-			throws IdAuthenticationAppException {
-		return encipherResponse(responseMap);
-	}
-
-	/**
 	 * validateRequestHMAC method is used to validate the HMAC of the request with
 	 * the deciphered request block and requestHMAC received in the request body.
 	 *

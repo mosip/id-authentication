@@ -3,11 +3,7 @@ package io.mosip.authentication.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,9 +20,12 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -41,6 +40,10 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -119,42 +122,52 @@ public class AuthController {
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public AuthResponseDTO authenticateIndividual(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
-			@PathVariable("API-Key") String partnerApiKey)
+			@PathVariable("API-Key") String partnerApiKey, HttpServletRequest request)
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		
-		boolean isAuth = true;
-		Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authrequestdto.getMetadata());
-		AuthTransactionBuilder authTxnBuilder = authTransactionHelper
-				.createAndSetAuthTxnBuilderMetadataToRequest(authrequestdto, !isAuth, partner);
+		if(request instanceof ObjectWithMetadata) {
+			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 		
-		try {
-			String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
-					: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
-			authrequestdto.setIndividualIdType(idType);
-			authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
-			if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
-				authRequestValidator.validateDeviceDetails(authrequestdto, errors);
-			}
-			DataValidationUtil.validate(errors);
-			AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId, partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT);
-			// Note: Auditing of success or failure status of each authentication (but not
-			// the exception) is handled in respective authentication invocations in the facade
-			return authResponsedto;
-		} catch (IDDataValidationException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
+			boolean isAuth = true;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authrequestdto.getMetadata());
+			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(authrequestdto, !isAuth, partner);
 			
-			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
-			
-			throw authTransactionHelper.createDataValidationException(authTxnBuilder, e);
-		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
-			
-			auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
-			
-			throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e);
-		} 
+			try {
+				String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
+						: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
+				authrequestdto.setIndividualIdType(idType);
+				authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
+				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
+					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
+				}
+				DataValidationUtil.validate(errors);
+				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
+						partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT, requestWithMetadata);
+				// Note: Auditing of success or failure status of each authentication (but not
+				// the exception) is handled in respective authentication invocations in the facade
+				return authResponsedto;
+			} catch (IDDataValidationException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
+				
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
+				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
+				
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());
+				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWithMetadata);
+			} 
+		} else {
+			mosipLogger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
 	}
 
 	

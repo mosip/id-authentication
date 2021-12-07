@@ -19,9 +19,6 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class PartnerServiceCallbackControllerTest {
 
-    @InjectMocks
-    private PartnerServiceCallbackController partnerServiceCallbackController;
-
     @Mock
     private PartnerServiceManager partnerManager;
 
@@ -30,6 +27,10 @@ public class PartnerServiceCallbackControllerTest {
 
     @Mock
     private EventModel eventModel;
+    
+    @InjectMocks
+    private PartnerServiceCallbackController partnerServiceCallbackController;
+
 
     /**
      * This class tests the handleApiKeyApprovedEvent method

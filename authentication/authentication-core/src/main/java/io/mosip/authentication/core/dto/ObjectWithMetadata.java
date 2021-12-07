@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ObjectWithMetadata - base interface for objects with metadata.
  *
@@ -90,7 +89,9 @@ public interface ObjectWithMetadata {
 	 * @param target the target
 	 */
 	default void copyAllMetadaTo(ObjectWithMetadata target) {
-		this.getMetadata().keySet().forEach(key -> this.copyMetadataTo(target, key));
+		if(this.getMetadata() != null && !this.getMetadata().isEmpty()) {
+			this.getMetadata().keySet().forEach(key -> this.copyMetadataTo(target, key));
+		}
 	}
 	
 }
