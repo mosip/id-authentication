@@ -1,14 +1,13 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertyResolver;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -27,7 +26,6 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
  * The builder to build {@code AutnTxn} instance.
@@ -246,7 +244,7 @@ public class AuthTransactionBuilder {
 			AutnTxn autnTxn = new AutnTxn();
 			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
-			String id = createId(token, env);
+			String id = createId();
 			autnTxn.setToken(token);
 			autnTxn.setId(id);
 			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
@@ -330,11 +328,8 @@ public class AuthTransactionBuilder {
 	 * @param env the env
 	 * @return the string
 	 */
-	private String createId(String token, PropertyResolver env) {
-		String currentDate = DateUtils.formatDate(new Date(),
-				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-		String tokenAndDate = token + "-" + currentDate;
-		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, tokenAndDate).toString();
+	private String createId() {
+		return UUID.randomUUID().toString();
 	}
 
 	/**

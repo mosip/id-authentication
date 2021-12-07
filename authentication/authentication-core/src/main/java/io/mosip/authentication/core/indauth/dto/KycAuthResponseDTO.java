@@ -1,8 +1,5 @@
 package io.mosip.authentication.core.indauth.dto;
 
-import java.util.Map;
-
-import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,11 +13,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true	)
-public class KycAuthResponseDTO extends BaseAuthResponseDTO implements ObjectWithMetadata {
+public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
 	private KycResponseDTO response;
 	
-	private Map<String, Object> metadata;
-
 }
