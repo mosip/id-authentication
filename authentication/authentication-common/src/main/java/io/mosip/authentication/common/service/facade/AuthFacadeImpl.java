@@ -164,8 +164,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		String token = idService.getToken(idResDTO);
 
 		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
-				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String authTokenId = null;
 		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
@@ -193,9 +192,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		} finally {
 			// Set response token
 			if (authTokenRequired) {
-				authResponseDTO = authResponseBuilder.build(authTokenId, authRequestDTO.getRequestTime());
+				authResponseDTO = authResponseBuilder.build(authTokenId);
 			} else {
-				authResponseDTO = authResponseBuilder.build(null, authRequestDTO.getRequestTime());
+				authResponseDTO = authResponseBuilder.build(null);
 			}
 			
 			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWrapperMetadata, authResponseDTO);
