@@ -349,7 +349,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
 		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
-		System.err.println(mailContent);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
 	
