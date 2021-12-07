@@ -3,13 +3,10 @@ package io.mosip.authentication.common.service.websub.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_TYPE_STATUS_ACK_TOPIC;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.idevent.AuthTypeStatusUpdateAckEvent;
 import io.mosip.authentication.common.service.websub.dto.EventModel;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -31,10 +28,6 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
 	private String authTypeStatusAcknlowedgeTopic;
 	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
-
 	/**
 	 * Do subscribe.
 	 */
