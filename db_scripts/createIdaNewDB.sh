@@ -33,7 +33,7 @@ sed -i "s/DBADMIN_PWD=.*/DBADMIN_PWD=$dbPwd/g" $newDB/mosip_ida_deploy.propertie
 sed -i "s/APPADMIN_PWD=.*/APPADMIN_PWD=$dbPwd/g" $newDB/mosip_ida_deploy.properties;
 sed -i "s/DBUSER_PWD=.*/DBUSER_PWD=$dbPwd/g" $newDB/mosip_ida_deploy.properties;
 sed -i "s:BASEPATH=.*:BASEPATH=$PWD:g" $newDB/mosip_ida_deploy.properties;
-sed -i "s/LOG_PATH=.*/LOG_PATH=..\/..\/tmp\/logs\//g" $newDB/mosip_ida_deploy.properties;
+sed -i "s/LOG_PATH=.*/LOG_PATH=..\/..\/..\/logs\//g" $newDB/mosip_ida_deploy.properties;
 sed -i "s/DML_FLAG=.*/DML_FLAG=1/g" $newDB/mosip_ida_deploy.properties;
 
 echo "success";
