@@ -39,6 +39,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -131,18 +132,18 @@ public class InternalOTPControllerTest {
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
+		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
 		Errors errors = new BeanPropertyBindingResult(otpRequestDto, "otpRequestDto");
-		internalotpController.generateOTP(otpRequestDto, errors);
+		internalotpController.generateOTP(otpRequestDto, errors, new TestHttpServletRequest());
 
 	}
 	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void TestIdAuthBusinessException() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		otpRequestDto = getOtpRequestDTO();
-		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
+		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		Errors errors = new BeanPropertyBindingResult(otpRequestDto, "otpRequestDto");
-		internalotpController.generateOTP(otpRequestDto, errors);
+		internalotpController.generateOTP(otpRequestDto, errors, new TestHttpServletRequest());
 	}
 
 
@@ -151,9 +152,9 @@ public class InternalOTPControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
-		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any()))
+		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException());
-		internalotpController.generateOTP(new OtpRequestDTO(), errors);
+		internalotpController.generateOTP(new OtpRequestDTO(), errors, new TestHttpServletRequest());
 	}
 
 	@Test
@@ -174,8 +175,8 @@ public class InternalOTPControllerTest {
 		otpResponseDTO.setErrors(autherror);
 		otpResponseDTO.setResponseTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
-		internalotpController.generateOTP(otpRequestDTO, errors);
+		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
+		internalotpController.generateOTP(otpRequestDTO, errors, new TestHttpServletRequest());
 	}
 
 	// =========================================================

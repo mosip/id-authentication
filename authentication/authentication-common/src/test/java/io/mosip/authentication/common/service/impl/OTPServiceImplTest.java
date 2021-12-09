@@ -41,9 +41,11 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRespon
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -156,7 +158,7 @@ public class OTPServiceImplTest {
 		map.put("messaage", "otp_generated");
 		response.setResponse(map);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
-		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
+		otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -211,14 +213,14 @@ public class OTPServiceImplTest {
 		
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
-		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
+		otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestOtpFloodException() throws IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
 		otpRequestDTO.setRequestTime("2019-03-23T14:52:29.008");
-		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
+		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890", new TestObjectWithMetadata());
 	}
 
 	@Test
@@ -248,7 +250,7 @@ public class OTPServiceImplTest {
 	
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
 	   try {	
-		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
+		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890", new TestObjectWithMetadata());
 	   }
 	   catch(IdAuthenticationBusinessException ex) {
 		   assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED.getErrorCode(), ex.getErrorCode());
@@ -292,7 +294,7 @@ public class OTPServiceImplTest {
 		response.setResponse(map);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 	   try {	
-		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
+		otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
 	   }
 	   catch(IdAuthenticationBusinessException ex) {
 		   assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());

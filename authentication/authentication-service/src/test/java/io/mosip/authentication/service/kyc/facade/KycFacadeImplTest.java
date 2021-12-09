@@ -47,6 +47,8 @@ import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.TestHttpServletRequest;
+import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -243,7 +245,7 @@ public class KycFacadeImplTest {
 		uinList.add(uin1);
 		idInfoMetadata.put("uin", uinList);
 		resMetadata.put("IDENTITY_INFO", idInfoMetadata);
-		authResponseDTO.setMetadata(resMetadata);
+//		authResponseDTO.setMetadata(resMetadata);
 		
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(idRepo);
 		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(idRepo);
@@ -254,7 +256,7 @@ public class KycFacadeImplTest {
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString())).thenReturn("234567890");
 		Mockito.when(otpAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(),"123456")).thenReturn(authStatusInfo);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456", true)).thenReturn(authStatusInfo);
-		assertEquals(authResponseDTO.getResponse(), kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345").getResponse());
+		assertEquals(authResponseDTO.getResponse(), kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse());
 	}
 	
 	
@@ -341,7 +343,7 @@ public class KycFacadeImplTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		authResponseDTO.setMetadata(authResMetadata);
+//		authResponseDTO.setMetadata(authResMetadata);
 
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(mapData);
 		Mockito.when(securityManager.encryptData(Mockito.any(), Mockito.any())).thenReturn(Tuples.of("", "",""));
@@ -350,7 +352,7 @@ public class KycFacadeImplTest {
 		Mockito.when(securityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());
 		Mockito.when(idService.getToken(idData)).thenReturn(uin);
-		assertEquals(kycAuthResponseDTO.getResponse(),kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456").getResponse());
+		assertEquals(kycAuthResponseDTO.getResponse(),kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata).getResponse());
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -429,12 +431,12 @@ public class KycFacadeImplTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		authResponseDTO.setMetadata(authResMetadata);
+//		authResponseDTO.setMetadata(authResMetadata);
 		
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(kycResponseDTO);
 		Mockito.when(partnerService.getPartner("123456", kycAuthRequestDTO.getMetadata())).thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(idService.getToken(idData)).thenReturn(uin);
-		kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456");
+		kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
 	}
 
 }

@@ -76,6 +76,9 @@ public final class IdAuthCommonConstants {
 	public static final String STATUS = "status";
 
 	public static final String ID = "id";
+	
+	/** The Constant VERSION. */
+	public static final String VERSION = "version";
 
 	public static final String RESPONSE = "response";
 
@@ -322,7 +325,7 @@ public final class IdAuthCommonConstants {
 	
 	public static final String UIN_HASH_SALT = "uin_hash_salt";
 
-
+	public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private IdAuthCommonConstants() {
 	}

@@ -24,7 +24,6 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 public class AuthResponseBuilderTest {
 	@Autowired
 	Environment env;
-	private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
 	@Test
 	public void testAuthStatusInfoBuilder() {
@@ -72,17 +71,17 @@ public class AuthResponseBuilderTest {
 
 	@Test
 	public void testAuthResponseInfoBuilder() {
-		assertTrue(AuthResponseBuilder.newInstance(dateTimePattern)
+		assertTrue(AuthResponseBuilder.newInstance()
 				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789")
 				.getResponse().isAuthStatus());
-		assertFalse(AuthResponseBuilder.newInstance(dateTimePattern)
+		assertFalse(AuthResponseBuilder.newInstance()
 				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789")
 				.getResponse().isAuthStatus());
 
-		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789")
+		assertEquals(AuthResponseBuilder.newInstance().setTxnID("1234567890").build("123456789")
 				.getTransactionID(), "1234567890");
 
-		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance(dateTimePattern)
+		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance()
 				.addErrors(new AuthError("101", "Error1"))
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build("123456789");
 
@@ -106,7 +105,7 @@ public class AuthResponseBuilderTest {
 				// AuthUsageDataBit.MATCHED_PI_EMAIL)
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3")).build();
 
-		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder.newInstance(dateTimePattern)
+		AuthResponseDTO authResponseDTO2 = AuthResponseBuilder.newInstance()
 				.addAuthStatusInfo(authStatusInfo1).addAuthStatusInfo(authStatusInfo2).build("123456789");
 
 		/*
@@ -126,7 +125,7 @@ public class AuthResponseBuilderTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testAuthResponseBuilderMultipleTimes() {
-		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance();
 		statusInfoBuilder.setTxnID("1234567890");
 		statusInfoBuilder.build("123456789");
 
@@ -135,19 +134,19 @@ public class AuthResponseBuilderTest {
 
 	@Test
 	public void TestSetId() {
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
-		authResponseBuilder.setId(PinAuthType.OTP.getDisplayName());
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
+		authResponseBuilder.setId();
 	}
 
 	@Test
 	public void TestSetAuthToken() {
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		authResponseBuilder.setAuthTokenId("TEST123");
 	}
 
 	@Test
 	public void TestSetVersion() {
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		authResponseBuilder.setVersion("1.0");
 	}
 

@@ -441,7 +441,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		Map<String, Object> metadata = new HashMap<>();
 		metadata.put("partnerId", partnerId);
 		metadata.put(partnerId, createPartnerDTO(partnerServiceResponse, partnerApiKey));
-		metadata.put(partnerId + partnerApiKey, partnerServiceResponse.getPolicy());
+		metadata.put(partnerId + partnerApiKey, partnerServiceResponse);
 		metadata.put(IdAuthCommonConstants.KYC_LANGUAGES, validateAndGetKycLanguages(partnerServiceResponse.getPolicy().getKycLanguages()));
 		if (partnerCertificate != null) {
 			metadata.put(IdAuthCommonConstants.PARTNER_CERTIFICATE, partnerCertificate);
