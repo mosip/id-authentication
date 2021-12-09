@@ -1,11 +1,9 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,17 +310,6 @@ public class OTPServiceImpl implements OTPService {
 	 */
 	private String getPhoneNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-	}
-
-	/**
-	 * Formate date.
-	 *
-	 * @param date   the date
-	 * @param format the formate
-	 * @return the date
-	 */
-	private String formatDate(Date date, String format) {
-		return new SimpleDateFormat(format).format(date);
 	}
 
 	/**
