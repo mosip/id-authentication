@@ -3,7 +3,7 @@
 echo "syntax: bash reNameDB.sh oldDbName newDbName password";
 
 if [[ $# -ne 3 ]]; then
-  echo "oldDB name & newDB name not provided as parameter; EXITING"
+  echo "oldDB, newDB & dbPwd not provided as parameter; EXITING"
   exit 1;
 fi
 
