@@ -8,8 +8,8 @@ if [[ $# -ne 3 ]]; then
 fi
 
 ## set variables
-oldDB=$1;
-newDB=$2;
+oldDB=$1;     ## mosip_ida
+newDB=$2;     ## mosip_ida_1
 dbPwd=$3
 
 ## create new DB directory
