@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.integration.DataShareManager;
+import io.mosip.authentication.common.service.spi.websub.PartnerCACertEventService;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -35,7 +36,7 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 	private static Logger logger = IdaLogger.getLogger(PartnerCACertEventServiceImpl.class);
 
 	/** The data share manager. */
-	@Autowired
+	@Autowired(required = false)
 	private DataShareManager dataShareManager;
 	
 	/** The partner cert manager. */
@@ -45,7 +46,7 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 	/** The decrypt ca cert from data share. */
 	@Value("${ida-decrypt-ca-cert-data-share-content:false}")
 	private boolean decryptCaCertFromDataShare;
-
+	
 	/**
 	 * Handle CA cert event.
 	 *
@@ -63,7 +64,8 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 			caCertRequestDto.setCertificateData(downloadCertificate(certificateDataShareUrl));
 		}
 		if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String) {
-			caCertRequestDto.setPartnerDomain((String) data.get(PARTNER_DOMAIN));
+			String partnerDomain = (String) data.get(PARTNER_DOMAIN);
+			caCertRequestDto.setPartnerDomain(partnerDomain);
 		}
 		partnerCertManager.uploadCACertificate(caCertRequestDto);
 	}
@@ -90,5 +92,14 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 					ExceptionUtils.getStackTrace(e));
 			throw e;
 		}
+	}
+
+	@Override
+	public void evictCACertCache(EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {
+		Map<String, Object> data = eventModel.getEvent().getData();
+		if (data.containsKey(PARTNER_DOMAIN) && data.get(PARTNER_DOMAIN) instanceof String) {
+			String partnerDomain = (String) data.get(PARTNER_DOMAIN);
+			partnerCertManager.purgeTrustStoreCache(partnerDomain);
+		}		
 	}
 }
