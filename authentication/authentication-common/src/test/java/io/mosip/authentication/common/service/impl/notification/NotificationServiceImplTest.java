@@ -4,18 +4,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -126,7 +124,7 @@ public class NotificationServiceImplTest {
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		Supplier<Object> Supplier = () -> new String("Success");
+		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -174,7 +172,7 @@ public class NotificationServiceImplTest {
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		Supplier<Object> Supplier = () -> new String("Success");
+		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();

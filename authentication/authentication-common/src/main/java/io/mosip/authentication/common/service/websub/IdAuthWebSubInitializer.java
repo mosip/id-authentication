@@ -8,6 +8,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPubl
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
+import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 
 /**
  * Websub Initializer for External facing IDA services such as Auth, EKYC and
@@ -31,13 +32,18 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	
 	@Autowired
 	private AuthAnonymousEventPublisher authAnonymousEventPublisher;
+	
+	@Autowired
+	private PartnerCACertEventInitializer partnerCACertEventInitializer;
 
 	/**
 	 * Do init subscriptions.
 	 */
 	@Override
 	protected int doInitSubscriptions() {
-		return webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		webSubHelper.initSubscriber(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		webSubHelper.initSubscriber(partnerCACertEventInitializer);
+		return HttpStatus.SC_OK;
 	}
 
 	/**
@@ -46,6 +52,7 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Override
 	protected int doRegisterTopics() {
 		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		webSubHelper.initRegistrar(partnerCACertEventInitializer);
 		webSubHelper.initRegistrar(fraudEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
 		webSubHelper.initRegistrar(authAnonymousEventPublisher);

@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.micrometer.core.instrument.util.StringEscapeUtils;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -48,10 +48,12 @@ public class IdAuthFraudAnalysisEventManager {
 
 	@Autowired
 	private AutnTxnRepository authtxnRepo;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Async
-	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage)
-			throws JsonParseException, JsonMappingException, IOException {
+	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage) {
 		List<String> pathSegments = Arrays.asList(uri.split("/"));
 		String authType = null;
 		if (pathSegments.size() > 4) {
@@ -109,8 +111,17 @@ public class IdAuthFraudAnalysisEventManager {
 		eventData.setAuthType(authType);
 		eventData.setRequestTime(requestTime);
 		eventData.setAuthStatus(authStatus);
-		eventData.setComment(comment);
+		eventData.setComment(formatAsJson(comment));
 		return eventData;
+	}
+
+	private String formatAsJson(String comment) {
+		try {
+			mapper.readValue(comment, Object.class);
+			return StringEscapeUtils.escapeJson(comment);
+		} catch (IOException e) {
+			return comment;
+		}
 	}
 
 	private String getAuthType(List<String> pathSegments, String authType, Map<String, Object> request) {

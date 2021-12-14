@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 
 @Configuration
 @EnableCaching
+@EnableAsync
 public class AuthConfig extends IdAuthConfig {
 	
 	@Autowired

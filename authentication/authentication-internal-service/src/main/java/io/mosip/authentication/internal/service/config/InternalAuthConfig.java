@@ -3,10 +3,14 @@ package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.INTERNAL_ALLOWED_AUTH_TYPE;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -19,10 +23,16 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
  */
 @Configuration
 @EnableCaching
+@EnableAsync
 public class InternalAuthConfig extends IdAuthConfig {
 
 	@Autowired
 	protected Environment environment;
+	
+	@PostConstruct
+	public void initialize() {
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+	}
 	
 	/*
 	 * (non-Javadoc)
