@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.impl.patrner;
+package io.mosip.authentication.common.service.spi.websub;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.exception.RestServiceException;
@@ -19,5 +19,14 @@ public interface PartnerCACertEventService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	void handleCACertEvent(EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException;
+	
+	/**
+	 * Evict CA cert cache.
+	 *
+	 * @param eventModel the event model
+	 * @throws RestServiceException the rest service exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	void evictCACertCache(EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException;
 
 }
