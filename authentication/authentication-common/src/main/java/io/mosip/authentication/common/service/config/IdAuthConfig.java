@@ -30,7 +30,6 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
  * @author Manoj SP
  *
  */
-@EnableAsync
 public abstract class IdAuthConfig extends HibernateDaoConfig {
 
 	/** The environment. */

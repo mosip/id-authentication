@@ -1,16 +1,21 @@
 package io.mosip.authentication.common.manager;
 
-import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
-import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -18,10 +23,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
+import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
+import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -43,12 +50,13 @@ public class IdAuthFraudAnalysisEventManagerTest {
     @Mock
     private IdAuthFraudAnalysisEventPublisher publisher;
 
-    @Mock
-    private IdAuthSecurityManager idAuthSecurityManager;
+    @Autowired
+    private ObjectMapper mapper;
 
     @Before
     public void Before(){
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "requestFloodingTimeDiff", 1);
+        ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "mapper", mapper);
     }
 
     /**
@@ -140,5 +148,17 @@ public class IdAuthFraudAnalysisEventManagerTest {
         autnTxn.setDeleted(false);
         autnTxn.setDelDTimes(null);
         return autnTxn;
+    }
+    
+    @Test
+    public void testFormatAsJsonWithListInput() {
+    	String response = ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "formatAsJson", "[{\"errorCode\" : \"IDA-MLC-009\", \"errorMessage\" : \"Invalid input parameter\"}]");
+    	assertEquals("[{\\\"errorCode\\\" : \\\"IDA-MLC-009\\\", \\\"errorMessage\\\" : \\\"Invalid input parameter\\\"}]", response);
+    }
+    
+    @Test
+    public void testFormatAsJsonWithStringInput() {
+    	String response = ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "formatAsJson", "Auth Success");
+    	assertEquals("Auth Success", response);
     }
 }

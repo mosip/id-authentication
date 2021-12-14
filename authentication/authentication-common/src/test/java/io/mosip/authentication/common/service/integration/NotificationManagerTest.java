@@ -3,7 +3,7 @@ package io.mosip.authentication.common.service.integration;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -111,7 +111,7 @@ public class NotificationManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.notification.type", "");
-		Supplier<Object> Supplier = () -> new String("Success");
+		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		notificationManager.sendEmailNotification("abc@test.com", "test", "test");
 	}
