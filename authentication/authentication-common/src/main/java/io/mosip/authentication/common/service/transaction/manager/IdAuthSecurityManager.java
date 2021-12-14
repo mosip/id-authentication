@@ -352,7 +352,7 @@ public class IdAuthSecurityManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String hash(String id) throws IdAuthenticationBusinessException {
-		Integer idModulo = getSaltKeyForId(id);
+		Integer idModulo = getSaltKeyForHashOfId(id);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if (hashSaltValue != null) {
 			try {
@@ -520,9 +520,9 @@ public class IdAuthSecurityManager {
 		}
 	}
 	
-	public int getSaltKeyForId(String id) {
+	private int getSaltKeyForHashOfId(String id) {
 		Integer saltKeyLength = env.getProperty(SALT_KEY_LENGTH, Integer.class, DEFAULT_SALT_KEY_LENGTH);
-		return SaltUtil.getIdvidModulo(id, saltKeyLength);
+		return SaltUtil.getIdvidHashModulo(id, saltKeyLength);
 	}
 	
 }
