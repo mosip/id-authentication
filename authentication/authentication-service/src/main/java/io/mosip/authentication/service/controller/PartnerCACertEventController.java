@@ -1,4 +1,4 @@
-package io.mosip.authentication.internal.service.controller;
+package io.mosip.authentication.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CA_CERT_EVENT;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CA_CERT_CALLBACK_SECRET;
@@ -49,16 +49,12 @@ public class PartnerCACertEventController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/" + CA_CERT_EVENT, topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
-	public void handleCACertificate(@RequestBody EventModel eventModel)
-			throws RestServiceException, IdAuthenticationBusinessException {
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "PartnerCACertEventController", "handleCACertificate",
-				"EVENT RECEIVED");
+			+ "}", callback = "/idauthentication/v1/callback/partnermanagement/" + CA_CERT_EVENT, topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
+	public void handleCACertificate(@RequestBody EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {
+		logger.debug(IdAuthCommonConstants.SESSION_ID, "PartnerCACertEventController", "handleCACertificate", "EVENT RECEIVED");
 		// Evict the cache for the partner domain present in the event so that it will
 		// be re-cached with new certificates
 		partnerCACertEventService.evictCACertCache(eventModel);
-		//Store the ca cert
-		partnerCACertEventService.handleCACertEvent(eventModel);
 	}
 
 }

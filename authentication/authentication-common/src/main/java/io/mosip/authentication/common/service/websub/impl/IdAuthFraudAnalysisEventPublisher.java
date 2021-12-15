@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -32,10 +31,6 @@ public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializ
 	@Value("${" + AUTH_FRAUD_ANALYSIS_TOPIC + "}")
 	private String fraudAnalysisTopic;
 	
-	/** The web sub event publish helper. */
-	@Autowired
-	private WebSubHelper webSubHelper;
-
 	@Autowired
 	private ObjectMapper objectMapper;
 	

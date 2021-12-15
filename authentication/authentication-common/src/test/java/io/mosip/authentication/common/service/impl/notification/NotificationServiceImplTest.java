@@ -4,18 +4,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,6 +54,7 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
@@ -124,8 +123,8 @@ public class NotificationServiceImplTest {
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
-		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
-		Supplier<Object> Supplier = () -> new String("Success");
+		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -172,8 +171,8 @@ public class NotificationServiceImplTest {
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
-		authResponseDTO.setResponseTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
-		Supplier<Object> Supplier = () -> new String("Success");
+		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
