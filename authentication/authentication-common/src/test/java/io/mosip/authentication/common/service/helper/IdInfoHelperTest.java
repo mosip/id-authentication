@@ -185,7 +185,7 @@ public class IdInfoHelperTest {
 		value.add("fullAddress");
 
 		IdInfoHelper idInfoHelperSpy = Mockito.spy(idInfoHelper);
-		Mockito.doReturn(null).when(idInfoHelperSpy).getIdEntityInfoMap(DemoMatchType.ADDR, idInfo, null);
+		Mockito.doReturn(null).when(idInfoHelperSpy).getIdEntityInfoMap(DemoMatchType.ADDR, idInfo, null, null);
 		idInfoHelperSpy.getEntityInfoAsString(DemoMatchType.ADDR, idInfo);
 	}
 
@@ -477,7 +477,15 @@ public class IdInfoHelperTest {
 		assertEquals(list, idInfoHelper.getIdentityAttributesForMatchType(DemoMatchType.DYNAMIC, "preferredLanguage"));
 	}
 
+	@Test
+	public void getIdentityAttributesForMatchTypeTest() throws IdAuthenticationBusinessException {
+		List<String> list = new ArrayList<String>();
+		list.add("fullName");
 
+		IdInfoHelper idInfoHelperSpy = Mockito.spy(idInfoHelper);
+		Mockito.doThrow(IdAuthenticationBusinessException.class).when(idInfoHelperSpy).getIdMappingValue(DemoMatchType.NAME.getIdMapping(), DemoMatchType.NAME);
+		idInfoHelperSpy.getIdentityAttributesForMatchType(DemoMatchType.NAME, "name");
+	}
 
 	@Test
 	public void buildBioFiltersTest_Empty() {
@@ -713,5 +721,35 @@ public class IdInfoHelperTest {
 		dobList.add(dob);
 		idInfo.put("dateOfBirth", dobList);
 		assertEquals(idInfo, idInfoHelper.getIdEntityInfo(DemoMatchType.DOB, idInfo));
+	}
+
+	@Test
+	public void getBioSubTypesTest(){
+		BiometricType type = BiometricType.FINGER;
+		idInfoHelper.getBioSubTypes(type);
+//		type = BiometricType.IRIS;
+//		idInfoHelper.getBioSubTypes(type);
+		type = BiometricType.FACE;
+		idInfoHelper.getBioSubTypes(type);
+	}
+
+	@Test
+	public void getIdentityAttributesForIdNameTest() throws IdAuthenticationBusinessException {
+		idInfoHelper.getIdentityAttributesForIdName("idName");
+	}
+
+	@Test
+	public void getBioIdsTest(){
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		List<BioIdentityInfoDTO> bioDataList = new ArrayList<BioIdentityInfoDTO>();
+		authRequestDTO.setRequest(requestDTO);
+
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getBioIds", authRequestDTO, "Iris");
+	}
+
+	@Test
+	public void getIdEntityInfoMapTest(){
+
 	}
 }
