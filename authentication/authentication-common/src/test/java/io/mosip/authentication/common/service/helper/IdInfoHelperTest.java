@@ -747,9 +747,4 @@ public class IdInfoHelperTest {
 
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "getBioIds", authRequestDTO, "Iris");
 	}
-
-	@Test
-	public void getIdEntityInfoMapTest(){
-
-	}
 }
