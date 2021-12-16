@@ -23,9 +23,6 @@ public class AuthTypeStatusEventSubscriber extends BaseWebSubEventsInitializer {
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventSubscriber.class);
 	
-	/** The Constant PARTNER_ID_PLACEHOLDER. */
-	private static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";
-	
 	/** The auth type callback URL. */
 	@Value("${"+ IDA_WEBSUB_AUTH_TYPE_CALLBACK_URL +"}")
 	private String authTypeCallbackURL;
@@ -74,7 +71,7 @@ public class AuthTypeStatusEventSubscriber extends BaseWebSubEventsInitializer {
 		String topic = topicPrefix + IDAEventType.AUTH_TYPE_STATUS_UPDATE.name();
 		try {
 			SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-			subscriptionRequest.setCallbackURL(authTypeCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId));
+			subscriptionRequest.setCallbackURL(authTypeCallbackURL);
 			subscriptionRequest.setSecret(autypeCallbackSecret);
 			subscriptionRequest.setTopic(topic);
 			logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "", "Trying to subscribe to topic: " + topic + " callback-url: " + authTypeCallbackURL);

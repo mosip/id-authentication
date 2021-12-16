@@ -60,7 +60,7 @@ public class MasterDataUpdateEventController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/otp/callback/masterdata/templates", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
+			+ "}", callback = "${ida-websub-masterdata-templates-callback-relative-url}", topic = "${" + IDA_WEBSUB_MASTERDATA_TEMPLATES_TOPIC + "}")
 	public void handleMasterdataTemplatesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTemplatesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateService.updateTemplates(eventModel);
@@ -83,7 +83,7 @@ public class MasterDataUpdateEventController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_MASTERDATA_TITLES_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/otp/callback/masterdata/titles", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
+			+ "}", callback = "${ida-websub-masterdata-titles-callback-relative-url}", topic = "${" + IDA_WEBSUB_MASTERDATA_TITLES_TOPIC + "}")
 	public void handleMasterdataTitlesUpdate(@RequestBody EventModel eventModel) {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "handleMasterdataTitlesUpdate", "EVENT RECEIVED");
 		masterDataCacheUpdateService.updateTitles(eventModel);

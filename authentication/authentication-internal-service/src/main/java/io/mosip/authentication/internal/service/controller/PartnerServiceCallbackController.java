@@ -61,8 +61,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ APIKEY_APPROVED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
+			+ "}", callback = "${ida-websub-partner-service-apikey-approved-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED + "}")
 	public void handleApiKeyApprovedEvent(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
@@ -84,8 +83,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ PARTNER_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED + "}")
+			+ "}", callback = "${ida-websub-partner-service-partner-updated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED + "}")
 	public void handlePartnerUpdated(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerUpdated",
@@ -107,8 +105,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ POLICY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED + "}")
+			+ "}", callback = "${ida-websub-partner-service-policy-updated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED + "}")
 	public void handlePolicyUpdated(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePolicyUpdated",
@@ -130,8 +127,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ PARTNER_API_KEY_UPDATED_EVENT_NAME, topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED + "}")
+			+ "}", callback = "${ida-websub-partner-service-partner-api-key-updated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED + "}")
 	public void handlePartnerApiKeyUpdated(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
@@ -153,8 +149,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ MISP_LICENSE_GENERATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED + "}")
+			+ "}", callback = "${ida-websub-partner-service-misp-license-generated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED + "}")
 	public void handleMispLicenseGeneratedEvent(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispLicenseGeneratedEvent",
@@ -176,8 +171,7 @@ public class PartnerServiceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/partnermanagement/"
-					+ MISP_LICENSE_UPDATED, topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED + "}")
+			+ "}", callback = "${ida-websub-partner-service-misp-license-updated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED + "}")
 	public void handleMispUpdatedEvent(@RequestBody EventModel eventModel) {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
