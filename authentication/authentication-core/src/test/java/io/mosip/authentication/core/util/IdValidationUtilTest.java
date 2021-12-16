@@ -16,21 +16,28 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class IdValidationUtilTest {
 
+    /** The Id Validation Util. */
     @InjectMocks
     private IdValidationUtil idValidationUtil;
 
-    public void validateUinTest() throws IdAuthenticationBusinessException {
-        String id="23";
-        ReflectionTestUtils.setField(idValidationUtil, "uinLength", 2);
-        idValidationUtil.validateUIN(id);
-    }
-
+    /**
+     * This class tests the validateUin method when id is empty
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateUinTest1() throws IdAuthenticationBusinessException {
         String id=null;
         idValidationUtil.validateUIN(id);
     }
 
+    /**
+     * This class tests the validateUin method when id.length()!=uinLength
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateUinTest2() throws IdAuthenticationBusinessException {
         String id="id";
@@ -38,6 +45,12 @@ public class IdValidationUtilTest {
         idValidationUtil.validateUIN(id);
     }
 
+    /**
+     * This class tests the validateUin method when !ChecksumUtils.validateChecksum(id) = true
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateUinTest3() throws IdAuthenticationBusinessException {
         String id="111";
@@ -45,12 +58,24 @@ public class IdValidationUtilTest {
         idValidationUtil.validateUIN(id);
     }
 
+    /**
+     * This class tests the validateVid method when id is empty
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateVidTest1() throws IdAuthenticationBusinessException {
         String id=null;
         idValidationUtil.validateVID(id);
     }
 
+    /**
+     * This class tests the validateVid method when id.length()!=vidLength
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateVidTest2() throws IdAuthenticationBusinessException {
         String id="id";
@@ -58,6 +83,12 @@ public class IdValidationUtilTest {
         idValidationUtil.validateVID(id);
     }
 
+    /**
+     * This class tests the validateVid method when !ChecksumUtils.validateChecksum(id) = true
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void validateVidTest3() throws IdAuthenticationBusinessException {
         String id="23";
