@@ -46,7 +46,7 @@ public class HotlistEventController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_HOTLIST_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/internal/callback/hotlist", topic = "${" + IDA_WEBSUB_HOTLIST_TOPIC
+			+ "}", callback = "${ida-websub-hotlist-callback-relative-url}", topic = "${" + IDA_WEBSUB_HOTLIST_TOPIC
 					+ "}")
 	public void handleHotlisting(@RequestBody EventModel eventModel) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "HotlistEventController", "handleHotlisting", "EVENT RECEIVED");

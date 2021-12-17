@@ -478,7 +478,7 @@ public abstract class BaseIDAFilter implements Filter {
 				}
 			}
 			
-			Object inputRequestTime = requestBody.get(IdAuthCommonConstants.REQ_TIME);
+			Object inputRequestTime = requestBody == null ? null : requestBody.get(IdAuthCommonConstants.REQ_TIME);
 			String inputReqTimeStr = inputRequestTime instanceof String? (String) inputRequestTime : null;
 			logTime(inputReqTimeStr, IdAuthCommonConstants.RESPONSE, actualRequestTime);
 			return responseAsString;

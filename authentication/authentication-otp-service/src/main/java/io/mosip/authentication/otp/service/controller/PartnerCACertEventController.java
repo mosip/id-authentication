@@ -49,7 +49,7 @@ public class PartnerCACertEventController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_CA_CERT_CALLBACK_SECRET
-			+ "}", callback = "/idauthentication/v1/otp/callback/partnermanagement/" + CA_CERT_EVENT, topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
+			+ "}", callback = "${ida-websub-ca-cert-callback-relative-url}", topic = "${" + IDA_WEBSUB_CA_CERT_TOPIC + "}")
 	public void handleCACertificate(@RequestBody EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "PartnerCACertEventController", "handleCACertificate", "EVENT RECEIVED");
 		// Evict the cache for the partner domain present in the event so that it will
