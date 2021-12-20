@@ -25,6 +25,9 @@ CREATE TABLE ida.uin_hash_salt(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
+--index section ends------
 COMMENT ON TABLE ida.uin_hash_salt IS 'UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.';
 -- ddl-end --
 COMMENT ON COLUMN ida.uin_hash_salt.id IS 'Id: Unique id generated for the salts that is used to hash the uin field.';

@@ -179,7 +179,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
@@ -246,7 +246,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Iris_Left", individualBiometicsList);
 		
 		Map<String, String> cbeffValueMap = new HashMap<String, String>();
 		cbeffValueMap.put("IRIS_Left_9", value);
@@ -328,7 +328,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Iris_Left", individualBiometicsList);
 		
 		Map<String, String> cbeffValueMap = new HashMap<String, String>();
 		cbeffValueMap.put("IRIS_Left_9", value);
@@ -768,7 +768,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);;
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));
@@ -893,7 +893,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Iris_Left", individualBiometicsList);
 		
 		Map<String, String> cbeffValueMap = new HashMap<String, String>();
 		cbeffValueMap.put("IRIS_Left_9", value);
@@ -957,7 +957,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FINGER_Left IndexFinger_7", new SimpleEntry<>("leftIndex", identityList));
@@ -1020,7 +1020,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Face", individualBiometicsList);
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FACE__8", new SimpleEntry<>("face", identityList));
@@ -1137,7 +1137,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Face", individualBiometicsList);
 		
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FACE__8", new SimpleEntry<>("face", null));
@@ -1224,7 +1224,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 
 		
 		Map<String, String> cbeffValueMap = new HashMap<String, String>();
@@ -1331,7 +1331,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO individualBiometicsListInfoDTO = new IdentityInfoDTO();
 		individualBiometicsListInfoDTO.setValue(individualBiometics);
 		individualBiometicsList.add(individualBiometicsListInfoDTO);
-		bioIdentity.put("individualBiometrics", individualBiometicsList);
+		bioIdentity.put("Finger_Left IndexFinger", individualBiometicsList);
 		
 		Map<String, String> cbeffValueMap = new HashMap<String, String>();
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);

@@ -24,6 +24,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -33,6 +35,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -177,6 +180,9 @@ public class IdInfoHelper {
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
+		if(entityInfoMap == null) {
+			entityInfoMap = Map.of();
+		}
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
 
@@ -510,5 +516,54 @@ public class IdInfoHelper {
 		}
 		return allowedLang;
 	}
+	
+	/**
+	 * Construct the default attributes
+	 * @return
+	 */
+	public Set<MatchInput> buildDefaultFilterAttributes() {
+		Set<MatchInput> defaultDemoFiltersAttributes = new HashSet<>();
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.NAME, DemoAuthType.values()).get(),
+						DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.PHONE, DemoAuthType.values()).get(),
+						DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.EMAIL, DemoAuthType.values()).get(),
+						DemoMatchType.EMAIL.getIdMapping().getIdname(), DemoMatchType.EMAIL,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		return defaultDemoFiltersAttributes;
+	}
+	
+	/**
+	 * Method will bring matching id values for given input demo attributes
+	 * @param defaultFilterAttributes
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	public Set<String> getAttributesFromMatchInput(Set<MatchInput> defaultFilterAttributes) throws IdAuthenticationBusinessException {
+		Set<String> demoFilterAttributes = new HashSet<String>();
+		for (MatchInput matchInput : defaultFilterAttributes) {
+			try {
+				List<String> propertyNames = getIdMappingValue(matchInput.getMatchType().getIdMapping(),
+						matchInput.getMatchType());
+				if (!propertyNames.isEmpty()) {
+					demoFilterAttributes.addAll(propertyNames);
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE,
+						"IdMapping config is Invalid for Type -" + matchInput.getMatchType().getCategory().getType());
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+			}
+		}
+		return demoFilterAttributes;
+	}
+
 
 }

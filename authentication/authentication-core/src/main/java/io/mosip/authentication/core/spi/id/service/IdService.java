@@ -3,6 +3,7 @@ package io.mosip.authentication.core.spi.id.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,7 +28,7 @@ public interface IdService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByUin(String uin, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID.
@@ -38,7 +39,7 @@ public interface IdService<T> {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdByVid(String vid, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Process id type.
@@ -50,7 +51,7 @@ public interface IdService<T> {
 	 * @return the map
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
 			throws IdAuthenticationBusinessException;
 
 	/**

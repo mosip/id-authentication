@@ -64,10 +64,10 @@ public class AuthTxnServiceImplTest {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -102,10 +102,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageStart(null);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -117,10 +117,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageFetch(null);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -133,10 +133,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageFetch(null);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -150,10 +150,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageFetch(null);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -166,10 +166,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageFetch(null);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
@@ -181,10 +181,10 @@ public class AuthTxnServiceImplTest {
 		authtxnrequestdto.setPageFetch(-1);
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
-		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean()))
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyLong())).thenReturn("1234");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("1234");
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
