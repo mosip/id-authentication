@@ -74,14 +74,14 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	 */
 	@Override
 	protected int doRegisterTopics() {
-		webSubHelper.initRegistrar(authTypeStatusEventSubscriber);
-		webSubHelper.initRegistrar(partnerCACertEventInitializer);
-		webSubHelper.initRegistrar(hotlistEventInitializer);
-		webSubHelper.initRegistrar(partnerServiceEventsInitializer);
+		//webSubHelper.initRegistrar(authTypeStatusEventSubscriber);
+		//webSubHelper.initRegistrar(partnerCACertEventInitializer);
+		//webSubHelper.initRegistrar(hotlistEventInitializer);
+		//webSubHelper.initRegistrar(partnerServiceEventsInitializer);
+		//webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
 		webSubHelper.initRegistrar(credentialStoreStatusEventPublisher);
 		webSubHelper.initRegistrar(authTypeStatusEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
-		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
 		webSubHelper.initRegistrar(fraudEventPublisher);
 		return HttpStatus.SC_OK;
 	}

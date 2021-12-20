@@ -68,6 +68,7 @@ public abstract class BaseIDAWebSubInitializer implements ApplicationListener<Ap
 		logger.info(IdAuthCommonConstants.SESSION_ID, "onApplicationEvent",  this.getClass().getSimpleName(), "Scheduling event subscriptions after (milliseconds): " + taskSubsctiptionDelay);
 		taskScheduler.schedule(() -> {
 			//Invoke topic registrations. This is done only once.
+			//Note: With authenticated websub, only register topics which are only published by IDA
 			registerTopics();
 			//Init topic subscriptions
 			initSubsriptions();

@@ -51,8 +51,8 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	 */
 	@Override
 	protected int doRegisterTopics() {
-		webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
-		webSubHelper.initRegistrar(partnerCACertEventInitializer);
+		//webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
+		//webSubHelper.initRegistrar(partnerCACertEventInitializer);
 		webSubHelper.initRegistrar(fraudEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
 		webSubHelper.initRegistrar(authAnonymousEventPublisher);
