@@ -1,20 +1,13 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.common.service.impl.DynamicDemoAuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -53,8 +46,6 @@ public enum DemoAuthType implements AuthType {
 		
 	;
 
-
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	// @formatter:on
 	
