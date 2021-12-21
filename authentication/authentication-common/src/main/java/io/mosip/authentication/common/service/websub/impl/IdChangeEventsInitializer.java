@@ -1,7 +1,7 @@
 package io.mosip.authentication.common.service.websub.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_AUTH_PARTNER_ID;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_IDCHANGE_CALLBACK_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
 
 import java.util.Arrays;
@@ -28,12 +28,9 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 	/** The Constant ID_CHANGE_EVENTS. */
 	private static final IDAEventType[] ID_CHANGE_EVENTS = {IDAEventType.CREDENTIAL_ISSUED, IDAEventType.REMOVE_ID, IDAEventType.DEACTIVATE_ID, IDAEventType.ACTIVATE_ID};
 	
-	/** The Constant PARTNER_ID_PLACEHOLDER. */
-	public static final String PARTNER_ID_PLACEHOLDER = "{partnerId}";
-	
 	/** The credential issue callback URL. */
-	@Value("${"+ IDA_WEBSUB_CREDENTIAL_ISSUE_CALLBACK_URL +"}")
-	private String credentialIssueCallbackURL;
+	@Value("${"+ IDA_WEBSUB_IDCHANGE_CALLBACK_URL +"}")
+	private String idChangeCallbackURL;
 	
 	/** The cred issue callbacksecret. */
 	@Value("${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}")
@@ -83,7 +80,7 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 			String topic = topicPrefix + eventType.toString();
 			try {
 				SubscriptionChangeRequest subscriptionRequest = new SubscriptionChangeRequest();
-				String callbackURL = credentialIssueCallbackURL.replace(PARTNER_ID_PLACEHOLDER, authPartherId)
+				String callbackURL = idChangeCallbackURL
 														.replace(EVENT_TYPE_PLACEHOLDER, eventType.toString().toLowerCase());
 				subscriptionRequest.setCallbackURL(callbackURL);
 				subscriptionRequest.setSecret(credIssueCallbacksecret);

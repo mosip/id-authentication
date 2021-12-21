@@ -31,7 +31,7 @@ public class InternalAuthIdChangeEventsWebSubInitializer extends CacheUpdatingWe
 	 */
 	@Override
 	public int doRegisterTopics() {
-		webSubHelper.initRegistrar(idChangeEventInitializer);
+		//webSubHelper.initRegistrar(idChangeEventInitializer);
 		return HttpStatus.SC_OK;
 	}
 

@@ -23,9 +23,6 @@ public class KycAuthFilter extends IdAuthFilter {
 	/** The Constant KYC. */
 	private static final String KYC = "kyc";
 
-	/** The Constant IDENTITY. */
-	private static final String IDENTITY = "identity";
-
 //	/*
 //	 * (non-Javadoc)
 //	 * 
