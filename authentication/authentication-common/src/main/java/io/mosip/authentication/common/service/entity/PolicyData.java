@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.entity;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import javax.persistence.Basic;
@@ -13,11 +14,16 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+
+import io.mosip.authentication.core.util.CryptoUtil;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.JSONObject;
 
 @NoArgsConstructor
 @Data
@@ -78,11 +84,25 @@ public class PolicyData {
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
 
-	public byte[] getPolicy() {
-		return policy;
+	private static final ObjectMapper OBJECT_MAPPER;
+	
+	static {
+		OBJECT_MAPPER = new ObjectMapper();
+		OBJECT_MAPPER.registerModule(new AfterburnerModule());
 	}
 
-	public void setPolicy(byte[] policy) {
-		this.policy = policy;
+	public JSONObject getPolicy() {
+		
+		try {
+			return OBJECT_MAPPER.readValue(CryptoUtil.decodeBase64Url(new String(this.policy)), JSONObject.class);
+		} catch (IOException e) {
+			// This block will never be executed
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void setPolicy(JSONObject policy) {
+		this.policy = CryptoUtil.encodeBase64Url(policy.toJSONString().getBytes()).getBytes();
 	}
 }
