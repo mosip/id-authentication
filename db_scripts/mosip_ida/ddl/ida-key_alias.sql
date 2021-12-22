@@ -10,6 +10,7 @@
 -- ------------------------------------------------------------------------------------------
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
 -- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+-- Dec-2021		Loganathan S    Added uni_ident column and unique constraint for that
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_alias | type: TABLE --
@@ -29,7 +30,9 @@ CREATE TABLE ida.key_alias(
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
 	cert_thumbprint character varying(100),
-	CONSTRAINT pk_keymals_id PRIMARY KEY (id)
+	uni_ident character varying(50),
+	CONSTRAINT pk_keymals_id PRIMARY KEY (id),
+	CONSTRAINT uni_ident_const UNIQUE (uni_ident)
 
 );
 -- ddl-end --

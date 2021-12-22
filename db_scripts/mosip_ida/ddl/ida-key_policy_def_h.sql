@@ -1,4 +1,4 @@
--- -------------------------------------------------------------------------------------------------
+	-- -------------------------------------------------------------------------------------------------
 -- Database Name: mosip_ida
 -- Table Name 	: ida.key_policy_def_h
 -- Purpose    	: Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.
@@ -10,6 +10,7 @@
 -- ------------------------------------------------------------------------------------------
 -- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false 
 -- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+-- Dec-2021		Loganathan S    Added pre_expire_days and access_allowed columns
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_policy_def_h | type: TABLE --
@@ -19,6 +20,8 @@ CREATE TABLE ida.key_policy_def_h(
 	eff_dtimes timestamp NOT NULL,
 	key_validity_duration smallint,
 	is_active boolean NOT NULL,
+	pre_expire_days smallint,
+	access_allowed character varying(1024),
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
