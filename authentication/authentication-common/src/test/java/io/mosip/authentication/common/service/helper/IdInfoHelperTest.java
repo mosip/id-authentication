@@ -3,17 +3,20 @@ package io.mosip.authentication.common.service.helper;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
-import io.mosip.authentication.common.service.impl.match.*;
-import io.mosip.authentication.core.spi.indauth.match.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,10 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -39,6 +46,12 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
@@ -747,4 +760,82 @@ public class IdInfoHelperTest {
 
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "getBioIds", authRequestDTO, "Iris");
 	}
+	
+	@Test
+	public void testGetFullAddressWithConfiguredSeperator() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"addressLine1", List.of(new IdentityInfoDTO("eng", "Address Line1")),
+				"addressLine2", List.of(new IdentityInfoDTO("eng", "Address Line2")),
+				"addressLine3", List.of(new IdentityInfoDTO("eng", "Address Line3")),
+				"city", List.of(new IdentityInfoDTO("eng", "City")),
+				"region", List.of(new IdentityInfoDTO("eng", "Region")),
+				"province", List.of(new IdentityInfoDTO("eng", "Province")),
+				"postalCode", List.of(new IdentityInfoDTO(null, "12345"))
+				);
+		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, "eng", idInfo);
+		assertEquals(
+			   "Address Line1" + ":"
+			 + "Address Line2" + ":"
+			 + "Address Line3" + ":"
+			 + "City" + ":"
+			 + "Region" + ":"
+			 + "Province" + ":"
+			 + "12345"
+		, entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetNameWithoutConfiguredSeperator() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"fullName", List.of(new IdentityInfoDTO("eng", "My Name"))
+				);
+		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, "eng", idInfo);
+		assertEquals("My Name", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetPhoneWithoutConfiguredSeperator() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"phone", List.of(new IdentityInfoDTO(null, "9988776655"))
+				);
+		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, null, idInfo);
+		assertEquals("9988776655", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"residenceStatus", List.of(new IdentityInfoDTO("eng", "Citizen"))
+				);
+		String entityInfoAsString = idInfoHelper.getDynamicEntityInfo(idInfo, "eng", "residenceStatus");
+		assertEquals("Citizen", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetNonMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"newAttribute", List.of(new IdentityInfoDTO("eng", "New Attribute"))
+				);
+		String entityInfoAsString = idInfoHelper.getDynamicEntityInfo(idInfo, "eng", "newAttribute");
+		assertEquals("New Attribute", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"introducerRID", List.of(new IdentityInfoDTO(null, "11223344"))
+				);
+		String entityInfoAsString = idInfoHelper.getDynamicEntityInfo(idInfo, null, "introducerRID");
+		assertEquals("11223344", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetNonMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"newAttribute1", List.of(new IdentityInfoDTO(null, "New Attribute1"))
+				);
+		String entityInfoAsString = idInfoHelper.getDynamicEntityInfo(idInfo, null, "newAttribute1");
+		assertEquals("New Attribute1", entityInfoAsString);
+	}
+	
 }

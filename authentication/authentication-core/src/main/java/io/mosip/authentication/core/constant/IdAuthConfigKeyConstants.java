@@ -16,6 +16,7 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_BDB_PROCESSED_LEVEL = "ida-bdb-processed-level";
 	public static final String IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED = "mosip.ida.datashare.thumbprint-validation-required";
+	public static final String IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX = "ida.id.attribute.separator.";
 
 	private IdAuthConfigKeyConstants() {
 
