@@ -37,6 +37,8 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -791,6 +793,47 @@ public class IdInfoHelperTest {
 				);
 		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, "eng", idInfo);
 		assertEquals("My Name", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetNameMap2WithoutConfiguredSeperator() throws IdAuthenticationBusinessException {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("firstName", "lastName"));
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"firstName", List.of(new IdentityInfoDTO("eng", "First Name")),
+				"lastName", List.of(new IdentityInfoDTO("eng", "Last Name"))
+				);
+		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, "eng", idInfo);
+		assertEquals("First Name Last Name", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetNameMap2WithConfiguredSeperator() throws IdAuthenticationBusinessException {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", config);
+		Environment environment = Mockito.mock(Environment.class);
+		Mockito.when(environment.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + "name",
+				IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE))
+				.thenReturn("-");
+		ReflectionTestUtils.setField(idInfoHelper, "env", environment);
+		Mockito.when(config.getName()).thenReturn(List.of("firstName", "lastName"));
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"firstName", List.of(new IdentityInfoDTO("eng", "First Name")),
+				"lastName", List.of(new IdentityInfoDTO("eng", "Last Name"))
+				);
+		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, "eng", idInfo);
+		assertEquals("First Name-Last Name", entityInfoAsString);
+	}
+	
+	@Test
+	public void testGetName2WithoutConfiguredSeperator() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"firstName", List.of(new IdentityInfoDTO("eng", "First Name")),
+				"lastName", List.of(new IdentityInfoDTO("eng", "Last Name"))
+				);
+		String entityInfoAsString = idInfoHelper.getDynamicEntityInfo(idInfo, "eng", "name2");
+		assertEquals("First Name Last Name", entityInfoAsString);
 	}
 	
 	@Test

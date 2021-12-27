@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,8 +67,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
 public class IdInfoHelper {
-
-	private static final String DEFAULT_SEPARATOR_VALUE = " ";
 
 	/** The id mapping config. */
 	@Autowired
@@ -207,7 +206,7 @@ public class IdInfoHelper {
 	}
 
 	private String getSeparator(String idname) {
-		return env.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + idname, DEFAULT_SEPARATOR_VALUE);
+		return env.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + idname, IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE);
 	}
 
 	/**
@@ -267,26 +266,31 @@ public class IdInfoHelper {
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language, String idName) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdentityAttributesForMatchType(matchType, idName);
-		Map<String, String> identityValuesMap = new LinkedHashMap<>();
 		Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
 		Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
-		mergeNonNullValues(identityValuesMap, identityValuesMapWithLang);
-		mergeNonNullValues(identityValuesMap, identityValuesMapWithoutLang);
+		Map<String, String> mergedMap = mergeNonNullValues(identityValuesMapWithLang, identityValuesMapWithoutLang);
 		Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
-		return matchType.getEntityInfoMapper().apply(identityValuesMap, props);
+		return matchType.getEntityInfoMapper().apply(mergedMap, props);
 	}
 
 	/**
 	 * Merge non null values.
 	 *
-	 * @param identityValuesMap the identity values map
-	 * @param identityValuesMapWithoutLang the identity values map without lang
+	 * @param map1 the identity values map
+	 * @param map2 the identity values map without lang
+	 * @return 
 	 */
-	private void mergeNonNullValues(Map<String, String> identityValuesMap, Map<String, String> identityValuesMapWithoutLang) {
-		identityValuesMapWithoutLang.entrySet()
-			.stream()
-			.filter(entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty())
-			.forEach(entry -> identityValuesMap.put(entry.getKey(), entry.getValue()));
+	private Map<String, String> mergeNonNullValues(Map<String, String> map1, Map<String, String> map2) {
+		Predicate<? super Entry<String, String>> nonNullPredicate = entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty();
+		Map<String, String> mergeMap = map1.entrySet()
+				.stream()
+				.filter(nonNullPredicate)
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (m1,m2) -> m1,  () -> new LinkedHashMap<>()));
+		map2.entrySet()
+				.stream()
+				.filter(nonNullPredicate)
+				.forEach(entry -> mergeMap.merge(entry.getKey(), entry.getValue(), (str1, str2) -> str1));
+		return mergeMap;
 	}
 	
 	/**
@@ -562,9 +566,8 @@ public class IdInfoHelper {
 		try {
 			return getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
 					.stream()
-					.findFirst()
 					.map(Entry::getValue)
-					.orElse(null);
+					.collect(Collectors.joining(getSeparator(idName)));
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -728,16 +731,16 @@ public class IdInfoHelper {
 	 * @return the finger sub types
 	 */
 	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + DEFAULT_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value());
+		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value());
 	}
 	
 	/**

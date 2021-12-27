@@ -327,6 +327,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+	public static final String DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE = " ";
+
 	private IdAuthCommonConstants() {
 	}
 }
