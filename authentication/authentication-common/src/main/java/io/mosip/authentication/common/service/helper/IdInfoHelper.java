@@ -68,6 +68,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class IdInfoHelper {
 
+	private static final String BIO_SUBTYPE_SEPARATOR = " ";
+
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
@@ -731,16 +733,16 @@ public class IdInfoHelper {
 	 * @return the finger sub types
 	 */
 	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE + SingleAnySubtypeType.LITTLE_FINGER.value());
+		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value());
 	}
 	
 	/**
