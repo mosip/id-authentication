@@ -64,6 +64,8 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @WebMvcTest
 public class IdInfoHelperTest {
 
+	private static final String ID_ATTRI_TEST_SEP = ",";
+
 	@InjectMocks
 	IdInfoHelper idInfoHelper;
 
@@ -776,12 +778,12 @@ public class IdInfoHelperTest {
 				);
 		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, "eng", idInfo);
 		assertEquals(
-			   "Address Line1" + ":"
-			 + "Address Line2" + ":"
-			 + "Address Line3" + ":"
-			 + "City" + ":"
-			 + "Region" + ":"
-			 + "Province" + ":"
+			   "Address Line1" + ID_ATTRI_TEST_SEP
+			 + "Address Line2" + ID_ATTRI_TEST_SEP
+			 + "Address Line3" + ID_ATTRI_TEST_SEP
+			 + "City" + ID_ATTRI_TEST_SEP
+			 + "Region" + ID_ATTRI_TEST_SEP
+			 + "Province" + ID_ATTRI_TEST_SEP
 			 + "12345"
 		, entityInfoAsString);
 	}
