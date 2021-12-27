@@ -3,6 +3,8 @@
  */
 package io.mosip.authentication.common.service.helper;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUBTYPE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +36,7 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -114,7 +118,7 @@ public class IdInfoHelper {
 		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
-					.filter(idinfo -> !matchType.isPropMultiLang(name, idMappingConfig)
+					.filter(idinfo -> (languageForMatchType == null && !matchType.isPropMultiLang(name, idMappingConfig))
 							|| idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
 					.map(idInfo -> idInfo.getValue());
 		}
@@ -200,7 +204,11 @@ public class IdInfoHelper {
 		if(entityInfoMap == null) {
 			entityInfoMap = Map.of();
 		}
-		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
+		return concatValues(getSeparator(matchType.getIdMapping().getIdname()), entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
+	}
+
+	private String getSeparator(String idname) {
+		return env.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + idname, IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE);
 	}
 
 	/**
@@ -220,7 +228,7 @@ public class IdInfoHelper {
 		Function<? super String, ? extends String> keyMapper = propName -> {
 			String key = mappedIdEntity.get(propName).getKey();
 			if (languageCode != null) {
-				key = key + "_" + languageCode;
+				key = key + BIO_TYPE_SEPARATOR + languageCode;
 			}
 			return key;
 		};
@@ -260,26 +268,31 @@ public class IdInfoHelper {
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language, String idName) throws IdAuthenticationBusinessException {
 		List<String> propertyNames = getIdentityAttributesForMatchType(matchType, idName);
-		Map<String, String> identityValuesMap = new LinkedHashMap<>();
 		Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
 		Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
-		mergeNonNullValues(identityValuesMap, identityValuesMapWithLang);
-		mergeNonNullValues(identityValuesMap, identityValuesMapWithoutLang);
+		Map<String, String> mergedMap = mergeNonNullValues(identityValuesMapWithLang, identityValuesMapWithoutLang);
 		Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
-		return matchType.getEntityInfoMapper().apply(identityValuesMap, props);
+		return matchType.getEntityInfoMapper().apply(mergedMap, props);
 	}
 
 	/**
 	 * Merge non null values.
 	 *
-	 * @param identityValuesMap the identity values map
-	 * @param identityValuesMapWithoutLang the identity values map without lang
+	 * @param map1 the identity values map
+	 * @param map2 the identity values map without lang
+	 * @return 
 	 */
-	private void mergeNonNullValues(Map<String, String> identityValuesMap, Map<String, String> identityValuesMapWithoutLang) {
-		identityValuesMapWithoutLang.entrySet()
-			.stream()
-			.filter(entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty())
-			.forEach(entry -> identityValuesMap.put(entry.getKey(), entry.getValue()));
+	private Map<String, String> mergeNonNullValues(Map<String, String> map1, Map<String, String> map2) {
+		Predicate<? super Entry<String, String>> nonNullPredicate = entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty();
+		Map<String, String> mergeMap = map1.entrySet()
+				.stream()
+				.filter(nonNullPredicate)
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (m1,m2) -> m1,  () -> new LinkedHashMap<>()));
+		map2.entrySet()
+				.stream()
+				.filter(nonNullPredicate)
+				.forEach(entry -> mergeMap.merge(entry.getKey(), entry.getValue(), (str1, str2) -> str1));
+		return mergeMap;
 	}
 	
 	/**
@@ -529,14 +542,14 @@ public class IdInfoHelper {
 	 * @param values the values
 	 * @return the string
 	 */
-	private static String concatValues(String... values) {
+	private String concatValues(String sep, String... values) {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < values.length; i++) {
 			String demo = values[i];
 			if (null != demo && demo.length() > 0) {
 				demoBuilder.append(demo);
 				if (i < values.length - 1) {
-					demoBuilder.append(" ");
+					demoBuilder.append(sep);
 				}
 			}
 		}
@@ -555,9 +568,8 @@ public class IdInfoHelper {
 		try {
 			return getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
 					.stream()
-					.findFirst()
 					.map(Entry::getValue)
-					.orElse(null);
+					.collect(Collectors.joining(getSeparator(idName)));
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -643,7 +655,7 @@ public class IdInfoHelper {
 							bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
 						} else {
 							bioFilters.addAll(
-									bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+									bioFingerData.stream().map(bio -> (bio.getBioType() + BIO_TYPE_SEPARATOR + bio.getBioSubType()))
 											.collect(Collectors.toList()));
 						}
 					}
@@ -660,7 +672,7 @@ public class IdInfoHelper {
 							bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
 						} else {
 							bioFilters.addAll(
-									bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+									bioIrisData.stream().map(bio -> (bio.getBioType() + BIO_TYPE_SEPARATOR + bio.getBioSubType()))
 											.collect(Collectors.toList()));
 						}
 					}
@@ -721,16 +733,16 @@ public class IdInfoHelper {
 	 * @return the finger sub types
 	 */
 	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + " " + SingleAnySubtypeType.LITTLE_FINGER.value());
+		return List.of(type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value());
 	}
 	
 	/**
@@ -740,8 +752,8 @@ public class IdInfoHelper {
 	 * @return the iris sub types
 	 */
 	private List<String> getIrisSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value());
+		return List.of(type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value());
 	}
 	
 	/**
