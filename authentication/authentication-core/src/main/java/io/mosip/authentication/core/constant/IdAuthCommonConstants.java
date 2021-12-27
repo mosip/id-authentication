@@ -329,6 +329,11 @@ public final class IdAuthCommonConstants {
 
 	public static final String DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE = " ";
 
+	public static final String BIO_SUBTYPE_SEPARATOR = " ";
+	
+	public static final String BIO_TYPE_SEPARATOR="_";
+
+
 	private IdAuthCommonConstants() {
 	}
 }

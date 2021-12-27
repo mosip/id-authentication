@@ -3,6 +3,8 @@
  */
 package io.mosip.authentication.common.service.helper;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUBTYPE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES;
 
 import java.util.ArrayList;
@@ -67,8 +69,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
 public class IdInfoHelper {
-
-	private static final String BIO_SUBTYPE_SEPARATOR = " ";
 
 	/** The id mapping config. */
 	@Autowired
@@ -228,7 +228,7 @@ public class IdInfoHelper {
 		Function<? super String, ? extends String> keyMapper = propName -> {
 			String key = mappedIdEntity.get(propName).getKey();
 			if (languageCode != null) {
-				key = key + "_" + languageCode;
+				key = key + BIO_TYPE_SEPARATOR + languageCode;
 			}
 			return key;
 		};
@@ -655,7 +655,7 @@ public class IdInfoHelper {
 							bioFilters.addAll(getBioSubTypes(BiometricType.FINGER));
 						} else {
 							bioFilters.addAll(
-									bioFingerData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+									bioFingerData.stream().map(bio -> (bio.getBioType() + BIO_TYPE_SEPARATOR + bio.getBioSubType()))
 											.collect(Collectors.toList()));
 						}
 					}
@@ -672,7 +672,7 @@ public class IdInfoHelper {
 							bioFilters.addAll(getBioSubTypes(BiometricType.IRIS));
 						} else {
 							bioFilters.addAll(
-									bioIrisData.stream().map(bio -> (bio.getBioType() + "_" + bio.getBioSubType()))
+									bioIrisData.stream().map(bio -> (bio.getBioType() + BIO_TYPE_SEPARATOR + bio.getBioSubType()))
 											.collect(Collectors.toList()));
 						}
 					}
@@ -733,16 +733,16 @@ public class IdInfoHelper {
 	 * @return the finger sub types
 	 */
 	private List<String> getFingerSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value());
+		return List.of(type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.THUMB.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.INDEX_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.MIDDLE_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.RING_FINGER.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value() + BIO_SUBTYPE_SEPARATOR + SingleAnySubtypeType.LITTLE_FINGER.value());
 	}
 	
 	/**
@@ -752,8 +752,8 @@ public class IdInfoHelper {
 	 * @return the iris sub types
 	 */
 	private List<String> getIrisSubTypes(BiometricType type){
-		return List.of(type.value() + "_" + SingleAnySubtypeType.LEFT.value(),
-				type.value() + "_" + SingleAnySubtypeType.RIGHT.value());
+		return List.of(type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value(),
+				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value());
 	}
 	
 	/**
