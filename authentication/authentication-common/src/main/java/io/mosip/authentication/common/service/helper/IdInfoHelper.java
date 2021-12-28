@@ -190,13 +190,17 @@ public class IdInfoHelper {
 	}
 
 	/**
-	 * Gets the entity info as string.
+	 * Gets the entity info as string. 
+	 * 
+	 * Note: This method is not used during authentication match, so the
+	 * separator used in concatenation will not be used during the match.
 	 *
-	 * @param matchType  the match type
-	 * @param langCode the lang code
-	 * @param idEntity the id entity
+	 * @param matchType the match type
+	 * @param langCode  the lang code
+	 * @param idEntity  the id entity
 	 * @return the entity info as string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {

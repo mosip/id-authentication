@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -51,9 +52,12 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
@@ -64,7 +68,8 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @WebMvcTest
 public class IdInfoHelperTest {
 
-	private static final String ID_ATTRI_TEST_SEP = ",";
+	@Value("${ida.id.attribute.separator.fullAddress}")
+	private String fullAddrSep;
 
 	@InjectMocks
 	IdInfoHelper idInfoHelper;
@@ -77,7 +82,7 @@ public class IdInfoHelperTest {
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
-
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
@@ -311,6 +316,106 @@ public class IdInfoHelperTest {
 				60, matchProperties, "fra"));
 		idInfoHelper.matchIdentityData(authRequestDTO,"426789089018", listMatchInputsExp,null,"12523823232");
 	}
+	
+	@Test
+	public void matchFullAddressTest1() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIndividualId("426789089018");
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identityDTO = new IdentityDTO();
+		List<IdentityInfoDTO> infoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setValue("Test");
+		infoList.add(identityInfoDTO);
+		identityDTO.setFullAddress(infoList);
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestHMAC("string");
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
+		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
+		identityinfo.setLanguage("fre");
+		identityinfo.setValue("Address Line1 Address Line2 Address Line3 City Region Province 11223344");
+		List<IdentityInfoDTO> addresslist = new ArrayList<>();
+		addresslist.add(identityinfo);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setRequest(request);
+		identity.setFullAddress(addresslist);
+		request.setDemographics(identity);
+		authRequestDTO.setRequest(request);
+		authRequestDTO.setTransactionID("1234567890");
+		Map<String, List<IdentityInfoDTO>> identityEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("Address Line1");
+		identityInfoList.add(addrLine);
+		identityEntity.put("addressLine1", identityInfoList);
+		
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("Address Line2");
+		identityInfoList.add(addrLine);
+		identityEntity.put("addressLine2", identityInfoList);
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("Address Line3");
+		identityInfoList.add(addrLine);
+		identityEntity.put("addressLine3", identityInfoList);
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("City");
+		identityInfoList.add(addrLine);
+		identityEntity.put("city", identityInfoList);
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("Region");
+		identityInfoList.add(addrLine);
+		identityEntity.put("region", identityInfoList);
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setLanguage("fre");
+		addrLine.setValue("Province");
+		identityInfoList.add(addrLine);
+		identityEntity.put("province", identityInfoList);
+		
+		identityInfoList = new ArrayList<>();
+		addrLine = new IdentityInfoDTO();
+		addrLine.setValue("11223344");
+		identityInfoList.add(addrLine);
+		identityEntity.put("postalCode", identityInfoList);
+		
+		
+		List<MatchInput> listMatchInputsExp = new ArrayList<>();
+		AuthType demoAuthType = DemoAuthType.ADDRESS;
+		Map<String, Object> matchProperties = new HashMap<>();
+		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		Mockito.when(demoMatcherUtil.doExactMatch("Address Line1 Address Line2 Address Line3 City Region Province 11223344", "Address Line1 Address Line2 Address Line3 City Region Province 11223344")).thenReturn(100);
+		matchProperties.put("demoMatcherUtil", demoMatcherUtil);
+		DemoNormalizer demoNormalizer = Mockito.mock(DemoNormalizer.class);
+		Mockito.when(demoNormalizer.normalizeAddress("Address Line1 Address Line2 Address Line3 City Region Province 11223344", "fre"))
+			.thenReturn("Address Line1 Address Line2 Address Line3 City Region Province 11223344");
+		matchProperties.put("demoNormalizer", demoNormalizer);
+		matchProperties.put("langCode", "fre");
+		
+		
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR.getIdMapping().getIdname(), DemoMatchType.ADDR, null,
+				100, matchProperties, "fre"));
+		List<MatchOutput> matchOutput = idInfoHelper.matchIdentityData(authRequestDTO,identityEntity, listMatchInputsExp,"12523823232");
+		assertEquals(100, matchOutput.get(0).getMatchValue());
+	}
+
 
 
 	@Test
@@ -778,12 +883,12 @@ public class IdInfoHelperTest {
 				);
 		String entityInfoAsString = idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, "eng", idInfo);
 		assertEquals(
-			   "Address Line1" + ID_ATTRI_TEST_SEP
-			 + "Address Line2" + ID_ATTRI_TEST_SEP
-			 + "Address Line3" + ID_ATTRI_TEST_SEP
-			 + "City" + ID_ATTRI_TEST_SEP
-			 + "Region" + ID_ATTRI_TEST_SEP
-			 + "Province" + ID_ATTRI_TEST_SEP
+			   "Address Line1" + fullAddrSep
+			 + "Address Line2" + fullAddrSep
+			 + "Address Line3" + fullAddrSep
+			 + "City" + fullAddrSep
+			 + "Region" + fullAddrSep
+			 + "Province" + fullAddrSep
 			 + "12345"
 		, entityInfoAsString);
 	}
