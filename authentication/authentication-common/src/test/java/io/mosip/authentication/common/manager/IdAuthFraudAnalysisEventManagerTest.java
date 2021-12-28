@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -52,11 +53,15 @@ public class IdAuthFraudAnalysisEventManagerTest {
 
     @Autowired
     private ObjectMapper mapper;
+    
+    @Autowired
+    private Environment env;
 
     @Before
     public void Before(){
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "requestFloodingTimeDiff", 1);
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "mapper", mapper);
+        ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "env", env);
     }
 
     /**
