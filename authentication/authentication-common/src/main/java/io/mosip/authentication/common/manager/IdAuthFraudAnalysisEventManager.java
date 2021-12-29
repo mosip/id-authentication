@@ -5,6 +5,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OTP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FRAUD_ANALYSIS_ENABLED;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +45,7 @@ public class IdAuthFraudAnalysisEventManager {
 	@Value("${ida.fraud-analysis.request-flooding.request-count:3}")
 	private int requestCountForFlooding;
 
-	@Autowired
+	@Autowired(required = false)
 	private IdAuthFraudAnalysisEventPublisher publisher;
 
 	@Autowired
@@ -51,30 +53,39 @@ public class IdAuthFraudAnalysisEventManager {
 	
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
+	private Environment env;
 
 	@Async
 	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage) {
-		List<String> pathSegments = Arrays.asList(uri.split("/"));
-		String authType = null;
-		if (pathSegments.size() > 4) {
-			String idvIdHash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
-			String txnId = (String) request.get(TRANSACTION_ID);
-			String partnerId = pathSegments.get(4);
-			LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
-			authType = getAuthType(pathSegments, authType, request);
-			IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType, requestTime, "N",
-					errorMessage);
-			publisher.publishEvent(eventData);
-			this.analyseRequestFlooding(eventData);
+		if (env.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true)) {
+			List<String> pathSegments = Arrays.asList(uri.split("/"));
+			String authType = null;
+			if (pathSegments.size() > 4) {
+				String idvIdHash = IdAuthSecurityManager
+						.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
+				String txnId = (String) request.get(TRANSACTION_ID);
+				String partnerId = pathSegments.get(4);
+				LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
+				authType = getAuthType(pathSegments, authType, request);
+				IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType,
+						requestTime, "N", errorMessage);
+				publisher.publishEvent(eventData);
+				this.analyseRequestFlooding(eventData);
+			}
 		}
 	}
 
 	@Async
 	public void analyseEvent(AutnTxn txn) {
-		IdAuthFraudAnalysisEventDTO eventData = createEventData(txn.getRefId(), txn.getRequestTrnId(), txn.getEntityId(),
-				txn.getAuthTypeCode(), txn.getRequestDTtimes(), txn.getStatusCode(), txn.getStatusComment());
-		publisher.publishEvent(eventData);
-		this.analyseRequestFlooding(eventData);
+		if (env.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true)) {
+			IdAuthFraudAnalysisEventDTO eventData = createEventData(txn.getRefId(), txn.getRequestTrnId(),
+					txn.getEntityId(), txn.getAuthTypeCode(), txn.getRequestDTtimes(), txn.getStatusCode(),
+					txn.getStatusComment());
+			publisher.publishEvent(eventData);
+			this.analyseRequestFlooding(eventData);
+		}
 	}
 
 	private void analyseRequestFlooding(IdAuthFraudAnalysisEventDTO eventData) {
@@ -83,20 +94,20 @@ public class IdAuthFraudAnalysisEventManager {
 	}
 
 	private void requestFloodingBasedOnIdvId(IdAuthFraudAnalysisEventDTO eventData) {
-		List<AutnTxn> requests = authtxnRepo.findByRefIdAndRequestDTtimesAfter(eventData.getIndividualIdHash(),
+		Long requestCount = authtxnRepo.countByRefIdAndRequestDTtimesAfter(eventData.getIndividualIdHash(),
 				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requests.size() >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requests.size(),
+		if (requestCount >= requestCountForFlooding) {
+			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
 					requestFloodingTimeDiff));
 			publisher.publishEvent(eventData);
 		}
 	}
 
 	private void requestFloodingBasedOnPartnerId(IdAuthFraudAnalysisEventDTO eventData) {
-		List<AutnTxn> requests = authtxnRepo.findByEntityIdAndRequestDTtimesAfter(eventData.getPartnerId(),
+		Long requestCount = authtxnRepo.countByEntityIdAndRequestDTtimesAfter(eventData.getPartnerId(),
 				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requests.size() >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requests.size(),
+		if (requestCount >= requestCountForFlooding) {
+			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
 					requestFloodingTimeDiff));
 			publisher.publishEvent(eventData);
 		}

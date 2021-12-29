@@ -166,6 +166,6 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String MOSIP_DATE_OF_BIRTH_ATTRIBUTE_NAME = "mosip.date-of-birth.attribute.name";
 
-
+	public static final String FRAUD_ANALYSIS_ENABLED = "mosip.ida.fraud-analysis-enabled";
 
 }
