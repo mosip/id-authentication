@@ -94,20 +94,20 @@ public class IdAuthFraudAnalysisEventManager {
 	}
 
 	private void requestFloodingBasedOnIdvId(IdAuthFraudAnalysisEventDTO eventData) {
-		List<AutnTxn> requests = authtxnRepo.findByRefIdAndRequestDTtimesAfter(eventData.getIndividualIdHash(),
+		Long requestCount = authtxnRepo.countByRefIdAndRequestDTtimesAfter(eventData.getIndividualIdHash(),
 				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requests.size() >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requests.size(),
+		if (requestCount >= requestCountForFlooding) {
+			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
 					requestFloodingTimeDiff));
 			publisher.publishEvent(eventData);
 		}
 	}
 
 	private void requestFloodingBasedOnPartnerId(IdAuthFraudAnalysisEventDTO eventData) {
-		List<AutnTxn> requests = authtxnRepo.findByEntityIdAndRequestDTtimesAfter(eventData.getPartnerId(),
+		Long requestCount = authtxnRepo.countByEntityIdAndRequestDTtimesAfter(eventData.getPartnerId(),
 				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requests.size() >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requests.size(),
+		if (requestCount >= requestCountForFlooding) {
+			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
 					requestFloodingTimeDiff));
 			publisher.publishEvent(eventData);
 		}
