@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.listener;
 
+import java.util.Objects;
+
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,7 +56,7 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
 
-	@Autowired
+	@Autowired(required=false)
 	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
 
 	/**
@@ -82,7 +84,8 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(credentialStoreStatusEventPublisher);
 		webSubHelper.initRegistrar(authTypeStatusEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
-		webSubHelper.initRegistrar(fraudEventPublisher);
+		if(Objects.nonNull(fraudEventPublisher))
+			webSubHelper.initRegistrar(fraudEventPublisher);
 		return HttpStatus.SC_OK;
 	}
 
