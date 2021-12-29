@@ -332,6 +332,8 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_SUBTYPE_SEPARATOR = " ";
 	
 	public static final String BIO_TYPE_SEPARATOR="_";
+	
+	public static final String LANG_CODE_SEPARATOR="_";
 
 
 	private IdAuthCommonConstants() {

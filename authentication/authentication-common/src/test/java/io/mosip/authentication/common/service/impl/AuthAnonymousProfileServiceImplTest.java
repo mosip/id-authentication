@@ -114,7 +114,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getDynamicEntityInfo(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
+		Mockito.when(idInfoHelper.getDynamicEntityInfoAsString(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
 		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	
