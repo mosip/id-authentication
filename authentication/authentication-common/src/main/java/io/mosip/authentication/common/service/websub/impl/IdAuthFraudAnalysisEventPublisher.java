@@ -1,11 +1,13 @@
 package io.mosip.authentication.common.service.websub.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_FRAUD_ANALYSIS_TOPIC;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FRAUD_ANALYSIS_ENABLED;
 
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +24,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  * @author Loganathan Sekar
  */
 @Component
+@ConditionalOnProperty(FRAUD_ANALYSIS_ENABLED)
 public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
