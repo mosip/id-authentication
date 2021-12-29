@@ -6,6 +6,9 @@
 		"name": {
 			"value": "fullName"
 		},
+		"name2": {
+			"value": "firstName,lastName"
+		},
 		"gender": {
 			"value": "gender"
 		},

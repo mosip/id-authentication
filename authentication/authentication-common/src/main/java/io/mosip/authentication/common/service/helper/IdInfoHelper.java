@@ -5,6 +5,7 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUBTYPE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES;
 
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
  * Helper class to build Authentication request.
  *
@@ -204,11 +204,26 @@ public class IdInfoHelper {
 	 */
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
-		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
-		if(entityInfoMap == null) {
-			entityInfoMap = Map.of();
+		Map<String, String> entityInfo = getEntityInfoAsStringWithKey(matchType, langCode,
+						idEntity, null);
+		if(entityInfo == null || entityInfo.isEmpty()) {
+			return null;
 		}
-		return concatValues(getSeparator(matchType.getIdMapping().getIdname()), entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
+		return entityInfo.values().iterator().next();
+	}
+	
+	public Map<String, String> getEntityInfoAsStringWithKey(MatchType matchType, String langCode,
+			Map<String, List<IdentityInfoDTO>> idEntity, String key) throws IdAuthenticationBusinessException {
+		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
+		if(entityInfoMap == null || entityInfoMap.isEmpty()) {
+			return Map.of();
+		}
+		String actualKey = entityInfoMap.keySet().iterator().next();
+		return Map.of(key == null ? actualKey :  computeKey(key, entityInfoMap.keySet().iterator().next(), langCode) ,concatValues(getSeparator(matchType.getIdMapping().getIdname()), entityInfoMap.values().toArray(new String[entityInfoMap.size()])));
+	}
+
+	private String computeKey(String newKey, String originalKey, String langCode) {
+		return langCode != null && originalKey.contains(LANG_CODE_SEPARATOR) ? newKey + LANG_CODE_SEPARATOR + langCode: originalKey;
 	}
 
 	private String getSeparator(String idname) {
@@ -232,7 +247,7 @@ public class IdInfoHelper {
 		Function<? super String, ? extends String> keyMapper = propName -> {
 			String key = mappedIdEntity.get(propName).getKey();
 			if (languageCode != null) {
-				key = key + BIO_TYPE_SEPARATOR + languageCode;
+				key = key + LANG_CODE_SEPARATOR + languageCode;
 			}
 			return key;
 		};
@@ -317,24 +332,6 @@ public class IdInfoHelper {
 				.collect(Collectors.toList());
 	}
 	
-	/**
-	 * Get the ID Entity Info for all languages for the given match type from the
-	 * identity infos map.
-	 *
-	 * @param matchType the match type
-	 * @param identityInfos the identity infos
-	 * @return the id entity info
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public Map<String, List<IdentityInfoDTO>> getIdEntityInfo(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos)
-			throws IdAuthenticationBusinessException {
-		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(identityInfos,
-				idInfoFetcher);
-		return propertyNames.stream().collect(Collectors.toMap(Function.identity(), prop -> mappedIdEntity.get(prop).getValue()));
-	}
-
-
 	/**
 	 * Match id data.
 	 *
@@ -568,12 +565,41 @@ public class IdInfoHelper {
 	 * @param idName the id name
 	 * @return the entity for match type
 	 */
-	public String getDynamicEntityInfo(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+	public Map<String, String> getDynamicEntityInfoAsStringWithKey(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+		try {
+			Map<String, String> idEntityInfoMap = getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
+			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
+					.stream()
+					.map(Entry::getValue)
+					.collect(Collectors.joining(getSeparator(idName))));
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
+					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+		}
+		return Map.of();
+	}
+	
+	public String getDynamicEntityInfoAsString(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
+		Map<String, String> entityInfoMap = getDynamicEntityInfoAsStringWithKey(filteredIdentityInfo, langCode, idName);
+		if(entityInfoMap == null || entityInfoMap.isEmpty()) {
+			return null;
+		}
+		return entityInfoMap.values().iterator().next();
+	}
+	
+	/**
+	 * Gets the dynamic entity info for ID Name.
+	 *
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCode the lang code
+	 * @param idName the id name
+	 * @return the entity for match type
+	 */
+	public Map<String, String> getDynamicEntityInfo(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
 			return getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
 					.stream()
-					.map(Entry::getValue)
-					.collect(Collectors.joining(getSeparator(idName)));
+					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
