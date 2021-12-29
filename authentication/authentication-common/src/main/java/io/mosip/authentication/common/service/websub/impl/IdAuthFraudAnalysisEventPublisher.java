@@ -24,7 +24,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  * @author Loganathan Sekar
  */
 @Component
-@ConditionalOnProperty(FRAUD_ANALYSIS_ENABLED)
+@ConditionalOnProperty(matchIfMissing = true, value = FRAUD_ANALYSIS_ENABLED)
 public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
