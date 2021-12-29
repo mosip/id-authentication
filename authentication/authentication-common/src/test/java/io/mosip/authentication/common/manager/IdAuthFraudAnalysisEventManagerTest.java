@@ -80,10 +80,10 @@ public class IdAuthFraudAnalysisEventManagerTest {
         Mockito.when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
         Mockito.when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        Mockito.when(authTxnRepo.findByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(requests);
+        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
         Mockito.when(eventData.getPartnerId()).thenReturn("PartnerId");
-        Mockito.when(authTxnRepo.findByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(requests);
+        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 

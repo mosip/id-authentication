@@ -48,8 +48,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 	
-	List<AutnTxn> findByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
+	Long countByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
 	
-	List<AutnTxn> findByEntityIdAndRequestDTtimesAfter(String entityId, LocalDateTime afterRequestTime);
+	Long countByEntityIdAndRequestDTtimesAfter(String entityId, LocalDateTime afterRequestTime);
 
 }
