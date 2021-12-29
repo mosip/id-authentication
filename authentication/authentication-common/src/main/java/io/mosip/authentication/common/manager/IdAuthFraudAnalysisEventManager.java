@@ -45,7 +45,7 @@ public class IdAuthFraudAnalysisEventManager {
 	@Value("${ida.fraud-analysis.request-flooding.request-count:3}")
 	private int requestCountForFlooding;
 
-	@Autowired
+	@Autowired(required = false)
 	private IdAuthFraudAnalysisEventPublisher publisher;
 
 	@Autowired
