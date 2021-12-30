@@ -128,7 +128,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		if(idInfo != null && !idInfo.isEmpty()) {
 			setYearOfBirth(ananymousProfile, idInfo);
 			
-			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttribName);
+			String preferredLang = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, preferredLangAttribName);
 			if(preferredLang != null) {
 				ananymousProfile.setPreferredLanguages(List.of(preferredLang));
 			}
