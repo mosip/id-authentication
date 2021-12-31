@@ -62,11 +62,12 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  */
 //TODO remove the ignore . This is ignored due to Java 11 mockito error
 //@Ignore
-@RunWith(SpringRunner.class)
-@WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties", "classpath:ida-mapping.json"})
+
+@RunWith(SpringRunner.class)
+
+@WebMvcTest
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
