@@ -35,7 +35,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdaRequestResponsConsumerUtil.
  * 
