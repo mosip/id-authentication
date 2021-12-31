@@ -209,6 +209,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	private void setDymanicDemograpicData(Map<String, Object> demographics) {
 		Map<String, List<String>> dynamicAttributes = idMappingConfig.getDynamicAttributes();
 		
+		// First putting all demographics attributes which are mapped as dynamic in mapping
+		// config
 		Map<String, Object> metadata = demographics.entrySet()
 												.stream()
 												.filter(entry -> dynamicAttributes.containsKey(entry.getKey()))
@@ -217,7 +219,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		Set<String> staticIdNames = Stream.of(IdaIdMapping.values())
 											.map(IdaIdMapping::getIdname)
 											.collect(Collectors.toSet());
-		
+		// Putting all demographics attributes which are not mapped in mapping config
 		metadata.putAll(demographics.entrySet()
 			.stream()
 			.filter(entry -> !staticIdNames.contains(entry.getKey()))
