@@ -66,7 +66,7 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
+@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties", "classpath:ida-mapping.json"})
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
