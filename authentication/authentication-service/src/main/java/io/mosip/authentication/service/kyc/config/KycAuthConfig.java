@@ -1,15 +1,12 @@
 package io.mosip.authentication.service.kyc.config;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.EKYC_ALLOWED_AUTH_TYPE;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.util.EnvUtil;
 
 /**
  * The Class KycAuthConfig.
@@ -22,14 +19,14 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 public class KycAuthConfig extends IdAuthConfig {
 	
 	@Autowired
-	protected Environment environment;
+	protected EnvUtil environment;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFingerAuthEnabled()
 	 */
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue())
-				|| (FMR_ENABLED_TEST.test(environment) && environment.getProperty(EKYC_ALLOWED_AUTH_TYPE)
+		return (EnvUtil.getEkycAllowedAuthType().contains(BioAuthType.FGR_IMG.getConfigNameValue())
+				|| (EnvUtil.getIsFmrEnabled() && EnvUtil.getEkycAllowedAuthType()
 						.contains(BioAuthType.FGR_MIN.getConfigNameValue())));
 	}
 	
@@ -37,13 +34,13 @@ public class KycAuthConfig extends IdAuthConfig {
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isFaceAuthEnabled()
 	 */
 	protected boolean isFaceAuthEnabled() {
-		return environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigNameValue());
+		return EnvUtil.getEkycAllowedAuthType().contains(BioAuthType.FACE_IMG.getConfigNameValue());
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.config.IdAuthConfig#isIrisAuthEnabled()
 	 */
 	protected boolean isIrisAuthEnabled() {
-		return environment.getProperty(EKYC_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
+		return EnvUtil.getEkycAllowedAuthType().contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
 }

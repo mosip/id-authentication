@@ -22,8 +22,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -38,6 +38,7 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -64,7 +65,7 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 		IDAMappingConfig.class })
 
 @RunWith(SpringRunner.class)
-
+@Import(EnvUtil.class)
 @WebMvcTest
 public class IdInfoHelperTest {
 
@@ -78,7 +79,7 @@ public class IdInfoHelperTest {
 	IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
@@ -788,10 +789,10 @@ public class IdInfoHelperTest {
 	public void TestgetLanguageName() {
 		String langCode = "ara";
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) env));
 		mockenv.setProperty("mosip.phonetic.lang.".concat(langCode.toLowerCase()), "arabic-ar");
 		mockenv.setProperty("mosip.phonetic.lang.ar", "arabic-ar");
-		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", mockenv);
+		env.merge(mockenv);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 		Optional<String> languageName = idInfoFetcherImpl.getLanguageName(langCode);
 		String value = languageName.get();
 		assertEquals("arabic", value);
@@ -907,7 +908,7 @@ public class IdInfoHelperTest {
 	public void testGetNameMap2WithConfiguredSeperator() throws IdAuthenticationBusinessException {
 		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", config);
-		Environment environment = Mockito.mock(Environment.class);
+		EnvUtil environment = Mockito.mock(EnvUtil.class);
 		Mockito.when(environment.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + "name",
 				IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE))
 				.thenReturn("-");

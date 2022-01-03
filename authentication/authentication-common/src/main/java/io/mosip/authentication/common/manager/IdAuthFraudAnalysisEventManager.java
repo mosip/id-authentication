@@ -5,7 +5,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OTP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FRAUD_ANALYSIS_ENABLED;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +23,7 @@ import io.micrometer.core.instrument.util.StringEscapeUtils;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
@@ -54,12 +53,9 @@ public class IdAuthFraudAnalysisEventManager {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Autowired
-	private Environment env;
-
 	@Async
 	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage) {
-		if (env.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true)) {
+		if (EnvUtil.getIsFraudAnalysisEnabled()) {
 			List<String> pathSegments = Arrays.asList(uri.split("/"));
 			String authType = null;
 			if (pathSegments.size() > 4) {
@@ -79,7 +75,7 @@ public class IdAuthFraudAnalysisEventManager {
 
 	@Async
 	public void analyseEvent(AutnTxn txn) {
-		if (env.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true)) {
+		if (EnvUtil.getIsFraudAnalysisEnabled()) {
 			IdAuthFraudAnalysisEventDTO eventData = createEventData(txn.getRefId(), txn.getRequestTrnId(),
 					txn.getEntityId(), txn.getAuthTypeCode(), txn.getRequestDTtimes(), txn.getStatusCode(),
 					txn.getStatusComment());

@@ -1,10 +1,8 @@
 package io.mosip.authentication.common.service.filter;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BIO_HASH_VALIDATION_DISABLED;
-
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
 /**
@@ -39,12 +37,12 @@ public class InternalAuthFilter extends IdAuthFilter {
 	 */
 	@Override
 	protected String fetchReferenceId() {
-		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_REFERENCE_ID);
+		return EnvUtil.getInternalAuthInternalRefId();
 	}
 
 	@Override
 	protected String getBioRefId() {
-		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_BIO_REFERENCE_ID);
+		return EnvUtil.getInternalAuthInternalBioRefId();
 	}
 
 	@Override
@@ -55,12 +53,12 @@ public class InternalAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isSigningRequired() {
-		return env.getProperty("mosip.ida.internal.signing-required", Boolean.class, true);
+		return EnvUtil.getInternalAuthSigningRequired();
 	}
 
 	@Override
 	protected boolean isSignatureVerificationRequired() {
-		return env.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, false);
+		return EnvUtil.getInternalAuthSignatureVerificationRequired();
 	}
 
 	//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
@@ -71,13 +69,13 @@ public class InternalAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isTrustValidationRequired() {
-		return env.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false);
+		return EnvUtil.getInternalAuthTrustValidationRequired();
 	}
 	
 	@Override
 	protected boolean isBiometricHashValidationDisabled() {
 		//Disable biometric hash validation for internal auth
-		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, true);
+		return EnvUtil.getInternalAuthBioHashValidationDisabled();
 	}
 	
 	/**

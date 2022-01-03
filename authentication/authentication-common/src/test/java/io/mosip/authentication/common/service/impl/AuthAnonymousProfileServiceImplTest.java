@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -26,6 +27,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
@@ -34,6 +36,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
+@Import(EnvUtil.class)
 public class AuthAnonymousProfileServiceImplTest {
 
 	
@@ -50,7 +53,10 @@ public class AuthAnonymousProfileServiceImplTest {
 	private IdInfoFetcherImpl idInfoFetcherImpl;
 	
 	@Autowired
-	Environment env;
+	EnvUtil env;
+	
+	@Autowired
+	Environment environment;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -72,6 +78,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		 responseMetadata = new HashMap<>();
 		 idInfoMap = new HashMap<String, List<IdentityInfoDTO>>();
 			
+		 ReflectionTestUtils.setField(env, "env", environment);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "env", env);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);

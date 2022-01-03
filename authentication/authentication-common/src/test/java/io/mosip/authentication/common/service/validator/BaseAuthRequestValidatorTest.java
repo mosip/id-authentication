@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,7 +41,7 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -80,10 +79,6 @@ public class BaseAuthRequestValidatorTest {
 	@Mock
 	AuthRequestDTO authRequestDTO;
 
-	/** The environment. */
-	@Autowired
-	protected Environment environment;
-
 	@InjectMocks
 	AuthRequestValidator AuthRequestValidator;
 
@@ -108,7 +103,6 @@ public class BaseAuthRequestValidatorTest {
 	public void before() {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.setField(AuthRequestValidator, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 	}
 
@@ -220,9 +214,7 @@ public class BaseAuthRequestValidatorTest {
 
 		authRequestDTO = getAuthRequestDTO();
 		
-		Environment env = Mockito.mock(Environment.class);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
-		Mockito.when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(true);
+		EnvUtil.setIsFmrEnabled(true);
 
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
@@ -259,10 +251,7 @@ public class BaseAuthRequestValidatorTest {
 
 		authRequestDTO = getAuthRequestDTO();
 		
-		Environment env = Mockito.mock(Environment.class);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", env);
-		Mockito.when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false))
-		.thenReturn(false);
+		EnvUtil.setIsFmrEnabled(false);
 
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
@@ -302,7 +291,7 @@ public class BaseAuthRequestValidatorTest {
 
 		authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -318,7 +307,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTOFinger.setDigitalId(digitalId);
 		dataDTOFinger.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		dataDTOFinger.setBioValue("finger");
 		dataDTOFinger.setBioSubType("Thumb");
 		dataDTOFinger.setBioType("");
@@ -362,7 +351,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioSubType("Left Thumb");
 		dataDTO.setBioType("Finger");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
@@ -384,7 +373,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO1.setBioSubType("Left");
 		dataDTO1.setBioType("Iris");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		irisValue.setData(dataDTO1);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO2 = new DataDTO();
@@ -405,7 +394,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO2.setBioValue("face img");
 		dataDTO2.setBioType("FACE");
 		dataDTO2.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		faceValue.setData(dataDTO2);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
@@ -1420,7 +1409,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		return authRequestDTO;
 	}
@@ -1432,14 +1421,14 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
+		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO1.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1449,7 +1438,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1470,14 +1459,14 @@ public class BaseAuthRequestValidatorTest {
 	public void testInValidAuthRequest_SecondaryLanguage() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO1.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1487,7 +1476,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1508,7 +1497,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testInValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1525,7 +1514,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setDob("25/11/1990");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1546,7 +1535,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidAuthRequest2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1735,10 +1724,10 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateAge_Valid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
+		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO.setValue("16");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO1.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1748,7 +1737,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setAge("25");
 		idDTO.setDob("25/11/1990");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1764,10 +1753,10 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateAge_InValid() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
+		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO.setValue("16");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTO1.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -1777,7 +1766,7 @@ public class BaseAuthRequestValidatorTest {
 		idDTO.setAge("25/01/1998");
 		idDTO.setDob("25/11/1990");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
+		idInfoDTOs.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTOs.setValue("V");
 		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
 		idInfoLists.add(idInfoDTOs);
@@ -1794,7 +1783,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "456789";
@@ -1810,7 +1799,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "";
@@ -1826,7 +1815,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = null;
@@ -1842,7 +1831,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "123e45";
@@ -1858,7 +1847,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String otp = "123445";
@@ -1874,7 +1863,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String otp = null;
@@ -1914,7 +1903,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 
@@ -2304,7 +2293,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		dataDTO.setTimestamp(timestamp);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
@@ -2344,7 +2333,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString();
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		dataDTO.setTimestamp(timestamp);
 		
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);
@@ -2355,7 +2344,7 @@ public class BaseAuthRequestValidatorTest {
 		Map<String, List<String>> map = new HashMap<>();
 		List<String> list = new ArrayList<>();
 		list.add("M");
-		map.put(environment.getProperty("mosip.secondary-language"), list);
+		map.put(EnvUtil.getMandatoryLanguages(), list);
 		return map;
 	}
 
@@ -2363,7 +2352,7 @@ public class BaseAuthRequestValidatorTest {
 		Map<String, List<String>> map = new HashMap<>();
 		List<String> list = new ArrayList<>();
 		list.add("Test");
-		map.put(environment.getProperty("mosip.secondary-language"), list);
+		map.put(EnvUtil.getMandatoryLanguages(), list);
 		return map;
 	}
 }

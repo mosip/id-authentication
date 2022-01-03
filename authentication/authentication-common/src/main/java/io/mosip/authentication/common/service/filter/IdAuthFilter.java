@@ -10,8 +10,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TY
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE_INPUT_PARAM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_AAD_LAST_BYTES_NUM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_SALT_LAST_BYTES_NUM;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEMOGRAPHICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
@@ -26,8 +24,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUES
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_BIO_HASH_VALIDATION_DISABLED;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -64,9 +60,9 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.DomainType;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -198,7 +194,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @return true, if is hash based on biometric data block
 	 */
 	protected boolean isBiometricHashValidationDisabled() {
-		return env.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false);
+		return EnvUtil.getIsBioHashValidationDisabled();
 	}
 
 	/**
@@ -304,11 +300,9 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			String timestamp = String.valueOf(data.get(TIMESTAMP));
 			String transactionId = String.valueOf(data.get(TRANSACTION_ID));
 			byte[] xorBytes = BytesUtil.getXOR(timestamp, transactionId);
-			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
-					IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
+			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, EnvUtil.getSaltLastBytesSum());
 			String salt = CryptoUtil.encodeBase64(saltLastBytes);
-			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
-					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
+			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, EnvUtil.getAadLastBytesSum());
 			String aad = CryptoUtil.encodeBase64(aadLastBytes);
 			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
@@ -326,7 +320,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @return the bio ref id
 	 */
 	protected String getBioRefId() {
-		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_BIO_REFERENCE_ID);
+		return EnvUtil.getPartnerBioRefId();
 	}
 
 	/**
@@ -367,7 +361,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @return the string
 	 */
 	protected String fetchReferenceId() {
-		return env.getProperty(IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID);
+		return EnvUtil.getPartnerRefId();
 	}
 
 	/**
@@ -797,7 +791,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		for (String bioType : bioTypeList) {
 			bioAuthType = bioType;
 			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
-					|| (FMR_ENABLED_TEST.test(env) && bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))) {
+					|| (EnvUtil.getIsFmrEnabled() && bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType()))) {
 				bioType = BiometricType.FINGER.value();
 			} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
 				bioType = BiometricType.FACE.value();
@@ -910,7 +904,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else if (mandatoryAuthPolicy.getAuthType().equalsIgnoreCase(KYC)
 				&& !Optional.ofNullable(requestBody.get("id"))
-						.filter(id -> id.equals(env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_API_ID + KYC)))
+						.filter(id -> id.equals(EnvUtil.getIdaApiIdWithKyc()))
 						.isPresent()) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(), KYC));
@@ -1016,8 +1010,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @return
 	 */
 	public Set<String> getSystemSupportedLanguageCodes() {
-		String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
-				+ env.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		String languages = EnvUtil.getMandatoryLanguages() + ","
+				+ EnvUtil.getOptionalLanguages();		
 		return new HashSet<>(List.of(languages.split(",")));
 	}
 

@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,6 +31,7 @@ import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -43,6 +44,7 @@ import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class InternalAuthTransactionTest {
 
 	@InjectMocks
@@ -58,7 +60,7 @@ public class InternalAuthTransactionTest {
 	private AuthTxnValidator authTxnValidator;
 
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 	
 	@Mock
 	private IdAuthSecurityManager securityManager;
@@ -73,7 +75,7 @@ public class InternalAuthTransactionTest {
 	private IdServiceImpl idService;
 	
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Mock
 	private IdaUinHashSaltRepo uinHashSaltRepo;
@@ -91,7 +93,6 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);
 		ReflectionTestUtils.setField(internalAuthTxnController, "environment", environment);
 		ReflectionTestUtils.setField(internalAuthTxnController, "auditHelper", auditHelper);
-		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 		ReflectionTestUtils.setField(authTxnService, "authtxnRepo", authtxnRepo);
 		ReflectionTestUtils.setField(internalAuthTxnController, "idTypeUtil", idTypeUtil);
 		when(securityManager.hash(Mockito.any())).thenReturn("1234");

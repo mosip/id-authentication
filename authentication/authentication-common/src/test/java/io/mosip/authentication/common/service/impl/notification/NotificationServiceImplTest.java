@@ -24,8 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -40,6 +40,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -60,6 +61,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
+@Import(EnvUtil.class)
 public class NotificationServiceImplTest {
 
 	@InjectMocks
@@ -69,7 +71,7 @@ public class NotificationServiceImplTest {
 	private RestRequestFactory restRequestFactory;
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 
 	@Mock
 	private RestHelper restHelper;
@@ -96,10 +98,8 @@ public class NotificationServiceImplTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
-		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(notificationService, "idInfoFetcher", idInfoFetcher);
-		ReflectionTestUtils.setField(notificationService, "env", environment);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(notificationManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
@@ -118,7 +118,7 @@ public class NotificationServiceImplTest {
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 
 		// authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// .format(DateTimeFormatter.ofPattern(environment.getDateTimePattern())).toString());
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
@@ -155,7 +155,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
-		ReflectionTestUtils.setField(notificationService, "env", mockenv);
+		ReflectionTestUtils.setField(environment, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
@@ -208,7 +208,6 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.primary-language", "fra");
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
-		ReflectionTestUtils.setField(notificationService, "env", mockenv);
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
 
@@ -226,7 +225,7 @@ public class NotificationServiceImplTest {
 		otpRequestDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
 		// otpRequestDto.setReqTime(ZonedDateTime.now()
-		// .format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// .format(DateTimeFormatter.ofPattern(environment.getDateTimePattern())).toString());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();

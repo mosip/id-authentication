@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -28,8 +27,8 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -64,9 +63,6 @@ public class NotificationServiceImpl implements NotificationService {
 	/** The Constant DATE. */
 	private static final String DATE = "date";
 
-	@Autowired
-	private Environment env;
-
 	/** The demo auth service. */
 	@Autowired
 	private IdInfoHelper infoHelper;
@@ -98,7 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
 		values.put(DATE, dateAndTime.getT1());
 		values.put(TIME, dateAndTime.getT2());
 		String maskedUin = "";
-		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
+		String charCount = EnvUtil.getUinMaskingCharCount();
 		if (charCount != null && !charCount.isEmpty()) {
 			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
 		}
@@ -127,7 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
 		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
-			notificationType = env.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATIONTYPE);
+			notificationType = EnvUtil.getNotificationType();
 		} else {
 			// For internal auth no notification is done
 			notificationType = NotificationType.NONE.getName();
@@ -159,13 +155,13 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
-		String charCount = env.getProperty(IdAuthConfigKeyConstants.UIN_MASKING_CHARCOUNT);
+		String charCount = EnvUtil.getUinMaskingCharCount();
 		if (charCount != null) {
 			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
 		}
 		values.put("idvid", maskedUin);
 		values.put("idvidType", idvidType);
-		Integer timeInSeconds = env.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class);
+		Integer timeInSeconds = EnvUtil.getOtpExpiryTime();
 		int timeInMinutes = (timeInSeconds % 3600) / 60;
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
@@ -185,13 +181,13 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private Tuple2<String, String> getDateAndTime(LocalDateTime timestamp) {
 		ZonedDateTime dateTime = ZonedDateTime.of(timestamp, ZoneId.of("UTC")).withZoneSameInstant(getZone());
-		String date = dateTime.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_DATE_FORMAT)));
-		String time = dateTime.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_FORMAT)));
+		String date = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationDateFormat()));
+		String time = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationTimeFormat()));
 		return Tuples.of(date, time);
 	}
 
 	private ZoneId getZone() {
-		return ZoneId.of(env.getProperty(IdAuthConfigKeyConstants.NOTIFICATION_TIME_ZONE));
+		return ZoneId.of(EnvUtil.getNotificationTimeZone());
 	}
 
 	/**
@@ -306,8 +302,8 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
-		String authSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE);
-		String otpSmsTemplate = env.getProperty(IdAuthConfigKeyConstants.OTP_SMS_TEMPLATE);
+		String authSmsTemplate = EnvUtil.getAuthSmsTemplate();
+		String otpSmsTemplate = EnvUtil.getOtpSmsTemplate();
 		String contentTemplate = "";
 		if (sender == SenderType.AUTH && authSmsTemplate != null) {
 			contentTemplate = authSmsTemplate;
@@ -332,10 +328,10 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
-		String otpContentTemaplate = env.getProperty(IdAuthConfigKeyConstants.OTP_CONTENT_TEMPLATE);
-		String authEmailSubjectTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_SUBJECT_TEMPLATE);
-		String authEmailContentTemplate = env.getProperty(IdAuthConfigKeyConstants.AUTH_EMAIL_CONTENT_TEMPLATE);
-		String otpSubjectTemplate = env.getProperty(IdAuthConfigKeyConstants.OTP_SUBJECT_TEMPLATE);
+		String otpContentTemaplate = EnvUtil.getOtpContentTemplate();
+		String authEmailSubjectTemplate = EnvUtil.getAuthEmailSubjectTemplate();
+		String authEmailContentTemplate = EnvUtil.getAuthEmailContentTemplate();
+		String otpSubjectTemplate = EnvUtil.getOtpSubjectTemplate();
 
 		String contentTemplate = "";
 		String subjectTemplate = "";

@@ -1,9 +1,5 @@
 package io.mosip.authentication.core.constant;
 
-import java.util.function.Predicate;
-
-import org.springframework.core.env.Environment;
-
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 
 /**
@@ -84,8 +80,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
 	
 	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";	
-
-	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_SECRET = "ida-websub-ca-certificate-callback-secret";
 	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_SECRET = "ida-websub-hotlist-callback-secret";
