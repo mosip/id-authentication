@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.kyc.impl;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,10 +27,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,7 +44,7 @@ import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
-import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -62,21 +60,22 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  */
 //TODO remove the ignore . This is ignored due to Java 11 mockito error
 //@Ignore
-@RunWith(SpringRunner.class)
-@WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
+
+@RunWith(SpringRunner.class)
+@Import(EnvUtil.class)
+@WebMvcTest
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
 	private String fullAddrSep;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 	
 	@Mock
 	private MappingConfig mappingConfig;

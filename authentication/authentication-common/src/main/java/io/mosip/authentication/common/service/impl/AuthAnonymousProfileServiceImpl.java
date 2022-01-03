@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,6 +38,7 @@ import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticati
 import io.mosip.authentication.common.service.impl.idevent.BiometricProfileInfo;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -86,7 +86,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private String dateOfBirthPattern;
 	
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -233,7 +233,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private String getProfileDataLangCode(Map<String, List<IdentityInfoDTO>> idInfo, String preferredLang) {
-		Optional<String> mandatoryLang = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES).split(","))
+		Optional<String> mandatoryLang = Arrays.stream(EnvUtil.getMandatoryLanguages().split(","))
 				.filter(str -> str.trim().length() > 0)
 				.findFirst();
 		return mandatoryLang.orElse(preferredLang);

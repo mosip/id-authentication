@@ -109,7 +109,7 @@ public interface IdInfoFetcher {
 			CbeffDocType[] cbeffDocTypes, MatchType matchType) throws IdAuthenticationBusinessException;
 
 	/**
-	 * To get Environment.
+	 * To get EnvPropertyResolver.
 	 *
 	 * @return the environment
 	 */

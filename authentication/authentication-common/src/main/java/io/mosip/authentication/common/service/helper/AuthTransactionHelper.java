@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.helper;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +7,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +20,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -59,7 +57,7 @@ public class AuthTransactionHelper {
 	
 	/** The env. */
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 	
 	/** The security manager. */
 	@Autowired
@@ -287,10 +285,10 @@ public class AuthTransactionHelper {
 	 * @param env the env
 	 * @return true, if is finger auth
 	 */
-	public static boolean isFingerAuth(AuthRequestDTO authRequestDTO, Environment env) {
+	public static boolean isFingerAuth(AuthRequestDTO authRequestDTO, EnvUtil env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
-				bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || (FMR_ENABLED_TEST.test(env)
-						&& bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType())));
+				bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType()) || EnvUtil.getIsFmrEnabled()
+						&& bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()));
 	}
 	
 	/**
@@ -300,7 +298,7 @@ public class AuthTransactionHelper {
 	 * @param env the env
 	 * @return true, if is iris auth
 	 */
-	public static boolean isIrisAuth(AuthRequestDTO authRequestDTO, Environment env) {
+	public static boolean isIrisAuth(AuthRequestDTO authRequestDTO, EnvUtil env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType()));
 	}
@@ -312,7 +310,7 @@ public class AuthTransactionHelper {
 	 * @param env the env
 	 * @return true, if is face auth
 	 */
-	public static boolean isFaceAuth(AuthRequestDTO authRequestDTO, Environment env) {
+	public static boolean isFaceAuth(AuthRequestDTO authRequestDTO, EnvUtil env) {
 		return authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FACE_IMG.getType()));
 	}

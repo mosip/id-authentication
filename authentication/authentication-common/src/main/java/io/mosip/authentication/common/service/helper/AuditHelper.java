@@ -1,14 +1,11 @@
 package io.mosip.authentication.common.service.helper;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +16,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -57,9 +55,9 @@ public class AuditHelper {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	/** The Environment */
+	/** The EnvPropertyResolver */
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	
 	/**
@@ -167,10 +165,9 @@ public class AuditHelper {
 
 		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			if (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getBiometrics() != null) {
-				if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
-						.anyMatch(bioInfo -> BioAuthType.FGR_IMG.getType().equals(bioInfo.getBioType())
-								|| (FMR_ENABLED_TEST.test(env)
-										&& BioAuthType.FGR_MIN.getType().equals(bioInfo.getBioType()))))) {
+				if ((authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData).anyMatch(
+						bioInfo -> BioAuthType.FGR_IMG.getType().equals(bioInfo.getBioType()) || (EnvUtil.getIsFmrEnabled()
+								&& BioAuthType.FGR_MIN.getType().equals(bioInfo.getBioType()))))) {
 					auditModules.add(AuditModules.FINGERPRINT_AUTH);
 				}
 

@@ -14,7 +14,7 @@
 //import org.mockito.Mockito;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.core.env.Environment;
+//import org.springframework.core.env.EnvPropertyResolver;
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.TestContext;
 //import org.springframework.test.context.junit4.SpringRunner;
@@ -49,7 +49,7 @@
 //	private AuthLockRepository authLockRepository;
 //
 //	@Autowired
-//	private Environment environment;
+//	private EnvPropertyResolver environment;
 //	
 //	@Mock
 //	private IdAuthSecurityManager securityManager;

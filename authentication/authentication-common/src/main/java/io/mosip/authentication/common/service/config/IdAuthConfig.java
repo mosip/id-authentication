@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.config;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
@@ -11,14 +12,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -31,8 +34,8 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 
 	/** The environment. */
 	@Autowired
-	private Environment environment;
-
+	private EnvUtil environment;
+	
 	/**
 	 * Initialize.
 	 */
@@ -49,7 +52,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-		Locale locale = new Locale(environment.getProperty(MOSIP_ERRORMESSAGES_DEFAULT_LANG));
+		Locale locale = new Locale(EnvUtil.getErrorMsgDefaultLang());
 		LocaleContextHolder.setLocale(locale);
 		sessionLocaleResolver.setDefaultLocale(locale);
 		return sessionLocaleResolver;
@@ -104,6 +107,19 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Bean
 	public AfterburnerModule afterburnerModule() {
 	  return new AfterburnerModule();
+	}
+	
+	private ArrayList<String> serviceNames() {
+		ArrayList<String> list = new ArrayList<String>();
+		for(RestServicesConstants service: RestServicesConstants.values()) {
+			list.add(service.getServiceName());
+		}
+		return list;
+	}
+
+	@Bean
+	public RestRequestBuilder getRestRequestBuilder() {
+		return new RestRequestBuilder(serviceNames());
 	}
 
 }

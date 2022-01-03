@@ -17,9 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,6 +36,7 @@ import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -62,9 +61,6 @@ public class IdMappingValidationTest {
 	@Mock
 	private PinValidatorImpl pinValidator;
 
-	@Autowired
-	Environment environment;
-	
 	@Mock
 	private IdInfoFetcherImpl idInfoFetcher;
 
@@ -80,9 +76,6 @@ public class IdMappingValidationTest {
 	@Mock
 	private MasterDataManager masterDataManager;
 
-	@Autowired
-	private Environment env;
-
 	@Mock
 	private PinValidatorImpl pinValidatorImpl;
 
@@ -97,7 +90,6 @@ public class IdMappingValidationTest {
 
 	@Before
 	public void before() throws IdAuthenticationDaoException {
-		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 	}
 
@@ -302,7 +294,7 @@ public class IdMappingValidationTest {
 		dataDTO.setBioSubType("Thumb");
 		dataDTO.setBioType("test");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO fingerValue1 = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
@@ -321,14 +313,14 @@ public class IdMappingValidationTest {
 		dataDTO1.setBioSubType("Left Thumb");
 		dataDTO1.setBioType("Finger");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		fingerValue1.setData(dataDTO1);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
 		dataDTO.setBioSubType("Left");
 		dataDTO.setBioType("Iris");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		irisValue.setData(dataDTO);
 		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFace = new DataDTO();
@@ -346,7 +338,7 @@ public class IdMappingValidationTest {
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FACE");
 		dataDTOFace.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		faceValue.setData(dataDTOFace);
 
 		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();

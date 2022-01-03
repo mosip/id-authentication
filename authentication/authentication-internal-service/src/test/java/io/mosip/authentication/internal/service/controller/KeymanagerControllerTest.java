@@ -10,7 +10,7 @@ public class KeymanagerControllerTest {
 //	KeymanagerController keymanagerController;
 //	
 //	@Autowired
-//	private Environment env;
+//	private EnvPropertyResolver env;
 //	
 //	@Mock
 //	KeyServiceManager keymanagerService;

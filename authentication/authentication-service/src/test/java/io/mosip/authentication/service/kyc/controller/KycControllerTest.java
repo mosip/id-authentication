@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -43,6 +43,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -76,6 +77,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class KycControllerTest {
 
 	@Mock
@@ -88,7 +90,7 @@ public class KycControllerTest {
 	private RestHelper restHelper;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@InjectMocks
 	private RestRequestFactory restFactory;
@@ -150,7 +152,6 @@ public class KycControllerTest {
 	
 	@Before
 	public void before() throws Exception {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(partnerService, "mapper", mapper);
 		ReflectionTestUtils.setField(partnerService, "partnerServiceManager", partnerServiceManager);
@@ -158,7 +159,6 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
 		ReflectionTestUtils.setField(kycAuthController, "authTransactionHelper", authTransactionHelper);
 		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);
-		ReflectionTestUtils.setField(kycReqValidator, "env", env);
 		ReflectionTestUtils.setField(kycReqValidator, "idInfoFetcher", idInfoFetcherImpl);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 
@@ -166,7 +166,7 @@ public class KycControllerTest {
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setVersion("1.1");
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthReqDTO.setTransactionID("1234567890");
 		kycAuthReqDTO.setIndividualId("5134256294");
 		
@@ -224,7 +224,7 @@ public class KycControllerTest {
 		
 		kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		
@@ -235,7 +235,7 @@ public class KycControllerTest {
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setVersion("1.0");
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		HashMap<String, Object> respMetadata = new HashMap<String, Object>();

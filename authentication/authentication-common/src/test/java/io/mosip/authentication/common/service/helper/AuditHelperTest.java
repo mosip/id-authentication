@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -25,9 +26,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
@@ -45,6 +46,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@Import(EnvUtil.class)
 public class AuditHelperTest {
 
 	@Mock
@@ -65,15 +67,17 @@ public class AuditHelperTest {
 	@Mock
 	RestRequestFactory restFactory;
 
+	@InjectMocks
+	EnvUtil env;
+	
 	@Mock
-	Environment env;
+	Environment environment;
 	
 	@Autowired
 	ObjectMapper mapper;
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(auditHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(auditHelper, "env", env);
@@ -106,7 +110,7 @@ public class AuditHelperTest {
 		IdAuthenticationBaseException e = new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		AuthRequestDTO authRequestDTO = createAuthRequest();
 		
-		when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(false);
+		EnvUtil.setIsFmrEnabled(false);
 		
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
@@ -118,7 +122,7 @@ public class AuditHelperTest {
 		
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 
-		when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(true);
+		EnvUtil.setIsFmrEnabled(true);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 		
 		List<BioIdentityInfoDTO> biometrics = authRequestDTO.getRequest().getBiometrics();
@@ -176,7 +180,7 @@ public class AuditHelperTest {
 	@Test
 	public void testAuditAuthStatus() throws IDDataValidationException {
 		AuthRequestDTO authRequestDTO = createAuthRequest();
-		when(env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false)).thenReturn(false);
+		EnvUtil.setIsFmrEnabled(false);
 
 		auditHelper.auditStatusForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , "Status: true");
 	
