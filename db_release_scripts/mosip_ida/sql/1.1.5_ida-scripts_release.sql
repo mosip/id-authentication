@@ -75,5 +75,6 @@ CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);
 CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
 
 -----------------------------------------------------------------------------------------------------------
+ALTER TABLE ida.key_alias ADD COLUMN cert_thumbprint character varying(100);
 
 
