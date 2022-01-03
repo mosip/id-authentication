@@ -73,7 +73,7 @@ public class PartnerServiceEventsInitializer extends BaseWebSubEventsInitializer
 				subscriptionRequest.setTopic(topic);
 				logger.debug(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
 						"Trying to subscribe to topic: " + topic + " callback-url: "
-								+ partnerServiceCallbackURL);
+								+ callbackURL);
 				webSubHelper.subscribe(subscriptionRequest);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForAuthTypeEvents", "",
 						"Subscribed to topic: " + topic);
