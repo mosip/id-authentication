@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -77,7 +77,7 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 	 */
 	@Override
 	protected String getAllowedAuthTypeProperty() {
-		return IdAuthConfigKeyConstants.EKYC_ALLOWED_AUTH_TYPE;
+		return EnvUtil.getEkycAllowedAuthType();
 	}
 
 }

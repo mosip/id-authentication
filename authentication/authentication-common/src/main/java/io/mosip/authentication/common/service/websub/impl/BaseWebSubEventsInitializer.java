@@ -4,10 +4,10 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -32,7 +32,7 @@ public abstract class BaseWebSubEventsInitializer implements WebSubEventTopicReg
 	
 	/** The env. */
 	@Autowired
-	protected Environment env;
+	protected EnvUtil env;
 	
 	@Autowired
 	protected WebSubHelper webSubHelper;

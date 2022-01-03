@@ -3,13 +3,11 @@ package io.mosip.authentication.common.service.factory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -28,17 +26,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuditRequestFactory {
 
-    private static final String DEFAULT_HOST_NAME = "localhost";
-
-	private static final String DEFAULT_HOST_ADDRESS = "127.0.0.1";
-
 	/** The mosipLogger. */
     private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
-    /** The env. */
-    @Autowired
-    private Environment env;
-    
     /**
      * Builds the request.
      *
@@ -74,8 +64,8 @@ public class AuditRequestFactory {
 	    hostAddress = inetAddress.getHostAddress();
 	} catch (UnknownHostException ex) {
 	    mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
-	    hostName = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_NAME, DEFAULT_HOST_NAME);
-	    hostAddress = env.getProperty(IdAuthConfigKeyConstants.AUDIT_DEFAULT_HOST_ADDRESS, DEFAULT_HOST_ADDRESS);
+	    hostName = 
+	    hostAddress = EnvUtil.getAuditDefaultHostName();
 	}
 
 	request.setEventId(event.getEventId());
@@ -84,12 +74,12 @@ public class AuditRequestFactory {
 	request.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 	request.setHostName(hostName);
 	request.setHostIp(hostAddress);
-	request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-	request.setApplicationName(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_NAME));
+	request.setApplicationId(EnvUtil.getAppId());
+	request.setApplicationName(EnvUtil.getAppName());
 	request.setSessionUserId("sessionUserId");
 	request.setSessionUserName("sessionUserName");
 	request.setIdType(idType);
-	request.setCreatedBy(env.getProperty(IdAuthConfigKeyConstants.USER_NAME));
+	request.setCreatedBy(EnvUtil.getUsername());
 	request.setModuleName(module.getModuleName());
 	request.setModuleId(module.getModuleId());
 	request.setDescription(desc);

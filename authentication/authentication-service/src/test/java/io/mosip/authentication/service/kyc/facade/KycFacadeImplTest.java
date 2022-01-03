@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -47,7 +47,7 @@ import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
-import io.mosip.authentication.common.service.util.TestHttpServletRequest;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -80,6 +80,7 @@ import reactor.util.function.Tuples;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
+@Import(EnvUtil.class)
 public class KycFacadeImplTest {
 
 	@InjectMocks
@@ -92,7 +93,7 @@ public class KycFacadeImplTest {
 	private IdInfoHelper idInfoHelper;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Mock
 	private BioAuthServiceImpl bioAuthService;
@@ -188,7 +189,7 @@ public class KycFacadeImplTest {
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		List<BioIdentityInfoDTO> bioDataList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO bioIdInfoDto1 = new BioIdentityInfoDTO();
 		DataDTO dataDto1 = new DataDTO();
@@ -227,7 +228,7 @@ public class KycFacadeImplTest {
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		HashMap<String, Object> resMetadata = new HashMap<>();
 		resMetadata.put("IDENTITY_DATA", idRepo);
 		HashMap<String, Object> idInfoMetadata = new HashMap<>();
@@ -274,7 +275,7 @@ public class KycFacadeImplTest {
 		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
-		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		kycAuthRequestDTO.setMetadata(kycReqMetadata);
@@ -302,11 +303,11 @@ public class KycFacadeImplTest {
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 		kycResponseDTO.setIdentity("id data");
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		
 		Map<String, Object> authResMetadata = new HashMap<>();
@@ -339,7 +340,7 @@ public class KycFacadeImplTest {
 		res.setAuthToken("2345678");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
@@ -366,7 +367,7 @@ public class KycFacadeImplTest {
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		kycAuthRequestDTO.setMetadata(kycReqMetadata);
@@ -391,10 +392,10 @@ public class KycFacadeImplTest {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		kycResponseDTO.setAuthToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
-		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		
 		Map<String, Object> authResMetadata = new HashMap<>();
@@ -427,7 +428,7 @@ public class KycFacadeImplTest {
 		res.setAuthToken("2345678");
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");

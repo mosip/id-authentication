@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
@@ -39,7 +37,7 @@ public final class AuthTypeUtil {
 		return Stream.of(values).anyMatch(authType -> authType.isAuthTypeInfoAvailable(authReqDto));
 	}
 	
-	public static List<RequestType> findAutRequestTypes(AuthRequestDTO authRequestDTO, Environment env) {
+	public static List<RequestType> findAutRequestTypes(AuthRequestDTO authRequestDTO, EnvUtil env) {
 		List<RequestType> requestTypes = new ArrayList<>();
 		if(AuthTypeUtil.isOtp(authRequestDTO)) {
 			requestTypes.add(RequestType.OTP_AUTH);

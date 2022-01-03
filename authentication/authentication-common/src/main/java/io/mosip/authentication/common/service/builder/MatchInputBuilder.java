@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -41,12 +41,6 @@ public class MatchInputBuilder {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(MatchInputBuilder.class);
-	
-	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
-	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
-	
-	/** The Constant DEFAULT_PARTIAL_MATCH_VALUE. */
-	public static final int DEFAULT_PARTIAL_MATCH_VALUE = DEFAULT_EXACT_MATCH_VALUE;
 
 	/** The id info fetcher. */
 	@Autowired
@@ -54,7 +48,7 @@ public class MatchInputBuilder {
 	
 	/** The environment. */
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	/** The Constant DEFAULT_MATCH_VALUE. */
 	public static final String DEFAULT_MATCH_VALUE = "demo.threshold";
@@ -310,7 +304,7 @@ public class MatchInputBuilder {
 		if (matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {
 			return null;
 		} else {
-			Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
+			Integer matchValue = IdAuthCommonConstants.DEFAULT_EXACT_MATCH_VALUE;
 			String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
 
 			Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, language);
@@ -320,7 +314,7 @@ public class MatchInputBuilder {
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
 							environment, idInfoFetcher);
-					matchValue = matchThresholdOpt.orElseGet(() -> environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE, int.class, DEFAULT_PARTIAL_MATCH_VALUE));
+					matchValue = matchThresholdOpt.orElseGet(() -> EnvUtil.getDefaultMatchValue());
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);

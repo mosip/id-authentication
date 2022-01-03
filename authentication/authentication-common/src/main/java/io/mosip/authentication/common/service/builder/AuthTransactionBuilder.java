@@ -7,14 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.TransactionType;
@@ -222,7 +220,7 @@ public class AuthTransactionBuilder {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public AutnTxn build(Environment env, IdaUinHashSaltRepo uinHashSaltRepo,
+	public AutnTxn build(EnvUtil env, IdaUinHashSaltRepo uinHashSaltRepo,
 			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
 		try {
 			String idvId;
@@ -247,13 +245,13 @@ public class AuthTransactionBuilder {
 			String id = createId();
 			autnTxn.setToken(token);
 			autnTxn.setId(id);
-			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			autnTxn.setCrBy(EnvUtil.getAppId());
 			autnTxn.setAuthTknId(authTokenId);
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
 			try {
 				strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
-						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN))));
+						DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
 			} catch (ParseException e) {
 				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
 						"Invalid Request Time - setting to current date time");

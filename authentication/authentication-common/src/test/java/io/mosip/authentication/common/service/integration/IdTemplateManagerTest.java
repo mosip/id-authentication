@@ -24,8 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -52,6 +53,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Import(EnvUtil.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
 
@@ -70,7 +72,7 @@ public class IdTemplateManagerTest {
 	private PDFGenerator pdfGenerator;
 
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;

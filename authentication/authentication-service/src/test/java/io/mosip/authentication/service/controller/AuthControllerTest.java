@@ -30,6 +30,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -62,7 +63,10 @@ public class AuthControllerTest {
 	private RestHelper restHelper;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
+	
+	@Autowired
+	Environment environment;
 
 	@InjectMocks
 	private RestRequestFactory restFactory;
@@ -93,6 +97,7 @@ public class AuthControllerTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(env, "env", environment);
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
@@ -198,7 +203,7 @@ public class AuthControllerTest {
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		return authRequestDTO;
@@ -221,7 +226,7 @@ public class AuthControllerTest {
 	 * KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
 	 * kycAuthReqDTO.setId("id"); kycAuthReqDTO.setVersion("1.1");
 	 * kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); kycAuthReqDTO.setId("id");
 	 * kycAuthReqDTO.setTransactionID("1234567890"); AuthTypeDTO authTypeDTO = new
 	 * AuthTypeDTO(); authTypeDTO.setDemo(false); authTypeDTO.setOtp(true);
@@ -240,14 +245,14 @@ public class AuthControllerTest {
 	 * KycResponseDTO kycResponseDTO = new KycResponseDTO(); KycAuthResponseDTO
 	 * kycAuthResponseDTO = new KycAuthResponseDTO();
 	 * kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); kycAuthResponseDTO.setTransactionID("34567");
 	 * kycAuthResponseDTO.setErrors(null);
 	 * kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 	 * kycResponseDTO.setKycStatus(Boolean.TRUE);
 	 * 
 	 * kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 	 * List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>(); list.add(new
 	 * IdentityInfoDTO("en", "mosip")); idInfo.put("name", list);
@@ -258,7 +263,7 @@ public class AuthControllerTest {
 	 * res.setAuthStatus(Boolean.TRUE); res.setStaticToken("234567890");
 	 * authResponseDTO.setResponse(res);
 	 * authResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); authResponseDTO.setErrors(null);
 	 * authResponseDTO.setTransactionID("123456789");
 	 * authResponseDTO.setVersion("1.0");
@@ -275,7 +280,7 @@ public class AuthControllerTest {
 	 * KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 	 * kycAuthRequestDTO.setId("id"); kycAuthRequestDTO.setVersion("1.1");
 	 * kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); kycAuthRequestDTO.setId("id");
 	 * kycAuthRequestDTO.setTransactionID("1234567890"); AuthTypeDTO authTypeDTO =
 	 * new AuthTypeDTO(); authTypeDTO.setDemo(false); authTypeDTO.setOtp(true);
@@ -295,7 +300,7 @@ public class AuthControllerTest {
 	 * KycResponseDTO kycResponseDTO = new KycResponseDTO(); KycAuthResponseDTO
 	 * kycAuthResponseDTO = new KycAuthResponseDTO();
 	 * kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); kycAuthResponseDTO.setTransactionID("34567");
 	 * kycAuthResponseDTO.setErrors(null);
 	 * kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
@@ -303,7 +308,7 @@ public class AuthControllerTest {
 	 * kycResponseDTO.setKycStatus(Boolean.TRUE);
 	 * 
 	 * kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 	 * List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>(); list.add(new
 	 * IdentityInfoDTO("en", "mosip")); idInfo.put("name", list);
@@ -314,7 +319,7 @@ public class AuthControllerTest {
 	 * res.setAuthStatus(Boolean.TRUE); res.setStaticToken("234567890");
 	 * authResponseDTO.setResponse(res);
 	 * authResponseDTO.setResponseTime(ZonedDateTime.now()
-	 * .format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).
+	 * .format(DateTimeFormatter.ofPattern(env.getDateTimePattern())).
 	 * toString()); authResponseDTO.setErrors(null);
 	 * authResponseDTO.setTransactionID("123456789");
 	 * authResponseDTO.setVersion("1.0");

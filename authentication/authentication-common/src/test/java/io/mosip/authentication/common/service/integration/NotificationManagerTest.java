@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.integration.dto.MailRequestDto;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -36,6 +37,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class NotificationManagerTest {
 
 	@Mock
@@ -45,7 +47,7 @@ public class NotificationManagerTest {
 	AuditRequestFactory auditFactory;
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 
 	@Mock
 	private RestHelper restHelper;
@@ -59,7 +61,6 @@ public class NotificationManagerTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
-		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 	}
 

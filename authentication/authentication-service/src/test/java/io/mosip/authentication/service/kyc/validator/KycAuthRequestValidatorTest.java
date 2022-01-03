@@ -19,9 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.mock.env.MockEnvironment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
@@ -51,6 +50,7 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class KycAuthRequestValidatorTest {
 
 	@Mock
@@ -75,17 +75,14 @@ public class KycAuthRequestValidatorTest {
 	PinValidatorImpl pinValidator;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Mock
 	private MasterDataManager masterDataManager;
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
-		//ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
 
 	}
@@ -106,7 +103,7 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setTransactionID("1234567890");
@@ -137,7 +134,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequest(request);
@@ -162,7 +159,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		kycAuthRequestDTO.setTransactionID("1234567890");
@@ -202,14 +199,11 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestMUAPermissionisNotAvail() {
-		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("ekyc.auth.types.allowed", "otp,bio,pin");
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
+		EnvUtil.setEkycAllowedAuthType("otp,bio,pin");
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		kycAuthRequestDTO.setTransactionID("1234567890");
@@ -244,7 +238,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -297,7 +291,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -346,7 +340,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -390,7 +384,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setTransactionID("1234567890");
@@ -421,7 +415,7 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		request.setDemographics(idDTO);
 		request.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthRequestDTO.setConsentObtained(true);
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequest(request);

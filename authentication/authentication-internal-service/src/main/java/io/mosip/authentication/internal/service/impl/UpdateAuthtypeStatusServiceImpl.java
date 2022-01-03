@@ -10,14 +10,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeStatusService;
@@ -46,10 +45,6 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 	/** The auth lock repository. */
 	@Autowired
 	private AuthLockRepository authLockRepository;
-
-	/** The environment. */
-	@Autowired
-	private Environment environment;
 
 	@Autowired
 	private AuthTypeStatusEventPublisher authTypeStatusEventPublisherManager;
@@ -110,7 +105,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 					DateUtils.parseToLocalDateTime((String) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP)));
 		}
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
-		authtypeLock.setCreatedBy(environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+		authtypeLock.setCreatedBy(EnvUtil.getAppId());
 		authtypeLock.setCrDTimes(currentDtime);
 		authtypeLock.setLangCode(IdAuthCommonConstants.NA);
 		return authtypeLock;

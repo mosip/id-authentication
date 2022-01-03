@@ -7,6 +7,16 @@ package io.mosip.authentication.core.constant;
  * @author Nagarjuna K
  */
 public final class IdAuthCommonConstants {
+	
+	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
+	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
+	
+	/** The Constant DEFAULT_PARTIAL_MATCH_VALUE. */
+	public static final int DEFAULT_PARTIAL_MATCH_VALUE = DEFAULT_EXACT_MATCH_VALUE;
+
+	public static final String DEFAULT_HOST_NAME = "localhost";
+
+	public static final String DEFAULT_HOST_ADDRESS = "127.0.0.1";
 
 	public static final String DEVICE_PURPOSE_AUTH = "AUTH";
 

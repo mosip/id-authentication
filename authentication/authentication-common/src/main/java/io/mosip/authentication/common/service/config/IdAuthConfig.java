@@ -11,13 +11,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
@@ -31,8 +31,8 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 
 	/** The environment. */
 	@Autowired
-	private Environment environment;
-
+	private EnvUtil environment;
+	
 	/**
 	 * Initialize.
 	 */
@@ -49,7 +49,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-		Locale locale = new Locale(environment.getProperty(MOSIP_ERRORMESSAGES_DEFAULT_LANG));
+		Locale locale = new Locale(EnvUtil.getErrorMsgDefaultLang());
 		LocaleContextHolder.setLocale(locale);
 		sessionLocaleResolver.setDefaultLocale(locale);
 		return sessionLocaleResolver;

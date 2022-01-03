@@ -24,6 +24,7 @@ import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -71,7 +72,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	/** The environment. */
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	/** The id mapping config. */
 	@Autowired
@@ -498,7 +499,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public List<String> getTemplatesDefaultLanguageCodes() {
-		String languages = environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_TEMPLATE_LANGUAGES);
+		String languages = EnvUtil.getDefaultTemplateLang();
 		if (languages != null) {
 			return List.of(languages.split(","));
 		}
@@ -511,8 +512,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public List<String> getSystemSupportedLanguageCodes() {
-		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
-				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);		
+		String languages = EnvUtil.getMandatoryLanguages() + ","
+				+ EnvUtil.getOptionalLanguages();		
 		return List.of(languages.split(","));
 	}
 
@@ -521,8 +522,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public List<String> getUserPreferredLanguages(Map<String, List<IdentityInfoDTO>> idInfo) {
-		String userPreferredLangAttribute = environment
-				.getProperty(IdAuthConfigKeyConstants.USER_PREFFRRED_LANG_ATTRIBUTE_NAME);		
+		String userPreferredLangAttribute = EnvUtil.getUserPrefLangAttrName();		
 		if (userPreferredLangAttribute != null) {
 			List<IdentityInfoDTO> identityInfoList = idInfo.get(userPreferredLangAttribute);
 			if (identityInfoList != null) {

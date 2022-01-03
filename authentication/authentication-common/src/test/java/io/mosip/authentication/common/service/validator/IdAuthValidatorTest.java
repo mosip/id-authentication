@@ -14,9 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.mock.env.MockEnvironment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,7 +24,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -42,6 +40,7 @@ import io.mosip.authentication.core.util.IdValidationUtil;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,IdValidationUtil.class })
+@Import(EnvUtil.class)
 public class IdAuthValidatorTest {
 
 
@@ -56,9 +55,6 @@ public class IdAuthValidatorTest {
 	/** The uin validator. */
 	@Autowired
 	IdValidationUtil idValidator;
-
-	@Autowired
-	Environment env;
 
 	/** The validator. */
 	IdAuthValidator validator = new IdAuthValidator() {
@@ -89,7 +85,7 @@ public class IdAuthValidatorTest {
 	 */
 	@Before
 	public void setup() {
-		ReflectionTestUtils.setField(validator, "env", env);
+		EnvUtil.setAllowedIdTypes("UIN,VID");
 		errors = new BeanPropertyBindingResult(request, "IdAuthValidator");
 		ReflectionTestUtils.setField(validator, "idValidator", idValidator);;
 	}
@@ -151,10 +147,7 @@ public class IdAuthValidatorTest {
 
 	@Test
 	public void testNotConfiguredIdType() {
-		MockEnvironment mockEnv = new MockEnvironment();
-		mockEnv.merge((ConfigurableEnvironment) env);
-		mockEnv.setProperty("request.idtypes.allowed", "UIN");
-		ReflectionTestUtils.setField(validator, "env", mockEnv);
+		EnvUtil.setAllowedIdTypes("UIN");
 		validator.validateIdvId("1234", "VID", errors, INDIVIDUAL_ID);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-015")));
 	}
@@ -273,7 +266,7 @@ public class IdAuthValidatorTest {
 	public void testRequestTime_Valid() {
 		String reqTime = null;
 		reqTime = Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN))).toString();
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		validator.validateReqTime(reqTime, errors, REQUEST_TIME);
 		assertFalse(errors.hasErrors());
 	}

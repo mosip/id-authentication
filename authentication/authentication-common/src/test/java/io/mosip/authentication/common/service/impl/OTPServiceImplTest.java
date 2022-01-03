@@ -2,8 +2,6 @@ package io.mosip.authentication.common.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.sql.Ref;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
-import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -31,12 +26,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
@@ -45,7 +42,9 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorReques
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
@@ -70,6 +69,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class, IDAMappingFactory.class, RestRequestFactory.class})
 @WebMvcTest
+@Import(EnvUtil.class)
 public class OTPServiceImplTest {
 
     @Mock
@@ -119,10 +119,10 @@ public class OTPServiceImplTest {
     private IdInfoHelper idInfoHelperMock;
 
     @Autowired
-    private Environment env;
+    private EnvUtil env;
 
     @Mock
-    private Environment envMock;
+    private EnvUtil envMock;
 
     @Mock
     private IdaUinHashSaltRepo uinHashSaltRepo;
@@ -211,7 +211,7 @@ public class OTPServiceImplTest {
     public void TestPhonenumberisNull() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
         otpRequestDto.setTransactionID("1234567890");
         ArrayList<String> channelList = new ArrayList<String>();
         otpRequestDto.setOtpChannel(channelList);
@@ -252,7 +252,7 @@ public class OTPServiceImplTest {
     public void TestPhoneorEmailisNull() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
         otpRequestDto.setTransactionID("1234567890");
         ArrayList<String> channelList = new ArrayList<String>();
         otpRequestDto.setOtpChannel(channelList);
@@ -353,7 +353,7 @@ public class OTPServiceImplTest {
     private OtpRequestDTO getOtpRequestDTO() {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-//        otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+//        otpRequestDto.setRequestTime(new SimpleDateFormat(env.getDateTimePattern()).format(new Date()));
         otpRequestDto.setTransactionID("1234567890");
         ArrayList<String> channelList = new ArrayList<String>();
         channelList.add("MOBILE");
