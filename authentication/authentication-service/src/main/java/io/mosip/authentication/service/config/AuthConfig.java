@@ -1,7 +1,10 @@
 package io.mosip.authentication.service.config;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -25,4 +28,10 @@ public class AuthConfig extends IdAuthConfig {
 	protected boolean isIrisAuthEnabled() {
 		return EnvUtil.getAllowedAuthType().contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
+	
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+	  return new AfterburnerModule();
+	}
+	
 }

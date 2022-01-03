@@ -9,6 +9,9 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
@@ -91,6 +94,11 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 		if (AuthTypeUtil.isBio(authRequestDto)) {
 			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics());
 		}
+	}
+	
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+	  return new AfterburnerModule();
 	}
 	
 }

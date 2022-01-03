@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.util.ReflectionUtils;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -91,5 +93,10 @@ public class DemoAuthConfig {
 					"Didn't find normalizer instance", normalizerClassName);
 			return null;
 		}
+	}
+	
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+	  return new AfterburnerModule();
 	}
 }
