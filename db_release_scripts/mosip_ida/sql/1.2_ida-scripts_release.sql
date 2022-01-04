@@ -58,3 +58,11 @@ ALTER TABLE ida.ca_cert_store ADD CONSTRAINT cert_thumbprint_unique UNIQUE (cert
 
 
 
+--------------------------------------------------------------------------------------------------------------
+ALTER TABLE ida.key_alias ADD COLUMN uni_ident character varying(50);
+ALTER TABLE ida.key_alias ADD CONSTRAINT uni_ident_const UNIQUE (uni_ident);
+
+
+
+
+
