@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.config;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -16,7 +18,9 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
@@ -102,6 +106,12 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Bean
 	public AfterburnerModule afterburnerModule() {
 	  return new AfterburnerModule();
+	}
+	
+	@Bean
+	public RestRequestBuilder getRestRequestBuilder() {
+		return new RestRequestBuilder(Arrays.stream(RestServicesConstants.values())
+				.map(RestServicesConstants::getServiceName).collect(Collectors.toList()));
 	}
 
 }
