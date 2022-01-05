@@ -62,6 +62,7 @@ import static io.mosip.idrepository.core.constant.IdRepoConstants.SALT_KEY_LENGT
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -79,6 +80,7 @@ import lombok.Setter;
 @Component
 @EqualsAndHashCode(callSuper=false)
 @Primary
+@RefreshScope
 public class EnvUtil extends AbstractEnvironment {
 
 	@Getter @Setter private static String  dateTimePattern;
