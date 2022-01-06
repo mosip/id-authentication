@@ -144,7 +144,8 @@ public class AuthStatusInfoBuilder {
 			if(nameMapping.contains(idName)) {
 				idNameForErrorMessage = idName;
 			} else {
-				//If Full address mapping contains the id Name the error message will be called as address line item(s)
+				// For Address line items, check if Full address mapping contains the id Name
+				// the error message will be called as address line item(s)
 				List<String> fullAddressMappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
 						matchOutput.getMatchType());
 				if (fullAddressMappings.contains(idName)) {

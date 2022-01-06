@@ -86,9 +86,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private String dateOfBirthPattern;
 	
 	@Autowired
-	private EnvUtil env;
-	
-	@Autowired
 	private ObjectMapper mapper;
 	
 
@@ -163,6 +160,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return ananymousProfile;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<BiometricProfileInfo> getBiometricInfos(Map<String, Object> requestBody) {
 		Object requestObj = requestBody.get(REQUEST);
 		if(requestObj instanceof Map) {
@@ -266,6 +264,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Optional.empty();
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, List<IdentityInfoDTO>> getMapOfIdentityInfoDTOList(Map<String, Object> responseMetadata) {
 		if(responseMetadata != null) {
 			Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
@@ -284,7 +283,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Map.of();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setStatus(boolean status, AnonymousAuthenticationProfile ananymousProfile) {
 		ananymousProfile.setStatus(status ? SUCCESS : FAILURE);
 	}
@@ -316,6 +314,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
 		if(requestMetadata != null) {
 			Object partnerIdObj = requestMetadata.get("partnerId");
