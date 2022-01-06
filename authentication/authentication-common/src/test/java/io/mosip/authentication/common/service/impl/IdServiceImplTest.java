@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -75,7 +77,13 @@ public class IdServiceImplTest {
         Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 
         Mockito.when(identityRepo.getOne("12")).thenReturn(entity);
-        idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+        try {
+			idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+		} catch (IdAuthenticationBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail();
+		}
     }
 
     @Test(expected = IdAuthenticationBusinessException.class)
@@ -175,11 +183,18 @@ public class IdServiceImplTest {
         Mockito.when(identityRepo.existsById("12")).thenReturn(true);
         Mockito.when(identityRepo.getOne("12")).thenReturn(entity);
 
-        String idvIdType = "VID";
-        idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+        
+        try {
+			String idvIdType = "VID";
+			idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
 
-        idvIdType = "UIN";
-        idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+			idvIdType = "UIN";
+			idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+		} catch (IdAuthenticationBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail();
+		}
     }
 
     @Test(expected = IdAuthenticationBusinessException.class)
