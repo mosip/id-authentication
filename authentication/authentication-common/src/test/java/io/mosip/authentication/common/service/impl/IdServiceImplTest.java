@@ -54,6 +54,7 @@ public class IdServiceImplTest {
 
     @Ignore
     @Test
+    @Ignore
     public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
         String uin = "12312312";
         Boolean isBio = true;
@@ -197,6 +198,7 @@ public class IdServiceImplTest {
 
     @Ignore
     @Test
+    @Ignore
     public void processIdTypeTest() throws IdAuthenticationBusinessException, IOException {
 //        String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes
         String idvId = "12312312";
