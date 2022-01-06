@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,12 +52,6 @@ public class AuthAnonymousProfileServiceImplTest {
 	private IdInfoFetcherImpl idInfoFetcherImpl;
 	
 	@Autowired
-	EnvUtil env;
-	
-	@Autowired
-	Environment environment;
-	
-	@Autowired
 	private ObjectMapper mapper;
 	
 	@InjectMocks
@@ -78,8 +71,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		 responseMetadata = new HashMap<>();
 		 idInfoMap = new HashMap<String, List<IdentityInfoDTO>>();
 			
-		 ReflectionTestUtils.setField(env, "env", environment);
-		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "env", env);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "preferredLangAttribName", "preferredLanguage");
