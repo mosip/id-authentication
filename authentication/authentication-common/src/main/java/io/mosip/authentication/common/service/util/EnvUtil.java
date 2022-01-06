@@ -296,4 +296,19 @@ public class EnvUtil {
 	public Environment getEnvironment() {
 		return env;
 	}
+}etProperty(String key, Class<T> targetType) {
+		return getEnvironment().getProperty(key, targetType);
+	}
+
+	public void merge(ConfigurableEnvironment parent) {
+		((ConfigurableEnvironment) getEnvironment()).merge(parent);
+	}
+
+	public boolean containsProperty(String key) {
+		return getEnvironment().containsProperty(key);
+	}
+
+	public Environment getEnvironment() {
+		return env;
+	}
 }
