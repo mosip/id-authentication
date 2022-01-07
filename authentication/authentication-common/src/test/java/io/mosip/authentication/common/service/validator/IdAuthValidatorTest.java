@@ -144,6 +144,12 @@ public class IdAuthValidatorTest {
 			assertEquals(INDIVIDUAL_ID_TYPE, ((FieldError) error).getField());
 		});
 	}
+	
+	@Test
+	public void testcorrectIdType() {
+		validator.validateIdvId("1234", "UIN", errors, INDIVIDUAL_ID);
+		assertEquals(0, errors.getAllErrors().size());
+	}
 
 	@Test
 	public void testNotConfiguredIdType() {
