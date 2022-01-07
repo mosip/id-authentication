@@ -7,6 +7,16 @@ package io.mosip.authentication.core.constant;
  * @author Nagarjuna K
  */
 public final class IdAuthCommonConstants {
+	
+	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
+	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
+	
+	/** The Constant DEFAULT_PARTIAL_MATCH_VALUE. */
+	public static final int DEFAULT_PARTIAL_MATCH_VALUE = DEFAULT_EXACT_MATCH_VALUE;
+
+	public static final String DEFAULT_HOST_NAME = "localhost";
+
+	public static final String DEFAULT_HOST_ADDRESS = "127.0.0.1";
 
 	public static final String DEVICE_PURPOSE_AUTH = "AUTH";
 
@@ -326,6 +336,15 @@ public final class IdAuthCommonConstants {
 	public static final String UIN_HASH_SALT = "uin_hash_salt";
 
 	public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+	public static final String DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE = " ";
+
+	public static final String BIO_SUBTYPE_SEPARATOR = " ";
+	
+	public static final String BIO_TYPE_SEPARATOR="_";
+	
+	public static final String LANG_CODE_SEPARATOR="_";
+
 
 	private IdAuthCommonConstants() {
 	}

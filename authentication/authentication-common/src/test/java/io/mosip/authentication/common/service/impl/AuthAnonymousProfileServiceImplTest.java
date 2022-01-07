@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +26,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
@@ -34,6 +35,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
+@Import(EnvUtil.class)
 public class AuthAnonymousProfileServiceImplTest {
 
 	
@@ -48,9 +50,6 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
-	
-	@Autowired
-	Environment env;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -72,7 +71,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		 responseMetadata = new HashMap<>();
 		 idInfoMap = new HashMap<String, List<IdentityInfoDTO>>();
 			
-		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "env", env);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "preferredLangAttribName", "preferredLanguage");
@@ -114,7 +112,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getDynamicEntityInfo(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
+		Mockito.when(idInfoHelper.getDynamicEntityInfoAsString(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
 		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 	}
 	

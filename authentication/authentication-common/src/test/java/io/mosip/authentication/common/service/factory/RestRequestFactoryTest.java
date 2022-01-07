@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.factory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -8,8 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -46,6 +50,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Import(EnvUtil.class)
 public class RestRequestFactoryTest {
 
 	/** The rest factory. */
@@ -54,7 +59,7 @@ public class RestRequestFactoryTest {
 
 	/** The env. */
 	@Autowired
-	ConfigurableEnvironment env;
+	EnvUtil env;
 
 	/** The mock mvc. */
 	@Autowired
@@ -72,7 +77,6 @@ public class RestRequestFactoryTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 	}
 
@@ -121,11 +125,9 @@ public class RestRequestFactoryTest {
 	@Test(expected=IDDataValidationException.class)
 	public void testBuildRequestWithMultiValueMap() throws IDDataValidationException {
 	    
-		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
-		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
-
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		EnvUtil envMock = Mockito.mock(EnvUtil.class);
+		when(envMock.getProperty("audit.rest.headers.mediaType")).thenReturn("multipart/form-data");
+		ReflectionTestUtils.setField(restFactory, "env", envMock);
 		RequestWrapper<AuditRequestDto> auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
 				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 		auditRequest.getRequest().setActionTimeStamp(null);
@@ -144,11 +146,9 @@ public class RestRequestFactoryTest {
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyUri() throws IDDataValidationException {
 
-		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
-		environment.setProperty("audit.rest.uri", "");
-
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		EnvUtil envMock = Mockito.mock(EnvUtil.class);
+		when(envMock.getProperty("audit.rest.uri")).thenReturn("");
+		ReflectionTestUtils.setField(restFactory, "env", envMock);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
 				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
@@ -164,9 +164,9 @@ public class RestRequestFactoryTest {
 	@DirtiesContext
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
 
-		MockEnvironment environment = new MockEnvironment();
-
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		EnvUtil envMock = Mockito.mock(EnvUtil.class);
+		when(envMock.getProperty(Mockito.any())).thenReturn(null);
+		ReflectionTestUtils.setField(restFactory, "env", envMock);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
@@ -180,12 +180,9 @@ public class RestRequestFactoryTest {
 	 */
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyHttpMethod() throws IDDataValidationException {
-
-		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
-		environment.setProperty("audit.rest.httpMethod", "");
-
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		EnvUtil envMock = Mockito.mock(EnvUtil.class);
+		when(envMock.getProperty("audit.rest.httpMethod")).thenReturn("");
+		ReflectionTestUtils.setField(restFactory, "env", envMock);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
 				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
@@ -213,10 +210,10 @@ public class RestRequestFactoryTest {
 	public void testBuildRequestEmptyTimeout() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
 		environment.setProperty("audit.rest.timeout", "");
+		env.merge(environment);
 
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		ReflectionTestUtils.setField(restFactory, "env", env);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
@@ -234,10 +231,12 @@ public class RestRequestFactoryTest {
 	public void testBuildRequestHeaders() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
+		environment.merge((ConfigurableEnvironment) env.getEnvironment());
 		environment.setProperty("audit.rest.headers.accept", "application/json");
 
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		env.merge(environment);
+
+		ReflectionTestUtils.setField(restFactory, "env", env);
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
@@ -252,12 +251,14 @@ public class RestRequestFactoryTest {
 	@Test
 	public void testBuildRequestMultiValueMap() throws IDDataValidationException {
 		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
+		environment.merge((ConfigurableEnvironment) env.getEnvironment());
 		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
 		environment.setProperty("audit.rest.uri.queryparam.test", "yes");
 		environment.setProperty("audit.rest.uri.pathparam.test", "yes");
 
-		ReflectionTestUtils.setField(restFactory, "env", environment);
+		env.merge(environment);
+
+		ReflectionTestUtils.setField(restFactory, "env", env);
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, new LinkedMultiValueMap<String, String>(),
 				Object.class);
 	}

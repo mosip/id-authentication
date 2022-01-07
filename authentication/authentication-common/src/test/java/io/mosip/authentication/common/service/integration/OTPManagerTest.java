@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -34,6 +33,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -64,13 +64,13 @@ public class OTPManagerTest {
 	private OtpGeneratorRequestDto otpGeneratorRequestDto;
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 
 	@Mock
 	private RestHelper restHelper;
 
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	@Mock
 	RestServiceException e;
@@ -702,7 +702,7 @@ public class OTPManagerTest {
 		otpChannel.add("mobile");
 		otpChannel.add("email");
 		otpRequestDTO.setOtpChannel(otpChannel);
-		otpRequestDTO.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDTO.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
 		return otpRequestDTO;
 	}
 

@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,6 +33,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -54,6 +55,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class InternalAuthControllerTest {
 
 	@Mock
@@ -78,7 +80,7 @@ public class InternalAuthControllerTest {
 	private RestHelper restHelper;
 	
 	@Autowired
-	Environment env;	
+	EnvUtil env;	
 	
 	@InjectMocks
 	private RestRequestFactory restFactory;
@@ -102,7 +104,6 @@ public class InternalAuthControllerTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
@@ -232,7 +233,7 @@ public class InternalAuthControllerTest {
 		authRequestDTO.setIndividualId("5134256294");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
@@ -292,7 +293,7 @@ public class InternalAuthControllerTest {
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		return authRequestDTO;

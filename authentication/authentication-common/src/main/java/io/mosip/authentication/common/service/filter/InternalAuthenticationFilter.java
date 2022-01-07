@@ -2,7 +2,7 @@ package io.mosip.authentication.common.service.filter;
 
 import java.util.Map;
 
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
 /**
@@ -37,12 +37,12 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 	 */
 	@Override
 	protected String fetchReferenceId() {
-		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_REFERENCE_ID);
+		return EnvUtil.getInternalAuthInternalRefId();
 	}
 
 	@Override
 	protected String getBioRefId() {
-		return env.getProperty(IdAuthConfigKeyConstants.INTERNAL_BIO_REFERENCE_ID);
+		return EnvUtil.getInternalAuthInternalBioRefId();
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
@@ -24,9 +23,9 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
@@ -72,7 +71,7 @@ public class OTPServiceImpl implements OTPService {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
@@ -153,7 +152,7 @@ public class OTPServiceImpl implements OTPService {
 			throws IdAuthenticationBusinessException {
 		if (token != null) {
 			boolean authTokenRequired = !isInternal
-					&& env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, boolean.class, false);
+					&& EnvUtil.getAuthTokenRequired();
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
 			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal, otpResponseDTO, requestWithMetadata);
 		}
@@ -191,7 +190,7 @@ public class OTPServiceImpl implements OTPService {
 			if (isOtpGenerated) {
 				otpResponseDTO.setErrors(null);
 				String responseTime = IdaRequestResponsConsumerUtil.getResponseTime(otpRequestDto.getRequestTime(),
-						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+						EnvUtil.getDateTimePattern());
 				otpResponseDTO.setResponseTime(responseTime);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
 				List<String> otpChannels = otpRequestDto.getOtpChannel();
@@ -263,18 +262,18 @@ public class OTPServiceImpl implements OTPService {
 		LocalDateTime reqTime;
 		try {
 			String strUTCDate = DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(requestTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+					DateUtils.parseToDate(requestTime, EnvUtil.getDateTimePattern()));
 			reqTime = LocalDateTime.parse(strUTCDate,
-					DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+					DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern()));
 
 		} catch (ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
 					e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-		int addMinutes = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_DURATION));
+		int addMinutes = EnvUtil.getOtpRequestFloodingDuration();
 		LocalDateTime addMinutesInOtpRequestDTimes = reqTime.minus(addMinutes, ChronoUnit.MINUTES);
-		int maxCount = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_MAX_COUNT));
+		int maxCount = EnvUtil.getOtpRequestFloodingMaxCount();
 		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, token) > maxCount) {
 			isOtpFlooded = true;
 		}

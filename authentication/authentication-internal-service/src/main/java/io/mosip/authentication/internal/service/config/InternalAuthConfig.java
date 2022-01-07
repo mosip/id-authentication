@@ -1,19 +1,16 @@
 package io.mosip.authentication.internal.service.config;
 
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.INTERNAL_ALLOWED_AUTH_TYPE;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.util.EnvUtil;
 
 /**
  * Class for defining configurations for the service.
@@ -27,7 +24,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 public class InternalAuthConfig extends IdAuthConfig {
 
 	@Autowired
-	protected Environment environment;
+	protected EnvUtil environment;
 	
 	@PostConstruct
 	public void initialize() {
@@ -41,8 +38,8 @@ public class InternalAuthConfig extends IdAuthConfig {
 	 * isFingerAuthEnabled()
 	 */
 	protected boolean isFingerAuthEnabled() {
-		return (environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FGR_IMG.getConfigNameValue())
-				|| (FMR_ENABLED_TEST.test(environment) && environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE)
+		return (EnvUtil.getInternalAuthAllowedType().contains(BioAuthType.FGR_IMG.getConfigNameValue())
+				|| (EnvUtil.getIsFmrEnabled() && EnvUtil.getInternalAuthAllowedType()
 						.contains(BioAuthType.FGR_MIN.getConfigNameValue())));
 	}
 
@@ -54,7 +51,7 @@ public class InternalAuthConfig extends IdAuthConfig {
 	 * )
 	 */
 	protected boolean isFaceAuthEnabled() {
-		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.FACE_IMG.getConfigNameValue());
+		return EnvUtil.getInternalAuthAllowedType().contains(BioAuthType.FACE_IMG.getConfigNameValue());
 	}
 
 	/*
@@ -65,7 +62,7 @@ public class InternalAuthConfig extends IdAuthConfig {
 	 * )
 	 */
 	protected boolean isIrisAuthEnabled() {
-		return environment.getProperty(INTERNAL_ALLOWED_AUTH_TYPE).contains(BioAuthType.IRIS_IMG.getConfigNameValue());
+		return EnvUtil.getInternalAuthAllowedType().contains(BioAuthType.IRIS_IMG.getConfigNameValue());
 	}
 
 }

@@ -16,7 +16,6 @@ import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
@@ -136,19 +135,34 @@ public class AuthStatusInfoBuilder {
 		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
 		if (authTypeForMatchType.isPresent()) {
 			AuthError errors = null;
-			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
-					matchOutput.getMatchType());
 			String idName = matchOutput.getIdName();
-			String name = mappings.contains(idName) ? ADDRESS_LINE_ITEMS : idName;
+			
+			//If name mapping contains the id Name the error message will not be checked for full address mapping condition
+			List<String> nameMapping = IdaIdMapping.NAME.getMappingFunction().apply(idMappingConfig,
+					matchOutput.getMatchType());
+			String idNameForErrorMessage;
+			if(nameMapping.contains(idName)) {
+				idNameForErrorMessage = idName;
+			} else {
+				// For Address line items, check if Full address mapping contains the id Name
+				// the error message will be called as address line item(s)
+				List<String> fullAddressMappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
+						matchOutput.getMatchType());
+				if (fullAddressMappings.contains(idName)) {
+					idNameForErrorMessage = ADDRESS_LINE_ITEMS;
+				} else {
+					idNameForErrorMessage = idName;
+				}
+			}
 			//Need special handling for age since it is mapped to Date of Birth , but error should say about age only.
 			if(matchOutput.getMatchType().equals(DemoMatchType.AGE)) {
-				name = IdaIdMapping.AGE.getIdname();
+				idNameForErrorMessage = IdaIdMapping.AGE.getIdname();
 			}
 
 			if (!multiLanguage) {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, idNameForErrorMessage);
 			} else {
-				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG, name,
+				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG, idNameForErrorMessage,
 						matchOutput.getLanguage());
 			}
 

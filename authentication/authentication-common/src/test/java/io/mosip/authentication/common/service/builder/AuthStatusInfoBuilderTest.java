@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.builder;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -24,10 +25,13 @@ import io.mosip.authentication.common.service.impl.match.OtpMatchingStrategy;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchingStrategy;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 public class AuthStatusInfoBuilderTest {
 
@@ -59,16 +63,6 @@ public class AuthStatusInfoBuilderTest {
 	}
 	
 	@Test
-	public void TestconstructDemoErrorForName() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), DemoMatchType.NAME, null, "id");
-		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
-		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
-		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
-				authStatusInfoBuilder, idMappingConfig);
-	}
-	
-	@Test
 	public void TestconstructDemoErrorForDOB() {
 		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.DOB.getIdname(), DemoMatchType.DOB, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
@@ -80,12 +74,68 @@ public class AuthStatusInfoBuilderTest {
 	
 	@Test
 	public void TestconstructDemoErrorForAddresLine() {
-		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.ADDRESSLINE1.getIdname(), DemoMatchType.ADDR_LINE1, null, "id");
+		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
+				DemoMatchType.ADDR_LINE1, "eng", IdaIdMapping.ADDRESSLINE1.getIdname());
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
-		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.ADDRESSLINE1.getIdname()));
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
+		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
+		List<AuthError> err = authStatusInfo.getErr();
+		assertEquals(1, err.size());
+		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
+		assertEquals(err.get(0).getErrorMessage(), "Demographic data address line item(s) in eng did not match");
+	}
+	
+	@Test
+	public void TestconstructDemoErrorForName() {
+		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
+				DemoMatchType.NAME, "eng", IdaIdMapping.NAME.getIdname());
+		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
+				authStatusInfoBuilder, idMappingConfig);
+		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
+		List<AuthError> err = authStatusInfo.getErr();
+		assertEquals(1, err.size());
+		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
+		assertEquals(err.get(0).getErrorMessage(), "Demographic data name in eng did not match");
+	}
+	
+	@Test
+	public void TestconstructDemoErrorForAge() {
+		MatchOutput matchOutput = new MatchOutput(0, false, MatchingStrategyType.EXACT.toString(),
+				DemoMatchType.AGE, "eng", IdaIdMapping.AGE.getIdname());
+		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.DOB.getIdname()));
+		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
+				authStatusInfoBuilder, idMappingConfig);
+		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
+		List<AuthError> err = authStatusInfo.getErr();
+		assertEquals(1, err.size());
+		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
+		assertEquals(err.get(0).getErrorMessage(), "Demographic data age did not match");
+	}
+	
+	@Test
+	public void TestconstructDemoErrorForNameWithNameInFullAddress() {
+		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
+				DemoMatchType.NAME, "eng", IdaIdMapping.NAME.getIdname());
+		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
+				authStatusInfoBuilder, idMappingConfig);
+		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
+		List<AuthError> err = authStatusInfo.getErr();
+		assertEquals(1, err.size());
+		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
+		assertEquals(err.get(0).getErrorMessage(), "Demographic data name in eng did not match");
 	}
 	
 	@Test

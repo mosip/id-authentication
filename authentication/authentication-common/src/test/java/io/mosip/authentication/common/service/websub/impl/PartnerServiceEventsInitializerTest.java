@@ -8,7 +8,6 @@ public class PartnerServiceEventsInitializerTest extends AbstractEventInitialize
 
 	@Before
 	public void before() {
-		Mockito.when(env.getProperty(Mockito.anyString())).thenReturn("abcd");
 	}
 	
 	@Override

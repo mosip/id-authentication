@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -47,7 +47,7 @@ public class RestRequestFactory {
 
     /** The env. */
     @Autowired
-    private Environment env;
+    private EnvUtil env;
 
     /** The logger. */
     private static Logger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
@@ -148,7 +148,7 @@ public class RestRequestFactory {
      */
     private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 	    HttpHeaders headers, String serviceName) {
-	((AbstractEnvironment) env).getPropertySources().forEach((PropertySource<?> source) -> {
+	((AbstractEnvironment) env.getEnvironment()).getPropertySources().forEach((PropertySource<?> source) -> {
 	    if (source instanceof MapPropertySource) {
 		Map<String, Object> systemProperties = ((MapPropertySource) source).getSource();
 

@@ -1,9 +1,5 @@
 package io.mosip.authentication.core.constant;
 
-import java.util.function.Predicate;
-
-import org.springframework.core.env.Environment;
-
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 
 /**
@@ -16,6 +12,7 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_BDB_PROCESSED_LEVEL = "ida-bdb-processed-level";
 	public static final String IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED = "mosip.ida.datashare.thumbprint-validation-required";
+	public static final String IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX = "ida.id.attribute.separator.";
 
 	private IdAuthConfigKeyConstants() {
 
@@ -83,8 +80,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String IDA_SALT_LASTBYTES_NUM = "ida.salt.lastbytes.num";
 	
 	public static final String MOSIP_FMR_ENABLED="mosip.fingerprint.fmr.enabled";	
-
-	public static final Predicate<Environment> FMR_ENABLED_TEST = env -> env.getProperty(IdAuthConfigKeyConstants.MOSIP_FMR_ENABLED, boolean.class, false);
 
 	public static final String IDA_WEBSUB_CA_CERT_CALLBACK_SECRET = "ida-websub-ca-certificate-callback-secret";
 	public static final String IDA_WEBSUB_HOTLIST_CALLBACK_SECRET = "ida-websub-hotlist-callback-secret";
@@ -165,6 +160,6 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String MOSIP_DATE_OF_BIRTH_ATTRIBUTE_NAME = "mosip.date-of-birth.attribute.name";
 
-
+	public static final String FRAUD_ANALYSIS_ENABLED = "mosip.ida.fraud-analysis-enabled";
 
 }

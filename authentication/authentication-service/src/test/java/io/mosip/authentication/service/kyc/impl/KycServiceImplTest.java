@@ -1,9 +1,12 @@
 package io.mosip.authentication.service.kyc.impl;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,10 +27,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -38,9 +40,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -55,26 +60,31 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  */
 //TODO remove the ignore . This is ignored due to Java 11 mockito error
 //@Ignore
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
+		IDAMappingConfig.class })
+
 @RunWith(SpringRunner.class)
+@Import(EnvUtil.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource({"classpath:application.properties", "classpath:sample-data-test.properties"})
 public class KycServiceImplTest {
+	
+	@Value("${ida.id.attribute.separator.fullAddress}")
+	private String fullAddrSep;
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 	
 	@Mock
 	private MappingConfig mappingConfig;
 	
 	@Mock
-	private IDAMappingConfig idMappingConfig;
-
-	@Mock
 	private IdInfoHelper idInfoHelper;
+	
+	@Autowired
+	private IDAMappingConfig idMappingConfig;
 	
 	@InjectMocks
 	private IdInfoHelper idInfoHelper2;
@@ -96,6 +106,9 @@ public class KycServiceImplTest {
 
 	Map<String, List<IdentityInfoDTO>> idInfo;
 	
+	@Value("${mosip.date-of-birth.pattern}")
+	private String dobPattern;
+	
 
 	@Before
 	public void before() throws IdAuthenticationDaoException {
@@ -106,8 +119,10 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl2, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
+		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper2, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
+		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
 		idInfo = getIdInfo("12232323121");
@@ -387,5 +402,220 @@ public class KycServiceImplTest {
 		Map<String, String> map = new HashMap<>();
 		map.put("FACE", "agsafkjsaufdhkjesadfjdsklkasnfdkjbsafdjbnadsfkjfds");
 		return map;
+	}
+	
+	@Test
+	public void testGetKycInfo_FullAddress() {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"addressLine1", List.of(new IdentityInfoDTO("eng", "Address Line1")),
+				"addressLine2", List.of(new IdentityInfoDTO("eng", "Address Line2")),
+				"addressLine3", List.of(new IdentityInfoDTO("eng", "Address Line3")),
+				"city", List.of(new IdentityInfoDTO("eng", "City")),
+				"region", List.of(new IdentityInfoDTO("eng", "Region")),
+				"province", List.of(new IdentityInfoDTO("eng", "Province")),
+				"postalCode", List.of(new IdentityInfoDTO(null, "12345"))
+				);
+		
+		
+		List<String> allowedkycAttributes = List.of("addressLine1", "addressLine2", "addressLine3", "city", "region", "province", "postalCode", "fullAddress");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expectedMap = Map.of("addressLine1_eng", "Address Line1",
+		         "addressLine2_eng", "Address Line2" ,
+		         "addressLine3_eng", "Address Line3" ,
+		         "location1_eng", 		"City",
+		         "location2_eng", 		"Region",
+		         "location3_eng", 	"Province" ,
+		         "postalCode", 	"12345",
+		         "fullAddress_eng", "Address Line1" + fullAddrSep
+				 + "Address Line2" + fullAddrSep
+				 + "Address Line3" + fullAddrSep
+				 + "City" + fullAddrSep
+				 + "Region" + fullAddrSep
+				 + "Province" + fullAddrSep
+				 + "12345");
+		assertTrue(kycInfo.entrySet().containsAll(expectedMap.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_Name() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"fullName", List.of(new IdentityInfoDTO("eng", "My Name"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("fullName");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("name_eng", "My Name");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+
+	}
+	
+	@Test
+	public void testGetKycInfo_NameMap2() throws IdAuthenticationBusinessException {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", config);
+		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", config);
+		Mockito.when(config.getDynamicAttributes()).thenReturn(Map.of("name", List.of("firstName", "lastName")));
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"firstName", List.of(new IdentityInfoDTO("eng", "First Name")),
+				"lastName", List.of(new IdentityInfoDTO("eng", "Last Name"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("firstName", "lastName", "name");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("firstName_eng", "First Name", 
+				"lastName_eng", "Last Name", 
+				"name_eng", "First Name Last Name");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+
+	}
+	
+	@Test
+	public void testGetKycInfo_Name2() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"firstName", List.of(new IdentityInfoDTO("eng", "First Name")),
+				"lastName", List.of(new IdentityInfoDTO("eng", "Last Name"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("firstName", "lastName", "name2");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("firstName_eng", "First Name", "lastName_eng", "Last Name", "name2_eng", "First Name Last Name");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+		
+	}
+	
+	@Test
+	public void testGetKycInfo_Phone() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"phone", List.of(new IdentityInfoDTO(null, "9988776655"))
+				);
+		Map<String, String> expected1 = Map.of("phone", "9988776655");
+		Map<String, String> expected2 = Map.of("phoneNumber", "9988776655");
+		
+		List<String> allowedkycAttributes = List.of("phone");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		assertTrue(kycInfo.entrySet().containsAll(expected1.entrySet()) || kycInfo.entrySet().containsAll(expected2.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_Age() throws IdAuthenticationBusinessException {
+		String dateBefore10Years = LocalDate.now().minusYears(10L).format(DateTimeFormatter.ofPattern(dobPattern));
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"dateOfBirth", List.of(new IdentityInfoDTO(null, dateBefore10Years))
+				);
+		Map<String, String> expected = Map.of("age", "10");
+		
+		List<String> allowedkycAttributes = List.of("age");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_MappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"residenceStatus", List.of(new IdentityInfoDTO("eng", "Citizen"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("residenceStatus");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("residenceStatus_eng", "Citizen");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+		
+	}
+	
+	@Test
+	public void testGetKycInfo_NonMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"newAttribute", List.of(new IdentityInfoDTO("eng", "New Attribute"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("newAttribute");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("newAttribute_eng", "New Attribute");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_MappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"introducerRID", List.of(new IdentityInfoDTO(null, "11223344"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("introducerRID");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("introducerRID", "11223344");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_NonMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"newAttribute1", List.of(new IdentityInfoDTO(null, "New Attribute1"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("newAttribute1");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		
+		Map<String, String> expected = Map.of("newAttribute1", "New Attribute1");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_photo() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				IdAuthCommonConstants.PHOTO, List.of(new IdentityInfoDTO(null, "face image"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("photo");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("photo", "face image");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_Face() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"Face", List.of(new IdentityInfoDTO(null, "face image"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("Face");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("Face", "face image");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
 	}
 }

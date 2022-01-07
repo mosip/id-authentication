@@ -7,7 +7,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAUL
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.FAILURE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.IDA;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC_STATUS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.QUALITY_SCORE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SUCCESS;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,6 +38,7 @@ import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticati
 import io.mosip.authentication.common.service.impl.idevent.BiometricProfileInfo;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -87,9 +86,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private String dateOfBirthPattern;
 	
 	@Autowired
-	private Environment env;
-	
-	@Autowired
 	private ObjectMapper mapper;
 	
 
@@ -129,7 +125,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		if(idInfo != null && !idInfo.isEmpty()) {
 			setYearOfBirth(ananymousProfile, idInfo);
 			
-			String preferredLang = idInfoHelper.getDynamicEntityInfo(idInfo, null, preferredLangAttribName);
+			String preferredLang = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, preferredLangAttribName);
 			if(preferredLang != null) {
 				ananymousProfile.setPreferredLanguages(List.of(preferredLang));
 			}
@@ -164,6 +160,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return ananymousProfile;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<BiometricProfileInfo> getBiometricInfos(Map<String, Object> requestBody) {
 		Object requestObj = requestBody.get(REQUEST);
 		if(requestObj instanceof Map) {
@@ -234,7 +231,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private String getProfileDataLangCode(Map<String, List<IdentityInfoDTO>> idInfo, String preferredLang) {
-		Optional<String> mandatoryLang = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES).split(","))
+		Optional<String> mandatoryLang = Arrays.stream(EnvUtil.getMandatoryLanguages().split(","))
 				.filter(str -> str.trim().length() > 0)
 				.findFirst();
 		return mandatoryLang.orElse(preferredLang);
@@ -267,6 +264,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Optional.empty();
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, List<IdentityInfoDTO>> getMapOfIdentityInfoDTOList(Map<String, Object> responseMetadata) {
 		if(responseMetadata != null) {
 			Map<String, Object> mapOfObject = (Map<String, Object>) responseMetadata.get(IdAuthCommonConstants.IDENTITY_INFO);
@@ -285,7 +283,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		return Map.of();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setStatus(boolean status, AnonymousAuthenticationProfile ananymousProfile) {
 		ananymousProfile.setStatus(status ? SUCCESS : FAILURE);
 	}
@@ -317,6 +314,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
 		if(requestMetadata != null) {
 			Object partnerIdObj = requestMetadata.get("partnerId");
