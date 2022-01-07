@@ -58,8 +58,6 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  *
  * @author Sanjay Murali
  */
-//TODO remove the ignore . This is ignored due to Java 11 mockito error
-//@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 
@@ -456,6 +454,22 @@ public class KycServiceImplTest {
 	}
 	
 	@Test
+	public void testGetKycInfo_Name_twoLangs() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"fullName", List.of(new IdentityInfoDTO("eng", "My Name"), new IdentityInfoDTO("ara", "My ara Name"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("fullName");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng", "ara");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("name_eng", "My Name");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+
+	}
+	
+	@Test
 	public void testGetKycInfo_NameMap2() throws IdAuthenticationBusinessException {
 		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", config);
@@ -598,6 +612,21 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("photo");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of("photo", "face image");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_photo_twoLanguages() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				IdAuthCommonConstants.PHOTO, List.of(new IdentityInfoDTO(null, "face image"))
+				);
+		
+		List<String> allowedkycAttributes = List.of("photo");
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng", "ara");
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("photo", "face image");

@@ -144,7 +144,7 @@ public class IdAuthValidatorTest {
 			assertEquals(INDIVIDUAL_ID_TYPE, ((FieldError) error).getField());
 		});
 	}
-
+	
 	@Test
 	public void testNotConfiguredIdType() {
 		EnvUtil.setAllowedIdTypes("UIN");

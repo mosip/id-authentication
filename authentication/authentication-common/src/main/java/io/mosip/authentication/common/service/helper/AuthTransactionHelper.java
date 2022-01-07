@@ -135,8 +135,7 @@ public class AuthTransactionHelper {
 		if(requestDTO != null) {
 			String idvid = requestDTO.getIndividualId();
 			String idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
-			logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthTransactionHelper", "computeToken: ",
-					idvIdType + "-" + idvid);
+			logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthTransactionHelper", "computeToken");
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
 					false, false, Collections.emptySet());

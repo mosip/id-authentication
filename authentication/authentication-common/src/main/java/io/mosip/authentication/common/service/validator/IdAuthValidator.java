@@ -391,7 +391,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the allowed id types
 	 */
 	protected Set<String> getAllowedIdTypes() {
-		return Stream.of(getAllowedIdTypesConfigKey().split(","))
+		return Stream.of(getAllowedIdTypesConfigVal().split(","))
 				.map(String::trim)
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
@@ -433,7 +433,7 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @return the allowed id types config key
 	 */
-	protected String getAllowedIdTypesConfigKey() {
+	protected String getAllowedIdTypesConfigVal() {
 		return EnvUtil.getAllowedIdTypes();
 	}
 
