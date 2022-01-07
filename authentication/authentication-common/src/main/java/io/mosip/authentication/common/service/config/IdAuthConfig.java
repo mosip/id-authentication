@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.config;
 
-import java.util.Arrays;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.MOSIP_ERRORMESSAGES_DEFAULT_LANG;
+
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -108,10 +110,17 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	  return new AfterburnerModule();
 	}
 	
+	private ArrayList<String> serviceNames() {
+		ArrayList<String> list = new ArrayList<String>();
+		for(RestServicesConstants service : RestServicesConstants.values()) {
+			list.add(service.getServiceName());
+		}
+		return list;
+	}
+	
 	@Bean
 	public RestRequestBuilder getRestRequestBuilder() {
-		return new RestRequestBuilder(Arrays.stream(RestServicesConstants.values())
-				.map(RestServicesConstants::getServiceName).collect(Collectors.toList()));
+		return new RestRequestBuilder(serviceNames());
 	}
 
 }
