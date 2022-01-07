@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -230,7 +231,7 @@ public class RestRequestFactoryTest {
 	public void testBuildRequestHeaders() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
+		environment.merge((ConfigurableEnvironment) env.getEnvironment());
 		environment.setProperty("audit.rest.headers.accept", "application/json");
 
 		env.merge(environment);
@@ -250,7 +251,7 @@ public class RestRequestFactoryTest {
 	@Test
 	public void testBuildRequestMultiValueMap() throws IDDataValidationException {
 		MockEnvironment environment = new MockEnvironment();
-		environment.merge(env);
+		environment.merge((ConfigurableEnvironment) env.getEnvironment());
 		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
 		environment.setProperty("audit.rest.uri.queryparam.test", "yes");
 		environment.setProperty("audit.rest.uri.pathparam.test", "yes");
