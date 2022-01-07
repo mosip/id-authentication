@@ -62,13 +62,10 @@ import static io.mosip.idrepository.core.constant.IdRepoConstants.SALT_KEY_LENGT
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -77,9 +74,7 @@ import lombok.Setter;
  *
  */
 @Component
-@EqualsAndHashCode(callSuper=false)
-@Primary
-public class EnvUtil extends AbstractEnvironment {
+public class EnvUtil {
 
 	@Getter @Setter private static String  dateTimePattern;
 
@@ -198,66 +193,94 @@ public class EnvUtil extends AbstractEnvironment {
 
 	@PostConstruct
 	public void init() {
-		this.merge((ConfigurableEnvironment) env);
-		setIsFmrEnabled(super.getProperty(MOSIP_FMR_ENABLED, boolean.class, false));
-		setAuditDefaultHostName(super.getProperty(AUDIT_DEFAULT_HOST_NAME, DEFAULT_HOST_NAME));
-		setDateTimePattern(super.getProperty(DATE_TIME_PATTERN));
-		setAllowedAuthType(super.getProperty(ALLOWED_AUTH_TYPE));
-		setAllowedIdTypes(super.getProperty(MOSIP_IDTYPE_ALLOWED));
-		setInternalAllowedAuthType(super.getProperty(INTERNAL_ALLOWED_AUTH_TYPE));
-		setInternalAllowedIdTypes(super.getProperty(INTERNAL_AUTH_ALLOWED_IDTYPE));
-		setEkycAllowedAuthType(super.getProperty(EKYC_ALLOWED_AUTH_TYPE));
-		setAllowedEnv(super.getProperty(ALLOWED_ENVIRONMENTS));
-		setAllowedDomainUri(super.getProperty(ALLOWED_DOMAIN_URIS));
-		setAppId(super.getProperty(APPLICATION_ID));
-		setAppName(super.getProperty(APPLICATION_NAME));
-		setUsername(super.getProperty(USER_NAME));
-		setMandatoryLanguages(super.getProperty(MOSIP_MANDATORY_LANGUAGES));
-		setOptionalLanguages(super.getProperty(MOSIP_OPTIONAL_LANGUAGES));
-		setAuthTokenRequired(super.getProperty(RESPONSE_TOKEN_ENABLE, Boolean.class));
-		setBioSegmentTimeDiffAllowed(super.getProperty(BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L));
-		setAuthRequestReceivedTimeAllowedInSeconds(super.getProperty(AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS,
+		this.merge((ConfigurableEnvironment) getEnvironment());
+		setIsFmrEnabled(this.getProperty(MOSIP_FMR_ENABLED, boolean.class, false));
+		setAuditDefaultHostName(this.getProperty(AUDIT_DEFAULT_HOST_NAME, DEFAULT_HOST_NAME));
+		setDateTimePattern(this.getProperty(DATE_TIME_PATTERN));
+		setAllowedAuthType(this.getProperty(ALLOWED_AUTH_TYPE));
+		setAllowedIdTypes(this.getProperty(MOSIP_IDTYPE_ALLOWED));
+		setInternalAllowedAuthType(this.getProperty(INTERNAL_ALLOWED_AUTH_TYPE));
+		setInternalAllowedIdTypes(this.getProperty(INTERNAL_AUTH_ALLOWED_IDTYPE));
+		setEkycAllowedAuthType(this.getProperty(EKYC_ALLOWED_AUTH_TYPE));
+		setAllowedEnv(this.getProperty(ALLOWED_ENVIRONMENTS));
+		setAllowedDomainUri(this.getProperty(ALLOWED_DOMAIN_URIS));
+		setAppId(this.getProperty(APPLICATION_ID));
+		setAppName(this.getProperty(APPLICATION_NAME));
+		setUsername(this.getProperty(USER_NAME));
+		setMandatoryLanguages(this.getProperty(MOSIP_MANDATORY_LANGUAGES));
+		setOptionalLanguages(this.getProperty(MOSIP_OPTIONAL_LANGUAGES));
+		setAuthTokenRequired(this.getProperty(RESPONSE_TOKEN_ENABLE, Boolean.class));
+		setBioSegmentTimeDiffAllowed(this.getProperty(BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L));
+		setAuthRequestReceivedTimeAllowedInSeconds(this.getProperty(AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS,
 				Long.class));
-		setRequestTimeAdjustmentSeconds(super.getProperty(AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS, Long.class,
+		setRequestTimeAdjustmentSeconds(this.getProperty(AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS, Long.class,
 				DEFAULT_REQUEST_TIME_ADJUSTMENT_SECONDS));
-		setIsFraudAnalysisEnabled(super.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true));
-		setDelayToPullMissingCredAfterTopicSub(super.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l));
-		setSignResponse(super.getProperty(SIGN_RESPONSE));
-		setErrorMsgDefaultLang(super.getProperty(MOSIP_ERRORMESSAGES_DEFAULT_LANG));
-		setIdaAuthClientId(super.getProperty(MOSIP_IDA_AUTH_CLIENTID));
-		setSaltKeyLength(super.getProperty(SALT_KEY_LENGTH, Integer.class, DEFAULT_SALT_KEY_LENGTH));
-		setDefaultTemplateLang(super.getProperty(DEFAULT_TEMPLATE_LANGUAGES));
-		setUserPrefLangAttrName(super.getProperty(USER_PREFFRRED_LANG_ATTRIBUTE_NAME));
-		setInternalAuthAllowedType(super.getProperty(INTERNAL_ALLOWED_AUTH_TYPE));
-		setAuthEmailContentTemplate(super.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE));
-		setAuthEmailSubjectTemplate(super.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE));
-		setOtpSubjectTemplate(super.getProperty(OTP_SUBJECT_TEMPLATE));
-		setOtpContentTemplate(super.getProperty(OTP_CONTENT_TEMPLATE));
-		setAuthSmsTemplate(super.getProperty(AUTH_SMS_TEMPLATE));
-		setOtpSmsTemplate(super.getProperty(OTP_SMS_TEMPLATE));
-		setDefaultMatchValue(super.getProperty(DEFAULT_MATCH_VALUE, int.class, DEFAULT_PARTIAL_MATCH_VALUE));
-		setUinMaskingCharCount(super.getProperty(UIN_MASKING_CHARCOUNT));
-		setNotificationType(super.getProperty(MOSIP_NOTIFICATIONTYPE));
-		setOtpExpiryTime(super.getProperty(MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class));
-		setNotificationDateFormat(super.getProperty(NOTIFICATION_DATE_FORMAT));
-		setNotificationTimeFormat(super.getProperty(NOTIFICATION_TIME_FORMAT));
-		setNotificationTimeZone(super.getProperty(NOTIFICATION_TIME_ZONE));
-		setKeySplitter(super.getProperty(KEY_SPLITTER));
-		setOtpRequestFloodingDuration(super.getProperty(OTP_REQUEST_FLOODING_DURATION, Integer.class));
-		setOtpRequestFloodingMaxCount(super.getProperty(OTP_REQUEST_FLOODING_MAX_COUNT, Integer.class));
-		setIsBioHashValidationDisabled(super.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false));
-		setInternalAuthBioHashValidationDisabled(super.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, true));
-		setSaltLastBytesSum(super.getProperty(
+		setIsFraudAnalysisEnabled(this.getProperty(FRAUD_ANALYSIS_ENABLED, Boolean.class, true));
+		setDelayToPullMissingCredAfterTopicSub(this.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l));
+		setSignResponse(this.getProperty(SIGN_RESPONSE));
+		setErrorMsgDefaultLang(this.getProperty(MOSIP_ERRORMESSAGES_DEFAULT_LANG));
+		setIdaAuthClientId(this.getProperty(MOSIP_IDA_AUTH_CLIENTID));
+		setSaltKeyLength(this.getProperty(SALT_KEY_LENGTH, Integer.class, DEFAULT_SALT_KEY_LENGTH));
+		setDefaultTemplateLang(this.getProperty(DEFAULT_TEMPLATE_LANGUAGES));
+		setUserPrefLangAttrName(this.getProperty(USER_PREFFRRED_LANG_ATTRIBUTE_NAME));
+		setInternalAuthAllowedType(this.getProperty(INTERNAL_ALLOWED_AUTH_TYPE));
+		setAuthEmailContentTemplate(this.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE));
+		setAuthEmailSubjectTemplate(this.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE));
+		setOtpSubjectTemplate(this.getProperty(OTP_SUBJECT_TEMPLATE));
+		setOtpContentTemplate(this.getProperty(OTP_CONTENT_TEMPLATE));
+		setAuthSmsTemplate(this.getProperty(AUTH_SMS_TEMPLATE));
+		setOtpSmsTemplate(this.getProperty(OTP_SMS_TEMPLATE));
+		setDefaultMatchValue(this.getProperty(DEFAULT_MATCH_VALUE, int.class, DEFAULT_PARTIAL_MATCH_VALUE));
+		setUinMaskingCharCount(this.getProperty(UIN_MASKING_CHARCOUNT));
+		setNotificationType(this.getProperty(MOSIP_NOTIFICATIONTYPE));
+		setOtpExpiryTime(this.getProperty(MOSIP_KERNEL_OTP_EXPIRY_TIME, Integer.class));
+		setNotificationDateFormat(this.getProperty(NOTIFICATION_DATE_FORMAT));
+		setNotificationTimeFormat(this.getProperty(NOTIFICATION_TIME_FORMAT));
+		setNotificationTimeZone(this.getProperty(NOTIFICATION_TIME_ZONE));
+		setKeySplitter(this.getProperty(KEY_SPLITTER));
+		setOtpRequestFloodingDuration(this.getProperty(OTP_REQUEST_FLOODING_DURATION, Integer.class));
+		setOtpRequestFloodingMaxCount(this.getProperty(OTP_REQUEST_FLOODING_MAX_COUNT, Integer.class));
+		setIsBioHashValidationDisabled(this.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, false));
+		setInternalAuthBioHashValidationDisabled(this.getProperty(IDA_BIO_HASH_VALIDATION_DISABLED, Boolean.class, true));
+		setSaltLastBytesSum(this.getProperty(
 				IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
-		setAadLastBytesSum(super.getProperty(
+		setAadLastBytesSum(this.getProperty(
 				IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
-		setPartnerBioRefId(super.getProperty(PARTNER_BIO_REFERENCE_ID));
-		setPartnerRefId(super.getProperty(PARTNER_REFERENCE_ID));
-		setIdaApiIdWithKyc(super.getProperty(MOSIP_IDA_API_ID + KYC));
-		setInternalAuthSigningRequired(super.getProperty("mosip.ida.internal.signing-required", Boolean.class, true));
-		setInternalAuthSignatureVerificationRequired(super.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, false));
-		setInternalAuthTrustValidationRequired(super.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false));
-		setInternalAuthInternalRefId(super.getProperty(INTERNAL_REFERENCE_ID));
-		setInternalAuthInternalBioRefId(super.getProperty(INTERNAL_BIO_REFERENCE_ID));
+		setPartnerBioRefId(this.getProperty(PARTNER_BIO_REFERENCE_ID));
+		setPartnerRefId(this.getProperty(PARTNER_REFERENCE_ID));
+		setIdaApiIdWithKyc(this.getProperty(MOSIP_IDA_API_ID + KYC));
+		setInternalAuthSigningRequired(this.getProperty("mosip.ida.internal.signing-required", Boolean.class, true));
+		setInternalAuthSignatureVerificationRequired(this.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, false));
+		setInternalAuthTrustValidationRequired(this.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false));
+		setInternalAuthInternalRefId(this.getProperty(INTERNAL_REFERENCE_ID));
+		setInternalAuthInternalBioRefId(this.getProperty(INTERNAL_BIO_REFERENCE_ID));
+	}
+	
+	public String getProperty(String key) {
+		return getEnvironment().getProperty(key);
+	}
+
+	public <T> T getProperty(String key, Class<T> targetType, T defaultValue) {
+		return getEnvironment().getProperty(key, targetType, defaultValue);
+	}
+
+	public String getProperty(String key, String defaultValue) {
+		return getEnvironment().getProperty(key, defaultValue);
+	}
+
+	public <T> T getProperty(String key, Class<T> targetType) {
+		return getEnvironment().getProperty(key, targetType);
+	}
+
+	public void merge(ConfigurableEnvironment parent) {
+		((ConfigurableEnvironment) getEnvironment()).merge(parent);
+	}
+
+	public boolean containsProperty(String key) {
+		return getEnvironment().containsProperty(key);
+	}
+
+	public Environment getEnvironment() {
+		return env;
 	}
 }

@@ -40,7 +40,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	 */
 	@PostConstruct
 	public void initialize() {
-		IdType.initializeAliases(environment);
+		IdType.initializeAliases(environment.getEnvironment());
 	}
 
 	/**

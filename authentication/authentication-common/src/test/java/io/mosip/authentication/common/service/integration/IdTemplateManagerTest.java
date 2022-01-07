@@ -147,7 +147,7 @@ public class IdTemplateManagerTest {
 	@Test
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));
 		mockenv.setProperty("mosip.default.template-languages", "eng");
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("auth-sms",templateLanguages);
@@ -156,7 +156,7 @@ public class IdTemplateManagerTest {
 	@Test
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));		
+		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));	
 		mockRestCalls();
 		idTemplateManager.fetchTemplate(AUTH_SMS,templateLanguages);
 	}
@@ -164,7 +164,7 @@ public class IdTemplateManagerTest {
 	@Test
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));
 		mockRestCalls();
 		idTemplateManager.fetchTemplate("auth-sms", templateLanguages);
 	}

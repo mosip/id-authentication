@@ -390,7 +390,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public Environment getEnvironment() {
-		return environment;
+		return environment.getEnvironment();
 	}
 
 	/**

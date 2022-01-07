@@ -96,7 +96,7 @@ public class AuthTransactionHelperTest {
 		baseRequestDTO.setVersion("v1");
 		mockenv = new MockEnvironment();
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		mockenv.merge(((AbstractEnvironment) env));
+		mockenv.merge(((AbstractEnvironment) env.getEnvironment()));
 		ReflectionTestUtils.setField(authTransactionHelper, "env", env);
 		baseRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(mockenv.getProperty("datetime.pattern"))).toString());
