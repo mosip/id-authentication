@@ -427,8 +427,8 @@ public class IdAuthSecurityManager {
 	 * @return the string
 	 */
 	public static String trimBeginEnd(String pKey) {
-		pKey = pKey.replaceAll("-{0,30}BEGIN([^-]{0,30})-{0,30}(\r?\n)?", "");
-		pKey = pKey.replaceAll("-{0,30}END([^-]{0,30})-{0,30}(\r?\n)?", "");
+		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
 		pKey = pKey.replaceAll("\\s", "");
 		return pKey;
 	}
