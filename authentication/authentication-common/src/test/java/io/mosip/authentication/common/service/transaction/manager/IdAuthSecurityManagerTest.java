@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -101,41 +100,5 @@ public class IdAuthSecurityManagerTest {
 //		String sign = authSecurityManager.sign("req");
 //		assertEquals("abcd", sign);
 //	}
-	
-	@Test
-	public void testTrimBeginEndForKey() {
-		String pkey = "-----BEGIN RSA PRIVATE KEY-----\r\n"
-				+ "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31u\r\n"
-				+ "FpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDf\r\n"
-				+"WGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==\r\n"
-				+ "-----END RSA PRIVATE KEY-----\r\n";
-		String out  = authSecurityManager.trimBeginEnd(pkey);
-		String actual_out = "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31uFpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDfWGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==";
-		assertEquals(actual_out,out);
-	}
-	
-	@Test
-	public void testTrimBeginEndForCert() {
-		String pkey = "-----BEGIN RSA PRIVATE KEY-----\r\n"
-				+ "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31u\r\n"
-				+ "FpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDf\r\n"
-				+"WGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==\r\n"
-				+ "-----END RSA PRIVATE KEY-----\r\n";
-		String out  = authSecurityManager.trimBeginEnd(pkey);
-		String actual_out = "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31uFpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDfWGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==";
-		assertEquals(actual_out,out);
-	}
-
-	@Test
-	public void testTrimBeginEndForCertException(){
-		String pkey = "--------------------------------BEGIN RSA PRIVATE KEY--------------------------------\r\n"
-				+ "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31u\r\n"
-				+ "FpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDf\r\n"
-				+"WGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==\r\n"
-				+ "--------------------------------END RSA PRIVATE KEY--------------------------------\r\n";
-		String out  = authSecurityManager.trimBeginEnd(pkey);
-		String actual_out = "MIIJJwIBAAKCAgEAsYTVyPeMD2SyaQTqTnpl59P0OEJwCjS1MsFWEOhGK5wg/31uFpKHjJ8RrQe++Lb00c8sTuYrjjL5eK4JwDjCRXP2PZWfBzts2HX0eCpk5n7YSgDfWGVSRPDlVFIWKIsgZhwYbihzf2YJHE0DlcQgaDrsG8ZLVQ4Sy5DnhO32vA==";
-		assertNotSame(actual_out,out);
-	}
 
 }
