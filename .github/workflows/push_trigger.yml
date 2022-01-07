@@ -94,7 +94,7 @@ jobs:
         echo ${{ env.GPG_TTY }}
         sudo apt-get --yes install gnupg2
         gpg2 --import ./.github/keys/mosipgpgkey_pub.gpg 
-        gpg2 --quiet --batch --passphrase=${{secrets.gpg_secret}}  --allow-secret-key-import --import ./.github/keys/mosipgpgkey_sec.gpg 
+        gpg2 --quiet --batch --passphrase=${{secrets.gpg_secret}} --always-trust --allow-secret-key-import --import ./.github/keys/mosipgpgkey_sec.gpg 
      
     - uses: actions/cache@v1
       with:
