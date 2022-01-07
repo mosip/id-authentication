@@ -30,7 +30,7 @@ public class InternalAuthRequestValidator extends AuthRequestValidator {
 	}
 	
 	@Override
-	protected String getAllowedIdTypesConfigKey() {
+	protected String getAllowedIdTypesConfigVal() {
 		return EnvUtil.getInternalAllowedIdTypes();
 	}
 
