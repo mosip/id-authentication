@@ -21,8 +21,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,6 +35,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -59,9 +60,10 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Import(EnvUtil.class)
 public class IDAuthExceptionHandlerTest {
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 
 	@InjectMocks
 	private IdAuthExceptionHandler handler;

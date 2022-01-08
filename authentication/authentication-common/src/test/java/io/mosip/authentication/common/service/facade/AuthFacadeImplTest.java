@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -56,6 +56,7 @@ import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -93,7 +94,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
-
+@Import(EnvUtil.class)
 public class AuthFacadeImplTest {
 
 	private static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
@@ -105,8 +106,8 @@ public class AuthFacadeImplTest {
 	private AuthFacadeImpl authFacadeMock;
 	/** The env. */
 	@Autowired
-	private Environment env;
-
+	private EnvUtil env;
+	
 	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthService otpAuthService;
@@ -203,7 +204,6 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "authTransactionHelper", authTransactionHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "notificationService", notificationService);
-		ReflectionTestUtils.setField(notificationService, "env", env);
 		ReflectionTestUtils.setField(notificationService, "idTemplateManager", idTemplateManager);
 		ReflectionTestUtils.setField(notificationService, "notificationManager", notificationManager);
 		ReflectionTestUtils.setField(authFacadeImpl, "partnerService", partnerService);
@@ -236,7 +236,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -302,7 +302,7 @@ public class AuthFacadeImplTest {
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
@@ -335,14 +335,14 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("1234567");
 
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setVersion("1.1");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(env.getProperty(MOSIP_PRIMARY_LANGUAGE));
+		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage(env.getProperty(MOSIP_SECONDARY_LANGUAGE));
+		idInfoDTO1.setLanguage(EnvUtil.getMandatoryLanguages());
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -370,7 +370,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
@@ -428,7 +428,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setOtp("456789");
@@ -468,7 +468,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -526,7 +526,7 @@ public class AuthFacadeImplTest {
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
@@ -549,7 +549,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -607,7 +607,7 @@ public class AuthFacadeImplTest {
 		authResponseDTO.setResponse(res);
 
 		authResponseDTO.setResponseTime(
-				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
@@ -632,7 +632,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
@@ -656,7 +656,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setMetadata(Collections.singletonMap("metadata", "{}"));
 		RequestDTO request = new RequestDTO();
 		request.setOtp("111111");

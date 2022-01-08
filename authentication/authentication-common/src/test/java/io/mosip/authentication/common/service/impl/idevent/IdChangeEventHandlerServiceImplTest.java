@@ -15,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class IdChangeEventHandlerServiceImplTest {
 //	
 //	@Autowired
-//	private Environment env;
+//	private EnvPropertyResolver env;
 //	
 //	@Mock
 //	private IdAuthSecurityManager securityManager;

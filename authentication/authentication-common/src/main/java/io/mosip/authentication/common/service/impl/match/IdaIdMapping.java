@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -416,9 +417,22 @@ private String idname;
 	 * @return the id name for mapping
 	 */
 	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
-		return Stream.of(IdaIdMapping.values()).filter(mapping -> mapping.getSubIdMappings().isEmpty())
+		//First check if this already the ID Name in static and dynamic mapping
+		Supplier<? extends Optional<? extends String>> dynamicMappingFinder = () -> mappingConfig.getDynamicAttributes().containsKey(mappingName) ? Optional.of(mappingName) : Optional.empty();
+		Optional<String> staticMapping = Stream.of(IdaIdMapping.values()).map(idmap -> idmap.idname)
+				.filter(idname -> idname.equals(mappingName))
+				.findAny();
+		Optional<String> existingMapping = staticMapping.or(dynamicMappingFinder);
+		if(existingMapping.isPresent()) {
+			return existingMapping;
+		}
+		
+		//Then check if this is a mapping and then get ids name of that
+		return Stream.of(IdaIdMapping.values())
+				.filter(mapping -> mapping.getSubIdMappings().isEmpty())
 				.filter(mapping -> mapping.getMappingFunction().apply(mappingConfig, null).contains(mappingName))
-				.findFirst().map(IdaIdMapping::getIdname);
+				.findFirst()
+				.map(IdaIdMapping::getIdname);
 	}
 	
 	/**

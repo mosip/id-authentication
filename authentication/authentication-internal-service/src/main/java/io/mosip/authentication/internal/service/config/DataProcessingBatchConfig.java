@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_CHUNK_SIZE;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -36,7 +35,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -50,6 +48,7 @@ import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -120,7 +119,7 @@ public class DataProcessingBatchConfig {
 	private JobLauncher jobLauncher;
 	
 	@Autowired
-	private Environment env;
+	private io.mosip.authentication.common.service.util.EnvUtil env;
 	
 	@Autowired
 	private CredentialStoreJobExecutionListener listener;
@@ -185,8 +184,7 @@ public class DataProcessingBatchConfig {
 					| JobParametersInvalidException e) {
 				logger.warn("error in rescheduleJob - {}", e.getMessage());
 			}
-		}, new Date(System.currentTimeMillis()
-				+ env.getProperty(DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION, Long.class, 60000l)));
+		}, new Date(System.currentTimeMillis() + EnvUtil.getDelayToPullMissingCredAfterTopicSub()));
 	}
 
 	/**

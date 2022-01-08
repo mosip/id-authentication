@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.util.LanguageComparator;
 
 /**
@@ -20,7 +19,7 @@ import io.mosip.authentication.core.util.LanguageComparator;
 public class LangComparatorConfig {
 
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	@Bean(name = "NotificationLangComparator")
 	public LanguageComparator getLanguageComparator() {
@@ -28,8 +27,8 @@ public class LangComparatorConfig {
 	}
 
 	public List<String> getSystemSupportedLanguageCodes() {
-		String languages = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_MANDATORY_LANGUAGES) + ","
-				+ environment.getProperty(IdAuthConfigKeyConstants.MOSIP_OPTIONAL_LANGUAGES);
+		String languages = EnvUtil.getMandatoryLanguages() + ","
+				+ EnvUtil.getOptionalLanguages();
 		return List.of(languages.split(","));
 	}
 

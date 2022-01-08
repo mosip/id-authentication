@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 
@@ -26,12 +26,12 @@ public class InternalAuthRequestValidator extends AuthRequestValidator {
 	 */
 	@Override
 	public String getAllowedAuthTypeProperty() {
-		return IdAuthConfigKeyConstants.INTERNAL_ALLOWED_AUTH_TYPE;
+		return EnvUtil.getInternalAllowedAuthType();
 	}
 	
 	@Override
-	protected String getAllowedIdTypesConfigKey() {
-		return IdAuthConfigKeyConstants.INTERNAL_AUTH_ALLOWED_IDTYPE;
+	protected String getAllowedIdTypesConfigVal() {
+		return EnvUtil.getInternalAllowedIdTypes();
 	}
 
 	@Override

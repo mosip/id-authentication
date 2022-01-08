@@ -1,17 +1,19 @@
 package io.mosip.authentication.service.kyc.impl;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,6 +23,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -44,14 +47,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public class KycServiceImpl implements KycService {
 	
 	/** The Constant KYC_ATTRIB_LANGCODE_SEPERATOR. */
-	private static final String KYC_ATTRIB_LANGCODE_SEPERATOR="_";
+	private static final String KYC_ATTRIB_LANGCODE_SEPERATOR = LANG_CODE_SEPARATOR;
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
 
 	/** The env. */
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	/** The demo helper. */
 	@Autowired
@@ -69,7 +72,7 @@ public class KycServiceImpl implements KycService {
 	 * Retrieve kyc info.
 	 *
 	 * @param allowedkycAttributes the allowedkyc attributes
-	 * @param secLangCode the sec lang code
+	 * @param langCodes the lang codes
 	 * @param identityInfo the identity info
 	 * @return the kyc response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
@@ -85,25 +88,30 @@ public class KycServiceImpl implements KycService {
 	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
-		if (Objects.nonNull(identityInfo)) {
-			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
-					null);
-			List<IdentityInfoDTO> bioValue = null;
-			String face = Objects.nonNull(faceEntityInfoMap)
-					? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
-					: null;
-			if (Objects.nonNull(faceEntityInfoMap)) {
-				bioValue = new ArrayList<>();
-				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-				identityInfoDTO.setValue(face);
-				bioValue.add(identityInfoDTO);
-				identityInfo.put(IdAuthCommonConstants.PHOTO, bioValue);
+		if (Objects.nonNull(identityInfo) && Objects.nonNull(allowedkycAttributes) && !allowedkycAttributes.isEmpty()) {
+			Optional<String> faceAttribute = allowedkycAttributes.stream()
+					.filter(key -> key.equalsIgnoreCase(IdAuthCommonConstants.PHOTO)
+							|| key.equalsIgnoreCase(CbeffDocType.FACE.getType().value()))
+					.findFirst();
+			if(faceAttribute.isPresent()) {
+				Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
+						null);
+				if (Objects.nonNull(faceEntityInfoMap)) {
+					String face = Objects.nonNull(faceEntityInfoMap)
+							? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
+							: null;
+					List<IdentityInfoDTO> bioValue = new ArrayList<>();
+					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+					identityInfoDTO.setValue(face);
+					bioValue.add(identityInfoDTO);
+					identityInfo.put(faceAttribute.get(), bioValue);
+				}
 			}
 
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes,
 					identityInfo, langCodes);
 			if (Objects.nonNull(filteredIdentityInfo)) {
-				setKycInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo, langCodes);
+				setKycInfo(allowedkycAttributes, kycResponseDTO, filteredIdentityInfo, langCodes);
 			}
 		}
 		return kycResponseDTO;
@@ -121,7 +129,63 @@ public class KycServiceImpl implements KycService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
-			List<IdentityInfoDTO> bioValue, String face, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) throws IdAuthenticationBusinessException {
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) throws IdAuthenticationBusinessException {
+		Map<String, Object> idMappingIdentityInfo = getKycInfo(allowedkycAttributes,
+				filteredIdentityInfo, langCodes);
+		try {
+			kycResponseDTO.setIdentity(mapper.writeValueAsString(idMappingIdentityInfo));
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	/**
+	 * Gets the kyc info.
+	 *
+	 * @param allowedkycAttributes the allowedkyc attributes
+	 * @param bioValue the bio value
+	 * @param face the face
+	 * @param filteredIdentityInfo the filtered identity info
+	 * @param langCodes the lang codes
+	 * @return the kyc info
+	 */
+	private Map<String, Object> getKycInfo(List<String> allowedkycAttributes, Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) {
+
+		Map<String, Object> idMappingIdentityInfo = new HashMap<>();
+		for (String kycAttribute : allowedkycAttributes) {
+			String mappedIdName = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
+			String idname;
+			if (mappedIdName.isEmpty() || mappedIdName.equalsIgnoreCase(DemoMatchType.DYNAMIC.getIdMapping().getIdname())) {
+				idname = kycAttribute;
+				Map<String, Object> nonMappedIdInfoForIdName = getNonMappedIdentityInfosForIdName(filteredIdentityInfo, langCodes, idname);
+				if(!nonMappedIdInfoForIdName.isEmpty()) {
+					idMappingIdentityInfo.putAll(nonMappedIdInfoForIdName);
+				}
+			} else {
+				idname = mappedIdName;
+				Map<String, Object> idMappingIdentityInfoForIdName = getMappedIdentityInfosForIdName(filteredIdentityInfo, langCodes, idname);
+				idMappingIdentityInfo.putAll(idMappingIdentityInfoForIdName);
+				//If mapped ID Name is not found, it might be biometrics such as face, for which non mapped id attribute needs to be fetched
+				if(idMappingIdentityInfoForIdName.isEmpty()) {
+					Map<String, Object> nonMappedIdInfoForIdName = getNonMappedIdentityInfosForIdName(filteredIdentityInfo, langCodes, idname);
+					if(!nonMappedIdInfoForIdName.isEmpty()) {
+						idMappingIdentityInfo.putAll(nonMappedIdInfoForIdName);
+					}
+				}
+			}
+		}
+		
+		return idMappingIdentityInfo;
+	}
+
+	private Map<String, Object> getNonMappedIdentityInfosForIdName(
+			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, String idName) {
+		return getDynamicEntityInfoStream(filteredIdentityInfo, langCodes, idName)
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (val1, val2) -> val1));
+	}
+
+	private Map<String, Object> getMappedIdentityInfosForIdName(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
+			Set<String> langCodes, String targetIdName) {
 		// Getting allowed demographic data - key will be the ID Name (from ID Mapping),
 		// value will be the ID Entity value from ID Name
 		Map<String, Object> idMappingIdentityInfo = Stream.of(DemoMatchType.values())
@@ -132,50 +196,40 @@ public class KycServiceImpl implements KycService {
 							return dynamicAttributes.entrySet()
 										.stream()
 										.map(Entry::getKey)
+										.filter(idName -> idName.equalsIgnoreCase(targetIdName))
 										.flatMap(idName -> {
 											return getDynamicEntityInfoStream(filteredIdentityInfo, langCodes, idName);
 										});
 						} else {
-							return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
+							String idname = demoMatchType.getIdMapping().getIdname();
+							if(targetIdName.equalsIgnoreCase(idname)) {
+								return getEntityForLangCodes(filteredIdentityInfo, langCodes, demoMatchType);
+							} else {
+								return Stream.empty();
+							}
 						}
 					} else {
 						String idname = demoMatchType.getIdMapping().getIdname();
-						//Need special handling for age since it is mapped to Date of Birth which will conflict with actual date of birth
-						if(demoMatchType.equals(DemoMatchType.AGE)) {
-							if(allowedkycAttributes.contains(IdaIdMapping.AGE.getIdname())) {
+						// Need special handling for age since it is mapped to Date of Birth which will
+						// conflict with actual date of birth
+						if (demoMatchType.equals(DemoMatchType.AGE)) {
+							if (targetIdName.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
 								return Stream.of(new SimpleEntry<>(IdaIdMapping.AGE.getIdname(),
 										getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
 							}
 						} else {
-							return Stream.of(new SimpleEntry<>(idname,
-									getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+							if (targetIdName.equalsIgnoreCase(idname)) {
+								return Stream.of(new SimpleEntry<>(idname,
+										getEntityForMatchType(demoMatchType, filteredIdentityInfo)));
+							}
 						}
 						
 						return Stream.empty();
 					}
 				})
 				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-
-		//Set null value to the idnames which don't have entry in filtered Identity Info map
-		for (String kycAttribute : allowedkycAttributes) {
-			String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
-			if (!(idname.isEmpty() || !idMappingIdentityInfo.containsKey(idname) 
-					|| idMappingIdentityInfo.keySet().stream()
-							.anyMatch(attributeName -> attributeName.toLowerCase().startsWith(idname.toLowerCase())))) {
-				idMappingIdentityInfo.put(idname, null);
-			}
-		}
-		
-		// Setting face biometrics as photo
-		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey(IdAuthCommonConstants.PHOTO)) {
-			idMappingIdentityInfo.put(CbeffDocType.FACE.getType().value(), Objects.nonNull(bioValue) ? face : null);
-		}
-		try {
-			kycResponseDTO.setIdentity(mapper.writeValueAsString(idMappingIdentityInfo));
-		} catch (JsonProcessingException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (val1, val2) -> val1));
+		return idMappingIdentityInfo;
 	}
 
 	/**
@@ -183,18 +237,17 @@ public class KycServiceImpl implements KycService {
 	 *
 	 * @param filteredIdentityInfo the filtered identity info
 	 * @param langCodes the lang codes
-	 * @param demoMatchType the demo match type
 	 * @param idName the id name
 	 * @return the entity for lang codes and id name
 	 */
-	private Stream<? extends SimpleEntry<String, String>> getDynamicEntityInfoStream(
+	private Stream<? extends Entry<String, String>> getDynamicEntityInfoStream(
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes,
 			String idName) {
 		return langCodes.stream()
-				.map(langCode -> new SimpleEntry<>(
-						idName + KYC_ATTRIB_LANGCODE_SEPERATOR
-								+ langCode,
-						idInfoHelper.getDynamicEntityInfo(filteredIdentityInfo, langCode, idName)));
+				.flatMap(langCode -> {
+					Map<String, String> entityInfo = idInfoHelper.getDynamicEntityInfoAsStringWithKey(filteredIdentityInfo, langCode, idName);
+					return entityInfo.entrySet().stream();
+				});
 	}
 
 	/**
@@ -203,7 +256,6 @@ public class KycServiceImpl implements KycService {
 	 * @param filteredIdentityInfo the filtered identity info
 	 * @param langCodes the lang codes
 	 * @param demoMatchType the demo match type
-	 * @param allowedkycAttributes 
 	 * @return the entity for lang codes
 	 */
 	private Stream<SimpleEntry<String, String>> getEntityForLangCodes(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,

@@ -1,7 +1,4 @@
 package io.mosip.authentication.common.service.transaction.manager;
-import static io.mosip.idrepository.core.constant.IdRepoConstants.DEFAULT_SALT_KEY_LENGTH;
-import static io.mosip.idrepository.core.constant.IdRepoConstants.SALT_KEY_LENGTH;
-
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -21,10 +18,10 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -88,10 +85,6 @@ public class IdAuthSecurityManager {
 	/** The mosip logger. */
 	private Logger mosipLogger = IdaLogger.getLogger(IdAuthSecurityManager.class);
 
-	/** The mapper. */
-	@Autowired
-	private Environment env;
-
 	/** The cryptomanager service. */
 	@Autowired
 	private CryptomanagerService cryptomanagerService;
@@ -145,7 +138,7 @@ public class IdAuthSecurityManager {
 	 * @return the user
 	 */
 	public String getUser() {
-		return env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDA_AUTH_CLIENTID);
+		return EnvUtil.getIdaAuthClientId();
 	}
 
 	/**
@@ -164,7 +157,7 @@ public class IdAuthSecurityManager {
 			throws IdAuthenticationBusinessException {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
-			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			request.setApplicationId(EnvUtil.getAppId());
 			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
 			request.setData(dataToEncrypt);
 			request.setReferenceId(refId);
@@ -200,7 +193,7 @@ public class IdAuthSecurityManager {
 			Boolean isThumbprintEnabled) throws IdAuthenticationBusinessException {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
-			request.setApplicationId(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
+			request.setApplicationId(EnvUtil.getAppId());
 			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
 			request.setData(dataToDecrypt);
 			request.setReferenceId(refId);
@@ -434,8 +427,8 @@ public class IdAuthSecurityManager {
 	 * @return the string
 	 */
 	public static String trimBeginEnd(String pKey) {
-		pKey = pKey.replaceAll("-*BEGIN([^-]*)-*(\r?\n)?", "");
-		pKey = pKey.replaceAll("-*END([^-]*)-*(\r?\n)?", "");
+		pKey = pKey.replaceAll("-{0,30}BEGIN([^-]{0,30})-{0,30}(\r?\n)?", "");
+		pKey = pKey.replaceAll("-{0,30}END([^-]{0,30})-{0,30}(\r?\n)?", "");
 		pKey = pKey.replaceAll("\\s", "");
 		return pKey;
 	}
@@ -521,7 +514,7 @@ public class IdAuthSecurityManager {
 	}
 	
 	private int getSaltKeyForHashOfId(String id) {
-		Integer saltKeyLength = env.getProperty(SALT_KEY_LENGTH, Integer.class, DEFAULT_SALT_KEY_LENGTH);
+		Integer saltKeyLength = EnvUtil.getSaltKeyLength();
 		return SaltUtil.getIdvidHashModulo(id, saltKeyLength);
 	}
 	

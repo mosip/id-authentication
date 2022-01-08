@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -25,23 +26,27 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.validator.OTPRequestValidator;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
+@Import(EnvUtil.class)
 public class OtpValidatorTest {
 
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;
 	
 	@Autowired
-	Environment env;
+	EnvUtil envUtil;
+	
+	
 	
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
+//		ReflectionTestUtils.setField(envUtil, "env", env);
+//		envUtil.init();
 	}
 	
 	@Test
@@ -68,7 +73,7 @@ public class OtpValidatorTest {
 	public void validateReqTimeFuture() {
 		OtpRequestDTO otpRequestDTO = createOTPRequest();
 		otpRequestDTO.setRequestTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "otpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
@@ -78,7 +83,7 @@ public class OtpValidatorTest {
 	public void validateReqTimePast() {
 		OtpRequestDTO otpRequestDTO = createOTPRequest();
 		otpRequestDTO.setRequestTime(Instant.now().minus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "otpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
@@ -127,7 +132,7 @@ public class OtpValidatorTest {
 		otpRequestDTO.setIndividualIdType("UIN");
 		otpRequestDTO.setOtpChannel(Collections.singletonList("email"));
 		otpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		otpRequestDTO.setTransactionID("1234567890");
 		otpRequestDTO.setVersion("1.0");
 		return otpRequestDTO;

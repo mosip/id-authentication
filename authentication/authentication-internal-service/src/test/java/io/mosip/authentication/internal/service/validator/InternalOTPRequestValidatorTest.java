@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,6 +32,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -49,6 +50,7 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class InternalOTPRequestValidatorTest {
 
 	/** The error. */
@@ -57,7 +59,7 @@ public class InternalOTPRequestValidatorTest {
 
 	/** The env. */
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	/** The uin validator. */
 	@Mock
@@ -80,7 +82,6 @@ public class InternalOTPRequestValidatorTest {
 	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
 	}
 
 	/**
@@ -111,7 +112,7 @@ public class InternalOTPRequestValidatorTest {
 		OtpRequestDTO.setTransactionID("1234567890");
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				// offset
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		OtpRequestDTO.setIndividualId("5076204698");
 		OtpRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		ArrayList<String> channelList = new ArrayList<String>();
@@ -152,7 +153,7 @@ public class InternalOTPRequestValidatorTest {
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setTransactionID("1234567890");
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIndividualId("5371843613598206");
 		OtpRequestDTO.setIndividualIdType(IdType.VID.getType());
@@ -190,7 +191,7 @@ public class InternalOTPRequestValidatorTest {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setRequestTime(new Date(LocalDate.of(2017, 1, 1).toEpochDay()).toInstant().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		OtpRequestDTO.setId("id");
 		ArrayList<String> channelList = new ArrayList<String>();

@@ -9,9 +9,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.common.service.impl.match.PinAuthType;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -23,7 +22,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
  */
 public class AuthResponseBuilderTest {
 	@Autowired
-	Environment env;
+	EnvUtil env;
 
 	@Test
 	public void testAuthStatusInfoBuilder() {

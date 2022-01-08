@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 
@@ -52,9 +53,10 @@ public class IdAuthFraudAnalysisEventManagerTest {
 
     @Autowired
     private ObjectMapper mapper;
-
+    
     @Before
     public void Before(){
+    	EnvUtil.setIsFraudAnalysisEnabled(true);
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "requestFloodingTimeDiff", 1);
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "mapper", mapper);
     }
@@ -75,10 +77,10 @@ public class IdAuthFraudAnalysisEventManagerTest {
         Mockito.when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
         Mockito.when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        Mockito.when(authTxnRepo.findByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(requests);
+        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
         Mockito.when(eventData.getPartnerId()).thenReturn("PartnerId");
-        Mockito.when(authTxnRepo.findByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(requests);
+        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 

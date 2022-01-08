@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +16,8 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.integration.dto.OtpGenerateRequestDto;
 import io.mosip.authentication.common.service.repository.OtpTxnRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -57,7 +56,7 @@ public class OTPManager {
 	private RestHelper restHelper;
 
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	/** The rest request factory. */
 	@Autowired
@@ -92,8 +91,8 @@ public class OTPManager {
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
 		String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
-				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otpRequestDTO.getTransactionID()
-				+ environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + otp).getBytes());
+				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
+				+ EnvUtil.getKeySplitter() + otp).getBytes());
 
 		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 		if (otpTxnOpt.isPresent()) {
@@ -101,8 +100,7 @@ public class OTPManager {
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(otpGenerationTime);
-			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(
-					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
 			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(otpTxn);
 		} else {
@@ -113,7 +111,7 @@ public class OTPManager {
 			txn.setCrBy(securityManager.getUser());
 			txn.setCrDtimes(otpGenerationTime);
 			txn.setExpiryDtimes(otpGenerationTime.plusSeconds(
-					environment.getProperty(IdAuthConfigKeyConstants.MOSIP_KERNEL_OTP_EXPIRY_TIME, Long.class)));
+					EnvUtil.getOtpExpiryTime()));
 			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(txn);
 		}
@@ -167,7 +165,7 @@ public class OTPManager {
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		String otpHash;
 		otpHash = IdAuthSecurityManager.digestAsPlainText(
-				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
+				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
 		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 		if (otpTxnOpt.isPresent()) {
 			OtpTransaction otpTxn = otpTxnOpt.get();

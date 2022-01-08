@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -43,6 +42,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -68,13 +68,13 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@Import(IDAMappingConfig.class)
+@Import({IDAMappingConfig.class, EnvUtil.class})
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })
 public class DemoAuthServiceTest {
 
 	@Autowired
-	private Environment environment;
+	private EnvUtil environment;
 
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
@@ -106,7 +106,6 @@ public class DemoAuthServiceTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
-		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idaMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
@@ -478,7 +477,7 @@ public class DemoAuthServiceTest {
 
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
@@ -657,7 +656,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 //		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");
