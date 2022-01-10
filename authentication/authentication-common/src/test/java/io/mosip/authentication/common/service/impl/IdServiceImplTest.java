@@ -51,8 +51,8 @@ public class IdServiceImplTest {
     @Mock
     private AutnTxnRepository autntxnrepository;
 
+    //tehadkandls
     @Test
-    @Ignore
     public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
         String uin = "12312312";
         Boolean isBio = true;
@@ -77,6 +77,22 @@ public class IdServiceImplTest {
         Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 
         Mockito.when(identityRepo.getOne("12")).thenReturn(entity);
+        idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+    }
+
+    @Test
+    public void getIdentityTest2() throws IdAuthenticationBusinessException {
+        String uin = "12312312";
+        Boolean isBio = false;
+        IdType idType = IdType.VID;
+        Set<String> filterAttributes = new HashSet<String>();
+        Mockito.when(securityManager.hash(uin)).thenReturn("12");
+        Mockito.when(identityRepo.existsById("12")).thenReturn(true);
+        byte[] demographicData = {};
+        LocalDateTime ltime= LocalDateTime.now();
+        Object[] data = new Object[]{1, demographicData, null, null, 1};
+
+        Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
         idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
     }
 
@@ -119,22 +135,6 @@ public class IdServiceImplTest {
     }
 
     @Test(expected = IdAuthenticationBusinessException.class)
-    public void getIdentityTestException4() throws IdAuthenticationBusinessException {
-        String uin = "12312312";
-        Boolean isBio = false;
-        IdType idType = IdType.VID;
-        Set<String> filterAttributes = new HashSet<String>();
-        Mockito.when(securityManager.hash(uin)).thenReturn("12");
-        Mockito.when(identityRepo.existsById("12")).thenReturn(true);
-        byte[] demographicData = {};
-        LocalDateTime ltime= LocalDateTime.now();
-        Object[] data = new Object[]{1, demographicData, "2018-12-30T19:34:50.63", 1, 1};
-        System.out.println("time="+ LocalDateTime.parse(String.valueOf(data[2])) );
-        Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
-        idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
-    }
-
-    @Test(expected = IdAuthenticationBusinessException.class)
     public void getIdentityTestException5() throws IdAuthenticationBusinessException, IOException {
         String uin = "12312312";
         Boolean isBio = true;
@@ -152,7 +152,6 @@ public class IdServiceImplTest {
     }
 
     @Test
-    @Ignore
     public void processIdTypeTest() throws IdAuthenticationBusinessException, IOException {
 //        String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes
         String idvId = "12312312";
@@ -181,7 +180,13 @@ public class IdServiceImplTest {
         String idvIdType = "VID";
         idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
 
+        markVidConsumed=false;
+        idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+
         idvIdType = "UIN";
+        idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+
+        idvIdType = "";
         idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
     }
 
