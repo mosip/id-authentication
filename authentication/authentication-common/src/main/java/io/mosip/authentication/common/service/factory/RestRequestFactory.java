@@ -148,7 +148,7 @@ public class RestRequestFactory {
      */
     private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 	    HttpHeaders headers, String serviceName) {
-	((AbstractEnvironment) env).getPropertySources().forEach((PropertySource<?> source) -> {
+	((AbstractEnvironment) env.getEnvironment()).getPropertySources().forEach((PropertySource<?> source) -> {
 	    if (source instanceof MapPropertySource) {
 		Map<String, Object> systemProperties = ((MapPropertySource) source).getSource();
 

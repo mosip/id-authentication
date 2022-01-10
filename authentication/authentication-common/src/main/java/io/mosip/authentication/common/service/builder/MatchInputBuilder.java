@@ -313,7 +313,7 @@ public class MatchInputBuilder {
 				if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
-							environment, idInfoFetcher);
+							environment.getEnvironment(), idInfoFetcher);
 					matchValue = matchThresholdOpt.orElseGet(() -> EnvUtil.getDefaultMatchValue());
 				}
 			}

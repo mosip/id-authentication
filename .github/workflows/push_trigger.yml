@@ -94,7 +94,7 @@ jobs:
         echo ${{ env.GPG_TTY }}
         sudo apt-get --yes install gnupg2
         gpg2 --import ./.github/keys/mosipgpgkey_pub.gpg 
-        gpg2 --quiet --batch --passphrase=${{secrets.gpg_secret}}  --allow-secret-key-import --import ./.github/keys/mosipgpgkey_sec.gpg 
+        gpg2 --quiet --batch --passphrase=${{secrets.gpg_secret}} --always-trust --allow-secret-key-import --import ./.github/keys/mosipgpgkey_sec.gpg 
      
     - uses: actions/cache@v1
       with:
@@ -312,8 +312,8 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
+        
   sonar_analysis:
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -360,4 +360,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
         if: failure() # Pick up events even if the job fails or is canceled.
-

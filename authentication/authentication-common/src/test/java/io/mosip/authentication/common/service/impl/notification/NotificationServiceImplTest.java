@@ -5,9 +5,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,7 +94,7 @@ public class NotificationServiceImplTest {
 	private NotificationManager notificationManager;
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
-	
+
 	List<String> templateLanguages = new ArrayList<String>();
 
 	@Before
@@ -133,9 +135,10 @@ public class NotificationServiceImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn("test");
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn("test");
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
@@ -181,8 +184,8 @@ public class NotificationServiceImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
@@ -232,10 +235,10 @@ public class NotificationServiceImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 
-		//Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
+		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -301,11 +304,30 @@ public class NotificationServiceImplTest {
 		Map<String, Object> values = new HashMap<>();
 		values.put("uin", "123456677890");
 		String contentTemplate = "test";
-		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(IOException.class);
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenThrow(IOException.class);
 		try {
-			ReflectionTestUtils.invokeMethod(notificationService, "applyTemplate", values, contentTemplate, templateLanguages);
+			ReflectionTestUtils.invokeMethod(notificationService, "applyTemplate", values, contentTemplate,
+					templateLanguages);
 		} catch (UndeclaredThrowableException ex) {
 			assertTrue(ex.getUndeclaredThrowable().getClass().equals(IdAuthenticationBusinessException.class));
 		}
 	}
+
+	@Test
+	public void sendOTPNotificationTest() throws IdAuthenticationBusinessException {
+		String idvid = "123";
+		String idvidType = "test";
+		Map<String, String> valueMap = new HashMap<String, String>();
+		valueMap.put("key1", "value1");
+		valueMap.put("key2", "value2");
+		valueMap.put("key3", "value3");
+		List<String> templateLanguages = Arrays.asList("eng", "ara", "fra");
+		String otp = "1234";
+		String notificationProperty = "test";
+		LocalDateTime otpGenerationTime = LocalDateTime.now();
+		notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp,
+				notificationProperty, otpGenerationTime);
+	}
+
 }
