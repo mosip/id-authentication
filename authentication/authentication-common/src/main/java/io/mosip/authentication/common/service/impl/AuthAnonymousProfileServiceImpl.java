@@ -93,12 +93,12 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
 			Map<String, Object> responseMetadata, boolean status, List<AuthError> errors) {
-		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
-		storeAnanymousProfile(ananymousProfile);
+		AnonymousAuthenticationProfile ananymousProfile = createAnonymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
+		storeAnonymousProfile(ananymousProfile);
 		authAnonymousEventPublisher.publishEvent(ananymousProfile);
 	}
 
-	private void storeAnanymousProfile(AnonymousAuthenticationProfile ananymousProfile) {
+	private void storeAnonymousProfile(AnonymousAuthenticationProfile ananymousProfile) {
 		AnonymousProfileEntity authAnonymousProfileEntity = new AnonymousProfileEntity();
 		String id = UUID.randomUUID().toString();
 		authAnonymousProfileEntity.setId(id);
@@ -116,7 +116,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		authAnonymousProfileRepository.flush();
 	}
 
-	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody,
+	private AnonymousAuthenticationProfile createAnonymousProfile(Map<String, Object> requestBody,
 			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status,
 			List<AuthError> errorCodes) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
