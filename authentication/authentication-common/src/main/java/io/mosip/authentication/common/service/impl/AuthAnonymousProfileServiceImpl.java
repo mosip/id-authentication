@@ -46,6 +46,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -314,18 +315,15 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
 		if(requestMetadata != null) {
 			Object partnerIdObj = requestMetadata.get("partnerId");
 			if(partnerIdObj instanceof String) {
 				String partnerId = (String) partnerIdObj;
 				Object partnerObj = requestMetadata.get(partnerId);
-				if(partnerObj instanceof Map) {
-					Object partnerNameObj = ((Map<String, Object>)partnerObj).get("partnerName");
-					if(partnerNameObj instanceof String) {
-						ananymousProfile.setPartnerName((String) partnerNameObj);
-					}
+				if(partnerObj instanceof PartnerDTO) {
+					String partnerNameObj = ((PartnerDTO)partnerObj).getPartnerName();
+					ananymousProfile.setPartnerName(partnerNameObj);
 				}
 			}
 		}
