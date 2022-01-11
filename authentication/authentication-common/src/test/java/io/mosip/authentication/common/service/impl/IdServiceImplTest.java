@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -288,6 +289,18 @@ public class IdServiceImplTest {
         Map<String, Object> idResDTO = new HashMap<>();
         idResDTO.put("TOKEN", "23242");
         idServiceImpl.getToken(idResDTO);
+    }
+
+    @Test
+    public void updateVidStatusTest() throws IdAuthenticationBusinessException {
+        String vid = "213131";
+        Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+        IdentityEntity entity = getEntity();
+        entity.setTransactionLimit(5);
+        Mockito.when(securityManager.hash(vid)).thenReturn(vid);
+        Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+        Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+        ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
     }
 
     private IdentityEntity getEntity(){
