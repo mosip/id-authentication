@@ -181,7 +181,7 @@ public class KycServiceImpl implements KycService {
 	private Map<String, Object> getNonMappedIdentityInfosForIdName(
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes, String idName) {
 		return getDynamicEntityInfoStream(filteredIdentityInfo, langCodes, idName)
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (val1, val2) -> val1));
 	}
 
 	private Map<String, Object> getMappedIdentityInfosForIdName(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
@@ -228,7 +228,7 @@ public class KycServiceImpl implements KycService {
 					}
 				})
 				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (val1, val2) -> val1));
 		return idMappingIdentityInfo;
 	}
 
