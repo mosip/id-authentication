@@ -89,10 +89,7 @@ public class KycServiceImpl implements KycService {
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		if (Objects.nonNull(identityInfo) && Objects.nonNull(allowedkycAttributes) && !allowedkycAttributes.isEmpty()) {
-			Optional<String> faceAttribute = allowedkycAttributes.stream()
-					.filter(key -> key.equalsIgnoreCase(IdAuthCommonConstants.PHOTO)
-							|| key.equalsIgnoreCase(CbeffDocType.FACE.getType().value()))
-					.findFirst();
+			Optional<String> faceAttribute = IdInfoHelper.getKycAttributeHasPhoto(allowedkycAttributes);
 			if(faceAttribute.isPresent()) {
 				Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 						null);

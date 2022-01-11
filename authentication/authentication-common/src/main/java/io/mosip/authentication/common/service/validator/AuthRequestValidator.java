@@ -553,7 +553,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
 			// First try parsing with biometric timestamp format
-			return DateUtils.parseToDate(timestamp, EnvUtil.getDateTimePattern());
+			return DateUtils.parseToDate(timestamp, EnvUtil.getBiometricDateTimePattern());
 		} catch (ParseException e) {
 			mosipLogger.debug(
 					"error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern",

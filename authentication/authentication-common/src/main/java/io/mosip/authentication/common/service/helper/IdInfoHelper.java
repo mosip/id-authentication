@@ -48,6 +48,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -860,8 +861,16 @@ public class IdInfoHelper {
 				&& isKycAttributeHasPhoto((KycAuthRequestDTO) authRequestDTO);
 	}
 
-	public boolean isKycAttributeHasPhoto(KycAuthRequestDTO authRequestDTO) {
-		return Optional.ofNullable(authRequestDTO.getAllowedKycAttributes()).orElse(List.of())
-				.contains(IdAuthCommonConstants.PHOTO);
+	public static boolean isKycAttributeHasPhoto(KycAuthRequestDTO authRequestDTO) {
+		return getKycAttributeHasPhoto(authRequestDTO.getAllowedKycAttributes()).isPresent();
+	}
+	
+	public static Optional<String> getKycAttributeHasPhoto(List<String> allowedKycAttributes) {
+		return Optional.ofNullable(allowedKycAttributes)
+				.stream()
+				.flatMap(List::stream)
+				.filter(elem -> elem.equalsIgnoreCase(IdAuthCommonConstants.PHOTO.toLowerCase())
+						|| elem.equalsIgnoreCase(CbeffDocType.FACE.getType().value().toLowerCase()))
+				.findAny();
 	}
 }

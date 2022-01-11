@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +24,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticationProfile;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.repository.AuthAnonymousProfileRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -31,6 +38,7 @@ import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPubl
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -79,7 +87,7 @@ public class AuthAnonymousProfileServiceImplTest {
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_YourOfBirthTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_YourOfBirthTest() throws IdAuthenticationBusinessException  {
 		List<IdentityInfoDTO> dobList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO dob = new IdentityInfoDTO();
 		dob.setLanguage("Eng");
@@ -94,11 +102,12 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_PreferredLangTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_PreferredLangTest() throws IdAuthenticationBusinessException  {
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage("eng");
@@ -113,33 +122,36 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getDynamicEntityInfoAsString(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(List.of("eng"), anonymousProfile.getPreferredLanguages());
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_GenderTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_GenderTest() throws IdAuthenticationBusinessException  {
 		List<IdentityInfoDTO> genderList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO gender = new IdentityInfoDTO();
-		gender.setLanguage("Eng");
-		gender.setValue("F");
+		gender.setLanguage("eng");
+		gender.setValue("Female");
 		genderList.add(gender);
 		idInfoMap.put("gender", genderList);
+		responseMetadata.put("IDENTITY_INFO", idInfoMap );
 		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("F");
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody,requestMetadata, responseMetadata, true, null);
+		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, null);
+		assertEquals("Female", anonymousProfile.getGender());
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_LocationTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_LocationTest() throws IdAuthenticationBusinessException  {
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
-		lang.setLanguage("eng");
-		lang.setValue("English");
+		lang.setLanguage(null);
+		lang.setValue("eng");
 		preferedLangList.add(lang);
 		idInfoMap.put("preferredLanguage", preferedLangList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
@@ -155,11 +167,12 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, JsonMappingException, JsonProcessingException  {
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage("eng");
@@ -188,11 +201,16 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(1, anonymousProfile.getBiometricInfo().size());
+		assertEquals("Iris", anonymousProfile.getBiometricInfo().get(0).getType());
+		assertEquals("LEFT", anonymousProfile.getBiometricInfo().get(0).getSubtype());
+		assertEquals("70", anonymousProfile.getBiometricInfo().get(0).getQualityScore());
+		assertEquals(digitalIdObj, mapper.readValue(anonymousProfile.getBiometricInfo().get(0).getDigitalId(), Map.class));
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_AuthFactorsTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileWith_AuthFactorsTest() throws IdAuthenticationBusinessException  {
 		AutnTxn authTxn = new AutnTxn();
 		authTxn.setAuthTypeCode("OTP-REQUEST,DEMO-AUTH,BIO-AUTH");
 		responseMetadata.put("AutnTxn",authTxn);
@@ -202,29 +220,53 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(3, anonymousProfile.getAuthFactors().size());
+		assertEquals(List.of("OTP-REQUEST","DEMO-AUTH","BIO-AUTH"), anonymousProfile.getAuthFactors());
+
 	}
 	
 	@Test
-	public void storeAnonymousProfileWith_PartnerTest() throws IdAuthenticationBusinessException  {
-		Map<String, Object> partner = new HashMap<>();
-		partner.put("partnerName", "SyncByte");
+	public void createAnonymousProfileWith_PartnerTest() throws IdAuthenticationBusinessException  {
+		PartnerDTO partner = new PartnerDTO();
+		partner.setPartnerName("SyncByte");
+		partner.setPartnerId("abc");
 		requestMetadata.put("partnerId", "abc");
 		requestMetadata.put("abc", partner);
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		assertEquals(partner.getPartnerName(), anonymousProfile.getPartnerName());
 	}
 	
 	
 	@Test
-	public void storeAnonymousProfileExceptionTest() throws IdAuthenticationBusinessException  {
+	public void createAnonymousProfileExceptionTest() throws IdAuthenticationBusinessException  {
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "false");
 		authResponse.put("authToken", "");
 		responseBody.put("response", authResponse);
 		
 		List<AuthError>  errorsList = new ArrayList<>();
-		errorsList.add(new AuthError("IDA-MLC-007",  "IDA-MLC-007"));
-		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, false, errorsList);
+		errorsList.add(new AuthError("IDA-MLC-007",  "error"));
+		errorsList.add(new AuthError("IDA-MLC-008",  "error1"));
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, false, errorsList);
+		assertEquals(List.of("IDA-MLC-007",  "IDA-MLC-008"), anonymousProfile.getErrorCode());
 	}
+	
+	@Test
+	public void test_storeAnonymouseProfileToDB() {
+		AnonymousAuthenticationProfile anonymouseProfile = Mockito.mock(AnonymousAuthenticationProfile.class);
+		ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "storeAnonymousProfile", anonymouseProfile);
+		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
+		verify(authAnonymousProfileRepository, times(1)).flush();
+	}
+	
+	@Test
+	public void test_storeAnonymouseProfile() {
+		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
+		verify(authAnonymousEventPublisher, times(1)).publishEvent(Mockito.any());
+		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
+		verify(authAnonymousProfileRepository, times(1)).flush();
+	}
+	
 
 }
