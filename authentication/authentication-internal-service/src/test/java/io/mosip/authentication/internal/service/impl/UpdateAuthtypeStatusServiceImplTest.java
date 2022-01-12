@@ -43,6 +43,7 @@ public class UpdateAuthtypeStatusServiceImplTest {
         String token = "11221122";
         ReflectionTestUtils.invokeMethod(updateAuthtypeStatusService, "putAuthTypeStatus", authtypeStatus, token);
 
+
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("unlockExpiryTimestamp", "2018-12-30T19:34:50.63");
         authtypeStatus.setMetadata(metadata);
