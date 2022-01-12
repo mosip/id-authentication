@@ -46,6 +46,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -92,12 +93,12 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
 			Map<String, Object> responseMetadata, boolean status, List<AuthError> errors) {
-		AnonymousAuthenticationProfile ananymousProfile = createAnanymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
-		storeAnanymousProfile(ananymousProfile);
+		AnonymousAuthenticationProfile ananymousProfile = createAnonymousProfile(requestBody, requestMetadata, responseMetadata, status, errors);
+		storeAnonymousProfile(ananymousProfile);
 		authAnonymousEventPublisher.publishEvent(ananymousProfile);
 	}
 
-	private void storeAnanymousProfile(AnonymousAuthenticationProfile ananymousProfile) {
+	private void storeAnonymousProfile(AnonymousAuthenticationProfile ananymousProfile) {
 		AnonymousProfileEntity authAnonymousProfileEntity = new AnonymousProfileEntity();
 		String id = UUID.randomUUID().toString();
 		authAnonymousProfileEntity.setId(id);
@@ -115,7 +116,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		authAnonymousProfileRepository.flush();
 	}
 
-	private AnonymousAuthenticationProfile createAnanymousProfile(Map<String, Object> requestBody,
+	private AnonymousAuthenticationProfile createAnonymousProfile(Map<String, Object> requestBody,
 			Map<String, Object> requestMetadata, Map<String, Object> responseMetadata, boolean status,
 			List<AuthError> errorCodes) {
 		AnonymousAuthenticationProfile ananymousProfile = new AnonymousAuthenticationProfile();
@@ -314,18 +315,15 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setPartnerName(Map<String, Object> requestMetadata, AnonymousAuthenticationProfile ananymousProfile) {
 		if(requestMetadata != null) {
 			Object partnerIdObj = requestMetadata.get("partnerId");
 			if(partnerIdObj instanceof String) {
 				String partnerId = (String) partnerIdObj;
 				Object partnerObj = requestMetadata.get(partnerId);
-				if(partnerObj instanceof Map) {
-					Object partnerNameObj = ((Map<String, Object>)partnerObj).get("partnerName");
-					if(partnerNameObj instanceof String) {
-						ananymousProfile.setPartnerName((String) partnerNameObj);
-					}
+				if(partnerObj instanceof PartnerDTO) {
+					String partnerNameObj = ((PartnerDTO)partnerObj).getPartnerName();
+					ananymousProfile.setPartnerName(partnerNameObj);
 				}
 			}
 		}
