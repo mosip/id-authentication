@@ -2131,10 +2131,6 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Boolean flag = authRequestValidator.nullCheckDigitalIdAndTimestamp(digitalId, errors, "param");
-//		Boolean flag = ReflectionTestUtils
-//		.invokeMethod(authRequestValidator, "nullCheckDigitalIdAndTimestamp",
-//				digitalId,errors, "param");
-//		assertTrue(errors.hasErrors());
 		assertFalse(flag);
 	}
 	
