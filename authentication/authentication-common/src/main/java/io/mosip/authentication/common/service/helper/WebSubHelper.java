@@ -136,7 +136,7 @@ public class WebSubHelper {
 	 * @param eventModel the event model
 	 */
 	@WithRetry
-	@Async
+	@Async("webSubHelperExecutor")
 	public <U> void publishEvent(String eventTopic, U eventModel) {
 		publisher.publishUpdate(eventTopic, eventModel, MediaType.APPLICATION_JSON_VALUE, null, publisherUrl);
 	}
