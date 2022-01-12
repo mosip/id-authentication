@@ -2,7 +2,6 @@ package io.mosip.authentication.internal.service.impl;
 
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +46,9 @@ public class UpdateAuthtypeStatusServiceImplTest {
         ReflectionTestUtils.invokeMethod(updateAuthtypeStatusService, "putAuthTypeStatus", authtypeStatus, token);
 
         Map<String, Object> metadata = new HashMap<>();
+        authtypeStatus.setMetadata(metadata);
+        ReflectionTestUtils.invokeMethod(updateAuthtypeStatusService, "putAuthTypeStatus", authtypeStatus, token);
+
         metadata.put("unlockExpiryTimestamp", "2018-12-30T19:34:50.63");
         authtypeStatus.setMetadata(metadata);
         ReflectionTestUtils.invokeMethod(updateAuthtypeStatusService, "putAuthTypeStatus", authtypeStatus, token);
