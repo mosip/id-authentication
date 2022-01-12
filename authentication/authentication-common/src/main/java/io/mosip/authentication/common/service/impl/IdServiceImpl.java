@@ -281,6 +281,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		Map<String, String> finalDataStr = new LinkedHashMap<>();
 		finalDataStr.putAll(plainData);
 		finalDataStr.putAll(decryptedData);
+		//FIXME added for debug
+		logger.debug("zk decrypted data: " + finalDataStr);
 		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(), 
 				entry -> {
 					Object valObject = entry.getValue();
