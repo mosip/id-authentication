@@ -128,7 +128,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Primary
 	public Executor executor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 4));
+	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 3));
 	    executor.setMaxPoolSize(EnvUtil.getActiveAsyncThreadCount());
 	    executor.setThreadNamePrefix("idauth-");
 	    executor.setWaitForTasksToCompleteOnShutdown(true);
@@ -140,7 +140,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Qualifier("webSubHelperExecutor")
 	public Executor webSubHelperExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 4));
+	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 3));
 	    executor.setMaxPoolSize(EnvUtil.getActiveAsyncThreadCount());
 	    executor.setThreadNamePrefix("idauth-websub-");
 	    executor.setWaitForTasksToCompleteOnShutdown(true);
@@ -152,7 +152,7 @@ public abstract class IdAuthConfig extends HibernateDaoConfig {
 	@Qualifier("fraudAnalysisExecutor")
 	public Executor fraudAnalysisExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 4));
+	    executor.setCorePoolSize(Math.floorDiv(EnvUtil.getActiveAsyncThreadCount(), 3));
 	    executor.setMaxPoolSize(EnvUtil.getActiveAsyncThreadCount());
 	    executor.setThreadNamePrefix("idauth-fraud-analysis-");
 	    executor.setWaitForTasksToCompleteOnShutdown(true);
