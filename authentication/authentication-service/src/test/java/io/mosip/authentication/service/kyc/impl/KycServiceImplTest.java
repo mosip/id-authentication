@@ -160,6 +160,24 @@ public class KycServiceImplTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void validdata_noPhoto() throws IOException {
+		try {
+			deleteBootStrapFile();
+			prepareMap(idInfo);
+			List<String> allowedKycList = limitedList_nophoto();
+			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
+			idInfo1.remove("face");
+			//Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Set<String> langCodes = new HashSet<>();
+			langCodes.add("ara");
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
+			assertTrue(mapper.readValue(k.getIdentity().getBytes(), Map.class).isEmpty());
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void validdata2() throws IOException {
@@ -387,6 +405,11 @@ public class KycServiceImplTest {
 
 	private List<String> limitedList() {
 		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,photo";
+		List<String> allowedKycList = Arrays.asList(s.split(","));
+		return allowedKycList;
+	}
+	private List<String> limitedList_nophoto() {
+		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode";
 		List<String> allowedKycList = Arrays.asList(s.split(","));
 		return allowedKycList;
 	}
@@ -645,6 +668,19 @@ public class KycServiceImplTest {
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("Face", "face image");
+		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+	}
+	
+	@Test
+	public void testGetKycInfo_photo_withPhotoNotInAllowedKycAttrib() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of();
+		
+		List<String> allowedkycAttributes = List.of();
+		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
+		Set<String> langCodes = Set.of("eng");
+		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
+		
+		Map<String, String> expected = Map.of();
 		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
 	}
 }

@@ -63,9 +63,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant REQUEST_REQUEST_TIME. */
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
-	/** The Constant AUTH_REQUEST. */
-	private static final String AUTH_REQUEST = "authRequest";
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
@@ -161,8 +158,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + REQUEST);
+			errors.rejectValue(REQUEST ,IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
@@ -553,7 +550,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
 			// First try parsing with biometric timestamp format
-			return DateUtils.parseToDate(timestamp, EnvUtil.getDateTimePattern());
+			return DateUtils.parseToDate(timestamp, EnvUtil.getBiometricDateTimePattern());
 		} catch (ParseException e) {
 			mosipLogger.debug(
 					"error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern",

@@ -17,6 +17,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUT
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_EMAIL_CONTENT_TEMPLATE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_EMAIL_SUBJECT_TEMPLATE;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_SMS_TEMPLATE;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.BIO_DATE_TIME_PATTERN;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.BIO_SEGMENT_TIME_DIFF_ALLOWED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DATE_TIME_PATTERN;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE;
@@ -77,6 +78,8 @@ import lombok.Setter;
 public class EnvUtil {
 
 	@Getter @Setter private static String  dateTimePattern;
+	
+	@Getter @Setter private static String  biometricDateTimePattern;
 
 	@Getter @Setter private static String  allowedAuthType;
 
@@ -188,6 +191,12 @@ public class EnvUtil {
 
 	@Getter @Setter private static String  internalAuthInternalBioRefId;
 	
+	@Getter @Setter private static Integer activeAsyncThreadCount;
+	
+	@Getter @Setter private static String monitorAsyncThreadQueue;
+	
+	@Getter @Setter private static Integer asyncThreadQueueThreshold;
+	
 	@Autowired
 	private Environment env;
 
@@ -197,6 +206,7 @@ public class EnvUtil {
 		setIsFmrEnabled(this.getProperty(MOSIP_FMR_ENABLED, boolean.class, false));
 		setAuditDefaultHostName(this.getProperty(AUDIT_DEFAULT_HOST_NAME, DEFAULT_HOST_NAME));
 		setDateTimePattern(this.getProperty(DATE_TIME_PATTERN));
+		setBiometricDateTimePattern(this.getProperty(BIO_DATE_TIME_PATTERN));
 		setAllowedAuthType(this.getProperty(ALLOWED_AUTH_TYPE));
 		setAllowedIdTypes(this.getProperty(MOSIP_IDTYPE_ALLOWED));
 		setInternalAllowedAuthType(this.getProperty(INTERNAL_ALLOWED_AUTH_TYPE));
@@ -254,6 +264,9 @@ public class EnvUtil {
 		setInternalAuthTrustValidationRequired(this.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false));
 		setInternalAuthInternalRefId(this.getProperty(INTERNAL_REFERENCE_ID));
 		setInternalAuthInternalBioRefId(this.getProperty(INTERNAL_BIO_REFERENCE_ID));
+		setActiveAsyncThreadCount(this.getProperty("mosip.ida.active-async-thread-count", Integer.class));
+		setMonitorAsyncThreadQueue(this.getProperty("mosip.ida.monitor-thread-queue-in-ms"));
+		setAsyncThreadQueueThreshold(this.getProperty("mosip.ida.max-thread-queue-threshold", Integer.class, 0));
 	}
 	
 	public String getProperty(String key) {
