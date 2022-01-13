@@ -191,6 +191,12 @@ public class EnvUtil {
 
 	@Getter @Setter private static String  internalAuthInternalBioRefId;
 	
+	@Getter @Setter private static Integer activeAsyncThreadCount;
+	
+	@Getter @Setter private static String monitorAsyncThreadQueue;
+	
+	@Getter @Setter private static Integer asyncThreadQueueThreshold;
+	
 	@Autowired
 	private Environment env;
 
@@ -258,6 +264,9 @@ public class EnvUtil {
 		setInternalAuthTrustValidationRequired(this.getProperty("mosip.ida.internal.trust-validation-required", Boolean.class, false));
 		setInternalAuthInternalRefId(this.getProperty(INTERNAL_REFERENCE_ID));
 		setInternalAuthInternalBioRefId(this.getProperty(INTERNAL_BIO_REFERENCE_ID));
+		setActiveAsyncThreadCount(this.getProperty("mosip.ida.active-async-thread-count", Integer.class));
+		setMonitorAsyncThreadQueue(this.getProperty("mosip.ida.monitor-thread-queue-in-ms"));
+		setAsyncThreadQueueThreshold(this.getProperty("mosip.ida.max-thread-queue-threshold", Integer.class, 0));
 	}
 	
 	public String getProperty(String key) {

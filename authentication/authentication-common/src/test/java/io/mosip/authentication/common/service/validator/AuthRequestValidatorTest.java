@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -124,7 +125,22 @@ public class AuthRequestValidatorTest {
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
 	}
+	
+	@Test
+	public void testFingerprintcount() {
+		int afc = 10;
+		int fc = authRequestValidator.getMaxFingerCount();
+		assertSame(afc,fc);
+	}
 
+	@Test
+	public void testValidEmpty() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(null, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
 	@Test
 	public void testValidUin() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -2052,5 +2068,80 @@ public class AuthRequestValidatorTest {
 		}
 	}
 	
+	@Test
+	public void testValidateBiometrics() {
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validateBiometrics(biometrics,"abpnx", errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testvalidateBioTxnIdEmptyBioTxnId() {
+		String BioTxnId = "";
+		String authTxnId = "Random";
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		int index = 100;
+		ReflectionTestUtils
+		.invokeMethod(authRequestValidator, "validateBioTxnId",
+				authTxnId,errors, index, BioTxnId);
+		assertTrue(errors.hasErrors());
+		
+	}
+	@Test
+	public void testvalidateBioTxnId() throws IdAuthenticationBusinessException {
+		String BioTxnId = "Something";
+		String authTxnId = "Random";
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		int index = 100;
+		ReflectionTestUtils
+		.invokeMethod(authRequestValidator, "validateBioTxnId",
+				authTxnId,errors, index, BioTxnId);
+		assertTrue(errors.hasErrors());
+		
+	}
+	
+	
+	@Test
+	public void testnullCheckOnBioTimestampAndDigitalIdTimestamp() {
+		DataDTO data = new DataDTO();
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils
+		.invokeMethod(authRequestValidator, "nullCheckOnBioTimestampAndDigitalIdTimestamp",
+				errors,101,data, "param");
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testnullCheckDigitalIdAndTimestamp() {
+		DigitalId digitalId =  new DigitalId();
+		digitalId.setSerialNo("");
+		digitalId.setMake("");
+		digitalId.setModel("");
+		digitalId.setDeviceProvider("");
+		digitalId.setDeviceProviderId("");
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		Boolean flag = authRequestValidator.nullCheckDigitalIdAndTimestamp(digitalId, errors, "param");
+		assertFalse(flag);
+	}
+	
+	@Test
+	public void testnullCheckDigitalIdAndTimestampNull() {
+		DigitalId digitalId =  new DigitalId();
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		Boolean flag = authRequestValidator.nullCheckDigitalIdAndTimestamp(null, errors, "param");
+		assertFalse(flag);
+		assertTrue(errors.hasErrors());
+	}
 	
 }
