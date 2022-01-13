@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.websub;
 
+import java.util.Objects;
+
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,7 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	@Autowired
 	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
 
-	@Autowired
+	@Autowired(required=false)
 	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
 
 	@Autowired
@@ -53,7 +55,8 @@ public final class IdAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	protected int doRegisterTopics() {
 		//webSubHelper.initRegistrar(masterDataUpdateEventInitializer, this::isCacheEnabled);
 		//webSubHelper.initRegistrar(partnerCACertEventInitializer);
-		webSubHelper.initRegistrar(fraudEventPublisher);
+		if(Objects.nonNull(fraudEventPublisher))
+			webSubHelper.initRegistrar(fraudEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
 		webSubHelper.initRegistrar(authAnonymousEventPublisher);
 		return HttpStatus.SC_OK;

@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -15,7 +15,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 public class AuthTransactionBuilderTest {
 	
 	@Autowired
-	Environment env;
+	EnvUtil env;
 	
 	@Mock
 	IdInfoFetcher idInfoFetcher;

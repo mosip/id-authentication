@@ -22,8 +22,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -38,6 +38,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -58,13 +59,14 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Import(EnvUtil.class)
 public class AuthTransactionHelperTest {
 
 	@Mock
 	private IdaUinHashSaltRepo uinHashSaltRepo;
 	
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 	
 	@Mock
 	private IdAuthSecurityManager securityManager;
@@ -93,9 +95,9 @@ public class AuthTransactionHelperTest {
 		baseRequestDTO.setTransactionID("12345");
 		baseRequestDTO.setVersion("v1");
 		mockenv = new MockEnvironment();
-		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		ReflectionTestUtils.setField(authTransactionHelper, "env", mockenv);
+		mockenv.merge(((AbstractEnvironment) env.getEnvironment()));
+		ReflectionTestUtils.setField(authTransactionHelper, "env", env);
 		baseRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(mockenv.getProperty("datetime.pattern"))).toString());
 		
@@ -180,7 +182,7 @@ public class AuthTransactionHelperTest {
 		otpChannel.add("email");
 		otpChannel.add("mobile");
 		otpRequestDTO.setOtpChannel(otpChannel);
-		otpRequestDTO.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDTO.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
 		otpRequestDTO.setVersion("1.0");
 		Set<RequestType> set = new HashSet<>();
 		set.add(RequestType.OTP_REQUEST);

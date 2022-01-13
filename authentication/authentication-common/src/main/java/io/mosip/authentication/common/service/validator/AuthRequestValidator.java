@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -63,9 +63,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant REQUEST_REQUEST_TIME. */
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
-	/** The Constant AUTH_REQUEST. */
-	private static final String AUTH_REQUEST = "authRequest";
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
@@ -81,9 +78,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	
 	@PostConstruct
 	public void initialize() {
-		allowedEnvironments = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_ENVIRONMENTS).split((",")))
+		allowedEnvironments = Arrays.stream(EnvUtil.getAllowedEnv().split((",")))
 				.map(String::trim).collect(Collectors.toList());
-		allowedDomainUris = Arrays.stream(env.getProperty(IdAuthConfigKeyConstants.ALLOWED_DOMAIN_URIS).split((",")))
+		allowedDomainUris = Arrays.stream(EnvUtil.getAllowedDomainUri().split((",")))
 				.map(String::trim).collect(Collectors.toList());
 	}
 
@@ -161,8 +158,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
-					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + REQUEST);
+			errors.rejectValue(REQUEST ,IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
@@ -202,7 +199,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					this.biometricTimestampParser((biometrics.get(index - 1).getData().getTimestamp())));
 			long bioTimestampDiffInSeconds = Duration.between(previousIndexDateTime, currentIndexDateTime).toSeconds();
 			
-			Long allowedTimeDiffInSeconds = env.getProperty(IdAuthConfigKeyConstants.BIO_SEGMENT_TIME_DIFF_ALLOWED, Long.class, 120L);
+			Long allowedTimeDiffInSeconds = EnvUtil.getBioSegmentTimeDiffAllowed();
 			if (bioTimestampDiffInSeconds < 0 || bioTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 						IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP);
@@ -553,7 +550,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
 			// First try parsing with biometric timestamp format
-			return DateUtils.parseToDate(timestamp, env.getProperty(IdAuthConfigKeyConstants.BIO_DATE_TIME_PATTERN));
+			return DateUtils.parseToDate(timestamp, EnvUtil.getBiometricDateTimePattern());
 		} catch (ParseException e) {
 			mosipLogger.debug(
 					"error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern",

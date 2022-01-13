@@ -23,7 +23,7 @@ public class CredentialIssueEventValidatorTest {
 //	private VidValidatorImpl vidValidator;
 //	
 //	@Autowired
-//	Environment env;
+//	EnvPropertyResolver env;
 //	
 //	@InjectMocks
 //	CredentialIssueEventValidator validator;

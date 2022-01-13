@@ -22,13 +22,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -70,10 +69,6 @@ public abstract class IdAuthValidator implements Validator {
 	@Autowired
 	IdValidationUtil idValidator;
 	
-
-	/** The env. */
-	@Autowired
-	protected Environment env;
 
 	/**
 	 * Validate id - check whether id is null or not.
@@ -214,8 +209,7 @@ public abstract class IdAuthValidator implements Validator {
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, plusAdjustmentTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS, Long.class);
+			Long reqDateMaxTimeLong = EnvUtil.getAuthRequestReceivedTimeAllowedInSeconds();
 			String message;
 			if (paramName == null) {
 				message = IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage();
@@ -246,21 +240,12 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the adjustment time
 	 */
 	private Date getAdjustmentTime(LocalDateTime originalLdt, BiFunction<LocalDateTime, Long, LocalDateTime> adjustmentFunc) {
-		long adjustmentSeconds = getRequestTimeAdjustmentSeconds();
+		long adjustmentSeconds = EnvUtil.getRequestTimeAdjustmentSeconds();
 		LocalDateTime ldt = adjustmentFunc.apply(originalLdt, adjustmentSeconds);
 		Date plusAdjustmentTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
 		return plusAdjustmentTime;
 	}
 
-	/**
-	 * Gets the request time adjustment seconds.
-	 *
-	 * @return the request time adjustment seconds
-	 */
-	private Long getRequestTimeAdjustmentSeconds() {
-		return env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ADJUSTMENT_IN_SECONDS, Long.class, IdAuthCommonConstants.DEFAULT_REQUEST_TIME_ADJUSTMENT_SECONDS);
-	}
-	
 	/**
 	 * Validate request timed out.
 	 *
@@ -286,9 +271,8 @@ public abstract class IdAuthValidator implements Validator {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			Long reqDateMaxTimeLong = env
-					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_SECONDS, Long.class);
-			Long adjustmentSeconds = getRequestTimeAdjustmentSeconds();
+			Long reqDateMaxTimeLong = EnvUtil.getAuthRequestReceivedTimeAllowedInSeconds();
+			Long adjustmentSeconds = EnvUtil.getRequestTimeAdjustmentSeconds();
 			Instant maxAllowedEarlyInstant = now.minus(reqDateMaxTimeLong + adjustmentSeconds, ChronoUnit.SECONDS);
 			if (reqTimeInstance.isBefore(maxAllowedEarlyInstant)) {
 				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -407,8 +391,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the allowed id types
 	 */
 	protected Set<String> getAllowedIdTypes() {
-		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
-		return Stream.of(allowedIdTypes.split(","))
+		return Stream.of(getAllowedIdTypesConfigVal().split(","))
 				.map(String::trim)
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
@@ -430,8 +413,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the sets the
 	 */
 	private Set<String> getAllowedAuthTypes(String configKey) {
-		String intAllowedAuthType = env.getProperty(configKey);
-		return Stream.of(intAllowedAuthType.split(","))
+		return Stream.of(configKey.split(","))
 				.map(String::trim)
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
@@ -443,7 +425,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @return the allowedAuthType
 	 */
 	protected String getAllowedAuthTypeProperty() {
-		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
+		return EnvUtil.getAllowedAuthType();
 	}
 
 	/**
@@ -451,8 +433,8 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @return the allowed id types config key
 	 */
-	protected String getAllowedIdTypesConfigKey() {
-		return IdAuthConfigKeyConstants.MOSIP_IDTYPE_ALLOWED;
+	protected String getAllowedIdTypesConfigVal() {
+		return EnvUtil.getAllowedIdTypes();
 	}
 
 	/**
@@ -495,8 +477,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @throws ParseException the parse exception
 	 */
 	protected Date requestTimeParser(String reqTime) throws ParseException {
-		return DateUtils.parseToDate(reqTime,
-				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		return DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern());
 	}
 
 }

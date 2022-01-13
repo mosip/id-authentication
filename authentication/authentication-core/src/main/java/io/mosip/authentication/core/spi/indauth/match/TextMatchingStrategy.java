@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE;
+
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -15,8 +17,8 @@ import io.mosip.authentication.core.util.DemoNormalizer;
 public interface TextMatchingStrategy extends MatchingStrategy {
 
 	public default int match(Map<String, String> reqValues, Map<String, String> entityValues, Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
-		String reqInfo = reqValues.values().stream().collect(Collectors.joining(" "));
-		String entityInfo = entityValues.values().stream().collect(Collectors.joining(" "));
+		String reqInfo = reqValues.values().stream().collect(Collectors.joining(DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE));
+		String entityInfo = entityValues.values().stream().collect(Collectors.joining(DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE));
 		return  getMatchFunction().match(reqInfo, entityInfo, matchProperties);
 	}
 	

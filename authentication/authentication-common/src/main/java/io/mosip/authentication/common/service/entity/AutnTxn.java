@@ -46,12 +46,12 @@ public class AutnTxn {
 	private String authTypeCode;
 
 	@NotNull
-	@Size(max = 16)
+	@Size(max = 36)
 	@Column(name = "status_code")
 	private String statusCode;
 
 	@NotNull
-	@Size(max = 256)
+	@Size(max = 1024)
 	@Column(name = "status_comment")
 	private String statusComment;
 	

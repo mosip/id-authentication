@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -41,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -78,7 +78,7 @@ public abstract class BaseIDAFilter implements Filter {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(VERSION_REGEX);
 
 	/** The env. */
-	protected Environment env;
+	protected EnvUtil env;
 
 	/** The mapper. */
 	protected ObjectMapper mapper;
@@ -102,7 +102,7 @@ public abstract class BaseIDAFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		env = context.getBean(Environment.class);
+		env = context.getBean(EnvUtil.class);
 		mapper = context.getBean(ObjectMapper.class);
 		keyManager = context.getBean(KeyManager.class);
 		fraudEventManager = context.getBean(IdAuthFraudAnalysisEventManager.class);
@@ -232,7 +232,7 @@ public abstract class BaseIDAFilter implements Filter {
 		try {
 			if (isSigningRequired()) {
 				responseSignature = keyManager.signResponse(responseAsString);
-				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE),
+				responseWrapper.setHeader(EnvUtil.getSignResponse(),
 						responseSignature);
 			}
 		} catch (IdAuthenticationAppException e) {
@@ -300,7 +300,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param actualRequestTime
 	 */
 	private void logTime(String timeInTheAllowedPattern, String type, Temporal actualRequestTime) {
-		String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
+		String dateTimePattern = EnvUtil.getDateTimePattern();
 		if (timeInTheAllowedPattern == null || timeInTheAllowedPattern.isEmpty()) {
 			timeInTheAllowedPattern = IdaRequestResponsConsumerUtil.getResponseTime(null, dateTimePattern);
 		}
@@ -464,7 +464,7 @@ public abstract class BaseIDAFilter implements Filter {
 			String responseSignature = null;
 			if(isSigningRequired()) {
 				responseSignature = keyManager.signResponse(responseAsString);
-				responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), responseSignature);
+				responseWrapper.setHeader(EnvUtil.getSignResponse(), responseSignature);
 			}
 			if(needStoreAuthTransaction()) {
 				requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
@@ -516,7 +516,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected boolean isDate(String date) {
 		try {
-			DateUtils.parseToDate(date, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+			DateUtils.parseToDate(date, EnvUtil.getDateTimePattern());
 			return true;
 		} catch (ParseException e) {
 			mosipLogger.warn("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));

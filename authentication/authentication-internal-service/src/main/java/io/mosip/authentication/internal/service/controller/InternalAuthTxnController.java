@@ -7,12 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -47,6 +43,7 @@ import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -82,7 +79,7 @@ public class InternalAuthTxnController {
 	}
 
 	@Autowired
-	Environment environment;
+	EnvUtil environment;
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
@@ -158,9 +155,9 @@ public class InternalAuthTxnController {
 	private String getResponseTime() {
 		return DateUtils.formatDate(
 				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
-						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
+						EnvUtil.getDateTimePattern(),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
-				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
+				EnvUtil.getDateTimePattern(),
 				TimeZone.getTimeZone(ZoneOffset.UTC));
 	}
 

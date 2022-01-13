@@ -10,10 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.kernel.websub.api.exception.WebSubClientException;
 
@@ -36,7 +36,7 @@ public class BaseWebSubEventsInitializerTest {
 	
 	/** The env. */
 	@Mock
-	protected Environment env;
+	protected EnvUtil env;
 	
 	@Mock
 	protected WebSubHelper webSubHelper;

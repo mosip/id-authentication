@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,8 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -67,7 +66,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	private IDAMappingConfig idaMappingConfig;
 	
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -123,7 +122,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
 			throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
-		map.put("value", authReq.getIndividualId() + env.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER)
+		map.put("value", authReq.getIndividualId() + EnvUtil.getKeySplitter()
 				+ authReq.getTransactionID());
 		return map;
 	}

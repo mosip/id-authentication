@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -45,6 +46,7 @@ import io.mosip.kernel.crypto.jce.core.CryptoCore;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, CryptoCore.class })
+@Import(EnvUtil.class)
 public class BaseAuthFilterTest {
 
 	private final class ServletInputStreamExtension extends ServletInputStream {
@@ -76,7 +78,7 @@ public class BaseAuthFilterTest {
 	}
 
 	@Autowired
-	Environment env;
+	EnvUtil env;
 	
 	@Mock
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
@@ -153,7 +155,7 @@ public class BaseAuthFilterTest {
 	public void testInit() throws Exception {
 		FilterConfig mockFilterConfig = Mockito.mock(FilterConfig.class);
 		Mockito.when(mockFilterConfig.getServletContext()).thenReturn(sc);
-		when(wac.getBean(Environment.class)).thenReturn(env);
+		when(wac.getBean(EnvUtil.class)).thenReturn(env);
 		when(wac.getBean(ObjectMapper.class)).thenReturn(mapper);
 		when(sc.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE)).thenReturn(wac);
 		ReflectionTestUtils.invokeMethod(baseAuthFilter, "init", mockFilterConfig);
@@ -301,7 +303,8 @@ public class BaseAuthFilterTest {
 		mockenv.setProperty("mosip.ida.api.ids.auth", "mosip.identity.auth");
 		mockenv.setProperty("mosip.jws.certificate.algo", "RS256");
 		mockenv.setProperty("mosip.jws.certificate.type", "X.509");
-		ReflectionTestUtils.setField(baseAuthFilter, "env", mockenv);
+		env.merge(mockenv);
+		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
 		ByteArrayInputStream bais = new ByteArrayInputStream(req.getBytes());
 		ServletInputStream servletInputStream = new ServletInputStream() {
@@ -348,7 +351,8 @@ public class BaseAuthFilterTest {
 		mockenv.setProperty("mosip.ida.api.ids.auth", "mosip.identity.auth");
 		mockenv.setProperty("mosip.jws.certificate.algo", "RS257");
 		mockenv.setProperty("mosip.jws.certificate.type", "X.509");
-		ReflectionTestUtils.setField(baseAuthFilter, "env", mockenv);
+		env.merge(mockenv);
+		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
 		ByteArrayInputStream bais = new ByteArrayInputStream(req.getBytes());
 		ServletInputStream servletInputStream = new ServletInputStream() {
@@ -395,7 +399,8 @@ public class BaseAuthFilterTest {
 		mockenv.setProperty("mosip.ida.api.ids.auth", "mosip.identity.auth");
 		mockenv.setProperty("mosip.jws.certificate.algo", "RS257");
 		mockenv.setProperty("mosip.jws.certificate.type", "X.509");
-		ReflectionTestUtils.setField(baseAuthFilter, "env", mockenv);
+		env.merge(mockenv);
+		ReflectionTestUtils.setField(baseAuthFilter, "env", env);
 		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
 		ByteArrayInputStream bais = new ByteArrayInputStream(req.getBytes());
 		ServletInputStream servletInputStream = new ServletInputStream() {

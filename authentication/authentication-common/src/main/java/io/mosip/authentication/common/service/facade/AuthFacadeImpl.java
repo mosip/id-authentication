@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
@@ -32,12 +31,12 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -92,9 +91,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private AuditHelper auditHelper;
 
-	/** The Environment */
+	/** The EnvPropertyResolver */
 	@Autowired
-	private Environment env;
+	private EnvUtil env;
 
 	/** The Demo Auth Service */
 	@Autowired
@@ -167,7 +166,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
 		String authTokenId = null;
-		Boolean authTokenRequired = env.getProperty(IdAuthConfigKeyConstants.RESPONSE_TOKEN_ENABLE, Boolean.class);
+		Boolean authTokenRequired = EnvUtil.getAuthTokenRequired();
 
 		AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata()
 				.get(AuthTransactionBuilder.class.getSimpleName());
@@ -215,7 +214,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
 
-			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+			logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
 					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
 		}
 
@@ -340,7 +339,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				saveAndAuditBioAuthTxn(authRequestDTO, token, idType, isStatus, authTokenId, !isAuth, partnerId,
 						authTxnBuilder);
 			} finally {
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+				logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
 						AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
 			}
 
@@ -381,7 +380,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			} finally {
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+				logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
 						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 				authTxnBuilder.addRequestType(RequestType.DEMO_AUTH);
 			}
@@ -418,7 +417,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						idType, "authenticateApplicant status : " + isStatus);
 			} finally {
 				boolean isStatus = otpValidationStatus != null && otpValidationStatus.isStatus();
-				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
+				logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
 				authTxnBuilder.addRequestType(RequestType.OTP_AUTH);
 			}

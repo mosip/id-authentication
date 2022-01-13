@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -34,13 +31,18 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.common.service.repository.OtpTxnRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
@@ -50,10 +52,12 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = OTPManagerTest.class)
+@WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@Ignore
 public class OTPManagerTest {
+
+	@InjectMocks
+	private OTPManager otpManager;
 
 	@Mock
 	private RestRequestFactory restRequestFactory;
@@ -63,32 +67,38 @@ public class OTPManagerTest {
 
 	private OtpGeneratorRequestDto otpGeneratorRequestDto;
 
-	@Autowired
-	Environment environment;
+	@Mock
+	EnvUtil environment;
 
 	@Mock
 	private RestHelper restHelper;
 
-	@Autowired
-	private Environment env;
+	@Mock
+	private EnvUtil env;
 
 	@Mock
 	RestServiceException e;
 
-	@InjectMocks
-	private OTPManager otpManager;
-	
+	@Mock
+	private OtpTxnRepository otpRepo;
+
+	@Mock
+	private IdAuthSecurityManager securityManager;
+
+	@Mock
+	private NotificationService notificationService;
+
+	private int otpExpiryTime;
+
 	List<String> templateLanguages = new ArrayList<>();
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(otpManager, "environment", environment);
-		ReflectionTestUtils.setField(auditFactory, "env", environment);		
+		ReflectionTestUtils.setField(env, "otpExpiryTime", 12);
 		templateLanguages.add("eng");
 		templateLanguages.add("ara");
-
-
 	}
 
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
@@ -99,7 +109,7 @@ public class OTPManagerTest {
 
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void otpTest() throws RestServiceException, IdAuthenticationBusinessException {
+	public void sendOtpTest() throws RestServiceException, IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = getOtpGeneratorRequestDto();
 		ResponseWrapper<Map> otpGeneratorResponsetDto = new ResponseWrapper<>();
 		Map<String, Object> response = new HashMap<>();
@@ -113,10 +123,11 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
-
+		boolean sendOtpResponse = otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
+		assertEquals(sendOtpResponse, true);
 	}
 
+	@Ignore
 	@Test
 	public void TestPhoneNumberNotRegistered() throws RestServiceException, IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = getOtpGeneratorRequestDto();
@@ -133,8 +144,8 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -147,6 +158,7 @@ public class OTPManagerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void TestEmailNotRegistered() throws RestServiceException, IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = getOtpGeneratorRequestDto();
@@ -163,8 +175,8 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -177,6 +189,7 @@ public class OTPManagerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void TestEmailandPhoneNotRegistered() throws RestServiceException, IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = getOtpGeneratorRequestDto();
@@ -193,8 +206,8 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -270,15 +283,16 @@ public class OTPManagerTest {
 
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestRestServiceException() throws RestServiceException, IdAuthenticationBusinessException,
-			JsonProcessingException, com.fasterxml.jackson.core.JsonProcessingException {
+	public void TestRestServiceException() throws IdAuthenticationBusinessException, JsonProcessingException,
+			com.fasterxml.jackson.core.JsonProcessingException, RestServiceException {
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", "failure");
 		response.put("message", "OTP_EXPIRED");
 		Map<String, Object> response1 = new HashMap<>();
 		response1.put("response", response);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -288,11 +302,12 @@ public class OTPManagerTest {
 
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valuemap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valuemap));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valuemap));
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test
 	public void TestOtpAuth() throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
 		Map<String, Object> response = new HashMap<>();
@@ -300,7 +315,7 @@ public class OTPManagerTest {
 		response.put("message", "VALIDATION_SUCCESSFUL");
 		Map<String, Object> response1 = new HashMap<>();
 		response1.put("response", response);
-		
+
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -312,7 +327,7 @@ public class OTPManagerTest {
 	@Test
 	public void TestOtpAuthFailure()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
-		
+
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -324,6 +339,7 @@ public class OTPManagerTest {
 		assertFalse(expactedOTP);
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestRestServiceExceptionwithInvalid() throws RestServiceException, IdAuthenticationBusinessException,
 			JsonProcessingException, com.fasterxml.jackson.core.JsonProcessingException {
@@ -332,17 +348,18 @@ public class OTPManagerTest {
 		valueMap.put("status", "failure");
 		valueMap.put("message", "VALIDATION_UNSUCCESSFUL");
 		response.put("response", valueMap);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestRestServiceExceptionwithInvalidUnknownMessage()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException,
@@ -352,22 +369,23 @@ public class OTPManagerTest {
 		valueMap.put("status", "failure");
 		valueMap.put("message", "VALIDATION_UNSUCCESSFUL");
 		response.put("response", valueMap);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestRestServiceExceptionwithInvalidWithoutStatus()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException,
 			com.fasterxml.jackson.core.JsonProcessingException {
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> responseMap = new HashMap<>();
 		Map<String, Object> response = new HashMap<>();
@@ -378,15 +396,16 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, responseMap));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, responseMap));
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestRestServiceExceptionwithInvalidWithoutStatusWithOTPNOTGENERATEDError()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
-		
+
 		Map<String, Object> valuemap = new HashMap<>();
 		valuemap.put("status", "failure");
 		valuemap.put("message", "VALIDATION_UNSUCCESSFUL");
@@ -396,16 +415,17 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		RestServiceException restServiceException = new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, output, responseMap);
+		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output,
+				responseMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestRestServiceExceptionwithInvalidWithoutStatusWithSOMEOTHERERRORDError()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
-		
+
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", "failure");
 		response.put("message", "VALIDATION_UNSUCCESSFUL");
@@ -415,12 +435,13 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		RestServiceException restServiceException = new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, output, responseMap);
+		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output,
+				responseMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestDataValidationException() throws IdAuthenticationBusinessException {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
@@ -428,7 +449,7 @@ public class OTPManagerTest {
 		otpManager.validateOtp("Test123", "123456");
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthUncheckedException.class)
 	public void TestGenerateOtpDataValidationException() throws IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
@@ -458,9 +479,8 @@ public class OTPManagerTest {
 		response.setStatus("failure");
 		response.setMessage(USER_BLOCKED);
 		otpGeneratorResponsedto.setResponse(response);
-		RestServiceException restServiceException = new RestServiceException(
-				IdRepoErrorConstants.CLIENT_ERROR, otpGeneratorResponsedto.toString(),
-				otpGeneratorResponsedto);
+		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
+				otpGeneratorResponsedto.toString(), otpGeneratorResponsedto);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -469,6 +489,7 @@ public class OTPManagerTest {
 		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap, templateLanguages);
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testValidateOTP_ThrowRestServiceExceptionWith_StatusFailureAndMessageUSER_BLOCKED()
 			throws JsonProcessingException, RestServiceException, IdAuthenticationBusinessException,
@@ -480,18 +501,18 @@ public class OTPManagerTest {
 		response.put("message", "USER_BLOCKED");
 		valueMap.put("response", response);
 
-		
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
-				new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valueMap));
+		Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valueMap));
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestResponseBodyisEmpty() throws RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -507,7 +528,8 @@ public class OTPManagerTest {
 	}
 
 	@Test
-	public void TestThrowOtpException_UINLocked() throws RestServiceException, IdAuthenticationBusinessException {
+	public void TestThrowOtpException_UINLocked()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -569,6 +591,7 @@ public class OTPManagerTest {
 		}
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestThrowOtpException_ValidationUnsuccessful_Invalid()
 			throws RestServiceException, IdAuthenticationBusinessException {
@@ -585,6 +608,7 @@ public class OTPManagerTest {
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestthrowOTPException() throws Throwable {
 		try {
@@ -595,6 +619,7 @@ public class OTPManagerTest {
 
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestThrowKeynotFound() throws RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -610,6 +635,7 @@ public class OTPManagerTest {
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestthrowKeyNotFoundException() throws IdAuthenticationBusinessException, RestServiceException {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -625,6 +651,7 @@ public class OTPManagerTest {
 		otpManager.validateOtp("Test123", "123456");
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestIDDataValidationException() throws RestServiceException, IdAuthenticationBusinessException {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
@@ -640,6 +667,7 @@ public class OTPManagerTest {
 
 	}
 
+	@Ignore
 	@SuppressWarnings("rawtypes")
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestUserBlocked() throws RestServiceException, IdAuthenticationBusinessException {
@@ -660,7 +688,7 @@ public class OTPManagerTest {
 		otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthUncheckedException.class)
 	public void TestInvalidGenerateOtp() throws RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
@@ -674,6 +702,7 @@ public class OTPManagerTest {
 		otpManager.sendOtp(otpRequestDTO, "Test123", "UIN", valueMap, templateLanguages);
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestThrowOtpKeyException() throws RestServiceException, IdAuthenticationBusinessException,
 			JsonProcessingException, com.fasterxml.jackson.core.JsonProcessingException {
@@ -686,9 +715,8 @@ public class OTPManagerTest {
 		errorMap.put("errorCode", "KER-OTV-005");
 		errorList.add(errorMap);
 		valueMap.put("errors", (Object) errorList);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
-				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
-						new ObjectMapper().writeValueAsString(valueMap), valueMap));
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+				IdRepoErrorConstants.CLIENT_ERROR, new ObjectMapper().writeValueAsString(valueMap), valueMap));
 		otpManager.validateOtp("Test123", "123456");
 
 	}
@@ -702,7 +730,7 @@ public class OTPManagerTest {
 		otpChannel.add("mobile");
 		otpChannel.add("email");
 		otpRequestDTO.setOtpChannel(otpChannel);
-		otpRequestDTO.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDTO.setRequestTime(LocalDateTime.now().toString());
 		return otpRequestDTO;
 	}
 
