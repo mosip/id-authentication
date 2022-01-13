@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service.controller;
 
+import java.sql.Ref;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +83,9 @@ public class InternalAuthControllerTest {
 
 	@Mock
 	private RestHelper restHelper;
+
+	@Mock
+	private IdTypeUtil idTypeUtil;
 	
 	@Autowired
 	EnvUtil env;	
@@ -109,6 +114,7 @@ public class InternalAuthControllerTest {
 	public void before() {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
+		ReflectionTestUtils.setField(authController, "idTypeUtil", idTypeUtil);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
 		ReflectionTestUtils.setField(authfacade, "env", env);
 		
@@ -142,7 +148,8 @@ public class InternalAuthControllerTest {
 	public void auhtenticationTspSuccess()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+
+	 	authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
@@ -152,8 +159,8 @@ public class InternalAuthControllerTest {
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenReturn(authResponseDTO);
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
-
-		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+		TestHttpServletRequest request = new TestHttpServletRequest();
+		authController.authenticate(authReqestDTO, error, request);
 	}
 
 	@Test
@@ -161,7 +168,6 @@ public class InternalAuthControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		List<AuthError> errors = new ArrayList<>();
 		authResponseDTO.setErrors(errors);
 		ResponseDTO response = new ResponseDTO();
@@ -171,7 +177,14 @@ public class InternalAuthControllerTest {
 				.thenReturn(authResponseDTO);
 //		Mockito.when(authfacade.authenticateIndividual(authReqestDTO, false, InternalAuthController.DEFAULT_PARTNER_ID))
 //				.thenReturn(new AuthResponseDTO());
-		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+		TestHttpServletRequest request = new TestHttpServletRequest();
+		authReqestDTO.setIndividualIdType(null);
+		authReqestDTO.setIndividualId("1122");
+		Mockito.when(idTypeUtil.getIdType("1122")).thenReturn(IdType.UIN);
+		authController.authenticate(authReqestDTO, error, request);
+
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		authController.authenticate(authReqestDTO, error, request);
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -293,9 +306,16 @@ public class InternalAuthControllerTest {
 	@Test
 	public void authenticateInternalTest() throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
-		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqestDTO, "authReqDTO");
-		Assert.assertEquals(null, authController.authenticateInternal(authReqestDTO, error, new TestHttpServletRequest()));
+		 TestHttpServletRequest request= new TestHttpServletRequest();
+		authReqestDTO.setIndividualIdType(null);
+		authReqestDTO.setIndividualId("1122");
+		ReflectionTestUtils.setField(authController, "idTypeUtil", idTypeUtil);
+		Mockito.when(idTypeUtil.getIdType("1122")).thenReturn(IdType.UIN);
+		authController.authenticateInternal(authReqestDTO, error, request);
+
+		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
+		Assert.assertEquals(null, authController.authenticateInternal(authReqestDTO, error, request));
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
