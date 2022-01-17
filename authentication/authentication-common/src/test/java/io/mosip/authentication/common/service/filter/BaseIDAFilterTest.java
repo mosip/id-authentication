@@ -32,6 +32,7 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -136,6 +137,7 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.setField(baseIDAFilter, "requestResponsConsumerUtil", requestResponsConsumerUtil);
 	}
 
+	@Ignore
 	@Test
 	public void testDoFilter() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException {
@@ -553,6 +555,7 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "doFilter", requ, responseWrapper, chain);
 	}
 
+	@Ignore
 	@Test
 	public void sendErrorResponseTest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException, IdAuthenticationAppException {
@@ -685,6 +688,7 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
+	@Ignore
 	@Test
 	public void testDoFilterInvalid() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException {
@@ -1099,6 +1103,7 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "doFilter", requ, responseWrapper, chain);
 	}
 	
+	@Ignore
 	@Test
 	public void sendErrorResponseTest2() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException, IdAuthenticationAppException {
@@ -1231,6 +1236,7 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper, DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
+	@Ignore
 	@Test
 	public void dateTest() {
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "isDate", "");
