@@ -1,6 +1,8 @@
 package io.mosip.authentication.core.util;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,13 +36,14 @@ public class IdTypeUtilTest {
     @Test
     public void validateUinTest() throws IdAuthenticationBusinessException {
         String uin= "1122";
-        idTypeUtil.validateUin(uin);
+        Mockito.doReturn(true).when(idValidator).validateUIN(uin);
+        Assert.assertTrue(idTypeUtil.validateUin(uin));
 
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(idValidator).validateUIN(uin);
         idTypeUtil.validateUin(uin);
 
         ReflectionTestUtils.setField(idTypeUtil, "idValidator", null);
-        idTypeUtil.validateUin(uin);
+        Assert.assertFalse(idTypeUtil.validateUin(uin));
     }
 
     /**
@@ -52,13 +55,14 @@ public class IdTypeUtilTest {
     @Test
     public void validateVidTest() throws IdAuthenticationBusinessException {
         String vid= "1122";
-        idTypeUtil.validateVid(vid);
+        Mockito.doReturn(true).when(idValidator).validateVID(vid);
+        Assert.assertTrue(idTypeUtil.validateVid(vid));
 
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(idValidator).validateVID(vid);
         idTypeUtil.validateVid(vid);
 
         ReflectionTestUtils.setField(idTypeUtil, "idValidator", null);
-        idTypeUtil.validateVid(vid);
+        Assert.assertFalse(idTypeUtil.validateVid(vid));
     }
 
     /**
@@ -84,9 +88,9 @@ public class IdTypeUtilTest {
     public void getIdTypeTest() throws IdAuthenticationBusinessException {
         String id ="1122";
         Mockito.when(idValidator.validateVID(id)).thenReturn(true);
-        idTypeUtil.getIdType(id);
+        Assert.assertEquals(IdType.VID, idTypeUtil.getIdType(id));
 
         Mockito.when(idValidator.validateUIN(id)).thenReturn(true);
-        idTypeUtil.getIdType(id);
+        Assert.assertEquals(IdType.UIN, idTypeUtil.getIdType(id));
     }
 }
