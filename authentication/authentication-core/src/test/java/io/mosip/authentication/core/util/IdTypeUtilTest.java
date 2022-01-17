@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.sql.Ref;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
@@ -26,6 +25,12 @@ public class IdTypeUtilTest {
     @Mock
     private IdValidationUtil idValidator;
 
+    /**
+     * This class tests the validateUin method
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test
     public void validateUinTest() throws IdAuthenticationBusinessException {
         String uin= "1122";
@@ -38,6 +43,12 @@ public class IdTypeUtilTest {
         idTypeUtil.validateUin(uin);
     }
 
+    /**
+     * This class tests the validateVid method
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test
     public void validateVidTest() throws IdAuthenticationBusinessException {
         String vid= "1122";
@@ -50,12 +61,25 @@ public class IdTypeUtilTest {
         idTypeUtil.validateVid(vid);
     }
 
+    /**
+     * This class tests the getIdType method
+     *                             in case of IdAuthenticationBusinessException
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test(expected = IdAuthenticationBusinessException.class)
     public void getIdTypeExceptionTest() throws IdAuthenticationBusinessException {
         String id ="1122";
         idTypeUtil.getIdType(id);
     }
 
+    /**
+     * This class tests the getIdType method
+     *
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
     @Test
     public void getIdTypeTest() throws IdAuthenticationBusinessException {
         String id ="1122";
