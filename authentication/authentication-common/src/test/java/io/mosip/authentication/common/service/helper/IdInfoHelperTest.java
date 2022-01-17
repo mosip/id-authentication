@@ -23,13 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
@@ -84,12 +85,16 @@ public class IdInfoHelperTest {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		//	ReflectionTestUtils.setField(idInfoHelper, "ida-default-identity-filter-attributes", "phone,fullName,dateOfBirth,email,preferredLang");
 		ReflectionTestUtils.setField(idInfoHelper, "env", env);
+		ReflectionTestUtils.setField(idInfoHelper, "objectMapper", objectMapper);
 		MockitoAnnotations.initMocks(this);
 	}
 
@@ -571,7 +576,38 @@ public class IdInfoHelperTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO requestDTO = new RequestDTO();
 		authRequestDTO.setRequest(requestDTO);
-		idInfoHelper.buildDemoAttributeFilters(authRequestDTO);
+		Set<String> buildDemoAttributeFilters = idInfoHelper.buildDemoAttributeFilters(authRequestDTO);
+		assertEquals(0, buildDemoAttributeFilters.size());
+	}
+	
+	@Test
+	public void buildDemoAttributeFiltersTest_demoAuth() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identityDTO = new IdentityDTO();
+		List<IdentityInfoDTO> names = List.of(new IdentityInfoDTO("eng", "My Name"));
+		identityDTO.setName(names );
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequest(requestDTO);
+		Set<String> buildDemoAttributeFilters = idInfoHelper.buildDemoAttributeFilters(authRequestDTO);
+		assertEquals(1, buildDemoAttributeFilters.size() );
+		assertEquals("fullName", buildDemoAttributeFilters.iterator().next() );
+
+	}
+	
+	@Test
+	public void buildDemoAttributeFiltersTest_dynamicAttrib() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identityDTO = new IdentityDTO();
+		List<IdentityInfoDTO> residenceStatus = List.of(new IdentityInfoDTO("eng", "Indian"));
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequest(requestDTO);
+		identityDTO.setMetadata(Map.of("residenceStatus", objectMapper.convertValue(residenceStatus, List.class)));
+		Set<String> buildDemoAttributeFilters = idInfoHelper.buildDemoAttributeFilters(authRequestDTO);
+		assertEquals(1, buildDemoAttributeFilters.size() );
+		assertEquals("residenceStatus", buildDemoAttributeFilters.iterator().next() );
+
 	}
 
 	@Test
@@ -615,6 +651,38 @@ public class IdInfoHelperTest {
 		Set<String> bioFilterExpected = new HashSet<String>();
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO requestDTO = new RequestDTO();
+		authRequestDTO.setRequest(requestDTO);
+
+		assertEquals(bioFilterExpected.size(), idInfoHelper.buildBioFilters(authRequestDTO).size());
+	}
+	
+	@Test
+	public void buildBioFiltersTest_Finger() {
+		Set<String> bioFilterExpected = new HashSet<String>();
+		bioFilterExpected.add("Finger_Left Thumb");
+
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO requestDTO = new RequestDTO();
+		List<BioIdentityInfoDTO> bioDataList = new ArrayList<BioIdentityInfoDTO>();
+		BioIdentityInfoDTO bioIdInfoDto1 = new BioIdentityInfoDTO();
+		DataDTO dataDto1 = new DataDTO();
+		dataDto1.setBioSubType("Left Thumb");
+		dataDto1.setBioType("Finger");
+		DigitalId digitalId1 = new DigitalId();
+		digitalId1.setSerialNo("9149795");
+		digitalId1.setMake("eyecool");
+		dataDto1.setDigitalId(digitalId1);
+		dataDto1.setDomainUri("dev.mosip.net");
+		dataDto1.setPurpose("Registration");
+		dataDto1.setQualityScore(70f);
+		dataDto1.setRequestedScore(90f);
+		bioIdInfoDto1.setData(dataDto1);
+		bioIdInfoDto1.setHash("12341");
+		bioIdInfoDto1.setSessionKey("Testsessionkey1");
+		bioIdInfoDto1.setSpecVersion("Spec1.1.0");
+		bioIdInfoDto1.setThumbprint("testvalue1");
+		bioDataList.add(bioIdInfoDto1);
+		requestDTO.setBiometrics(bioDataList);
 		authRequestDTO.setRequest(requestDTO);
 
 		assertEquals(bioFilterExpected.size(), idInfoHelper.buildBioFilters(authRequestDTO).size());
