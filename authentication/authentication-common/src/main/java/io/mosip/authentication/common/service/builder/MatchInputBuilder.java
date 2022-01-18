@@ -1,4 +1,6 @@
 package io.mosip.authentication.common.service.builder;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID_NAME;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MAPPING_CONFIG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -318,8 +320,8 @@ public class MatchInputBuilder {
 				}
 			}
 			Map<String, Object> matchProperties = new HashMap<>(authType.getMatchProperties(authRequestDTO, idInfoFetcher, language));
-			matchProperties.put("idName", idName);
-			matchProperties.put("mappingConfig", idInfoFetcher.getMappingConfig());
+			matchProperties.put(ID_NAME, idName);
+			matchProperties.put(MAPPING_CONFIG, idInfoFetcher.getMappingConfig());
 			return new MatchInput(authType, idName, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
 	}

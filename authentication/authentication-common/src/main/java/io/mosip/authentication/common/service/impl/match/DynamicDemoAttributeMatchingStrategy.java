@@ -1,4 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID_NAME;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MAPPING_CONFIG;
 
 import java.util.Map;
 
@@ -20,8 +22,8 @@ public enum DynamicDemoAttributeMatchingStrategy implements TextMatchingStrategy
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			DemoMatcherUtil demoMatcherUtilObject = getDemoMatcherUtilObject(props);
-			Object idNameObj = props.get("idName");
-			Object mappingConfigObj = props.get("mappingConfig");
+			Object idNameObj = props.get(ID_NAME);
+			Object mappingConfigObj = props.get(MAPPING_CONFIG);
 			if(idNameObj instanceof String && mappingConfigObj instanceof MappingConfig) {
 				MappingConfig mappingConfig = (MappingConfig) mappingConfigObj;
 				String idName = (String) idNameObj;
