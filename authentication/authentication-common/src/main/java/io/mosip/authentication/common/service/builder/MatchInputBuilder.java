@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -317,7 +317,9 @@ public class MatchInputBuilder {
 					matchValue = matchThresholdOpt.orElseGet(() -> EnvUtil.getDefaultMatchValue());
 				}
 			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);
+			Map<String, Object> matchProperties = new HashMap<>(authType.getMatchProperties(authRequestDTO, idInfoFetcher, language));
+			matchProperties.put("idName", idName);
+			matchProperties.put("mappingConfig", idInfoFetcher.getMappingConfig());
 			return new MatchInput(authType, idName, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
 	}
