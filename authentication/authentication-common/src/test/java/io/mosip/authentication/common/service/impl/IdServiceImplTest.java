@@ -321,4 +321,10 @@ public class IdServiceImplTest {
         List<String> unencrptedAttribs = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
         assertEquals(0, unencrptedAttribs.size());
     }
+    
+    @Test
+    public void Test_getZkUnEncryptedAttributes() {
+        List<String> unencrptedAttribs = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
+        assertEquals(0, unencrptedAttribs.size());
+    }
 }
