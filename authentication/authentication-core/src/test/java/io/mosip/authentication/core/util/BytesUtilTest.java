@@ -40,7 +40,6 @@ public class BytesUtilTest {
     public void getXORTest(){
         //length of b > leangth of a
         String a = "test", b = "sample";
-        ReflectionTestUtils.invokeMethod(bytesUtil, "getXOR", a, b);
         byte[] expected = {115, 97, 25, 21, 31, 17};
         Assert.assertArrayEquals(expected, ReflectionTestUtils.invokeMethod(bytesUtil, "getXOR", a, b));
         //length of a > leangth of b
