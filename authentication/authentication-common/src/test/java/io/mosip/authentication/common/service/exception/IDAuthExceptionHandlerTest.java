@@ -227,7 +227,7 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals(expectedResponse, actualResponse);
 		}
 	}
-	
+
 	@Test
 	public void testHandleDataExceptionInternalAuthTxn() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
@@ -255,7 +255,7 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals(expectedResponse, actualResponse);
 		}
 	}
-	
+
 	@Test
 	public void testHandleDataExceptionInternalOtp() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
@@ -280,7 +280,7 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals(expectedResponse, actualResponse);
 		}
 	}
-	
+
 	@Test
 	public void testHandleDataExceptionInternalAuthType() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
@@ -305,7 +305,7 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals(expectedResponse, actualResponse);
 		}
 	}
-	
+
 	@Test
 	public void testHandleDataExceptionWithArgs() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
@@ -316,13 +316,13 @@ public class IDAuthExceptionHandlerTest {
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
-		expectedResponse.setErrors(
-				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+		expectedResponse.setErrors(Collections
+				.singletonList(new AuthError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage())));
 
 		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
-		errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				new Object[] {"bioType"}, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] { "bioType" },
+				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
@@ -333,7 +333,7 @@ public class IDAuthExceptionHandlerTest {
 			assertTrue(!actualResponse.getErrors().isEmpty());
 		}
 	}
-	
+
 	@Test
 	public void testHandleDataExceptionWithArgsAndActionArgs() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
@@ -344,18 +344,19 @@ public class IDAuthExceptionHandlerTest {
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
 		expectedResponse.setResponse(res);
-		expectedResponse.setErrors(
-				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+		expectedResponse.setErrors(Collections
+				.singletonList(new AuthError(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage())));
 
 		Errors errors = new BindException(expectedResponse, "BaseAuthResponseDTO");
 		errors.reject(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-				new Object[] {"Email"}, IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage());
+				new Object[] { "Email" }, IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage());
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
-					new IdAuthenticationAppException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, e), null);
+					new IdAuthenticationAppException(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, e),
+					null);
 			BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
 			actualResponse.setResponseTime(null);
 			assertTrue(!actualResponse.getErrors().isEmpty());
@@ -458,24 +459,6 @@ public class IDAuthExceptionHandlerTest {
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getActionMessage())));
 		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
 				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
-		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
-		actualResponse.setResponseTime(null);
-//		assertEquals(expectedResponse, actualResponse);
-	}
-
-	@Ignore
-	@Test
-	public void testCreateAuthErrorwithActionCode() {
-		AuthResponseDTO expectedResponse = new AuthResponseDTO();
-		ResponseDTO res = new ResponseDTO();
-		res.setAuthStatus(Boolean.FALSE);
-		expectedResponse.setResponse(res);
-		expectedResponse.setErrors(Collections
-				.singletonList(new ActionableAuthError(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getActionMessage())));
-		ResponseEntity<Object> handleExceptionInternal = handler.handleIdAppException(
-				new IdAuthenticationBaseException(IdAuthenticationErrorConstants.EXPIRED_OTP), null);
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
 		actualResponse.setResponseTime(null);
 //		assertEquals(expectedResponse, actualResponse);
