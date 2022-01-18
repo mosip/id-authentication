@@ -73,10 +73,10 @@ public class OTPAuthServiceTest {
 
 	@Mock
 	OTPManager otpmanager;
-	
+
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
-	
+
 	@Mock
 	private IdAuthSecurityManager securityManager;
 
@@ -138,11 +138,10 @@ public class OTPAuthServiceTest {
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456",
-				Collections.emptyMap(), "PARTNER1");
+		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456", Collections.emptyMap(),
+				"PARTNER1");
 		assertNotNull(authStatusInfo);
 	}
 
@@ -182,7 +181,7 @@ public class OTPAuthServiceTest {
 	 * method to test IDDatavalidation Exception for IDA
 	 * 
 	 * @throws IdAuthenticationBusinessException
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
 	 */
 	@Test
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
@@ -195,11 +194,10 @@ public class OTPAuthServiceTest {
 		autTxn.setRefIdType("UIN");
 		autTxn.setEntityId("PARTNER1");
 		autntxnList.add(autTxn);
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn(uinHash);
 
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER1"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN", "PARTNER1"));
 	}
 
 	/**
@@ -219,11 +217,10 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER1"));
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN", "PARTNER1"));
 	}
-	
+
 	/**
 	 * To test the Transaction id with UIN
 	 * 
@@ -241,9 +238,8 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
-		otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN","PARTNER2");
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
+		otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN", "PARTNER2");
 	}
 
 	@Test(expected = IDDataValidationException.class)
@@ -258,19 +254,17 @@ public class OTPAuthServiceTest {
 		otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
 	}
 
-/*	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestOtpbyVID() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIndividualId("1234567890");
-		authRequestDTO.setIndividualIdType(IdType.VID.getType());
-		RequestDTO request = new RequestDTO();
-		request.setOtp("123456");
-		authRequestDTO.setRequest(request);
-		String uin = null;
-		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-		String partnerId = null;
-		otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
-	}*/
+	/*
+	 * @Test(expected = IdAuthenticationBusinessException.class) public void
+	 * TestOtpbyVID() throws IdAuthenticationBusinessException { AuthRequestDTO
+	 * authRequestDTO = new AuthRequestDTO();
+	 * authRequestDTO.setIndividualId("1234567890");
+	 * authRequestDTO.setIndividualIdType(IdType.VID.getType()); RequestDTO request
+	 * = new RequestDTO(); request.setOtp("123456");
+	 * authRequestDTO.setRequest(request); String uin = null; Map<String,
+	 * List<IdentityInfoDTO>> idInfo = new HashMap<>(); String partnerId = null;
+	 * otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId); }
+	 */
 
 	@Test(expected = IDDataValidationException.class)
 	public void TestIdDataValidationException() throws IdAuthenticationBusinessException {
@@ -332,8 +326,7 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Ignore
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("TXN00001");
@@ -345,8 +338,10 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setIndividualId("426789089018");
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
+		RequestDTO req = new RequestDTO();
+		req.setOtp("123456");
+		otpAuthRequestDTO.setRequest(req);
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
@@ -357,9 +352,8 @@ public class OTPAuthServiceTest {
 	 * Throw Custom IdAuthenticationBusinessException class
 	 * 
 	 * @throws IdAuthenticationBusinessException
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
 	 */
-	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
 		AutnTxn autntxn = new AutnTxn();
@@ -373,12 +367,13 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setIndividualId("12345");
 		otpAuthRequestDTO.setId("mosip.identity.auth");
 		otpAuthRequestDTO.setRequestTime("2019-02-18T18:17:48.923+05:30");
-		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any()))
-				.thenReturn(autntxnList);
+		RequestDTO req = new RequestDTO();
+		req.setOtp("123456");
+		otpAuthRequestDTO.setRequest(req);
+		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
 	}
 
-	
 }

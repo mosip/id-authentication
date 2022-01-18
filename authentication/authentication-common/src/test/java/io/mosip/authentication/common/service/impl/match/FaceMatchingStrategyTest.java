@@ -72,8 +72,7 @@ public class FaceMatchingStrategyTest {
 		assertEquals(100, value);
 	}
 
-	@Ignore
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test  
 	public void TestInValidMatchingStrategy() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FaceMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, String> reqValues = new HashMap<>();
