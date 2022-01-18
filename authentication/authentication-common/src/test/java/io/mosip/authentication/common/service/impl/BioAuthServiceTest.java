@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -548,7 +549,6 @@ public class BioAuthServiceTest {
 		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
-	@Ignore
 	@Test
 	public void TestvalidateBioDetailsMulti() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -602,7 +602,7 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 	}
 
 	@Test
