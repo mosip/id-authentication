@@ -344,6 +344,10 @@ public final class IdAuthCommonConstants {
 	public static final String BIO_TYPE_SEPARATOR="_";
 	
 	public static final String LANG_CODE_SEPARATOR="_";
+	
+	public static final String MAPPING_CONFIG = "mappingConfig";
+
+	public static final String ID_NAME = "idName";
 
 
 	private IdAuthCommonConstants() {
