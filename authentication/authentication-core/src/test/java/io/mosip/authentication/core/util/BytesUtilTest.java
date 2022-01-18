@@ -68,4 +68,5 @@ public class BytesUtilTest {
         String[]args = new String[10];
         ReflectionTestUtils.invokeMethod(bytesUtil, "main", (Object) args);
     }
+
 }
