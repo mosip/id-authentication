@@ -214,31 +214,29 @@ public class NotificationServiceImplTest {
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
 
-	@Ignore
 	@Test
 	public void testSendOtpNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-//		otpRequestDto.getIdentity().setUin("8765");
 		String otp = "987654";
-		String uin = "274390482564";
-		String email = "abc@gmail.cpm";
-		String mobileNumber = "";
+		String idvid = "123";
+		String idvidType = "test";
+		Map<String, String> valueMap = new HashMap<String, String>();
+		valueMap.put("key1", "value1");
+		List<String> templateLanguages = Arrays.asList("eng", "ara", "fra");
+		String notificationProperty = "test";
+		LocalDateTime otpGenerationTime = LocalDateTime.now();
 
 		otpRequestDto.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
-		// otpRequestDto.setReqTime(ZonedDateTime.now()
-		// .format(DateTimeFormatter.ofPattern(environment.getDateTimePattern())).toString());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 
-		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -254,9 +252,9 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
-		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		ReflectionTestUtils.invokeMethod(notificationService, "sendOtpNotification", otpRequestDto, otp, uin, email,
-				mobileNumber, idInfo);
+		ReflectionTestUtils.setField(environment, "env", mockenv);
+		notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp,
+				notificationProperty, otpGenerationTime);
 	}
 
 	@Test
