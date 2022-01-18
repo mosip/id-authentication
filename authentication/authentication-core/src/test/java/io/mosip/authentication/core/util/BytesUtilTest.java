@@ -46,6 +46,10 @@ public class BytesUtilTest {
         a = "sample";
         b = "test";
         Assert.assertArrayEquals(expected, ReflectionTestUtils.invokeMethod(bytesUtil, "getXOR", a, b));
+//        length of a == length of b
+        byte[] exp = {0, 0, 0, 0, 0, 0 };
+        b="sample";
+        Assert.assertArrayEquals(exp, ReflectionTestUtils.invokeMethod(bytesUtil, "getXOR", a, b));
     }
 
     /**
