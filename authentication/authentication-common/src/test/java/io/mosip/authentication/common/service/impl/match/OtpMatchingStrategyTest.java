@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -25,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.repository.OtpTxnRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
@@ -35,7 +34,6 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@Ignore
 public class OtpMatchingStrategyTest {
 
 	@InjectMocks
@@ -43,6 +41,9 @@ public class OtpMatchingStrategyTest {
 
 	@InjectMocks
 	private OTPManager otpManager;
+	
+	@Mock
+	private OtpTxnRepository otpRepo;
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
@@ -54,7 +55,7 @@ public class OtpMatchingStrategyTest {
 	@InjectMocks
 	private ObjectMapper mapper;
 
-	@Autowired
+	@Mock
 	EnvUtil environment;
 
 	@Before
