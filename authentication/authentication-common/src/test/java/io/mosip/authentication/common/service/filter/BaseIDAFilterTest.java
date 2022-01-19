@@ -36,8 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
@@ -54,15 +52,14 @@ import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
-@AutoConfigureMockMvc
-@Import(EnvUtil.class)
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseIDAFilterTest {
 
-	@Autowired
+	@Mock
 	EnvUtil env;
 
 	@Mock
@@ -136,6 +133,8 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.setField(baseIDAFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseIDAFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(baseIDAFilter, "requestResponsConsumerUtil", requestResponsConsumerUtil);
+		
+		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 	}
 
 	@Test
