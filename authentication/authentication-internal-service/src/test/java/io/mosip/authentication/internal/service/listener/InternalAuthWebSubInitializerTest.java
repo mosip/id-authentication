@@ -45,6 +45,13 @@ public class InternalAuthWebSubInitializerTest {
     @Test
     public void doRegisterTopicsTest(){
         Assert.assertEquals(HttpStatus.SC_OK, internalAuthWebSubInitializer.doRegisterTopics());
+    }
+
+    /**
+     * This class tests the doRegisterTopics method
+     */
+    @Test
+    public void doRegisterTopicsTest1(){
 //        when fraudEventPublisher is null
         ReflectionTestUtils.setField(internalAuthWebSubInitializer, "fraudEventPublisher", null);
         Assert.assertEquals(HttpStatus.SC_OK, internalAuthWebSubInitializer.doRegisterTopics());
