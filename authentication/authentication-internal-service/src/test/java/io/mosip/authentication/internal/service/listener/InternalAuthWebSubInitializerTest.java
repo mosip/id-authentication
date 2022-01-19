@@ -3,6 +3,8 @@ package io.mosip.authentication.internal.service.listener;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import org.apache.commons.lang3.builder.ReflectionDiffBuilder;
+import org.apache.http.HttpStatus;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,6 +36,7 @@ public class InternalAuthWebSubInitializerTest {
     @Test
     public void doInitSubscriptionsTest(){
         internalAuthWebSubInitializer.doInitSubscriptions();
+        Assert.assertEquals(HttpStatus.SC_OK, internalAuthWebSubInitializer.doInitSubscriptions());
     }
 
     /**
@@ -41,9 +44,9 @@ public class InternalAuthWebSubInitializerTest {
      */
     @Test
     public void doRegisterTopicsTest(){
-        internalAuthWebSubInitializer.doRegisterTopics();
+        Assert.assertEquals(HttpStatus.SC_OK, internalAuthWebSubInitializer.doRegisterTopics());
 //        when fraudEventPublisher is null
         ReflectionTestUtils.setField(internalAuthWebSubInitializer, "fraudEventPublisher", null);
-        internalAuthWebSubInitializer.doRegisterTopics();
+        Assert.assertEquals(HttpStatus.SC_OK, internalAuthWebSubInitializer.doRegisterTopics());
     }
 }
