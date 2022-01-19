@@ -267,7 +267,6 @@
 				</executions>
 				<configuration>
 					<doclint>none</doclint>
-					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
 				</configuration>
 			</plugin>
 			<plugin>
