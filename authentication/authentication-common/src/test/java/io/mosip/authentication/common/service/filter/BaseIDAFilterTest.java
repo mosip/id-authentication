@@ -32,12 +32,12 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
@@ -56,10 +56,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@WebMvcTest
+@AutoConfigureMockMvc
 @Import(EnvUtil.class)
-@Ignore
 public class BaseIDAFilterTest {
 
 	@Autowired
