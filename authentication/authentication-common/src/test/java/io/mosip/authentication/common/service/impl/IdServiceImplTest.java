@@ -33,6 +33,7 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdServiceImplTest {
@@ -89,7 +90,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, null, null, 1 };
 
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
@@ -140,7 +140,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
 		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
@@ -185,7 +184,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
 		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
@@ -303,7 +301,7 @@ public class IdServiceImplTest {
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
-		LocalDateTime time = LocalDateTime.now();
+		LocalDateTime time = DateUtils.getUTCCurrentDateTime();
 		entity.setExpiryTimestamp(time);
 		byte[] bioData = {};
 		entity.setBiometricData(bioData);
