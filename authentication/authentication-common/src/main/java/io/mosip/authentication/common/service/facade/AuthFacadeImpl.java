@@ -134,7 +134,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
 	@Override
-	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isAuth, String partnerId,
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isExternalAuth, String partnerId,
 			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata) throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
@@ -150,7 +150,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
 			// In case of ekyc request and photo also needed we need to add face to get it
 			// filtered
-			if(idInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
+			if(IdInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
 				filterAttributes.add(CbeffDocType.FACE.getType().value());
 			}
 			
@@ -176,14 +176,14 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(transactionID);
-			authTokenId = authTokenRequired && isAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
+			authTokenId = authTokenRequired && isExternalAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
 					: null;
 
 			LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
 			properties.put(IdAuthCommonConstants.TOKEN, token);
 			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isAuth, authTokenId,
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isExternalAuth, authTokenId,
 					partnerId, authTxnBuilder);
 			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
 		} catch (IdAuthenticationBusinessException e) {
@@ -219,7 +219,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 
 		if (idInfo != null && idvid != null) {
-			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isAuth);
+			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isExternalAuth);
 		}
 
 		return authResponseDTO;
