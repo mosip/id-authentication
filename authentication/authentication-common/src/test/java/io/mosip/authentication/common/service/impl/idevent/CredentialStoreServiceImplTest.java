@@ -1,5 +1,8 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doThrow;
+
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
@@ -37,7 +40,14 @@ import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.exception.IdAuthRetryException;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -132,6 +142,29 @@ public class CredentialStoreServiceImplTest {
         credentialEventStore.setStatusCode("STORED");
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processCredentialStoreEvent", credentialEventStore);
     }
+    
+    @Test
+    public void ProcessCredentialStoreEventTest_exception()
+            throws RestServiceException, IOException, IdAuthenticationBusinessException {
+        CredentialEventStore credentialEventStore = getCredentialEventStore();
+        credentialEventStore.setStatusCode("FAILED");
+        credentialEventStore.setRetryCount(1);
+        credentialEventStore.setEventObject("invalid json");
+        Map<String, Object> credentialData = new HashMap<>();
+        Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
+        credentialData.put("credentialSubject", map);
+        Mockito.when(dataShareManager.downloadObject(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean())).thenReturn(credentialData);
+        try {
+            ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processCredentialStoreEvent", credentialEventStore);
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+    }
 
     /**
      * This class tests the updateEventProcessingStatus method
@@ -158,6 +191,19 @@ public class CredentialStoreServiceImplTest {
         isRecoverableException=false;
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "updateEventProcessingStatus", credentialEventStore, isSuccess, isRecoverableException, credentialEventStore.getStatusCode());
     }
+    
+    @Test
+    public void UpdateEventProcessingStatusTest_auditError() throws IDDataValidationException{
+        CredentialEventStore credentialEventStore = getCredentialEventStore();
+        boolean isSuccess = false, isRecoverableException=true;
+        credentialEventStore.setStatusCode("FAILED");
+        credentialEventStore.setRetryCount(6);
+        String requestId = "5b679189-6f3a-46b5-9979-b4ed8d3230c2";
+		doThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS))
+			.when(auditHelper).audit(AuditModules.CREDENTIAL_STORAGE, AuditEvents.CREDENTIAL_STORED_EVENT, requestId , "request-id", "FAILED");
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "updateEventProcessingStatus", credentialEventStore, isSuccess, isRecoverableException, credentialEventStore.getStatusCode());
+        //
+    }
 
     /**
      * This class tests the storeEventModel method
@@ -177,15 +223,84 @@ public class CredentialStoreServiceImplTest {
      * @throws RestServiceException
      * @throws IOException
      */
-    @Test(expected= UndeclaredThrowableException.class)
-    public void doProcessCredentialStoreEventTest1() throws IOException, RestServiceException, IdAuthenticationBusinessException {
+    @Test
+    public void doProcessCredentialStoreEventTest_datashareUriNull() throws IOException, RestServiceException, IdAuthenticationBusinessException {
         CredentialEventStore credentialEventStore = getCredentialEventStore();
         credentialEventStore.setEventObject("{\"publisher\":\"CREDENTIAL_SERVICE\",\"topic\":\"mpartner-default-auth/CREDENTIAL_ISSUED\",\"publishedOn\":\"2021-11-02T09:18:52.418Z\",\"event\":{\"id\":\"437ca068-702f-4b14-a21a-b3994c094d38\",\"transactionId\":\"a84f9af6-025d-4c68-a005-4da9cddb0874\",\"type\":{\"namespace\":\"mosip\",\"name\":\"mosip\"},\"timestamp\":\"2021-11-02T09:18:52.418Z\",\"dataShareUri\":null,\"data\":{\"SALT\":\"Q74F5OnTZdw5qiOFp6h6Ww\",\"MODULO\":\"943\",\"expiry_timestamp\":null,\"transaction_limit\":null,\"id_hash\":\"9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3\",\"TOKEN\":\"362737013453447806883457690320262449\",\"demoEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4GYkjXPjxZHR4MFHob_CKM9Wx0ZOpy0oA8Kcv-0kI1GEDfl070vppDaS0gG30P6QOUy5aEYY4nXffc0nqqrqdC4rzY4LdWbrxxkoyx1Q4BhNZHiA7Tm931-kjdC2YJkDFMHburu72N8CuI6wktAuhQPagWCGL2hGUkdbcFhvD8045Y9oggLfDYNH1Oaj9XIwEEvyAaHvH8mfJxQ5aiLp23mt6PA3QZ4uaVxMvprYBGR8CypGZIBKLfCCfamHsW01ae33mPFyQH1AKKIaJ1XaoeoIgJq9ocUZ292hl3rtgdOuj6eJmcrMOwpiOhHNMY0ndAuH1-RMWdY6CZ2FG-o5VI\",\"demoRankomKeyIndex\":\"4150\",\"bioEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4U5vX_6IU_5l5gi_ATfr1cgICFAViR06A9LrDq8J01i_ICoHaCMqmKMBVk3B4lJ8zAyyYDbM4ztLYIDK95ozZArJuB4i3aJp7lh2XhEqn4xpSzLXJRIjKGuHckq-81IxQmozgo1eE07NlJ3-7tt9thjWujgEmJABpir893tZnxG3br9yAecqUTbnjxrXpvNRdCJm7SgwgJ-tQyE49QvDeXWw_ucXnx1SyQ99eeDafMzgc4JffrQeFCWwryo0q6TzgJ9qAm8SITAy0sc3Q3BJgddCnFH0s1GHjKPBsJBxknb_N3b5zB2yXomVn3bsKV7V-bXiC8Gf9CNj0yZf9xV-Ns\",\"bioRankomKeyIndex\":\"8678\",\"proof\":{\"signature\":\"eyJ4NWMiOlsiTUlJRHRUQ0NBcDJnQXdJQkFnSUlzNkphZWlpZE1va3dEUVlKS29aSWh2Y05BUUVMQlFBd2NERUxNQWtHQTFVRUJoTUNTVTR4Q3pBSkJnTlZCQWdNQWt0Qk1SSXdFQVlEVlFRSERBbENRVTVIUVV4UFVrVXhEVEFMQmdOVkJBb01CRWxKVkVJeEdqQVlCZ05WQkFzTUVVMVBVMGxRTFZSRlEwZ3RRMFZPVkVWU01SVXdFd1lEVlFRRERBeDNkM2N1Ylc5emFYQXVhVzh3SGhjTk1qRXhNREkyTVRRd05EVTRXaGNOTWpReE1ESTFNVFF3TkRVNFdqQitNUXN3Q1FZRFZRUUdFd0pKVGpFTE1Ba0dBMVVFQ0F3Q1MwRXhFakFRQmdOVkJBY01DVUpCVGtkQlRFOVNSVEVOTUFzR0ExVUVDZ3dFU1VsVVFqRWpNQ0VHQTFVRUN3d2FUVTlUU1ZBdFZFVkRTQzFEUlU1VVJWSWdLRXRGVWs1RlRDa3hHakFZQmdOVkJBTU1FWGQzZHk1dGIzTnBjQzVwYnkxVFNVZE9NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXJYWDhYR2tscGxrOGMyRC8zTGhWelZucTVJVGJ1a21sV2ZORnRnWUNYY1Y3d2IzWUhhaUNudWI0STVkbDZmZGxLUEVUN2t6dTllYno3VTlVVUVXVzc5VWF0NHY0WFV0bEJ1ejJ6VmVjckZpcERtLytNTU5JNEMzSXpwbmVrVlB2NUl0VjBzSzVZcGVRck5HbFh3NFI4TzlTYk9NcUE4NElqQTZsanE2enFZZlpTRzZkSnJSbFVqQS9KczdweVV6Z0t4U0pBYXdmaVFWaThXK05WTnpPdjdUTEdESjhaR3BFT1lnUkdDbjVpU21UVldtVzF5UVNhTEQrT3BlTHhkUHJocE9ZbWtMbkd2alR6aHkxQm5RWVhmVGxyeVd1b2drVzM5NUZBTW9SOEI1ekZiK0FKbHlVVm9zMU5MUEU3cWM5UDIrSDZlbURmUHNhVDNRMjRrWXZCUUlEQVFBQm8wVXdRekFTQmdOVkhSTUJBZjhFQ0RBR0FRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTOHpQL0lTNDlrOGsxblJIb05HMGZNUVQ5elJUQU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIWWlqN3p4Sy84dGdrS1czMkhRejRUVFN2d0VqazZmY1dVMWFTbkJkVzFWS2w1TGlrTXZ6OC96M0hUOEpmOW4wdVgwdlFET0M5Mnh4SitNWmU3RTNoWUJ4SFNPRHVyL3FkQ1JGRFFYUnQyMzU4OWpmSXZBQjN6ejJyakFuZ1hzTUxQRldRV2tZdnU0clJFVWFVUHNQRmp0NkhUM3lZcUJrbHJXL0NaNGxDTW9vZ1VNOGRTS1drZ0ZlTHBKbXhIMVhhZGo0R0VCazhaSTZUaVU2cGZOQ0hRMnlLanVEdC85V1kwMzFsTTJmcGh6Mmw2OUJHV2Z5MWZQNEQ3Mjl2NVR0WEM3eGlvb2ZCV3hWL28wNm8xZXRxUTFKUVpmdS9zNWRRQjZ0UEZhbVlwOTBhTmFqYjMwLzI4bkJIdnN0bllhZjIzL0d1cnNYa1dYSzBOM1pJUXhINTA9Il0sIng1dCNTMjU2IjoiYmNaX3RKSm42SXFRVUhNVnNFTlNzS2JMOXlGUGxTTzVqempWdFpJa3AwOCIsImFsZyI6IlJTMjU2In0..muzYpaSxQyjIjOdloDxhMgWj5Ljs8MLPTgZiAtDiiBt_OuaCn3L939uJBREosodYCVlnQu54MDvUoeWPbBJYtJWpm6HceCfgLSzOBnI3gv7bblJ6fcK__HzSEL4gbRaysC3tkO5yx5C0v0JR3vk_pjZV2PFz9y3vpMdxiuaqxWhUpV9qLWM4Y7JVKbzEC2EOnIZAZtkLGxViczK29F9AK10r4Z5djZ4-FYXDXFO0m24a5n5-k7n5UMOL4YL9LslZX8Odd0H8orvAv7P_I3_AmnjKcJDuU7IlQGuD4Em-Id4eFi1pA4vNCr7pUMjb_rNDngnQ43XJbRh6yA2SrU_n_w\"},\"credentialType\":\"auth\",\"protectionKey\":null}}}");
         Map<String, Object> credentialData = new HashMap<>();
         Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
         credentialData.put("credentialSubject", map);
         Mockito.when(dataShareManager.downloadObject(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean())).thenReturn(credentialData);
-        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "doProcessCredentialStoreEvent", credentialEventStore);
+        try {
+			ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "doProcessCredentialStoreEvent", credentialEventStore);
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+    }
+    
+    @Test
+    public void doProcessCredentialStoreEventTest_parseError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
+        CredentialEventStore credentialEventStore = getCredentialEventStore();
+        credentialEventStore.setEventObject("{\"publisher\":\"CREDENTIAL_SERVICE\" \"topic\":\"mpartner-default-auth/CREDENTIAL_ISSUED\",\"publishedOn\":\"2021-11-02T09:18:52.418Z\",\"event\":{\"id\":\"437ca068-702f-4b14-a21a-b3994c094d38\",\"transactionId\":\"a84f9af6-025d-4c68-a005-4da9cddb0874\",\"type\":{\"namespace\":\"mosip\",\"name\":\"mosip\"},\"timestamp\":\"2021-11-02T09:18:52.418Z\",\"dataShareUri\":null,\"data\":{\"SALT\":\"Q74F5OnTZdw5qiOFp6h6Ww\",\"MODULO\":\"943\",\"expiry_timestamp\":null,\"transaction_limit\":null,\"id_hash\":\"9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3\",\"TOKEN\":\"362737013453447806883457690320262449\",\"demoEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4GYkjXPjxZHR4MFHob_CKM9Wx0ZOpy0oA8Kcv-0kI1GEDfl070vppDaS0gG30P6QOUy5aEYY4nXffc0nqqrqdC4rzY4LdWbrxxkoyx1Q4BhNZHiA7Tm931-kjdC2YJkDFMHburu72N8CuI6wktAuhQPagWCGL2hGUkdbcFhvD8045Y9oggLfDYNH1Oaj9XIwEEvyAaHvH8mfJxQ5aiLp23mt6PA3QZ4uaVxMvprYBGR8CypGZIBKLfCCfamHsW01ae33mPFyQH1AKKIaJ1XaoeoIgJq9ocUZ292hl3rtgdOuj6eJmcrMOwpiOhHNMY0ndAuH1-RMWdY6CZ2FG-o5VI\",\"demoRankomKeyIndex\":\"4150\",\"bioEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4U5vX_6IU_5l5gi_ATfr1cgICFAViR06A9LrDq8J01i_ICoHaCMqmKMBVk3B4lJ8zAyyYDbM4ztLYIDK95ozZArJuB4i3aJp7lh2XhEqn4xpSzLXJRIjKGuHckq-81IxQmozgo1eE07NlJ3-7tt9thjWujgEmJABpir893tZnxG3br9yAecqUTbnjxrXpvNRdCJm7SgwgJ-tQyE49QvDeXWw_ucXnx1SyQ99eeDafMzgc4JffrQeFCWwryo0q6TzgJ9qAm8SITAy0sc3Q3BJgddCnFH0s1GHjKPBsJBxknb_N3b5zB2yXomVn3bsKV7V-bXiC8Gf9CNj0yZf9xV-Ns\",\"bioRankomKeyIndex\":\"8678\",\"proof\":{\"signature\":\"eyJ4NWMiOlsiTUlJRHRUQ0NBcDJnQXdJQkFnSUlzNkphZWlpZE1va3dEUVlKS29aSWh2Y05BUUVMQlFBd2NERUxNQWtHQTFVRUJoTUNTVTR4Q3pBSkJnTlZCQWdNQWt0Qk1SSXdFQVlEVlFRSERBbENRVTVIUVV4UFVrVXhEVEFMQmdOVkJBb01CRWxKVkVJeEdqQVlCZ05WQkFzTUVVMVBVMGxRTFZSRlEwZ3RRMFZPVkVWU01SVXdFd1lEVlFRRERBeDNkM2N1Ylc5emFYQXVhVzh3SGhjTk1qRXhNREkyTVRRd05EVTRXaGNOTWpReE1ESTFNVFF3TkRVNFdqQitNUXN3Q1FZRFZRUUdFd0pKVGpFTE1Ba0dBMVVFQ0F3Q1MwRXhFakFRQmdOVkJBY01DVUpCVGtkQlRFOVNSVEVOTUFzR0ExVUVDZ3dFU1VsVVFqRWpNQ0VHQTFVRUN3d2FUVTlUU1ZBdFZFVkRTQzFEUlU1VVJWSWdLRXRGVWs1RlRDa3hHakFZQmdOVkJBTU1FWGQzZHk1dGIzTnBjQzVwYnkxVFNVZE9NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXJYWDhYR2tscGxrOGMyRC8zTGhWelZucTVJVGJ1a21sV2ZORnRnWUNYY1Y3d2IzWUhhaUNudWI0STVkbDZmZGxLUEVUN2t6dTllYno3VTlVVUVXVzc5VWF0NHY0WFV0bEJ1ejJ6VmVjckZpcERtLytNTU5JNEMzSXpwbmVrVlB2NUl0VjBzSzVZcGVRck5HbFh3NFI4TzlTYk9NcUE4NElqQTZsanE2enFZZlpTRzZkSnJSbFVqQS9KczdweVV6Z0t4U0pBYXdmaVFWaThXK05WTnpPdjdUTEdESjhaR3BFT1lnUkdDbjVpU21UVldtVzF5UVNhTEQrT3BlTHhkUHJocE9ZbWtMbkd2alR6aHkxQm5RWVhmVGxyeVd1b2drVzM5NUZBTW9SOEI1ekZiK0FKbHlVVm9zMU5MUEU3cWM5UDIrSDZlbURmUHNhVDNRMjRrWXZCUUlEQVFBQm8wVXdRekFTQmdOVkhSTUJBZjhFQ0RBR0FRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTOHpQL0lTNDlrOGsxblJIb05HMGZNUVQ5elJUQU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIWWlqN3p4Sy84dGdrS1czMkhRejRUVFN2d0VqazZmY1dVMWFTbkJkVzFWS2w1TGlrTXZ6OC96M0hUOEpmOW4wdVgwdlFET0M5Mnh4SitNWmU3RTNoWUJ4SFNPRHVyL3FkQ1JGRFFYUnQyMzU4OWpmSXZBQjN6ejJyakFuZ1hzTUxQRldRV2tZdnU0clJFVWFVUHNQRmp0NkhUM3lZcUJrbHJXL0NaNGxDTW9vZ1VNOGRTS1drZ0ZlTHBKbXhIMVhhZGo0R0VCazhaSTZUaVU2cGZOQ0hRMnlLanVEdC85V1kwMzFsTTJmcGh6Mmw2OUJHV2Z5MWZQNEQ3Mjl2NVR0WEM3eGlvb2ZCV3hWL28wNm8xZXRxUTFKUVpmdS9zNWRRQjZ0UEZhbVlwOTBhTmFqYjMwLzI4bkJIdnN0bllhZjIzL0d1cnNYa1dYSzBOM1pJUXhINTA9Il0sIng1dCNTMjU2IjoiYmNaX3RKSm42SXFRVUhNVnNFTlNzS2JMOXlGUGxTTzVqempWdFpJa3AwOCIsImFsZyI6IlJTMjU2In0..muzYpaSxQyjIjOdloDxhMgWj5Ljs8MLPTgZiAtDiiBt_OuaCn3L939uJBREosodYCVlnQu54MDvUoeWPbBJYtJWpm6HceCfgLSzOBnI3gv7bblJ6fcK__HzSEL4gbRaysC3tkO5yx5C0v0JR3vk_pjZV2PFz9y3vpMdxiuaqxWhUpV9qLWM4Y7JVKbzEC2EOnIZAZtkLGxViczK29F9AK10r4Z5djZ4-FYXDXFO0m24a5n5-k7n5UMOL4YL9LslZX8Odd0H8orvAv7P_I3_AmnjKcJDuU7IlQGuD4Em-Id4eFi1pA4vNCr7pUMjb_rNDngnQ43XJbRh6yA2SrU_n_w\"},\"credentialType\":\"auth\",\"protectionKey\":null}}}");
+        Map<String, Object> credentialData = new HashMap<>();
+        Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
+        credentialData.put("credentialSubject", map);
+        Mockito.when(dataShareManager.downloadObject(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean())).thenReturn(credentialData);
+        try {
+			ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "doProcessCredentialStoreEvent", credentialEventStore);
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+    }
+    
+    @Test
+    public void doProcessCredentialStoreEventTest_dataShareDownloadError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
+        CredentialEventStore credentialEventStore = getCredentialEventStore();
+        credentialEventStore.setEventObject("{\"publisher\":\"CREDENTIAL_SERVICE\", \"topic\":\"mpartner-default-auth/CREDENTIAL_ISSUED\",\"publishedOn\":\"2021-11-02T09:18:52.418Z\",\"event\":{\"id\":\"437ca068-702f-4b14-a21a-b3994c094d38\",\"transactionId\":\"a84f9af6-025d-4c68-a005-4da9cddb0874\",\"type\":{\"namespace\":\"mosip\",\"name\":\"mosip\"},\"timestamp\":\"2021-11-02T09:18:52.418Z\",\"dataShareUri\":\"http://test\",\"data\":{\"SALT\":\"Q74F5OnTZdw5qiOFp6h6Ww\",\"MODULO\":\"943\",\"expiry_timestamp\":null,\"transaction_limit\":null,\"id_hash\":\"9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3\",\"TOKEN\":\"362737013453447806883457690320262449\",\"demoEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4GYkjXPjxZHR4MFHob_CKM9Wx0ZOpy0oA8Kcv-0kI1GEDfl070vppDaS0gG30P6QOUy5aEYY4nXffc0nqqrqdC4rzY4LdWbrxxkoyx1Q4BhNZHiA7Tm931-kjdC2YJkDFMHburu72N8CuI6wktAuhQPagWCGL2hGUkdbcFhvD8045Y9oggLfDYNH1Oaj9XIwEEvyAaHvH8mfJxQ5aiLp23mt6PA3QZ4uaVxMvprYBGR8CypGZIBKLfCCfamHsW01ae33mPFyQH1AKKIaJ1XaoeoIgJq9ocUZ292hl3rtgdOuj6eJmcrMOwpiOhHNMY0ndAuH1-RMWdY6CZ2FG-o5VI\",\"demoRankomKeyIndex\":\"4150\",\"bioEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4U5vX_6IU_5l5gi_ATfr1cgICFAViR06A9LrDq8J01i_ICoHaCMqmKMBVk3B4lJ8zAyyYDbM4ztLYIDK95ozZArJuB4i3aJp7lh2XhEqn4xpSzLXJRIjKGuHckq-81IxQmozgo1eE07NlJ3-7tt9thjWujgEmJABpir893tZnxG3br9yAecqUTbnjxrXpvNRdCJm7SgwgJ-tQyE49QvDeXWw_ucXnx1SyQ99eeDafMzgc4JffrQeFCWwryo0q6TzgJ9qAm8SITAy0sc3Q3BJgddCnFH0s1GHjKPBsJBxknb_N3b5zB2yXomVn3bsKV7V-bXiC8Gf9CNj0yZf9xV-Ns\",\"bioRankomKeyIndex\":\"8678\",\"proof\":{\"signature\":\"eyJ4NWMiOlsiTUlJRHRUQ0NBcDJnQXdJQkFnSUlzNkphZWlpZE1va3dEUVlKS29aSWh2Y05BUUVMQlFBd2NERUxNQWtHQTFVRUJoTUNTVTR4Q3pBSkJnTlZCQWdNQWt0Qk1SSXdFQVlEVlFRSERBbENRVTVIUVV4UFVrVXhEVEFMQmdOVkJBb01CRWxKVkVJeEdqQVlCZ05WQkFzTUVVMVBVMGxRTFZSRlEwZ3RRMFZPVkVWU01SVXdFd1lEVlFRRERBeDNkM2N1Ylc5emFYQXVhVzh3SGhjTk1qRXhNREkyTVRRd05EVTRXaGNOTWpReE1ESTFNVFF3TkRVNFdqQitNUXN3Q1FZRFZRUUdFd0pKVGpFTE1Ba0dBMVVFQ0F3Q1MwRXhFakFRQmdOVkJBY01DVUpCVGtkQlRFOVNSVEVOTUFzR0ExVUVDZ3dFU1VsVVFqRWpNQ0VHQTFVRUN3d2FUVTlUU1ZBdFZFVkRTQzFEUlU1VVJWSWdLRXRGVWs1RlRDa3hHakFZQmdOVkJBTU1FWGQzZHk1dGIzTnBjQzVwYnkxVFNVZE9NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXJYWDhYR2tscGxrOGMyRC8zTGhWelZucTVJVGJ1a21sV2ZORnRnWUNYY1Y3d2IzWUhhaUNudWI0STVkbDZmZGxLUEVUN2t6dTllYno3VTlVVUVXVzc5VWF0NHY0WFV0bEJ1ejJ6VmVjckZpcERtLytNTU5JNEMzSXpwbmVrVlB2NUl0VjBzSzVZcGVRck5HbFh3NFI4TzlTYk9NcUE4NElqQTZsanE2enFZZlpTRzZkSnJSbFVqQS9KczdweVV6Z0t4U0pBYXdmaVFWaThXK05WTnpPdjdUTEdESjhaR3BFT1lnUkdDbjVpU21UVldtVzF5UVNhTEQrT3BlTHhkUHJocE9ZbWtMbkd2alR6aHkxQm5RWVhmVGxyeVd1b2drVzM5NUZBTW9SOEI1ekZiK0FKbHlVVm9zMU5MUEU3cWM5UDIrSDZlbURmUHNhVDNRMjRrWXZCUUlEQVFBQm8wVXdRekFTQmdOVkhSTUJBZjhFQ0RBR0FRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTOHpQL0lTNDlrOGsxblJIb05HMGZNUVQ5elJUQU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIWWlqN3p4Sy84dGdrS1czMkhRejRUVFN2d0VqazZmY1dVMWFTbkJkVzFWS2w1TGlrTXZ6OC96M0hUOEpmOW4wdVgwdlFET0M5Mnh4SitNWmU3RTNoWUJ4SFNPRHVyL3FkQ1JGRFFYUnQyMzU4OWpmSXZBQjN6ejJyakFuZ1hzTUxQRldRV2tZdnU0clJFVWFVUHNQRmp0NkhUM3lZcUJrbHJXL0NaNGxDTW9vZ1VNOGRTS1drZ0ZlTHBKbXhIMVhhZGo0R0VCazhaSTZUaVU2cGZOQ0hRMnlLanVEdC85V1kwMzFsTTJmcGh6Mmw2OUJHV2Z5MWZQNEQ3Mjl2NVR0WEM3eGlvb2ZCV3hWL28wNm8xZXRxUTFKUVpmdS9zNWRRQjZ0UEZhbVlwOTBhTmFqYjMwLzI4bkJIdnN0bllhZjIzL0d1cnNYa1dYSzBOM1pJUXhINTA9Il0sIng1dCNTMjU2IjoiYmNaX3RKSm42SXFRVUhNVnNFTlNzS2JMOXlGUGxTTzVqempWdFpJa3AwOCIsImFsZyI6IlJTMjU2In0..muzYpaSxQyjIjOdloDxhMgWj5Ljs8MLPTgZiAtDiiBt_OuaCn3L939uJBREosodYCVlnQu54MDvUoeWPbBJYtJWpm6HceCfgLSzOBnI3gv7bblJ6fcK__HzSEL4gbRaysC3tkO5yx5C0v0JR3vk_pjZV2PFz9y3vpMdxiuaqxWhUpV9qLWM4Y7JVKbzEC2EOnIZAZtkLGxViczK29F9AK10r4Z5djZ4-FYXDXFO0m24a5n5-k7n5UMOL4YL9LslZX8Odd0H8orvAv7P_I3_AmnjKcJDuU7IlQGuD4Em-Id4eFi1pA4vNCr7pUMjb_rNDngnQ43XJbRh6yA2SrU_n_w\"},\"credentialType\":\"auth\",\"protectionKey\":null}}}");
+        Map<String, Object> credentialData = new HashMap<>();
+        Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
+        credentialData.put("credentialSubject", map);
+        Mockito.when(dataShareManager.downloadObject(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean())).thenThrow(new RestServiceException(IdRepoErrorConstants.AUTHENTICATION_FAILED));
+        try {
+			ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "doProcessCredentialStoreEvent", credentialEventStore);
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+    }
+    
+    @Test
+    public void doProcessCredentialStoreEventTest_dataShareDownloadError_datavalidationError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
+        CredentialEventStore credentialEventStore = getCredentialEventStore();
+        credentialEventStore.setEventObject("{\"publisher\":\"CREDENTIAL_SERVICE\", \"topic\":\"mpartner-default-auth/CREDENTIAL_ISSUED\",\"publishedOn\":\"2021-11-02T09:18:52.418Z\",\"event\":{\"id\":\"437ca068-702f-4b14-a21a-b3994c094d38\",\"transactionId\":\"a84f9af6-025d-4c68-a005-4da9cddb0874\",\"type\":{\"namespace\":\"mosip\",\"name\":\"mosip\"},\"timestamp\":\"2021-11-02T09:18:52.418Z\",\"dataShareUri\":\"http://test\",\"data\":{\"SALT\":\"Q74F5OnTZdw5qiOFp6h6Ww\",\"MODULO\":\"943\",\"expiry_timestamp\":null,\"transaction_limit\":null,\"id_hash\":\"9DCF43F9973826A8331209CAA22A8080995420D992D0BBEE2A3356077EA525E3\",\"TOKEN\":\"362737013453447806883457690320262449\",\"demoEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4GYkjXPjxZHR4MFHob_CKM9Wx0ZOpy0oA8Kcv-0kI1GEDfl070vppDaS0gG30P6QOUy5aEYY4nXffc0nqqrqdC4rzY4LdWbrxxkoyx1Q4BhNZHiA7Tm931-kjdC2YJkDFMHburu72N8CuI6wktAuhQPagWCGL2hGUkdbcFhvD8045Y9oggLfDYNH1Oaj9XIwEEvyAaHvH8mfJxQ5aiLp23mt6PA3QZ4uaVxMvprYBGR8CypGZIBKLfCCfamHsW01ae33mPFyQH1AKKIaJ1XaoeoIgJq9ocUZ292hl3rtgdOuj6eJmcrMOwpiOhHNMY0ndAuH1-RMWdY6CZ2FG-o5VI\",\"demoRankomKeyIndex\":\"4150\",\"bioEncryptedRandomKey\":\"1v87FAFPnjRzKo8mF6K715e0EXv-rnqF9_aJoN5OUp4U5vX_6IU_5l5gi_ATfr1cgICFAViR06A9LrDq8J01i_ICoHaCMqmKMBVk3B4lJ8zAyyYDbM4ztLYIDK95ozZArJuB4i3aJp7lh2XhEqn4xpSzLXJRIjKGuHckq-81IxQmozgo1eE07NlJ3-7tt9thjWujgEmJABpir893tZnxG3br9yAecqUTbnjxrXpvNRdCJm7SgwgJ-tQyE49QvDeXWw_ucXnx1SyQ99eeDafMzgc4JffrQeFCWwryo0q6TzgJ9qAm8SITAy0sc3Q3BJgddCnFH0s1GHjKPBsJBxknb_N3b5zB2yXomVn3bsKV7V-bXiC8Gf9CNj0yZf9xV-Ns\",\"bioRankomKeyIndex\":\"8678\",\"proof\":{\"signature\":\"eyJ4NWMiOlsiTUlJRHRUQ0NBcDJnQXdJQkFnSUlzNkphZWlpZE1va3dEUVlKS29aSWh2Y05BUUVMQlFBd2NERUxNQWtHQTFVRUJoTUNTVTR4Q3pBSkJnTlZCQWdNQWt0Qk1SSXdFQVlEVlFRSERBbENRVTVIUVV4UFVrVXhEVEFMQmdOVkJBb01CRWxKVkVJeEdqQVlCZ05WQkFzTUVVMVBVMGxRTFZSRlEwZ3RRMFZPVkVWU01SVXdFd1lEVlFRRERBeDNkM2N1Ylc5emFYQXVhVzh3SGhjTk1qRXhNREkyTVRRd05EVTRXaGNOTWpReE1ESTFNVFF3TkRVNFdqQitNUXN3Q1FZRFZRUUdFd0pKVGpFTE1Ba0dBMVVFQ0F3Q1MwRXhFakFRQmdOVkJBY01DVUpCVGtkQlRFOVNSVEVOTUFzR0ExVUVDZ3dFU1VsVVFqRWpNQ0VHQTFVRUN3d2FUVTlUU1ZBdFZFVkRTQzFEUlU1VVJWSWdLRXRGVWs1RlRDa3hHakFZQmdOVkJBTU1FWGQzZHk1dGIzTnBjQzVwYnkxVFNVZE9NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXJYWDhYR2tscGxrOGMyRC8zTGhWelZucTVJVGJ1a21sV2ZORnRnWUNYY1Y3d2IzWUhhaUNudWI0STVkbDZmZGxLUEVUN2t6dTllYno3VTlVVUVXVzc5VWF0NHY0WFV0bEJ1ejJ6VmVjckZpcERtLytNTU5JNEMzSXpwbmVrVlB2NUl0VjBzSzVZcGVRck5HbFh3NFI4TzlTYk9NcUE4NElqQTZsanE2enFZZlpTRzZkSnJSbFVqQS9KczdweVV6Z0t4U0pBYXdmaVFWaThXK05WTnpPdjdUTEdESjhaR3BFT1lnUkdDbjVpU21UVldtVzF5UVNhTEQrT3BlTHhkUHJocE9ZbWtMbkd2alR6aHkxQm5RWVhmVGxyeVd1b2drVzM5NUZBTW9SOEI1ekZiK0FKbHlVVm9zMU5MUEU3cWM5UDIrSDZlbURmUHNhVDNRMjRrWXZCUUlEQVFBQm8wVXdRekFTQmdOVkhSTUJBZjhFQ0RBR0FRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTOHpQL0lTNDlrOGsxblJIb05HMGZNUVQ5elJUQU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIWWlqN3p4Sy84dGdrS1czMkhRejRUVFN2d0VqazZmY1dVMWFTbkJkVzFWS2w1TGlrTXZ6OC96M0hUOEpmOW4wdVgwdlFET0M5Mnh4SitNWmU3RTNoWUJ4SFNPRHVyL3FkQ1JGRFFYUnQyMzU4OWpmSXZBQjN6ejJyakFuZ1hzTUxQRldRV2tZdnU0clJFVWFVUHNQRmp0NkhUM3lZcUJrbHJXL0NaNGxDTW9vZ1VNOGRTS1drZ0ZlTHBKbXhIMVhhZGo0R0VCazhaSTZUaVU2cGZOQ0hRMnlLanVEdC85V1kwMzFsTTJmcGh6Mmw2OUJHV2Z5MWZQNEQ3Mjl2NVR0WEM3eGlvb2ZCV3hWL28wNm8xZXRxUTFKUVpmdS9zNWRRQjZ0UEZhbVlwOTBhTmFqYjMwLzI4bkJIdnN0bllhZjIzL0d1cnNYa1dYSzBOM1pJUXhINTA9Il0sIng1dCNTMjU2IjoiYmNaX3RKSm42SXFRVUhNVnNFTlNzS2JMOXlGUGxTTzVqempWdFpJa3AwOCIsImFsZyI6IlJTMjU2In0..muzYpaSxQyjIjOdloDxhMgWj5Ljs8MLPTgZiAtDiiBt_OuaCn3L939uJBREosodYCVlnQu54MDvUoeWPbBJYtJWpm6HceCfgLSzOBnI3gv7bblJ6fcK__HzSEL4gbRaysC3tkO5yx5C0v0JR3vk_pjZV2PFz9y3vpMdxiuaqxWhUpV9qLWM4Y7JVKbzEC2EOnIZAZtkLGxViczK29F9AK10r4Z5djZ4-FYXDXFO0m24a5n5-k7n5UMOL4YL9LslZX8Odd0H8orvAv7P_I3_AmnjKcJDuU7IlQGuD4Em-Id4eFi1pA4vNCr7pUMjb_rNDngnQ43XJbRh6yA2SrU_n_w\"},\"credentialType\":\"auth\",\"protectionKey\":null}}}");
+        Map<String, Object> credentialData = new HashMap<>();
+        Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
+        credentialData.put("credentialSubject", map);
+        Mockito.when(dataShareManager.downloadObject(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean())).thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+        try {
+			ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "doProcessCredentialStoreEvent", credentialEventStore);
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
     }
 
     /**
@@ -258,6 +373,13 @@ public class CredentialStoreServiceImplTest {
     @Test
     public void retriggerCredentialIssuanceTest(){
         String requestId=null;
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "retriggerCredentialIssuance", requestId);
+    }
+    
+    @Test(expected = IdAuthRetryException.class)
+    public void retriggerCredentialIssuanceTest_exception() throws IDDataValidationException, RestServiceException{
+        String requestId="abc";
+    	doThrow(new RestServiceException(IdRepoErrorConstants.AUTHENTICATION_FAILED)).when(credentialRequestManager).retriggerCredentialIssuance(Mockito.anyString());
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "retriggerCredentialIssuance", requestId);
     }
 
