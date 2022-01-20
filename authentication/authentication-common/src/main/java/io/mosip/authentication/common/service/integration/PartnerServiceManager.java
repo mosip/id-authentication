@@ -148,8 +148,9 @@ public class PartnerServiceManager {
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
 			}
-			if (!(partnerMapping.getPolicyData().getPolicyCommenceOn().isBefore(DateUtils.getUTCCurrentDateTime())
-					&& partnerMapping.getPolicyData().getPolicyExpiresOn().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+			if (partnerMapping.getPolicyData().getPolicyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
+					|| partnerMapping.getPolicyData().getPolicyExpiresOn()
+							.isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
@@ -162,8 +163,9 @@ public class PartnerServiceManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
 			}
-			if (!(partnerMapping.getApiKeyData().getApiKeyCommenceOn().isBefore(DateUtils.getUTCCurrentDateTime())
-					&& partnerMapping.getApiKeyData().getApiKeyExpiresOn().isAfter(DateUtils.getUTCCurrentDateTime()))) {
+			if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
+					|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
+							.isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 			}
