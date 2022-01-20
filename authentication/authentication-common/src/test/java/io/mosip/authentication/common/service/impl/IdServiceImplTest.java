@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
@@ -21,12 +21,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,11 +33,8 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import nonapi.io.github.classgraph.utils.ReflectionUtils;
 
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@WebMvcTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class IdServiceImplTest {
 
 	@InjectMocks
