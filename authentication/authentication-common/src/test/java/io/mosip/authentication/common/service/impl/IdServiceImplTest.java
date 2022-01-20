@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -60,7 +59,6 @@ public class IdServiceImplTest {
 	@Mock
 	private AutnTxnRepository autntxnrepository;
 	
-//	@Ignore
 	@Test
 	public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -115,7 +113,6 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-//	@Ignore
 	@Test
 	public void getIdentityTest3() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -203,7 +200,6 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-//	@Ignore
 	@Test
 	public void processIdTypeTest() throws IdAuthenticationBusinessException, IOException {
 		String idvId = "12312312";
