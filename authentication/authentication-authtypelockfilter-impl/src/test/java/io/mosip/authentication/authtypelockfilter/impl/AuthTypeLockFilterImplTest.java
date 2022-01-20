@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
+import io.mosip.authentication.core.indauth.dto.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +25,6 @@ import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
@@ -146,5 +143,42 @@ public class AuthTypeLockFilterImplTest {
 		}
 	}
 
+	@Test(expected = IdAuthenticationFilterException.class)
+	public void validateExceptionTest() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		request.setStaticPin("123");
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> identityData = new HashMap<>();
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("TOKEN", "1122");
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.SPIN.getType());
+		status.setLocked(true);
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
+		System.out.println("1= "+authtypeStatusList);
+		Mockito.when(authTypeStatusService.fetchAuthtypeStatus("1122")).thenReturn(authtypeStatusList);
+		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+	}
+
+	@Test
+	public void validateTest() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		RequestDTO request = new RequestDTO();
+		request.setStaticPin("123");
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> identityData = new HashMap<>();
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("TOKEN", "1122");
+		AuthtypeStatus status = new AuthtypeStatus();
+		status.setAuthType(MatchType.Category.SPIN.getType());
+		status.setLocked(false);
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
+		System.out.println("1= "+authtypeStatusList);
+		Mockito.when(authTypeStatusService.fetchAuthtypeStatus("1122")).thenReturn(authtypeStatusList);
+		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+	}
 
 }
