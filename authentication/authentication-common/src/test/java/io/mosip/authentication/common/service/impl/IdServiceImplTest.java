@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
 import org.junit.Ignore;
@@ -34,6 +38,7 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import nonapi.io.github.classgraph.utils.ReflectionUtils;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
@@ -55,7 +60,7 @@ public class IdServiceImplTest {
 	@Mock
 	private AutnTxnRepository autntxnrepository;
 	
-	@Ignore
+//	@Ignore
 	@Test
 	public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -110,7 +115,7 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void getIdentityTest3() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -198,7 +203,7 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void processIdTypeTest() throws IdAuthenticationBusinessException, IOException {
 		String idvId = "12312312";
@@ -321,4 +326,38 @@ public class IdServiceImplTest {
         List<String> unencrptedAttribs = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
         assertEquals(0, unencrptedAttribs.size());
     }
+    
+    @Test
+    public void testDecryptConfiguredAttributesDemo() {
+    	String uin = "12312312";
+		Map<String, String> demoDataMap = new HashMap<String, String>();
+		demoDataMap.put("1", "11");
+		demoDataMap.put("2", "22");
+		demoDataMap.put("3", "33");
+		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,demoDataMap);
+		assertTrue(map.isEmpty());
+        
+    }
+    
+    
+    @Test
+    public void testDecryptConfiguredAttributesBio() throws IdAuthenticationBusinessException {
+    	String uin = "12312312";
+    	Map<String, String> dataMap = new HashMap<String, String>();
+		dataMap.put("1", "11");
+		dataMap.put("2", "22");
+		dataMap.put("3", "33");
+		List<String> list = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
+		List<String> zkUnEncryptedAttributes = list.stream().map(String::toLowerCase).collect(Collectors.toList());
+		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
+				.stream()
+				.collect(Collectors.partitioningBy(entry -> 
+							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+				Collectors.toMap(Entry::getKey, Entry::getValue)));
+		Map<String, String> dataToDecrypt = partitionedMap.get(true);
+		Mockito.when(securityManager.zkDecrypt(uin, dataToDecrypt)).thenReturn(dataToDecrypt);
+		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,dataMap);
+		assertFalse(map.isEmpty());
+    }
+    
 }
