@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -301,7 +302,7 @@ public class IdServiceImplTest {
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
-		LocalDateTime time = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
 		entity.setExpiryTimestamp(time);
 		byte[] bioData = {};
 		entity.setBiometricData(bioData);
