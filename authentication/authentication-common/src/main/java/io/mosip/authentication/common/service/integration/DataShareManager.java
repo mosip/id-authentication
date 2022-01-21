@@ -46,32 +46,46 @@ public class DataShareManager {
 	@Value("${" + IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED + ":true}")
 	private boolean thumbprintValidationRequired;
 
-	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequred) throws  RestServiceException, IdAuthenticationBusinessException {
+	@SuppressWarnings("unchecked")
+	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequired) throws  RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restHelper.requestSync(request);
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
-		byte[] data;
-		if(errorOpt.isEmpty()) {
-			if(decryptionRequred) {
-				//Decrypt data
-				data = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null, thumbprintValidationRequired);
-			} else {
-				if(clazz.equals(String.class)) {
-					return (R) responseStr;
+		
+		if (errorOpt.isEmpty()) {
+			R result;
+			if (decryptionRequired) {
+				// Decrypt data
+				byte[] dataBytes = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null,
+						thumbprintValidationRequired);
+				if (clazz.equals(String.class)) {
+					result = (R) new String(dataBytes);
 				} else {
-					data = responseStr.getBytes();
+					result = readToObject(clazz, dataBytes);
+				}
+			} else {
+				if (clazz.equals(String.class)) {
+					result = (R) responseStr;
+				} else {
+					byte[] dataBytes = responseStr.getBytes();
+					result = readToObject(clazz, dataBytes);
 				}
 			}
 			
-			try {
-				return mapper.readValue(data, clazz);
-			} catch (IOException e) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-			}
+			return result;
+			
 		} else {
 			//Unchecked exception is thrown so that retry will not be performed on this.
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() + " : " + errorOpt.get().toString());
+		}
+	}
+
+	private <R> R readToObject(Class<R> clazz, byte[] dataBytes) throws IdAuthenticationBusinessException {
+		try {
+			return mapper.readValue(dataBytes, clazz);
+		} catch (IOException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 	
