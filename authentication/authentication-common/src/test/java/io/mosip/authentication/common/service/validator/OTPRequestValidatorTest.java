@@ -94,12 +94,12 @@ public class OTPRequestValidatorTest {
 	/**
 	 * Test valid uin.
 	 */
-	@Ignore
 	@Test
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
+		OtpRequestDTO.setVersion("2.0");
 		OtpRequestDTO.setTransactionID("1234567890");
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				// offset
@@ -115,7 +115,8 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test invalid uin.
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void testInvalidUin() throws IdAuthenticationBusinessException {
@@ -134,9 +135,9 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test valid vid.
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Ignore
 	@Test
 	public void testValidVid() throws IdAuthenticationBusinessException {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -157,7 +158,8 @@ public class OTPRequestValidatorTest {
 
 	/**
 	 * Test invalid vid.
-	 * @throws IdAuthenticationBusinessException 
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
 	public void testInvalidVid() throws IdAuthenticationBusinessException {
@@ -181,8 +183,9 @@ public class OTPRequestValidatorTest {
 	public void testTimeout() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setRequestTime(new Date(LocalDate.of(2017, 1, 1).toEpochDay()).toInstant().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+		OtpRequestDTO.setRequestTime(
+				new Date(LocalDate.of(2017, 1, 1).toEpochDay()).toInstant().atOffset(ZoneOffset.of("+0530"))
+						.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		OtpRequestDTO.setId("id");
 		ArrayList<String> channelList = new ArrayList<String>();
@@ -214,13 +217,14 @@ public class OTPRequestValidatorTest {
 	/**
 	 * Test invalid ver.
 	 */
-	@Ignore
 
 	@Test
 	public void testInvalidVer() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestDTO.setRequestTime(Instant.now().toString());
+		otpRequestDTO.setTransactionID("123");
+		otpRequestDTO.setIndividualIdType("Demo");
 		otpRequestDTO.setId("id");
 		otpRequestDTO.setIndividualId("5371843613598211");
 		otpRequestDTO.setVersion("1.12");
@@ -279,7 +283,6 @@ public class OTPRequestValidatorTest {
 	/**
 	 * Test otp channel.
 	 */
-	@Ignore
 	@Test
 	public void TestOtpChannel() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
@@ -295,7 +298,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setOtpChannel(channelList);
 		otpRequestDTO.setTransactionID("1234567890");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	/**
@@ -360,7 +363,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		ReflectionTestUtils.invokeMethod(otpRequestValidator, "validateRequestTimedOut", "test", errors);
-		
+
 	}
 
 }
