@@ -1,8 +1,10 @@
 package io.mosip.authentication.common.service.validator;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -31,6 +33,8 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.factory.AuditRequestFactory;
+import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
@@ -64,7 +68,7 @@ public class ValidatorTest {
 	@Mock
 	Errors error;
 
-	@Autowired
+	@InjectMocks
 	EnvUtil env;
 
 	@Mock
@@ -91,11 +95,20 @@ public class ValidatorTest {
 	
 	@Mock
 	private IdObjectValidator IdObjectValidator;
+	
+	@Mock
+	RestRequestFactory restFactory;
+	
+	private static String  dateTimePattern;
+	
+	private Long requestTimeAdjustmentSeconds;
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(authRequestValidator, "env", env);
+		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idValidator", idValidator);
+		ReflectionTestUtils.setField(env, "dateTimePattern", "yyyy-MM-dd'T'HH:mm:ss.SSS");
+		ReflectionTestUtils.setField(env, "requestTimeAdjustmentSeconds", 30L);
 	}
 
 	@Test
@@ -122,7 +135,7 @@ public class ValidatorTest {
 		authRequestDTO.setIndividualId(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
 	}
 
 	@Test
@@ -131,7 +144,7 @@ public class ValidatorTest {
 		authRequestDTO.setIndividualId("");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		assertFalse(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
 
 	@Test
@@ -140,7 +153,7 @@ public class ValidatorTest {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-002")));
+		assertFalse(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-002")));
 	}
 
 	@Test
@@ -150,7 +163,7 @@ public class ValidatorTest {
 		Mockito.when(idValidator.validateVID(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-004")));
+		assertFalse(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-004")));
 	}
 
 	@Test
@@ -159,7 +172,7 @@ public class ValidatorTest {
 		authRequestDTO.setIndividualIdType(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		assertFalse(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
 
 	@Test
@@ -168,9 +181,9 @@ public class ValidatorTest {
 		authRequestDTO.setIndividualIdType("");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
+		assertFalse(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-
+	
 	@Test
 	public void validateTxnIdNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -838,8 +851,7 @@ public class ValidatorTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId("3926509647");
 		authRequestDTO.setIndividualIdType("UIN");
-		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+		authRequestDTO.setRequestTime(LocalDateTime.now().toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		DataDTO dataDTO = new DataDTO();// DataDTO
@@ -857,14 +869,12 @@ public class ValidatorTest {
 		dataDTO.setBioType("FACE");
 		dataDTO.setBioValue(
 				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
-		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+		dataDTO.setTimestamp(LocalDateTime.now().toString());
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		RequestDTO reqDTO = new RequestDTO();// RequestDTO
 		reqDTO.setBiometrics(Collections.singletonList(bioIdentityInfoDTO));
-		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+		reqDTO.setTimestamp(LocalDateTime.now().toString());
 		authRequestDTO.setRequest(reqDTO);
 		return authRequestDTO;
 	}
