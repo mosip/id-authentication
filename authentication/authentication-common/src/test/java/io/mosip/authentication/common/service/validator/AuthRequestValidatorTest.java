@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -41,6 +42,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -125,12 +127,12 @@ public class AuthRequestValidatorTest {
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testFingerprintcount() {
 		int afc = 10;
 		int fc = authRequestValidator.getMaxFingerCount();
-		assertSame(afc,fc);
+		assertSame(afc, fc);
 	}
 
 	@Test
@@ -140,7 +142,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(null, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidUin() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -186,7 +188,7 @@ public class AuthRequestValidatorTest {
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
-		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
+		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng", "fra", "ara"));
 		authRequestValidator.validate(authRequestDTO, errors);
 		System.err.println(errors.getAllErrors());
 		assertFalse(errors.hasErrors());
@@ -238,7 +240,6 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testValidVid() throws IdAuthenticationBusinessException {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -280,7 +281,7 @@ public class AuthRequestValidatorTest {
 		value.add("dateOfBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -355,11 +356,10 @@ public class AuthRequestValidatorTest {
 	public void testInvalidTimestamp3() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateRequestTimedOut",
-						Instant.now().minus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
-								.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString(),
-						errors);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut",
+				Instant.now().minus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
+						.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString(),
+				errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -443,7 +443,6 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testValidRequest() throws IdAuthenticationBusinessException {
 		Mockito.when(idValidator.validateUIN(Mockito.anyString())).thenReturn(Boolean.TRUE);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -508,7 +507,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
@@ -1124,6 +1123,34 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
+		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFinger = new DataDTO();
+		dataDTOFinger.setBioValue("finger");
+		dataDTOFinger.setBioSubType("Thumb");
+		dataDTOFinger.setBioType(BioAuthType.FGR_IMG.getType());
+		fingerValue.setData(dataDTOFinger);
+		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOIris = new DataDTO();
+		dataDTOIris.setBioValue("iris img");
+		dataDTOIris.setBioSubType("left");
+		dataDTOIris.setBioType(BioAuthType.IRIS_IMG.getType());
+		irisValue.setData(dataDTOIris);
+		BioIdentityInfoDTO faceValue = new BioIdentityInfoDTO();
+		DataDTO dataDTOFace = new DataDTO();
+		dataDTOFace.setBioValue("face img");
+		dataDTOFace.setBioSubType("Thumb");
+		dataDTOFace.setBioType(BioAuthType.FACE_IMG.getType());
+		faceValue.setData(dataDTOFace);
+		List<BioIdentityInfoDTO> fingerIdentityInfoDtoList = new ArrayList<BioIdentityInfoDTO>();
+		fingerIdentityInfoDtoList.add(fingerValue);
+		fingerIdentityInfoDtoList.add(irisValue);
+		fingerIdentityInfoDtoList.add(faceValue);
+
+		RequestDTO request = new RequestDTO();
+		request.setOtp("123456");
+		request.setTimestamp("1");
+		request.setBiometrics(fingerIdentityInfoDtoList);
+		authRequestDTO.setRequest(request);
 		return authRequestDTO;
 	}
 
@@ -1220,7 +1247,7 @@ public class AuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
-		
+
 		BioIdentityInfoDTO bioIdentityDto1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		data1.setBioValue("adsadas");
@@ -1239,8 +1266,8 @@ public class AuthRequestValidatorTest {
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream().anyMatch(
+				err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
 	}
 
 	@Test
@@ -1273,8 +1300,8 @@ public class AuthRequestValidatorTest {
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream().anyMatch(
+				err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
 	}
 
 	@Test
@@ -1346,10 +1373,10 @@ public class AuthRequestValidatorTest {
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		authRequestDTO.setRequestTime(timestamp);
-		
+
 		data.setTimestamp(timestamp);
 		digitalId.setDateTime(timestamp);
-		
+
 		authRequestDTO.setTransactionID("1234567890");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
@@ -1396,10 +1423,10 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
-		
+
 		data.setTimestamp(timestamp);
 		digitalId.setDateTime(timestamp);
-		
+
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
 	}
@@ -1542,10 +1569,10 @@ public class AuthRequestValidatorTest {
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		authRequestDTO.setRequestTime(timestamp);
 		authRequestDTO.setTransactionID("1234567890");
-		
+
 		data.setTimestamp(timestamp);
 		digitalId.setDateTime(timestamp);
-		
+
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
@@ -1590,10 +1617,10 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setTransactionID("1234567890");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		request.setTimestamp(timestamp);
-		
+
 		data.setTimestamp(timestamp);
 		digitalId.setDateTime(timestamp);
-		
+
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().isEmpty());
@@ -1603,25 +1630,21 @@ public class AuthRequestValidatorTest {
 	public void TestValidateSuccessiveBioSegmentTimestamp_emptyBiometricsList() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						List.of(),
-						errors, 0, null);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", List.of(),
+				errors, 0, null);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_singleBio_null_timestamp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		List<BioIdentityInfoDTO> bioIds = List.of(new BioIdentityInfoDTO());
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, 0, null);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				0, null);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_singleBio_non_null_timestamp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1633,44 +1656,40 @@ public class AuthRequestValidatorTest {
 		bioIdentityInfoDTO.setData(data);
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, 0, null);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				0, null);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_same_timestamp_index0() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		data.setTimestamp(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		String timestamp1 = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
 		data1.setTimestamp(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, 0, null);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				0, null);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_same_timestamp_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1681,7 +1700,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1691,21 +1710,19 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp1);
 		digId1.setDateTime(timestamp);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index));
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				index, bioIds.get(index));
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_min_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1716,7 +1733,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1726,21 +1743,19 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp1);
 		digId1.setDateTime(timestamp);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index));
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				index, bioIds.get(index));
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_max_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1751,7 +1766,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1761,21 +1776,19 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp1);
 		digId1.setDateTime(timestamp);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index));
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				index, bioIds.get(index));
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_morethan_allowed_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1786,7 +1799,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1797,31 +1810,32 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp1);
 		digId1.setDateTime(timestamp);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index));
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				index, bioIds.get(index));
 		assertTrue(errors.hasErrors());
-		assertTrue(((FieldError)errors.getAllErrors().get(0)).getCode().equals(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode()));
+		assertTrue(((FieldError) errors.getAllErrors().get(0)).getCode()
+				.equals(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode()));
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
 			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
-			AuthResponseDTO resp = (AuthResponseDTO)IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
-			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
-			assertEquals(((ActionableAuthError)resp.getErrors().get(0)).getActionMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
+			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
+			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(
+					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
+			assertEquals(((ActionableAuthError) resp.getErrors().get(0)).getActionMessage(), String.format(
+					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
 		}
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveBioSegmentTimestamp_multiBio_negative_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1832,7 +1846,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1842,33 +1856,34 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp1);
 		digId1.setDateTime(timestamp);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		Long maxAllowedTimeDiff = EnvUtil.getBioSegmentTimeDiffAllowed();
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index));
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveBioSegmentTimestamp", bioIds, errors,
+				index, bioIds.get(index));
 		assertTrue(errors.hasErrors());
-		assertTrue(((FieldError)errors.getAllErrors().get(0)).getCode().equals(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode()));
+		assertTrue(((FieldError) errors.getAllErrors().get(0)).getCode()
+				.equals(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorCode()));
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
 			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
-			AuthResponseDTO resp = (AuthResponseDTO)IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
-			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
-			assertEquals(((ActionableAuthError)resp.getErrors().get(0)).getActionMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
+			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
+			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(
+					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
+			assertEquals(((ActionableAuthError) resp.getErrors().get(0)).getActionMessage(), String.format(
+					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
 		}
 	}
-		
+
 	@Test
 	public void TestValidateSuccessiveDigitalIdTimestamp_multiBio_same_timestamp_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1879,7 +1894,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1889,23 +1904,21 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp);
 		digId1.setDateTime(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		Long maxAllowedTimeDiff = EnvUtil.getBioSegmentTimeDiffAllowed();
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index), maxAllowedTimeDiff);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp", bioIds, errors,
+				index, bioIds.get(index), maxAllowedTimeDiff);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveDigitalIdTimestamp_multiBio_min_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1916,7 +1929,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1926,23 +1939,21 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp);
 		digId1.setDateTime(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		Long maxAllowedTimeDiff = EnvUtil.getBioSegmentTimeDiffAllowed();
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index), maxAllowedTimeDiff);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp", bioIds, errors,
+				index, bioIds.get(index), maxAllowedTimeDiff);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveDigitalIdTimestamp_multiBio_max_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1953,7 +1964,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -1963,22 +1974,20 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp);
 		digId1.setDateTime(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
 		Long maxAllowedTimeDiff = EnvUtil.getBioSegmentTimeDiffAllowed();
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index), maxAllowedTimeDiff);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp", bioIds, errors,
+				index, bioIds.get(index), maxAllowedTimeDiff);
 		assertFalse(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveDigitalIdTimestamp_multiBio_morethan_allowed_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -1989,7 +1998,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -2000,31 +2009,34 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp);
 		digId1.setDateTime(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index), maxAllowedTimeDiff);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp", bioIds, errors,
+				index, bioIds.get(index), maxAllowedTimeDiff);
 		assertTrue(errors.hasErrors());
-		assertTrue(((FieldError)errors.getAllErrors().get(0)).getCode().equals(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode()));
+		assertTrue(((FieldError) errors.getAllErrors().get(0)).getCode()
+				.equals(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode()));
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
 			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
-			AuthResponseDTO resp = (AuthResponseDTO)IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
-			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
-			assertEquals(((ActionableAuthError)resp.getErrors().get(0)).getActionMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
+			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
+			assertEquals(resp.getErrors().get(0).getErrorMessage(),
+					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(),
+							"" + maxAllowedTimeDiff));
+			assertEquals(((ActionableAuthError) resp.getErrors().get(0)).getActionMessage(),
+					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getActionMessage(),
+							"" + maxAllowedTimeDiff));
 		}
 	}
-	
+
 	@Test
 	public void TestValidateSuccessiveDigitalIdTimestamp_multiBio_negative_timediff_index1() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
 		DataDTO data = new DataDTO();
 		DigitalId digId = new DigitalId();
@@ -2035,7 +2047,7 @@ public class AuthRequestValidatorTest {
 		data.setTimestamp(timestamp);
 		digId.setDateTime(timestamp);
 		bioIdentityInfoDTO.setData(data);
-		
+
 		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		DigitalId digId1 = new DigitalId();
@@ -2045,29 +2057,32 @@ public class AuthRequestValidatorTest {
 		data1.setTimestamp(timestamp);
 		digId1.setDateTime(timestamp1);
 		bioIdentityInfoDTO1.setData(data1);
-		
+
 		Long maxAllowedTimeDiff = EnvUtil.getBioSegmentTimeDiffAllowed();
-		
+
 		List<BioIdentityInfoDTO> bioIds = List.of(bioIdentityInfoDTO, bioIdentityInfoDTO1);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 1;
-		ReflectionTestUtils
-				.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp",
-						bioIds,
-						errors, index, bioIds.get(index), maxAllowedTimeDiff);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateSuccessiveDigitalIdTimestamp", bioIds, errors,
+				index, bioIds.get(index), maxAllowedTimeDiff);
 		assertTrue(errors.hasErrors());
-		assertTrue(((FieldError)errors.getAllErrors().get(0)).getCode().equals(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode()));
+		assertTrue(((FieldError) errors.getAllErrors().get(0)).getCode()
+				.equals(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorCode()));
 		try {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
 			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
-			AuthResponseDTO resp = (AuthResponseDTO)IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
-			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
-			assertEquals(((ActionableAuthError)resp.getErrors().get(0)).getActionMessage(), String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getActionMessage(), "" + maxAllowedTimeDiff));
+			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
+			assertEquals(resp.getErrors().get(0).getErrorMessage(),
+					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(),
+							"" + maxAllowedTimeDiff));
+			assertEquals(((ActionableAuthError) resp.getErrors().get(0)).getActionMessage(),
+					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getActionMessage(),
+							"" + maxAllowedTimeDiff));
 		}
 	}
-	
+
 	@Test
 	public void testValidateBiometrics() {
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
@@ -2077,10 +2092,10 @@ public class AuthRequestValidatorTest {
 		biometrics.add(bioIdentityDto);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestValidator.validateBiometrics(biometrics,"abpnx", errors);
+		authRequestValidator.validateBiometrics(biometrics, "abpnx", errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testvalidateBioTxnIdEmptyBioTxnId() {
 		String BioTxnId = "";
@@ -2088,12 +2103,11 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 100;
-		ReflectionTestUtils
-		.invokeMethod(authRequestValidator, "validateBioTxnId",
-				authTxnId,errors, index, BioTxnId);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioTxnId", authTxnId, errors, index, BioTxnId);
 		assertTrue(errors.hasErrors());
-		
+
 	}
+
 	@Test
 	public void testvalidateBioTxnId() throws IdAuthenticationBusinessException {
 		String BioTxnId = "Something";
@@ -2101,28 +2115,24 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		int index = 100;
-		ReflectionTestUtils
-		.invokeMethod(authRequestValidator, "validateBioTxnId",
-				authTxnId,errors, index, BioTxnId);
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioTxnId", authTxnId, errors, index, BioTxnId);
 		assertTrue(errors.hasErrors());
-		
+
 	}
-	
-	
+
 	@Test
 	public void testnullCheckOnBioTimestampAndDigitalIdTimestamp() {
 		DataDTO data = new DataDTO();
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils
-		.invokeMethod(authRequestValidator, "nullCheckOnBioTimestampAndDigitalIdTimestamp",
-				errors,101,data, "param");
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "nullCheckOnBioTimestampAndDigitalIdTimestamp", errors,
+				101, data, "param");
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testnullCheckDigitalIdAndTimestamp() {
-		DigitalId digitalId =  new DigitalId();
+		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
 		digitalId.setModel("");
@@ -2133,15 +2143,21 @@ public class AuthRequestValidatorTest {
 		Boolean flag = authRequestValidator.nullCheckDigitalIdAndTimestamp(digitalId, errors, "param");
 		assertFalse(flag);
 	}
-	
+
 	@Test
 	public void testnullCheckDigitalIdAndTimestampNull() {
-		DigitalId digitalId =  new DigitalId();
+		DigitalId digitalId = new DigitalId();
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Boolean flag = authRequestValidator.nullCheckDigitalIdAndTimestamp(null, errors, "param");
 		assertFalse(flag);
 		assertTrue(errors.hasErrors());
 	}
-	
+
+	@Test
+	public void validateDeviceDetailsTest() {
+		authRequestValidator.validateDeviceDetails(getAuthRequestDto(), error);
+		assertFalse(error.hasErrors());
+	}
+
 }
