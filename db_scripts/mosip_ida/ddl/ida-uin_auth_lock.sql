@@ -8,10 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
---  Sep-2020            Sadanandegowda DM   removed uin,uin_hash added token_id
---  Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
---  Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
--- Sep-2021		Ram Bhatt	    Added index to token_id column
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.uin_auth_lock | type: TABLE --
 -- DROP TABLE IF EXISTS ida.uin_auth_lock CASCADE;

@@ -1,18 +1,3 @@
--- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
--- Table Name 	: ida.policy_data
-
--- Purpose    	: 
---           
--- Create By   	: Ram Bhatt
--- Created Date	: Apr-2021
--- 
--- Modified Date        Modified By         Comments / Remarks
--- ------------------------------------------------------------------------------------------
--- Sep-2021		Ram Bhatt	    Added index to policy_id column
--- ------------------------------------------------------------------------------------------
--- object: ida.policy_data | type: TABLE --
--- DROP TABLE IF EXISTS ida.policy_data CASCADE;
 CREATE TABLE ida.policy_data (
 	policy_id character varying(36) NOT NULL,
 	policy_data bytea NOT NULL,
@@ -30,7 +15,5 @@ CREATE TABLE ida.policy_data (
 	CONSTRAINT policy_data_pk PRIMARY KEY (policy_id)
 
 );
--- ddl-end --
---index section starts----
-CREATE INDEX ind_pd_pid ON ida.policy_data (policy_id);
---index section ends------
+
+CREATE INDEX ind_pl_pid ON ida.policy_data (policy_id);

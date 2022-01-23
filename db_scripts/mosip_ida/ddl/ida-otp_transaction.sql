@@ -8,9 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
--- Sep-2021		Ram Bhatt	    Added index to otp_hash column
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.otp_transaction | type: TABLE --
 -- DROP TABLE IF EXISTS ida.otp_transaction CASCADE;
@@ -34,7 +32,7 @@ CREATE TABLE ida.otp_transaction(
 );
 -- ddl-end --
 --index section starts----
-CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash,status_code);
+CREATE INDEX ind_otphsh ON ida.otp_transaction (otp_hash);
 --index section ends------
 COMMENT ON TABLE ida.otp_transaction IS 'OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.';
 -- ddl-end --
