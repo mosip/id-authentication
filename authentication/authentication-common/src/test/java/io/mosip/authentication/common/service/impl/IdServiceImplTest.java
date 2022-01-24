@@ -1,26 +1,29 @@
 package io.mosip.authentication.common.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,10 +34,9 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.kernel.core.util.DateUtils;
 
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@WebMvcTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class IdServiceImplTest {
 
 	@InjectMocks
@@ -52,7 +54,6 @@ public class IdServiceImplTest {
 	@Mock
 	private AutnTxnRepository autntxnrepository;
 	
-	@Ignore
 	@Test
 	public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -90,7 +91,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, null, null, 1 };
 
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
@@ -107,7 +107,6 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Ignore
 	@Test
 	public void getIdentityTest3() throws IdAuthenticationBusinessException, IOException {
 		String uin = "12312312";
@@ -142,7 +141,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
 		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
@@ -187,7 +185,6 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		byte[] demographicData = {};
-		LocalDateTime ltime = LocalDateTime.now();
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
 		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
@@ -195,7 +192,6 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Ignore
 	@Test
 	public void processIdTypeTest() throws IdAuthenticationBusinessException, IOException {
 		String idvId = "12312312";
@@ -306,10 +302,50 @@ public class IdServiceImplTest {
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
-		LocalDateTime time = LocalDateTime.now();
+		LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
 		entity.setExpiryTimestamp(time);
 		byte[] bioData = {};
 		entity.setBiometricData(bioData);
 		return entity;
 	}
+    
+    @Test
+    public void Test_getZkUnEncryptedAttributes() {
+        List<String> unencrptedAttribs = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
+        assertEquals(0, unencrptedAttribs.size());
+    }
+    
+    @Test
+    public void testDecryptConfiguredAttributesDemo() {
+    	String uin = "12312312";
+		Map<String, String> demoDataMap = new HashMap<String, String>();
+		demoDataMap.put("1", "11");
+		demoDataMap.put("2", "22");
+		demoDataMap.put("3", "33");
+		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,demoDataMap);
+		assertTrue(map.isEmpty());
+        
+    }
+    
+    
+    @Test
+    public void testDecryptConfiguredAttributesBio() throws IdAuthenticationBusinessException {
+    	String uin = "12312312";
+    	Map<String, String> dataMap = new HashMap<String, String>();
+		dataMap.put("1", "11");
+		dataMap.put("2", "22");
+		dataMap.put("3", "33");
+		List<String> list = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
+		List<String> zkUnEncryptedAttributes = list.stream().map(String::toLowerCase).collect(Collectors.toList());
+		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
+				.stream()
+				.collect(Collectors.partitioningBy(entry -> 
+							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+				Collectors.toMap(Entry::getKey, Entry::getValue)));
+		Map<String, String> dataToDecrypt = partitionedMap.get(true);
+		Mockito.when(securityManager.zkDecrypt(uin, dataToDecrypt)).thenReturn(dataToDecrypt);
+		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,dataMap);
+		assertFalse(map.isEmpty());
+    }
+    
 }

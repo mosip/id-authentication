@@ -261,8 +261,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			List<String> identityBioAttributes = getBioAttributeNames(type, matchType, idEntity);
 			for (String bioAttribute : identityBioAttributes) {
 				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
-				if (!identityValue.isEmpty()) {
-					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
+				if (identityValue.isPresent()) {
+					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue.get()));
 				} else {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
@@ -314,10 +314,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
-			MatchType matchType, Optional<String> identityValue) throws IdAuthenticationBusinessException {
+			MatchType matchType, String identityValue) throws IdAuthenticationBusinessException {
 		Map<String, String> bdbBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.get().getBytes(), type.getName(),
+			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.getBytes(), type.getName(),
 					null);
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),

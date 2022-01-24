@@ -32,14 +32,12 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -56,13 +54,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@Import(EnvUtil.class)
-@Ignore
+@WebMvcTest
+@AutoConfigureMockMvc
 public class BaseIDAFilterTest {
 
-	@Autowired
+	@Mock
 	EnvUtil env;
 
 	@Mock
@@ -136,6 +133,8 @@ public class BaseIDAFilterTest {
 		ReflectionTestUtils.setField(baseIDAFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(baseIDAFilter, "keyManager", keyManager);
 		ReflectionTestUtils.setField(baseIDAFilter, "requestResponsConsumerUtil", requestResponsConsumerUtil);
+		
+		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 	}
 
 	@Test

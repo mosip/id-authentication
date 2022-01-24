@@ -2,7 +2,9 @@ package io.mosip.authentication.common.service.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -34,9 +36,12 @@ import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.model.Type;
@@ -348,7 +353,6 @@ public class PartnerServiceManagerTest {
 		event.setTransactionId("1234567895");
 		eventModel.setEvent(event);
 		eventModel.setPublishedOn("2021-10-26T04:30:32.250Z");
-		eventModel.setPublisher("PartnerManagementServiceImpl");
 		eventModel.setTopic("APIKEY_APPROVED");
 		Mockito.when(securityManager.getUser()).thenReturn("IdaUser");
 		partnerServiceManager.handleApiKeyApproved(eventModel);
@@ -488,7 +492,6 @@ public class PartnerServiceManagerTest {
 		event.setTransactionId("1234557892");
 		eventModel.setEvent(event);
 		eventModel.setPublishedOn("2021-10-26T04:30:32.250Z");
-		eventModel.setPublisher("PartnerManagementServiceImpl");
 		eventModel.setTopic("POLICY_UPDATED");
 		
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
@@ -545,6 +548,477 @@ public class PartnerServiceManagerTest {
 		mispLicenseData.setMispExpiresOn(plusHours);
 		
 		partnerServiceManager.updateMispLicenseData(eventModel);		
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_emptyArgs() {
+		try {
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.empty(),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_partnerMappingDeleted() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			partnerMappingData.setDeleted(true);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_partnerDataDeleted() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setDeleted(true);
+			partnerMappingData.setPartnerData(partnerData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_partnerDataInactive() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("INACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_policyDeleted() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setDeleted(true);
+			partnerMappingData.setPolicyData(policyData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.INVALID_POLICY_ID.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_policyInactive() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("INACTIVE");
+			partnerMappingData.setPolicyData(policyData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_policyCommenceNotBefore() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_policyExpiryNotAfter() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_apikeyDeleted() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setDeleted(true);
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_apikeyInactive() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("INACTIVE");
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_apikeyCommenceNotBefore() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_apikeyExpiryNotAfter() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_mispLicenseKeyEmpty() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.empty());
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_mispLicenseKeyDeleted() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			MispLicenseData mispLicenseData = new MispLicenseData();
+			mispLicenseData.setDeleted(true);
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.of(mispLicenseData ));
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_mispLicenseInactive() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			MispLicenseData mispLicenseData = new MispLicenseData();
+			mispLicenseData.setMispStatus("INACTIVE");
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.of(mispLicenseData ));
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_mispLicenseCommenseOnIsNotBefore() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			MispLicenseData mispLicenseData = new MispLicenseData();
+			mispLicenseData.setMispStatus("ACTIVE");
+			mispLicenseData.setMispCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.of(mispLicenseData ));
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
+	}
+	
+	@Test
+	public void Test_validatePartnerMappingDetails_mispLicenseExpiryIsNotAfter() {
+		try {
+			PartnerMapping partnerMappingData = new PartnerMapping();
+			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerStatus("ACTIVE");
+			partnerMappingData.setPartnerData(partnerData1);
+			PolicyData policyData1 = new PolicyData();
+			policyData1.setPolicyStatus("ACTIVE");
+			
+			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setPolicyData(policyData1);
+			
+			ApiKeyData apiKeyData1 = new ApiKeyData();
+			apiKeyData1.setApiKeyStatus("ACTIVE");
+			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			
+			partnerMappingData.setApiKeyData(apiKeyData1 );
+			MispLicenseData mispLicenseData = new MispLicenseData();
+			mispLicenseData.setMispStatus("ACTIVE");
+			mispLicenseData.setMispCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			
+			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
+					Optional.of(mispLicenseData ));
+		} catch (UndeclaredThrowableException e) {
+			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
+				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
+						.getUndeclaredThrowable();
+				assertEquals(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
+						idAuthenticationBaseException.getErrorCode());
+			}
+		}
 	}
 }
 
