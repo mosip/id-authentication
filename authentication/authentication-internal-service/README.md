@@ -1,6 +1,6 @@
 # Internal Authentication Service
 ## About
-Authentication Service is used by Internal MOSIP modules such as Registration Processor, Registration Client and Resident to authenticate an individual's UIN/VID using one ore more authentication types.
+Internal Authentication Service is used by Internal MOSIP modules such as Registration Processor, Registration Client and Resident to authenticate an individual's UIN/VID using one ore more authentication types.
 
 ## Authentication Types:
 * Below are the authentication types supported in MOSIP, which can be used seperately or combined in any combination, 
