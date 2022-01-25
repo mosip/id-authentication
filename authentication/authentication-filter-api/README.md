@@ -2,7 +2,7 @@
 ## About
 Authentication Filter API is the component that have the API definition for the Authentication Filters. 
 
-# Authentication Filter
+## Authentication Filter
 Authentication filters are [configurable]() filters that are applied before performing actual authentication (OTP/Demograpic/Biometric) of an individual. 
 This can be separately configured for [Authentication Service]() and [Internal Authentication Service]().
 Below are such authentication filters implemented, 
