@@ -2,10 +2,9 @@
 ID Authentication (IDA) is the authentication module of MOSIP, used to authenticate Individuals using their UIN/VID, via a Partner. 
 
 List of authentication types supported by MOSIP are - 
-1. OTP Auth
-2. Demographic Auth
-3. Biometric Auth (includes Fingerprint, IRIS and Face)
-4. Static Pin Auth
+1. OTP Authentication
+2. Demographic Authentication
+3. Biometric Authentication (includes Fingerprint, IRIS and Face)
 
 Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-API)   
 
