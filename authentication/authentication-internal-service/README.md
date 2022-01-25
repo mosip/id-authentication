@@ -36,7 +36,7 @@ GET /authTransactions/individualId/{ID}
 ## Dependencies
 * Kernal Notification Service - for sending notifications for Authentication Success/Failure
 * Kernel Audit Service
-* Keycloak serivce - to get authentication token for connecting to the above kernel services
+* Keycloak serivce - To verify authentication token in incoming request, and to get authentication token for connecting to the above kernel services
 * Websub - for getting events for Credential data/ IDentity data/ Partner data/ Master data updates.
 * Bio-SDK HTTP service - for biometric authentication
 * HSM - for retrieving encryption/decryption keys.
