@@ -33,7 +33,7 @@ POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-
 * E-KYC
 
 ```
-POST /idauthentication/v1/ekyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
+POST /idauthentication/v1/kyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
 ```
 # Callbacks for Websub:
 * Credential Issuance callback - to process websub message sent from Credential Service
