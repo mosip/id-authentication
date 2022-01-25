@@ -15,7 +15,13 @@ Authentication Service is used by Authentication/E-KYC Partners
   2. Iris
   3. Face
 
-* These authentication can be allowed/disallowed/mandated by the [configuraion]() and the [Authentication/E-KYC Partner's Policy]().
+* Above authentication types can be allowed/disallowed/mandated by the [configuraion]() and the [Authentication/E-KYC Partner's Policy]().
+
+## Partner/MISP validation:
+* Below partner/MISP data are validated before processing the authentication request:
+  1. MISP License Key
+  2. Partner ID
+  3. Partner API Key
 
 ## Endpoints:
 * Authentication:
