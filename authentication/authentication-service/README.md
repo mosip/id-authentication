@@ -6,7 +6,7 @@ Authentication Service is used by Authentication/E-KYC Partners
 
 ## Authentication Types:
 * Below are the authentication types supported in MOSIP, which can be used seperately or combined in any combination, 
-  1. OTP Authentication 
+  1. OTP Authentication. **Note:** This service only deals with authentication of individual's OTP. OTP Request is done using the [OTP Request Service]()
   2. Demographic Authentication - Name, Date of Birth, Age, Gender, Address, Full Address, etc...
   3. Biometric Authentication
   
