@@ -18,5 +18,24 @@ Authentication Service is used by Authentication/E-KYC Partners
 * These authentication can be allowed/disallowed/mandated by the [configuraion]() and the [Authentication/E-KYC Partner's Policy]().
 
 ## Endpoints:
-* POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
-* POST /idauthentication/v1/ekyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
+* Authentication:
+
+```
+POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
+```
+
+* E-KYC
+
+```
+POST /idauthentication/v1/ekyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
+```
+
+# Dependencies
+* Kernal Notification Service - for sending notifications for Authentication Success/Failure
+* Kernel Audit Service
+* Keycloak serivce - to get authentication token for connecting to the above kernel services
+* Websub - for getting events for Credential data/ IDentity data/ Partner data/ Master data updates.
+* Bio-SDK HTTP service - for biometric authentication
+* HSM - for retrieving encryption/decryption keys.
+
+
