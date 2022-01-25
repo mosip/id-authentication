@@ -8,4 +8,4 @@ This can be separately configured for [Authentication Service]() and [Internal A
 Below are such authentication filters implemented, 
 * [Child Authentication filter]() - used to validate if an individual is child, and if so disallow some [configured]() authentication types.
 * [Hotlist filters]() - used to disallow authentication for hotlised Partner IDs/Device data/Individual IDs.
-* [Auth Type filter]() - used to disallow authentication if an individual has locked certain authentication types for themselves.
+* [Auth Type Lock filter]() - used to disallow authentication if an individual has locked certain authentication types for themselves.
