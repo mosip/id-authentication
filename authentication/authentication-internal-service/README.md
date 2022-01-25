@@ -25,7 +25,7 @@ POST /idauthentication/v1/internal/auth
 * Authentication Transaction History - Used by Resident service to retrieve the authentication transaction history for an individual (UIN and VIDs).
 
 ```
-GET /authTransactions/individualId/{ID}
+GET /idauthentication/v1/internal/authTransactions/individualId/{ID}
 ```
 
 # Callbacks for Websub:
