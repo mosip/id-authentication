@@ -1,3 +1,3 @@
-# Auth Type Lock filter
+# Authentication Type Lock filter
 ## About
-Auth Type Lock filter is the implementation of [Auth Filter API](), used to disallow authentication, if an individual has locked certain authentication types for themselves.
+Authentication Type Lock filter is the implementation of [Auth Filter API](), used to disallow authentication, if an individual has locked certain authentication types for themselves.
