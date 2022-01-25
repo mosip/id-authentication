@@ -30,7 +30,7 @@ POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-
 POST /idauthentication/v1/ekyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
 ```
 
-# Dependencies
+## Dependencies
 * Kernal Notification Service - for sending notifications for Authentication Success/Failure
 * Kernel Audit Service
 * Keycloak serivce - to get authentication token for connecting to the above kernel services
