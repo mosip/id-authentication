@@ -3,7 +3,7 @@
 Authentication Filter API is the component that have the API definition for the Authentication Filters. 
 
 ## Authentication Filter
-Authentication filters are [configurable](https://github.com/mosip/mosip-config) filters that are applied before performing actual authentication (OTP/Demograpic/Biometric) of an individual. 
+Authentication filters are [configurable](../../docs/configuration.md) filters that are applied before performing actual authentication (OTP/Demograpic/Biometric) of an individual. 
 This can be separately configured for [Authentication Service](../authentication-service) and [Internal Authentication Service](../authentication-internal-service).
 Below are such authentication filters implemented, 
 * [Hotlist filters](../authentication-hotlistfilter-impl) - used to disallow authentication for hotlised Partner IDs/Device data/Individual IDs.

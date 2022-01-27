@@ -10,7 +10,7 @@ Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip-docs/
 
 
 **Configuration**
-Configurations used for ID Repo are available in [mosip-config](https://github.com/mosip/mosip-config)
+Configurations used for ID Repo are available in [mosip-config](../docs/configuration.md)
 
 ### Build
 Below command should be run in the parent project **authentication**

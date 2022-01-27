@@ -13,7 +13,7 @@ Internal Authentication Service is used by internal MOSIP modules such as Regist
   2. Iris
   3. Face
 
-* Above authentication types can be allowed/disallowed/mandated by the [configuraion](https://github.com/mosip/mosip-config) and the [Authentication/E-KYC Partner's Policy](https://github.com/mosip/mosip-config).
+* Above authentication types can be allowed/disallowed/mandated by the [configuraion](../../docs/configuration.md#allowed-authentication-types-configurations) and the [Authentication/E-KYC Partner's Policy](../../docs/configuration.md).
 
 ## Endpoints:
 * Internal Authentication - used by Internal MOSIP modules for authenticating an individual's UIN/VID
