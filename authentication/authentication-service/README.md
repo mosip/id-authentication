@@ -15,7 +15,7 @@ Authentication Service is used by Authentication/E-KYC Partners
   2. Iris
   3. Face
 
-* Above authentication types can be allowed/disallowed/mandated by the [configuraion](https://github.com/mosip/mosip-config) and the [Authentication/E-KYC Partner's Policy](https://github.com/mosip/mosip-config).
+* Above authentication types can be allowed/disallowed/mandated by the [configuraion](../../docs/configuration.md) and the [Authentication/E-KYC Partner's Policy](../../docs/configuration.md).
 
 ## Partner/MISP validation:
 * Below partner/MISP data are validated before processing the authentication request:
