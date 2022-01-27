@@ -6,7 +6,7 @@ Authentication Service is used by Authentication/E-KYC Partners
 
 ## Authentication Types:
 * Below are the authentication types supported in MOSIP, which can be used seperately or combined in any combination, 
-  1. OTP Authentication. **Note:** This service only deals with authentication of individual's OTP. OTP Request is done using the [OTP Request Service]()
+  1. OTP Authentication. **Note:** This service only deals with authentication of individual's OTP. OTP Request is done using the [OTP Request Service](../authentication-otp-service)
   2. Demographic Authentication - Name, Date of Birth, Age, Gender, Address, Full Address, etc...
   3. Biometric Authentication
   
@@ -15,7 +15,7 @@ Authentication Service is used by Authentication/E-KYC Partners
   2. Iris
   3. Face
 
-* Above authentication types can be allowed/disallowed/mandated by the [configuraion]() and the [Authentication/E-KYC Partner's Policy]().
+* Above authentication types can be allowed/disallowed/mandated by the [configuraion](https://github.com/mosip/mosip-config) and the [Authentication/E-KYC Partner's Policy](https://github.com/mosip/mosip-config).
 
 ## Partner/MISP validation:
 * Below partner/MISP data are validated before processing the authentication request:
@@ -35,7 +35,7 @@ POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-
 ```
 POST /idauthentication/v1/kyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
 ```
-# Callbacks for Websub:
+## Callbacks for Websub:
 * Credential Issuance callback - to process websub message sent from Credential Service
 * UIN/VID status update callback - to process websub message sent from ID Repo Identity/VID service
 * Partner/MISP data update callback - to process websub message sent from Partner Management Service
