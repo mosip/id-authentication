@@ -1,6 +1,6 @@
 # OTP Request Service
 ## About
-OTP Request is used by Authentication/E-KYC Partners to generate OTP for an individual's UIN/VID. The generated OTP is stored in IDA DB for validation during [OTP Authentication]() request in [Authentication Service]()
+OTP Request is used by Authentication/E-KYC Partners to generate OTP for an individual's UIN/VID. The generated OTP is stored in IDA DB for validation during [OTP Authentication](https://github.com/mosip/documentation) request in [Authentication Service](../authentication-service)
 
 ## Partner/MISP validation:
 * Below partner/MISP data are validated before processing the authentication request:
