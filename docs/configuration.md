@@ -1,18 +1,20 @@
-# IDA Configuration Guide
+# ID Authentication Configuration Guide
 
 ## Overview
 The guide here lists down some of the important properties that may be customised for a given installation. Note that the listing here is not exhaustive, but a checklist to review properties that are likely to be different from default.  If you would like to see all the properites, then refer to the files listed below.
 
 ## Configuration files
-IDA uses the following configuration files:
+ID Authentication uses the following configuration files:
 ```
 application-default.properties
-[TODO]
+id-authentication-default.properties
+id-authentication-external-default.properties
+id-authentication-internal-default.properties
+id-authentication-otp-default.properties
 identity-mapping.json
 ```
-The `*-dmz` files are applicable only to [sandbox v2](https://github.com/mosip/mosip-infra/tree/1.2.0-rc2/deployment/sandbox-v2) installation.  [sandbox v3](https://github.com/mosip/mosip-infra/tree/1.2.0-rc2/deployment/v3) does not use them.
 
-The above files are located in [mosip-config](https://github.com/mosip/mosip-config/blob/develop2-v2/) repo
+The above files are located in [mosip-config](https://github.com/mosip/mosip-config) repo
 
 ## DB
 * `mosip.ida.database.hostname`
