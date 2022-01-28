@@ -6,9 +6,9 @@
     <parent>
         <groupId>io.mosip.authentication</groupId>
         <artifactId>authentication-parent</artifactId>
-        <version>1.2.0-rc2-SNAPSHOT</version>
+        <version>1.2.0-prerel</version>
     </parent>
-    <version>1.2.0-rc2-SNAPSHOT</version>
+    <version>1.2.0-prerel</version>
 
     <artifactId>authentication-service</artifactId>
     <packaging>jar</packaging>
@@ -229,22 +229,22 @@
                 <dependency>
                     <groupId>io.mosip.kernel</groupId>
                     <artifactId>kernel-auth-adapter</artifactId>
-                    <version>1.2.0-rc2-SNAPSHOT</version>
+                    <version>1.2.0-prerel</version>
                 </dependency>
                 <dependency>
                     <groupId>io.mosip.authentication</groupId>
                     <artifactId>authentication-childauthfilter-impl</artifactId>
-                    <version>1.2.0-rc2-SNAPSHOT</version>
+                    <version>1.2.0-prerel</version>
                 </dependency>
                 <dependency>
                     <groupId>io.mosip.biosdk</groupId>
                     <artifactId>biosdk-client</artifactId>
-                    <version>1.2.0-rc2-SNAPSHOT</version>
+                    <version>1.2.0-prerel</version>
                 </dependency>
                 <dependency>
                     <groupId>io.mosip.demosdk</groupId>
                     <artifactId>demosdk-client</artifactId>
-                    <version>1.2.0-rc2-SNAPSHOT</version>
+                    <version>1.2.0-prerel</version>
                 </dependency>
             </dependencies>
             <build>
