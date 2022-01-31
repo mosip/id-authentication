@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/mosip/id-authentication.svg?branch=master)](https://app.travis-ci.com/github/mosip/id-authentication)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication)  [![Join the chat at https://gitter.im/mosip-community/ID-Authentication](https://badges.gitter.im/mosip-community/Id-Authentication.svg)](https://gitter.im/mosip-community/ID-Authentication?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.com/mosip/id-authentication.svg?branch=master)](https://app.travis-ci.com/github/mosip/id-authentication)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication)
 
 # ID-Authentication
 
