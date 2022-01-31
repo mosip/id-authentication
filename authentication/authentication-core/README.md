@@ -1,3 +1,4 @@
-# Authentication Core Component
+# Authentication Core 
+
 ## About
-Authentication Core component contains the core componentes of IDA such as APIs, SPIs, Helper/Utilitiy methods.
+Contains the core components of IDA such as APIs, SPIs, helper/utilitiy methods.
