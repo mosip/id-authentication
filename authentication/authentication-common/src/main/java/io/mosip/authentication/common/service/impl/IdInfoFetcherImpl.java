@@ -31,6 +31,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.demoauth.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -43,6 +44,7 @@ import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessExc
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Helper class to fetch identity values from request.
@@ -51,6 +53,8 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
+	
+	private static Logger logger = IdaLogger.getLogger(IdInfoFetcherImpl.class);
 
 	/**  The OTPManager. */
 	@Autowired
@@ -265,6 +269,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			for (String bioAttribute : identityBioAttributes) {
 				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
 				if (!identityValue.isEmpty()) {
+					logger.debug("getCbeffValues: %s value is %s", bioAttribute, identityValue.get());
 					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 				} else {
 					throw new IdAuthenticationBusinessException(
