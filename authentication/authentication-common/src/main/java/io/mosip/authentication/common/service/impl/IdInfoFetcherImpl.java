@@ -269,12 +269,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			for (String bioAttribute : identityBioAttributes) {
 				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
 				if (!identityValue.isEmpty()) {
-					logger.info("getCbeffValues: %s value is %s", bioAttribute, identityValue.get());
+					logger.info(String.format("getCbeffValues: %s value is \n%s", bioAttribute, identityValue.get()));
 					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 				} else {
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
-									IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+									IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName() + " - " + bioAttribute));
 				}				
 			}
 		}
