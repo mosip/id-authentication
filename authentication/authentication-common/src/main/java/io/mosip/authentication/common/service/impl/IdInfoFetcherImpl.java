@@ -269,7 +269,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			for (String bioAttribute : identityBioAttributes) {
 				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
 				if (!identityValue.isEmpty()) {
-					logger.debug("getCbeffValues: %s value is %s", bioAttribute, identityValue.get());
+					logger.info("getCbeffValues: %s value is %s", bioAttribute, identityValue.get());
 					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue));
 				} else {
 					throw new IdAuthenticationBusinessException(
