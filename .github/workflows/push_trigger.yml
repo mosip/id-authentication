@@ -72,7 +72,7 @@ jobs:
       if: failure() # Pick up events even if the job fails or is canceled.
 
   publish_to_nexus:
-    if: "!contains(github.ref, master)"
+    if: "!contains(github.ref, 'master')"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
