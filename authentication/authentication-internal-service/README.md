@@ -26,6 +26,7 @@ GET /idauthentication/v1/internal/authTransactions/individualId/{ID}
 ## Callbacks for WebSub 
 * Credential Issuance callback - to process incoming credentials and store it into IDA DB
 * ID Activate/De-activate/Remove callback - to process UIN/VID Activate/De-activate/Remove events sent from ID Repository and update them in IDA DB.
+* Authentication Type Status update callback - to process event of Authentication type lock status sent from ID Repository and update them in IDA DB.
 * Partner/MISP data update callback - to process  WebSub message sent from Partner Management Service and store partner/policy/MISP license key data into IDA DB
 * Master data update callback- to process WebSub message sent from Master data service and clear master data cache, so that in next authentication the master data is re-cached
 
