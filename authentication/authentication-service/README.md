@@ -32,10 +32,7 @@ POST /idauthentication/v1/kyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-K
 ```
 
 ## Callbacks for WebSub
-* Credential Issuance callback: To process WebSub message sent from Credential Service
-* UIN/VID status update callback: To process WebSub message sent from ID Repo Identity/VID service
-* Partner/MISP data update callback: To process WebSub message sent from Partner Management Service
-* Master data update callback: To process WebSub message sent from Master data service
+* Master data update callback- to process WebSub message sent from Master data service and clear master data cache, so that in next authentication the master data is re-cached
 
 ## Dependencies
 * Kernal Notification Service: For sending notifications for Authentication Success/Failure
