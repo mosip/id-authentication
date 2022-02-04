@@ -10,7 +10,7 @@ OTP Request is used by Authentication/E-KYC Partners to generate OTP for an indi
   3. Partner API Key
 
 ## Endpoints
-* Authentication:
+* OTP Request:
 
 ```
 POST /idauthentication/v1/otp/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
