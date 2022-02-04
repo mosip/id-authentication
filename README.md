@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/mosip/id-authentication.svg?branch=master)](https://travis-ci.com/mosip/id-authentication)
+[![Build Status](https://travis-ci.com/mosip/id-authentication.svg?branch=master)](https://app.travis-ci.com/github/mosip/id-authentication)  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&id=mosip_id-authentication&branch=master&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication&branch=master)
 
 # ID-Authentication
 

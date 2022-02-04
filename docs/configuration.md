@@ -128,7 +128,6 @@ mosip.ida.allowed.enviromemnts
 
 ## Allowed domain URIs in Authentication request 
 ```
-mosip.ida.allowed.enviromemnts
 mosip.ida.allowed.domain.uris
 ```
 

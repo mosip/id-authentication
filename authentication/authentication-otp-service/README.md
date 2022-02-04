@@ -10,15 +10,14 @@ OTP Request is used by Authentication/E-KYC Partners to generate OTP for an indi
   3. Partner API Key
 
 ## Endpoints
-* Authentication:
+* OTP Request:
 
 ```
 POST /idauthentication/v1/otp/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}
 ```
 
 ## Callbacks for WebSub
-* Partner/MISP data update callback: To process WebSub message sent from Partner Management Service
-* Master data update callback: To process WebSub message sent from Master data service
+* Master data update callback- to process WebSub message sent from Master data service and clear master data cache, so that in next authentication the master data is re-cached
 
 ## Dependencies
 * Kernel OTP Manager service: To generate OTP.
