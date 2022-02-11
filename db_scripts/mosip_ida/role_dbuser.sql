@@ -1,0 +1,4 @@
+CREATE ROLE idauser WITH 
+	INHERIT
+	LOGIN
+	PASSWORD :dbuserpwd;
