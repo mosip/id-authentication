@@ -48,7 +48,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class IdServiceImpl implements IdService<AutnTxn> {
-	
+
 	private static final String TOKEN = "TOKEN";
 
 	private static final String BIOMETRICS = "biometrics";
@@ -61,25 +61,25 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	/** The autntxnrepository. */
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
-	
+
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	private IdentityCacheRepository identityRepo;
-	
+
 	@Autowired
 	private IdAuthSecurityManager securityManager;
-	
+
 	@Value("${" + IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
 	private String zkUnEncryptedCredAttribs;
-	
+
 	@Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
 	private String authPartherId;
 
 	/*
 	 * To get Identity data from IDRepo based on UIN
-	 * 
+	 *
 	 * @see
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.
 	 * String)
@@ -91,7 +91,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
 	/*
 	 * To get Identity data from IDRepo based on VID
-	 * 
+	 *
 	 * @see
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.
 	 * String)
@@ -100,7 +100,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	public Map<String, Object> getIdByVid(String vid, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
 		return getIdentity(vid, isBio, IdType.VID, filterAttributes);
 	}
-	
+
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
@@ -130,7 +130,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
-			
+
 			if(markVidConsumed) {
 				updateVIDstatus(idvId);
 			}
@@ -157,12 +157,12 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getDemoData(Map<String, Object> identity) {
-		 return Optional.ofNullable(identity.get("response"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> ((Map<String, Object>)obj).get("identity"))
-								.filter(obj -> obj instanceof Map)
-								.map(obj -> (Map<String, Object>) obj)
-								.orElseGet(Collections::emptyMap);
+		return Optional.ofNullable(identity.get("response"))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> ((Map<String, Object>)obj).get("identity"))
+				.filter(obj -> obj instanceof Map)
+				.map(obj -> (Map<String, Object>) obj)
+				.orElseGet(Collections::emptyMap);
 	}
 
 	public Map<String, Object> getIdentity(String id, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
@@ -191,7 +191,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							idType.getType()));
 		}
-		
+
 		try {
 			IdentityEntity entity = null;
 			if (!identityRepo.existsById(hashedId)) {
@@ -214,7 +214,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
 				entity.setToken(String.valueOf(data[4]));
 			}
-			
+
 			if (Objects.nonNull(entity.getExpiryTimestamp())
 					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
@@ -229,24 +229,24 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			}
 
 			Map<String, Object> responseMap = new LinkedHashMap<>();
-			
+
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
 			Set<String> filterAttributesInLowercase = filterAttributes.isEmpty() ? Set.of()
 					: filterAttributes.stream().map(String::toLowerCase).collect(Collectors.toSet());
-			
-			if (!filterAttributesInLowercase.isEmpty()) {		
+
+			if (!filterAttributesInLowercase.isEmpty()) {
 				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
 						.filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
-						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
 			}
-			
+
 			if (entity.getBiometricData() != null) {
-				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
-				if (!filterAttributesInLowercase.isEmpty()) {					
+				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
+				if (!filterAttributesInLowercase.isEmpty()) {
 					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
 							.filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
-							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
 				}
 			}
@@ -271,9 +271,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				.stream().map(String::toLowerCase).collect(Collectors.toList());
 		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
 				.stream()
-				.collect(Collectors.partitioningBy(entry -> 
-							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
-				Collectors.toMap(Entry::getKey, Entry::getValue)));
+				.collect(Collectors.partitioningBy(entry ->
+								!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+						Collectors.toMap(Entry::getKey, Entry::getValue)));
 		Map<String, String> dataToDecrypt = partitionedMap.get(true);
 		Map<String, String> plainData = partitionedMap.get(false);
 		Map<String, String> decryptedData = dataToDecrypt.isEmpty() ? Map.of()
@@ -281,7 +281,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		Map<String, String> finalDataStr = new LinkedHashMap<>();
 		finalDataStr.putAll(plainData);
 		finalDataStr.putAll(decryptedData);
-		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(), 
+		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(),
 				entry -> {
 					Object valObject = entry.getValue();
 					if (valObject instanceof String) {
@@ -302,7 +302,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 					}
 				}));
 	}
-	
+
 	/**
 	 * Get the list of attributes not to decrypt from config. Returns empty if no config is there
 	 * @return
@@ -313,7 +313,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				.filter(str -> !str.isEmpty())
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Update VID dstatus.
 	 *
@@ -329,15 +329,17 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			// If transactionLimit is nonNull, id is considered as Temporary VID
 
 			//get entity
-			Optional<IdentityEntity> entity = Optional.of(identityRepo.getOne(vid));
-
-			if (identityRepo.existsById(vid)
-					&& Objects.nonNull(entity.get().getTransactionLimit())) {
-				if(entity.get().getTransactionLimit()>0){
-					entity.get().setTransactionLimit(entity.get().getTransactionLimit()-1);
-				}
-				else {
-					identityRepo.deleteById(vid);
+			Optional<IdentityEntity> entityOpt = identityRepo.findById(vid);
+			if(entityOpt.isPresent()) {
+				IdentityEntity entity =entityOpt.get();
+				Integer transactionLimit = entity.getTransactionLimit();
+				if (identityRepo.existsById(vid)
+						&& Objects.nonNull(transactionLimit)){
+					if (transactionLimit > 0) {
+						entity.setTransactionLimit(transactionLimit - 1);
+					} else {
+						identityRepo.deleteById(vid);
+					}
 				}
 			}
 

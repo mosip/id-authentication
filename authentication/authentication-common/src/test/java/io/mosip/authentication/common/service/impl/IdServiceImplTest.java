@@ -7,13 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
@@ -256,11 +251,11 @@ public class IdServiceImplTest {
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
 		Set<String> filterAttributes = new HashSet<String>();
-		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(0);
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		entityOpt.get().setTransactionLimit(0);
 		Mockito.when(securityManager.hash(idvId)).thenReturn("11");
 		Mockito.when(identityRepo.existsById("11")).thenReturn(true);
-		Mockito.when(identityRepo.getOne("11")).thenReturn(entity);
+		Mockito.when(identityRepo.findById("11")).thenReturn(entityOpt);
 		IdServiceImpl idServiceSpy = Mockito.spy(idServiceImpl);
 		Mockito.doReturn(null).when(idServiceSpy).getIdByVid(idvId, isBio, filterAttributes);
 		String idvIdType = "VID";
@@ -290,27 +285,27 @@ public class IdServiceImplTest {
 	@Test
 	public void updateVidStatusTest() throws IdAuthenticationBusinessException {
 		String vid = "213131";
-		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(2);
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		entityOpt.get().setTransactionLimit(2);
 		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
-		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+//		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 
-		entity.setTransactionLimit(0);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		entityOpt.get().setTransactionLimit(0);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 
-		entity.setTransactionLimit(null);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		entityOpt.get().setTransactionLimit(null);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 
-		entity.setTransactionLimit(1);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		entityOpt.get().setTransactionLimit(1);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 
-		entity.setTransactionLimit(-1);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		entityOpt.get().setTransactionLimit(-1);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 	}
 
