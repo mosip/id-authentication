@@ -7,16 +7,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -252,16 +248,15 @@ public class IdServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdTypeExceptionTest3() throws IdAuthenticationBusinessException, IOException {
-//        String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes
 		String idvId = "12";
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
 		Set<String> filterAttributes = new HashSet<String>();
-		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(5);
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		entityOpt.get().setTransactionLimit(0);
 		Mockito.when(securityManager.hash(idvId)).thenReturn("11");
 		Mockito.when(identityRepo.existsById("11")).thenReturn(true);
-		Mockito.when(identityRepo.getOne("11")).thenReturn(entity);
+		Mockito.when(identityRepo.findById("11")).thenReturn(entityOpt);
 		IdServiceImpl idServiceSpy = Mockito.spy(idServiceImpl);
 		Mockito.doReturn(null).when(idServiceSpy).getIdByVid(idvId, isBio, filterAttributes);
 		String idvIdType = "VID";
@@ -288,22 +283,103 @@ public class IdServiceImplTest {
 		idServiceImpl.getToken(idResDTO);
 	}
 
+	/**
+	 * This class tests the updateVidStatusTest method when transaction limit is 2
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
 	@Test
-	public void updateVidStatusTest() throws IdAuthenticationBusinessException {
+	public void updateVidStatusTestTrnsLim2() throws IdAuthenticationBusinessException {
 		String vid = "213131";
-		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
-		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(5);
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		entityOpt.get().setTransactionLimit(2);
 		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
 		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
-		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+		Integer result = 1;
+		Assert.assertEquals(result, identityRepo.findById(vid).get().getTransactionLimit());
+	}
+
+	/**
+	 * This class tests the updateVidStatusTest method when transaction limit is 0
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@Test
+	public void updateVidStatusTestTransLim0() throws IdAuthenticationBusinessException {
+		String vid = "213131";
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
+		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+		entityOpt.get().setTransactionLimit(0);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+		Mockito.verify(identityRepo, Mockito.times(1)).deleteById(vid);
+	}
+
+	/**
+	 * This class tests the updateVidStatusTest method when transaction limit is null
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@Test
+	public void updateVidStatusTestTrnsLimNull() throws IdAuthenticationBusinessException {
+		String vid = "213131";
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
+		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+		entityOpt.get().setTransactionLimit(null);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+		Mockito.verify(identityRepo, Mockito.times(1)).existsById(vid);
+	}
+
+	/**
+	 * This class tests the updateVidStatusTest method when transaction limit is 1
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@Test
+	public void updateVidStatusTestTrnsLim1() throws IdAuthenticationBusinessException {
+		String vid = "213131";
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
+		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+		entityOpt.get().setTransactionLimit(1);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+		Integer result = 0;
+		Assert.assertEquals(result, identityRepo.findById(vid).get().getTransactionLimit());
+	}
+
+	/**
+	 * This class tests the updateVidStatusTest method when transaction limit is -1
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@Test
+	public void updateVidStatusTestTrnsLim_1() throws IdAuthenticationBusinessException {
+		String vid = "213131";
+		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
+		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
+		entityOpt.get().setTransactionLimit(-1);
+		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+		Mockito.verify(identityRepo, Mockito.times(1)).deleteById(vid);
 	}
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
 		LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
 		entity.setExpiryTimestamp(time);
+
 		byte[] bioData = {};
 		entity.setBiometricData(bioData);
 		return entity;
@@ -324,7 +400,6 @@ public class IdServiceImplTest {
 		demoDataMap.put("3", "33");
 		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,demoDataMap);
 		assertTrue(map.isEmpty());
-        
     }
     
     
