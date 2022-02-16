@@ -252,13 +252,12 @@ public class IdServiceImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processIdTypeExceptionTest3() throws IdAuthenticationBusinessException, IOException {
-//        String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes
 		String idvId = "12";
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
 		Set<String> filterAttributes = new HashSet<String>();
 		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(5);
+		entity.setTransactionLimit(0);
 		Mockito.when(securityManager.hash(idvId)).thenReturn("11");
 		Mockito.when(identityRepo.existsById("11")).thenReturn(true);
 		Mockito.when(identityRepo.getOne("11")).thenReturn(entity);

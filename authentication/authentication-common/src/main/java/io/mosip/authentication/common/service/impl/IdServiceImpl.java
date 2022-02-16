@@ -327,9 +327,15 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			vid = securityManager.hash(vid);
 			// Assumption : If transactionLimit is null, id is considered as Perpetual VID
 			// If transactionLimit is nonNull, id is considered as Temporary VID
+
 			if (identityRepo.existsById(vid)
 					&& Objects.nonNull(identityRepo.getOne(vid).getTransactionLimit())) {
-				identityRepo.deleteById(vid);
+				int transactionLimit = identityRepo.getOne(vid).getTransactionLimit();
+
+				if(transactionLimit>0){
+					identityRepo.getOne(vid).setTransactionLimit(transactionLimit-1);
+				}
+				else identityRepo.deleteById(vid);
 			}
 
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
