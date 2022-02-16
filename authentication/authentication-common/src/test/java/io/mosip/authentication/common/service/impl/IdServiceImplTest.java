@@ -297,6 +297,10 @@ public class IdServiceImplTest {
 		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
 		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+
+		entity.setTransactionLimit(0);
+		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 	}
 
 	private IdentityEntity getEntity() {
