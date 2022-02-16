@@ -290,9 +290,8 @@ public class IdServiceImplTest {
 	@Test
 	public void updateVidStatusTest() throws IdAuthenticationBusinessException {
 		String vid = "213131";
-		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
 		IdentityEntity entity = getEntity();
-		entity.setTransactionLimit(5);
+		entity.setTransactionLimit(2);
 		Mockito.when(securityManager.hash(vid)).thenReturn(vid);
 		Mockito.when(identityRepo.existsById(vid)).thenReturn(true);
 		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
@@ -301,12 +300,25 @@ public class IdServiceImplTest {
 		entity.setTransactionLimit(0);
 		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+
+		entity.setTransactionLimit(null);
+		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+
+		entity.setTransactionLimit(1);
+		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
+
+		entity.setTransactionLimit(-1);
+		Mockito.when(identityRepo.getOne(vid)).thenReturn(entity);
+		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 	}
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
 		LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
 		entity.setExpiryTimestamp(time);
+
 		byte[] bioData = {};
 		entity.setBiometricData(bioData);
 		return entity;
