@@ -140,7 +140,7 @@ public class OTPManager {
 			if(response !=null){
 				return response.getResponse().get("otp");
 			}else{
-				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
 
 		} catch (IDDataValidationException e) {

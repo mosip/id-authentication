@@ -131,7 +131,26 @@ public class OTPManagerTest {
 		boolean sendOtpResponse = otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		assertEquals(sendOtpResponse, true);
 	}
-	
+
+	@Test(expected = IdAuthUncheckedException.class)
+	public void sendOtpNullResponseExceptionTest() throws RestServiceException, IdAuthenticationBusinessException {
+		OtpGeneratorRequestDto otpGeneratorRequestDto = getOtpGeneratorRequestDto();
+		ResponseWrapper<Map> otpGeneratorResponsetDto = new ResponseWrapper<>();
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", "success");
+		otpGeneratorResponsetDto.setResponse(response);
+		RestRequestDTO restRequestDTO = getRestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
+				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(null);
+		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		boolean sendOtpResponse = otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
+		assertEquals(sendOtpResponse, true);
+	}
+
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void sendOtpTest_existingEntry() throws RestServiceException, IdAuthenticationBusinessException {
