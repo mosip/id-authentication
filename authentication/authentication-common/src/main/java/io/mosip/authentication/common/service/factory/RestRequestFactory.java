@@ -85,7 +85,7 @@ public class RestRequestFactory {
 	checkHttpMethod(request, httpMethod);
 
 	if (requestBody != null) {
-	    if (Objects.nonNull(headers.getContentType()) && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
+	    if (headers.getContentType()!=null && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
 		request.setRequestBody(requestBody);
 	    } else {
 		if (requestBody instanceof MultiValueMap) {
