@@ -85,18 +85,20 @@ public class RestRequestFactory {
 	checkHttpMethod(request, httpMethod);
 
 	if (requestBody != null) {
-	    if (headers.getContentType()!=null && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
-		request.setRequestBody(requestBody);
-	    } else {
-		if (requestBody instanceof MultiValueMap) {
-		    request.setRequestBody(requestBody);
-		} else {
-		    throw new IDDataValidationException(
-			    IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-			    String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-				    "requestBody"));
+		if(headers.getContentType()!=null){
+			if (!Objects.requireNonNull(headers.getContentType()).includes(MediaType.MULTIPART_FORM_DATA)) {
+				request.setRequestBody(requestBody);
+			} else {
+				if (requestBody instanceof MultiValueMap) {
+					request.setRequestBody(requestBody);
+				} else {
+					throw new IDDataValidationException(
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+									"requestBody"));
+				}
+			}
 		}
-	    }
 	}
 
 	checkReturnType(returnType, request);
