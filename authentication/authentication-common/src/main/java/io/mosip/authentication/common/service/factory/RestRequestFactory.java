@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.factory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
@@ -84,7 +85,7 @@ public class RestRequestFactory {
 	checkHttpMethod(request, httpMethod);
 
 	if (requestBody != null) {
-	    if (!headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
+	    if (Objects.nonNull(headers.getContentType()) && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
 		request.setRequestBody(requestBody);
 	    } else {
 		if (requestBody instanceof MultiValueMap) {
