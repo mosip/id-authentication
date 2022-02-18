@@ -1,10 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,12 +132,17 @@ public class OTPManager {
 			RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					reqWrapper, ResponseWrapper.class);
 			ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
-			if (response != null && response.getResponse().get("status").equals(USER_BLOCKED)) {
+			if ( response!=null && response.getResponse()!=null && response.getResponse().get("status")!=null && response.getResponse().get("status").equals(USER_BLOCKED)) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 			}
-			return response.getResponse().get("otp");
+			if(response !=null && response.getResponse()!=null){
+				return response.getResponse().get("otp");
+			}else{
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			}
+
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					e.getMessage());
