@@ -8,9 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------- -----------------------------------------------------------------
--- Aug-2020             Sadanandegowda DM   Changed data type of private_key and added certificate_data attribute
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
+
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.key_store | type: TABLE --

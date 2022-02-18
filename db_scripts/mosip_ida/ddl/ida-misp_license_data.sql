@@ -8,7 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Sep-2021		Ram Bhatt	    Added index to license_key column
+
 -- ------------------------------------------------------------------------------------------
 
 -- DROP TABLE IF EXISTS ida.misp_license_data CASCADE;

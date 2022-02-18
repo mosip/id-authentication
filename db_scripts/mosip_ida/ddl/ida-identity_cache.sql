@@ -8,11 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Sep-2020             Sadanandegowda DM    Added token_id
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
--- Jul-2021		Ram Bhatt	    Adding a new nullable column identity_expiry in IDA table identity_cache
--- Sep-2021		Ram Bhatt	    Added index on id column
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
