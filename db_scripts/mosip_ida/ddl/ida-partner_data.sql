@@ -9,7 +9,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Sep-2021		Ram Bhatt	    Added index to partner_id column
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_data CASCADE;

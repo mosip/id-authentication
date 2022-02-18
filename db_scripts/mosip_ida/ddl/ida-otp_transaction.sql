@@ -8,9 +8,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
--- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
--- Sep-2021		Ram Bhatt	    Added index to otp_hash column
+
 -- ------------------------------------------------------------------------------------------
 -- object: ida.otp_transaction | type: TABLE --
 -- DROP TABLE IF EXISTS ida.otp_transaction CASCADE;
