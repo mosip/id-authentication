@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  */
 @Component
 @ConditionalOnProperty(matchIfMissing = true, value = FRAUD_ANALYSIS_ENABLED)
+@Async("webSubHelperExecutor")
 public class IdAuthFraudAnalysisEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
