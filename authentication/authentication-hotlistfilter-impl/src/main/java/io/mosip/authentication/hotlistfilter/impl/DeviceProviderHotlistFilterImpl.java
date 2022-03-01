@@ -16,7 +16,6 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -62,21 +61,28 @@ public class DeviceProviderHotlistFilterImpl implements IMosipAuthFilter {
 	 * @param errors     the errors
 	 * @throws IdAuthenticationFilterException 
 	 */
-	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics) throws IdAuthenticationFilterException {
+	protected void isDeviceProviderHotlisted(List<BioIdentityInfoDTO> biometrics)
+			throws IdAuthenticationFilterException {
 		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			OptionalInt indexOpt = IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(0).getData().getDigitalId().getDp()
-								.concat(biometrics.get(0).getData().getDigitalId().getDpId()).getBytes()),
-						HotlistIdTypes.DEVICE_PROVIDER);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
-			}).findFirst();
-			if(indexOpt.isPresent()) {
-				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE_PROVIDER)));
+			OptionalInt indexOpt = IntStream
+					.range(0, biometrics.size()).filter(
+							index -> hotlistService
+									.getHotlistStatus(
+											IdAuthSecurityManager.generateHashAndDigestAsPlainText(
+													biometrics.get(index).getData().getDigitalId().getDp()
+															.concat(biometrics.get(index).getData().getDigitalId()
+																	.getDpId())
+															.getBytes()),
+											HotlistIdTypes.DEVICE_PROVIDER)
+									.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					.findFirst();
+			if (indexOpt.isPresent()) {
+				throw new IdAuthenticationFilterException(
+						IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+								String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE_PROVIDER)));
 			}
-			
+
 		}
 	}
 
