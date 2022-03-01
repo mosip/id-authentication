@@ -34,6 +34,7 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Component
+@Async("fraudAnalysisExecutor")
 public class IdAuthFraudAnalysisEventManager {
 
 	private static final String AUTH = "AUTH";
@@ -53,7 +54,6 @@ public class IdAuthFraudAnalysisEventManager {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Async("fraudAnalysisExecutor")
 	public void analyseDigitalSignatureFailure(String uri, Map<String, Object> request, String errorMessage) {
 		if (EnvUtil.getIsFraudAnalysisEnabled()) {
 			List<String> pathSegments = Arrays.asList(uri.split("/"));
@@ -73,7 +73,6 @@ public class IdAuthFraudAnalysisEventManager {
 		}
 	}
 
-	@Async("fraudAnalysisExecutor")
 	public void analyseEvent(AutnTxn txn) {
 		if (EnvUtil.getIsFraudAnalysisEnabled()) {
 			IdAuthFraudAnalysisEventDTO eventData = createEventData(txn.getRefId(), txn.getRequestTrnId(),
