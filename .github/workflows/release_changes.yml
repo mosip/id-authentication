@@ -33,7 +33,7 @@ jobs:
     - name: Updating the Release URL in POM 
       run: |
           cd .github/workflows
-          sed -i 's/OSSRH_SNAPSHOT_URL/RELEASE_URL/g' push_trigger.yml
+          sed -i 's/OSSRH_SNAPSHOT_URL/OSSRH_SNAPSHOT_URL/g' push_trigger.yml
 
     - name: Updating libs-snapshot-local to libs-release local for artifactory URL's.
       run: find . -type f -name "*Dockerfile" -print0 | xargs -0 sed -i "s/libs-snapshot-local/libs-release-local/g"
