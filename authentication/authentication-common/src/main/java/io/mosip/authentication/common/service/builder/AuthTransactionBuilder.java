@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.builder;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -59,6 +60,18 @@ public class AuthTransactionBuilder {
 
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
+
+	/**
+	 * Below comparator puts the KYC-AUTH to the beginning in the list
+	 */
+	private static final Comparator<? super RequestType> KYC_AUTH_COMPARATOR = (s1, s2) -> {
+		if(s1.getType().equalsIgnoreCase(RequestType.KYC_AUTH_REQUEST.getType())) {
+			return -1;
+		} else if(s2.getType().equalsIgnoreCase(RequestType.KYC_AUTH_REQUEST.getType())) {
+			return 1;
+		}
+		return 0;
+	};
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(AuditHelper.class);
@@ -263,11 +276,13 @@ public class AuthTransactionBuilder {
 			
 			if (!requestTypes.isEmpty()) {
 				String authTypeCodes = requestTypes.stream()
+						.sorted(KYC_AUTH_COMPARATOR) // Put KYC-AUTH in the beginning if available
 						.map(RequestType::getRequestType)
 						.collect(Collectors.joining(REQ_TYPE_DELIM));
 				autnTxn.setAuthTypeCode(authTypeCodes);
 	
 				String requestTypeMessages = requestTypes.stream()
+						.sorted(KYC_AUTH_COMPARATOR) // Put KYC-AUTH message in the beginning if available
 						.map(RequestType::getMessage)
 						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
 				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
