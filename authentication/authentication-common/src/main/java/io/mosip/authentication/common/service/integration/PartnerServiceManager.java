@@ -212,19 +212,19 @@ public class PartnerServiceManager {
 		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA),
 				PartnerData.class);
 		mapping.setPartnerId(partnerEventData.getPartnerId());
-		partnerEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+		partnerEventData.setCreatedBy(getCreatedBy(eventModel));
 		partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
 				ApiKeyData.class);
 		mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
-		apiKeyEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+		apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
 		apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA),
 				PolicyData.class);
 		mapping.setPolicyId(policyEventData.getPolicyId());
-		policyEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+		policyEventData.setCreatedBy(getCreatedBy(eventModel));
 		policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-		mapping.setCreatedBy(IdAuthCommonConstants.IDA);
+		mapping.setCreatedBy(getCreatedBy(eventModel));
 		mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		partnerDataRepo.save(partnerEventData);
 		apiKeyRepo.save(apiKeyEventData);
@@ -242,20 +242,17 @@ public class PartnerServiceManager {
 	private String getCreatedBy(EventModel eventModel) {
 		//Get user from session
 		String user = securityManager.getUser();
-		if (user == null) {
+		if (user == null || user.isEmpty()) {
 			//Get publisher from event
 			String publisher = eventModel.getPublisher();
-			eventModel.getPublisher();
-			if (publisher == null) {
+			if (publisher == null || publisher.isEmpty()) {
 				//return as created by IDA
 				return IdAuthCommonConstants.IDA;
 			} else {
-				return IdAuthCommonConstants.IDA;
-				//return publisher;
+				return publisher;
 			}
 		} else {
-			return IdAuthCommonConstants.IDA;
-			//return user;
+			return user;
 		}
 	}
 
@@ -277,11 +274,11 @@ public class PartnerServiceManager {
 			apiKeyData.setApiKeyCommenceOn(apiKeyEventData.getApiKeyCommenceOn());
 			apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
 			apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
-			apiKeyData.setUpdatedBy(IdAuthCommonConstants.IDA);
+			apiKeyData.setUpdatedBy(getCreatedBy(eventModel));
 			apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyData);
 		} else {
-			apiKeyEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+			apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
 			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyEventData);
 		}
@@ -301,11 +298,11 @@ public class PartnerServiceManager {
 			partnerData.setPartnerName(partnerEventData.getPartnerName());
 			partnerData.setCertificateData(partnerEventData.getCertificateData());
 			partnerData.setPartnerStatus(partnerEventData.getPartnerStatus());
-			partnerData.setUpdatedBy(IdAuthCommonConstants.IDA);
+			partnerData.setUpdatedBy(getCreatedBy(eventModel));
 			partnerData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerData);
 		} else {
-			partnerEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+			partnerEventData.setCreatedBy(getCreatedBy(eventModel));
 			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerEventData);
 		}
@@ -321,7 +318,7 @@ public class PartnerServiceManager {
 		Optional<PolicyData> policyDataOptional = policyDataRepo.findById(policyEventData.getPolicyId());
 		if (policyDataOptional.isPresent()) {
 			PolicyData policyData = policyDataOptional.get();
-			policyData.setUpdatedBy(IdAuthCommonConstants.IDA);
+			policyData.setUpdatedBy(getCreatedBy(eventModel));
 			policyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			policyData.setPolicyId(policyEventData.getPolicyId());
 			policyData.setPolicy(policyEventData.getPolicy());
@@ -332,7 +329,7 @@ public class PartnerServiceManager {
 			policyData.setPolicyExpiresOn(policyEventData.getPolicyExpiresOn());
 			policyDataRepo.save(policyData);
 		} else {
-			policyEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+			policyEventData.setCreatedBy(getCreatedBy(eventModel));
 			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			policyDataRepo.save(policyEventData);
 		}
@@ -348,7 +345,7 @@ public class PartnerServiceManager {
 		Optional<MispLicenseData> mispLicenseDataOptional = mispLicDataRepo.findById(mispLicenseEventData.getMispId());
 		if (mispLicenseDataOptional.isPresent()) {
 			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
-			mispLicenseData.setUpdatedBy(IdAuthCommonConstants.IDA);
+			mispLicenseData.setUpdatedBy(getCreatedBy(eventModel));
 			mispLicenseData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicenseData.setMispId(mispLicenseEventData.getMispId());
 			mispLicenseData.setLicenseKey(mispLicenseEventData.getLicenseKey());
@@ -357,7 +354,7 @@ public class PartnerServiceManager {
 			mispLicenseData.setMispStatus(mispLicenseEventData.getMispStatus());
 			mispLicDataRepo.save(mispLicenseData);
 		} else {
-			mispLicenseEventData.setCreatedBy(IdAuthCommonConstants.IDA);
+			mispLicenseEventData.setCreatedBy(getCreatedBy(eventModel));
 			mispLicenseEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicDataRepo.save(mispLicenseEventData);
 		}
