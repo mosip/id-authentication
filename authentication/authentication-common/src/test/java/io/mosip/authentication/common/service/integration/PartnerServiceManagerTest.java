@@ -8,6 +8,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Optional;
 
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1019,6 +1021,30 @@ public class PartnerServiceManagerTest {
 						idAuthenticationBaseException.getErrorCode());
 			}
 		}
+	}
+
+	@Test
+	public void getCreatedByTest(){
+		eventModel.setPublishedOn("2021-10-26T04:30:32.250Z");
+
+		//user = ""
+		eventModel.setPublisher(null);
+		Mockito.when(securityManager.getUser()).thenReturn("");
+		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+
+		//user = null
+		eventModel.setPublisher("");
+		Mockito.when(securityManager.getUser()).thenReturn(null);
+		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+
+		//publisher is not null
+		eventModel.setPublisher(IdAuthCommonConstants.IDA);
+		Mockito.when(securityManager.getUser()).thenReturn(null);
+		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+
+		//user not null
+		Mockito.when(securityManager.getUser()).thenReturn("IdaUser");
+		Assert.assertEquals("IdaUser", ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
 	}
 }
 
