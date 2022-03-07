@@ -35,7 +35,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  * This class Partner Service Manager connects to partner service to validate
  * and get the policy file for a given partnerID, partner api key and misp
  * license key.
- * 
+ *
  * @author Nagarjuna
  *
  */
@@ -94,7 +94,7 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
-			boolean certificateNeeded) throws IdAuthenticationBusinessException {
+														 boolean certificateNeeded) throws IdAuthenticationBusinessException {
 		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
 		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findByLicenseKey(misp_license_key);
 		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional);
@@ -128,7 +128,7 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
-			Optional<MispLicenseData> mispLicOptional) throws IdAuthenticationBusinessException {
+											   Optional<MispLicenseData> mispLicOptional) throws IdAuthenticationBusinessException {
 		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
 			PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 			if (partnerMapping.getPartnerData().isDeleted()) {
@@ -150,7 +150,7 @@ public class PartnerServiceManager {
 			}
 			if (partnerMapping.getPolicyData().getPolicyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
 					|| partnerMapping.getPolicyData().getPolicyExpiresOn()
-							.isBefore(DateUtils.getUTCCurrentDateTime())) {
+					.isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
@@ -165,7 +165,7 @@ public class PartnerServiceManager {
 			}
 			if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
 					|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
-							.isBefore(DateUtils.getUTCCurrentDateTime())) {
+					.isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 			}
@@ -232,7 +232,7 @@ public class PartnerServiceManager {
 		partnerMappingRepo.save(mapping);
 	}
 
-	
+
 	/**
 	 * Gets the created by.
 	 *
@@ -242,10 +242,10 @@ public class PartnerServiceManager {
 	private String getCreatedBy(EventModel eventModel) {
 		//Get user from session
 		String user = securityManager.getUser();
-		if (user == null) {
+		if (user == null || user.isEmpty()) {
 			//Get publisher from event
 			String publisher = eventModel.getPublisher();
-			if (publisher == null) {
+			if (publisher == null || publisher.isEmpty()) {
 				//return as created by IDA
 				return IdAuthCommonConstants.IDA;
 			} else {
@@ -255,7 +255,7 @@ public class PartnerServiceManager {
 			return user;
 		}
 	}
-	
+
 	/**
 	 * Handle api key updated.
 	 *
