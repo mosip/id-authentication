@@ -335,8 +335,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				Integer transactionLimit = entity.getTransactionLimit();
 				if (identityRepo.existsById(vid)
 						&& Objects.nonNull(transactionLimit)){
-					if (transactionLimit > 0) {
-						entity.setTransactionLimit(transactionLimit - 1);
+					int newTransactionLimit = transactionLimit-1;
+					if (newTransactionLimit>0) {
+						entity.setTransactionLimit(newTransactionLimit);
+						identityRepo.save(entity);
 					} else {
 						identityRepo.deleteById(vid);
 					}
