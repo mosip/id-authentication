@@ -150,8 +150,8 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		authRequestDTO.setId("id");
-		authRequestDTO.setEnv("");
-		authRequestDTO.setDomainUri("");
+		authRequestDTO.setEnv("Staging");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
 		authRequestDTO.setVersion("1.1");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(EnvUtil.getMandatoryLanguages());
@@ -1303,27 +1303,20 @@ public class AuthRequestValidatorTest {
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream().anyMatch(
 				err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
 	}
-
+	
 	@Test
-	public void testErrorForDomainUriNotMatchingBetweenReqAndBio() {
+	public void testErrorForDomainUriValidInAuthReq_withoutBio() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("id");
 		authRequestDTO.setVersion("v1");
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
-		authRequestDTO.setDomainUri("localhost1");
+		authRequestDTO.setEnv("Staging");
 		RequestDTO request = new RequestDTO();
+		
+		request.setOtp("111111");
 
-		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
-		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
-		DataDTO data = new DataDTO();
-		data.setBioValue("adsadas");
-		data.setBioType("Face");
-		data.setDomainUri("localhost2");
-		bioIdentityDto.setData(data);
-		biometrics.add(bioIdentityDto);
-		request.setBiometrics(biometrics);
 
 		authRequestDTO.setConsentObtained(true);
 		authRequestDTO.setRequest(request);
@@ -1335,8 +1328,7 @@ public class AuthRequestValidatorTest {
 		request.setTimestamp(timestamp);
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+		assertTrue(errors.getAllErrors().isEmpty());
 	}
 
 	@Test
@@ -1347,6 +1339,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
+		authRequestDTO.setEnv("Staging");
 		// authRequestDTO.setDomainUri("localhost1");
 		RequestDTO request = new RequestDTO();
 
@@ -1363,6 +1356,7 @@ public class AuthRequestValidatorTest {
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		data.setTransactionId("1234567890");
+		data.setEnv("Staging");
 		// data.setDomainUri("localhost2");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
@@ -1440,6 +1434,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
 		authRequestDTO.setEnv("Staging");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
 		RequestDTO request = new RequestDTO();
 
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
@@ -1462,7 +1457,69 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(request);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
-				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INPUT_MISMATCH.getErrorCode())));
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForEmptyEnvInBioData() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
+		authRequestDTO.setEnv("Staging");
+		RequestDTO request = new RequestDTO();
+
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setDomainUri("https://dev.mosip.net");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForEmptyEnvInReq() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
+		RequestDTO request = new RequestDTO();
+
+		request.setOtp("111111");
+
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
 	}
 
 	@Test
@@ -1481,6 +1538,68 @@ public class AuthRequestValidatorTest {
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
 		data.setEnv("Staging");
+		bioIdentityDto.setData(data);
+		biometrics.add(bioIdentityDto);
+		request.setBiometrics(biometrics);
+
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(!errors.getAllErrors().isEmpty() && errors.getAllErrors().stream()
+				.noneMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
+	}
+	
+	@Test
+	public void testErrorForEnvValidInAuthReq_withoutBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
+		authRequestDTO.setVersion("v1");
+		RequestDTO request = new RequestDTO();
+		request.setOtp("111111");
+
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setRequest(request);
+		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+		authRequestDTO.setRequestTime(timestamp);
+		authRequestDTO.setTransactionID("1234567890");
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		request.setTimestamp(timestamp);
+		authRequestDTO.setRequest(request);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.getAllErrors().isEmpty());
+	}
+	
+	@Test
+	public void testErrorForDomainUriNotMatchingBetweenReqAndBio() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setIndividualId("12345");
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setVersion("v1");
+		authRequestDTO.setEnv("Staging");
+		authRequestDTO.setDomainUri("domain1");
+		RequestDTO request = new RequestDTO();
+
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityDto = new BioIdentityInfoDTO();
+		DataDTO data = new DataDTO();
+		data.setBioValue("adsadas");
+		data.setBioType("Face");
+		data.setEnv("Staging");
+		data.setDomainUri("domain2");
 		bioIdentityDto.setData(data);
 		biometrics.add(bioIdentityDto);
 		request.setBiometrics(biometrics);
@@ -1542,7 +1661,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualId("12345");
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setVersion("v1");
-		// authRequestDTO.setEnv("Staging");
+		authRequestDTO.setDomainUri("https://dev.mosip.net");
 		RequestDTO request = new RequestDTO();
 
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
@@ -1550,6 +1669,7 @@ public class AuthRequestValidatorTest {
 		DataDTO data = new DataDTO();
 		data.setBioValue("adsadas");
 		data.setBioType("Face");
+		data.setDomainUri("https://dev.mosip.net");
 		DigitalId digitalId = new DigitalId();
 		digitalId.setSerialNo("");
 		digitalId.setMake("");
