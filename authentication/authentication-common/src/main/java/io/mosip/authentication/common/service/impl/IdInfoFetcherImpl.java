@@ -483,6 +483,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		if (matchType.toString().equals(BioMatchType.FACE.toString())) {
 			return List.of(BiometricType.FACE.value());
 		}
+		if(matchType.toString().equals(BioMatchType.MULTI_MODAL.toString())) {
+			return idEntity.keySet().stream().filter(bio -> bio.startsWith(BiometricType.FINGER.value().toString()) ||
+						bio.startsWith(BiometricType.IRIS.value().toString()) ||
+						bio.startsWith(BiometricType.FACE.value().toString()))
+					.collect(Collectors.toList());
+		}
 		return List.of(type.getType().value() + "_" + matchType.getIdMapping().getSubType());
 	}
 
