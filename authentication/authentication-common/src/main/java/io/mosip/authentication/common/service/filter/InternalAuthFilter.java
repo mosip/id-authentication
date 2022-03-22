@@ -58,11 +58,10 @@ public class InternalAuthFilter extends IdAuthFilter {
 		return env.getProperty("mosip.ida.internal.signature-verification-required", Boolean.class, false);
 	}
 
-	//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
-//	@Override
-//	protected boolean isThumbprintValidationRequired() {
-//		return env.getProperty("mosip.ida.internal.thumbprint-validation-required", Boolean.class, false);
-//	}
+	@Override
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.internal.thumbprint-validation-required", Boolean.class, true);
+	}
 
 	@Override
 	protected boolean isTrustValidationRequired() {
