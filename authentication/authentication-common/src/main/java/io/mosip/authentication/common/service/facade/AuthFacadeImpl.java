@@ -9,6 +9,7 @@ import static io.mosip.authentication.core.constant.AuthTokenType.POLICY_GROUP;
 import static io.mosip.authentication.core.constant.AuthTokenType.RANDOM;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -166,10 +167,15 @@ public class AuthFacadeImpl implements AuthFacade {
 		filterAttributes.addAll(buildDemoAttributeFilters(authRequestDTO));
 		filterAttributes.addAll(buildBioFilters(authRequestDTO));		
 
-		// In case of ekyc request and photo also needed we need to add face to get it
-		// filtered
-		if(containsPhotoKYCAttribute(authRequestDTO)) {
-			filterAttributes.add(CbeffDocType.FACE.getType().value());
+		if(authRequestDTO instanceof KycAuthRequestDTO) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+			// In case of ekyc request and photo also needed we need to add face to get it
+			// filtered
+			if(IdInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
+				filterAttributes.add(CbeffDocType.FACE.getType().value());
+			}
+
+			addKycPolicyAttributes(filterAttributes, kycAuthRequestDTO);
 		}
 		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
@@ -222,6 +228,20 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authResponseDTO;
 
+	}
+	
+	private void addKycPolicyAttributes(Set<String> filterAttributes, KycAuthRequestDTO kycAuthRequestDTO)
+			throws IdAuthenticationBusinessException {
+		List<String> allowedKycAttributes = kycAuthRequestDTO.getAllowedKycAttributes();
+		if(allowedKycAttributes != null && !allowedKycAttributes.isEmpty()) {
+			for (String attrib : allowedKycAttributes) {
+				filterAttributes.addAll(getIdSchemaAttributes(attrib));
+			}
+		}
+	}
+	
+	private Collection<? extends String> getIdSchemaAttributes(String attrib) throws IdAuthenticationBusinessException {
+		return idInfoHelper.getIdentityAttributesForIdName(attrib);
 	}
 
 	private boolean isBiometricDataNeeded(AuthRequestDTO authRequestDTO) {
