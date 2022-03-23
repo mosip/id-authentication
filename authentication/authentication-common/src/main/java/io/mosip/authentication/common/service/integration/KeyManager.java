@@ -178,8 +178,9 @@ public class KeyManager {
 			Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		byte[] data;
-		if (isThumbprintEnabled) {
-			if(thumbprint != null) {
+		boolean isThumbprintPresentInRequest = thumbprint != null;
+		if (isThumbprintEnabled || isThumbprintPresentInRequest) {
+			if(isThumbprintPresentInRequest) {
 				data = combineDataForDecryption(encryptedSessionKey, encryptedData);
 				byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
 				// Compare the thumbprint bytes with starting bytes of data to check if it is already exists
