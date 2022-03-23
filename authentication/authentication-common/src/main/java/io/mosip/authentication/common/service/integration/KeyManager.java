@@ -39,6 +39,8 @@ import io.mosip.authentication.core.util.CryptoUtil;
 @Component
 public class KeyManager {
 
+	private static final String THUMBPRINT = "thumbprint";
+
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
 
@@ -176,14 +178,19 @@ public class KeyManager {
 			Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
 		String decryptedRequest = null;
 		byte[] data;
-		if (isThumbprintEnabled) {
-			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
-			byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
-			// Compare the thumbprint bytes with starting bytes of data to check if it is already exists
-			boolean isThumbprintAlreadyExsists = data.length > bytesFromThumbprint.length 
-					&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(data, bytesFromThumbprint.length));
-			if(!isThumbprintAlreadyExsists) {
-				data = ArrayUtils.addAll(bytesFromThumbprint, data);
+		boolean isThumbprintPresentInRequest = thumbprint != null;
+		if (isThumbprintEnabled || isThumbprintPresentInRequest) {
+			if(isThumbprintPresentInRequest) {
+				data = combineDataForDecryption(encryptedSessionKey, encryptedData);
+				byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
+				// Compare the thumbprint bytes with starting bytes of data to check if it is already exists
+				boolean isThumbprintAlreadyExsists = data.length > bytesFromThumbprint.length 
+						&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(data, bytesFromThumbprint.length));
+				if(!isThumbprintAlreadyExsists) {
+					data = ArrayUtils.addAll(bytesFromThumbprint, data);
+				}
+			} else {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),  THUMBPRINT));
 			}
 		} else {
 			data = combineDataForDecryption(encryptedSessionKey, encryptedData);

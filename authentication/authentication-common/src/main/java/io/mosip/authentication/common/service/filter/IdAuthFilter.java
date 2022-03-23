@@ -282,7 +282,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
 			String aad = CryptoUtil.encodeBase64Url(aadLastBytes);
-			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
+			String decryptedData = keyManager.kernelDecrypt((String) thumbprint, CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
@@ -944,10 +944,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return true, if is thumbprint validation required
 	 */
 	@Override
-	protected final boolean isThumbprintValidationRequired() {
-		//return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
-		//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
-		return true;
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
 	}
 
 	/**
