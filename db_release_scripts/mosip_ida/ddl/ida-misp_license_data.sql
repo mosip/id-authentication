@@ -12,7 +12,7 @@
 -- ------------------------------------------------------------------------------------------
 
 -- DROP TABLE IF EXISTS ida.misp_license_data CASCADE;
-CREATE TABLE ida.misp_license_data (
+CREATE TABLE IF NOT EXISTS ida.misp_license_data (
 	misp_id character varying(36) NOT NULL,
 	license_key character varying(128) NOT NULL,
 	misp_commence_on timestamp NOT NULL,
@@ -24,8 +24,6 @@ CREATE TABLE ida.misp_license_data (
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
 	del_dtimes timestamp,
-	CONSTRAINT misp_license_data_pk PRIMARY KEY (misp_id)
-
-);
+	CONSTRAINT misp_license_data_pk PRIMARY KEY (misp_id));
 -- ddl-end --
 

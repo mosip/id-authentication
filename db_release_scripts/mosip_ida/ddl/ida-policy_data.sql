@@ -13,7 +13,7 @@
 -- ------------------------------------------------------------------------------------------
 -- object: ida.policy_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.policy_data CASCADE;
-CREATE TABLE ida.policy_data (
+CREATE TABLE IF NOT EXISTS ida.policy_data (
 	policy_id character varying(36) NOT NULL,
 	policy_data bytea NOT NULL,
 	policy_name character varying(128) NOT NULL,
@@ -27,7 +27,5 @@ CREATE TABLE ida.policy_data (
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
 	del_dtimes timestamp,
-	CONSTRAINT policy_data_pk PRIMARY KEY (policy_id)
-
-);
+	CONSTRAINT policy_data_pk PRIMARY KEY (policy_id));
 -- ddl-end --

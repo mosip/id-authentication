@@ -13,7 +13,7 @@
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_data CASCADE;
-CREATE TABLE ida.partner_data (
+CREATE TABLE IF NOT EXISTS ida.partner_data (
 	partner_id character varying(36) NOT NULL,
 	partner_name character varying(128) NOT NULL,
 	certificate_data bytea ,
@@ -24,7 +24,5 @@ CREATE TABLE ida.partner_data (
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT false,
 	del_dtimes timestamp,
-	CONSTRAINT partner_data_pk PRIMARY KEY (partner_id)
-
-);
+	CONSTRAINT partner_data_pk PRIMARY KEY (partner_id));
 -- ddl-end --

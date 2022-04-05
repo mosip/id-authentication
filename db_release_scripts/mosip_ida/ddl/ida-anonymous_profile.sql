@@ -13,7 +13,7 @@
 
 -- object: ida.anonymous_profile | type: TABLE --
 -- DROP TABLE IF EXISTS ida.anonymous_profile CASCADE;
-CREATE TABLE ida.anonymous_profile(
+CREATE TABLE IF NOT EXISTS ida.anonymous_profile(
 	id character varying(36) NOT NULL,
 	profile character varying NOT NULL,
 	cr_by character varying(256) NOT NULL,

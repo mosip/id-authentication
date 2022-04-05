@@ -13,7 +13,7 @@
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_mapping | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
-CREATE TABLE ida.partner_mapping (
+CREATE TABLE IF NOT EXISTS ida.partner_mapping (
 	partner_id character varying(36) NOT NULL,
 	policy_id character varying(36) NOT NULL,
 	api_key_id character varying(36) NOT NULL,
@@ -23,7 +23,5 @@ CREATE TABLE ida.partner_mapping (
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
 	del_dtimes timestamp,
-	CONSTRAINT partner_mapping_pk PRIMARY KEY (partner_id,policy_id,api_key_id)
-
-);
+	CONSTRAINT partner_mapping_pk PRIMARY KEY (partner_id,policy_id,api_key_id));
 -- ddl-end --

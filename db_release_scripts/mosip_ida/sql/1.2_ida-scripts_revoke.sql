@@ -13,7 +13,7 @@
 
 \c mosip_ida sysadmin
 
-ALTER TABLE ida.uin_auth_lock DROP COLUMN unlock_expiry_datetime;
+ALTER TABLE IF EXISTS ida.uin_auth_lock DROP COLUMN unlock_expiry_datetime;
 
 -- -------------------------------------------------------------------------------------------------
 
