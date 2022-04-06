@@ -64,7 +64,12 @@ ALTER TABLE ida.key_alias ADD CONSTRAINT uni_ident_const UNIQUE (uni_ident);
 
 ALTER TABLE ida.key_policy_def ADD COLUMN pre_expire_days smallint;
 ALTER TABLE ida.key_policy_def ADD COLUMN access_allowed character varying(1024);
+
+ALTER TABLE ida.key_policy_def_h ADD COLUMN pre_expire_days smallint;
+ALTER TABLE ida.key_policy_def_h ADD COLUMN access_allowed character varying(1024);
 ---------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE ida.uin_auth_lock ALTER COLUMN is_deleted SET DEFAULT FALSE;
 
 
 
