@@ -221,7 +221,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		String type = null;
 		String contextPath = request.getRequestURL().toString();
 		String[] splitedContext = contextPath.split("/");
-		String requestReceived = splitedContext[5];
+		String requestReceived = splitedContext.length >= 5 ? splitedContext[5] : "";
 		if (requestReceived.equalsIgnoreCase("internal")) {
 			String reqUrl = request.getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
