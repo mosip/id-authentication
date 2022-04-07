@@ -42,6 +42,7 @@ import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
@@ -218,11 +219,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
 				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String type = null;
-		String contextPath = request.getContextPath();
+		String contextPath = request.getRequestURL().toString();
 		String[] splitedContext = contextPath.split("/");
-		String requestReceived = splitedContext[splitedContext.length - 1];
+		String requestReceived = splitedContext.length >= 5 ? splitedContext[5] : "";
 		if (requestReceived.equalsIgnoreCase("internal")) {
-			String reqUrl = (request).getRequestURL().toString();
+			String reqUrl = request.getRequestURL().toString();
 			type = fetchInternalAuthtype(reqUrl);
 		}
 		if (errors != null && !errors.isEmpty()) {
@@ -320,7 +321,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		String type = null;
 		if (reqURL != null && !reqURL.isEmpty()) {
 			String[] path = reqURL.split(INTERNAL);
-			if (path[1] != null && !path[1].isEmpty()) {
+			if (path.length > 1 && path[1] != null && !path[1].isEmpty()) {
 				String[] urlPath = path[1].split("/");
 				String contextPath = urlPath[1];
 				if (!StringUtils.isEmpty(contextPath)) {
@@ -361,6 +362,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		switch (requestReceived) {
 		case "kyc":
 			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+			KycResponseDTO kycResponse = new KycResponseDTO();
+			kycResponse.setKycStatus(false);
+			kycAuthResponseDTO.setResponse(kycResponse);
 			kycAuthResponseDTO.setErrors(errors);
 			kycAuthResponseDTO.setResponseTime(responseTime);
 			return kycAuthResponseDTO;

@@ -845,16 +845,13 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			AuthRequestDTO authRequestDto = mapper.readValue(mapper.writeValueAsBytes(requestBody),
 					AuthRequestDTO.class);
 			Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
-					.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
-					.filter(obj -> obj instanceof List).orElse(Collections.emptyList());
+					.filter(Map.class::isInstance).map(obj -> ((Map<String, Object>) obj).get(BIOMETRICS))
+					.filter(List.class::isInstance).orElse(Collections.emptyList());
 			List<BioIdentityInfoDTO> listBioInfo = mapper.readValue(mapper.writeValueAsBytes(value),
 					new TypeReference<List<BioIdentityInfoDTO>>() {
 					});
-			List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType())
+			List<String> bioTypeList = listBioInfo.stream().map(s -> s.getData().getBioType().toUpperCase())
 					.collect(Collectors.toList());
-			if (bioTypeList.contains("Finger")) {
-				bioTypeList.add("FINGER");
-			}
 			for (AuthPolicy mandatoryAuthPolicy : mandatoryAuthPolicies) {
 				validateAuthPolicy(requestBody, authRequestDto, bioTypeList, mandatoryAuthPolicy);
 			}
@@ -895,7 +892,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
 								MatchType.Category.BIO.getType()));
 			} else {
-				if (!bioTypeList.contains(mandatoryAuthPolicy.getAuthSubType())) {
+				if (!bioTypeList.contains(mandatoryAuthPolicy.getAuthSubType().toUpperCase())) {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorMessage(),
