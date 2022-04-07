@@ -1943,7 +1943,7 @@ public class AuthRequestValidatorTest {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
+			Mockito.when(mockReq.getRequestURL()).thenReturn(new StringBuffer("/test"));
 			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
 			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(
 					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
@@ -1991,7 +1991,7 @@ public class AuthRequestValidatorTest {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
+			Mockito.when(mockReq.getRequestURL()).thenReturn(new StringBuffer("/test"));
 			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
 			assertEquals(resp.getErrors().get(0).getErrorMessage(), String.format(
 					IdAuthenticationErrorConstants.INVALID_BIO_TIMESTAMP.getErrorMessage(), "" + maxAllowedTimeDiff));
@@ -2142,7 +2142,7 @@ public class AuthRequestValidatorTest {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
+			Mockito.when(mockReq.getRequestURL()).thenReturn(new StringBuffer("/test"));
 			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
 			assertEquals(resp.getErrors().get(0).getErrorMessage(),
 					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(),
@@ -2192,7 +2192,7 @@ public class AuthRequestValidatorTest {
 			DataValidationUtil.validate(errors);
 		} catch (IDDataValidationException e) {
 			HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-			Mockito.when(mockReq.getContextPath()).thenReturn("/test");
+			Mockito.when(mockReq.getRequestURL()).thenReturn(new StringBuffer("/test"));
 			AuthResponseDTO resp = (AuthResponseDTO) IdAuthExceptionHandler.buildExceptionResponse(e, mockReq);
 			assertEquals(resp.getErrors().get(0).getErrorMessage(),
 					String.format(IdAuthenticationErrorConstants.INVALID_BIO_DIGITALID_TIMESTAMP.getErrorMessage(),
