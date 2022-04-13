@@ -2,9 +2,9 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.FMR_ENABLED_TEST;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -135,7 +135,7 @@ public class AuthTransactionHelper {
 					idvIdType + "-" + idvid);
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
-					false, false);
+					false, false, Collections.emptySet());
 			
 			String token = idService.getToken(idResDTO);
 			return token;

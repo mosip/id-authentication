@@ -76,7 +76,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -248,7 +248,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		try {
-			byte[] decodedData = CryptoUtil.decodeBase64(extractBioData((String) map.get(DATA)));
+			byte[] decodedData = CryptoUtil.decodeBase64Url(extractBioData((String) map.get(DATA)));
 			Map<String, Object> data = mapper.readValue(decodedData, Map.class);
 
 			if (!getStringValue(data, BIO_VALUE).isPresent()) {
@@ -278,11 +278,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 			byte[] xorBytes = BytesUtil.getXOR(timestamp, transactionId);
 			byte[] saltLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_SALT_LASTBYTES_NUM, Integer.class, DEFAULT_SALT_LAST_BYTES_NUM));
-			String salt = CryptoUtil.encodeBase64(saltLastBytes);
+			String salt = CryptoUtil.encodeBase64Url(saltLastBytes);
 			byte[] aadLastBytes = BytesUtil.getLastBytes(xorBytes, env.getProperty(
 					IdAuthConfigKeyConstants.IDA_AAD_LASTBYTES_NUM, Integer.class, DEFAULT_AAD_LAST_BYTES_NUM));
-			String aad = CryptoUtil.encodeBase64(aadLastBytes);
-			String decryptedData = keyManager.kernelDecrypt(String.valueOf(thumbprint), CryptoUtil.decodeBase64(String.valueOf(sessionKey)), CryptoUtil.decodeBase64(String.valueOf(bioValue)), getBioRefId(),
+			String aad = CryptoUtil.encodeBase64Url(aadLastBytes);
+			String decryptedData = keyManager.kernelDecrypt((String) thumbprint, CryptoUtil.decodeBase64Url(String.valueOf(sessionKey)), CryptoUtil.decodeBase64Url(String.valueOf(bioValue)), getBioRefId(),
 					aad, salt, isThumbprintValidationRequired());
 			data.replace(BIO_VALUE, decryptedData);
 			map.replace(DATA, data);
@@ -322,7 +322,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	protected DigitalId decipherDigitalId(String jwsSignature) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(CryptoUtil.decodeBase64(getPayloadFromJwsSingature(jwsSignature)), DigitalId.class);
+			return mapper.readValue(CryptoUtil.decodeBase64Url(getPayloadFromJwsSingature(jwsSignature)), DigitalId.class);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
@@ -549,9 +549,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException, UnsupportedEncodingException {
 		byte[] currentHash = getHash(bdb);
 		
-		byte[] finalHash = contatBytes(previousHash, currentHash);
+		byte[] finalConcat = concatBytes(previousHash, currentHash);
 		
-		String finalHashDigest = digest(getHash(finalHash));
+		byte[] finalHash = getHash(finalConcat);
+		String finalHashDigest = digest(finalHash);
 
 		if (!inputHashDigest.equals(finalHashDigest)) {
 			throwError(IdAuthenticationErrorConstants.INVALID_HASH);
@@ -569,7 +570,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @param currentHash the current hash
 	 * @return the byte[]
 	 */
-	private static byte[] contatBytes(byte[] previousHash, byte[] currentHash) {
+	private static byte[] concatBytes(byte[] previousHash, byte[] currentHash) {
 		byte[] finalHash = new byte[currentHash.length + previousHash.length];
 		System.arraycopy(previousHash, 0, finalHash, 0, previousHash.length);
 		System.arraycopy(currentHash, 0, finalHash, previousHash.length, currentHash.length);
@@ -943,10 +944,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @return true, if is thumbprint validation required
 	 */
 	@Override
-	protected final boolean isThumbprintValidationRequired() {
-		//return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
-		//After integration with 1.1.5.3 version of keymanager, thumbprint is always mandated for decryption.
-		return true;
+	protected boolean isThumbprintValidationRequired() {
+		return env.getProperty("mosip.ida.auth.thumbprint-validation-required", Boolean.class, true);
 	}
 
 	/**

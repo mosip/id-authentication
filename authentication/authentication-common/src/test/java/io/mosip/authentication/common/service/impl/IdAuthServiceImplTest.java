@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.CryptoUtil;
 
 /**
  * IdAuthServiceImplTest test class.
@@ -194,7 +195,7 @@ public class IdAuthServiceImplTest {
 				IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 		
-		idServiceImpl.processIdType(idvIdType, idvId, false, true);
+		idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet());
 
 	}
 
@@ -208,9 +209,9 @@ public class IdAuthServiceImplTest {
 
 		Mockito.when(identityRepo.existsById(idvId)).thenReturn(false);
 
-		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
+		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean(), Collections.emptySet()))
 				.thenThrow(idBusinessException);
-		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true)).thenThrow(idBusinessException);
+		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet())).thenThrow(idBusinessException);
 
 	}
 
