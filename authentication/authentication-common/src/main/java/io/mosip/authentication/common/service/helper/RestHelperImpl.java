@@ -18,13 +18,13 @@ import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -32,9 +32,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,6 +43,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -86,6 +87,23 @@ public class RestHelperImpl implements RestHelper {
 
 	@Autowired
 	private Environment env;
+	
+	private WebClient webClient;
+	
+	@PostConstruct
+	public void initialize() {
+		webClient =  WebClient.builder()
+			.clientConnector(new ReactorClientHttpConnector(builder -> {
+				try {
+					builder.sslContext(getSslContext());
+				} catch (RestServiceException e) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+							"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+				}
+			}))
+			.build();
+	}
 
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
@@ -104,10 +122,10 @@ public class RestHelperImpl implements RestHelper {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
 			if (request.getTimeout() != null) {
-				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout()))
+				response = request(request).timeout(Duration.ofSeconds(request.getTimeout()))
 						.block();
 			} else {
-				response = request(request, getSslContext()).block();
+				response = request(request).block();
 			}
 			if(!String.class.equals(request.getResponseType())) {
 				checkErrorResponse(response, request.getResponseType());
@@ -159,17 +177,11 @@ public class RestHelperImpl implements RestHelper {
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
-		try {
-			Mono<?> sendRequest = request(request, getSslContext());
-			sendRequest.subscribe();
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-					"Request subscribed");
-			return () -> sendRequest.block();
-		} catch (RestServiceException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
-			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
+		Mono<?> sendRequest = request(request);
+		sendRequest.subscribe();
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+				"Request subscribed");
+		return () -> sendRequest.block();
 	}
 
 	/**
@@ -195,36 +207,42 @@ public class RestHelperImpl implements RestHelper {
 	 * @param sslContext the ssl context
 	 * @return the mono
 	 */
-	private Mono<?> request(RestRequestDTO request, SslContext sslContext) {
-		WebClient webClient;
+	private Mono<?> request(RestRequestDTO request) {
 		Mono<?> monoResponse;
 		RequestBodySpec uri;
 		ResponseSpec exchange;
-		RequestBodyUriSpec method;
-
-		if (request.getHeaders() != null) {
-			webClient = WebClient.builder()
-					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
-					.baseUrl(request.getUri())
-					.defaultHeader(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().toString()).build();
-		} else {
-			webClient = WebClient.builder()
-					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
-					.baseUrl(request.getUri()).build();
+		
+		if (request.getParams() != null && request.getPathVariables() == null) {
+			request.setUri(UriComponentsBuilder
+					.fromUriString(request.getUri())
+					.queryParams(request.getParams())
+					.toUriString());
+		} else if (request.getParams() == null && request.getPathVariables() != null) {
+			request.setUri(UriComponentsBuilder
+					.fromUriString(request.getUri())
+					.buildAndExpand(request.getPathVariables())
+					.toUriString());
+		} else if (request.getParams() != null && request.getPathVariables() != null) {
+			request.setUri(UriComponentsBuilder
+					.fromUriString(request.getUri())
+					.queryParams(request.getParams())
+					.buildAndExpand(request.getPathVariables())
+					.toUriString());
 		}
 
-		method = webClient.method(request.getHttpMethod());
-		uri = method.uri(builder -> {
-			if(request.getParams() != null) {
-				builder.queryParams(request.getParams());
-			}
-			
-			if(request.getPathVariables() != null) {
-				return builder.build(request.getPathVariables());
-			} else {
-				return builder.build();
-			}
-		});
+		uri = webClient.method(request.getHttpMethod()).uri(request.getUri());
+
+		
+		if (request.getHeaders() != null) {
+			uri = uri.headers( headers -> {
+				request.getHeaders()
+				.entrySet()
+				.forEach(entry -> 
+					entry.getValue()
+						.forEach(headerVal -> 
+								headers.add(entry.getKey(), headerVal)));
+			});
+		}
 
 		uri.cookie("Authorization", getAuthToken());
 

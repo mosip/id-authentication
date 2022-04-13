@@ -24,6 +24,9 @@ CREATE TABLE ida.hotlist_cache (
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_hc_idhsh_etp ON ida.hotlist_cache (id_hash, expiry_timestamp);
+--index section ends------
 COMMENT ON TABLE ida.hotlist_cache IS E'UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table.';
 -- ddl-end --
 COMMENT ON COLUMN ida.hotlist_cache.id_hash IS E'Vanilla hash of IdValue';

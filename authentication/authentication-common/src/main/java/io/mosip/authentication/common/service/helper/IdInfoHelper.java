@@ -24,6 +24,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -31,8 +33,11 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -177,6 +182,9 @@ public class IdInfoHelper {
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
+		if(entityInfoMap == null) {
+			entityInfoMap = Map.of();
+		}
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
 
@@ -510,5 +518,132 @@ public class IdInfoHelper {
 		}
 		return allowedLang;
 	}
+	
+	/**
+	 * Construct the default attributes
+	 * @return
+	 */
+	public Set<MatchInput> buildDefaultFilterAttributes() {
+		Set<MatchInput> defaultDemoFiltersAttributes = new HashSet<>();
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.NAME, DemoAuthType.values()).get(),
+						DemoMatchType.NAME.getIdMapping().getIdname(), DemoMatchType.NAME,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.PHONE, DemoAuthType.values()).get(),
+						DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		defaultDemoFiltersAttributes
+				.add(new MatchInput(AuthType.getAuthTypeForMatchType(DemoMatchType.EMAIL, DemoAuthType.values()).get(),
+						DemoMatchType.EMAIL.getIdMapping().getIdname(), DemoMatchType.EMAIL,
+						MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType(), 0, Collections.emptyMap(), null));
+		return defaultDemoFiltersAttributes;
+	}
+	
+	/**
+	 * Method will bring matching id values for given input demo attributes
+	 * @param defaultFilterAttributes
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+	public Set<String> getAttributesFromMatchInput(Set<MatchInput> defaultFilterAttributes) throws IdAuthenticationBusinessException {
+		Set<String> demoFilterAttributes = new HashSet<String>();
+		for (MatchInput matchInput : defaultFilterAttributes) {
+			try {
+				List<String> propertyNames = getIdMappingValue(matchInput.getMatchType().getIdMapping(),
+						matchInput.getMatchType());
+				if (!propertyNames.isEmpty()) {
+					demoFilterAttributes.addAll(propertyNames);
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE,
+						"IdMapping config is Invalid for Type -" + matchInput.getMatchType().getCategory().getType());
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+			}
+		}
+		return demoFilterAttributes;
+	}
+	
+	public static boolean isKycAttributeHasPhoto(KycAuthRequestDTO authRequestDTO) {
+		return getKycAttributeHasPhoto(authRequestDTO.getAllowedKycAttributes()).isPresent();
+	}
+	
+	public static Optional<String> getKycAttributeHasPhoto(List<String> allowedKycAttributes) {
+		return Optional.ofNullable(allowedKycAttributes)
+				.stream()
+				.flatMap(List::stream)
+				.filter(elem -> elem.equalsIgnoreCase(IdAuthCommonConstants.PHOTO.toLowerCase())
+						|| elem.equalsIgnoreCase(CbeffDocType.FACE.getType().value().toLowerCase()))
+				.findAny();
+	}
+	
+	/**
+	 * Gets the property names for match type.
+	 *
+	 * @param matchType the match type
+	 * @param idName the id name
+	 * @return the property names for match type
+	 */
+	public List<String> getIdentityAttributesForMatchType(MatchType matchType, String idName) {
+		String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
+		List<String> propertyNames;
+		if (!matchType.isDynamic()) {
+			if(matchType.getIdMapping().getIdname().equals(propertyName)) {
+				try {
+					propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
+				} catch (IdAuthenticationBusinessException e) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.VALIDATE, "Ignoring : IdMapping config is Invalid for Type -" + matchType);
+					propertyNames = List.of();
+				}
+			} else {
+				propertyNames = List.of();
+			}
+
+		} else {
+			if (idMappingConfig.getDynamicAttributes().containsKey(propertyName)) {
+				propertyNames = idMappingConfig.getDynamicAttributes().get(propertyName);
+			} else {
+				propertyNames = List.of(idName);
+			}
+		}
+		return propertyNames;
+	}
+	
+	public List<String> getIdentityAttributesForIdName(String idName)
+			throws IdAuthenticationBusinessException {
+		boolean isDynamic = idMappingConfig.getDynamicAttributes().keySet().contains(idName);
+		return getIdentityAttributesForIdName(idName, isDynamic);
+	}
+	
+	/**
+	 * Gets the identity attributes for id name.
+	 *
+	 * @param idName the id name
+	 * @param isDynamic the is dynamic
+	 * @return the property names for id name
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	public List<String> getIdentityAttributesForIdName(String idName, boolean isDynamic)
+			throws IdAuthenticationBusinessException {
+		DemoMatchType[] demoMatchTypes = DemoMatchType.values();
+		List<String> propNames = new ArrayList<>();
+		for (DemoMatchType demoMatchType : demoMatchTypes) {
+			if(isDynamic == demoMatchType.isDynamic()) {
+				List<String> propertyNamesForMatchType = this.getIdentityAttributesForMatchType(demoMatchType, idName);
+				if(!propertyNamesForMatchType.isEmpty()) {
+					propNames.addAll(propertyNamesForMatchType);
+				}
+			}
+		}
+		if(propNames.isEmpty()) {
+			propNames.add(idName);
+		}
+		return propNames;
+	}
+
 
 }

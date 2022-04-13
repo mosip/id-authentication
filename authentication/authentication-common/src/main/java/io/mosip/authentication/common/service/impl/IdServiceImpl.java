@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,8 +96,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByUin(String uin, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(uin, isBio);
+	public Map<String, Object> getIdByUin(String uin, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(uin, isBio, filterAttributes);
 	}
 
 	/*
@@ -107,8 +108,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdByVid(String vid, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(vid, isBio, IdType.VID);
+	public Map<String, Object> getIdByVid(String vid, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(vid, isBio, IdType.VID, filterAttributes);
 	}
 	
 	/**
@@ -123,19 +124,19 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed)
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdByUin(idvId, isBio);
+				idResDTO = getIdByUin(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
 		} else if(idvIdType.equals(IdType.VID.getType())) {
 			try {
-				idResDTO = getIdByVid(idvId, isBio);
+				idResDTO = getIdByVid(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -223,8 +224,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								.orElseGet(Collections::emptyMap);
 	}
 
-	public Map<String, Object> getIdentity(String id, boolean isBio) throws IdAuthenticationBusinessException {
-		return getIdentity(id, isBio, IdType.UIN);
+	public Map<String, Object> getIdentity(String id, boolean isBio, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
+		return getIdentity(id, isBio, IdType.UIN, filterAttributes);
 	}
 
 	/**
@@ -239,7 +240,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *             the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
 		
 		String hashedId;
 		try {
@@ -290,10 +291,23 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			Map<String, Object> responseMap = new LinkedHashMap<>();
 			
 			Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-			responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMap));
+			Set<String> filterAttributesInLowercase = filterAttributes.stream().map(String::toLowerCase)
+							.collect(Collectors.toSet());
+			if (!filterAttributesInLowercase.isEmpty()) {					
+				Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
+						.filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
+						.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+				responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
+			}
+			
 			if (entity.getBiometricData() != null) {
-				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
-				responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMap));
+				Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);				
+				if (!filterAttributesInLowercase.isEmpty()) {					
+					Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
+							.filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
+							.collect(Collectors.toMap(Entry::getKey, Entry::getValue));					
+					responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
+				}
 			}
 			responseMap.put(TOKEN, entity.getToken());
 			return responseMap;
@@ -326,21 +340,26 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		finalDataStr.putAll(plainData);
 		finalDataStr.putAll(decryptedData);
 		return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(), 
-								entry -> {
-									String val = entry.getValue();
-									if(val.trim().startsWith("[") || val.trim().startsWith("{")) {
-										try {
-											return mapper.readValue(val.getBytes(), Object.class);
-										} catch (IOException e) {
-											logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "decryptConfiguredAttributes",
-													ExceptionUtils.getStackTrace(e));
-											return val;
-										}
-									} else {
-										return val;
-									}
+					entry -> {
+						Object valObject = entry.getValue();
+						if (valObject instanceof String) {
+							String val = (String) valObject;
+							if (val.trim().startsWith("[") || val.trim().startsWith("{")) {
+								try {
+									return mapper.readValue(val.getBytes(), Object.class);
+								} catch (IOException e) {
+									logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+											"decryptConfiguredAttributes", ExceptionUtils.getStackTrace(e));
+									return val;
 								}
-								));
+							} else {
+								return val;
+							}
+						} else {
+							return valObject;
+						}
+					}));
+
 	}
 	
 	/**

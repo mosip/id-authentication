@@ -28,6 +28,7 @@ CREATE TABLE ida.key_alias(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
+	cert_thumbprint character varying(100),
 	CONSTRAINT pk_keymals_id PRIMARY KEY (id)
 
 );

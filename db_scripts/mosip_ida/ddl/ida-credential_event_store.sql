@@ -33,6 +33,9 @@ CREATE TABLE ida.credential_event_store(
 
 );
 -- ddl-end --
+--index section starts----
+CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+--index section ends------
 COMMENT ON TABLE ida.credential_event_store IS 'Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure';
 -- ddl-end --
 COMMENT ON COLUMN ida.credential_event_store.event_id IS 'Event ID: Event id of the credential request';
