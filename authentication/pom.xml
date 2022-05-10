@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.1.5.5-SNAPSHOT</version>
+	<version>1.1.5.5</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -73,8 +73,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel-core.version>1.1.5.5-SNAPSHOT</kernel-core.version>
-		<kernel-keymanager-service.version>1.1.5.5-SNAPSHOT</kernel-keymanager-service.version>
+		<kernel-core.version>1.1.5.5</kernel-core.version>
+		<kernel-keymanager-service.version>1.1.5.5</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>1.1.5.3</kernel-idgenerator-tokenid.version>
 		<kernel-idvalidator-uin.version>1.1.5.4</kernel-idvalidator-uin.version>
 		<kernel-idvalidator-vid.version>1.1.5.3</kernel-idvalidator-vid.version>
@@ -89,8 +89,8 @@
 		<kernel-biometrics-api.version>1.1.5.3</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.1.5.3</kernel-biosdk-provider.version>
 
-		<kernel-websubclient-api.version>1.1.5.5-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.1.5.5-SNAPSHOT</id-repository-core.version>
+		<kernel-websubclient-api.version>1.1.5.5</kernel-websubclient-api.version>
+		<id-repository-core.version>1.1.5.5</id-repository-core.version>
 
 		<json.utility.version>20180130</json.utility.version>
 		<!-- Maven Plugins -->
