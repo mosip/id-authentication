@@ -48,7 +48,7 @@ jobs:
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.ACTION_PAT }}
-        commit-message: Updated Pom versions for release changes
+        commit-message: Release Bot Pre-release changes
         title: Release changes
         body: Automated PR for ${{ github.event.inputs.releaseTags }} release.
         branch: release-branch
