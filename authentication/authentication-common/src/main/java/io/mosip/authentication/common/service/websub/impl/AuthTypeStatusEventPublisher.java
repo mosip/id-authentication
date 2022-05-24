@@ -63,6 +63,12 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	public void publishEvent(String status, String requestId, LocalDateTime updatedDTimes) {
 		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = createEvent(requestId, status, updatedDTimes);
 		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
+		if(eventModel != null) {
+			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
+			partnerIdMap.put("ida-auth-partner-id", "mpartner-default-auth");
+			partnerIdMap.put("PARTNER_REFERENCE_Id","mpartner-default-resident");
+			eventModel.getEvent().setData(partnerIdMap);
+		}
 		webSubHelper.publishEvent(getTopic(), eventModel);
 	}
 	
