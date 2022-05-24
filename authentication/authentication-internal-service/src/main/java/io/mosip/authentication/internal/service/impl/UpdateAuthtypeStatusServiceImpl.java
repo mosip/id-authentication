@@ -92,7 +92,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		AuthtypeLock authtypeLock = new AuthtypeLock();
 		authtypeLock.setToken(token);
 		String authType = authtypeStatus.getAuthType();
-		if (authType.equalsIgnoreCase(Category.BIO.getType())) {
+		if (authType.equalsIgnoreCase(Category.BIO.getType()) || authType.equalsIgnoreCase(Category.OTP.getType())) {
 			authType = authType + "-" + authtypeStatus.getAuthSubType();
 		}
 		authtypeLock.setAuthtypecode(authType);
