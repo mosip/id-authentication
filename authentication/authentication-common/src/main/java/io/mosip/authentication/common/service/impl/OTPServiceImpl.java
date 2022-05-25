@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
+import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -68,6 +71,10 @@ public class OTPServiceImpl implements OTPService {
 	/** The autntxnrepository. */
 	@Autowired
 	private AutnTxnRepository autntxnrepository;
+
+	/** The auth lock repository. */
+	@Autowired
+	AuthLockRepository authLockRepository;
 
 	/** The env. */
 	@Autowired
@@ -130,6 +137,8 @@ public class OTPServiceImpl implements OTPService {
 			
 			token = idAuthService.getToken(idResDTO);
 
+			validateAllowedOtpChannles(token, otpRequestDto.getOtpChannel());
+
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
 			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, otpResponseDTO);
 
@@ -146,6 +155,28 @@ public class OTPServiceImpl implements OTPService {
 		}
 
 
+	}
+
+	private void validateAllowedOtpChannles(String token, List<String> otpChannel) throws IdAuthenticationFilterException {
+
+		if(otpChannel.stream().anyMatch(channel -> "PHONE".equalsIgnoreCase(channel))) {
+			checkAuthLock(token, "otp-sms");
+		}
+		else if(otpChannel.stream().anyMatch(channel -> "EMAIL".equalsIgnoreCase(channel))) {
+			checkAuthLock(token, "otp-email");
+		}
+	}
+
+	private void checkAuthLock(String token, String authTypeCode) throws IdAuthenticationFilterException {
+		List<AuthtypeLock> authTypeLocks = authLockRepository.findByTokenAndAuthtypecode(token, authTypeCode);
+		for(AuthtypeLock authtypeLock : authTypeLocks) {
+			if(authtypeLock.getStatuscode().equalsIgnoreCase("true")){
+				throw new IdAuthenticationFilterException(
+						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+								authTypeCode));
+			}
+		}
 	}
 
 	private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token, OtpResponseDTO otpResponseDTO, ObjectWithMetadata requestWithMetadata)
@@ -253,7 +284,6 @@ public class OTPServiceImpl implements OTPService {
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto the otp request dto
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
