@@ -66,8 +66,8 @@ public class OTPServiceImpl implements OTPService {
 	private static final String OTP = "otp";
 	private static final String PHONE = "PHONE";
 	private static final String EMAIL = "EMAIL";
-	private static final String OTP_SMS = "OTP-SMS";
-	private static final String OTP_EMAIL = "OTP-EMAIL";
+	private static final String OTP_SMS = "otp-sms";
+	private static final String OTP_EMAIL = "otp-email";
 
 
 	/** The id auth service. */
