@@ -66,6 +66,9 @@ public class OTPServiceImpl implements OTPService {
 	private static final String OTP = "otp";
 	private static final String PHONE = "PHONE";
 	private static final String EMAIL = "EMAIL";
+	private static final String OTP_SMS = "OTP-SMS";
+	private static final String OTP_EMAIL = "OTP-EMAIL";
+
 
 	/** The id auth service. */
 	@Autowired
@@ -166,10 +169,10 @@ public class OTPServiceImpl implements OTPService {
 			checkAuthLock(token, OTP);
 		}
 		else if(otpChannel.stream().anyMatch(channel -> PHONE.equalsIgnoreCase(channel))) {
-			checkAuthLock(token, "otp-sms");
+			checkAuthLock(token, OTP_SMS);
 		}
 		else if(otpChannel.stream().anyMatch(channel -> EMAIL.equalsIgnoreCase(channel))) {
-			checkAuthLock(token, "otp-email");
+			checkAuthLock(token, OTP_EMAIL);
 		}
 	}
 
