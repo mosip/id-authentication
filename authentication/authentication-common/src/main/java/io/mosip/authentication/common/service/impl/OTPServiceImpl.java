@@ -63,6 +63,9 @@ public class OTPServiceImpl implements OTPService {
 	
 	/** The Constant NAME. */
 	private static final String NAME = "name";
+	private static final String OTP = "otp";
+	private static final String PHONE = "PHONE";
+	private static final String EMAIL = "EMAIL";
 
 	/** The id auth service. */
 	@Autowired
@@ -159,13 +162,13 @@ public class OTPServiceImpl implements OTPService {
 
 	private void validateAllowedOtpChannles(String token, List<String> otpChannel) throws IdAuthenticationFilterException {
 
-		if(otpChannel.stream().anyMatch(channel -> "otp".equalsIgnoreCase(channel))) {
-			checkAuthLock(token, "otp");
+		if(otpChannel.stream().anyMatch(channel -> OTP.equalsIgnoreCase(channel))) {
+			checkAuthLock(token, OTP);
 		}
-		else if(otpChannel.stream().anyMatch(channel -> "PHONE".equalsIgnoreCase(channel))) {
+		else if(otpChannel.stream().anyMatch(channel -> PHONE.equalsIgnoreCase(channel))) {
 			checkAuthLock(token, "otp-sms");
 		}
-		else if(otpChannel.stream().anyMatch(channel -> "EMAIL".equalsIgnoreCase(channel))) {
+		else if(otpChannel.stream().anyMatch(channel -> EMAIL.equalsIgnoreCase(channel))) {
 			checkAuthLock(token, "otp-email");
 		}
 	}
