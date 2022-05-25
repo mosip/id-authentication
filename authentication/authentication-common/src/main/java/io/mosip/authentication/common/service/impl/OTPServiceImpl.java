@@ -159,7 +159,10 @@ public class OTPServiceImpl implements OTPService {
 
 	private void validateAllowedOtpChannles(String token, List<String> otpChannel) throws IdAuthenticationFilterException {
 
-		if(otpChannel.stream().anyMatch(channel -> "PHONE".equalsIgnoreCase(channel))) {
+		if(otpChannel.stream().anyMatch(channel -> "otp".equalsIgnoreCase(channel))) {
+			checkAuthLock(token, "otp");
+		}
+		else if(otpChannel.stream().anyMatch(channel -> "PHONE".equalsIgnoreCase(channel))) {
 			checkAuthLock(token, "otp-sms");
 		}
 		else if(otpChannel.stream().anyMatch(channel -> "EMAIL".equalsIgnoreCase(channel))) {
