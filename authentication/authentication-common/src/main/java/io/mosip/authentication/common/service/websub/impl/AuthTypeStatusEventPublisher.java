@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.websub.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_TYPE_STATUS_ACK_TOPIC;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,9 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	/** The credential status update topic. */
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
 	private String authTypeStatusAcknlowedgeTopic;
+
+	@Value("${ida-auth-partner-id}")
+	private String partnerId;
 	
 	/**
 	 * Do subscribe.
@@ -63,9 +67,14 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	public void publishEvent(String status, String requestId, LocalDateTime updatedDTimes) {
 		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = createEvent(requestId, status, updatedDTimes);
 		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
+		if(eventModel != null) {
+			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
+			partnerIdMap.put("olv_partner_id", partnerId);
+			eventModel.getEvent().setData(partnerIdMap);
+		}
 		webSubHelper.publishEvent(getTopic(), eventModel);
 	}
-	
+
 	/**
 	 * Creates the credential status update event.
 	 *
