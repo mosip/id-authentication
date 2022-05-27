@@ -24,6 +24,7 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventPublisher.class);
+	private static final String OLV_PARTNER_ID = "olv_partner_id";
 
 	/** The credential status update topic. */
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
@@ -69,7 +70,7 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
 		if(eventModel != null) {
 			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
-			partnerIdMap.put("olv_partner_id", partnerId);
+			partnerIdMap.put(OLV_PARTNER_ID, partnerId);
 			eventModel.getEvent().setData(partnerIdMap);
 		}
 		webSubHelper.publishEvent(getTopic(), eventModel);
