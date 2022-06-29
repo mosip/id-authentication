@@ -88,7 +88,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.2.0</kernel.parent.version>
+		<kernel.parent.version>1.2.1-SNAPSHOT</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
 		<kernel-keymanager-service.version>${kernel.parent.version}</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
@@ -103,7 +103,7 @@
 		<kernel-biometrics-api.version>${kernel.parent.version}</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>${kernel.parent.version}</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.0</id-repository-core.version>
+		<id-repository-core.version>1.2.1-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>${kernel.parent.version}</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
