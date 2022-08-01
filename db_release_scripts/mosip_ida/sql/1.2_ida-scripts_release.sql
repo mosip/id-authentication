@@ -72,9 +72,6 @@ ALTER TABLE ida.key_policy_def_h ADD COLUMN access_allowed character varying(102
 ALTER TABLE ida.uin_auth_lock ALTER COLUMN is_deleted SET DEFAULT FALSE;
 
 
-
-
-
-
-
-
+update ida.key_policy_def set pre_expire_days=90, access_allowed='NA' where app_id='ROOT';
+update ida.key_policy_def set pre_expire_days=30, access_allowed='NA' where app_id='BASE';
+update ida.key_policy_def set pre_expire_days=60, access_allowed='NA' where app_id='IDA';
