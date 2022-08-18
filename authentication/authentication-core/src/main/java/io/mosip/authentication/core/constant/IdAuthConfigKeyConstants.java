@@ -162,4 +162,6 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String FRAUD_ANALYSIS_ENABLED = "mosip.ida.fraud-analysis-enabled";
 
+	public static final String IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED = "ida-missing-credential-retrigger-enabled";
+
 }
