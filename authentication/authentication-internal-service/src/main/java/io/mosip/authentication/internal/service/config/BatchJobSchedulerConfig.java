@@ -66,13 +66,16 @@ public class BatchJobSchedulerConfig {
 			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
 	public void retriggerMissingCredentialsJob() {
 		if(enableMissingCredentialRetrigger) {
+			logger.info("launching job for missing credential retriggering");
 			try {
 				JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 						.toJobParameters();
 				jobLauncher.run(retriggerMissingCredentials, jobParameters);
 			} catch (Exception e) {
-				logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
+				logger.error("unable to launch job for missing credential retriggering: {}", e.getMessage(), e);
 			}
+		} else {
+			logger.info("job for missing credential retriggering is disabled");
 		}
 	}
 
