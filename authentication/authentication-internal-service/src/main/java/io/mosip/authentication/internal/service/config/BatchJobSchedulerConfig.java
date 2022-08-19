@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.CREDENTIAL_STORE_JOB_DELAY;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
 import org.springframework.batch.core.Job;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,6 +45,9 @@ public class BatchJobSchedulerConfig {
 	@Autowired
 	private JobLauncher jobLauncher;
 	
+	@Value("${" + IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED + ":false}")
+	private boolean enableMissingCredentialRetrigger;
+	
 	/**
 	 * Schedule credential store job.
 	 */
@@ -60,12 +65,17 @@ public class BatchJobSchedulerConfig {
 	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
 			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
 	public void retriggerMissingCredentialsJob() {
-		try {
-			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-					.toJobParameters();
-			jobLauncher.run(retriggerMissingCredentials, jobParameters);
-		} catch (Exception e) {
-			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
+		if(enableMissingCredentialRetrigger) {
+			logger.info("launching job for missing credential retriggering");
+			try {
+				JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+						.toJobParameters();
+				jobLauncher.run(retriggerMissingCredentials, jobParameters);
+			} catch (Exception e) {
+				logger.error("unable to launch job for missing credential retriggering: {}", e.getMessage(), e);
+			}
+		} else {
+			logger.info("job for missing credential retriggering is disabled");
 		}
 	}
 
