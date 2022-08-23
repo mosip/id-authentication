@@ -159,6 +159,9 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		autnTxnDto.setEntityName(autnTxn.getEntityName());
 		autnTxnDto.setRequestSignature(autnTxn.getRequestSignature());
 		autnTxnDto.setResponseSignature(autnTxn.getResponseSignature());
+		autnTxnDto.setTokenId(autnTxn.getToken());
+		autnTxnDto.setEntityId(autnTxn.getEntityId());
+		autnTxnDto.setIndividualId(autnTxn.getRefId());
 		return autnTxnDto;
 	}
 
