@@ -297,28 +297,26 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
 			MatchType matchType, String biometricCbeff) throws IdAuthenticationBusinessException {
-		Map<String, String> bdbBasedOnType;
+		Map<String, String> birBasedOnType;
 		try {
 			List<BIRType> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(biometricCbeff.getBytes(), type.getName());
-//			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.get().getBytes(), type.getName(),
-//					null);
 			Function<? super BIRType, ? extends String> keyFunction = bir -> {
 				BDBInfoType bdbInfo = bir.getBDBInfo();
 				return bdbInfo.getType().get(0).toString() + "_" 
-						+ bdbInfo.getSubtype().get(0) 
+						+ (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty()? "" : bdbInfo.getSubtype().get(0))
 						+ (bdbInfo.getSubtype().size() > 1 ?  " "  + bdbInfo.getSubtype().get(1) : "") + "_" 
 						+ bdbInfo.getFormat().getType();
 			};
 			if(birDataFromXMLType.size() == 1) {
 				//This is the segmented cbeff
 				//This is the most possible case
-				bdbBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> biometricCbeff));
+				birBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> biometricCbeff));
 			} else if(birDataFromXMLType.isEmpty()) {
 				//This is unlikely
-				bdbBasedOnType = Collections.emptyMap();
+				birBasedOnType = Collections.emptyMap();
 			} else {
 				//If size is more than one, which is unlikely
-				bdbBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> {
+				birBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> {
 					try {
 						return new String(cbeffUtil.createXML(cbeffUtil.convertBIRTypeToBIR(List.of(bir))));
 					} catch (Exception e) {
@@ -331,7 +329,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()), e);
 		}
-		return bdbBasedOnType.entrySet().stream()
+		return birBasedOnType.entrySet().stream()
 				.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
 					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 					identityInfoDTO.setValue(entry.getValue());
