@@ -86,7 +86,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 /**
  * Resident IdAuth controller test class.
  * 
- * @author Ritik Jain
+ * @author Loganathan Sekar
+ * 
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = IdAuthenticationTestApplication.class)
