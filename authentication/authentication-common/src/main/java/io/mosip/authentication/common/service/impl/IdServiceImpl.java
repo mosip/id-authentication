@@ -189,7 +189,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
-							idType.getType()));
+							idType.getType(), e));
 		}
 
 		try {

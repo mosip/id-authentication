@@ -354,6 +354,7 @@ public class IdAuthSecurityManager {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 		} else {
+			mosipLogger.error(String.format("salt hash value does not exist for modulo: %s", idModulo));
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							SALT_FOR_THE_GIVEN_ID));
