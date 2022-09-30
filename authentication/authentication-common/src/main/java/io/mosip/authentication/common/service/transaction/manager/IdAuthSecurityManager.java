@@ -351,6 +351,7 @@ public class IdAuthSecurityManager {
 			try {
 				return HMACUtils2.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
 			} catch (NoSuchAlgorithmException e) {
+				mosipLogger.error(String.format("No such algorithm exception: %s", e.getMessage()));
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 		} else {
