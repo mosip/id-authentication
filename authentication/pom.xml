@@ -127,7 +127,7 @@
 		<lombok.version>1.18.8</lombok.version>
 
 		<!-- Spring Boot -->
-		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring.boot.version>2.5.12</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
