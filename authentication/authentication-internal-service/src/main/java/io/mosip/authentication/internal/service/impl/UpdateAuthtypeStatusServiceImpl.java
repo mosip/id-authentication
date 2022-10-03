@@ -4,11 +4,13 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUT
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,17 +70,24 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		entities.forEach(entity -> authLockRepository.findByTokenAndAuthtypecode(tokenId, entity.getAuthtypecode())
 				.forEach(authLockRepository::delete));
 		authLockRepository.saveAll(entities);
-
+		String firstRequestId="";
+		LocalDateTime firstGetCreatedDateTime=null;
+		if(!entitiesForRequestId.isEmpty()){
+			firstRequestId = entitiesForRequestId.get(0).getKey();
+			firstGetCreatedDateTime = entitiesForRequestId.get(0).getValue().getCrDTimes();
+		}
+		List<String> statusList = new ArrayList<>();
 		entitiesForRequestId.stream().forEach(entry -> {
 			String requestId = entry.getKey();
 			if (requestId != null) {
 				AuthtypeLock authtypeLock = entry.getValue();
 				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
-				authTypeStatusEventPublisherManager.publishEvent(status, requestId, authtypeLock.getCrDTimes());
+				statusList.add(status);
 			} else {
 				mosipLogger.error("requestId is null; Websub Notification for {} topic is not sent.", AUTH_TYPE_STATUS_ACK_TOPIC);
 			}
 		});
+		authTypeStatusEventPublisherManager.publishEvent(statusList, firstRequestId, firstGetCreatedDateTime);
 	}
 
 	/**

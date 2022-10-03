@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.websub.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_TYPE_STATUS_ACK_TOPIC;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +77,17 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 		webSubHelper.publishEvent(getTopic(), eventModel);
 	}
 
+	public void publishEvent(List<String> status, String requestId, LocalDateTime updatedDTimes) {
+		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = createEvent(requestId, status, updatedDTimes);
+		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
+		if(eventModel != null) {
+			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
+			partnerIdMap.put(OLV_PARTNER_ID, partnerId);
+			eventModel.getEvent().setData(partnerIdMap);
+		}
+		webSubHelper.publishEvent(getTopic(), eventModel);
+	}
+
 	/**
 	 * Creates the credential status update event.
 	 *
@@ -92,6 +104,17 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 		return event;
 	}
 
+	private AuthTypeStatusUpdateAckEvent createEvent(String requestId, List<String> status, LocalDateTime updatedTimestamp) {
+		AuthTypeStatusUpdateAckEvent event = new AuthTypeStatusUpdateAckEvent();
+		if(!status.isEmpty()){
+			event.setStatus(status.get(0));
+		}else{
+			event.setStatus("");
+		}
+		event.setRequestId(requestId);
+		event.setTimestamp(updatedTimestamp);
+		return event;
+	}
 	/**
 	 * @return the authTypeStatusAcknlowedgeTopic
 	 */
