@@ -3,8 +3,13 @@ package io.mosip.authentication.common.service.websub.impl;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTH_TYPE_STATUS_ACK_TOPIC;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.impl.idevent.AuthTransactionStatusEvent;
+import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +30,10 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	/** The Constant logger. */
 	private static final Logger logger = IdaLogger.getLogger(AuthTypeStatusEventPublisher.class);
 	private static final String OLV_PARTNER_ID = "olv_partner_id";
+
+	private static final String STAUTS_LOCKED = "LOCKED";
+
+	private static final String STATUS_UNLOCKED = "UNLOCKED";
 
 	/** The credential status update topic. */
 	@Value("${" + AUTH_TYPE_STATUS_ACK_TOPIC + "}")
@@ -72,6 +81,32 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
 			partnerIdMap.put(OLV_PARTNER_ID, partnerId);
 			eventModel.getEvent().setData(partnerIdMap);
+		}
+		webSubHelper.publishEvent(getTopic(), eventModel);
+	}
+
+	public void publishEvent(List<Map.Entry<String, AuthtypeLock>> entitiesForRequestId){
+		List<AuthTypeStatusUpdateAckEvent> credentialStatusUpdateEvent = new ArrayList<>();
+		entitiesForRequestId.stream().forEach(entry -> {
+			String requestId = entry.getKey();
+			if (requestId != null) {
+				AuthtypeLock authtypeLock = entry.getValue();
+				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
+				credentialStatusUpdateEvent.add(createEvent(status, requestId, authtypeLock.getCrDTimes()));
+			} else {
+				logger.error("requestId is null; Websub Notification for {} topic is not sent.", AUTH_TYPE_STATUS_ACK_TOPIC);
+			}
+		});
+
+		List<EventModel<AuthTypeStatusUpdateAckEvent>> eventModel = new ArrayList<>();
+		for(AuthTypeStatusUpdateAckEvent authTypeStatusUpdateAckEvent : credentialStatusUpdateEvent){
+			EventModel<AuthTypeStatusUpdateAckEvent> event = webSubHelper.createEventModel(getTopic(), authTypeStatusUpdateAckEvent);
+			if(event != null) {
+				Map<String, Object> partnerIdMap = new java.util.HashMap<>();
+				partnerIdMap.put(OLV_PARTNER_ID, partnerId);
+				event.getEvent().setData(partnerIdMap);
+			}
+			eventModel.add(webSubHelper.createEventModel(getTopic(), authTypeStatusUpdateAckEvent));
 		}
 		webSubHelper.publishEvent(getTopic(), eventModel);
 	}

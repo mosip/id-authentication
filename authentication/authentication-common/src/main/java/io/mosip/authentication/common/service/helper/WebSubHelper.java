@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.helper;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
