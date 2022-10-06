@@ -82,7 +82,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 			if (requestId != null) {
 				AuthtypeLock authtypeLock = entry.getValue();
 				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
-				statusList.add(authtypeLock.getAuthtypecode()+":"+ status+",");
+				statusList.add(status);
 			} else {
 				mosipLogger.error("requestId is null; Websub Notification for {} topic is not sent.", AUTH_TYPE_STATUS_ACK_TOPIC);
 			}
