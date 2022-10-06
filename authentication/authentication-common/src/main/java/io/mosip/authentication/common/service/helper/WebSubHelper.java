@@ -1,19 +1,4 @@
 package io.mosip.authentication.common.service.helper;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
-import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.authentication.common.service.websub.WebSubEventSubcriber;
 import io.mosip.authentication.common.service.websub.WebSubEventTopicRegistrar;
@@ -27,11 +12,21 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.spi.PublisherClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionExtendedClient;
-import io.mosip.kernel.websub.api.model.FailedContentRequest;
-import io.mosip.kernel.websub.api.model.FailedContentResponse;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
-import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
+import io.mosip.kernel.websub.api.model.*;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_HUB_URL;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PUBLISHER_URL;
 
 /**
  * The Class WebSubHelper.
