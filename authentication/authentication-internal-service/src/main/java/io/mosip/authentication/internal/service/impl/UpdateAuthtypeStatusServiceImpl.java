@@ -68,7 +68,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		entities.forEach(entity -> authLockRepository.findByTokenAndAuthtypecode(tokenId, entity.getAuthtypecode())
 				.forEach(authLockRepository::delete));
 		authLockRepository.saveAll(entities);
-		authTypeStatusEventPublisherManager.publishEvent(entitiesForRequestId);
+		authTypeStatusEventPublisherManager.publishEvent(authTypeStatusList);
 	}
 
 	/**
