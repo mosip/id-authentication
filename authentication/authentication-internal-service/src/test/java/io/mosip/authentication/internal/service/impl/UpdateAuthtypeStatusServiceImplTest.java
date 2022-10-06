@@ -1,7 +1,6 @@
 package io.mosip.authentication.internal.service.impl;
 
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
-import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import org.junit.Test;
@@ -30,9 +29,6 @@ public class UpdateAuthtypeStatusServiceImplTest {
 
     @Mock
     private AuthLockRepository authLockRepository;
-
-    @Mock
-    private AuthTypeStatusEventPublisher authTypeStatusEventPublisherManager;
 
     /**
      * This class tests the putAuthTypeStatus method
@@ -75,7 +71,6 @@ public class UpdateAuthtypeStatusServiceImplTest {
         authtypeStatus1.setAuthType("LOCKED");
         authtypeStatus1.setAuthSubType("LOCKED");
         authtypeStatus1.setLocked(true);
-        authtypeStatus1.setRequestId("123");
         authtypeStatusList.add(authtypeStatus1);
         updateAuthtypeStatusService.updateAuthTypeStatus(tokenId, authtypeStatusList);
     }
