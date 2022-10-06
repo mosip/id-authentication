@@ -68,17 +68,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		entities.forEach(entity -> authLockRepository.findByTokenAndAuthtypecode(tokenId, entity.getAuthtypecode())
 				.forEach(authLockRepository::delete));
 		authLockRepository.saveAll(entities);
-
-		entitiesForRequestId.stream().forEach(entry -> {
-			String requestId = entry.getKey();
-			if (requestId != null) {
-				AuthtypeLock authtypeLock = entry.getValue();
-				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
-				authTypeStatusEventPublisherManager.publishEvent(status, requestId, authtypeLock.getCrDTimes());
-			} else {
-				mosipLogger.error("requestId is null; Websub Notification for {} topic is not sent.", AUTH_TYPE_STATUS_ACK_TOPIC);
-			}
-		});
+		authTypeStatusEventPublisherManager.publishEvent(authTypeStatusList);
 	}
 
 	/**
