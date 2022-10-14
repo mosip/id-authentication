@@ -1,4 +1,4 @@
-##Properties file 
+## Properties file 
 set -e
 properties_file="$1"
 revoke_version="$2"
@@ -28,7 +28,7 @@ fi
 
 ## Terminate existing connections
 echo "Terminating active connections" 
-CONN=$(PGPASSWORD=$SU_USER_PWD psql --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -t -c "SELECT count(pg_terminate_backend(pg_stat_activity.pid)) FROM pg_stat_activity WHERE datname = '$MOSIP_DB_NAME' AND pid <> pg_backend_pid()";exit;)
+CONN=$(PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -t -c "SELECT count(pg_terminate_backend(pg_stat_activity.pid)) FROM pg_stat_activity WHERE datname = '$MOSIP_DB_NAME' AND pid <> pg_backend_pid()";exit;)
 echo "Terminated connections"
 
 ## Executing DB Revoke scripts
@@ -36,4 +36,4 @@ echo "Alter scripts deployment on $MOSIP_DB_NAME database is started. Revoke Ver
 ALTER_SCRIPT_FILE="sql/${revoke_version}_${REVOKE_SCRIPT_FILENAME}"
 echo "Revoke script considered for DB changes - $ALTER_SCRIPT_FILE"
 
-PGPASSWORD=$SU_USER_PWD psql --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -a -b -f $ALTER_SCRIPT_FILE
+PGPASSWORD=$SU_USER_PWD psql -v ON_ERROR_STOP=1 --username=$SU_USER --host=$DB_SERVERIP --port=$DB_PORT --dbname=$DEFAULT_DB_NAME -a -b -f $ALTER_SCRIPT_FILE
