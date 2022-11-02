@@ -11,7 +11,7 @@ import lombok.Data;
  */
 
 @Data
-public class KycResponseDTO {
+public class EKycResponseDTO {
 
 	/** The Variable to hold value of kyc Status */
 	private boolean kycStatus;

@@ -49,7 +49,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 
@@ -136,7 +136,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -154,7 +154,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -172,7 +172,7 @@ public class KycServiceImplTest {
 			//Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
 			assertTrue(mapper.readValue(k.getIdentity().getBytes(), Map.class).isEmpty());
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -189,7 +189,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo1);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo1);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -206,7 +206,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, langCodes, null);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, langCodes, null);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -220,7 +220,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -234,7 +234,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -246,7 +246,7 @@ public class KycServiceImplTest {
 			throws JsonParseException, JsonMappingException, IOException, IdAuthenticationBusinessException {
 		Set<String> langCodes = new HashSet<>();
 		langCodes.add("ara");
-		KycResponseDTO k = kycServiceImpl2.retrieveKycInfo(limitedList(), langCodes, idInfo);
+		EKycResponseDTO k = kycServiceImpl2.retrieveKycInfo(limitedList(), langCodes, idInfo);
 		assertNotNull(mapper.readValue(k.getIdentity().getBytes(), Map.class).get("Face"));
 	}
 	
@@ -257,7 +257,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("fra");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -271,7 +271,7 @@ public class KycServiceImplTest {
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -283,7 +283,7 @@ public class KycServiceImplTest {
 		try {
 			deleteBootStrapFile();
 			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, null, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, null, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -306,7 +306,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -319,7 +319,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -332,7 +332,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
@@ -345,7 +345,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
-			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
+			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();

@@ -37,7 +37,7 @@ import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
@@ -89,7 +89,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void testSupportTrue() {
-		assertTrue(KycAuthRequestValidator.supports(KycAuthRequestDTO.class));
+		assertTrue(KycAuthRequestValidator.supports(EkycAuthRequestDTO.class));
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	@Ignore
 	public void testValidateAuthRequest() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
@@ -146,7 +146,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestInvalidAuthRequest() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
@@ -155,7 +155,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void testInvalidAuthRequest() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -200,7 +200,7 @@ public class KycAuthRequestValidatorTest {
 	@Test
 	public void TestMUAPermissionisNotAvail() {
 		EnvUtil.setEkycAllowedAuthType("otp,bio,pin");
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
@@ -234,7 +234,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestInvalidAuthType() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -278,7 +278,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestkycAuthRequestDtoisNull() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		kycAuthRequestDTO = null;
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
@@ -287,7 +287,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestkycvalidateAuthType() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -328,7 +328,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestkycAuthRequestisNull() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -336,7 +336,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void TestInvalidConsentReq() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -380,7 +380,7 @@ public class KycAuthRequestValidatorTest {
 
 	@Test
 	public void testForIsValidAuthtype() {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentObtained(Boolean.TRUE);
 		
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()

@@ -58,9 +58,9 @@ import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -117,7 +117,7 @@ public class KycControllerTest {
 	WebDataBinder binder;
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
-	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
+	Errors errors = new BindException(EkycAuthRequestDTO.class, "kycAuthReqDTO");
 
 	@Mock
 	private KycServiceImpl kycService;
@@ -131,7 +131,7 @@ public class KycControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	KycAuthRequestDTO kycAuthReqDTO = null;
+	EkycAuthRequestDTO kycAuthReqDTO = null;
 	IdentityInfoDTO idInfoDTO = null;
 	IdentityInfoDTO idInfoDTO1 = null;
 	List<IdentityInfoDTO> idInfoList = null;
@@ -141,10 +141,10 @@ public class KycControllerTest {
 	BioIdentityInfoDTO bioIdInfoDto1 = null;
 	DataDTO dataDto1 = null;
 	DigitalId digitalId1 = null;
-	KycAuthResponseDTO kycAuthResponseDTO = null;
+	EKycAuthResponseDTO kycAuthResponseDTO = null;
 	AuthResponseDTO authResponseDTO = null;
 	ResponseDTO res = null;
-	KycResponseDTO kycResponseDTO = null;
+	EKycResponseDTO kycResponseDTO = null;
 	HashMap<String, Object> respMetadata = null;
 	HashMap<String, Object> metadata = null;
 	Map<String, List<IdentityInfoDTO>> idInfo = null;
@@ -162,7 +162,7 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(kycReqValidator, "idInfoFetcher", idInfoFetcherImpl);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 
-		kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO = new EkycAuthRequestDTO();
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setVersion("1.1");
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
@@ -212,7 +212,7 @@ public class KycControllerTest {
 		metadata.put("IDENTITY_INFO", new HashMap<String, Object>());
 		kycAuthReqDTO.setMetadata(metadata);
 
-		kycResponseDTO = new KycResponseDTO();
+		kycResponseDTO = new EKycResponseDTO();
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 		idInfo = new HashMap<>();
 		list = new ArrayList<IdentityInfoDTO>();
@@ -222,7 +222,7 @@ public class KycControllerTest {
 		idInfo.put("phone", list);
 		kycResponseDTO.setIdentity(mapper.writeValueAsString(idInfo));
 		
-		kycAuthResponseDTO = new KycAuthResponseDTO();
+		kycAuthResponseDTO = new EKycAuthResponseDTO();
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
@@ -261,7 +261,7 @@ public class KycControllerTest {
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata))
 				.thenReturn(authResponseDTO);
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata()))
+		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata()))
 				.thenReturn(kycAuthResponseDTO);
 		assertEquals(kycAuthResponseDTO,
 				kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata));
@@ -279,7 +279,7 @@ public class KycControllerTest {
 				.thenReturn(authTxnBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException());
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", new TestObjectWithMetadata())).thenReturn(authResponseDTO);
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", Collections.emptyMap())).thenReturn(kycAuthResponseDTO);
+		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", Collections.emptyMap())).thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
 	}
 	
@@ -292,7 +292,7 @@ public class KycControllerTest {
 		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
 		requestWithMetadata.setMetadata(new HashMap<>());
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata)).thenThrow(new IdAuthenticationBusinessException());
-		Mockito.when(kycFacade.processKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata())).thenReturn(kycAuthResponseDTO);
+		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata())).thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata);
 	}
 }

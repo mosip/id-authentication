@@ -114,7 +114,8 @@ public class PartnerServiceManagerTest {
 	@Test
 	public void validateAndGetPolicyTest() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"partnerStatus\":\"ACTIVE\"},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
-		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\", \"policyId\":\"644269\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"DUMMY-CERTIFICATE-DATA\",\"partnerStatus\":\"ACTIVE\"}";
 
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
@@ -123,6 +124,11 @@ public class PartnerServiceManagerTest {
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		PartnerPolicyResponseDTO partnerPolicyResponseDTO = new PartnerPolicyResponseDTO();
 		PartnerData partnerData = partnerMapping.getPartnerData();
 		PolicyData policyData = partnerMapping.getPolicyData();
@@ -142,9 +148,11 @@ public class PartnerServiceManagerTest {
 		partnerPolicyResponseDTO.setMispExpiresOn(plusHours);
 		partnerPolicyResponseDTO.setApiKeyExpiresOn(plusHours);
 		partnerPolicyResponseDTO.setPolicyExpiresOn(plusHours);
+		partnerPolicyResponseDTO.setMispPolicyId("644269");
+
 		
 		partnerPolicyResponseDTO.setCertificateData(partnerData.getCertificateData());
-		assertEquals(partnerPolicyResponseDTO, partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", true));
+		assertEquals(partnerPolicyResponseDTO, partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", true, "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", false));
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException:IDA-MPA-012 --> Partner is deactivated
@@ -152,6 +160,8 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException1Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"isDeleted\":\"true\",\"partnerStatus\":\"ACTIVE\"},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"INACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"INACTIVE\",\"isDeleted\":true,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
+
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
@@ -161,11 +171,15 @@ public class PartnerServiceManagerTest {
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ"))
 				.thenReturn(mispLicOptional);
 		
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856",
-				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
@@ -173,18 +187,23 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException2Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"INACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
 				.thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
 		
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
@@ -192,18 +211,24 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException3Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
+
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
 				.thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
 		
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
@@ -211,15 +236,21 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException4Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856")).thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-012 --> Partner is deactivated
@@ -227,15 +258,21 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException5Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"INACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856")).thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-009 --> Partner is not registered
@@ -243,15 +280,21 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyException6Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856")).thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-017 --> License key of MISP is blocked
@@ -259,13 +302,18 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyMispException1Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-10-30T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856")).thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException:IDA-MPA-008 --> License key of MISP has expired
@@ -273,15 +321,20 @@ public class PartnerServiceManagerTest {
 	public void validateAndGetPolicyMispException2Test() throws IdAuthenticationBusinessException, Exception {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-10-30T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
 		PartnerMapping partnerMapping = mapper.readValue(partnerMappingObj, PartnerMapping.class);
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.of(partnerMapping);
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856")).thenReturn(partnerMappingDataOptional);
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicOptional = Optional.of(mispLicenseData);
+		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
+		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
+		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
-		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-007 --> License key does not belong to a registered MISP
@@ -291,7 +344,7 @@ public class PartnerServiceManagerTest {
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
 				.thenReturn(partnerMappingDataOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856",
-				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false);
+				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "", false);
 	}
 
 	@Test
@@ -504,7 +557,7 @@ public class PartnerServiceManagerTest {
 	
 	@Test
 	public void updateMispLicenseDataTest() throws Exception {
-		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\",\"mispType\":\"MISP\"}";
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		Optional<MispLicenseData> mispLicenseDataOptional = Optional.of(mispLicenseData);
 		HashMap<String, Object> data = new HashMap<String, Object>();
@@ -530,7 +583,7 @@ public class PartnerServiceManagerTest {
 	
 	@Test
 	public void updateMispLicenseDataTest1() throws Exception {
-		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
+		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\",\"mispType\":\"MISP\"}";
 		MispLicenseData mispLicenseData = mapper.readValue(mispLicenseDataObj, MispLicenseData.class);
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("mispLicenseData", mispLicenseData);
@@ -556,7 +609,7 @@ public class PartnerServiceManagerTest {
 	public void Test_validatePartnerMappingDetails_emptyArgs() {
 		try {
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.empty(),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -573,7 +626,7 @@ public class PartnerServiceManagerTest {
 			PartnerMapping partnerMappingData = new PartnerMapping();
 			partnerMappingData.setDeleted(true);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -592,7 +645,7 @@ public class PartnerServiceManagerTest {
 			partnerData1.setDeleted(true);
 			partnerMappingData.setPartnerData(partnerData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -611,7 +664,7 @@ public class PartnerServiceManagerTest {
 			partnerData1.setPartnerStatus("INACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -633,7 +686,7 @@ public class PartnerServiceManagerTest {
 			policyData1.setDeleted(true);
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -655,7 +708,7 @@ public class PartnerServiceManagerTest {
 			policyData1.setPolicyStatus("INACTIVE");
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -681,7 +734,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -707,7 +760,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -737,7 +790,7 @@ public class PartnerServiceManagerTest {
 			apiKeyData1.setDeleted(true);
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -767,7 +820,7 @@ public class PartnerServiceManagerTest {
 			apiKeyData1.setApiKeyStatus("INACTIVE");
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -800,7 +853,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -833,7 +886,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -848,12 +901,18 @@ public class PartnerServiceManagerTest {
 	public void Test_validatePartnerMappingDetails_mispLicenseKeyEmpty() {
 		try {
 			PartnerMapping partnerMappingData = new PartnerMapping();
+			partnerMappingData.setPartnerId("123");
 			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerId("123");
+			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
+			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
+			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
+
 			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
@@ -866,7 +925,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty());
+					Optional.empty(), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -882,11 +941,18 @@ public class PartnerServiceManagerTest {
 		try {
 			PartnerMapping partnerMappingData = new PartnerMapping();
 			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerId("123");
+			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
 			partnerData1.setPartnerStatus("ACTIVE");
+
+			partnerMappingData.setPartnerId("123");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
+			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
+			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
+
 			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
@@ -901,7 +967,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setDeleted(true);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ));
+					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -916,11 +982,18 @@ public class PartnerServiceManagerTest {
 	public void Test_validatePartnerMappingDetails_mispLicenseInactive() {
 		try {
 			PartnerMapping partnerMappingData = new PartnerMapping();
+			partnerMappingData.setPartnerId("123");
+
 			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerId("123");
+			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
+
+			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
+			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 			
 			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
@@ -936,7 +1009,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setMispStatus("INACTIVE");
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ));
+					Optional.of(mispLicenseData ), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -951,11 +1024,18 @@ public class PartnerServiceManagerTest {
 	public void Test_validatePartnerMappingDetails_mispLicenseCommenseOnIsNotBefore() {
 		try {
 			PartnerMapping partnerMappingData = new PartnerMapping();
+			partnerMappingData.setPartnerId("123");
+
 			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerId("123");
+			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
+
+			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
+			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 			
 			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
@@ -974,7 +1054,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ));
+					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -989,12 +1069,19 @@ public class PartnerServiceManagerTest {
 	public void Test_validatePartnerMappingDetails_mispLicenseExpiryIsNotAfter() {
 		try {
 			PartnerMapping partnerMappingData = new PartnerMapping();
+			partnerMappingData.setPartnerId("123");
+
 			PartnerData partnerData1 = new PartnerData();
+			partnerData1.setPartnerId("123");
+			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
+			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
+			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
+
 			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
@@ -1012,7 +1099,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ));
+					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e

@@ -70,9 +70,9 @@ import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -234,8 +234,8 @@ public class KycFacadeImplTest {
 		reqMetadata.put("123456"+"12345", partnerPolicyResponseDTO);
 		authRequestDTO.setMetadata(reqMetadata);
 		
-		KycAuthResponseDTO authResponseDTO = new KycAuthResponseDTO();
-		KycResponseDTO res = new KycResponseDTO();
+		EKycAuthResponseDTO authResponseDTO = new EKycAuthResponseDTO();
+		EKycResponseDTO res = new EKycResponseDTO();
 		res.setKycStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
@@ -297,7 +297,7 @@ public class KycFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		
-		KycAuthRequestDTO authRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO authRequestDTO = new EkycAuthRequestDTO();
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
@@ -336,8 +336,8 @@ public class KycFacadeImplTest {
 		reqMetadata.put("123456"+"12345", partnerPolicyResponseDTO);
 		authRequestDTO.setMetadata(reqMetadata);
 		
-		KycAuthResponseDTO authResponseDTO = new KycAuthResponseDTO();
-		KycResponseDTO res = new KycResponseDTO();
+		EKycAuthResponseDTO authResponseDTO = new EKycAuthResponseDTO();
+		EKycResponseDTO res = new EKycResponseDTO();
 		res.setKycStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
@@ -399,7 +399,7 @@ public class KycFacadeImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		
-		AuthRequestDTO authRequestDTO = new KycAuthRequestDTO();
+		AuthRequestDTO authRequestDTO = new EkycAuthRequestDTO();
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
@@ -482,7 +482,7 @@ public class KycFacadeImplTest {
 		Map<String, Object> mapData = new HashMap<>();
 		mapData.put("uin", "863537");
 		
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Map<String, Object> kycReqMetadata = new HashMap<>();
 		Set<String> langs = new HashSet<>();
 		langs.add("eng");
@@ -513,8 +513,8 @@ public class KycFacadeImplTest {
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequest(request);
 		
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		KycResponseDTO kycResponseDTO = new KycResponseDTO();
+		EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
+		EKycResponseDTO kycResponseDTO = new EKycResponseDTO();
 		kycResponseDTO.setAuthToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 		kycResponseDTO.setIdentity("id data");
@@ -569,7 +569,7 @@ public class KycFacadeImplTest {
 		Mockito.when(securityManager.getUser()).thenReturn("ida_app_user");
 		Mockito.when(authTypeStatus.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(new ArrayList<AuthtypeStatus>());
 		Mockito.when(idService.getToken(idData)).thenReturn(uin);
-		assertEquals(kycAuthResponseDTO.getResponse(),kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata).getResponse());
+		assertEquals(kycAuthResponseDTO.getResponse(),kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata).getResponse());
 	}
 	
 	@Test
@@ -577,7 +577,7 @@ public class KycFacadeImplTest {
 		Map<String, Object> mapData = new HashMap<>();
 		mapData.put("uin", "863537");
 		
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Map<String, Object> kycReqMetadata = new HashMap<>();
 		Set<String> langs = new HashSet<>();
 		langs.add("eng");
@@ -608,8 +608,8 @@ public class KycFacadeImplTest {
 		request.setDemographics(idDTO);
 		kycAuthRequestDTO.setRequest(request);
 		
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		KycResponseDTO kycResponseDTO = new KycResponseDTO();
+		EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
+		EKycResponseDTO kycResponseDTO = new EKycResponseDTO();
 		kycResponseDTO.setAuthToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 		kycResponseDTO.setIdentity("id data");
@@ -666,7 +666,7 @@ public class KycFacadeImplTest {
 		Mockito.when(idService.getToken(idData)).thenReturn(uin);
 		when(securityManager.encryptData(Mockito.any(), anyString())).thenThrow(new IdAuthenticationBusinessException());
 		try {
-			kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
+			kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
 		} catch (IdAuthenticationBusinessException e) {
 			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
 		}
@@ -674,7 +674,7 @@ public class KycFacadeImplTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void processKycAuthException1() throws IdAuthenticationBusinessException, JsonProcessingException {
-		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Map<String, Object> kycReqMetadata = new HashMap<>();
 		Set<String> langs = new HashSet<>();
 		langs.add("eng");
@@ -704,8 +704,8 @@ public class KycFacadeImplTest {
 		kycAuthRequestDTO.setIndividualId("5134256294");
 		kycAuthRequestDTO.setRequest(request);
 		
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-		KycResponseDTO kycResponseDTO = new KycResponseDTO();
+		EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
+		EKycResponseDTO kycResponseDTO = new EKycResponseDTO();
 		kycResponseDTO.setAuthToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
@@ -753,7 +753,7 @@ public class KycFacadeImplTest {
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(kycResponseDTO);
 		doThrow(new IDDataValidationException()).when(auditHelper).audit((AuditModules) any(),
 				(AuditEvents) any(), anyString(), (IdType) any(), anyString());
-		kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
+		kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
 	}
 
 }

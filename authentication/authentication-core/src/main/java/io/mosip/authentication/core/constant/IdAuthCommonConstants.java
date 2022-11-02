@@ -349,6 +349,9 @@ public final class IdAuthCommonConstants {
 
 	public static final String ID_NAME = "idName";
 
+	public static final String OIDC_CLIENT_CREATED = "oidc_client_created";
+
+	public static final String OIDC_CLIENT_UPDATED = "oidc_client_updated";
 
 	private IdAuthCommonConstants() {
 	}

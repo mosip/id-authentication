@@ -195,10 +195,9 @@ public class AuthTransactionHelper {
 	 * @return the auth transaction builder
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public AuthTransactionBuilder createAndSetAuthTxnBuilderMetadataToRequest(ObjectWithMetadata requestDTO, boolean isInternal, Optional<PartnerDTO> partner)
-			throws IdAuthenticationBusinessException {
-		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(requestDTO,
-				isInternal, partner);
+	public AuthTransactionBuilder createAndSetAuthTxnBuilderMetadataToRequest(ObjectWithMetadata requestDTO, boolean isInternal, 
+				Optional<PartnerDTO> partner) throws IdAuthenticationBusinessException {
+		AuthTransactionBuilder authTxnBuilder = createAuthTxnBuilder(requestDTO, isInternal, partner);
 		setAuthTransactionBuilderMetadata(requestDTO, authTxnBuilder);
 		return authTxnBuilder;
 	}

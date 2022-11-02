@@ -13,34 +13,43 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-@Table(name = "misp_license_data", schema = "ida")
+@Table(name = "kyc_token_store", schema = "ida")
 @Entity
-public class MispLicenseData {
+public class KycTokenData {
 	
 	@Id
 	@NotNull
-	@Column(name = "misp_id")
-	private String mispId;
+	@Column(name = "id")
+	private String kycTokenId;
 
 	@NotNull
-	@Column(name = "license_key")
-	private String licenseKey;
+	@Column(name = "id_vid_hash")
+	private String idVidHash;
 
 	@NotNull
-	@Column(name = "misp_commence_on")
-	private LocalDateTime mispCommenceOn;
+	@Column(name = "kyc_token")
+	private String kycToken;
 
 	@NotNull
-	@Column(name = "misp_expires_on")
-	private LocalDateTime mispExpiresOn;
+	@Column(name = "psu_token")
+	private String psuToken;
 
 	@NotNull
-	@Column(name = "misp_status")
-	private String mispStatus;
+	@Column(name = "oidc_client_id")
+	private String oidcClientId;
 
-	@Column(name = "policy_id")
-	private String policyId;
-	
+	@NotNull
+	@Column(name = "token_issued_dtimes")
+	private LocalDateTime tokenIssuedDateTime;
+
+	@NotNull
+	@Column(name = "auth_req_dtimes")
+	private LocalDateTime authReqDateTime;
+
+	@NotNull
+	@Column(name = "kyc_token_status")
+	private String kycTokenStatus;
+
 	@NotNull
 	@Column(name = "cr_by")
 	private String createdBy;

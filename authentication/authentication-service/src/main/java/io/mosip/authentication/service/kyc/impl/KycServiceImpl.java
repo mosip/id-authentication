@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,31 +12,39 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.KycTokenStatusType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The implementation of Kyc Authentication service which retrieves the identity
@@ -68,6 +78,11 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Autowired
+	private IdAuthSecurityManager securityManager;
+
+	@Autowired
+	private KycTokenDataRepository kycTokenDataRepo;
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -85,9 +100,9 @@ public class KycServiceImpl implements KycService {
 	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@Override
-	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
+	public EKycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
-		KycResponseDTO kycResponseDTO = new KycResponseDTO();
+		EKycResponseDTO kycResponseDTO = new EKycResponseDTO();
 		if (Objects.nonNull(identityInfo) && Objects.nonNull(allowedkycAttributes) && !allowedkycAttributes.isEmpty()) {
 			Optional<String> faceAttribute = IdInfoHelper.getKycAttributeHasPhoto(allowedkycAttributes);
 			if(faceAttribute.isPresent()) {
@@ -123,7 +138,7 @@ public class KycServiceImpl implements KycService {
 	 * @param langCodes the lang codes
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
+	private void setKycInfo(List<String> allowedkycAttributes, EKycResponseDTO kycResponseDTO,
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) throws IdAuthenticationBusinessException {
 		Map<String, Object> idMappingIdentityInfo = getKycInfo(allowedkycAttributes,
 				filteredIdentityInfo, langCodes);
@@ -324,4 +339,48 @@ public class KycServiceImpl implements KycService {
 		return identityInfos;
 	}
 
+	// Taking tokenGenerationTime same as auth response time only as response time is generated based on local timezone.
+	@Override
+	public String generateAndSaveKycToken(String idHash, String authToken, String oidcClientId, String requestTime, 
+				String tokenGenerationTime) throws IdAuthenticationBusinessException {
+		
+		String uuid = UUID.randomUUID().toString();
+		LocalDateTime requestLocalDateTime = IdaRequestResponsConsumerUtil.convertStringDateTimeToLDT(requestTime);
+		LocalDateTime tokenIssuedDateTime = IdaRequestResponsConsumerUtil.convertStringDateTimeToLDT(tokenGenerationTime);
+		
+		String kycToken = generateKycToken(uuid, idHash);
+		KycTokenData kycTokenData = new KycTokenData();
+		kycTokenData.setKycTokenId(uuid);
+		kycTokenData.setIdVidHash(idHash);
+		kycTokenData.setKycToken(kycToken);
+		kycTokenData.setPsuToken(authToken);
+		kycTokenData.setOidcClientId(oidcClientId);
+		kycTokenData.setTokenIssuedDateTime(tokenIssuedDateTime);
+		kycTokenData.setAuthReqDateTime(requestLocalDateTime);
+		kycTokenData.setKycTokenStatus(KycTokenStatusType.ACTIVE.getStatus());
+		kycTokenData.setCreatedBy(EnvUtil.getAppId());
+		kycTokenData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		kycTokenDataRepo.saveAndFlush(kycTokenData);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateAndSaveKycToken",
+					"KYC Token Generated & Saved.");
+		return kycToken;
+	}
+
+	private String generateKycToken(String uuid, String idHash) throws IdAuthenticationBusinessException {
+		try {
+			byte[] uuidBytes = uuid.getBytes();
+			byte[] idHashBytes = IdAuthSecurityManager.decodeHex(idHash);
+			ByteBuffer bBuffer = ByteBuffer.allocate(uuidBytes.length + idHashBytes.length);
+			bBuffer.put(uuidBytes);
+			bBuffer.put(idHashBytes);
+
+			byte[] kycTokenInputBytes = bBuffer.array();
+			return securityManager.generateKeyedHash(kycTokenInputBytes);
+		} catch (DecoderException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateKycToken",
+					"Error Generating KYC Token", e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+
+	}
 }

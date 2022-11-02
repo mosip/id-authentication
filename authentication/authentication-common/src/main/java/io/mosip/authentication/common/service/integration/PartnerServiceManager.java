@@ -1,6 +1,8 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -14,11 +16,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.ApiKeyData;
 import io.mosip.authentication.common.service.entity.MispLicenseData;
+import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.entity.PartnerData;
 import io.mosip.authentication.common.service.entity.PartnerMapping;
 import io.mosip.authentication.common.service.entity.PolicyData;
 import io.mosip.authentication.common.service.repository.ApiKeyDataRepository;
 import io.mosip.authentication.common.service.repository.MispLicenseDataRepository;
+import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
@@ -26,10 +30,14 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * This class Partner Service Manager connects to partner service to validate
@@ -43,6 +51,8 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @Transactional
 public class PartnerServiceManager {
 
+	private static final Logger logger = IdaLogger.getLogger(PartnerServiceManager.class);
+
 	/** The Constant API_KEY_DATA. */
 	private static final String API_KEY_DATA = "apiKeyData";
 
@@ -54,6 +64,9 @@ public class PartnerServiceManager {
 
 	/** The Constant MISP_LICENSE_DATA. */
 	private static final String MISP_LICENSE_DATA = "mispLicenseData";
+
+	/** The Constant OIDC_CLIENT_DATA. */
+	private static final String OIDC_CLIENT_DATA = "clientData";
 
 	/** The partner mapping repo. */
 	@Autowired
@@ -75,6 +88,9 @@ public class PartnerServiceManager {
 	@Autowired
 	private MispLicenseDataRepository mispLicDataRepo;
 
+	@Autowired
+	private OIDCClientDataRepository oidcClientDataRepo; 
+
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -94,10 +110,11 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
-														 boolean certificateNeeded) throws IdAuthenticationBusinessException {
+									boolean certificateNeeded, String signatureHeaderCertificate, boolean certValidationNeeded) 
+									throws IdAuthenticationBusinessException {
 		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
 		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findByLicenseKey(misp_license_key);
-		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional);
+		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional, signatureHeaderCertificate, certValidationNeeded);
 		PartnerPolicyResponseDTO response = new PartnerPolicyResponseDTO();
 		PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 		PartnerData partnerData = partnerMapping.getPartnerData();
@@ -115,8 +132,21 @@ public class PartnerServiceManager {
 			response.setCertificateData(partnerData.getCertificateData());
 		}
 		response.setPolicyExpiresOn(policyData.getPolicyExpiresOn());
-		response.setApiKeyExpiresOn(apiKeyData.getApiKeyExpiresOn());
+		if (Objects.nonNull(apiKeyData)) {
+			response.setApiKeyExpiresOn(apiKeyData.getApiKeyExpiresOn());
+		}
 		response.setMispExpiresOn(mispLicenseData.getMispExpiresOn());
+
+		String mispPolicyId = mispLicenseData.getPolicyId();
+		if (Objects.nonNull(mispPolicyId)) {
+			response.setMispPolicyId(mispPolicyId);
+			Optional<PolicyData> mispPolicyDataOpt = policyDataRepo.findByPolicyId(mispPolicyId);
+			if(mispPolicyDataOpt.isPresent()) {
+				PolicyData mispPolicyData = mispPolicyDataOpt.get();
+				response.setMispPolicy(mapper.convertValue(mispPolicyData.getPolicy(), MispPolicyDTO.class));
+			}
+		}
+
 		return response;
 	}
 
@@ -128,7 +158,8 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
-											   Optional<MispLicenseData> mispLicOptional) throws IdAuthenticationBusinessException {
+											   Optional<MispLicenseData> mispLicOptional, String signatureHeaderCertificate, 
+											   boolean certValidationNeeded) throws IdAuthenticationBusinessException {
 		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
 			PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 			if (partnerMapping.getPartnerData().isDeleted()) {
@@ -155,19 +186,62 @@ public class PartnerServiceManager {
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
 			}
-			if (partnerMapping.getApiKeyData().isDeleted()) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+			// Checking not null because in case of OIDC client id, API key data will not be available.
+			if (Objects.nonNull(partnerMapping.getApiKeyData())) {
+				if (partnerMapping.getApiKeyData().isDeleted()) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+							IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+				}
+				if (!partnerMapping.getApiKeyData().getApiKeyStatus().contentEquals("ACTIVE")) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
+							IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
+				}
+				if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
+						|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
+						.isBefore(DateUtils.getUTCCurrentDateTime())) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+							IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+				}
+			} else {
+				String oidcClientId = partnerMapping.getApiKeyId();
+				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_VALIDATION", 
+					"Checking for OIDC client exists or not");
+				Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+				if (!oidcClientData.isPresent()){
+					logger.error(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_VALIDATION", 
+						"OIDC client mapping not found in DB: " + oidcClientId);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorCode(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorMessage());
+				}
 			}
-			if (!partnerMapping.getApiKeyData().getApiKeyStatus().contentEquals("ACTIVE")) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
-						IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
-			}
-			if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
-					|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
-					.isBefore(DateUtils.getUTCCurrentDateTime())) {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-						IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+			if (certValidationNeeded && Objects.nonNull(signatureHeaderCertificate)) {
+				boolean partnerCertMatched = isCertificateMatching(signatureHeaderCertificate, partnerMapping.getPartnerId());
+				// Setting default value to true because mispPartner cert matching will be done after partner certificate match.
+				// if partner certificate matches, not required to match misp certificate/idp certificate 
+				boolean mispPartnerCertMatched = true;
+				// check signature header certificate is matching with IdP service partner certificate before throwing error.
+				if (!partnerCertMatched) {
+					if (mispLicOptional.isPresent()) {
+						MispLicenseData mispLicenseData = mispLicOptional.get();
+						mispPartnerCertMatched = isCertificateMatching(signatureHeaderCertificate, mispLicenseData.getMispId());
+					} else {
+						// misp not present. throw partner cert not matched exception because first matching partner certificate and  
+						// then validating misp details/idp service.
+						// misp partner not found so setting mispPartnerCertMatched value to false.
+						mispPartnerCertMatched = false;
+					}
+				}
+				/*
+				 Test Scenario's: (values for partnerCertMatched & mispPartnerCertMatched)
+				 1 - partner certificate matches -> true & true => below if condition will not be satisfied. No Exception 
+				 2 - partner certificate not matched and misp not found -> false & false => below if condition will be satisfied, throws exception
+				 3 - partner certificate not matched and misp cert found and matched -> false & true => below if condition will not be satisfied. No Exception
+				 4 - partner certificate not matched and misp cert found and not matched -> false & false => below if condition will be satisfied, throws exception
+				 */
+				if (!partnerCertMatched && !mispPartnerCertMatched) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_MATCHED.getErrorCode(),
+										IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_MATCHED.getErrorMessage());
+				}
 			}
 			if (mispLicOptional.isPresent()) {
 				MispLicenseData mispLicenseData = mispLicOptional.get();
@@ -197,6 +271,15 @@ public class PartnerServiceManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
 					IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 		}
+	}
+
+	private boolean isCertificateMatching(String signatureHeaderCertificate, String partnerId) {
+		Optional<PartnerData> partnerData = partnerDataRepo.findByPartnerId(partnerId);
+		if (partnerData.isPresent()) {
+			String partnerCertificate = CryptoUtil.encodeBase64Url(partnerData.get().getCertificateData().getBytes());
+			return signatureHeaderCertificate.equals(partnerCertificate);
+		}
+		return false;
 	}
 
 	/**
@@ -341,7 +424,17 @@ public class PartnerServiceManager {
 	 * @param eventModel the event model
 	 */
 	public void updateMispLicenseData(EventModel eventModel) {
-		MispLicenseData mispLicenseEventData = mapper.convertValue(eventModel.getEvent().getData().get(MISP_LICENSE_DATA), MispLicenseData.class);
+		Map<String, Object> eventDataMap = eventModel.getEvent().getData();
+		MispLicenseData mispLicenseEventData = mapper.convertValue(eventDataMap.get(MISP_LICENSE_DATA), MispLicenseData.class);
+		PolicyData policyEventData = null;
+		if (eventDataMap.containsKey(POLICY_DATA)) {
+			// First Add/Update the Policy details
+			updatePolicyData(eventModel);
+			// Later adding the policy id for MISP partner. 
+			policyEventData = mapper.convertValue(eventDataMap.get(POLICY_DATA), PolicyData.class);
+			mispLicenseEventData.setPolicyId(policyEventData.getPolicyId());
+		}
+
 		Optional<MispLicenseData> mispLicenseDataOptional = mispLicDataRepo.findById(mispLicenseEventData.getMispId());
 		if (mispLicenseDataOptional.isPresent()) {
 			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
@@ -352,11 +445,80 @@ public class PartnerServiceManager {
 			mispLicenseData.setMispCommenceOn(mispLicenseEventData.getMispCommenceOn());
 			mispLicenseData.setMispExpiresOn(mispLicenseEventData.getMispExpiresOn());
 			mispLicenseData.setMispStatus(mispLicenseEventData.getMispStatus());
+			mispLicenseData.setPolicyId(mispLicenseEventData.getPolicyId());
 			mispLicDataRepo.save(mispLicenseData);
 		} else {
 			mispLicenseEventData.setCreatedBy(getCreatedBy(eventModel));
 			mispLicenseEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicDataRepo.save(mispLicenseEventData);
+		}
+	}
+
+	/**
+	 * Add/Update OIDC client data.
+	 *
+	 * @param eventModel the event model
+	 */
+	public void updateOIDCClientData(EventModel eventModel) throws IdAuthenticationBusinessException {
+		// OIDC client handling is different from API key.
+		// For API key there is no update available, API key will always be created.
+		Map<String, Object> eventDataMap = eventModel.getEvent().getData();
+		
+		// First Add/Update the Policy details
+		PolicyData policyData = null;
+		if (eventDataMap.containsKey(POLICY_DATA)) {
+			updatePolicyData(eventModel);
+			policyData = mapper.convertValue(eventDataMap.get(POLICY_DATA), PolicyData.class);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.POLICY_DATA_NOT_FOUND_EVENT_DATA.getErrorCode(),
+					IdAuthenticationErrorConstants.POLICY_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
+		}
+		// Second Add/Update the Partner details
+		PartnerData partnerData = null;
+		if (eventDataMap.containsKey(PARTNER_DATA)) {
+			updatePartnerData(eventModel);
+			partnerData = mapper.convertValue(eventDataMap.get(PARTNER_DATA), PartnerData.class);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DATA_NOT_FOUND_EVENT_DATA.getErrorCode(),
+					IdAuthenticationErrorConstants.PARTNER_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
+		}
+
+		OIDCClientData oidcClientEventData = mapper.convertValue(eventDataMap.get(OIDC_CLIENT_DATA), OIDCClientData.class);
+		Optional<OIDCClientData> oidcClientDataOpt = oidcClientDataRepo.findByClientId(oidcClientEventData.getClientId());
+		if (oidcClientDataOpt.isPresent()) {
+			OIDCClientData oidcClientData = oidcClientDataOpt.get();
+			oidcClientData.setUpdatedBy(getCreatedBy(eventModel));
+			oidcClientData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			oidcClientData.setClientName(oidcClientEventData.getClientName());
+			oidcClientData.setClientStatus(oidcClientEventData.getClientStatus());
+			oidcClientData.setUserClaims(oidcClientEventData.getUserClaims());
+			oidcClientData.setAuthContextRefs(oidcClientEventData.getAuthContextRefs());
+			oidcClientData.setClientAuthMethods(oidcClientEventData.getClientAuthMethods());
+			oidcClientData.setPartnerId(oidcClientEventData.getPartnerId());
+			oidcClientDataRepo.save(oidcClientData);
+		} else {
+			oidcClientEventData.setCreatedBy(getCreatedBy(eventModel));
+			oidcClientEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			oidcClientEventData.setPartnerId(partnerData.getPartnerId());
+			oidcClientDataRepo.save(oidcClientEventData);
+		}
+
+		String partnerId = partnerData.getPartnerId();
+		String policyId = policyData.getPolicyId();
+		String oidcClientId = oidcClientEventData.getClientId();
+		
+		logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_EVENT", 
+				"Adding OIDC client mapping. Partner Id: " + partnerId + ", Policy Id: " + policyId + ", OIDC Clinet Id: " + oidcClientId);
+		Optional<PartnerMapping> partnerMappingOpt = partnerMappingRepo.findByPartnerIdAndApiKeyIdAndPolicyId(partnerId, oidcClientId, policyId);
+		if (!partnerMappingOpt.isPresent()) {
+			// Adding the mapping only if it's not available in DB.
+			PartnerMapping partnerMapping = new PartnerMapping();
+			partnerMapping.setPartnerId(partnerId);
+			partnerMapping.setPolicyId(policyId);
+			partnerMapping.setApiKeyId(oidcClientId);
+			partnerMapping.setCreatedBy(getCreatedBy(eventModel));
+			partnerMapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			partnerMappingRepo.save(partnerMapping);
 		}
 	}
 }

@@ -45,7 +45,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
@@ -857,11 +857,11 @@ public class IdInfoHelper {
 	}
 
 	public boolean containsPhotoKYCAttribute(AuthRequestDTO authRequestDTO) {
-		return (authRequestDTO instanceof KycAuthRequestDTO)
-				&& isKycAttributeHasPhoto((KycAuthRequestDTO) authRequestDTO);
+		return (authRequestDTO instanceof EkycAuthRequestDTO)
+				&& isKycAttributeHasPhoto((EkycAuthRequestDTO) authRequestDTO);
 	}
 
-	public static boolean isKycAttributeHasPhoto(KycAuthRequestDTO authRequestDTO) {
+	public static boolean isKycAttributeHasPhoto(EkycAuthRequestDTO authRequestDTO) {
 		return getKycAttributeHasPhoto(authRequestDTO.getAllowedKycAttributes()).isPresent();
 	}
 	
