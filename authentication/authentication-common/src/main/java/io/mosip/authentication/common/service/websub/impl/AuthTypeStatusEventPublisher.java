@@ -85,27 +85,18 @@ public class AuthTypeStatusEventPublisher extends BaseWebSubEventsInitializer {
 	}
 
 	public void publishEvent(List<AuthtypeStatus> authTypeStatusList){
-		logger.debug("List of Auth type status List- "+ authTypeStatusList);
 		AuthTypeStatusUpdateAckEvent credentialStatusUpdateEvent = new AuthTypeStatusUpdateAckEvent();
 		String requestId="";
 		if(!authTypeStatusList.isEmpty()){
 			requestId = authTypeStatusList.get(0).getRequestId();
 		}
-		logger.debug("RequestId- "+requestId);
 		credentialStatusUpdateEvent.setRequestId(requestId);
-		Map<String, Object> authTypes = new HashMap<>();
-		authTypes.put(AUTH_TYPES, authTypeStatusList);
-		logger.debug("AUTH TYPES- "+authTypes);
-		credentialStatusUpdateEvent.setData(authTypes);
-		logger.debug("credentialStatusUpdateEvent- "+credentialStatusUpdateEvent);
-		logger.debug("credentialStatusUpdateEvent Data-"+credentialStatusUpdateEvent.getData());
+		Map<String, Object> data = new HashMap<>();
+		data.put(AUTH_TYPES, authTypeStatusList);
+		credentialStatusUpdateEvent.setData(data);
 		EventModel<AuthTypeStatusUpdateAckEvent> eventModel = webSubHelper.createEventModel(getTopic(), credentialStatusUpdateEvent);
-		logger.debug("EventModel- "+ eventModel);
 		if(eventModel != null) {
-			Map<String, Object> partnerIdMap = new java.util.HashMap<>();
-			partnerIdMap.put(OLV_PARTNER_ID, partnerId);
-			eventModel.getEvent().setData(partnerIdMap);
-			logger.debug("Event Model Data- "+eventModel.getEvent().getData());
+			data.put(OLV_PARTNER_ID, partnerId);
 		}
 		logger.debug("Event Model- "+eventModel);
 		webSubHelper.publishEvent(getTopic(), eventModel);
