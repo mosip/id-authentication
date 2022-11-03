@@ -155,11 +155,9 @@ public class WebSubHelper {
 		event.setId(eventId);
 		EventModel<T> eventModel = new EventModel<>();
 		eventModel.setEvent(event);
-		logger.debug("Event- "+event);
 		eventModel.setPublisher(PUBLISHER_IDA);
 		eventModel.setPublishedOn(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		eventModel.setTopic(topic);
-		logger.debug("EventModel- "+eventModel);
 		return eventModel;
 	}
 	
