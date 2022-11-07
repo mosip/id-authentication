@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,4 +73,29 @@ public class OIDCClientData {
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
+
+	public String[] getAuthContextRefs() {
+		return this.authContextRefs.split(",");
+	}
+
+	public void setAuthContextRefs(String[] authContextRefs) {
+		this.authContextRefs = String.join(",", authContextRefs);
+	}
+
+	public String[] getUserClaims() {
+		return this.userClaims.split(",");
+	}
+
+	public void setUserClaims(String[] userClaims) {
+		this.userClaims = String.join(",", userClaims);
+	}
+
+	public String[] getClientAuthMethods() {
+		return this.clientAuthMethods.split(",");
+	}
+
+	public void setClientAuthMethods(String[] clientAuthMethods) {
+		this.clientAuthMethods = String.join(",", clientAuthMethods);
+	}
+
 }
