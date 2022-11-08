@@ -73,7 +73,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -1062,7 +1062,7 @@ public class AuthFacadeImplTest {
 			NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, IOException {
 
-		KycAuthRequestDTO authRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO authRequestDTO = new EkycAuthRequestDTO();
 		authRequestDTO.setAllowedKycAttributes(List.of("fullName", "photo"));
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
@@ -1162,7 +1162,7 @@ public class AuthFacadeImplTest {
 			NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, IOException {
 
-		KycAuthRequestDTO authRequestDTO = new KycAuthRequestDTO();
+		EkycAuthRequestDTO authRequestDTO = new EkycAuthRequestDTO();
 		authRequestDTO.setAllowedKycAttributes(List.of("fullName"));
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());

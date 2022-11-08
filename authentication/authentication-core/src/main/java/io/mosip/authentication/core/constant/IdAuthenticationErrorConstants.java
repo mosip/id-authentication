@@ -120,6 +120,13 @@ public enum IdAuthenticationErrorConstants {
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
 	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 	PARTNER_POLICY_NOT_ACTIVE("IDA-MPA-019", "Partner policy is not active"),
+	PARTNER_CERTIFICATE_NOT_FOUND("IDA-MPA-020", "Partner (Auth) Certificate not found in DB."),
+	PARTNER_CERTIFICATE_NOT_MATCHED("IDA-MPA-021", "Partner (Auth) Certificate not matching with signature header certificate."),
+	PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER("IDA-MPA-022", "Partner (Auth) Certificate not found in Request signature header."),
+	MISP_POLICY_NOT_FOUND("IDA-MPA-023", "MISP Partner Policy not availble."),
+	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
+	
+
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -146,6 +153,10 @@ public enum IdAuthenticationErrorConstants {
 	MISP_LICENSE_KEY_EXPIRED("PMS_PMP_021","MISP license key is expired."),
 	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
 	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked"),
+	
+	POLICY_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_026","Policy Data is not available in Event data."),
+	PARTNER_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_027","Partner Data is not available in Event data."),
+
 	
 	// UIN and VID validations
 	UIN_VAL_ILLEGAL_LENGTH("IDA-MLC-026", "UIN length should be - %s."),

@@ -124,7 +124,7 @@
 		<byte-buddy.version>1.9.3</byte-buddy.version>
 
 		<!-- Lombok -->
-		<lombok.version>1.18.8</lombok.version>
+		<lombok.version>1.18.22</lombok.version>
 
 		<!-- Spring Boot -->
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>

@@ -38,11 +38,14 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRespDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
@@ -124,18 +127,18 @@ public class KycFacadeImpl implements KycFacade {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public KycAuthResponseDTO processKycAuth(@Nonnull KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+	public EKycAuthResponseDTO processEKycAuth(@Nonnull EkycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
 		boolean status;
 		String token = null;
-		KycAuthResponseDTO kycAuthResponseDTO = null;
+		EKycAuthResponseDTO kycAuthResponseDTO = null;
 		try {
 			Map<String, Object> idResDTO = (Map<String, Object>) metadata.get(IdAuthCommonConstants.IDENTITY_DATA);
 			token = idService.getToken(idResDTO);
 			
 			Map<String, List<IdentityInfoDTO>> idInfo = (Map<String, List<IdentityInfoDTO>>) metadata.get(IdAuthCommonConstants.IDENTITY_INFO);
 
-			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
+			Entry<EKycAuthResponseDTO, Boolean> kycAuthResponse = doProcessEKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId,
 					idInfo, token);
 			kycAuthResponseDTO = kycAuthResponse.getKey();
 			status = kycAuthResponse.getValue();
@@ -155,14 +158,15 @@ public class KycFacadeImpl implements KycFacade {
 		}
 	}
 
-	private void saveToTxnTable(KycAuthRequestDTO kycAuthRequestDTO, boolean status, String partnerId, String token, AuthResponseDTO authResponseDTO, KycAuthResponseDTO kycAuthResponseDTO, Map<String, Object> metadata)
+	private void saveToTxnTable(AuthRequestDTO authRequestDTO, boolean status, String partnerId, String token, 
+			AuthResponseDTO authResponseDTO, BaseAuthResponseDTO baseAuthResponseDTO, Map<String, Object> metadata)
 			throws IdAuthenticationBusinessException {
 		if (token != null) {
 			Boolean authTokenRequired = EnvUtil.getAuthTokenRequired();
 			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
-			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycAuthRequestDTO.getMetadata());
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
 
-			if(kycAuthResponseDTO != null && authResponseDTO != null) {
+			if(baseAuthResponseDTO != null && authResponseDTO != null) {
 				Object authTxnObj = metadata.get(AutnTxn.class.getSimpleName());
 				if(authTxnObj instanceof AutnTxn) {
 					AutnTxn autnTxn = (AutnTxn) authTxnObj;
@@ -177,7 +181,7 @@ public class KycFacadeImpl implements KycFacade {
 					metadata.put(AutnTxn.class.getSimpleName(), autnTxn);
 				}
 			} else {
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(kycAuthRequestDTO)
+				AutnTxn authTxn = AuthTransactionBuilder.newInstance().withRequest(authRequestDTO)
 						.addRequestType(RequestType.KYC_AUTH_REQUEST).withAuthToken(authTokenId).withStatus(status)
 						.withInternal(false).withPartner(partner).withToken(token)
 						.build(env, uinHashSaltRepo, securityManager);
@@ -188,15 +192,15 @@ public class KycFacadeImpl implements KycFacade {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Entry<KycAuthResponseDTO, Boolean> doProcessKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+	private Entry<EKycAuthResponseDTO, Boolean> doProcessEKycAuth(EkycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId, Map<String, List<IdentityInfoDTO>> idInfo, String token)
 			throws IdAuthenticationBusinessException, IDDataValidationException {
 
-		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+		EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
 
 		if (kycAuthRequestDTO != null) {
 
-			KycResponseDTO response = new KycResponseDTO();
+			EKycResponseDTO response = new EKycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
 			Set<String> langCodes = mapper
 					.convertValue(kycAuthRequestDTO.getMetadata().get(IdAuthCommonConstants.KYC_LANGUAGES), Set.class);
@@ -249,4 +253,72 @@ public class KycFacadeImpl implements KycFacade {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public KycAuthResponseDTO processKycAuth(@Nonnull AuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
+		boolean status;
+		String token = null;
+		String idHash = null;
+		KycAuthResponseDTO kycAuthResponseDTO = null;
+		try {
+			Map<String, Object> idResDTO = (Map<String, Object>) metadata.get(IdAuthCommonConstants.IDENTITY_DATA);
+			token = idService.getToken(idResDTO);
+			idHash = idService.getIdHash(idResDTO);
+
+			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId, 
+							oidcClientId, token, idHash);
+			kycAuthResponseDTO = kycAuthResponse.getKey();
+			status = kycAuthResponse.getValue();
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata);
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
+					kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+					"kycAuthentication status : " + status);
+			return kycAuthResponseDTO;
+		} catch (IdAuthenticationBusinessException e) {
+			status = false;
+			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata);
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
+					kycAuthRequestDTO.getIndividualId(),
+					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
+			throw e;
+		}
+	}
+
+	private Entry<KycAuthResponseDTO, Boolean> doProcessKycAuth(AuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+			String partnerId, String oidcClientId, String token, String idHash) throws IdAuthenticationBusinessException, IDDataValidationException {
+
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+
+		if (kycAuthRequestDTO != null) {
+
+			KycAuthRespDTO response = new KycAuthRespDTO();
+			ResponseDTO authResponse = authResponseDTO.getResponse();
+			String responseTime = authResponseDTO.getResponseTime();
+			if(Objects.isNull(responseTime)) {
+				responseTime = getAuthResponseTime(kycAuthRequestDTO);
+			}
+
+			String requestTime = kycAuthRequestDTO.getRequestTime();
+			String kycToken = null;
+			if (Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
+				kycToken = kycService.generateAndSaveKycToken(idHash, token, oidcClientId, requestTime, responseTime);
+				response.setKycToken(kycToken);
+			}
+			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
+				response.setKycStatus(authResponse.isAuthStatus());
+				response.setAuthToken(authResponse.getAuthToken());
+				kycAuthResponseDTO.setResponse(response);
+				kycAuthResponseDTO.setId(authResponseDTO.getId());
+				kycAuthResponseDTO.setTransactionID(authResponseDTO.getTransactionID());
+				kycAuthResponseDTO.setVersion(authResponseDTO.getVersion());
+				kycAuthResponseDTO.setErrors(authResponseDTO.getErrors());
+				kycAuthResponseDTO.setResponseTime(responseTime);
+			}
+
+			return new SimpleEntry<>(kycAuthResponseDTO, response.isKycStatus());
+		}
+		return new SimpleEntry<>(kycAuthResponseDTO, false);
+	}
 }

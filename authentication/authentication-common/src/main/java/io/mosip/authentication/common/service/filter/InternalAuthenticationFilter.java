@@ -83,4 +83,13 @@ public class InternalAuthenticationFilter extends IdAuthFilter {
 		return attribute + INTERNAL;
 	}
 
+	@Override
+	protected boolean isMispPolicyValidationRequired() {
+		return false;
+	}
+
+	@Override
+	protected boolean isCertificateValidationRequired() {
+		return false;
+	}
 }

@@ -46,7 +46,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
@@ -138,16 +138,17 @@ public class AuthFacadeImpl implements AuthFacade {
 			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata) throws IdAuthenticationBusinessException {
 
 		String idvid = authRequestDTO.getIndividualId();
+		String idvidHash = securityManager.hash(idvid);
 		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
-				idvIdType + "-" + idvid);
+				idvIdType + "-" + idvidHash);
 
 		Set<String> filterAttributes = new HashSet<>();
 		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
 		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
 		
-		if(authRequestDTO instanceof KycAuthRequestDTO) {
-			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+		if(authRequestDTO instanceof EkycAuthRequestDTO) {
+			EkycAuthRequestDTO kycAuthRequestDTO = (EkycAuthRequestDTO) authRequestDTO;
 			// In case of ekyc request and photo also needed we need to add face to get it
 			// filtered
 			if(IdInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
@@ -226,7 +227,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	}
 
-	private void addKycPolicyAttributes(Set<String> filterAttributes, KycAuthRequestDTO kycAuthRequestDTO)
+	private void addKycPolicyAttributes(Set<String> filterAttributes, EkycAuthRequestDTO kycAuthRequestDTO)
 			throws IdAuthenticationBusinessException {
 		List<String> allowedKycAttributes = kycAuthRequestDTO.getAllowedKycAttributes();
 		if(allowedKycAttributes != null && !allowedKycAttributes.isEmpty()) {

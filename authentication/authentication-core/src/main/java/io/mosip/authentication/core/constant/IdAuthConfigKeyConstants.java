@@ -107,6 +107,9 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED = "ida-topic-pmp-misp-license-generated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED = "ida-topic-pmp-misp-license-updated";
+	public static final String IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_CREATED = "ida-topic-pmp-oidc-client-created";
+	public static final String IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_UPDATED = "ida-topic-pmp-oidc-client-updated";
+
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED = "ida-topic-pmp-partner-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED = "ida-topic-pmp-partner-api-key-approved";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";

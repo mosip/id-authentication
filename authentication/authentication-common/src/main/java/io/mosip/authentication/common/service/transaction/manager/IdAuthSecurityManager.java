@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.transaction.manager;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.common.service.util.TokenEncoderUtil;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -65,6 +67,8 @@ import reactor.util.function.Tuples;
 @Component
 public class IdAuthSecurityManager {
 
+	private static final String HASH_ALGORITHM_NAME = "SHA-256";
+	
 	/** The Constant SALT_FOR_THE_GIVEN_ID. */
 	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
 
@@ -128,6 +132,10 @@ public class IdAuthSecurityManager {
 	/** KeySplitter. */
 	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
 	private String keySplitter;
+
+	/** The token ID length. */
+	@Value("${mosip.ida.kyc.token.secret}")
+	private String kycTokenSecret;
 	
 	/** The cryptomanager utils. */
 	@Autowired
@@ -520,4 +528,19 @@ public class IdAuthSecurityManager {
 		return SaltUtil.getIdvidHashModulo(id, saltKeyLength);
 	}
 	
+	public String generateKeyedHash(byte[] bytesToHash) {
+		try {
+			// Need to get secret from HSM  
+			byte[] tokenSecret = CryptoUtil.decodeBase64Url(kycTokenSecret);
+			MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM_NAME);
+			messageDigest.update(bytesToHash);
+			messageDigest.update(tokenSecret);
+			byte[] tokenHash = messageDigest.digest();
+
+			return TokenEncoderUtil.encodeBase58(tokenHash);
+		} catch (NoSuchAlgorithmException e) {
+			mosipLogger.error("Error generating Keyed Hash", e);
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
 }

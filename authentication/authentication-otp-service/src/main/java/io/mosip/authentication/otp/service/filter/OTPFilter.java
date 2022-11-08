@@ -113,5 +113,14 @@ public class OTPFilter extends IdAuthFilter {
 	protected boolean needStoreAnonymousProfile() {
 		return false;
 	}
-	
+
+	@Override
+	protected boolean isMispPolicyValidationRequired() {
+		return false;
+	}
+
+	@Override
+	protected boolean isCertificateValidationRequired() {
+		return true;
+	}
 }
