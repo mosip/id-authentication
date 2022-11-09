@@ -22,7 +22,7 @@ public enum KycTokenStatusType {
 	/**
 	 * Instantiates a new status type.
 	 *
-	 * @param type the type
+	 * @param status the status
 	 */
 	private KycTokenStatusType(String status) {
 	  this.status = status;	
