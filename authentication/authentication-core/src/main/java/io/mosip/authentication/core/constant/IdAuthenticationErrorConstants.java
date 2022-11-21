@@ -125,6 +125,7 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER("IDA-MPA-022", "Partner (Auth) Certificate not found in Request signature header."),
 	MISP_POLICY_NOT_FOUND("IDA-MPA-023", "MISP Partner Policy not availble."),
 	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
+	UNAUTHORISED_KYC_AUTH_PARTNER("IDA-MPA-013", "Partner is unauthorised for KYC-Auth"),
 	
 
 
