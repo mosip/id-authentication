@@ -29,8 +29,8 @@ jobs:
 
     - name: update Branch name in badges
       run: |
-        sed -i 's/branch=.*)]/branch=${{ env.BRANCH_NAME }}\)]/g'  README.md
-        sed -i 's/branch=.*\&/branch=${{ env.BRANCH_NAME }}\&/g'  README.md
+        sed -i 's/branch=[^\&]*)]/branch=${{ env.BRANCH_NAME }}\)]/g'  README.md
+        sed -i 's/branch=[^\&]*\&/branch=${{ env.BRANCH_NAME }}\&/g'  README.md
 
     - name: Mannualy changing the pom versions
       run: find . -type f -name "*pom.xml" -print0 | xargs -0 sed -i "s/${{ github.event.inputs.snapshotTags }}/${{ github.event.inputs.releaseTags }}/g"
