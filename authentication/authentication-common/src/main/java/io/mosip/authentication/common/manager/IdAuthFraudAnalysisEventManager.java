@@ -135,7 +135,7 @@ public class IdAuthFraudAnalysisEventManager {
 		if (contextSuffix.contentEquals(OTP)) {
 			authType = RequestType.OTP_REQUEST.getRequestType();
 		} else if (contextSuffix.contentEquals(KYC)) {
-			authType = RequestType.KYC_AUTH_REQUEST.getRequestType();
+			authType = RequestType.EKYC_AUTH_REQUEST.getRequestType();
 		} else if (contextSuffix.contentEquals("auth")) {
 			authType = AUTH;
 		}

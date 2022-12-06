@@ -3,9 +3,12 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_C
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -382,5 +385,171 @@ public class KycServiceImpl implements KycService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 
+	}
+
+	@Override
+	public boolean isKycTokenExpire(LocalDateTime tokenIssuedDateTime, String kycToken) throws IdAuthenticationBusinessException {
+		LocalDateTime currentTime = LocalDateTime.now();
+		
+		long diffSeconds = ChronoUnit.SECONDS.between(tokenIssuedDateTime, currentTime);
+		long adjustmentSeconds = EnvUtil.getKycTokenExpireTimeAdjustmentSeconds();
+
+		if (tokenIssuedDateTime != null && adjustmentSeconds < diffSeconds) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
+				List<String> consentedAttributes, List<String> locales) throws IdAuthenticationBusinessException {
+		
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Building claims response for PSU token: " + subject);
+					
+		Map<String, Object> respMap = new HashMap<>();
+		Set<String> uniqueLocales = new HashSet<String>(locales);
+		Map<String, String> mappedLocales = localesMapping(uniqueLocales);
+
+		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
+		
+		for (String attrib : consentedAttributes) {
+			if (attrib.equals(IdAuthCommonConstants.SUBJECT))
+				continue;
+			List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
+			if (mappedLocales.size() > 0) {
+				addEntityForLangCodes(mappedLocales, idInfo, respMap, attrib, idSchemaAttribute);
+			}
+		}
+
+		try {
+			return securityManager.signWithPayload(mapper.writeValueAsString(respMap));
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private void addEntityForLangCodes(Map<String, String> mappedLocales, Map<String, List<IdentityInfoDTO>> idInfo, Map<String, Object> respMap, 
+				String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException {
+		
+		if (consentedAttribute.equals(IdAuthCommonConstants.PROFILE_PHOTO)) {
+			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			if (Objects.nonNull(faceEntityInfoMap)) {
+				String face = faceEntityInfoMap.get(CbeffDocType.FACE.getType().value());
+				respMap.put(consentedAttribute, face);
+			}
+			return;
+		}
+
+		if (idSchemaAttributes.size() == 1) {
+			List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttributes.get(0));
+			Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+			List<String> availableLangCodes = getAvailableLangCodes(mappedLocales, mappedLangCodes);
+			if (availableLangCodes.size() == 1){
+				for (IdentityInfoDTO identityInfo : idInfoList) {
+					String langCode = mappedLangCodes.get(availableLangCodes.get(0));
+					if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+						respMap.put(consentedAttribute, identityInfo.getValue());
+					}
+				}
+			} else {
+				if (availableLangCodes.size() > 0) {
+					for (IdentityInfoDTO identityInfo : idInfoList) {
+						for (String availableLangCode : availableLangCodes) {
+							String langCode = mappedLangCodes.get(availableLangCode);
+							if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+								respMap.put(consentedAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + availableLangCode, 
+										identityInfo.getValue());
+							}
+						}
+					}
+				} else {
+					respMap.put(consentedAttribute, idInfoList.get(0).getValue());
+				}
+			}
+		} else {
+			if (consentedAttribute.equals(IdAuthCommonConstants.ADDRESS)) {
+				if (mappedLocales.size() > 1) {
+					for (String locale: mappedLocales.keySet()) {
+						String localeValue = mappedLocales.get(locale);
+						Map<String, String> addressMap = new HashMap<>();
+						boolean langCodeFound = false; //added for language data not available in identity info (Eg: fr) 
+						for (String idSchemaAttribute : idSchemaAttributes) {
+							List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+							Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+							if (mappedLangCodes.keySet().contains(localeValue)) {
+								String langCode = mappedLangCodes.get(localeValue);
+								for (IdentityInfoDTO identityInfo : idInfoList) { 
+									if (identityInfo.getLanguage().equals(langCode)) {
+										langCodeFound = true;
+										addressMap.put(idSchemaAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, 
+											identityInfo.getValue());
+									}
+								}
+							} else {
+								if (idInfoList.size() == 1) {
+									addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
+								}
+							}
+						}
+						if (langCodeFound)
+							respMap.put(IdAuthCommonConstants.ADDRESS + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, addressMap);
+					}
+				} else {
+					Map<String, String> addressMap = new HashMap<>();
+					for (String idSchemaAttribute : idSchemaAttributes) {
+						List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+						Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+						String locale = mappedLocales.keySet().iterator().next();
+						String localeValue = mappedLocales.get(locale);
+						if (mappedLangCodes.keySet().contains(localeValue)) {
+							String langCode = mappedLangCodes.get(localeValue);
+							for (IdentityInfoDTO identityInfo : idInfoList) { 
+								if (identityInfo.getLanguage().equals(langCode)) {
+									addressMap.put(idSchemaAttribute, identityInfo.getValue());
+								}
+							}
+						} else {
+							if (idInfoList.size() == 1) {
+								addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
+							}
+						}
+					}
+					respMap.put(IdAuthCommonConstants.ADDRESS, addressMap);
+				}
+			}
+		}
+	}
+
+	private Map<String, String> localesMapping(Set<String> locales) {
+
+		Map<String, String> mappedLocales = new HashMap<>();
+		for (String locale : locales) {
+			mappedLocales.put(locale, locale.substring(0, 2));
+		}
+		return mappedLocales;
+	}
+
+	private Map<String, String> langCodeMapping(List<IdentityInfoDTO> idInfoList) {
+
+		Map<String, String> mappedLangCodes = new HashMap<>();
+		for (IdentityInfoDTO idInfo :  idInfoList) {
+			if (Objects.nonNull(idInfo.getLanguage())) {
+				mappedLangCodes.put(idInfo.getLanguage().substring(0,2), idInfo.getLanguage());
+			}
+		}
+		return mappedLangCodes;
+	}
+
+	private List<String> getAvailableLangCodes(Map<String, String> mappedLocales, Map<String, String> mappedLangCodes) {
+		List<String> availableLangCodes = new ArrayList<>();
+		for (String entry: mappedLocales.keySet()) {
+			String locale = mappedLocales.get(entry);
+			if (mappedLangCodes.keySet().contains(locale)) {
+				availableLangCodes.add(locale);
+			}
+		}
+		return availableLangCodes;
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.service.kyc.filter.KycAuthFilter;
 import io.mosip.authentication.service.kyc.filter.KycAuthenticationFilter;
+import io.mosip.authentication.service.kyc.filter.KycExchangeFilter;
 
 /**
  * The configuration for adding filters.
@@ -46,11 +47,11 @@ public class KycFilterConfig {
 	 *
 	 * @return the Kyc Exchange filter
 	 */
-	/* @Bean
-	public FilterRegistrationBean<KycAuthenticationFilter> getKycExchangeFilter() {
-		FilterRegistrationBean<KycAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new KycAuthenticationFilter());
+	@Bean
+	public FilterRegistrationBean<KycExchangeFilter> getKycExchangeFilter() {
+		FilterRegistrationBean<KycExchangeFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new KycExchangeFilter());
 		registrationBean.addUrlPatterns("/kyc-exchange/*");
 		return registrationBean;
-	} */
+	} 
 }

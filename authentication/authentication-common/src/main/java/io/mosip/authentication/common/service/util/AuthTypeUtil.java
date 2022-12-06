@@ -57,7 +57,7 @@ public final class AuthTypeUtil {
 			}
 		}
 		if(authRequestDTO instanceof EkycAuthRequestDTO) {
-			requestTypes.add(RequestType.KYC_AUTH_REQUEST);
+			requestTypes.add(RequestType.EKYC_AUTH_REQUEST);
 		}
 		
 		return requestTypes;

@@ -543,4 +543,16 @@ public class IdAuthSecurityManager {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+
+	@WithRetry
+	public String signWithPayload(String data) {
+		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
+		request.setApplicationId(signApplicationid);
+		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
+		request.setIncludeCertHash(false);
+		request.setIncludeCertificate(true);
+		request.setIncludePayload(true);
+		request.setReferenceId(signRefid);
+		return signatureService.jwtSign(request).getJwtSignedData();
+	}
 }
