@@ -14,7 +14,7 @@ CREATE TABLE ida.kyc_token_store(
     is_deleted boolean DEFAULT FALSE,
     del_dtimes timestamp,
     CONSTRAINT pk_key_id PRIMARY KEY (id),
-    CONSTRAINT uni_ident_const UNIQUE (kyc_token)
+    CONSTRAINT kyc_token_const UNIQUE (kyc_token)
 );
 COMMENT ON TABLE ida.kyc_token_store IS 'Kyc Token Store: To store and maintain a token generate after successful authentication of resident for IdP.';
 COMMENT ON COLUMN ida.kyc_token_store.id IS 'ID: Kyc Token id is a unique identifier (UUID) used to map uniqueness to the kyc token .';

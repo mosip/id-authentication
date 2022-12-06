@@ -15,7 +15,7 @@ public enum AuditEvents {
 	
 	/** The ekyc request response. */
 	EKYC_REQUEST_RESPONSE("IDA_003", "User", "eKYC Request"),
-	
+		
 	/** The internal request response. */
 	INTERNAL_REQUEST_RESPONSE("IDA_004", "System", "Internal Authentication Request"),
 	
@@ -39,7 +39,9 @@ public enum AuditEvents {
 	
 	ACTIVATE_ID_EVENT("IDA_012", "System", "Activate ID"),
 	
-	CREDENTIAL_STORED_EVENT("IDA_009", "System", "Credential Issued"),
+	CREDENTIAL_STORED_EVENT("IDA_013", "System", "Credential Issued"),
+
+	KYC_REQUEST_RESPONSE("IDA_014", "User", "Kyc Auth Request"),
 	
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1

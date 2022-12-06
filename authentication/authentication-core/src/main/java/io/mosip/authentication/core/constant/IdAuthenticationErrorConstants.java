@@ -125,6 +125,8 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER("IDA-MPA-022", "Partner (Auth) Certificate not found in Request signature header."),
 	MISP_POLICY_NOT_FOUND("IDA-MPA-023", "MISP Partner Policy not availble."),
 	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
+	UNAUTHORISED_KYC_AUTH_PARTNER("IDA-MPA-025", "Partner is unauthorised for KYC-Auth"),
+	UNAUTHORISED_KYC_EXCHANGE_PARTNER("IDA-MPA-026", "Partner is unauthorised for KYC-Exchange"),
 	
 
 
@@ -162,7 +164,12 @@ public enum IdAuthenticationErrorConstants {
 	UIN_VAL_ILLEGAL_LENGTH("IDA-MLC-026", "UIN length should be - %s."),
 	UIN_VAL_ILLEGAL_CHECKSUM("IDA-MLC-027", "UIN should match checksum."),
 	VID_VAL_ILLEGAL_LENGTH("IDA-MLC-028", "UIN length should be  - %s."),
-	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum.");
+	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum."),
+
+
+	KYC_TOKEN_NOT_FOUND("IDA-KYE-001", "KYC Token not found in Store or KYC Token already processed."),
+	KYC_TOKEN_EXPIRED("IDA-KYE-002", "KYC Token Expired."),
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-003", "Partner Policy not found.");
 	
 	private final String errorCode;
 	private final String errorMessage;

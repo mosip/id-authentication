@@ -12,16 +12,16 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 
 /**
- * The Class KycAuthFilter - used to authenticate the request and returns
- * kyc token and partner specific token as response.
+ * The Class KycExchangeFilter - used to validate the request and returns
+ * encrypted kyc data in JWE format as response.
  * 
  * @author Mahammed Taheer
  */
 @Component
-public class KycAuthFilter extends IdAuthFilter {
+public class KycExchangeFilter extends IdAuthFilter {
 
 	/** The Constant KYC. */
-	private static final String KYC_AUTH = "kycauth";
+	private static final String KYC_EXCHANGE = "kycexchange";
 	
 	@Override
 	protected boolean isPartnerCertificateNeeded() {
@@ -37,12 +37,20 @@ public class KycAuthFilter extends IdAuthFilter {
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
-		if (!isAllowedAuthType(KYC_AUTH, authPolicies)) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNAUTHORISED_KYC_AUTH_PARTNER.getErrorCode(),
-					IdAuthenticationErrorConstants.UNAUTHORISED_KYC_AUTH_PARTNER.getErrorMessage());
+		if (!isAllowedAuthType(KYC_EXCHANGE, authPolicies)) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNAUTHORISED_KYC_EXCHANGE_PARTNER.getErrorCode(),
+					IdAuthenticationErrorConstants.UNAUTHORISED_KYC_EXCHANGE_PARTNER.getErrorMessage());
 
 		}
-		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkMandatoryAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	 */
+	@Override
+	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
+			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
+		// Nothing to do
 	}
 	
 	@Override
@@ -62,7 +70,7 @@ public class KycAuthFilter extends IdAuthFilter {
 	
 	@Override
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
-		return attribute + KYC_AUTH;
+		return attribute + KYC_EXCHANGE;
 	}
 	
 	protected boolean needStoreAuthTransaction() {

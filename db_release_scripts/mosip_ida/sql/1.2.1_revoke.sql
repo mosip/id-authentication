@@ -14,3 +14,7 @@
 \c mosip_ida sysadmin
 
 ALTER TABLE ida.misp_license_data DROP COLUMN policy_id;
+
+DROP TABLE IF EXISTS ida.oidc_client_data CASCADE;
+
+DROP TABLE IF EXISTS ida.kyc_token_store CASCADE;

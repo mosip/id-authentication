@@ -8,9 +8,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 
 /**
  * This class used to integrate with kyc service
@@ -60,6 +63,22 @@ public interface KycFacade {
 	 *                                           exception
 	 */
 	KycAuthResponseDTO processKycAuth(@Nonnull AuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
+			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
+
+
+	/**
+	 * Process the KycExchangeRequestDTO to integrate with KYCService.
+	 *
+	 * @param kycExchangeRequestDTO is DTO of KycExchangeRequestDTO
+	 * @param kycExchangeResponseDTO   the kyc exchange response DTO
+	 * @param partnerId the partner id
+	 * @param oidcClientId the client id
+	 * @param metadata the metadata
+	 * @return the kyc auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	KycExchangeResponseDTO processKycExchance(KycExchangeRequestDTO kycExchangeRequestDTO, BaseAuthResponseDTO baseAuthResponseDTO,
 			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
 
 }

@@ -65,9 +65,9 @@ public class AuthTransactionBuilder {
 	 * Below comparator puts the KYC-AUTH to the beginning in the list
 	 */
 	private static final Comparator<? super RequestType> KYC_AUTH_COMPARATOR = (s1, s2) -> {
-		if(s1.getType().equalsIgnoreCase(RequestType.KYC_AUTH_REQUEST.getType())) {
+		if(s1.getType().equalsIgnoreCase(RequestType.EKYC_AUTH_REQUEST.getType())) {
 			return -1;
-		} else if(s2.getType().equalsIgnoreCase(RequestType.KYC_AUTH_REQUEST.getType())) {
+		} else if(s2.getType().equalsIgnoreCase(RequestType.EKYC_AUTH_REQUEST.getType())) {
 			return 1;
 		}
 		return 0;

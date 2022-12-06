@@ -167,4 +167,8 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED = "ida-missing-credential-retrigger-enabled";
 
+	public static final String KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS = "kyc.token.expire.time.adjustment.seconds";
+
+	public static final String KYC_EXCHANGE_DEFAULT_LANGUAGE = "kyc.exchange.default.lang";
+
 }

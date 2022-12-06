@@ -49,4 +49,30 @@ public interface KycService {
 	String generateAndSaveKycToken(String idHash, String authToken, String oidcClientId, String requestTime, 
 				String tokenGenerationTime) throws IdAuthenticationBusinessException;
 
+	
+	/**
+	 * Method used to validate the input KYC Token is expired or not. 
+	 *
+	 * @param tokenIssuedDateTime			Token Issued DataTime
+	 * @param kycToken        	 	The KYC Token
+	 * @return void
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	boolean isKycTokenExpire(LocalDateTime tokenIssuedDateTime, String kycToken) throws IdAuthenticationBusinessException;
+
+
+	/**
+	 * Method to build kyc exchange response to return user claims. 
+	 *
+	 * @param subject 							Partner Specific token as subject for user claims
+	 * @param idInfo							List of Identity Info of the user.
+	 * @param consentedAttributes        	 	Consented Attributes.
+	 * @param locales							selected locales.
+	 * @return String
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
+				List<String> consentedAttributes, List<String> locales) throws IdAuthenticationBusinessException;
 }
