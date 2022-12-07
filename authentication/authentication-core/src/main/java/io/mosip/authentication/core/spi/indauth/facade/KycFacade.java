@@ -70,7 +70,6 @@ public interface KycFacade {
 	 * Process the KycExchangeRequestDTO to integrate with KYCService.
 	 *
 	 * @param kycExchangeRequestDTO is DTO of KycExchangeRequestDTO
-	 * @param kycExchangeResponseDTO   the kyc exchange response DTO
 	 * @param partnerId the partner id
 	 * @param oidcClientId the client id
 	 * @param metadata the metadata
@@ -78,7 +77,7 @@ public interface KycFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	KycExchangeResponseDTO processKycExchance(KycExchangeRequestDTO kycExchangeRequestDTO, BaseAuthResponseDTO baseAuthResponseDTO,
+	KycExchangeResponseDTO processKycExchange(KycExchangeRequestDTO kycExchangeRequestDTO, 
 			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
 
 }
