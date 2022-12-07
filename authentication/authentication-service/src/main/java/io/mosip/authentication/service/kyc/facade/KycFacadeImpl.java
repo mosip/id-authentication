@@ -357,8 +357,8 @@ public class KycFacadeImpl implements KycFacade {
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
 	}
 
-	public KycExchangeResponseDTO processKycExchance(KycExchangeRequestDTO kycExchangeRequestDTO, BaseAuthResponseDTO baseAuthResponseDTO,
-			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
+	public KycExchangeResponseDTO processKycExchange(KycExchangeRequestDTO kycExchangeRequestDTO, String partnerId, 
+			String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
 				"Processing Kyc Exchange request.");

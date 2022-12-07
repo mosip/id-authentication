@@ -215,6 +215,9 @@ public class PartnerServiceManager {
 				}
 			}
 			if (certValidationNeeded && Objects.nonNull(signatureHeaderCertificate)) {
+
+				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "CERTIFICATE_MATCH", 
+					"Header Certificate: " + signatureHeaderCertificate);
 				boolean partnerCertMatched = isCertificateMatching(signatureHeaderCertificate, partnerMapping.getPartnerId());
 				// Setting default value to true because mispPartner cert matching will be done after partner certificate match.
 				// if partner certificate matches, not required to match misp certificate/idp certificate 
@@ -274,9 +277,13 @@ public class PartnerServiceManager {
 	}
 
 	private boolean isCertificateMatching(String signatureHeaderCertificate, String partnerId) {
+		logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "isCertificateMatching", 
+					"Partner ID: " + partnerId);
 		Optional<PartnerData> partnerData = partnerDataRepo.findByPartnerId(partnerId);
 		if (partnerData.isPresent()) {
 			String partnerCertificate = CryptoUtil.encodeBase64Url(partnerData.get().getCertificateData().getBytes());
+			logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "isCertificateMatching", 
+					"partnerCertificate in DB: " + partnerCertificate);
 			return signatureHeaderCertificate.equals(partnerCertificate);
 		}
 		return false;
