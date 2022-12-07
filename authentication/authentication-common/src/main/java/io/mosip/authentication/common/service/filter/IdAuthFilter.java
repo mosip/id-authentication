@@ -25,9 +25,14 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSIO
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,6 +54,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -455,26 +461,31 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			if (jwtTokenHeadersMap.containsKey(JWT_HEADER_CERT_KEY)) {
 				List<String> certList = (List<String>) jwtTokenHeadersMap.get(JWT_HEADER_CERT_KEY);
 				// Decoding and url safe encoding because parsed header certificate is returing without url safe encoding.
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
-					"Certificate Data in Signature:1:" + certList);
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
-					"Certificate Data in Signature:2:" + certList.get(0));
-
 				byte[] certData = Base64.decodeBase64(certList.get(0));
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
-					"Certificate Data in Signature:3:" + new String(certData));
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
-					"Certificate Data in Signature:4:" + CryptoUtil.encodeBase64Url(certData));
-
-				return CryptoUtil.encodeBase64Url(certData);
+				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+			 	X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certData));
+				return CryptoUtil.encodeBase64Url(getPEMFormatedData(x509Cert).getBytes());
 			}
-		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException e) {
+		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException | CertificateException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "ParseHeader", 
 				"Error Getting certificate from signature header.");
-		}
+		} 
 		// This not never happen, because certificate comparison will be done after successful signature validation. 
 		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
 			IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage());
+	}
+
+	private String getPEMFormatedData(Object anyObject) throws IdAuthenticationAppException {
+		
+		StringWriter stringWriter = new StringWriter();
+		try (JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)) {
+			pemWriter.writeObject(anyObject);
+			pemWriter.flush();
+			return stringWriter.toString();
+		} catch (IOException ioExp) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
+				IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage(), ioExp);
+		}
 	}
 
 	/**
