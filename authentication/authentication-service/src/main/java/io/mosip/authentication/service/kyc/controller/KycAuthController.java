@@ -312,8 +312,8 @@ public class KycAuthController {
 				DataValidationUtil.validate(errors);
 				
 				Map<String, Object> metadata = kycExchangeRequestDTO.getMetadata();
-				KycExchangeResponseDTO kycExchangeResponseDTO = kycFacade.processKycExchance(kycExchangeRequestDTO, null, 
-																partnerId, oidcClientId, metadata);
+				KycExchangeResponseDTO kycExchangeResponseDTO = kycFacade.processKycExchange(kycExchangeRequestDTO, partnerId, 
+									oidcClientId, metadata);
 				
 				return kycExchangeResponseDTO;
 			} catch (IDDataValidationException e) {
