@@ -455,7 +455,17 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			if (jwtTokenHeadersMap.containsKey(JWT_HEADER_CERT_KEY)) {
 				List<String> certList = (List<String>) jwtTokenHeadersMap.get(JWT_HEADER_CERT_KEY);
 				// Decoding and url safe encoding because parsed header certificate is returing without url safe encoding.
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
+					"Certificate Data in Signature:1:" + certList);
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
+					"Certificate Data in Signature:2:" + certList.get(0));
+
 				byte[] certData = Base64.decodeBase64(certList.get(0));
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
+					"Certificate Data in Signature:3:" + new String(certData));
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getCertificateDataFromSignatureData", 
+					"Certificate Data in Signature:4:" + CryptoUtil.encodeBase64Url(certData));
+
 				return CryptoUtil.encodeBase64Url(certData);
 			}
 		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException e) {
