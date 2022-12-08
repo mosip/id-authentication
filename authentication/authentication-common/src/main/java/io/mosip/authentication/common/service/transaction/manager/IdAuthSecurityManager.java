@@ -346,10 +346,14 @@ public class IdAuthSecurityManager {
 	 */
 	public String hash(String id) throws IdAuthenticationBusinessException {
 		Integer idModulo = getSaltKeyForHashOfId(id);
+		mosipLogger.debug("id-"+id);
+		mosipLogger.debug("idModulo"+idModulo);
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
+		String hash= "";
+		mosipLogger.debug("hashSaltValue"+hashSaltValue);
 		if (hashSaltValue != null) {
 			try {
-				return HMACUtils2.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
+				hash= HMACUtils2.digestAsPlainTextWithSalt(id.getBytes(), hashSaltValue.getBytes());
 			} catch (NoSuchAlgorithmException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
@@ -358,6 +362,8 @@ public class IdAuthSecurityManager {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							SALT_FOR_THE_GIVEN_ID));
 		}
+		mosipLogger.debug("hash"+hash);
+		return hash;
 	}
 
 	/**
