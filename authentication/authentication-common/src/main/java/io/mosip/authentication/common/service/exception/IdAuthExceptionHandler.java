@@ -375,6 +375,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			otpResponseDTO.setErrors(errors);
 			otpResponseDTO.setResponseTime(responseTime);
 			return otpResponseDTO;
+		case "kyc-exchange":
+			KycExchangeResponseDTO kycExchangeResponseDTO = new KycExchangeResponseDTO();
+			kycExchangeResponseDTO.setErrors(errors);
+			kycExchangeResponseDTO.setResponseTime(responseTime);
+			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
+			kycExchangeResponseDTO.setResponse(encryptedKycRespDTO);
+			return kycExchangeResponseDTO;
 		case "internal":
 			if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
 				OtpResponseDTO internalotpresponsedto = new OtpResponseDTO();
@@ -422,13 +429,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				hotlistResponseDto.setResponseTime(responseTime);
 				return hotlistResponseDto;
 			}
-		case "kyc-exchange":
-			KycExchangeResponseDTO kycExchangeResponseDTO = new KycExchangeResponseDTO();
-			kycExchangeResponseDTO.setErrors(errors);
-			kycExchangeResponseDTO.setResponseTime(responseTime);
-			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
-			kycExchangeResponseDTO.setResponse(encryptedKycRespDTO);
-			return kycExchangeResponseDTO;
+		
 
 			
 		default:
