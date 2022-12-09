@@ -434,6 +434,11 @@ public class KycServiceImpl implements KycService {
 				String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException {
 		
 		if (consentedAttribute.equals(IdAuthCommonConstants.PROFILE_PHOTO)) {
+			if (!idInfo.keySet().contains(BioMatchType.FACE.getIdMapping().getIdname())) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+					"Face Bio not found in DB. So not adding to response claims.");
+				return;
+			}
 			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				String face = faceEntityInfoMap.get(CbeffDocType.FACE.getType().value());
@@ -444,6 +449,11 @@ public class KycServiceImpl implements KycService {
 
 		if (idSchemaAttributes.size() == 1) {
 			List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttributes.get(0));
+			if (Objects.isNull(idInfoList)) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+					"Data not available in Identity Info for the claim. So not adding to response claims. Claim Name: " + idSchemaAttributes.get(0));
+				return;
+			}
 			Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
 			List<String> availableLangCodes = getAvailableLangCodes(mappedLocales, mappedLangCodes);
 			if (availableLangCodes.size() == 1){
