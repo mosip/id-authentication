@@ -212,7 +212,7 @@ public class KycAuthController {
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/kyc-auth/{IdP-LK}/{IdP-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/kyc-auth/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Kyc Auth Request", description = "Kyc Auth Request", tags = { "kyc-auth-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
@@ -224,7 +224,7 @@ public class KycAuthController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public KycAuthResponseDTO processKycAuth(@Validated @RequestBody AuthRequestDTO authRequestDTO,
-			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("IdP-Partner-ID") String partnerId,
+			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
@@ -289,7 +289,7 @@ public class KycAuthController {
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/kyc-exchange/{IdP-LK}/{IdP-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/kyc-exchange/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Kyc Exchange Request", description = "Kyc Exchange Request", tags = { "kyc-auth-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
@@ -301,7 +301,7 @@ public class KycAuthController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public KycExchangeResponseDTO processKycExchange(@Validated @RequestBody KycExchangeRequestDTO kycExchangeRequestDTO,
-			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("IdP-Partner-ID") String partnerId,
+			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
