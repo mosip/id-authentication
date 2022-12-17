@@ -361,10 +361,6 @@ public final class IdAuthCommonConstants {
 	
 	public static final String CLAIMS_LANG_SEPERATOR = "#";
 
-	public static final String ADDRESS = "address";
-	
-	public static final String PROFILE_PHOTO = "profile_photo";
-
 	public static final long DEFAULT_KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS = 300L;
 
 	public static final String DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE = "eng"; 
