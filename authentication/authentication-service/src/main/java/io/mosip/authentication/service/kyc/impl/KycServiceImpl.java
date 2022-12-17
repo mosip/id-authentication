@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,6 +65,12 @@ public class KycServiceImpl implements KycService {
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
+
+	@Value("${ida.idp.consented.picture.attribute.name:picture}")
+	private String consentedFaceAttributeName;
+
+	@Value("${ida.idp.consented.address.attribute.name:address}")
+	private String consentedAddressAttributeName;
 
 	/** The env. */
 	@Autowired
@@ -433,7 +440,7 @@ public class KycServiceImpl implements KycService {
 	private void addEntityForLangCodes(Map<String, String> mappedLocales, Map<String, List<IdentityInfoDTO>> idInfo, Map<String, Object> respMap, 
 				String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException {
 		
-		if (consentedAttribute.equals(IdAuthCommonConstants.PROFILE_PHOTO)) {
+		if (consentedAttribute.equals(consentedFaceAttributeName)) {
 			if (!idInfo.keySet().contains(BioMatchType.FACE.getIdMapping().getIdname())) {
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
 					"Face Bio not found in DB. So not adding to response claims.");
@@ -479,7 +486,7 @@ public class KycServiceImpl implements KycService {
 				}
 			}
 		} else {
-			if (consentedAttribute.equals(IdAuthCommonConstants.ADDRESS)) {
+			if (consentedAttribute.equals(consentedAddressAttributeName)) {
 				if (mappedLocales.size() > 1) {
 					for (String locale: mappedLocales.keySet()) {
 						String localeValue = mappedLocales.get(locale);
@@ -504,7 +511,7 @@ public class KycServiceImpl implements KycService {
 							}
 						}
 						if (langCodeFound)
-							respMap.put(IdAuthCommonConstants.ADDRESS + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, addressMap);
+							respMap.put(consentedAddressAttributeName + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, addressMap);
 					}
 				} else {
 					Map<String, String> addressMap = new HashMap<>();
@@ -526,7 +533,7 @@ public class KycServiceImpl implements KycService {
 							}
 						}
 					}
-					respMap.put(IdAuthCommonConstants.ADDRESS, addressMap);
+					respMap.put(consentedAddressAttributeName, addressMap);
 				}
 			}
 		}
