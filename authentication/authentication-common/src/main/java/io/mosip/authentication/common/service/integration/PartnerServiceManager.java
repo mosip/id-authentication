@@ -1,12 +1,20 @@
 package io.mosip.authentication.common.service.integration;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,15 +37,16 @@ import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.authentication.core.util.CryptoUtil;
-import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * This class Partner Service Manager connects to partner service to validate
@@ -110,11 +119,11 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key,
-									boolean certificateNeeded, String signatureHeaderCertificate, boolean certValidationNeeded) 
+									boolean certificateNeeded, String headerCertificateThumbprint, boolean certValidationNeeded) 
 									throws IdAuthenticationBusinessException {
 		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
 		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findByLicenseKey(misp_license_key);
-		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional, signatureHeaderCertificate, certValidationNeeded);
+		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional, headerCertificateThumbprint, certValidationNeeded);
 		PartnerPolicyResponseDTO response = new PartnerPolicyResponseDTO();
 		PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 		PartnerData partnerData = partnerMapping.getPartnerData();
@@ -158,7 +167,7 @@ public class PartnerServiceManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
-											   Optional<MispLicenseData> mispLicOptional, String signatureHeaderCertificate, 
+											   Optional<MispLicenseData> mispLicOptional, String headerCertificateThumbprint, 
 											   boolean certValidationNeeded) throws IdAuthenticationBusinessException {
 		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
 			PartnerMapping partnerMapping = partnerMappingDataOptional.get();
@@ -214,11 +223,11 @@ public class PartnerServiceManager {
 							IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorMessage());
 				}
 			}
-			if (certValidationNeeded && Objects.nonNull(signatureHeaderCertificate)) {
+			if (certValidationNeeded && Objects.nonNull(headerCertificateThumbprint)) {
 
 				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "signature-header-certificate", 
-					"Header Certificate: " + signatureHeaderCertificate);
-				boolean partnerCertMatched = isCertificateMatching(signatureHeaderCertificate, partnerMapping.getPartnerId());
+					"Header Certificate: " + headerCertificateThumbprint);
+				boolean partnerCertMatched = isCertificateMatching(headerCertificateThumbprint, partnerMapping.getPartnerId());
 				// Setting default value to true because mispPartner cert matching will be done after partner certificate match.
 				// if partner certificate matches, not required to match misp certificate/idp certificate 
 				boolean mispPartnerCertMatched = true;
@@ -226,7 +235,7 @@ public class PartnerServiceManager {
 				if (!partnerCertMatched) {
 					if (mispLicOptional.isPresent()) {
 						MispLicenseData mispLicenseData = mispLicOptional.get();
-						mispPartnerCertMatched = isCertificateMatching(signatureHeaderCertificate, mispLicenseData.getMispId());
+						mispPartnerCertMatched = isCertificateMatching(headerCertificateThumbprint, mispLicenseData.getMispId());
 					} else {
 						// misp not present. throw partner cert not matched exception because first matching partner certificate and  
 						// then validating misp details/idp service.
@@ -276,11 +285,19 @@ public class PartnerServiceManager {
 		}
 	}
 
-	private boolean isCertificateMatching(String signatureHeaderCertificate, String partnerId) {
+	private boolean isCertificateMatching(String headerCertificateThumbprint, String partnerId) {
 		Optional<PartnerData> partnerData = partnerDataRepo.findByPartnerId(partnerId);
 		if (partnerData.isPresent()) {
-			String partnerCertificate = CryptoUtil.encodeBase64Url(partnerData.get().getCertificateData().getBytes());
-			return signatureHeaderCertificate.equals(partnerCertificate);
+			try {
+				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+				X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(
+										new ByteArrayInputStream(partnerData.get().getCertificateData().getBytes()));
+				String dbPartnerCertThumbprint = DigestUtils.sha256Hex(x509Cert.getEncoded()).toUpperCase();
+				return headerCertificateThumbprint.equals(dbPartnerCertThumbprint);
+			} catch (CertificateException e) {
+				logger.warn(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "isCertificateMatching", 
+					"Warn - Comparing header certificate with DB Certificate.");
+			}
 		}
 		return false;
 	}
@@ -317,6 +334,7 @@ public class PartnerServiceManager {
 		policyDataRepo.save(policyEventData);
 		partnerMappingRepo.save(mapping);
 	}
+	
 
 
 	/**

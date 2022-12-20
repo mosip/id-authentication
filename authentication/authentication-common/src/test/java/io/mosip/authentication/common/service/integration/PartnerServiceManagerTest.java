@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -904,7 +905,7 @@ public class PartnerServiceManagerTest {
 			partnerMappingData.setPartnerId("123");
 			PartnerData partnerData1 = new PartnerData();
 			partnerData1.setPartnerId("123");
-			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
+			partnerData1.setCertificateData("-----BEGIN CERTIFICATE-----\nMIIDKDCCAhCgAwIBAgIEY6HHPTANBgkqhkiG9w0BAQsFADBWMQswCQYDVQQGEwJD\nQzELMAkGA1UECAwCU1QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTAL\nBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRlc3QwHhcNMjIxMjIwMTQzMTI1WhcNMjMx\nMjIwMTQzMTI1WjBWMQswCQYDVQQGEwJDQzELMAkGA1UECAwCU1QxDTALBgNVBAcM\nBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRl\nc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCflXqCfa20c1VRBrdt\n6E9FbfzZiVpGZ8zN22iipz0vcAjxDgcPKOdJ0PNPsZgXYrZEPbsd3kUBBDxRZRKk\njyMWZsOrSxo/0agNpS8+fUhT7ppaAmxfQoAUqAKSf+G5y8oyfqhVjcbMwS0KE1GK\ndK+ZMFvYCZOUya3+lx7YkK5Jm9L+VZt0hLjQFFyT53zXorrDx/QvEr5U8AOsFCr0\npNBf8KseVU8oxwUr28CYWBUvbewdTH9PiKybdhH65Nx/v0pJKIPASwOZ01UbE4Aa\nHvSCy1KGmFbGxBR6fh9YeWVDujQVp//qGDIgnCzMJ1o87skSmalFgX87B7i+zw5H\nTZUVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAChtExCLhxMdWPORiAUI8BzuDtcG\nzPo5DagHvv7udjbPglh5Wjkswe3LPjxSadttaPJrmxmgg1gQDZAMlLaUyY5KukHt\n4qHhic0bx7v/CfQzx4pAufJ6RZnY8Fxn0C3Sh2tXNpjMzL064DrAd9OGtJzmOVlw\nKV6W+6MlwQJemXXkTZzSNEyF+OeESbuRcA3xxmCvdfyHW/x2aEJZI4AJa9PsmJJX\nhGEDdBr8sH5/WyZUxeKV/GOzZXoYFAI68Uj5/2CNPF8vBuZ1xTvGiAgZSZMWPlNM\ndKHjYysmrrnwO7vWr9TvmTxEnWfIaIencY6rW4nn5yuzrinO8fFBVzHQ1kA=\n-----END CERTIFICATE-----\n");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
@@ -925,7 +926,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
+					Optional.empty(), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -942,7 +943,7 @@ public class PartnerServiceManagerTest {
 			PartnerMapping partnerMappingData = new PartnerMapping();
 			PartnerData partnerData1 = new PartnerData();
 			partnerData1.setPartnerId("123");
-			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
+			partnerData1.setCertificateData("-----BEGIN CERTIFICATE-----\nMIIDKDCCAhCgAwIBAgIEY6HHPTANBgkqhkiG9w0BAQsFADBWMQswCQYDVQQGEwJD\nQzELMAkGA1UECAwCU1QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTAL\nBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRlc3QwHhcNMjIxMjIwMTQzMTI1WhcNMjMx\nMjIwMTQzMTI1WjBWMQswCQYDVQQGEwJDQzELMAkGA1UECAwCU1QxDTALBgNVBAcM\nBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRl\nc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCflXqCfa20c1VRBrdt\n6E9FbfzZiVpGZ8zN22iipz0vcAjxDgcPKOdJ0PNPsZgXYrZEPbsd3kUBBDxRZRKk\njyMWZsOrSxo/0agNpS8+fUhT7ppaAmxfQoAUqAKSf+G5y8oyfqhVjcbMwS0KE1GK\ndK+ZMFvYCZOUya3+lx7YkK5Jm9L+VZt0hLjQFFyT53zXorrDx/QvEr5U8AOsFCr0\npNBf8KseVU8oxwUr28CYWBUvbewdTH9PiKybdhH65Nx/v0pJKIPASwOZ01UbE4Aa\nHvSCy1KGmFbGxBR6fh9YeWVDujQVp//qGDIgnCzMJ1o87skSmalFgX87B7i+zw5H\nTZUVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAChtExCLhxMdWPORiAUI8BzuDtcG\nzPo5DagHvv7udjbPglh5Wjkswe3LPjxSadttaPJrmxmgg1gQDZAMlLaUyY5KukHt\n4qHhic0bx7v/CfQzx4pAufJ6RZnY8Fxn0C3Sh2tXNpjMzL064DrAd9OGtJzmOVlw\nKV6W+6MlwQJemXXkTZzSNEyF+OeESbuRcA3xxmCvdfyHW/x2aEJZI4AJa9PsmJJX\nhGEDdBr8sH5/WyZUxeKV/GOzZXoYFAI68Uj5/2CNPF8vBuZ1xTvGiAgZSZMWPlNM\ndKHjYysmrrnwO7vWr9TvmTxEnWfIaIencY6rW4nn5yuzrinO8fFBVzHQ1kA=\n-----END CERTIFICATE-----\n");
 			partnerData1.setPartnerStatus("ACTIVE");
 
 			partnerMappingData.setPartnerId("123");
@@ -967,7 +968,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setDeleted(true);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -986,7 +987,7 @@ public class PartnerServiceManagerTest {
 
 			PartnerData partnerData1 = new PartnerData();
 			partnerData1.setPartnerId("123");
-			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
+			partnerData1.setCertificateData("-----BEGIN CERTIFICATE-----\nMIIDKDCCAhCgAwIBAgIEY6HHPTANBgkqhkiG9w0BAQsFADBWMQswCQYDVQQGEwJD\nQzELMAkGA1UECAwCU1QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTAL\nBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRlc3QwHhcNMjIxMjIwMTQzMTI1WhcNMjMx\nMjIwMTQzMTI1WjBWMQswCQYDVQQGEwJDQzELMAkGA1UECAwCU1QxDTALBgNVBAcM\nBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRl\nc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCflXqCfa20c1VRBrdt\n6E9FbfzZiVpGZ8zN22iipz0vcAjxDgcPKOdJ0PNPsZgXYrZEPbsd3kUBBDxRZRKk\njyMWZsOrSxo/0agNpS8+fUhT7ppaAmxfQoAUqAKSf+G5y8oyfqhVjcbMwS0KE1GK\ndK+ZMFvYCZOUya3+lx7YkK5Jm9L+VZt0hLjQFFyT53zXorrDx/QvEr5U8AOsFCr0\npNBf8KseVU8oxwUr28CYWBUvbewdTH9PiKybdhH65Nx/v0pJKIPASwOZ01UbE4Aa\nHvSCy1KGmFbGxBR6fh9YeWVDujQVp//qGDIgnCzMJ1o87skSmalFgX87B7i+zw5H\nTZUVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAChtExCLhxMdWPORiAUI8BzuDtcG\nzPo5DagHvv7udjbPglh5Wjkswe3LPjxSadttaPJrmxmgg1gQDZAMlLaUyY5KukHt\n4qHhic0bx7v/CfQzx4pAufJ6RZnY8Fxn0C3Sh2tXNpjMzL064DrAd9OGtJzmOVlw\nKV6W+6MlwQJemXXkTZzSNEyF+OeESbuRcA3xxmCvdfyHW/x2aEJZI4AJa9PsmJJX\nhGEDdBr8sH5/WyZUxeKV/GOzZXoYFAI68Uj5/2CNPF8vBuZ1xTvGiAgZSZMWPlNM\ndKHjYysmrrnwO7vWr9TvmTxEnWfIaIencY6rW4nn5yuzrinO8fFBVzHQ1kA=\n-----END CERTIFICATE-----\n");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
@@ -1009,7 +1010,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setMispStatus("INACTIVE");
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
+					Optional.of(mispLicenseData ), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -1028,7 +1029,7 @@ public class PartnerServiceManagerTest {
 
 			PartnerData partnerData1 = new PartnerData();
 			partnerData1.setPartnerId("123");
-			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
+			partnerData1.setCertificateData("-----BEGIN CERTIFICATE-----\nMIIDKDCCAhCgAwIBAgIEY6HHPTANBgkqhkiG9w0BAQsFADBWMQswCQYDVQQGEwJD\nQzELMAkGA1UECAwCU1QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTAL\nBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRlc3QwHhcNMjIxMjIwMTQzMTI1WhcNMjMx\nMjIwMTQzMTI1WjBWMQswCQYDVQQGEwJDQzELMAkGA1UECAwCU1QxDTALBgNVBAcM\nBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRl\nc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCflXqCfa20c1VRBrdt\n6E9FbfzZiVpGZ8zN22iipz0vcAjxDgcPKOdJ0PNPsZgXYrZEPbsd3kUBBDxRZRKk\njyMWZsOrSxo/0agNpS8+fUhT7ppaAmxfQoAUqAKSf+G5y8oyfqhVjcbMwS0KE1GK\ndK+ZMFvYCZOUya3+lx7YkK5Jm9L+VZt0hLjQFFyT53zXorrDx/QvEr5U8AOsFCr0\npNBf8KseVU8oxwUr28CYWBUvbewdTH9PiKybdhH65Nx/v0pJKIPASwOZ01UbE4Aa\nHvSCy1KGmFbGxBR6fh9YeWVDujQVp//qGDIgnCzMJ1o87skSmalFgX87B7i+zw5H\nTZUVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAChtExCLhxMdWPORiAUI8BzuDtcG\nzPo5DagHvv7udjbPglh5Wjkswe3LPjxSadttaPJrmxmgg1gQDZAMlLaUyY5KukHt\n4qHhic0bx7v/CfQzx4pAufJ6RZnY8Fxn0C3Sh2tXNpjMzL064DrAd9OGtJzmOVlw\nKV6W+6MlwQJemXXkTZzSNEyF+OeESbuRcA3xxmCvdfyHW/x2aEJZI4AJa9PsmJJX\nhGEDdBr8sH5/WyZUxeKV/GOzZXoYFAI68Uj5/2CNPF8vBuZ1xTvGiAgZSZMWPlNM\ndKHjYysmrrnwO7vWr9TvmTxEnWfIaIencY6rW4nn5yuzrinO8fFBVzHQ1kA=\n-----END CERTIFICATE-----\n");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
@@ -1054,7 +1055,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -1073,7 +1074,7 @@ public class PartnerServiceManagerTest {
 
 			PartnerData partnerData1 = new PartnerData();
 			partnerData1.setPartnerId("123");
-			partnerData1.setCertificateData("DUMMY-CERTIFICATE-DATA");
+			partnerData1.setCertificateData("-----BEGIN CERTIFICATE-----\nMIIDKDCCAhCgAwIBAgIEY6HHPTANBgkqhkiG9w0BAQsFADBWMQswCQYDVQQGEwJD\nQzELMAkGA1UECAwCU1QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTAL\nBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRlc3QwHhcNMjIxMjIwMTQzMTI1WhcNMjMx\nMjIwMTQzMTI1WjBWMQswCQYDVQQGEwJDQzELMAkGA1UECAwCU1QxDTALBgNVBAcM\nBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxDTALBgNVBAMMBFRl\nc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCflXqCfa20c1VRBrdt\n6E9FbfzZiVpGZ8zN22iipz0vcAjxDgcPKOdJ0PNPsZgXYrZEPbsd3kUBBDxRZRKk\njyMWZsOrSxo/0agNpS8+fUhT7ppaAmxfQoAUqAKSf+G5y8oyfqhVjcbMwS0KE1GK\ndK+ZMFvYCZOUya3+lx7YkK5Jm9L+VZt0hLjQFFyT53zXorrDx/QvEr5U8AOsFCr0\npNBf8KseVU8oxwUr28CYWBUvbewdTH9PiKybdhH65Nx/v0pJKIPASwOZ01UbE4Aa\nHvSCy1KGmFbGxBR6fh9YeWVDujQVp//qGDIgnCzMJ1o87skSmalFgX87B7i+zw5H\nTZUVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAChtExCLhxMdWPORiAUI8BzuDtcG\nzPo5DagHvv7udjbPglh5Wjkswe3LPjxSadttaPJrmxmgg1gQDZAMlLaUyY5KukHt\n4qHhic0bx7v/CfQzx4pAufJ6RZnY8Fxn0C3Sh2tXNpjMzL064DrAd9OGtJzmOVlw\nKV6W+6MlwQJemXXkTZzSNEyF+OeESbuRcA3xxmCvdfyHW/x2aEJZI4AJa9PsmJJX\nhGEDdBr8sH5/WyZUxeKV/GOzZXoYFAI68Uj5/2CNPF8vBuZ1xTvGiAgZSZMWPlNM\ndKHjYysmrrnwO7vWr9TvmTxEnWfIaIencY6rW4nn5yuzrinO8fFBVzHQ1kA=\n-----END CERTIFICATE-----\n");
 			partnerData1.setPartnerStatus("ACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			PolicyData policyData1 = new PolicyData();
@@ -1099,7 +1100,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "RFVNTVktQ0VSVElGSUNBVEUtREFUQQ", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
