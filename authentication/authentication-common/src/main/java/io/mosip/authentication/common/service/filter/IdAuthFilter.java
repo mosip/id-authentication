@@ -54,6 +54,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
@@ -397,7 +398,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		
-		String signatureHeaderCertificate = getCertificateDataFromSignatureData(requestWrapper.getHeader("signature"));
+		String headerCertificateThumbprint = getCertificateThumbprintFromSignatureData(requestWrapper.getHeader("signature"));
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		
 		String partnerId = partnerLkMap.get(PARTNER_ID);
@@ -406,7 +407,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 
 		if (partnerId != null && licenseKey != null) {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey, licenseKey,
-					isPartnerCertificateNeeded(), signatureHeaderCertificate, isCertificateValidationRequired());
+					isPartnerCertificateNeeded(), headerCertificateThumbprint, isCertificateValidationRequired());
 			// First, validate MISP Policy.
 			checkMispPolicyAllowed(partnerServiceResponse);
 			// Later, validate the auth policy attributes.
@@ -447,7 +448,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 
 
 	@SuppressWarnings("unchecked")
-	private String getCertificateDataFromSignatureData(String signatureData) throws IdAuthenticationAppException {
+	private String getCertificateThumbprintFromSignatureData(String signatureData) throws IdAuthenticationAppException {
 
 		if (Objects.isNull(signatureData)) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
@@ -464,7 +465,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 				byte[] certData = Base64.decodeBase64(certList.get(0));
 				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
 			 	X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certData));
-				return CryptoUtil.encodeBase64Url(getPEMFormatedData(x509Cert).getBytes());
+				return DigestUtils.sha256Hex(x509Cert.getEncoded()).toUpperCase();
+				//return CryptoUtil.encodeBase64Url(getPEMFormatedData(x509Cert).getBytes());
 			}
 		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException | CertificateException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "ParseHeader", 
@@ -473,19 +475,6 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		// This not never happen, because certificate comparison will be done after successful signature validation. 
 		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
 			IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage());
-	}
-
-	private String getPEMFormatedData(Object anyObject) throws IdAuthenticationAppException {
-		
-		StringWriter stringWriter = new StringWriter();
-		try (JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)) {
-			pemWriter.writeObject(anyObject);
-			pemWriter.flush();
-			return stringWriter.toString();
-		} catch (IOException ioExp) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
-				IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage(), ioExp);
-		}
 	}
 
 	/**

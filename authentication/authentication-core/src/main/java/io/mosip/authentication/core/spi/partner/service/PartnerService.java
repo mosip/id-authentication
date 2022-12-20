@@ -20,7 +20,7 @@ public interface PartnerService {
 			throws IdAuthenticationBusinessException;
 
 	PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partner_api_key, String misp_license_key, 
-				boolean certificateNeeded, String signatureHeaderCertificate, boolean certValidationNeeded)
+				boolean certificateNeeded, String headerCertificateThumbprint, boolean certValidationNeeded)
 			throws IdAuthenticationBusinessException;
 
 	Optional<PartnerPolicyResponseDTO> getPolicyForPartner(String partnerId, String partnerApiKey, Map<String, Object> metadata)

@@ -46,10 +46,10 @@ public class PartnerServiceImpl implements PartnerService {
 
 	@Override
 	public PartnerPolicyResponseDTO validateAndGetPolicy(String partnerId, String partnerApiKey, String mispLicenseKey, 
-			boolean certificateNeeded, String signatureHeaderCertificate, boolean certValidationNeeded)
+			boolean certificateNeeded, String headerCertificateThumbprint, boolean certValidationNeeded)
 			throws IdAuthenticationBusinessException {
 		return partnerServiceManager.validateAndGetPolicy(partnerId, partnerApiKey, mispLicenseKey, 
-					certificateNeeded, signatureHeaderCertificate, certValidationNeeded);
+					certificateNeeded, headerCertificateThumbprint, certValidationNeeded);
 	}
 
 	@Override
