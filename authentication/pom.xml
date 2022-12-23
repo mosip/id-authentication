@@ -107,6 +107,8 @@
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>${kernel.parent.version}</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
+		<kernel-biometrics-util>${kernel.parent.version}</kernel-biometrics-util>
+
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -154,6 +156,7 @@
 		<objenesis.version>3.1</objenesis.version>
 
 		<springdoc.version>1.5.10</springdoc.version>
+		
 	</properties>
 
 	<dependencies>

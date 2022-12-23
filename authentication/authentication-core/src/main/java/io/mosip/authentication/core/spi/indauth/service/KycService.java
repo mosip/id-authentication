@@ -69,10 +69,11 @@ public interface KycService {
 	 * @param idInfo							List of Identity Info of the user.
 	 * @param consentedAttributes        	 	Consented Attributes.
 	 * @param locales							selected locales.
+	 * @param idVid						        individual Id
 	 * @return String
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> locales) throws IdAuthenticationBusinessException;
+				List<String> consentedAttributes, List<String> locales, String idVid) throws IdAuthenticationBusinessException;
 }
