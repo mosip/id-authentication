@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,6 +87,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycFacadeImpl.class);
+
+	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
+	private String consentedIndividualAttributeName;
 
 	/** The env. */
 	@Autowired
@@ -412,7 +416,7 @@ public class KycFacadeImpl implements KycFacade {
 		List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
 
 		Set<String> filterAttributes = new HashSet<>();
-		mapConsentedAttributesToIdSchemaAttributes(consentAttributes, filterAttributes);
+		mapConsentedAttributesToIdSchemaAttributes(consentAttributes, filterAttributes, policyAllowedKycAttribs);
 		Set<String> policyAllowedAttributes = filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 		boolean isBioRequired = false;
@@ -430,6 +434,8 @@ public class KycFacadeImpl implements KycFacade {
 		if (locales.size() == 0) {
 			locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 		}
+
+
 		String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, consentAttributes, locales, idVid);
 		// update kyc token status 
 		KycTokenData kycTokenData = kycTokenDataOpt.get();
@@ -447,13 +453,17 @@ public class KycFacadeImpl implements KycFacade {
 		return kycExchangeResponseDTO;
 	}
 
-	private void mapConsentedAttributesToIdSchemaAttributes(List<String> consentAttributes, Set<String> filterAttributes) 
-			throws IdAuthenticationBusinessException {
+	private void mapConsentedAttributesToIdSchemaAttributes(List<String> consentAttributes, Set<String> filterAttributes, 
+			List<String> policyAllowedKycAttribs) throws IdAuthenticationBusinessException {
 
 		if(consentAttributes != null && !consentAttributes.isEmpty()) {
 			for (String attrib : consentAttributes) {
 				Collection<? extends String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
 				filterAttributes.addAll(idSchemaAttribute);
+			}
+			// removing individual id from consent if the claim is not allowed in policy.
+			if (!policyAllowedKycAttribs.contains(consentedIndividualAttributeName)) {
+				consentAttributes.remove(consentedIndividualAttributeName);
 			}
 		}
 	} 
