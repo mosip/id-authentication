@@ -365,6 +365,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE = "eng"; 
 
+	public static final String FACE_ISO_NUMBER = "ISO19794_5_2011";
+
 	private IdAuthCommonConstants() {
 	}
 }

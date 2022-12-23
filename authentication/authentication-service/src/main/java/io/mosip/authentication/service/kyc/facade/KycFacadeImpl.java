@@ -430,7 +430,7 @@ public class KycFacadeImpl implements KycFacade {
 		if (locales.size() == 0) {
 			locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 		}
-		String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, consentAttributes, locales);
+		String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, consentAttributes, locales, idVid);
 		// update kyc token status 
 		KycTokenData kycTokenData = kycTokenDataOpt.get();
 		kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());

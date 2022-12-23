@@ -200,6 +200,11 @@
         		</exclusion>
         	</exclusions>
         </dependency>
+        <dependency>
+            <groupId>io.mosip.biometric.util</groupId>
+            <artifactId>biometrics-util</artifactId>
+            <version>${kernel-biometrics-util}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

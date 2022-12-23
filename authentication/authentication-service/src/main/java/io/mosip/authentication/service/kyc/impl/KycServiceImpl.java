@@ -47,6 +47,9 @@ import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.biometrics.util.ConvertRequestDto;
+import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -71,6 +74,12 @@ public class KycServiceImpl implements KycService {
 
 	@Value("${ida.idp.consented.address.attribute.name:address}")
 	private String consentedAddressAttributeName;
+
+	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
+	private String consentedIndividualAttributeName;
+
+	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
+	private String consentedPictureAttributePrefix;
 
 	/** The env. */
 	@Autowired
@@ -410,7 +419,7 @@ public class KycServiceImpl implements KycService {
 
 	@Override
 	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> locales) throws IdAuthenticationBusinessException {
+				List<String> consentedAttributes, List<String> locales, String idVid) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
 					"Building claims response for PSU token: " + subject);
@@ -424,6 +433,10 @@ public class KycServiceImpl implements KycService {
 		for (String attrib : consentedAttributes) {
 			if (attrib.equals(IdAuthCommonConstants.SUBJECT))
 				continue;
+			if (attrib.equals(consentedIndividualAttributeName)) {
+				respMap.put(attrib, idVid);
+				continue;
+			}
 			List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
 			if (mappedLocales.size() > 0) {
 				addEntityForLangCodes(mappedLocales, idInfo, respMap, attrib, idSchemaAttribute);
@@ -448,8 +461,9 @@ public class KycServiceImpl implements KycService {
 			}
 			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 			if (Objects.nonNull(faceEntityInfoMap)) {
-				String face = faceEntityInfoMap.get(CbeffDocType.FACE.getType().value());
-				respMap.put(consentedAttribute, face);
+				String face = convertJP2ToJpeg(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()));
+				if (Objects.nonNull(face))
+					respMap.put(consentedAttribute, consentedPictureAttributePrefix + face);
 			}
 			return;
 		}
@@ -537,6 +551,20 @@ public class KycServiceImpl implements KycService {
 				}
 			}
 		}
+	}
+
+	private String convertJP2ToJpeg(String jp2Image) {
+		try {
+			ConvertRequestDto convertRequestDto = new ConvertRequestDto();
+			convertRequestDto.setVersion(IdAuthCommonConstants.FACE_ISO_NUMBER);
+			convertRequestDto.setInputBytes(CryptoUtil.decodeBase64(jp2Image));
+			byte[] image = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
+			return CryptoUtil.encodeBase64Url(image);
+		} catch(Exception exp) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "convertJP2ToJpeg",
+					"Error Converting JP2 To JPEG. " + exp.getMessage(), exp);
+		}
+		return null;
 	}
 
 	private Map<String, String> localesMapping(Set<String> locales) {
