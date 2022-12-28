@@ -2,8 +2,6 @@ package io.mosip.authentication.common.service.integration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -14,7 +12,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,13 +34,11 @@ import io.mosip.authentication.common.service.repository.PolicyDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
-import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
@@ -213,11 +208,11 @@ public class PartnerServiceManager {
 				}
 			} else {
 				String oidcClientId = partnerMapping.getApiKeyId();
-				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_VALIDATION", 
+				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_client_validation", 
 					"Checking for OIDC client exists or not");
 				Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
 				if (!oidcClientData.isPresent()){
-					logger.error(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_VALIDATION", 
+					logger.error(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_client_validation", 
 						"OIDC client mapping not found in DB: " + oidcClientId);
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorCode(),
 							IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorMessage());

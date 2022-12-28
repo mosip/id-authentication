@@ -245,12 +245,12 @@
 			<version>${spring.boot.version}</version>
 			<optional>true</optional>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-openid-bridge-api</artifactId>
 			<version>${kernel-openid-bridge-api.version}</version>
 			<scope>provided</scope>
-		</dependency> -->
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -18,9 +18,11 @@
 
 ALTER TABLE ida.misp_license_data ADD policy_id character varying(50);
 
+ALTER TABLE ida.partner_mapping ALTER COLUMN api_key_id TYPE varchar(100);
+
 -- DROP TABLE IF EXISTS ida.oidc_client_data CASCADE;
 CREATE TABLE ida.oidc_client_data (
-	oidc_client_id character varying(36) NOT NULL,
+	oidc_client_id character varying(100) NOT NULL,
 	oidc_client_name character varying(128) NOT NULL,
 	oidc_client_status character varying(36) NOT NULL,
 	user_claims character varying(1024) NOT NULL,
