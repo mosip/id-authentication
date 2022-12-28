@@ -16,7 +16,7 @@
 CREATE TABLE ida.partner_mapping (
 	partner_id character varying(36) NOT NULL,
 	policy_id character varying(36) NOT NULL,
-	api_key_id character varying(36) NOT NULL,
+	api_key_id character varying(100) NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),

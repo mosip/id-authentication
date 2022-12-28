@@ -89,7 +89,7 @@ public class KycFacadeImpl implements KycFacade {
 	private static Logger mosipLogger = IdaLogger.getLogger(KycFacadeImpl.class);
 
 	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
-	private String consentedIndividualAttributeName;
+	private String consentedIndividualIdAttributeName;
 
 	/** The env. */
 	@Autowired
@@ -409,6 +409,10 @@ public class KycFacadeImpl implements KycFacade {
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorMessage());
 		}
 
+		mosipLogger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "processKycExchange", 
+					"Checking for OIDC client allowed userclaims");
+		//Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+
 		PolicyDTO policyDto = policyDtoOpt.get();
 		List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 					.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
@@ -462,8 +466,8 @@ public class KycFacadeImpl implements KycFacade {
 				filterAttributes.addAll(idSchemaAttribute);
 			}
 			// removing individual id from consent if the claim is not allowed in policy.
-			if (!policyAllowedKycAttribs.contains(consentedIndividualAttributeName)) {
-				consentAttributes.remove(consentedIndividualAttributeName);
+			if (!policyAllowedKycAttribs.contains(consentedIndividualIdAttributeName)) {
+				consentAttributes.remove(consentedIndividualIdAttributeName);
 			}
 		}
 	} 
