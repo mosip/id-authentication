@@ -367,6 +367,10 @@ public final class IdAuthCommonConstants {
 
 	public static final String FACE_ISO_NUMBER = "ISO19794_5_2011";
 
+	public static final String ACR_AMR = "acr_amr";
+	
+	public static final String AMR = "amr";
+
 	private IdAuthCommonConstants() {
 	}
 }

@@ -73,11 +73,12 @@ public interface KycFacade {
 	 * @param partnerId the partner id
 	 * @param oidcClientId the client id
 	 * @param metadata the metadata
+	 * @param requestWithMetadata the request with metadata
 	 * @return the kyc auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	KycExchangeResponseDTO processKycExchange(KycExchangeRequestDTO kycExchangeRequestDTO, 
-			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
+			String partnerId, String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException;
 
 }

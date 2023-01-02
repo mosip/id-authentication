@@ -107,4 +107,9 @@ public class InternalAuthFilter extends IdAuthFilter {
 	protected boolean isCertificateValidationRequired() {
 		return false;
 	}
+
+	@Override
+	protected boolean isAMRValidationRequired() {
+		return false;
+	}
 }

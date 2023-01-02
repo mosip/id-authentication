@@ -546,6 +546,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 	protected abstract boolean isCertificateValidationRequired();
 
+	protected abstract boolean isAMRValidationRequired();
 
 	/*
 	 * (non-Javadoc)

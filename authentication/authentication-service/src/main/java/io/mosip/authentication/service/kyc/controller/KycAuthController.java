@@ -305,7 +305,12 @@ public class KycAuthController {
 			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
-			try {
+			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycExchangeRequestDTO.getMetadata());
+/* 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(kycExchangeRequestDTO, false, partner); */
+ 			try {
+				
 				String idType = Objects.nonNull(kycExchangeRequestDTO.getIndividualIdType()) ? kycExchangeRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(kycExchangeRequestDTO.getIndividualId()).getType();
 				kycExchangeRequestDTO.setIndividualIdType(idType);
@@ -313,12 +318,13 @@ public class KycAuthController {
 				
 				Map<String, Object> metadata = kycExchangeRequestDTO.getMetadata();
 				KycExchangeResponseDTO kycExchangeResponseDTO = kycFacade.processKycExchange(kycExchangeRequestDTO, partnerId, 
-									oidcClientId, metadata);
+									oidcClientId, metadata, requestWithMetadata);
 				
 				return kycExchangeResponseDTO;
 			} catch (IDDataValidationException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				//IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						e.getErrorTexts().isEmpty() ? IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() : e.getErrorText());
 			} catch (IdAuthenticationBusinessException e) {

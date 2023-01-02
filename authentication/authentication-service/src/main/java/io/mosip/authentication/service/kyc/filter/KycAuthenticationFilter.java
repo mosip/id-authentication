@@ -157,4 +157,9 @@ public class KycAuthenticationFilter extends IdAuthFilter {
 	protected boolean isCertificateValidationRequired() {
 		return true;
 	}
+
+	@Override
+	protected boolean isAMRValidationRequired() {
+		return false;
+	}
 }

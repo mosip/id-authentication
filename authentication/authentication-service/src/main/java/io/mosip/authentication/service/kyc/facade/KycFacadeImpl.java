@@ -5,7 +5,6 @@ package io.mosip.authentication.service.kyc.facade;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -28,11 +27,13 @@ import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.KycTokenData;
+import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
+import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
@@ -134,6 +135,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+
+	@Autowired
+	private OIDCClientDataRepository oidcClientDataRepo; 
 
 	/*
 	 * (non-Javadoc)
@@ -361,8 +365,9 @@ public class KycFacadeImpl implements KycFacade {
 		return new SimpleEntry<>(kycAuthResponseDTO, false);
 	}
 
+	@Override
 	public KycExchangeResponseDTO processKycExchange(KycExchangeRequestDTO kycExchangeRequestDTO, String partnerId, 
-			String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
+			String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
 				"Processing Kyc Exchange request.");
@@ -409,18 +414,16 @@ public class KycFacadeImpl implements KycFacade {
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorMessage());
 		}
 
-		mosipLogger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "processKycExchange", 
-					"Checking for OIDC client allowed userclaims");
-		//Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+		List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
+
+		List<String> allowedConsentAttributes = filterAllowedUserClaims(oidcClientId, consentAttributes);
 
 		PolicyDTO policyDto = policyDtoOpt.get();
 		List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 					.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
-		
-		List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
 
 		Set<String> filterAttributes = new HashSet<>();
-		mapConsentedAttributesToIdSchemaAttributes(consentAttributes, filterAttributes, policyAllowedKycAttribs);
+		mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
 		Set<String> policyAllowedAttributes = filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 		boolean isBioRequired = false;
@@ -440,7 +443,7 @@ public class KycFacadeImpl implements KycFacade {
 		}
 
 
-		String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, consentAttributes, locales, idVid);
+		String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid);
 		// update kyc token status 
 		KycTokenData kycTokenData = kycTokenDataOpt.get();
 		kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());
@@ -482,4 +485,31 @@ public class KycFacadeImpl implements KycFacade {
 		String dateTimePattern = EnvUtil.getDateTimePattern();
 		return IdaRequestResponsConsumerUtil.getResponseTime(kycExchangeRequestDTO.getRequestTime(), dateTimePattern);
 	}
+
+	private List<String> filterAllowedUserClaims(String oidcClientId, List<String> consentAttributes) {
+		mosipLogger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "processKycExchange", 
+					"Checking for OIDC client allowed userclaims");
+		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+
+		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims())
+													   .stream()
+													   .map(String::toLowerCase)
+													   .collect(Collectors.toList());
+
+		return consentAttributes.stream()
+							    .filter(claim -> oidcClientAllowedUserClaims.contains(claim.toLowerCase()))
+								.collect(Collectors.toList());
+
+	}
+
+	/* private void saveToTxnTable(OtpRequestDTO otpRequestDto, boolean isInternal, boolean status, String partnerId, String token, 
+					OtpResponseDTO otpResponseDTO, ObjectWithMetadata requestWithMetadata)
+			throws IdAuthenticationBusinessException {
+		if (token != null) {
+			boolean authTokenRequired = !isInternal
+					&& EnvUtil.getAuthTokenRequired();
+			String authTokenId = authTokenRequired ? tokenIdManager.generateTokenId(token, partnerId) : null;
+			saveTxn(otpRequestDto, token, authTokenId, status, partnerId, isInternal, otpResponseDTO, requestWithMetadata);
+		}
+	} */
 }

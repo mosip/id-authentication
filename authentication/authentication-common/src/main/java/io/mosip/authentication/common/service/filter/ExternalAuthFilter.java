@@ -38,4 +38,9 @@ public class ExternalAuthFilter extends IdAuthFilter {
 	protected boolean isCertificateValidationRequired() {
 		return true;
 	}
+
+	@Override
+	protected boolean isAMRValidationRequired() {
+		return false;
+	}
 }

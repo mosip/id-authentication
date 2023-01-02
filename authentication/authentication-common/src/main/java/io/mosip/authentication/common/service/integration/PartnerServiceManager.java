@@ -37,6 +37,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
+import io.mosip.authentication.core.partner.dto.OIDCClientDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -118,7 +119,8 @@ public class PartnerServiceManager {
 									throws IdAuthenticationBusinessException {
 		Optional<PartnerMapping> partnerMappingDataOptional = partnerMappingRepo.findByPartnerIdAndApiKeyId(partnerId, partner_api_key);
 		Optional<MispLicenseData> mispLicOptional = mispLicDataRepo.findByLicenseKey(misp_license_key);
-		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional, headerCertificateThumbprint, certValidationNeeded);
+		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(partner_api_key);
+		validatePartnerMappingDetails(partnerMappingDataOptional, mispLicOptional, headerCertificateThumbprint, certValidationNeeded, oidcClientData);
 		PartnerPolicyResponseDTO response = new PartnerPolicyResponseDTO();
 		PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 		PartnerData partnerData = partnerMapping.getPartnerData();
@@ -150,7 +152,11 @@ public class PartnerServiceManager {
 				response.setMispPolicy(mapper.convertValue(mispPolicyData.getPolicy(), MispPolicyDTO.class));
 			}
 		}
-
+		if (oidcClientData.isPresent()){
+			String[] authContextRefs = oidcClientData.get().getAuthContextRefs();
+			String[] userClaims = oidcClientData.get().getUserClaims();
+			response.setOidcClientDto(new OIDCClientDTO(authContextRefs, userClaims));
+		}
 		return response;
 	}
 
@@ -163,7 +169,7 @@ public class PartnerServiceManager {
 	 */
 	private void validatePartnerMappingDetails(Optional<PartnerMapping> partnerMappingDataOptional,
 											   Optional<MispLicenseData> mispLicOptional, String headerCertificateThumbprint, 
-											   boolean certValidationNeeded) throws IdAuthenticationBusinessException {
+											   boolean certValidationNeeded, Optional<OIDCClientData> oidcClientData) throws IdAuthenticationBusinessException {
 		if (partnerMappingDataOptional.isPresent() && !partnerMappingDataOptional.get().isDeleted()) {
 			PartnerMapping partnerMapping = partnerMappingDataOptional.get();
 			if (partnerMapping.getPartnerData().isDeleted()) {
@@ -207,15 +213,21 @@ public class PartnerServiceManager {
 							IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
 				}
 			} else {
-				String oidcClientId = partnerMapping.getApiKeyId();
 				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_client_validation", 
 					"Checking for OIDC client exists or not");
-				Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
 				if (!oidcClientData.isPresent()){
 					logger.error(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_client_validation", 
-						"OIDC client mapping not found in DB: " + oidcClientId);
+						"OIDC client mapping not found in DB: " + partnerMapping.getApiKeyData());
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorCode(),
 							IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_FOUND.getErrorMessage());
+				}
+				if (!oidcClientData.get().getClientStatus().contentEquals("ACTIVE")) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_DEACTIVATED.getErrorCode(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_DEACTIVATED.getErrorMessage());
+				}
+				if (oidcClientData.get().isDeleted()) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_REGISTERED.getErrorCode(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_NOT_REGISTERED.getErrorMessage());
 				}
 			}
 			if (certValidationNeeded && Objects.nonNull(headerCertificateThumbprint)) {
