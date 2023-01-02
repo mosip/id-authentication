@@ -86,6 +86,11 @@ public class IdAuthFilterTest {
 		protected boolean isCertificateValidationRequired() {
 			return false;
 		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
 	};
 
 	/** The request body. */

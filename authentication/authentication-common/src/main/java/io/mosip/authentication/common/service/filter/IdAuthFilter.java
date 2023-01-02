@@ -27,7 +27,6 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -46,6 +45,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -55,7 +55,6 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -64,6 +63,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.AuthContextClazzRefProvider;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -83,6 +83,8 @@ import io.mosip.authentication.core.partner.dto.KYCAttributes;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.authentication.core.spi.authtype.acramr.AuthMethodsRefValues;
+import io.mosip.authentication.core.spi.authtype.acramr.AuthenticationFactor;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
@@ -123,6 +125,11 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	/** The id mapping config. */
 	private IDAMappingConfig idMappingConfig;
+
+	/** The Authentication Methods Reference Values */
+	private AuthContextClazzRefProvider authContextClazzRefProvider; 
+
+	private AuthMethodsRefValues authMethodsRefValues;
 	
 	/**
 	 * Initialize the filter.
@@ -143,6 +150,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		} catch (NoSuchBeanDefinitionException ex) {
 			//
 		}
+		authContextClazzRefProvider = context.getBean(AuthContextClazzRefProvider.class);
+		authMethodsRefValues = authContextClazzRefProvider.getAuthMethodsRefValues();
 	}
 
 	/**
@@ -410,8 +419,10 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 					isPartnerCertificateNeeded(), headerCertificateThumbprint, isCertificateValidationRequired());
 			// First, validate MISP Policy.
 			checkMispPolicyAllowed(partnerServiceResponse);
-			// Later, validate the auth policy attributes.
+			// Second, validate the auth policy attributes.
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse, requestBody);
+			// Later, Validate OIDC Client allowed AMR values.
+			checkAllowedAMRBasedOnClientConfig(requestBody, partnerServiceResponse);
 			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse,
 					partnerServiceResponse.getCertificateData());
 		}
@@ -1012,6 +1023,62 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			return policies.stream().anyMatch(authPolicy -> authPolicy.getAuthType().equalsIgnoreCase(authType)
 					&& authPolicy.getAuthSubType().equalsIgnoreCase(subAuthType));
 		}
+	}
+
+	private void checkAllowedAMRBasedOnClientConfig(Map<String, Object> requestBody, PartnerPolicyResponseDTO partnerPolicyResponseDTO) 
+			throws IdAuthenticationAppException {
+		try {
+			if (isAMRValidationRequired()) {
+				Set<String> allowedAMRs = getAuthenticationFactors(partnerPolicyResponseDTO);
+				AuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+							AuthRequestDTO.class);
+				if (AuthTypeUtil.isDemo(authRequestDTO) && !allowedAMRs.contains(MatchType.Category.DEMO.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.DEMO.name()));
+				}
+				if (AuthTypeUtil.isBio(authRequestDTO) && !allowedAMRs.contains(MatchType.Category.BIO.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.BIO.name()));
+				}
+	
+				if (AuthTypeUtil.isPin(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.SPIN.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.SPIN.name()));
+				}
+				if (AuthTypeUtil.isOtp(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.OTP.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.OTP.name()));
+				}
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private Set<String> getAuthenticationFactors(PartnerPolicyResponseDTO partnerPolicyResponseDTO) {
+
+		Set<String> clientConfiguredAMRs = Stream.of(partnerPolicyResponseDTO.getOidcClientDto().getAuthContextRefs()).collect(Collectors.toSet());
+		
+		Map<String, List<AuthenticationFactor>> allowedAMRs = authMethodsRefValues.getAuthMethodsRefValues();
+		Set<String> filterAMRs = new HashSet<>();
+		for (String key: allowedAMRs.keySet()) {
+			if (clientConfiguredAMRs.contains(key)) {
+				List<AuthenticationFactor> amrs = allowedAMRs.get(key);
+				// not considering count in AuthenticationFactor. Need to handle later.
+				for (AuthenticationFactor amr : amrs) {
+					filterAMRs.add(amr.getType().toLowerCase());
+				}
+			}
+		}
+		return filterAMRs;
 	}
 
 	/**

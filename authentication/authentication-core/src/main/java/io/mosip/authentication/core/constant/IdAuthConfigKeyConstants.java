@@ -171,4 +171,5 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String KYC_EXCHANGE_DEFAULT_LANGUAGE = "kyc.exchange.default.lang";
 
+	public static final String IDP_AMR_ACR_IDA_MAPPING_SOURCE = "idp.amr-acr.ida.mapping.property.source";
 }

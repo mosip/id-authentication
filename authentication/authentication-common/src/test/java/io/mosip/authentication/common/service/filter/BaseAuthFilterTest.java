@@ -133,6 +133,11 @@ public class BaseAuthFilterTest {
 		protected boolean isCertificateValidationRequired() {
 			return false;
 		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

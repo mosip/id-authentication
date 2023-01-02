@@ -38,4 +38,6 @@ public class PartnerPolicyResponseDTO {
 
 	private MispPolicyDTO mispPolicy;
 
+	private OIDCClientDTO oidcClientDto;
+
 }

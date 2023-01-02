@@ -35,6 +35,7 @@ import io.mosip.authentication.common.service.entity.PartnerMapping;
 import io.mosip.authentication.common.service.entity.PolicyData;
 import io.mosip.authentication.common.service.repository.ApiKeyDataRepository;
 import io.mosip.authentication.common.service.repository.MispLicenseDataRepository;
+import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
 import io.mosip.authentication.common.service.repository.PolicyDataRepository;
@@ -83,6 +84,9 @@ public class PartnerServiceManagerTest {
 
 	@Mock
 	private IdAuthSecurityManager securityManager;
+
+	@Mock
+	private OIDCClientDataRepository oidcClientDataRepo; 
 
 	@InjectMocks
 	private PartnerServiceManager partnerServiceManager;
@@ -291,6 +295,7 @@ public class PartnerServiceManagerTest {
 		PartnerData mispPartnerData = mapper.readValue(mispPartnerDataObj, PartnerData.class);
 		Optional<PartnerData> mispPartnerDataOptional = Optional.of(mispPartnerData);
 		Mockito.when(partnerDataRepo.findByPartnerId("1635497344579")).thenReturn(mispPartnerDataOptional);
+		Mockito.when(oidcClientDataRepo.findByClientId("130956")).thenReturn(Optional.empty());
 
 		LocalDateTime plusHours = LocalDateTime.now().plusHours(1);
 		mispLicenseData.setMispExpiresOn(plusHours);
@@ -609,8 +614,9 @@ public class PartnerServiceManagerTest {
 	@Test
 	public void Test_validatePartnerMappingDetails_emptyArgs() {
 		try {
+			Mockito.when(oidcClientDataRepo.findByClientId("130956")).thenReturn(Optional.empty());
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.empty(),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -627,7 +633,7 @@ public class PartnerServiceManagerTest {
 			PartnerMapping partnerMappingData = new PartnerMapping();
 			partnerMappingData.setDeleted(true);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -646,7 +652,7 @@ public class PartnerServiceManagerTest {
 			partnerData1.setDeleted(true);
 			partnerMappingData.setPartnerData(partnerData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -665,7 +671,7 @@ public class PartnerServiceManagerTest {
 			partnerData1.setPartnerStatus("INACTIVE");
 			partnerMappingData.setPartnerData(partnerData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -687,7 +693,7 @@ public class PartnerServiceManagerTest {
 			policyData1.setDeleted(true);
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -709,7 +715,7 @@ public class PartnerServiceManagerTest {
 			policyData1.setPolicyStatus("INACTIVE");
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -735,7 +741,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -761,7 +767,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -791,7 +797,7 @@ public class PartnerServiceManagerTest {
 			apiKeyData1.setDeleted(true);
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -821,7 +827,7 @@ public class PartnerServiceManagerTest {
 			apiKeyData1.setApiKeyStatus("INACTIVE");
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -854,7 +860,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -887,7 +893,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true);
+					Optional.empty(), "DUMMY-CERTIFICATE-DATA", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -926,7 +932,7 @@ public class PartnerServiceManagerTest {
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.empty(), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
+					Optional.empty(), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -968,7 +974,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setDeleted(true);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -1010,7 +1016,7 @@ public class PartnerServiceManagerTest {
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setMispStatus("INACTIVE");
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData ), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
+					Optional.of(mispLicenseData ), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -1055,7 +1061,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
@@ -1100,7 +1106,7 @@ public class PartnerServiceManagerTest {
 			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
-					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true);
+					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
 		} catch (UndeclaredThrowableException e) {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e

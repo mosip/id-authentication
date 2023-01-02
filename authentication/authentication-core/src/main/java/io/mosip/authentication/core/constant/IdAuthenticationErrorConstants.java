@@ -127,7 +127,10 @@ public enum IdAuthenticationErrorConstants {
 	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
 	UNAUTHORISED_KYC_AUTH_PARTNER("IDA-MPA-025", "Partner is unauthorised for KYC-Auth"),
 	UNAUTHORISED_KYC_EXCHANGE_PARTNER("IDA-MPA-026", "Partner is unauthorised for KYC-Exchange"),
-	
+	OIDC_CLIENT_DEACTIVATED("IDA-MPA-027", "OIDC Client is deactivated"),
+	OIDC_CLIENT_NOT_REGISTERED("IDA-MPA-028", "OIDC Client is not registered"),
+	OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED("IDA-MPA-029", "%s Authentication usage not allowed as per client AMR configuration",
+			"Please use other Authentication Types in the request"),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -140,6 +143,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occurred"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	DOWNLOAD_ERROR("IDA-RST-009", "Error Downloading the data file/config file."),
 	
 	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
 

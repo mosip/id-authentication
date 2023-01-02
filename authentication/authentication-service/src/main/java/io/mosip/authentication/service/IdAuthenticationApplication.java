@@ -24,6 +24,7 @@ import io.mosip.authentication.common.service.helper.ExternalRestHelperConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.impl.AuthAnonymousProfileServiceImpl;
+import io.mosip.authentication.common.service.impl.AuthContextClazzRefProvider;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
@@ -93,7 +94,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Nagarjuna
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class, SecurityAutoConfiguration.class })
-@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, CbeffImpl.class,
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, AuthContextClazzRefProvider.class, CbeffImpl.class,
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
 		NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class,
 		IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class,

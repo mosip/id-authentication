@@ -519,7 +519,7 @@ public class KycServiceImpl implements KycService {
 									}
 								}
 							} else {
-								if (idInfoList.size() == 1) {
+								if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
 									addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
 								}
 							}
@@ -542,7 +542,7 @@ public class KycServiceImpl implements KycService {
 								}
 							}
 						} else {
-							if (idInfoList.size() == 1) {
+							if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
 								addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
 							}
 						}
@@ -579,9 +579,11 @@ public class KycServiceImpl implements KycService {
 	private Map<String, String> langCodeMapping(List<IdentityInfoDTO> idInfoList) {
 
 		Map<String, String> mappedLangCodes = new HashMap<>();
-		for (IdentityInfoDTO idInfo :  idInfoList) {
-			if (Objects.nonNull(idInfo.getLanguage())) {
-				mappedLangCodes.put(idInfo.getLanguage().substring(0,2), idInfo.getLanguage());
+		if (Objects.nonNull(idInfoList)) {
+			for (IdentityInfoDTO idInfo :  idInfoList) {
+				if (Objects.nonNull(idInfo.getLanguage())) {
+					mappedLangCodes.put(idInfo.getLanguage().substring(0,2), idInfo.getLanguage());
+				}
 			}
 		}
 		return mappedLangCodes;

@@ -89,6 +89,11 @@ public class FilterValidatorTest {
 		protected boolean isCertificateValidationRequired() {
 			return false;
 		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -135,6 +140,11 @@ public class FilterValidatorTest {
 		
 		@Override
 		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
 			return false;
 		}
 	};
