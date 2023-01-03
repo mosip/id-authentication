@@ -1,40 +1,57 @@
 package io.mosip.authentication.service.kyc.impl;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.KycTokenStatusType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.biometrics.util.ConvertRequestDto;
+import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The implementation of Kyc Authentication service which retrieves the identity
@@ -52,6 +69,18 @@ public class KycServiceImpl implements KycService {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
 
+	@Value("${ida.idp.consented.picture.attribute.name:picture}")
+	private String consentedFaceAttributeName;
+
+	@Value("${ida.idp.consented.address.attribute.name:address}")
+	private String consentedAddressAttributeName;
+
+	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
+	private String consentedIndividualAttributeName;
+
+	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
+	private String consentedPictureAttributePrefix;
+
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -68,6 +97,11 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Autowired
+	private IdAuthSecurityManager securityManager;
+
+	@Autowired
+	private KycTokenDataRepository kycTokenDataRepo;
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -85,9 +119,9 @@ public class KycServiceImpl implements KycService {
 	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@Override
-	public KycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
+	public EKycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
-		KycResponseDTO kycResponseDTO = new KycResponseDTO();
+		EKycResponseDTO kycResponseDTO = new EKycResponseDTO();
 		if (Objects.nonNull(identityInfo) && Objects.nonNull(allowedkycAttributes) && !allowedkycAttributes.isEmpty()) {
 			Optional<String> faceAttribute = IdInfoHelper.getKycAttributeHasPhoto(allowedkycAttributes);
 			if(faceAttribute.isPresent()) {
@@ -123,7 +157,7 @@ public class KycServiceImpl implements KycService {
 	 * @param langCodes the lang codes
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	private void setKycInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
+	private void setKycInfo(List<String> allowedkycAttributes, EKycResponseDTO kycResponseDTO,
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Set<String> langCodes) throws IdAuthenticationBusinessException {
 		Map<String, Object> idMappingIdentityInfo = getKycInfo(allowedkycAttributes,
 				filteredIdentityInfo, langCodes);
@@ -324,4 +358,245 @@ public class KycServiceImpl implements KycService {
 		return identityInfos;
 	}
 
+	// Taking tokenGenerationTime same as auth response time only as response time is generated based on local timezone.
+	@Override
+	public String generateAndSaveKycToken(String idHash, String authToken, String oidcClientId, String requestTime, 
+				String tokenGenerationTime) throws IdAuthenticationBusinessException {
+		
+		String uuid = UUID.randomUUID().toString();
+		LocalDateTime requestLocalDateTime = IdaRequestResponsConsumerUtil.convertStringDateTimeToLDT(requestTime);
+		LocalDateTime tokenIssuedDateTime = IdaRequestResponsConsumerUtil.convertStringDateTimeToLDT(tokenGenerationTime);
+		
+		String kycToken = generateKycToken(uuid, idHash);
+		KycTokenData kycTokenData = new KycTokenData();
+		kycTokenData.setKycTokenId(uuid);
+		kycTokenData.setIdVidHash(idHash);
+		kycTokenData.setKycToken(kycToken);
+		kycTokenData.setPsuToken(authToken);
+		kycTokenData.setOidcClientId(oidcClientId);
+		kycTokenData.setTokenIssuedDateTime(tokenIssuedDateTime);
+		kycTokenData.setAuthReqDateTime(requestLocalDateTime);
+		kycTokenData.setKycTokenStatus(KycTokenStatusType.ACTIVE.getStatus());
+		kycTokenData.setCreatedBy(EnvUtil.getAppId());
+		kycTokenData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		kycTokenDataRepo.saveAndFlush(kycTokenData);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateAndSaveKycToken",
+					"KYC Token Generated & Saved.");
+		return kycToken;
+	}
+
+	private String generateKycToken(String uuid, String idHash) throws IdAuthenticationBusinessException {
+		try {
+			byte[] uuidBytes = uuid.getBytes();
+			byte[] idHashBytes = IdAuthSecurityManager.decodeHex(idHash);
+			ByteBuffer bBuffer = ByteBuffer.allocate(uuidBytes.length + idHashBytes.length);
+			bBuffer.put(uuidBytes);
+			bBuffer.put(idHashBytes);
+
+			byte[] kycTokenInputBytes = bBuffer.array();
+			return securityManager.generateKeyedHash(kycTokenInputBytes);
+		} catch (DecoderException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateKycToken",
+					"Error Generating KYC Token", e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+
+	}
+
+	@Override
+	public boolean isKycTokenExpire(LocalDateTime tokenIssuedDateTime, String kycToken) throws IdAuthenticationBusinessException {
+		LocalDateTime currentTime = LocalDateTime.now();
+		
+		long diffSeconds = ChronoUnit.SECONDS.between(tokenIssuedDateTime, currentTime);
+		long adjustmentSeconds = EnvUtil.getKycTokenExpireTimeAdjustmentSeconds();
+
+		if (tokenIssuedDateTime != null && adjustmentSeconds < diffSeconds) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
+				List<String> consentedAttributes, List<String> locales, String idVid) throws IdAuthenticationBusinessException {
+		
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Building claims response for PSU token: " + subject);
+					
+		Map<String, Object> respMap = new HashMap<>();
+		Set<String> uniqueLocales = new HashSet<String>(locales);
+		Map<String, String> mappedLocales = localesMapping(uniqueLocales);
+
+		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
+		
+		for (String attrib : consentedAttributes) {
+			if (attrib.equals(IdAuthCommonConstants.SUBJECT))
+				continue;
+			if (attrib.equals(consentedIndividualAttributeName)) {
+				respMap.put(attrib, idVid);
+				continue;
+			}
+			List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
+			if (mappedLocales.size() > 0) {
+				addEntityForLangCodes(mappedLocales, idInfo, respMap, attrib, idSchemaAttribute);
+			}
+		}
+
+		try {
+			return securityManager.signWithPayload(mapper.writeValueAsString(respMap));
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private void addEntityForLangCodes(Map<String, String> mappedLocales, Map<String, List<IdentityInfoDTO>> idInfo, Map<String, Object> respMap, 
+				String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException {
+		
+		if (consentedAttribute.equals(consentedFaceAttributeName)) {
+			if (!idInfo.keySet().contains(BioMatchType.FACE.getIdMapping().getIdname())) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+					"Face Bio not found in DB. So not adding to response claims.");
+				return;
+			}
+			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			if (Objects.nonNull(faceEntityInfoMap)) {
+				String face = convertJP2ToJpeg(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()));
+				if (Objects.nonNull(face))
+					respMap.put(consentedAttribute, consentedPictureAttributePrefix + face);
+			}
+			return;
+		}
+
+		if (idSchemaAttributes.size() == 1) {
+			List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttributes.get(0));
+			if (Objects.isNull(idInfoList)) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+					"Data not available in Identity Info for the claim. So not adding to response claims. Claim Name: " + idSchemaAttributes.get(0));
+				return;
+			}
+			Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+			List<String> availableLangCodes = getAvailableLangCodes(mappedLocales, mappedLangCodes);
+			if (availableLangCodes.size() == 1){
+				for (IdentityInfoDTO identityInfo : idInfoList) {
+					String langCode = mappedLangCodes.get(availableLangCodes.get(0));
+					if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+						respMap.put(consentedAttribute, identityInfo.getValue());
+					}
+				}
+			} else {
+				if (availableLangCodes.size() > 0) {
+					for (IdentityInfoDTO identityInfo : idInfoList) {
+						for (String availableLangCode : availableLangCodes) {
+							String langCode = mappedLangCodes.get(availableLangCode);
+							if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+								respMap.put(consentedAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + availableLangCode, 
+										identityInfo.getValue());
+							}
+						}
+					}
+				} else {
+					respMap.put(consentedAttribute, idInfoList.get(0).getValue());
+				}
+			}
+		} else {
+			if (consentedAttribute.equals(consentedAddressAttributeName)) {
+				if (mappedLocales.size() > 1) {
+					for (String locale: mappedLocales.keySet()) {
+						String localeValue = mappedLocales.get(locale);
+						Map<String, String> addressMap = new HashMap<>();
+						boolean langCodeFound = false; //added for language data not available in identity info (Eg: fr) 
+						for (String idSchemaAttribute : idSchemaAttributes) {
+							List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+							Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+							if (mappedLangCodes.keySet().contains(localeValue)) {
+								String langCode = mappedLangCodes.get(localeValue);
+								for (IdentityInfoDTO identityInfo : idInfoList) { 
+									if (identityInfo.getLanguage().equals(langCode)) {
+										langCodeFound = true;
+										addressMap.put(idSchemaAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, 
+											identityInfo.getValue());
+									}
+								}
+							} else {
+								if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+									addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
+								}
+							}
+						}
+						if (langCodeFound)
+							respMap.put(consentedAddressAttributeName + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, addressMap);
+					}
+				} else {
+					Map<String, String> addressMap = new HashMap<>();
+					for (String idSchemaAttribute : idSchemaAttributes) {
+						List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+						Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+						String locale = mappedLocales.keySet().iterator().next();
+						String localeValue = mappedLocales.get(locale);
+						if (mappedLangCodes.keySet().contains(localeValue)) {
+							String langCode = mappedLangCodes.get(localeValue);
+							for (IdentityInfoDTO identityInfo : idInfoList) { 
+								if (identityInfo.getLanguage().equals(langCode)) {
+									addressMap.put(idSchemaAttribute, identityInfo.getValue());
+								}
+							}
+						} else {
+							if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+								addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
+							}
+						}
+					}
+					respMap.put(consentedAddressAttributeName, addressMap);
+				}
+			}
+		}
+	}
+
+	private String convertJP2ToJpeg(String jp2Image) {
+		try {
+			ConvertRequestDto convertRequestDto = new ConvertRequestDto();
+			convertRequestDto.setVersion(IdAuthCommonConstants.FACE_ISO_NUMBER);
+			convertRequestDto.setInputBytes(CryptoUtil.decodeBase64(jp2Image));
+			byte[] image = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
+			return CryptoUtil.encodeBase64(image);
+		} catch(Exception exp) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "convertJP2ToJpeg",
+					"Error Converting JP2 To JPEG. " + exp.getMessage(), exp);
+		}
+		return null;
+	}
+
+	private Map<String, String> localesMapping(Set<String> locales) {
+
+		Map<String, String> mappedLocales = new HashMap<>();
+		for (String locale : locales) {
+			mappedLocales.put(locale, locale.substring(0, 2));
+		}
+		return mappedLocales;
+	}
+
+	private Map<String, String> langCodeMapping(List<IdentityInfoDTO> idInfoList) {
+
+		Map<String, String> mappedLangCodes = new HashMap<>();
+		if (Objects.nonNull(idInfoList)) {
+			for (IdentityInfoDTO idInfo :  idInfoList) {
+				if (Objects.nonNull(idInfo.getLanguage())) {
+					mappedLangCodes.put(idInfo.getLanguage().substring(0,2), idInfo.getLanguage());
+				}
+			}
+		}
+		return mappedLangCodes;
+	}
+
+	private List<String> getAvailableLangCodes(Map<String, String> mappedLocales, Map<String, String> mappedLangCodes) {
+		List<String> availableLangCodes = new ArrayList<>();
+		for (String entry: mappedLocales.keySet()) {
+			String locale = mappedLocales.get(entry);
+			if (mappedLangCodes.keySet().contains(locale)) {
+				availableLangCodes.add(locale);
+			}
+		}
+		return availableLangCodes;
+	}
 }

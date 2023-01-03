@@ -123,6 +123,21 @@ public class BaseAuthFilterTest {
 			// TODO Auto-generated method stub
 			return "";
 		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

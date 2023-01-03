@@ -10,7 +10,7 @@ import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -40,7 +40,7 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return KycAuthRequestDTO.class.equals(clazz);
+		return EkycAuthRequestDTO.class.equals(clazz);
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
-		KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) target;
+		EkycAuthRequestDTO kycAuthRequestDTO = (EkycAuthRequestDTO) target;
 		if (kycAuthRequestDTO != null) {
 			BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(kycAuthRequestDTO,
 					errors.getObjectName());

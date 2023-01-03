@@ -4,18 +4,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * The Class For KycAuthResponseDTO extending {@link AuthResponseDTO}
+ * The Class For KycAuthResponseDTO extending {@link BaseAuthResponseDTO}
  * 
- * @author Prem Kumar
- *
- *
+ * @author Mahammed Taheer
  */
 
 @Data
-@EqualsAndHashCode(callSuper=true	)
+@EqualsAndHashCode(callSuper=true)
 public class KycAuthResponseDTO extends BaseAuthResponseDTO {
 	
 	/** The KycResponseDTO */
-	private KycResponseDTO response;
+	private KycAuthRespDTO response;
 	
 }

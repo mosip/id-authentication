@@ -349,6 +349,27 @@ public final class IdAuthCommonConstants {
 
 	public static final String ID_NAME = "idName";
 
+	public static final String OIDC_CLIENT_CREATED = "oidc_client_created";
+
+	public static final String OIDC_CLIENT_UPDATED = "oidc_client_updated";
+
+	public static final String KYC_TOKEN = "kycToken";
+
+	public static final String CONSENT_OBTAINED = "consentObtained";
+
+	public static final String SUBJECT = "sub";
+	
+	public static final String CLAIMS_LANG_SEPERATOR = "#";
+
+	public static final long DEFAULT_KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS = 300L;
+
+	public static final String DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE = "eng"; 
+
+	public static final String FACE_ISO_NUMBER = "ISO19794_5_2011";
+
+	public static final String ACR_AMR = "acr_amr";
+	
+	public static final String AMR = "amr";
 
 	private IdAuthCommonConstants() {
 	}

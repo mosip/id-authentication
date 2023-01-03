@@ -8,34 +8,40 @@ package io.mosip.authentication.core.constant;
 public enum AuditEvents {
 	
 	/** The auth request response. */
-	AUTH_REQUEST_RESPONSE("IDA-001", "BUSINESS", "Authentication Request"),
+	AUTH_REQUEST_RESPONSE("IDA_001", "User", "Authentication Request"),
 	
 	/** The otp trigger request response. */
-	OTP_TRIGGER_REQUEST_RESPONSE("IDA-002", "BUSINESS", "OTP Request"),
+	OTP_TRIGGER_REQUEST_RESPONSE("IDA_002", "User", "OTP Request"),
 	
 	/** The ekyc request response. */
-	EKYC_REQUEST_RESPONSE("IDA-003", "BUSINESS", "eKYC Request"),
-	
+	EKYC_REQUEST_RESPONSE("IDA_003", "User", "eKYC Request"),
+		
 	/** The internal request response. */
-	INTERNAL_REQUEST_RESPONSE("IDA-004", "SYSTEM", "Internal Authentication Request"),
+	INTERNAL_REQUEST_RESPONSE("IDA_004", "System", "Internal Authentication Request"),
 	
 	/** The internal otp trigger request response. */
-	INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE("IDA-005", "SYSTEM", "Internal OTP Request"),
+	INTERNAL_OTP_TRIGGER_REQUEST_RESPONSE("IDA_005", "System", "Internal OTP Request"),
 	
 	/** The retrieve auth type status request response. */
-	RETRIEVE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA-006", "SYSTEM", "Retrieve Auth Type Status Request"),
+	RETRIEVE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA_006", "System", "Retrieve Auth Type Status Request"),
 	
 	/** The update auth type status request response. */
-	UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA-007", "SYSTEM", "Update Auth Type Status Request"),
+	UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE("IDA_007", "System", "Update Auth Type Status Request"),
 	
 	/** The retrieve auth transaction history request response. */
-	RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE("IDA-008", "SYSTEM", "Retrieve Auth Transaction  History Request"),
+	RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE("IDA_008", "System", "Retrieve Auth Transaction  History Request"),
 	
-	CREDENTIAL_ISSUED_EVENT("IDA-009", "SYSTEM", "Credential Issued"),
-	REMOVE_ID_EVENT("IDA-010", "SYSTEM", "Remove ID"),
-	DEACTIVATE_ID_EVENT("IDA-011", "SYSTEM", "Deactivate ID"),
-	ACTIVATE_ID_EVENT("IDA-012", "SYSTEM", "Activate ID"),
-	CREDENTIAL_STORED_EVENT("IDA-009", "SYSTEM", "Credential Issued"),
+	CREDENTIAL_ISSUED_EVENT("IDA_009", "System", "Credential Issued"),
+	
+	REMOVE_ID_EVENT("IDA_010", "System", "Remove ID"),
+	
+	DEACTIVATE_ID_EVENT("IDA_011", "System", "Deactivate ID"),
+	
+	ACTIVATE_ID_EVENT("IDA_012", "System", "Activate ID"),
+	
+	CREDENTIAL_STORED_EVENT("IDA_013", "System", "Credential Issued"),
+
+	KYC_REQUEST_RESPONSE("IDA_014", "User", "Kyc Auth Request"),
 	
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1

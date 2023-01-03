@@ -51,6 +51,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
 	private static final String TOKEN = "TOKEN";
 
+	private static final String ID_HASH = "ID_HASH";
+
 	private static final String BIOMETRICS = "biometrics";
 
 	private static final String DEMOGRAPHICS = "demographics";
@@ -189,7 +191,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
-							idType.getType()));
+							idType.getType(), e));
 		}
 
 		try {
@@ -251,6 +253,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				}
 			}
 			responseMap.put(TOKEN, entity.getToken());
+			responseMap.put(ID_HASH, hashedId);
 			return responseMap;
 		} catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
@@ -357,4 +360,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		return (String) idResDTO.get(TOKEN);
 	}
 
+
+	@Override
+	public String getIdHash(Map<String, Object> idResDTO) {
+		return (String) idResDTO.get(ID_HASH);
+
+	}
 }

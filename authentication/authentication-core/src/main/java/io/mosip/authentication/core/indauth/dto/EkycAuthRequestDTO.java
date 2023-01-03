@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class KycAuthRequestDTO extends AuthRequestDTO {
+public class EkycAuthRequestDTO extends AuthRequestDTO {
 	
 	/** The value for allowed Kyc Attributes. */
 	@ApiModelProperty(required = false, hidden = true)

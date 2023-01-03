@@ -6,13 +6,18 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISP_L
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_API_KEY_UPDATED_EVENT_NAME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_UPDATED_EVENT_NAME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.POLICY_UPDATED_EVENT_NAME;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OIDC_CLIENT_CREATED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.OIDC_CLIENT_UPDATED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_CREATED;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_UPDATED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED;
+
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +182,50 @@ public class PartnerServiceCallbackController {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
 					MISP_LICENSE_UPDATED + " EVENT RECEIVED");
 			partnerManager.updateMispLicenseData(eventModel);
+		} catch (Exception e) {
+			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
+					ExceptionUtils.getFullStackTrace(e));
+		}
+	}
+
+
+	@PostMapping(value = "/callback/partnermanagement/" + OIDC_CLIENT_CREATED, consumes = "application/json")
+	@Operation(summary = "handleOIDCClientCreatedEvent", description = "TO Handle OIDC Client Created Event", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
+	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
+			+ "}", callback = "${ida-websub-partner-service-oidc-client-created-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_CREATED + "}")
+	public void handleOIDCClientCreatedEvent(@RequestBody EventModel eventModel) {
+		try {
+			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleOIDCClientCreatedEvent",
+						OIDC_CLIENT_CREATED + " EVENT RECEIVED");
+			partnerManager.updateOIDCClientData(eventModel);
+		} catch (Exception e) {
+			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
+					ExceptionUtils.getFullStackTrace(e));
+		}
+	}
+
+
+	@PostMapping(value = "/callback/partnermanagement/" + OIDC_CLIENT_UPDATED, consumes = "application/json")
+	@Operation(summary = "handleOIDCClientUpdatedEvent", description = "TO Handle OIDC Client Updated Event", tags = { "partner-service-callback-controller" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
+	@PreAuthenticateContentAndVerifyIntent(secret = "${" + IDA_WEBSUB_PARTNER_SERVICE_CALLBACK_SECRET
+			+ "}", callback = "${ida-websub-partner-service-oidc-client-updated-callback-relative-url}", topic = "${" + IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_UPDATED + "}")
+	public void handleOIDCClientUpdatedEvent(@RequestBody EventModel eventModel) {
+		try {
+			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleOIDCClientUpdatedEvent",
+						OIDC_CLIENT_UPDATED + " EVENT RECEIVED");
+			partnerManager.updateOIDCClientData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
 					ExceptionUtils.getFullStackTrace(e));

@@ -28,4 +28,19 @@ public class ExternalAuthFilter extends IdAuthFilter {
 	protected boolean needStoreAnonymousProfile() {
 		return true;
 	}
+
+	@Override
+	protected boolean isMispPolicyValidationRequired() {
+		return false;
+	}
+	
+	@Override
+	protected boolean isCertificateValidationRequired() {
+		return true;
+	}
+
+	@Override
+	protected boolean isAMRValidationRequired() {
+		return false;
+	}
 }

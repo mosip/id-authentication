@@ -37,6 +37,9 @@ public class MispLicenseData {
 	@NotNull
 	@Column(name = "misp_status")
 	private String mispStatus;
+
+	@Column(name = "policy_id")
+	private String policyId;
 	
 	@NotNull
 	@Column(name = "cr_by")

@@ -79,6 +79,21 @@ public class FilterValidatorTest {
 			// TODO Auto-generated method stub
 			return "";
 		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -116,6 +131,21 @@ public class FilterValidatorTest {
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			// TODO Auto-generated method stub
 			return "";
+		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+		
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
 		}
 	};
 

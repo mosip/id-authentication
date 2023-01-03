@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.0.1-B1</version>
+		<version>1.2.0.1-B2-SNAPSHOT</version>
 	</parent>
-	<version>1.2.0.1-B1</version>
+	<version>1.2.0.1-B2-SNAPSHOT</version>
 	<artifactId>authentication-hotlistfilter-impl</artifactId>
 	<name>authentication-hotlistfilter-impl</name>
 	<description>ID Authentication Filter Implementation for Hotlist validation</description>
