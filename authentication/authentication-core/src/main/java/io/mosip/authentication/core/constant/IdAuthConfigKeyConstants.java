@@ -107,6 +107,9 @@ public final class IdAuthConfigKeyConstants {
 	
 	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_GENERATED = "ida-topic-pmp-misp-license-generated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_MISP_LICENSE_UPDATED = "ida-topic-pmp-misp-license-updated";
+	public static final String IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_CREATED = "ida-topic-pmp-oidc-client-created";
+	public static final String IDA_WEBSUB_TOPIC_PMP_OIDC_CLIENT_UPDATED = "ida-topic-pmp-oidc-client-updated";
+
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_UPDATED = "ida-topic-pmp-partner-updated";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_APPROVED = "ida-topic-pmp-partner-api-key-approved";
 	public static final String IDA_WEBSUB_TOPIC_PMP_PARTNER_API_KEY_UPDATED = "ida-topic-pmp-partner-api-key-updated";
@@ -164,4 +167,9 @@ public final class IdAuthConfigKeyConstants {
 
 	public static final String IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED = "ida-missing-credential-retrigger-enabled";
 
+	public static final String KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS = "kyc.token.expire.time.adjustment.seconds";
+
+	public static final String KYC_EXCHANGE_DEFAULT_LANGUAGE = "kyc.exchange.default.lang";
+
+	public static final String IDP_AMR_ACR_IDA_MAPPING_SOURCE = "idp.amr-acr.ida.mapping.property.source";
 }

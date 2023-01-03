@@ -59,6 +59,10 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.USE
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.USER_PREFFRRED_LANG_ATTRIBUTE_NAME;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.DEFAULT_SALT_KEY_LENGTH;
 import static io.mosip.idrepository.core.constant.IdRepoConstants.SALT_KEY_LENGTH;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.KYC_EXCHANGE_DEFAULT_LANGUAGE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE;
 
 import javax.annotation.PostConstruct;
 
@@ -197,6 +201,10 @@ public class EnvUtil {
 	
 	@Getter @Setter private static Integer asyncThreadQueueThreshold;
 	
+	@Getter @Setter private static Long kycTokenExpireTimeAdjustmentSeconds;
+
+	@Getter @Setter private static String kycExchangeDefaultLanguage;
+
 	@Autowired
 	private Environment env;
 
@@ -267,6 +275,10 @@ public class EnvUtil {
 		setActiveAsyncThreadCount(this.getProperty("mosip.ida.active-async-thread-count", Integer.class));
 		setMonitorAsyncThreadQueue(this.getProperty("mosip.ida.monitor-thread-queue-in-ms"));
 		setAsyncThreadQueueThreshold(this.getProperty("mosip.ida.max-thread-queue-threshold", Integer.class, 0));
+		setKycTokenExpireTimeAdjustmentSeconds(this.getProperty(KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS, Long.class,
+			DEFAULT_KYC_TOKEN_EXPIRE_TIME_ADJUSTMENT_IN_SECONDS));
+		setKycExchangeDefaultLanguage(this.getProperty(KYC_EXCHANGE_DEFAULT_LANGUAGE, DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE));
+			
 	}
 	
 	public String getProperty(String key) {

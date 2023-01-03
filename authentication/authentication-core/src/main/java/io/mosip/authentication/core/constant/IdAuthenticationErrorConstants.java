@@ -120,6 +120,18 @@ public enum IdAuthenticationErrorConstants {
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
 	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 	PARTNER_POLICY_NOT_ACTIVE("IDA-MPA-019", "Partner policy is not active"),
+	PARTNER_CERTIFICATE_NOT_FOUND("IDA-MPA-020", "Partner (Auth) Certificate not found in DB."),
+	PARTNER_CERTIFICATE_NOT_MATCHED("IDA-MPA-021", "Partner (Auth) Certificate not matching with signature header certificate."),
+	PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER("IDA-MPA-022", "Partner (Auth) Certificate not found in Request signature header."),
+	MISP_POLICY_NOT_FOUND("IDA-MPA-023", "MISP Partner Policy not availble."),
+	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
+	UNAUTHORISED_KYC_AUTH_PARTNER("IDA-MPA-025", "Partner is unauthorised for KYC-Auth"),
+	UNAUTHORISED_KYC_EXCHANGE_PARTNER("IDA-MPA-026", "Partner is unauthorised for KYC-Exchange"),
+	OIDC_CLIENT_DEACTIVATED("IDA-MPA-027", "OIDC Client is deactivated"),
+	OIDC_CLIENT_NOT_REGISTERED("IDA-MPA-028", "OIDC Client is not registered"),
+	OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED("IDA-MPA-029", "%s Authentication usage not allowed as per client AMR configuration",
+			"Please use other Authentication Types in the request"),
+
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -131,6 +143,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occurred"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	DOWNLOAD_ERROR("IDA-RST-009", "Error Downloading the data file/config file."),
 	
 	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
 
@@ -147,11 +160,20 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
 	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked"),
 	
+	POLICY_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_026","Policy Data is not available in Event data."),
+	PARTNER_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_027","Partner Data is not available in Event data."),
+
+	
 	// UIN and VID validations
 	UIN_VAL_ILLEGAL_LENGTH("IDA-MLC-026", "UIN length should be - %s."),
 	UIN_VAL_ILLEGAL_CHECKSUM("IDA-MLC-027", "UIN should match checksum."),
 	VID_VAL_ILLEGAL_LENGTH("IDA-MLC-028", "UIN length should be  - %s."),
-	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum.");
+	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum."),
+
+
+	KYC_TOKEN_NOT_FOUND("IDA-KYE-001", "KYC Token not found in Store or KYC Token already processed."),
+	KYC_TOKEN_EXPIRED("IDA-KYE-002", "KYC Token Expired."),
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-003", "Partner Policy not found.");
 	
 	private final String errorCode;
 	private final String errorMessage;

@@ -10,6 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.impl.idevent.AuthTransactionStatusEvent;
+import io.mosip.authentication.common.service.impl.idevent.AuthTypeStatusUpdateAckEvent;
 
 public class AuthTypeStatusEventPublisherTest extends AbstractEventInitializerTest<AuthTypeStatusEventPublisher>{
 
@@ -20,6 +21,7 @@ public class AuthTypeStatusEventPublisherTest extends AbstractEventInitializerTe
 	protected AuthTypeStatusEventPublisher doCreateTestInstance() {
 		AuthTypeStatusEventPublisher authTypeStatusEventSubscriber = new AuthTypeStatusEventPublisher();
 		ReflectionTestUtils.setField(authTypeStatusEventSubscriber, "authTypeStatusAcknlowedgeTopic" ,"authTypeStatusAcknlowedgeTopic");
+		ReflectionTestUtils.setField(authTypeStatusEventSubscriber, "partnerId" ,"partnerId123");
 		return authTypeStatusEventSubscriber;
 	}
 	
@@ -35,7 +37,7 @@ public class AuthTypeStatusEventPublisherTest extends AbstractEventInitializerTe
 	public void testPublishEvent() {
 		AuthTypeStatusEventPublisher createTestInstance = createTestInstance();
 		io.mosip.authentication.common.service.websub.dto.EventModel eventModel = new io.mosip.authentication.common.service.websub.dto.EventModel();
-		eventModel.setEvent(Mockito.mock(AuthTransactionStatusEvent.class));
+		eventModel.setEvent(Mockito.mock(AuthTypeStatusUpdateAckEvent.class));
 		Mockito.when(webSubHelper.createEventModel(Mockito.anyString(), Mockito.any())).thenReturn(eventModel);
 		createTestInstance.publishEvent("status", "requestid", LocalDateTime.now());
 	}

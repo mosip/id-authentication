@@ -6,9 +6,9 @@
     <parent>
         <groupId>io.mosip.authentication</groupId>
         <artifactId>authentication-parent</artifactId>
-        <version>1.2.0.1-B1</version>
+        <version>1.2.0.1-B2-SNAPSHOT</version>
     </parent>
-    <version>1.2.0.1-B1</version>
+    <version>1.2.0.1-B2-SNAPSHOT</version>
 
     <artifactId>authentication-service</artifactId>
     <packaging>jar</packaging>
@@ -199,6 +199,11 @@
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
         	</exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.mosip.biometric.util</groupId>
+            <artifactId>biometrics-util</artifactId>
+            <version>${kernel-biometrics-util}</version>
         </dependency>
     </dependencies>
     <build>

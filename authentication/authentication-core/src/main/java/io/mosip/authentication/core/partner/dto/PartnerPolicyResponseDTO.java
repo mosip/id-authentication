@@ -34,4 +34,10 @@ public class PartnerPolicyResponseDTO {
 	
 	private LocalDateTime mispExpiresOn;
 
+	private String mispPolicyId;
+
+	private MispPolicyDTO mispPolicy;
+
+	private OIDCClientDTO oidcClientDto;
+
 }

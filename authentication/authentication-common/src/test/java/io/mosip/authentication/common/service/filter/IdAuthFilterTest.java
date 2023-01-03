@@ -75,7 +75,23 @@ public class IdAuthFilterTest {
 		@Override
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			return "";
-		}};
+		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
+	};
 
 	/** The request body. */
 	Map<String, Object> requestBody = new HashMap<>();

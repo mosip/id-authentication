@@ -10,7 +10,7 @@ import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 
 public final class AuthTypeUtil {
@@ -56,8 +56,8 @@ public final class AuthTypeUtil {
 				requestTypes.add(RequestType.FACE_AUTH);
 			}
 		}
-		if(authRequestDTO instanceof KycAuthRequestDTO) {
-			requestTypes.add(RequestType.KYC_AUTH_REQUEST);
+		if(authRequestDTO instanceof EkycAuthRequestDTO) {
+			requestTypes.add(RequestType.EKYC_AUTH_REQUEST);
 		}
 		
 		return requestTypes;

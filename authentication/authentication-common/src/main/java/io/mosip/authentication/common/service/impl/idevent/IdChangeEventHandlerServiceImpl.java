@@ -122,9 +122,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		String topic = event.getTopic();
 		if(e == null) {
 			String message = topic + " : Success";
-			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), "id", "idType", message);
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), event.getEvent().getId(), "UIN", message);
 		} else {
-			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), "id", "idType", e);
+			auditHelper.audit(AuditModules.IDENTITY_CACHE, getAuditEvent(topic), event.getEvent().getId(), "UIN", e);
 		}
 	}
 

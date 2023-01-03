@@ -25,9 +25,13 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSIO
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +45,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -48,6 +53,8 @@ import java.util.stream.Stream;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
@@ -56,6 +63,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.impl.AuthContextClazzRefProvider;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -72,15 +80,21 @@ import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.KYCAttributes;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
+import io.mosip.authentication.core.spi.authtype.acramr.AuthMethodsRefValues;
+import io.mosip.authentication.core.spi.authtype.acramr.AuthenticationFactor;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
@@ -101,12 +115,21 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	/** The Constant TRANSACTION_ID. */
 	private static final String TRANSACTION_ID = "transactionId";
+
+	private static final String PERIOD = "\\.";
+
+	private static final String JWT_HEADER_CERT_KEY = "x5c";
 	
 	/** The partner service. */
 	protected PartnerService partnerService;
 	
 	/** The id mapping config. */
 	private IDAMappingConfig idMappingConfig;
+
+	/** The Authentication Methods Reference Values */
+	private AuthContextClazzRefProvider authContextClazzRefProvider; 
+
+	private AuthMethodsRefValues authMethodsRefValues;
 	
 	/**
 	 * Initialize the filter.
@@ -127,6 +150,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		} catch (NoSuchBeanDefinitionException ex) {
 			//
 		}
+		authContextClazzRefProvider = context.getBean(AuthContextClazzRefProvider.class);
+		authMethodsRefValues = authContextClazzRefProvider.getAuthMethodsRefValues();
 	}
 
 	/**
@@ -381,15 +406,23 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
+		
+		String headerCertificateThumbprint = getCertificateThumbprintFromSignatureData(requestWrapper.getHeader("signature"));
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
+		
 		String partnerId = partnerLkMap.get(PARTNER_ID);
 		String licenseKey = partnerLkMap.get(MISPLICENSE_KEY);
 		String partnerApiKey = partnerLkMap.get(API_KEY);
 
 		if (partnerId != null && licenseKey != null) {
 			PartnerPolicyResponseDTO partnerServiceResponse = getPartnerPolicyInfo(partnerId, partnerApiKey, licenseKey,
-					isPartnerCertificateNeeded());
+					isPartnerCertificateNeeded(), headerCertificateThumbprint, isCertificateValidationRequired());
+			// First, validate MISP Policy.
+			checkMispPolicyAllowed(partnerServiceResponse);
+			// Second, validate the auth policy attributes.
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse, requestBody);
+			// Later, Validate OIDC Client allowed AMR values.
+			checkAllowedAMRBasedOnClientConfig(requestBody, partnerServiceResponse);
 			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse,
 					partnerServiceResponse.getCertificateData());
 		}
@@ -415,12 +448,44 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	private PartnerPolicyResponseDTO getPartnerPolicyInfo(String partnerId, String partnerApiKey, String licenseKey,
-			boolean certificateNeeded) throws IdAuthenticationAppException {
+			boolean certificateNeeded, String signatureHeaderCertificate, boolean certValidationNeeded) throws IdAuthenticationAppException {
 		try {
-			return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey, certificateNeeded);
+			return partnerService.validateAndGetPolicy(partnerId, partnerApiKey, licenseKey, certificateNeeded, 
+						signatureHeaderCertificate, certValidationNeeded);
 		} catch (IdAuthenticationBusinessException e) {
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private String getCertificateThumbprintFromSignatureData(String signatureData) throws IdAuthenticationAppException {
+
+		if (Objects.isNull(signatureData)) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
+				IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage());
+		}
+		String[] signatureTokens = signatureData.split(PERIOD, -1);
+		String jwtTokenHeader = new String(CryptoUtil.decodeBase64Url(signatureTokens[0]));
+		Map<String, Object> jwtTokenHeadersMap = null;
+		try {
+			jwtTokenHeadersMap = JsonUtils.jsonStringToJavaMap(jwtTokenHeader);
+			if (jwtTokenHeadersMap.containsKey(JWT_HEADER_CERT_KEY)) {
+				List<String> certList = (List<String>) jwtTokenHeadersMap.get(JWT_HEADER_CERT_KEY);
+				// Decoding and url safe encoding because parsed header certificate is returing without url safe encoding.
+				byte[] certData = Base64.decodeBase64(certList.get(0));
+				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+			 	X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(certData));
+				return DigestUtils.sha256Hex(x509Cert.getEncoded()).toUpperCase();
+				//return CryptoUtil.encodeBase64Url(getPEMFormatedData(x509Cert).getBytes());
+			}
+		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException | CertificateException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "ParseHeader", 
+				"Error Getting certificate from signature header.");
+		} 
+		// This not never happen, because certificate comparison will be done after successful signature validation. 
+		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorCode(), 
+			IdAuthenticationErrorConstants.PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER.getErrorMessage());
 	}
 
 	/**
@@ -658,6 +723,30 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		return Optional.ofNullable(map.get(fieldName)).filter(obj -> obj instanceof String).map(obj -> (String) obj);
 	}
 
+	private void checkMispPolicyAllowed(PartnerPolicyResponseDTO partnerPolicyResponseDTO) throws IdAuthenticationAppException {
+
+		if (isMispPolicyValidationRequired()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
+					"MISP Policy Validation Required for the request.");
+			MispPolicyDTO mispPolicy =  partnerPolicyResponseDTO.getMispPolicy();
+			if (Objects.isNull(mispPolicy)) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
+						"MISP Policy not avaialble for the MISP partner.");
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_POLICY_NOT_FOUND.getErrorCode(), 
+					IdAuthenticationErrorConstants.MISP_POLICY_NOT_FOUND.getErrorMessage());
+			}
+			// check whether policy is allowed or not for authentication.
+			if (!mispPolicy.isAllowKycRequestDelegation()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
+						"MISP Partner not allowed for the Auth Type - kyc-auth, kyc-exchange.");
+				throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "KYC-AUTH"));
+			}
+			// TODO For KYC OTP request need to handle thru different filter. We will implement later.
+
+		}
+	}
 	/**
 	 * Check allowed auth type based on policy.
 	 *
@@ -934,6 +1023,62 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			return policies.stream().anyMatch(authPolicy -> authPolicy.getAuthType().equalsIgnoreCase(authType)
 					&& authPolicy.getAuthSubType().equalsIgnoreCase(subAuthType));
 		}
+	}
+
+	private void checkAllowedAMRBasedOnClientConfig(Map<String, Object> requestBody, PartnerPolicyResponseDTO partnerPolicyResponseDTO) 
+			throws IdAuthenticationAppException {
+		try {
+			if (isAMRValidationRequired()) {
+				Set<String> allowedAMRs = getAuthenticationFactors(partnerPolicyResponseDTO);
+				AuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+							AuthRequestDTO.class);
+				if (AuthTypeUtil.isDemo(authRequestDTO) && !allowedAMRs.contains(MatchType.Category.DEMO.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.DEMO.name()));
+				}
+				if (AuthTypeUtil.isBio(authRequestDTO) && !allowedAMRs.contains(MatchType.Category.BIO.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.BIO.name()));
+				}
+	
+				if (AuthTypeUtil.isPin(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.SPIN.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.SPIN.name()));
+				}
+				if (AuthTypeUtil.isOtp(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.OTP.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.OTP.name()));
+				}
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private Set<String> getAuthenticationFactors(PartnerPolicyResponseDTO partnerPolicyResponseDTO) {
+
+		Set<String> clientConfiguredAMRs = Stream.of(partnerPolicyResponseDTO.getOidcClientDto().getAuthContextRefs()).collect(Collectors.toSet());
+		
+		Map<String, List<AuthenticationFactor>> allowedAMRs = authMethodsRefValues.getAuthMethodsRefValues();
+		Set<String> filterAMRs = new HashSet<>();
+		for (String key: allowedAMRs.keySet()) {
+			if (clientConfiguredAMRs.contains(key)) {
+				List<AuthenticationFactor> amrs = allowedAMRs.get(key);
+				// not considering count in AuthenticationFactor. Need to handle later.
+				for (AuthenticationFactor amr : amrs) {
+					filterAMRs.add(amr.getType().toLowerCase());
+				}
+			}
+		}
+		return filterAMRs;
 	}
 
 	/**

@@ -41,8 +41,9 @@ import io.mosip.authentication.core.hotlist.dto.HotlistResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
@@ -361,8 +362,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		String responseTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		switch (requestReceived) {
 		case "kyc":
-			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-			KycResponseDTO kycResponse = new KycResponseDTO();
+			EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
+			EKycResponseDTO kycResponse = new EKycResponseDTO();
 			kycResponse.setKycStatus(false);
 			kycAuthResponseDTO.setResponse(kycResponse);
 			kycAuthResponseDTO.setErrors(errors);
