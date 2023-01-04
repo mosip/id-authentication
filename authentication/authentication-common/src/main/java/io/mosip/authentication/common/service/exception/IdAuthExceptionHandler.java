@@ -429,7 +429,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				hotlistResponseDto.setResponseTime(responseTime);
 				return hotlistResponseDto;
 			}
-		
+
+
+
 
 			
 		default:

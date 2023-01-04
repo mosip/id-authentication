@@ -77,3 +77,4 @@ ALTER TABLE ida.uin_auth_lock ALTER COLUMN is_deleted SET DEFAULT FALSE;
 
 
 
+
