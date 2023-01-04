@@ -18,7 +18,7 @@ CREATE TABLE ida.misp_license_data (
 	misp_commence_on timestamp NOT NULL,
 	misp_expires_on timestamp,
 	misp_status character varying(36) NOT NULL,
-	policy_id character varying(50) NOT NULL,
+	policy_id character varying(50),
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
