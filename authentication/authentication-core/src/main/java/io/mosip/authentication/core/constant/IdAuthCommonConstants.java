@@ -371,6 +371,8 @@ public final class IdAuthCommonConstants {
 	
 	public static final String AMR = "amr";
 
+	public static final String ADDRESS_FORMATTED = "formatted";
+
 	private IdAuthCommonConstants() {
 	}
 }

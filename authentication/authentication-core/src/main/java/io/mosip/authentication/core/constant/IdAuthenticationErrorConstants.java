@@ -162,6 +162,9 @@ public enum IdAuthenticationErrorConstants {
 	
 	POLICY_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_026","Policy Data is not available in Event data."),
 	PARTNER_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_027","Partner Data is not available in Event data."),
+	OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_028","OIDC Client Data is not available in Event data."),
+	OIDC_CLIENT_DATA_ALREADY_EXIST("PMS_PMP_029","OIDC Client ID already exist in DB."),
+	OIDC_CLIENT_DATA_INVALID_PARTNER("PMS_PMP_030","Not Allowed to change the Partner mapping of OIDC Client."),
 
 	
 	// UIN and VID validations

@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -80,6 +79,12 @@ public class KycServiceImpl implements KycService {
 
 	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
 	private String consentedPictureAttributePrefix;
+
+	@Value("${ida.idp.consented.address.subset.attributes:}")
+	private String[] addressSubsetAttributes;
+
+	@Value("${ida.idp.consented.address.value.separator: }")
+	private String addressValueSeparator;
 
 	/** The env. */
 	@Autowired
@@ -419,14 +424,14 @@ public class KycServiceImpl implements KycService {
 
 	@Override
 	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> locales, String idVid) throws IdAuthenticationBusinessException {
+				List<String> consentedAttributes, List<String> consentedLocales, String idVid) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
 					"Building claims response for PSU token: " + subject);
 					
 		Map<String, Object> respMap = new HashMap<>();
-		Set<String> uniqueLocales = new HashSet<String>(locales);
-		Map<String, String> mappedLocales = localesMapping(uniqueLocales);
+		Set<String> uniqueConsentedLocales = new HashSet<String>(consentedLocales);
+		Map<String, String> mappedConsentedLocales = localesMapping(uniqueConsentedLocales);
 
 		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
 		
@@ -438,8 +443,8 @@ public class KycServiceImpl implements KycService {
 				continue;
 			}
 			List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
-			if (mappedLocales.size() > 0) {
-				addEntityForLangCodes(mappedLocales, idInfo, respMap, attrib, idSchemaAttribute);
+			if (mappedConsentedLocales.size() > 0) {
+				addEntityForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
 			}
 		}
 
@@ -450,8 +455,9 @@ public class KycServiceImpl implements KycService {
 		}
 	}
 
-	private void addEntityForLangCodes(Map<String, String> mappedLocales, Map<String, List<IdentityInfoDTO>> idInfo, Map<String, Object> respMap, 
-				String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException {
+	private void addEntityForLangCodes(Map<String, String> mappedConsentedLocales, Map<String, List<IdentityInfoDTO>> idInfo, 
+				Map<String, Object> respMap, String consentedAttribute, List<String> idSchemaAttributes) 
+				throws IdAuthenticationBusinessException {
 		
 		if (consentedAttribute.equals(consentedFaceAttributeName)) {
 			if (!idInfo.keySet().contains(BioMatchType.FACE.getIdMapping().getIdname())) {
@@ -476,7 +482,7 @@ public class KycServiceImpl implements KycService {
 				return;
 			}
 			Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
-			List<String> availableLangCodes = getAvailableLangCodes(mappedLocales, mappedLangCodes);
+			List<String> availableLangCodes = getAvailableLangCodes(mappedConsentedLocales, mappedLangCodes);
 			if (availableLangCodes.size() == 1){
 				for (IdentityInfoDTO identityInfo : idInfoList) {
 					String langCode = mappedLangCodes.get(availableLangCodes.get(0));
@@ -501,56 +507,101 @@ public class KycServiceImpl implements KycService {
 			}
 		} else {
 			if (consentedAttribute.equals(consentedAddressAttributeName)) {
-				if (mappedLocales.size() > 1) {
-					for (String locale: mappedLocales.keySet()) {
-						String localeValue = mappedLocales.get(locale);
-						Map<String, String> addressMap = new HashMap<>();
-						boolean langCodeFound = false; //added for language data not available in identity info (Eg: fr) 
-						for (String idSchemaAttribute : idSchemaAttributes) {
-							List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
-							Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
-							if (mappedLangCodes.keySet().contains(localeValue)) {
-								String langCode = mappedLangCodes.get(localeValue);
-								for (IdentityInfoDTO identityInfo : idInfoList) { 
-									if (identityInfo.getLanguage().equals(langCode)) {
-										langCodeFound = true;
-										addressMap.put(idSchemaAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, 
-											identityInfo.getValue());
-									}
-								}
-							} else {
-								if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
-									addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
-								}
-							}
+				if (mappedConsentedLocales.size() > 1) {
+					for (String consentedLocale: mappedConsentedLocales.keySet()) {
+						String consentedLocaleValue = mappedConsentedLocales.get(consentedLocale);
+						if (addressSubsetAttributes.length == 0) {
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+									"No address subset attributes configured. Will return the address with formatted attribute.");
+							addFormattedAddress(idSchemaAttributes, idInfo, consentedLocaleValue, respMap, true, 
+								IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + consentedLocaleValue);
+							continue;
 						}
-						if (langCodeFound)
-							respMap.put(consentedAddressAttributeName + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + localeValue, addressMap);
+						addAddressClaim(addressSubsetAttributes, idInfo, consentedLocaleValue, respMap, true, 
+								IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + consentedLocaleValue);
 					}
 				} else {
-					Map<String, String> addressMap = new HashMap<>();
-					for (String idSchemaAttribute : idSchemaAttributes) {
-						List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
-						Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
-						String locale = mappedLocales.keySet().iterator().next();
-						String localeValue = mappedLocales.get(locale);
-						if (mappedLangCodes.keySet().contains(localeValue)) {
-							String langCode = mappedLangCodes.get(localeValue);
-							for (IdentityInfoDTO identityInfo : idInfoList) { 
-								if (identityInfo.getLanguage().equals(langCode)) {
-									addressMap.put(idSchemaAttribute, identityInfo.getValue());
-								}
-							}
-						} else {
-							if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
-								addressMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
-							}
-						}
+					String consentedLocale = mappedConsentedLocales.keySet().iterator().next();
+					String consentedLocaleValue = mappedConsentedLocales.get(consentedLocale);
+					if (addressSubsetAttributes.length == 0) {
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+								"No address subset attributes configured. Will return the address with formatted attribute.");
+						addFormattedAddress(idSchemaAttributes, idInfo, consentedLocaleValue, respMap, false, "");
+						return;
 					}
-					respMap.put(consentedAddressAttributeName, addressMap);
+					
+					addAddressClaim(addressSubsetAttributes, idInfo, consentedLocaleValue, respMap, false, "");
 				}
 			}
 		}
+	}
+
+	private void addFormattedAddress(List<String> idSchemaAttributes, Map<String, List<IdentityInfoDTO>> idInfo, String localeValue, 
+								Map<String, Object> respMap, boolean addLocale, String localeAppendValue) throws IdAuthenticationBusinessException {
+		boolean langCodeFound = false;
+		Map<String, String> addressMap = new HashMap<>();
+		StringBuilder identityInfoValue = new StringBuilder(); 
+		for (String schemaAttrib: idSchemaAttributes) {
+			List<String> idSchemaSubsetAttributes = idInfoHelper.getIdentityAttributesForIdName(schemaAttrib);
+			for (String idSchemaAttribute : idSchemaSubsetAttributes) {
+				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+				Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+				if (mappedLangCodes.keySet().contains(localeValue)) {
+					String langCode = mappedLangCodes.get(localeValue);
+					for (IdentityInfoDTO identityInfo : idInfoList) { 
+						if (identityInfo.getLanguage().equals(langCode)) {
+							langCodeFound = true;
+							identityInfoValue.append(identityInfo.getValue() + addressValueSeparator);
+						}
+					}
+				} else {
+					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+						identityInfoValue.append(idInfoList.get(0).getValue() + addressValueSeparator);
+					}
+				}
+			}
+		}
+		String identityInfoValueStr = identityInfoValue.toString();
+		String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
+		addressMap.put(IdAuthCommonConstants.ADDRESS_FORMATTED + localeAppendValue, trimmedValue);
+		if (langCodeFound && addLocale)
+			respMap.put(consentedAddressAttributeName + localeAppendValue, addressMap);
+		else
+			respMap.put(consentedAddressAttributeName, addressMap);
+	}
+
+	private void addAddressClaim(String[] addressAttributes, Map<String, List<IdentityInfoDTO>> idInfo, String consentedLocaleValue,
+			Map<String, Object> respMap, boolean addLocale, String localeAppendValue) throws IdAuthenticationBusinessException {
+		boolean langCodeFound = false; //added for language data not available in identity info (Eg: fr)
+		Map<String, String> addressMap = new HashMap<>();
+		for (String addressAttribute : addressAttributes) {
+			List<String> idSchemaSubsetAttributes = idInfoHelper.getIdentityAttributesForIdName(addressAttribute);
+			StringBuilder identityInfoValue = new StringBuilder(); 
+			for (String idSchemaAttribute : idSchemaSubsetAttributes) {
+				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+				Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+				if (mappedLangCodes.keySet().contains(consentedLocaleValue)) {
+					String langCode = mappedLangCodes.get(consentedLocaleValue);
+					for (IdentityInfoDTO identityInfo : idInfoList) { 
+						if (identityInfo.getLanguage().equals(langCode)) {
+							langCodeFound = true;
+							identityInfoValue.append(identityInfo.getValue() + addressValueSeparator);
+						}
+					}
+				} else {
+					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+						identityInfoValue.append(idInfoList.get(0).getValue() + addressValueSeparator);
+					}
+				}
+			}
+			String identityInfoValueStr = identityInfoValue.toString();
+			String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
+			addressMap.put(addressAttribute + localeAppendValue, trimmedValue);
+		}
+		if (langCodeFound && addLocale)
+			respMap.put(consentedAddressAttributeName + localeAppendValue, addressMap);
+		else 
+			respMap.put(consentedAddressAttributeName, addressMap);
 	}
 
 	private String convertJP2ToJpeg(String jp2Image) {
@@ -571,6 +622,8 @@ public class KycServiceImpl implements KycService {
 
 		Map<String, String> mappedLocales = new HashMap<>();
 		for (String locale : locales) {
+			if (locale.trim().length() == 0)
+				continue;
 			mappedLocales.put(locale, locale.substring(0, 2));
 		}
 		return mappedLocales;
