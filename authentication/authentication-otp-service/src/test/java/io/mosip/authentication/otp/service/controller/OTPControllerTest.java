@@ -41,6 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
@@ -112,6 +113,9 @@ public class OTPControllerTest {
 	@Mock
 	private OTPRequestValidator otpRequestValidator;
 
+	@Mock
+	private IdAuthSecurityManager securityManager;
+
 	private static Validator validator;
 
 	@Before
@@ -138,6 +142,7 @@ public class OTPControllerTest {
 		assertTrue(violations.isEmpty());
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.anyString(), Mockito.any())).thenReturn(otpResponseDTO);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", new TestHttpServletRequest());
 
 	}
@@ -192,6 +197,7 @@ public class OTPControllerTest {
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
 		Mockito.when(otpService.generateOtp(otpRequestDto, "TEST0000001", requestWithMetadata)).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", requestWithMetadata);
 	}
 
@@ -215,6 +221,7 @@ public class OTPControllerTest {
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
 		Mockito.when(otpService.generateOtp(otpRequestDto, "TEST0000001", requestWithMetadata)).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", requestWithMetadata);
 
 	}
@@ -226,6 +233,7 @@ public class OTPControllerTest {
 		errors.reject("errorCode");
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 			.thenReturn(new IdAuthenticationAppException());
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001","TEST0000001", new TestHttpServletRequest());
 	}
 
@@ -248,7 +256,7 @@ public class OTPControllerTest {
 		otpResponseDTO.setResponseTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
-
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDTO, errors, "121212", "232323","TEST0000001", new TestHttpServletRequest());
 	}
 

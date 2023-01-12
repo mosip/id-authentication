@@ -1289,7 +1289,7 @@ public class AuthFacadeImplTest {
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1233", true, "247334310780728918141754192454591343", "123456",
-				AuthTransactionBuilder.newInstance());
+				AuthTransactionBuilder.newInstance(), "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 
 		assertTrue(authStatusList.stream().noneMatch(status -> status.isStatus()));
 	}
@@ -1356,7 +1356,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", true, "247334310780728918141754192454591343", "123456",
-				AuthTransactionBuilder.newInstance());
+				AuthTransactionBuilder.newInstance(), "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
 	}
 
@@ -1386,7 +1386,7 @@ public class AuthFacadeImplTest {
 		idInfo.put("phone", list);
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1242", false, "247334310780728918141754192454591343", "123456",
-				AuthTransactionBuilder.newInstance());
+				AuthTransactionBuilder.newInstance(), "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		assertTrue(authStatusList.stream().anyMatch(status -> status.isStatus()));
 	}
 
@@ -1481,7 +1481,7 @@ public class AuthFacadeImplTest {
 				.thenReturn("test");
 		AuthTransactionBuilder authTxnBuilder = AuthTransactionBuilder.newInstance();
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, token, IdType.UIN,
-				true, "247334310780728918141754192454591343", true, "123", authTxnBuilder);
+				true, "247334310780728918141754192454591343", true, "123", authTxnBuilder, "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 	}
 
 	@Test
@@ -1564,7 +1564,7 @@ public class AuthFacadeImplTest {
 				.thenReturn("test");
 		AuthTransactionBuilder authTxnBuilder = AuthTransactionBuilder.newInstance();
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, "123", IdType.UIN,
-				true, "247334310780728918141754192454591343", true, "1234", authTxnBuilder);
+				true, "247334310780728918141754192454591343", true, "1234", authTxnBuilder, "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -1586,7 +1586,7 @@ public class AuthFacadeImplTest {
 		try {
 			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456",
-					AuthTransactionBuilder.newInstance());
+					AuthTransactionBuilder.newInstance(), "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -1615,7 +1615,7 @@ public class AuthFacadeImplTest {
 		try {
 			ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 					authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456",
-					AuthTransactionBuilder.newInstance());
+					AuthTransactionBuilder.newInstance(), "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}

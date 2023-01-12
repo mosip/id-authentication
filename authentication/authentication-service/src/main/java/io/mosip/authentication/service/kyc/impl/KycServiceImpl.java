@@ -366,7 +366,7 @@ public class KycServiceImpl implements KycService {
 	// Taking tokenGenerationTime same as auth response time only as response time is generated based on local timezone.
 	@Override
 	public String generateAndSaveKycToken(String idHash, String authToken, String oidcClientId, String requestTime, 
-				String tokenGenerationTime) throws IdAuthenticationBusinessException {
+				String tokenGenerationTime, String reqTransactionId) throws IdAuthenticationBusinessException {
 		
 		String uuid = UUID.randomUUID().toString();
 		LocalDateTime requestLocalDateTime = IdaRequestResponsConsumerUtil.convertStringDateTimeToLDT(requestTime);
@@ -379,6 +379,7 @@ public class KycServiceImpl implements KycService {
 		kycTokenData.setKycToken(kycToken);
 		kycTokenData.setPsuToken(authToken);
 		kycTokenData.setOidcClientId(oidcClientId);
+		kycTokenData.setRequestTransactionId(reqTransactionId);
 		kycTokenData.setTokenIssuedDateTime(tokenIssuedDateTime);
 		kycTokenData.setAuthReqDateTime(requestLocalDateTime);
 		kycTokenData.setKycTokenStatus(KycTokenStatusType.ACTIVE.getStatus());
@@ -405,7 +406,6 @@ public class KycServiceImpl implements KycService {
 					"Error Generating KYC Token", e);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-
 	}
 
 	@Override

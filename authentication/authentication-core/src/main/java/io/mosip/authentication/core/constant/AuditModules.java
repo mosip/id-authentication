@@ -26,6 +26,8 @@ public enum AuditModules {
 	EKYC_AUTH("IDA-EKA", "E-KYC Authentication Request", "eKYC Authenticator"),
 
 	KYC_AUTH("IDA-KAT", "KYC Authentication Request", "KYC Authenticator"),
+
+	KYC_EXCHANGE("IDA-KEX", "KYC Exchange Request", "KYC Exchange"),
 	
 	/** The otp request. */
 	OTP_REQUEST("IDA-OTR","OTP Request", "OTP Requestor"),

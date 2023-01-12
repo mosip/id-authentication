@@ -307,8 +307,8 @@ public class KycAuthController {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycExchangeRequestDTO.getMetadata());
-/* 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
-					.createAndSetAuthTxnBuilderMetadataToRequest(kycExchangeRequestDTO, false, partner); */
+			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(kycExchangeRequestDTO, false, partner);
  			try {
 				
 				String idType = Objects.nonNull(kycExchangeRequestDTO.getIndividualIdType()) ? kycExchangeRequestDTO.getIndividualIdType()
@@ -322,17 +322,19 @@ public class KycAuthController {
 				
 				return kycExchangeResponseDTO;
 			} catch (IDDataValidationException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				//IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-						e.getErrorTexts().isEmpty() ? IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() : e.getErrorText());
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycExchangeRequestDTO.getTransactionID());
+				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					e.getErrorTexts().isEmpty() ? IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() : e.getErrorText());
+				authTransactionHelper.setAuthTransactionEntityMetadata(e, authTxnBuilder, requestWithMetadata);
+				authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycExchangeRequestDTO.getTransactionID());
+				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}  
 		} else {
 			mosipLogger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
