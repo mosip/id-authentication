@@ -4,6 +4,7 @@ CREATE TABLE ida.kyc_token_store(
     kyc_token character varying(128),
     psu_token character varying(128),
     oidc_client_id character varying(128),
+    request_trn_id character varying(64),
     token_issued_dtimes timestamp,
     auth_req_dtimes timestamp,
     kyc_token_status character varying(36),
@@ -22,6 +23,7 @@ COMMENT ON COLUMN ida.kyc_token_store.id_vid_hash IS 'IdVidHash: SHA 256 Hash va
 COMMENT ON COLUMN ida.kyc_token_store.kyc_token IS 'KYC Token: Random generator token used after successful authentication.';
 COMMENT ON COLUMN ida.kyc_token_store.psu_token IS 'PSU Token: Partner Specific User Token will be created using partner details and token details.';
 COMMENT ON COLUMN ida.kyc_token_store.oidc_client_id IS 'OIDC Client ID: An Id assigned to specific OIDC Client.';
+COMMENT ON COLUMN ida.kyc_token_store.request_trn_id IS 'Request Transaction Id: An Unique Id received for the incoming request.';
 COMMENT ON COLUMN ida.kyc_token_store.token_issued_dtimes IS 'Token Issued Datetime: The datatime token is issued after successful authentication.';
 COMMENT ON COLUMN ida.kyc_token_store.auth_req_dtimes IS 'Auth Request Datetime: The datatime authentication request received to authenticate.';
 COMMENT ON COLUMN ida.kyc_token_store.kyc_token_status IS 'KYC Token Status: To identify token is successfully used for kyc exchange.';

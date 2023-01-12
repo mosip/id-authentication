@@ -41,13 +41,14 @@ public interface KycService {
 	 * @param oidcClientId   		OIDC Client Id
 	 * @param requestTime   		Auth Request Time
 	 * @param tokenGenerationTime   Token Generation Time
+	 * @param reqTransactionId   	Request Transaction Id
 	 * 
 	 * @return the String generated Kyc Token
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	String generateAndSaveKycToken(String idHash, String authToken, String oidcClientId, String requestTime, 
-				String tokenGenerationTime) throws IdAuthenticationBusinessException;
+				String tokenGenerationTime, String reqTransactionId) throws IdAuthenticationBusinessException;
 
 	
 	/**

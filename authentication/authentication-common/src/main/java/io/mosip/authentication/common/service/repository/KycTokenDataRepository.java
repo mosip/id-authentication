@@ -16,5 +16,5 @@ import io.mosip.authentication.common.service.entity.KycTokenData;
 @Repository
 public interface KycTokenDataRepository extends JpaRepository<KycTokenData, String> {
 
-    Optional<KycTokenData> findByKycTokenAndOidcClientIdAndKycTokenStatus(String kycToken, String oidcClientId, String kycTokenStatus);
+    Optional<KycTokenData> findByKycToken(String kycToken);
 }

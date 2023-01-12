@@ -203,7 +203,7 @@ public class PartnerServiceCallbackController {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleOIDCClientCreatedEvent",
 						OIDC_CLIENT_CREATED + " EVENT RECEIVED");
-			partnerManager.updateOIDCClientData(eventModel);
+			partnerManager.createOIDCClientData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
 					ExceptionUtils.getFullStackTrace(e));

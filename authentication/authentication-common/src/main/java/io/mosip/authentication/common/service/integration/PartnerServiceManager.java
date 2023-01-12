@@ -483,11 +483,11 @@ public class PartnerServiceManager {
 	}
 
 	/**
-	 * Add/Update OIDC client data.
+	 * Add OIDC client data.
 	 *
 	 * @param eventModel the event model
 	 */
-	public void updateOIDCClientData(EventModel eventModel) throws IdAuthenticationBusinessException {
+	public void createOIDCClientData(EventModel eventModel) throws IdAuthenticationBusinessException {
 		// OIDC client handling is different from API key.
 		// For API key there is no update available, API key will always be created.
 		Map<String, Object> eventDataMap = eventModel.getEvent().getData();
@@ -499,7 +499,7 @@ public class PartnerServiceManager {
 			policyData = mapper.convertValue(eventDataMap.get(POLICY_DATA), PolicyData.class);
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.POLICY_DATA_NOT_FOUND_EVENT_DATA.getErrorCode(),
-					IdAuthenticationErrorConstants.POLICY_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
+				IdAuthenticationErrorConstants.POLICY_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
 		}
 		// Second Add/Update the Partner details
 		PartnerData partnerData = null;
@@ -511,19 +511,16 @@ public class PartnerServiceManager {
 					IdAuthenticationErrorConstants.PARTNER_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
 		}
 
+		if (!eventDataMap.containsKey(OIDC_CLIENT_DATA)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA.getErrorCode(),
+					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
+		}
+
 		OIDCClientData oidcClientEventData = mapper.convertValue(eventDataMap.get(OIDC_CLIENT_DATA), OIDCClientData.class);
 		Optional<OIDCClientData> oidcClientDataOpt = oidcClientDataRepo.findByClientId(oidcClientEventData.getClientId());
 		if (oidcClientDataOpt.isPresent()) {
-			OIDCClientData oidcClientData = oidcClientDataOpt.get();
-			oidcClientData.setUpdatedBy(getCreatedBy(eventModel));
-			oidcClientData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-			oidcClientData.setClientName(oidcClientEventData.getClientName());
-			oidcClientData.setClientStatus(oidcClientEventData.getClientStatus());
-			oidcClientData.setUserClaims(oidcClientEventData.getUserClaims());
-			oidcClientData.setAuthContextRefs(oidcClientEventData.getAuthContextRefs());
-			oidcClientData.setClientAuthMethods(oidcClientEventData.getClientAuthMethods());
-			oidcClientData.setPartnerId(oidcClientEventData.getPartnerId());
-			oidcClientDataRepo.save(oidcClientData);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_ALREADY_EXIST.getErrorCode(),
+					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_ALREADY_EXIST.getErrorMessage());
 		} else {
 			oidcClientEventData.setCreatedBy(getCreatedBy(eventModel));
 			oidcClientEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
@@ -548,5 +545,50 @@ public class PartnerServiceManager {
 			partnerMapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerMappingRepo.save(partnerMapping);
 		}
+	}
+
+	/**
+	 * Update OIDC client data.
+	 *
+	 * @param eventModel the event model
+	 */
+	public void updateOIDCClientData(EventModel eventModel) throws IdAuthenticationBusinessException {
+		Map<String, Object> eventDataMap = eventModel.getEvent().getData();
+		
+		// Policy Data will not be allowed to update after creation of OIDC Client.
+		// Second Update the Partner details
+		String partnerId = "";
+		if (eventDataMap.containsKey(PARTNER_DATA)) {
+			updatePartnerData(eventModel);
+			PartnerData partnerData = mapper.convertValue(eventDataMap.get(PARTNER_DATA), PartnerData.class);
+			partnerId = partnerData.getPartnerId();
+		} 
+
+		if (!eventDataMap.containsKey(OIDC_CLIENT_DATA)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA.getErrorCode(),
+					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA.getErrorMessage());
+		}
+
+		OIDCClientData oidcClientEventData = mapper.convertValue(eventDataMap.get(OIDC_CLIENT_DATA), OIDCClientData.class);
+		Optional<OIDCClientData> oidcClientDataOpt = oidcClientDataRepo.findByClientId(oidcClientEventData.getClientId());
+		if (oidcClientDataOpt.isPresent()) {
+			OIDCClientData oidcClientData = oidcClientDataOpt.get();
+			String dbPartnerId = oidcClientData.getPartnerId();
+			if (partnerId.length() != 0 && !partnerId.equals(dbPartnerId)) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_INVALID_PARTNER.getErrorCode(),
+					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_INVALID_PARTNER.getErrorMessage());
+			}
+			oidcClientData.setUpdatedBy(getCreatedBy(eventModel));
+			oidcClientData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			oidcClientData.setClientName(oidcClientEventData.getClientName());
+			oidcClientData.setClientStatus(oidcClientEventData.getClientStatus());
+			oidcClientData.setUserClaims(oidcClientEventData.getUserClaims());
+			oidcClientData.setAuthContextRefs(oidcClientEventData.getAuthContextRefs());
+			oidcClientData.setClientAuthMethods(oidcClientEventData.getClientAuthMethods());
+			oidcClientDataRepo.save(oidcClientData);
+		} 
+
+		logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_CLIENT_EVENT", 
+				"Updated OIDC client. OIDC Clinet Id: " + oidcClientEventData.getClientId());
 	}
 }

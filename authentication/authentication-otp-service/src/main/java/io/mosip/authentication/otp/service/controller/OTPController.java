@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -87,6 +88,9 @@ public class OTPController {
 	@Autowired
 	private PartnerService partnerService;
 
+	@Autowired
+	private IdAuthSecurityManager securityManager;
+
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(otpRequestValidator);
@@ -126,7 +130,7 @@ public class OTPController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
-			
+			String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 			try {
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
@@ -138,20 +142,20 @@ public class OTPController {
 						otpResponseDTO.getResponseTime());
 				
 				boolean status = otpResponseDTO.getErrors() == null || otpResponseDTO.getErrors().isEmpty();
-				auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
+				auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE, idvidHash,
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), "otpRequest status : " + status);
 				return otpResponseDTO;
 			} catch (IDDataValidationException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 						e.getErrorText());
-				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
+				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , idvidHash,
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, otpRequestDto.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getIndividualId(),
+				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , idvidHash,
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 				authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);

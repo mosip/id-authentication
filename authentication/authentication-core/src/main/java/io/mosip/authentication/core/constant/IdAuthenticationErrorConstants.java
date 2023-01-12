@@ -162,6 +162,9 @@ public enum IdAuthenticationErrorConstants {
 	
 	POLICY_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_026","Policy Data is not available in Event data."),
 	PARTNER_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_027","Partner Data is not available in Event data."),
+	OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_028","OIDC Client Data is not available in Event data."),
+	OIDC_CLIENT_DATA_ALREADY_EXIST("PMS_PMP_029","OIDC Client ID already exist in DB."),
+	OIDC_CLIENT_DATA_INVALID_PARTNER("PMS_PMP_030","Not Allowed to change the Partner mapping of OIDC Client."),
 
 	
 	// UIN and VID validations
@@ -171,9 +174,12 @@ public enum IdAuthenticationErrorConstants {
 	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum."),
 
 
-	KYC_TOKEN_NOT_FOUND("IDA-KYE-001", "KYC Token not found in Store or KYC Token already processed."),
+	KYC_TOKEN_NOT_FOUND("IDA-KYE-001", "KYC Token not found in Store."),
 	KYC_TOKEN_EXPIRED("IDA-KYE-002", "KYC Token Expired."),
-	PARTNER_POLICY_NOT_FOUND("IDA-KYE-003", "Partner Policy not found.");
+	KYC_TOKEN_ALREADY_PROCESSED("IDA-KYE-003", "KYC Token already processed."),
+	KYC_TOKEN_INVALID_OIDC_CLIENT_ID("IDA-KYE-004", "KYC Token does not belong to the input oidc client id."),
+	KYC_TOKEN_INVALID_TRANSACTION_ID("IDA-KYE-005", "KYC Auth and KYC Exchange transaction ids are different."),
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-004", "Partner Policy not found.");
 	
 	private final String errorCode;
 	private final String errorMessage;
