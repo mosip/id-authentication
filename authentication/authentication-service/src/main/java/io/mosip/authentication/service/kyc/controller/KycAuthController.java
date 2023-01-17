@@ -110,7 +110,7 @@ public class KycAuthController {
 	 * @param binder the binder
 	 */
 	@InitBinder("authRequestDTO")
-	private void initAuthRequestBinder(WebDataBinder binder) {
+	private void initKycAuthRequestBinder(WebDataBinder binder) {
 		binder.setValidator(authRequestValidator);
 	} 
 
@@ -119,8 +119,17 @@ public class KycAuthController {
 	 * @param binder the binder
 	 */
 	@InitBinder("ekycAuthRequestDTO")
-	private void initKycBinder(WebDataBinder binder) {
+	private void initEKycBinder(WebDataBinder binder) {
 		binder.setValidator(kycReqValidator);
+	}
+
+	/**
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder("kycExchangeRequestDTO")
+	private void initKycExchangeBinder(WebDataBinder binder) {
+		binder.setValidator(kycExchangeValidator);
 	}
 
 	
@@ -179,7 +188,7 @@ public class KycAuthController {
 				}
 				return kycAuthResponseDTO;
 			} catch (IDDataValidationException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processeKyc",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processeEKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
@@ -187,7 +196,7 @@ public class KycAuthController {
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, ekycAuthRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWrapperWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKyc",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processEKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
@@ -239,13 +248,14 @@ public class KycAuthController {
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 						authRequestDTO.setIndividualIdType(idType);
-				kycReqValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
+				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
 				if(AuthTypeUtil.isBio(authRequestDTO)) {
 					kycReqValidator.validateDeviceDetails(authRequestDTO, errors);
 				}
 				DataValidationUtil.validate(errors);
 				
-				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, true, partnerId, oidcClientId, requestWrapperWithMetadata);
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, true, partnerId, 
+								oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
 				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
 				if (authResponseDTO != null && 
@@ -259,7 +269,7 @@ public class KycAuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
-				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, authRequestDTO, e);
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWrapperWithMetadata);
@@ -267,7 +277,7 @@ public class KycAuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
-				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, authRequestDTO, e);
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWrapperWithMetadata);
@@ -314,6 +324,7 @@ public class KycAuthController {
 				String idType = Objects.nonNull(kycExchangeRequestDTO.getIndividualIdType()) ? kycExchangeRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(kycExchangeRequestDTO.getIndividualId()).getType();
 				kycExchangeRequestDTO.setIndividualIdType(idType);
+				kycExchangeValidator.validateIdvId(kycExchangeRequestDTO.getIndividualId(), idType, errors);
 				DataValidationUtil.validate(errors);
 				
 				Map<String, Object> metadata = kycExchangeRequestDTO.getMetadata();
@@ -325,6 +336,8 @@ public class KycAuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				if(kycExchangeRequestDTO.getTransactionID() == null) 
+					kycExchangeRequestDTO.setTransactionID(IdAuthCommonConstants.NO_TRANSACTION_ID);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycExchangeRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
