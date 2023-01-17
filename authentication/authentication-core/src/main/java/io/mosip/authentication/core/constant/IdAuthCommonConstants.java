@@ -373,6 +373,14 @@ public final class IdAuthCommonConstants {
 
 	public static final String ADDRESS_FORMATTED = "formatted";
 
+	public static final String NO_TRANSACTION_ID = "NO_TRANSACTION_ID";
+
+	public static final String  KYC_EXCHANGE_SUCCESS = "KycExchange status : true";
+
+	public static final boolean KYC_AUTH_CONSUME_VID_DEFAULT = false;
+
+	public static final boolean KYC_EXCHANGE_CONSUME_VID_DEFAULT = true;
+
 	private IdAuthCommonConstants() {
 	}
 }

@@ -56,7 +56,6 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateReqTime(kycExchangeRequestDTO.getRequestTime(), errors, IdAuthCommonConstants.REQ_TIME);
 			}
-			
 
 			if (!errors.hasErrors()) {
 				validateKycToken(kycExchangeRequestDTO.getKycToken(), errors, IdAuthCommonConstants.KYC_TOKEN);
@@ -64,6 +63,10 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 
 			if (!errors.hasErrors()) {
 				validateConsentObtainedList(kycExchangeRequestDTO.getConsentObtained(), errors, IdAuthCommonConstants.CONSENT_OBTAINED);
+			}
+
+			if (!errors.hasErrors()) {
+				validateTxnId(kycExchangeRequestDTO.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 			}
 			
 		} else {

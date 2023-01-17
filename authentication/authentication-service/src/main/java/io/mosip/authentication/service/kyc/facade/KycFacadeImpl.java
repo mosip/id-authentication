@@ -159,6 +159,21 @@ public class KycFacadeImpl implements KycFacade {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.facade.KycFacade#
+	 * authenticateIndividual(io.mosip.authentication.core.indauth.dto.
+	 * AuthRequestDTO, boolean, java.lang.String)
+	 */
+	@Override
+	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, 
+							String partnerApiKey, ObjectWithMetadata requestWithMetadata, boolean markVidConsumed)
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		return authFacade.authenticateIndividual(authRequest, request, partnerId, partnerApiKey, markVidConsumed, requestWithMetadata);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * io.mosip.authentication.core.spi.indauth.facade.KycFacade#processKycAuth(io.
 	 * mosip.authentication.core.indauth.dto.KycAuthRequestDTO,
@@ -421,7 +436,7 @@ public class KycFacadeImpl implements KycFacade {
 			}
 
 			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idVid, isBioRequired,
-					false, policyAllowedAttributes);
+					IdAuthCommonConstants.KYC_EXCHANGE_CONSUME_VID_DEFAULT, policyAllowedAttributes);
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			
 			String token = idAuthService.getToken(idResDTO);
@@ -449,7 +464,7 @@ public class KycFacadeImpl implements KycFacade {
 			saveToTxnTable(kycExchangeRequestDTO, false, true, partnerId, token, kycExchangeResponseDTO, requestWithMetadata);
 			auditHelper.audit(AuditModules.KYC_EXCHANGE, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE,
 					idHash,	IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()),
-					"KycExchange status : true");
+					IdAuthCommonConstants.KYC_EXCHANGE_SUCCESS);
 			return kycExchangeResponseDTO;
 		} catch(IdAuthenticationBusinessException e) {
 			auditHelper.audit(AuditModules.KYC_EXCHANGE, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE,
