@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-package io.mosip.authentication.impl.service;
+package io.mosip.authentication.esignet.integration.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.cert.Certificate;
@@ -41,13 +41,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 
-import io.mosip.authentication.impl.dto.IdaKycAuthRequest;
-import io.mosip.authentication.impl.dto.IdaKycAuthResponse;
-import io.mosip.authentication.impl.dto.IdaKycExchangeRequest;
-import io.mosip.authentication.impl.dto.IdaKycExchangeResponse;
-import io.mosip.authentication.impl.dto.IdaResponseWrapper;
-import io.mosip.authentication.impl.dto.IdaSendOtpRequest;
-import io.mosip.authentication.impl.dto.IdaSendOtpResponse;
+import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
+import io.mosip.authentication.esignet.integration.dto.IdaKycAuthResponse;
+import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeRequest;
+import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeResponse;
+import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
+import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
+import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
 import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.KycAuthDto;
 import io.mosip.esignet.api.dto.KycAuthResult;

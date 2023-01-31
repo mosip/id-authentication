@@ -1,4 +1,4 @@
-package io.mosip.authentication.impl.dto;
+package io.mosip.authentication.esignet.integration.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
