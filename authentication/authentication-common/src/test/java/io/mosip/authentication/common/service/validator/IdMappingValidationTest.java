@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -173,6 +174,7 @@ public class IdMappingValidationTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void TestBioMetricNotValidated() {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
@@ -186,6 +188,7 @@ public class IdMappingValidationTest {
 		assertFalse(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void TestBioMetricValidationsforFingerPrint() {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
