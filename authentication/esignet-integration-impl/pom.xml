@@ -36,6 +36,7 @@
 			<groupId>io.mosip.esignet</groupId>
     		<artifactId>esignet-integration-api</artifactId>
     		<version>1.0.0-SNAPSHOT</version>
+    		<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
