@@ -64,7 +64,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
-import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.util.PartnerCertificateManagerUtil;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
@@ -76,7 +75,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(value = "mosip.esignet.integration.authenticator", havingValue = "IdentityAuthenticationService")
 @Component
 @Slf4j
-public class IdentityAuthenticationService implements Authenticator {
+public class IdaAuthenticatorImpl implements Authenticator {
 
     public static final String KYC_EXCHANGE_TYPE = "oidc";
     public static final String SIGNATURE_HEADER_NAME = "signature";
@@ -133,9 +132,6 @@ public class IdentityAuthenticationService implements Authenticator {
     private RestTemplate restTemplate;
 
     @Autowired
-    private KeymanagerService keymanagerService;
-
-    @Autowired
     private KeymanagerUtil keymanagerUtil;
 
     @Autowired
@@ -143,9 +139,6 @@ public class IdentityAuthenticationService implements Authenticator {
 
     @Autowired
     private CryptoCore cryptoCore;
-
-    @Autowired
-    private MockHelperService mockHelperService;
 
     private Certificate idaPartnerCertificate;
     
@@ -163,22 +156,6 @@ public class IdentityAuthenticationService implements Authenticator {
         log.info("Started to build kyc-auth request with transactionId : {} && clientId : {}",
                 kycAuthDto.getTransactionId(), clientId);
         try {
-
-            List<AuthChallenge> keyBoundChallenges = kycAuthDto.getChallengeList().stream()
-                    .filter( authChallenge -> keyBoundAuthFactorTypes.contains(authChallenge.getAuthFactorType()) )
-                    .collect(Collectors.toList());
-
-            //throws exception if fails
-            if(!CollectionUtils.isEmpty(keyBoundChallenges)) {
-                sendOtpRequest(relyingPartyId, clientId, kycAuthDto.getTransactionId(), kycAuthDto.getIndividualId());
-                AuthChallenge authChallenge = new AuthChallenge();
-                authChallenge.setAuthFactorType("OTP");
-                authChallenge.setChallenge("111111");
-                authChallenge.setFormat("alpha-numeric");
-                kycAuthDto.getChallengeList().add(authChallenge);
-                mockHelperService.validateKeyBoundAuth(kycAuthDto.getTransactionId(), kycAuthDto.getIndividualId(), keyBoundChallenges);
-            }
-
             List<AuthChallenge> nonKeyBoundChallenges = kycAuthDto.getChallengeList().stream()
                     .filter( authChallenge -> !keyBoundAuthFactorTypes.contains(authChallenge.getAuthFactorType()) )
                     .collect(Collectors.toList());
