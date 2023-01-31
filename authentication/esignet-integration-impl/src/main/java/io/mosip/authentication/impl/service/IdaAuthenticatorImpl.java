@@ -72,7 +72,7 @@ import io.mosip.kernel.signature.service.SignatureService;
 import lombok.extern.slf4j.Slf4j;
 
 
-@ConditionalOnProperty(value = "mosip.esignet.integration.authenticator", havingValue = "IdentityAuthenticationService")
+@ConditionalOnProperty(value = "mosip.esignet.integration.authenticator", havingValue = "IdaAuthenticatorImpl")
 @Component
 @Slf4j
 public class IdaAuthenticatorImpl implements Authenticator {
