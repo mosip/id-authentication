@@ -139,9 +139,6 @@ public class KycFacadeImpl implements KycFacade {
 	@Autowired
 	private OIDCClientDataRepository oidcClientDataRepo; 
 
-	@Autowired
-	private IdService<AutnTxn> idAuthService;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -439,7 +436,7 @@ public class KycFacadeImpl implements KycFacade {
 					IdAuthCommonConstants.KYC_EXCHANGE_CONSUME_VID_DEFAULT, policyAllowedAttributes);
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			
-			String token = idAuthService.getToken(idResDTO);
+			String token = idService.getToken(idResDTO);
 			String psuToken = kycTokenDataOpt.get().getPsuToken();
 			List<String> locales = kycExchangeRequestDTO.getLocales();
 			if (locales.size() == 0) {
@@ -585,7 +582,9 @@ public class KycFacadeImpl implements KycFacade {
 		if(requestWithMetadata != null) {
 			requestWithMetadata.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
 		} else {
-			idAuthService.saveAutnTxn(authTxn);
+			idService.saveAutnTxn(authTxn);
 		}
 	}
+
+	
 }

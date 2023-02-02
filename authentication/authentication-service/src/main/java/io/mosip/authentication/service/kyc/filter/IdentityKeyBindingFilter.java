@@ -16,18 +16,18 @@ import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class KycAuthFilter - used to authenticate the request and returns
- * kyc token and partner specific token as response.
+ * The Class IdentityKeyBindingFilter - used to authenticate the user and returns
+ * IDA signed Certificate.
  * 
  * @author Mahammed Taheer
  */
 @Component
-public class KycAuthFilter extends IdAuthFilter {
+public class IdentityKeyBindingFilter extends IdAuthFilter {
 
-	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthFilter.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdentityKeyBindingFilter.class);
 
 	/** The Constant KYC. */
-	private static final String KYC_AUTH = "kycauth";
+	private static final String KEY_BINDING = "keybinding";
 	
 	@Override
 	protected boolean isPartnerCertificateNeeded() {
@@ -43,12 +43,20 @@ public class KycAuthFilter extends IdAuthFilter {
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException {
-		if (!isAllowedAuthType(KYC_AUTH, authPolicies)) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNAUTHORISED_KYC_AUTH_PARTNER.getErrorCode(),
-					IdAuthenticationErrorConstants.UNAUTHORISED_KYC_AUTH_PARTNER.getErrorMessage());
+		if (!isAllowedAuthType(KEY_BINDING, authPolicies)) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNAUTHORISED_KEY_BINDING_PARTNER.getErrorCode(),
+					IdAuthenticationErrorConstants.UNAUTHORISED_KEY_BINDING_PARTNER.getErrorMessage());
 
 		}
-		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkMandatoryAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	 */
+	@Override
+	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
+			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
+		// Nothing to do
 	}
 	
 	@Override
@@ -68,7 +76,7 @@ public class KycAuthFilter extends IdAuthFilter {
 	
 	@Override
 	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
-		return attribute + KYC_AUTH;
+		return attribute + KEY_BINDING;
 	}
 	
 	protected boolean needStoreAuthTransaction() {
@@ -91,17 +99,18 @@ public class KycAuthFilter extends IdAuthFilter {
 
 	@Override
 	protected boolean isAMRValidationRequired() {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
-		// check whether policy is allowed for kyc auth or not.
-		if (!mispPolicy.isAllowKycRequestDelegation()) {
+		// check whether policy is allowed for key binding or not.
+		if (!mispPolicy.isAllowKeyBindingDelegation()) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
-							"MISP Partner not allowed for the Auth Type - kyc-auth.");
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.KYC_AUTH_NOT_ALLOWED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.KYC_AUTH_NOT_ALLOWED.getErrorMessage(), "KYC-AUTH"));
+					"MISP Partner not allowed for key binding for an identity - identiy-key-binding.");
+			throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.KEY_BINDING_NOT_ALLOWED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.KEY_BINDING_NOT_ALLOWED.getErrorMessage(), "KEY-BINDING"));
 		}
 	}
 }

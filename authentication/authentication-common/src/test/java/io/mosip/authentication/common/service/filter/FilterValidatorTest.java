@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
@@ -94,6 +95,11 @@ public class FilterValidatorTest {
 		protected boolean isAMRValidationRequired() {
 			return false;
 		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+       }
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -147,6 +153,11 @@ public class FilterValidatorTest {
 		protected boolean isAMRValidationRequired() {
 			return false;
 		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+       }
 	};
 
 	@Mock

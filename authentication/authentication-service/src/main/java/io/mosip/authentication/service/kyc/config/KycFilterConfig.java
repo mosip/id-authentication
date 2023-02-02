@@ -4,6 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.service.kyc.filter.IdentityKeyBindingFilter;
 import io.mosip.authentication.service.kyc.filter.KycAuthFilter;
 import io.mosip.authentication.service.kyc.filter.KycAuthenticationFilter;
 import io.mosip.authentication.service.kyc.filter.KycExchangeFilter;
@@ -52,6 +53,19 @@ public class KycFilterConfig {
 		FilterRegistrationBean<KycExchangeFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new KycExchangeFilter());
 		registrationBean.addUrlPatterns("/kyc-exchange/*");
+		return registrationBean;
+	} 
+
+	/**
+	 * Gets the Kyc Exchange filter.
+	 *
+	 * @return the Kyc Exchange filter
+	 */
+	@Bean
+	public FilterRegistrationBean<IdentityKeyBindingFilter> getKeyBindingFilter() {
+		FilterRegistrationBean<IdentityKeyBindingFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new IdentityKeyBindingFilter());
+		registrationBean.addUrlPatterns("/identiy-key-binding/*");
 		return registrationBean;
 	} 
 }

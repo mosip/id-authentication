@@ -50,6 +50,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -547,6 +548,8 @@ public abstract class BaseIDAFilter implements Filter {
 	protected abstract boolean isCertificateValidationRequired();
 
 	protected abstract boolean isAMRValidationRequired();
+
+	protected abstract void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException;
 
 	/*
 	 * (non-Javadoc)
