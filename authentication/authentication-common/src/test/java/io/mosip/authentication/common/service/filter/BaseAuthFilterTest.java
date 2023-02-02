@@ -41,6 +41,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 
 @RunWith(SpringRunner.class)
@@ -138,6 +139,11 @@ public class BaseAuthFilterTest {
 		protected boolean isAMRValidationRequired() {
 			return false;
 		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+        	// Nothing required, Ignoring for other filters.
+       }
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

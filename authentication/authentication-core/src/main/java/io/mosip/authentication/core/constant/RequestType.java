@@ -17,7 +17,8 @@ public enum RequestType {
 	STATICPIN_STORE_REQUEST("STATIC-PIN-STORAGE","Static Pin Store Request"),
 	EKYC_AUTH_REQUEST("EKYC-AUTH","EKYC Authentication Request"),
 	KYC_AUTH_REQUEST("KYC-AUTH","KYC Authentication Request"),
-	KYC_EXCHANGE_REQUEST("KYC-EXCHANGE","KYC Exchange Request");
+	KYC_EXCHANGE_REQUEST("KYC-EXCHANGE","KYC Exchange Request"),
+	IDENTITY_KEY_BINDING("IDENTITY-KEY-BINDING","Identity Key Binding Request");
 
 	String type;
 	String message;

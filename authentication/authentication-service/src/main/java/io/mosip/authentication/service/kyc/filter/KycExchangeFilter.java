@@ -7,9 +7,13 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class KycExchangeFilter - used to validate the request and returns
@@ -19,6 +23,8 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
  */
 @Component
 public class KycExchangeFilter extends IdAuthFilter {
+
+	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthFilter.class);
 
 	/** The Constant KYC. */
 	private static final String KYC_EXCHANGE = "kycexchange";
@@ -94,5 +100,16 @@ public class KycExchangeFilter extends IdAuthFilter {
 	@Override
 	protected boolean isAMRValidationRequired() {
 		return false;
+	}
+
+	@Override
+	protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+		// check whether policy is allowed for kyc exchange or not.
+		if (!mispPolicy.isAllowKycRequestDelegation()) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
+							"MISP Partner not allowed for the Auth Type - kyc-exchange.");
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.KYC_EXCHANGE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.KYC_EXCHANGE_NOT_ALLOWED.getErrorMessage(), "KYC-EXCHANGE"));
+		}
 	}
 }

@@ -366,4 +366,52 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 		return (String) idResDTO.get(ID_HASH);
 
 	}
+
+	@Override
+	public void checkIdKeyBindingPermitted(String idvId, String idvIdType) throws IdAuthenticationBusinessException {
+		try {
+			String idVidHash = securityManager.hash(idvId);
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+						"Checking Id Key Binding Permitted or not. IdVidHash: " + idVidHash);
+			// Assumption : If transactionLimit is null, id is considered as Perpetual VID
+			// If transactionLimit is nonNull, id is considered as Temporary VID
+			// Duplicated identity data fetching from DB, because to avoid lot of if else conditions needs to be added in 
+			// above getIdentity method. Above getIdentity method also includes data decryption logic. 
+			List<Object[]> entityObjList = identityRepo.findTransactionLimitById(idVidHash);
+			if(entityObjList.size() == 0) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+						"Id not found in DB");
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage()));
+			}
+			Object[] entityObjs = entityObjList.get(0);
+			
+			LocalDateTime expiryTimestamp = Objects.nonNull(entityObjs[1]) ? LocalDateTime.parse(String.valueOf(entityObjs[1])) : null;
+
+			if (Objects.nonNull(expiryTimestamp)
+					&& DateUtils.before(expiryTimestamp, DateUtils.getUTCCurrentDateTime())) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+					idvIdType + " expired/deactivated/revoked/blocked");
+				IdAuthenticationErrorConstants errorConstant;
+				if (idvIdType.equals(IdType.UIN.getType())) {
+					errorConstant = IdAuthenticationErrorConstants.UIN_DEACTIVATED_BLOCKED;
+				} else {
+					errorConstant = IdAuthenticationErrorConstants.VID_EXPIRED_DEACTIVATED_REVOKED;
+				}
+				throw new IdAuthenticationBusinessException(errorConstant);
+			}
+			
+			int transactionLimit = Objects.nonNull(entityObjs[2]) ? Integer.parseInt(String.valueOf(entityObjs[2])) : -1;
+			if (transactionLimit > 0) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+						"Id not allowed for identity key binding.");
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_KEY_BINDING_NOT_ALLOWED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.ID_KEY_BINDING_NOT_ALLOWED.getErrorMessage()));
+			} 
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
 }

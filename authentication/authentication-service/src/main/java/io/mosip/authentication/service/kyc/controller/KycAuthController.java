@@ -33,17 +33,17 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
-import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
 import io.mosip.authentication.service.kyc.validator.KycExchangeRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -87,7 +87,7 @@ public class KycAuthController {
 
 	/** The auth facade. */
 	@Autowired
-	private KycFacadeImpl kycFacade;
+	private KycFacade kycFacade;
 	
 	@Autowired
 	private AuditHelper auditHelper;
@@ -176,8 +176,9 @@ public class KycAuthController {
 					kycReqValidator.validateDeviceDetails(ekycAuthRequestDTO, errors);
 				}
 				DataValidationUtil.validate(errors);
-				
-				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, true, partnerId, partnerApiKey, requestWrapperWithMetadata);
+				boolean externalAuthRequest = true;
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, externalAuthRequest, 
+														partnerId, partnerApiKey, requestWrapperWithMetadata);
 				EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
 				if (authResponseDTO != null && 
@@ -253,8 +254,8 @@ public class KycAuthController {
 					kycReqValidator.validateDeviceDetails(authRequestDTO, errors);
 				}
 				DataValidationUtil.validate(errors);
-				
-				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, true, partnerId, 
+				boolean externalAuthRequest = true;
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, externalAuthRequest, partnerId, 
 								oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
 				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
