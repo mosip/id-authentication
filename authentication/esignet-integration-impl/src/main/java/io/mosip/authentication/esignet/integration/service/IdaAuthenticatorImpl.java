@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 
+import io.mosip.authentication.esignet.integration.dto.ClientIdSecretKeyRequest;
+import io.mosip.authentication.esignet.integration.dto.GetAllCertificatesResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeRequest;
@@ -58,8 +61,12 @@ import io.mosip.esignet.api.dto.SendOtpDto;
 import io.mosip.esignet.api.dto.SendOtpResult;
 import io.mosip.esignet.api.exception.KycAuthException;
 import io.mosip.esignet.api.exception.KycExchangeException;
+import io.mosip.esignet.api.exception.KycSigningCertificateException;
 import io.mosip.esignet.api.exception.SendOtpException;
 import io.mosip.esignet.api.spi.Authenticator;
+import io.mosip.esignet.api.util.ErrorConstants;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
@@ -83,7 +90,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
     public static final String INVALID_PARTNER_CERTIFICATE = "invalid_partner_cert";
     private static final List<String> keyBoundAuthFactorTypes = Arrays.asList("WLA");
     public static final String OIDC_PARTNER_APP_ID = "OIDC_PARTNER";
-    public static final String AUTH_FAILED = "auth_failed";
+    
     public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     @Value("${mosip.esignet.authenticator.ida-id:mosip.identity.kycauth}")
@@ -112,7 +119,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
     @Value("${mosip.esignet.authenticator.ida.kyc-auth-url}")
     private String kycAuthUrl;
-
+    
     @Value("${mosip.esignet.authenticator.ida.kyc-exchange-url}")
     private String kycExchangeUrl;
 
@@ -124,6 +131,27 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
     @Value("${mosip.esignet.authenticator.ida.cert-url}")
     private String idaPartnerCertificateUrl;
+    
+    @Value("${mosip.esignet.authenticator.ida.get-certificates-url}")
+    private String getCertsUrl;
+    
+    @Value("${mosip.esignet.authenticator.ida.auth-token-url}")
+    private String authTokenUrl;
+    
+    @Value("${mosip.esignet.authenticator.ida.client-id}")
+    private String clientId;
+    
+    @Value("${mosip.esignet.authenticator.ida.secret-key}")
+    private String secretKey;
+    
+    @Value("${mosip.esignet.authenticator.ida.app-id}")
+    private String appId;
+    
+    @Value("${mosip.esignet.authenticator.ida.application-id}")
+    private String applicationId;
+    
+    @Value("${mosip.esignet.authenticator.ida.reference-id}")
+    private String referenceId;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -210,7 +238,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 log.error("Error response received from IDA KycStatus : {} && Errors: {}",
                         responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());
                 throw new KycAuthException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                         AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                         ErrorConstants.AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
 
             log.error("Error response received from IDA (Kyc-auth) with status : {}", responseEntity.getStatusCode());
@@ -218,7 +246,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
             log.error("KYC-auth failed with transactionId : {} && clientId : {}", kycAuthDto.getTransactionId(),
                     clientId, e);
         }
-        throw new KycAuthException(AUTH_FAILED);
+        throw new KycAuthException(ErrorConstants.AUTH_FAILED);
     }
 
     @Override
@@ -257,7 +285,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 }
                 log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());
                 throw new KycExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                        AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                		ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
 
             log.error("Error response received from IDA (Kyc-exchange) with status : {}", responseEntity.getStatusCode());
@@ -315,12 +343,55 @@ public class IdaAuthenticatorImpl implements Authenticator {
     }
 
     @Override
-    public List<KycSigningCertificateData> getAllKycSigningCertificates() {
-        List<KycSigningCertificateData> certs = new ArrayList<>();
-        return certs;
+    public List<KycSigningCertificateData> getAllKycSigningCertificates() throws KycSigningCertificateException {
+    	try {
+    		String authToken = getAuthToken();
+
+            RequestEntity requestEntity = RequestEntity
+                     .get(UriComponentsBuilder.fromUriString(getCertsUrl).queryParam("applicationId", applicationId).queryParam("referenceId", referenceId).build().toUri())
+                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
+                     .header(HttpHeaders.COOKIE, "Authorization=" + authToken)
+                     .build();
+            
+            ResponseEntity<ResponseWrapper<GetAllCertificatesResponse>> responseEntity = restTemplate.exchange(requestEntity,
+                     new ParameterizedTypeReference<ResponseWrapper<GetAllCertificatesResponse>>() {});
+            
+            if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
+            	ResponseWrapper<GetAllCertificatesResponse> responseWrapper = responseEntity.getBody();
+                if(responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null) {
+                    return responseWrapper.getResponse().getAllCertificates();
+                }
+                log.error("Error response received from getAllSigningCertificates with errors: {}",
+                        responseWrapper.getErrors());
+                throw new KycSigningCertificateException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+                		ErrorConstants.KYC_SIGNING_CERTIFICATE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+            }
+            log.error("Error response received from getAllSigningCertificates with status : {}", responseEntity.getStatusCode());
+    	} catch (KycSigningCertificateException e) { throw e; } catch (Exception e) {
+            log.error("getAllKycSigningCertificates failed with clientId : {}", clientId, e);
+        }
+    	throw new KycSigningCertificateException();
     }
 
-    private void buildAuthRequest(String authFactor, String authChallenge,
+    private String getAuthToken() throws Exception {
+    	RequestWrapper<ClientIdSecretKeyRequest> authRequest = new RequestWrapper<>();
+    	authRequest.setRequesttime(LocalDateTime.now());
+    	ClientIdSecretKeyRequest clientIdSecretKeyRequest = new ClientIdSecretKeyRequest(clientId, secretKey, appId);
+    	authRequest.setRequest(clientIdSecretKeyRequest);
+    	
+    	String requestBody = objectMapper.writeValueAsString(authRequest);
+    	RequestEntity requestEntity = RequestEntity
+                 .post(UriComponentsBuilder.fromUriString(authTokenUrl).build().toUri())
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
+                 .body(requestBody);
+        ResponseEntity<ResponseWrapper> responseEntity = restTemplate.exchange(requestEntity,
+                 new ParameterizedTypeReference<ResponseWrapper>() {});
+        
+        return responseEntity.getHeaders().getFirst("authorization");
+	}
+
+	private void buildAuthRequest(String authFactor, String authChallenge,
                                   IdaKycAuthRequest.AuthRequest authRequest, IdaKycAuthRequest idaKycAuthRequest) {
         log.info("Build kyc-auth request with authFactor : {}",  authFactor);
         switch (authFactor.toUpperCase()) {
