@@ -349,7 +349,6 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             RequestEntity requestEntity = RequestEntity
                      .get(UriComponentsBuilder.fromUriString(getCertsUrl).queryParam("applicationId", applicationId).queryParam("referenceId", referenceId).build().toUri())
-                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
                      .header(HttpHeaders.COOKIE, "Authorization=" + authToken)
                      .build();
             
@@ -383,7 +382,6 @@ public class IdaAuthenticatorImpl implements Authenticator {
     	RequestEntity requestEntity = RequestEntity
                  .post(UriComponentsBuilder.fromUriString(authTokenUrl).build().toUri())
                  .contentType(MediaType.APPLICATION_JSON)
-                 .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
                  .body(requestBody);
         ResponseEntity<ResponseWrapper> responseEntity = restTemplate.exchange(requestEntity,
                  new ParameterizedTypeReference<ResponseWrapper>() {});
