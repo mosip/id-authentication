@@ -735,16 +735,9 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.MISP_POLICY_NOT_FOUND.getErrorCode(), 
 					IdAuthenticationErrorConstants.MISP_POLICY_NOT_FOUND.getErrorMessage());
 			}
-			// check whether policy is allowed or not for authentication.
-			if (!mispPolicy.isAllowKycRequestDelegation()) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
-						"MISP Partner not allowed for the Auth Type - kyc-auth, kyc-exchange.");
-				throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "KYC-AUTH"));
-			}
+			// check whether policy is allowed or not for kyc-auth/kyc-exchange/key-binding.
+            checkMispPolicyAllowed(mispPolicy);
 			// TODO For KYC OTP request need to handle thru different filter. We will implement later.
-
 		}
 	}
 	/**
@@ -1136,6 +1129,11 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		//After integration with 1.1.5.1 version of keymanager, thumbprint is always mandated for decryption.
 		return true;
 	}
+
+	@Override
+	protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+        // Nothing required, Ignoring for other filters.
+    }
 
 	/**
 	 * Checks if is trust validation required.

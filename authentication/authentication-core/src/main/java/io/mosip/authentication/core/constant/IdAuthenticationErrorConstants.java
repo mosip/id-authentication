@@ -65,11 +65,10 @@ public enum IdAuthenticationErrorConstants {
 			"Please capture biometrics within %s seconds of previous biometric capture"),
 	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics not captured within %s seconds of previous biometrics",
 			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
-	
-	
-	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
+		
+	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
 				"Please re-enter your %s in %s"),
-		DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
+	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "Please provide valid Language"),
     DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
@@ -131,6 +130,13 @@ public enum IdAuthenticationErrorConstants {
 	OIDC_CLIENT_NOT_REGISTERED("IDA-MPA-028", "OIDC Client is not registered"),
 	OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED("IDA-MPA-029", "%s Authentication usage not allowed as per client AMR configuration",
 			"Please use other Authentication Types in the request"),
+	KYC_AUTH_NOT_ALLOWED("IDA-MPA-030", "%s Authentication usage not allowed as per policy",
+			"Please try after updating misp policy"),
+	KYC_EXCHANGE_NOT_ALLOWED("IDA-MPA-031", "%s not allowed as per policy",
+			"Please try after updating misp policy"),
+	KEY_BINDING_NOT_ALLOWED("IDA-MPA-032", "%s not allowed as per policy",
+			"Please try after updating misp policy"),
+	UNAUTHORISED_KEY_BINDING_PARTNER("IDA-MPA-033", "Partner is unauthorised for KeyBinding"),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -179,7 +185,13 @@ public enum IdAuthenticationErrorConstants {
 	KYC_TOKEN_ALREADY_PROCESSED("IDA-KYE-003", "KYC Token already processed."),
 	KYC_TOKEN_INVALID_OIDC_CLIENT_ID("IDA-KYE-004", "KYC Token does not belong to the input oidc client id."),
 	KYC_TOKEN_INVALID_TRANSACTION_ID("IDA-KYE-005", "KYC Auth and KYC Exchange transaction ids are different."),
-	PARTNER_POLICY_NOT_FOUND("IDA-KYE-004", "Partner Policy not found.");
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-004", "Partner Policy not found."),
+	
+	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
+	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
+	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binding to another Id."),
+	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
+	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object.");
 	
 	private final String errorCode;
 	private final String errorMessage;

@@ -15,4 +15,6 @@ public class MispPolicyDTO {
     private boolean allowKycRequestDelegation;
 
     private boolean allowOTPRequestDelegation;
+
+    private boolean allowKeyBindingDelegation;
 }
