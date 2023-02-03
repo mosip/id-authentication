@@ -147,10 +147,10 @@ public class IdaAuthenticatorImpl implements Authenticator {
     @Value("${mosip.esignet.authenticator.ida.app-id}")
     private String appId;
     
-    @Value("${mosip.esignet.authenticator.ida.application-id}")
+    @Value("${mosip.esignet.authenticator.ida.application-id:IDA}")
     private String applicationId;
     
-    @Value("${mosip.esignet.authenticator.ida.reference-id}")
+    @Value("${mosip.esignet.authenticator.ida.reference-id:SIGN}")
     private String referenceId;
 
     @Autowired
