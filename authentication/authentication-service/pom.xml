@@ -253,8 +253,6 @@
 					<artifactId>kernel-core</artifactId>
 				</exclusion>
 			</exclusions>
-<<<<<<< HEAD
-=======
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
