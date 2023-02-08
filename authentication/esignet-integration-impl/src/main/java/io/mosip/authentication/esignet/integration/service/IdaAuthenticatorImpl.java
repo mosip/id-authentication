@@ -5,24 +5,10 @@
  */
 package io.mosip.authentication.esignet.integration.service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,14 +19,10 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 
 import io.mosip.authentication.esignet.integration.dto.ClientIdSecretKeyRequest;
 import io.mosip.authentication.esignet.integration.dto.GetAllCertificatesResponse;
@@ -50,8 +32,6 @@ import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
-import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
-import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.KycAuthDto;
 import io.mosip.esignet.api.dto.KycAuthResult;
 import io.mosip.esignet.api.dto.KycExchangeDto;
@@ -67,15 +47,6 @@ import io.mosip.esignet.api.spi.Authenticator;
 import io.mosip.esignet.api.util.ErrorConstants;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.HMACUtils2;
-import io.mosip.kernel.crypto.jce.core.CryptoCore;
-import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
-import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
-import io.mosip.kernel.partnercertservice.util.PartnerCertificateManagerUtil;
-import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
-import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
-import io.mosip.kernel.signature.service.SignatureService;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -84,23 +55,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IdaAuthenticatorImpl implements Authenticator {
 
-    public static final String KYC_EXCHANGE_TYPE = "oidc";
     public static final String SIGNATURE_HEADER_NAME = "signature";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    public static final String INVALID_PARTNER_CERTIFICATE = "invalid_partner_cert";
-    private static final List<String> keyBoundAuthFactorTypes = Arrays.asList("WLA");
-    public static final String OIDC_PARTNER_APP_ID = "OIDC_PARTNER";
-    
-    public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String KYC_EXCHANGE_TYPE = "oidc";
 
-    @Value("${mosip.esignet.authenticator.ida-id:mosip.identity.kycauth}")
+    @Value("${mosip.esignet.authenticator.ida-auth-id:mosip.identity.kycauth}")
     private String kycAuthId;
 
-    @Value("${mosip.esignet.authenticator.ida-id:mosip.identity.kycexchange}")
+    @Value("${mosip.esignet.authenticator.ida-exchange-id:mosip.identity.kycexchange}")
     private String kycExchangeId;
-
-    @Value("${mosip.esignet.authenticator.ida-send-otp-id:mosip.identity.otp}")
-    private String sendOtpId;
 
     @Value("${mosip.esignet.authenticator.ida-version:1.0}")
     private String idaVersion;
@@ -111,27 +74,15 @@ public class IdaAuthenticatorImpl implements Authenticator {
     @Value("${mosip.esignet.authenticator.ida-env:Staging}")
     private String idaEnv;
 
-    @Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
-    private String symmetricAlgorithm;
-
-    @Value("${mosip.kernel.keygenerator.symmetric-key-length}")
-    private int symmetricKeyLength;
-
     @Value("${mosip.esignet.authenticator.ida.kyc-auth-url}")
     private String kycAuthUrl;
     
     @Value("${mosip.esignet.authenticator.ida.kyc-exchange-url}")
     private String kycExchangeUrl;
 
-    @Value("${mosip.esignet.authenticator.ida.send-otp-url}")
-    private String sendOtpUrl;
-
     @Value("${mosip.esignet.authenticator.ida.otp-channels}")
     private List<String> otpChannels;
 
-    @Value("${mosip.esignet.authenticator.ida.cert-url}")
-    private String idaPartnerCertificateUrl;
-    
     @Value("${mosip.esignet.authenticator.ida.get-certificates-url}")
     private String getCertsUrl;
     
@@ -160,23 +111,8 @@ public class IdaAuthenticatorImpl implements Authenticator {
     private RestTemplate restTemplate;
 
     @Autowired
-    private KeymanagerUtil keymanagerUtil;
+    HelperService helperService;
 
-    @Autowired
-    private SignatureService signatureService;
-
-    @Autowired
-    private CryptoCore cryptoCore;
-
-    private Certificate idaPartnerCertificate;
-    
-    private static Base64.Encoder urlSafeEncoder;
-    private static Base64.Decoder urlSafeDecoder;
-    
-    static {
-        urlSafeEncoder = Base64.getUrlEncoder().withoutPadding();
-        urlSafeDecoder = Base64.getUrlDecoder();
-    }
 
     @Override
     public KycAuthResult doKycAuth(String relyingPartyId, String clientId, KycAuthDto kycAuthDto)
@@ -184,46 +120,23 @@ public class IdaAuthenticatorImpl implements Authenticator {
         log.info("Started to build kyc-auth request with transactionId : {} && clientId : {}",
                 kycAuthDto.getTransactionId(), clientId);
         try {
-            List<AuthChallenge> nonKeyBoundChallenges = kycAuthDto.getChallengeList().stream()
-                    .filter( authChallenge -> !keyBoundAuthFactorTypes.contains(authChallenge.getAuthFactorType()) )
-                    .collect(Collectors.toList());
-
             IdaKycAuthRequest idaKycAuthRequest = new IdaKycAuthRequest();
             idaKycAuthRequest.setId(kycAuthId);
             idaKycAuthRequest.setVersion(idaVersion);
-            idaKycAuthRequest.setRequestTime(getUTCDateTime());
+            idaKycAuthRequest.setRequestTime(HelperService.getUTCDateTime());
             idaKycAuthRequest.setDomainUri(idaDomainUri);
             idaKycAuthRequest.setEnv(idaEnv);
             idaKycAuthRequest.setConsentObtained(true);
             idaKycAuthRequest.setIndividualId(kycAuthDto.getIndividualId());
             idaKycAuthRequest.setTransactionID(kycAuthDto.getTransactionId());
-
-            IdaKycAuthRequest.AuthRequest authRequest = new IdaKycAuthRequest.AuthRequest();
-            authRequest.setTimestamp(getUTCDateTime());
-            nonKeyBoundChallenges.stream()
-                    .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
-                    .forEach( auth -> { buildAuthRequest(auth.getAuthFactorType(), auth.getChallenge(), authRequest, idaKycAuthRequest); });
-
-            KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
-            final SecretKey symmetricKey = keyGenerator.generateKey();
-            String request = objectMapper.writeValueAsString(authRequest);
-            String hexEncodedHash = HMACUtils2.digestAsPlainText(request.getBytes(StandardCharsets.UTF_8));
-            idaKycAuthRequest.setRequest(b64Encode(CryptoUtil.symmetricEncrypt(symmetricKey,
-                    request.getBytes(StandardCharsets.UTF_8))));
-            idaKycAuthRequest.setRequestHMAC(b64Encode(CryptoUtil.symmetricEncrypt(symmetricKey,
-                    hexEncodedHash.getBytes(StandardCharsets.UTF_8))));
-            Certificate certificate = getIdaPartnerCertificate();
-            idaKycAuthRequest.setThumbprint(b64Encode(getCertificateThumbprint(certificate)));
-            log.info("IDA certificate thumbprint {}", idaKycAuthRequest.getThumbprint());
-            idaKycAuthRequest.setRequestSessionKey(b64Encode(
-                    cryptoCore.asymmetricEncrypt(certificate.getPublicKey(), symmetricKey.getEncoded())));
+            helperService.setAuthRequest(kycAuthDto.getChallengeList(), idaKycAuthRequest);
 
             //set signature header, body and invoke kyc auth endpoint
             String requestBody = objectMapper.writeValueAsString(idaKycAuthRequest);
             RequestEntity requestEntity = RequestEntity
                     .post(UriComponentsBuilder.fromUriString(kycAuthUrl).pathSegment(relyingPartyId, clientId).build().toUri())
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .header(SIGNATURE_HEADER_NAME, getRequestSignature(requestBody))
+                    .header(SIGNATURE_HEADER_NAME, helperService.getRequestSignature(requestBody))
                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
                     .body(requestBody);
             ResponseEntity<IdaResponseWrapper<IdaKycAuthResponse>> responseEntity = restTemplate.exchange(requestEntity,
@@ -258,12 +171,12 @@ public class IdaAuthenticatorImpl implements Authenticator {
             IdaKycExchangeRequest idaKycExchangeRequest = new IdaKycExchangeRequest();
             idaKycExchangeRequest.setId(kycExchangeId);
             idaKycExchangeRequest.setVersion(idaVersion);
-            idaKycExchangeRequest.setRequestTime(getUTCDateTime());
+            idaKycExchangeRequest.setRequestTime(HelperService.getUTCDateTime());
             idaKycExchangeRequest.setTransactionID(kycExchangeDto.getTransactionId());
             idaKycExchangeRequest.setKycToken(kycExchangeDto.getKycToken());
             idaKycExchangeRequest.setConsentObtained(kycExchangeDto.getAcceptedClaims());
             idaKycExchangeRequest.setLocales(Arrays.asList(kycExchangeDto.getClaimsLocales()));
-            idaKycExchangeRequest.setRespType(KYC_EXCHANGE_TYPE);
+            idaKycExchangeRequest.setRespType(kycExchangeDto.getUserInfoResponseType()); //may be either JWT or JWE
             idaKycExchangeRequest.setIndividualId(kycExchangeDto.getIndividualId());
 
             //set signature header, body and invoke kyc exchange endpoint
@@ -272,7 +185,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                     .post(UriComponentsBuilder.fromUriString(kycExchangeUrl).pathSegment(relyingPartyId,
                             clientId).build().toUri())
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .header(SIGNATURE_HEADER_NAME, getRequestSignature(requestBody))
+                    .header(SIGNATURE_HEADER_NAME, helperService.getRequestSignature(requestBody))
                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
                     .body(requestBody);
             ResponseEntity<IdaResponseWrapper<IdaKycExchangeResponse>> responseEntity = restTemplate.exchange(requestEntity,
@@ -304,34 +217,10 @@ public class IdaAuthenticatorImpl implements Authenticator {
             idaSendOtpRequest.setOtpChannel(sendOtpDto.getOtpChannels());
             idaSendOtpRequest.setIndividualId(sendOtpDto.getIndividualId());
             idaSendOtpRequest.setTransactionID(sendOtpDto.getTransactionId());
-            idaSendOtpRequest.setId(sendOtpId);
-            idaSendOtpRequest.setVersion(idaVersion);
-            idaSendOtpRequest.setRequestTime(getUTCDateTime());
-
-            //set signature header, body and invoke kyc exchange endpoint
-            String requestBody = objectMapper.writeValueAsString(idaSendOtpRequest);
-            RequestEntity requestEntity = RequestEntity
-                    .post(UriComponentsBuilder.fromUriString(sendOtpUrl).pathSegment(relyingPartyId, clientId).build().toUri())
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .header(SIGNATURE_HEADER_NAME, getRequestSignature(requestBody))
-                    .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
-                    .body(requestBody);
-            ResponseEntity<IdaSendOtpResponse> responseEntity = restTemplate.exchange(requestEntity,
-                            IdaSendOtpResponse.class);
-
-            if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
-                IdaSendOtpResponse idaSendOtpResponse = responseEntity.getBody();
-                if(idaSendOtpRequest.getTransactionID().equals(idaSendOtpResponse.getTransactionID()) && idaSendOtpResponse.getResponse() != null){
-                    return new SendOtpResult(idaSendOtpResponse.getTransactionID(),
-                            idaSendOtpResponse.getResponse().getMaskedEmail(),
-                            idaSendOtpResponse.getResponse().getMaskedMobile());
-                }
-                log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());
-                throw new SendOtpException(idaSendOtpResponse.getErrors().get(0).getErrorCode());
-            }
-
-            log.error("Error response received from IDA (send-otp) with status : {}", responseEntity.getStatusCode());
-        } catch (SendOtpException e) { throw e; } catch (Exception e) {
+            return helperService.sendOTP(relyingPartyId, clientId, idaSendOtpRequest);
+        } catch (SendOtpException e) {
+            throw e;
+        } catch (Exception e) {
             log.error("send-otp failed with clientId : {}", clientId, e);
         }
         throw new SendOtpException();
@@ -388,105 +277,4 @@ public class IdaAuthenticatorImpl implements Authenticator {
         
         return responseEntity.getHeaders().getFirst("authorization");
 	}
-
-	private void buildAuthRequest(String authFactor, String authChallenge,
-                                  IdaKycAuthRequest.AuthRequest authRequest, IdaKycAuthRequest idaKycAuthRequest) {
-        log.info("Build kyc-auth request with authFactor : {}",  authFactor);
-        switch (authFactor.toUpperCase()) {
-            case "OTP" : authRequest.setOtp(authChallenge);
-                break;
-            case "PIN" : authRequest.setStaticPin(authChallenge);
-                break;
-            case "BIO" :
-                byte[] decodedBio = b64Decode(authChallenge);
-                try {
-                    List<IdaKycAuthRequest.Biometric> biometrics = objectMapper.readValue(decodedBio,
-                            new TypeReference<List<IdaKycAuthRequest.Biometric>>(){});
-                    authRequest.setBiometrics(biometrics);
-                    if(biometrics != null && !biometrics.isEmpty()) {
-                        JWT jwt = JWTParser.parse(authRequest.getBiometrics().get(0).getData());
-                        idaKycAuthRequest.setTransactionID(jwt.getJWTClaimsSet().getStringClaim("transactionId"));
-                    }
-                } catch (Exception e) {
-                    log.error("Failed to parse biometric capture response", e);
-                }
-                break;
-
-            default:
-                throw new NotImplementedException("KYC auth not implemented");
-        }
-    }
-
-    private byte[] getCertificateThumbprint(Certificate certificate) {
-        try {
-            return DigestUtils.sha256(certificate.getEncoded());
-        } catch (CertificateEncodingException e) {
-            log.error("Failed to get cert thumbprint", e);
-        }
-        return new byte[]{};
-    }
-
-    private String getRequestSignature(String request) {
-        JWTSignatureRequestDto jwtSignatureRequestDto = new JWTSignatureRequestDto();
-        jwtSignatureRequestDto.setApplicationId(OIDC_PARTNER_APP_ID);
-        jwtSignatureRequestDto.setReferenceId("");
-        jwtSignatureRequestDto.setIncludePayload(false);
-        jwtSignatureRequestDto.setIncludeCertificate(true);
-        jwtSignatureRequestDto.setDataToSign(b64Encode(request));
-        JWTSignatureResponseDto responseDto = signatureService.jwtSign(jwtSignatureRequestDto);
-        log.debug("Request signature ---> {}", responseDto.getJwtSignedData());
-        return responseDto.getJwtSignedData();
-    }
-
-    private Certificate getIdaPartnerCertificate() throws KycAuthException {
-        if(StringUtils.isEmpty(idaPartnerCertificate)) {
-            log.info("Fetching IDA partner certificate from : {}", idaPartnerCertificateUrl);
-            idaPartnerCertificate = keymanagerUtil.convertToCertificate(restTemplate.getForObject(idaPartnerCertificateUrl,
-                    String.class));
-        }
-        if(PartnerCertificateManagerUtil.isCertificateDatesValid((X509Certificate)idaPartnerCertificate))
-            return idaPartnerCertificate;
-
-        log.info("PARTNER CERTIFICATE IS NOT VALID, Downloading the certificate again");
-        idaPartnerCertificate = keymanagerUtil.convertToCertificate(restTemplate.getForObject(idaPartnerCertificateUrl,
-                String.class));
-        if(PartnerCertificateManagerUtil.isCertificateDatesValid((X509Certificate)idaPartnerCertificate))
-            return idaPartnerCertificate;
-
-        throw new KycAuthException(INVALID_PARTNER_CERTIFICATE);
-    }
-    
-    private void sendOtpRequest(String relyingPartyId, String clientId, String transactionId, String individualId) {
-        try {
-            SendOtpDto sendOtpDto = new SendOtpDto();
-            sendOtpDto.setTransactionId(transactionId);
-            sendOtpDto.setIndividualId(individualId);
-            sendOtpDto.setOtpChannels(Arrays.asList("email"));
-            sendOtp(relyingPartyId, clientId, sendOtpDto);
-        } catch (SendOtpException e) {
-            log.error("Failed to send otp for transaction : {}", transactionId, e);
-        }
-    }
-    
-    /**
-     * Output format : 2022-12-01T03:22:46.720Z
-     * @return Formatted datetime
-     */
-    private static String getUTCDateTime() {
-        return ZonedDateTime
-                .now(ZoneOffset.UTC)
-                .format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
-    }
-    
-    public static String b64Encode(byte[] bytes) {
-        return urlSafeEncoder.encodeToString(bytes);
-    }
-
-    public static String b64Encode(String value) {
-        return urlSafeEncoder.encodeToString(value.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static byte[] b64Decode(String value) {
-        return urlSafeDecoder.decode(value);
-    }
 }
