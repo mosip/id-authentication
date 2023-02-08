@@ -1,20 +1,15 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package io.mosip.authentication.esignet.integration.service;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +29,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWK;
 
@@ -42,9 +36,7 @@ import io.mosip.authentication.esignet.integration.dto.GetAllCertificatesRespons
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest.Biometric;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeResponse;
-import io.mosip.authentication.esignet.integration.dto.IdaOtpResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
-import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
 import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.KycAuthDto;
 import io.mosip.esignet.api.dto.KycAuthResult;
@@ -59,12 +51,7 @@ import io.mosip.esignet.api.exception.KycSigningCertificateException;
 import io.mosip.esignet.api.exception.SendOtpException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.crypto.jce.core.CryptoCore;
-import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
-import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
-import io.mosip.kernel.signature.service.SignatureService;
-import io.mosip.authentication.esignet.integration.dto.Error;
 
 @SuppressWarnings("deprecation")
 @SpringBootTest
@@ -81,31 +68,20 @@ public class IdaAuthenticatorImplTest {
 	RestTemplate restTemplate;
 
 	@Mock
-	KeymanagerService keymanagerService;
+	HelperService helperService;
 
-	@Mock
-	KeymanagerUtil keymanagerUtil;
-
-	@Mock
-	SignatureService signatureService;
-
-	@Mock
-	CryptoCore cryptoCore;
-
-	@Mock
-	DigestUtils digestUtils;
-
-	private JWK clientJWK = TestUtil.generateJWK_RSA();
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		ReflectionTestUtils.setField(idaAuthenticatorImpl, "sendOtpUrl", "https:/");
+
+		ReflectionTestUtils.setField(helperService, "sendOtpUrl", "https:/");
+		ReflectionTestUtils.setField(helperService, "idaPartnerCertificateUrl", "https://test");
+		ReflectionTestUtils.setField(helperService, "symmetricAlgorithm", "AES");
+		ReflectionTestUtils.setField(helperService, "symmetricKeyLength", 256);
+
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "kycExchangeUrl", "https://dev.mosip.net");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "idaVersion", "VersionIDA");
-		ReflectionTestUtils.setField(idaAuthenticatorImpl, "symmetricAlgorithm", "AES");
-		ReflectionTestUtils.setField(idaAuthenticatorImpl, "symmetricKeyLength", 256);
-		ReflectionTestUtils.setField(idaAuthenticatorImpl, "idaPartnerCertificateUrl", "https://test");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "kycAuthUrl", "https://testkycAuthUrl");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "authTokenUrl", "https://testAuthTokenUrl");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "getCertsUrl", "https://testGetCertsUrl");
@@ -125,20 +101,6 @@ public class IdaAuthenticatorImplTest {
 		kycAuthDto.setChallengeList(authChallengeList);
 
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class))).thenReturn("value");
-
-		X509Certificate certificate = getCertificate();
-		Mockito.when(keymanagerUtil.convertToCertificate(Mockito.anyString())).thenReturn(certificate);
-
-		byte[] temp = new byte[2];
-		Mockito.when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.any())).thenReturn(temp);
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
 		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
 				Mockito.<ParameterizedTypeReference<IdaResponseWrapper<IdaKycAuthResponse>>>any())).thenReturn(null);
 
@@ -160,19 +122,6 @@ public class IdaAuthenticatorImplTest {
 
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
 
-		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class))).thenReturn("value");
-
-		X509Certificate certificate = getCertificate();
-		Mockito.when(keymanagerUtil.convertToCertificate(Mockito.anyString())).thenReturn(certificate);
-
-		byte[] temp = new byte[2];
-		Mockito.when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.any())).thenReturn(temp);
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
 		IdaKycAuthResponse idaKycAuthResponse = new IdaKycAuthResponse();
 		idaKycAuthResponse.setAuthToken("authToken1234");
 		idaKycAuthResponse.setKycToken("kycToken1234");
@@ -190,9 +139,7 @@ public class IdaAuthenticatorImplTest {
 				Mockito.<ParameterizedTypeReference<IdaResponseWrapper<IdaKycAuthResponse>>>any()))
 				.thenReturn(responseEntity);
 
-		KycAuthResult kycAuthResult = new KycAuthResult();
-
-		kycAuthResult = idaAuthenticatorImpl.doKycAuth("relyingId", "clientId", kycAuthDto);
+		KycAuthResult kycAuthResult = idaAuthenticatorImpl.doKycAuth("relyingId", "clientId", kycAuthDto);
 
 		Assert.assertEquals(kycAuthResult.getKycToken(), kycAuthResult.getKycToken());
 	}
@@ -246,23 +193,7 @@ public class IdaAuthenticatorImplTest {
 		b.setThumbprint("Thumbprint");
 		List<Biometric> bioList = new ArrayList<>();
 		bioList.add(b);
-		Mockito.when(mapper.readValue(Mockito.any(byte[].class), Mockito.any(TypeReference.class))).thenReturn(bioList);
-
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class))).thenReturn("value");
-
-		X509Certificate certificate = getCertificate();
-		Mockito.when(keymanagerUtil.convertToCertificate(Mockito.anyString())).thenReturn(certificate);
-
-		byte[] temp = new byte[2];
-		Mockito.when(cryptoCore.asymmetricEncrypt(Mockito.any(PublicKey.class), Mockito.any())).thenReturn(temp);
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
 		IdaKycAuthResponse idaKycAuthResponse = new IdaKycAuthResponse();
 		idaKycAuthResponse.setAuthToken("authToken1234");
 		idaKycAuthResponse.setKycToken("kycToken1234");
@@ -280,9 +211,7 @@ public class IdaAuthenticatorImplTest {
 				Mockito.<ParameterizedTypeReference<IdaResponseWrapper<IdaKycAuthResponse>>>any()))
 				.thenReturn(responseEntity);
 
-		KycAuthResult kycAuthResult = new KycAuthResult();
-
-		kycAuthResult = idaAuthenticatorImpl.doKycAuth("relyingId", "clientId", kycAuthDto);
+		KycAuthResult kycAuthResult = idaAuthenticatorImpl.doKycAuth("relyingId", "clientId", kycAuthDto);
 
 		Assert.assertEquals(kycAuthResult.getKycToken(), kycAuthResult.getKycToken());
 	}
@@ -300,11 +229,6 @@ public class IdaAuthenticatorImplTest {
 		kycExchangeDto.setClaimsLocales(claimsLacales);
 
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
 
 		IdaKycExchangeResponse idaKycExchangeResponse = new IdaKycExchangeResponse();
 		idaKycExchangeResponse.setEncryptedKyc("ENCRKYC123");
@@ -341,11 +265,6 @@ public class IdaAuthenticatorImplTest {
 
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
 
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
 		IdaKycExchangeResponse idaKycExchangeResponse = new IdaKycExchangeResponse();
 		idaKycExchangeResponse.setEncryptedKyc("ENCRKYC123");
 
@@ -378,12 +297,6 @@ public class IdaAuthenticatorImplTest {
 		kycExchangeDto.setClaimsLocales(claimsLacales);
 
 		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
 		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
 				Mockito.<ParameterizedTypeReference<IdaResponseWrapper<IdaKycExchangeResponse>>>any()))
 				.thenReturn(null);
@@ -401,28 +314,7 @@ public class IdaAuthenticatorImplTest {
 		otpChannelsList.add("channel");
 		sendOtpDto.setOtpChannels(otpChannelsList);
 
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
-		IdaOtpResponse idaOtpResponse = new IdaOtpResponse();
-		idaOtpResponse.setMaskedEmail("a@gmail.com");
-		idaOtpResponse.setMaskedMobile("1234567890");
-
-		IdaSendOtpResponse idaSendOtpResponse = new IdaSendOtpResponse();
-		idaSendOtpResponse.setTransactionID(sendOtpDto.getTransactionId());
-		idaSendOtpResponse.setVersion("Version123");
-		idaSendOtpResponse.setId("123");
-		idaSendOtpResponse.setErrors(null);
-		idaSendOtpResponse.setResponse(idaOtpResponse);
-
-		ResponseEntity<IdaSendOtpResponse> responseEntity = new ResponseEntity<IdaSendOtpResponse>(idaSendOtpResponse,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(any(), eq(IdaSendOtpResponse.class))).thenReturn(responseEntity);
+		Mockito.when(helperService.sendOTP(any(),any(),any())).thenReturn(new SendOtpResult(sendOtpDto.getTransactionId(), "", ""));
 
 		SendOtpResult sendOtpResult = idaAuthenticatorImpl.sendOtp("rly123", "cli123", sendOtpDto);
 
@@ -430,42 +322,7 @@ public class IdaAuthenticatorImplTest {
 	}
 
 	@Test
-	public void sendOtp_withInvalidTransactionId_throwsException() throws SendOtpException, Exception {
-		SendOtpDto sendOtpDto = new SendOtpDto();
-		sendOtpDto.setIndividualId("1234");
-		sendOtpDto.setTransactionId("4567");
-		List<String> otpChannelsList = new ArrayList<>();
-		otpChannelsList.add("channel");
-		sendOtpDto.setOtpChannels(otpChannelsList);
-
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
-		IdaOtpResponse idaOtpResponse = new IdaOtpResponse();
-		idaOtpResponse.setMaskedEmail("a@gmail.com");
-		idaOtpResponse.setMaskedMobile("1234567890");
-
-		IdaSendOtpResponse idaSendOtpResponse = new IdaSendOtpResponse();
-		idaSendOtpResponse.setTransactionID("1324");
-		idaSendOtpResponse.setVersion("Version123");
-		idaSendOtpResponse.setId("123");
-		idaSendOtpResponse.setErrors(null);
-		idaSendOtpResponse.setResponse(idaOtpResponse);
-
-		ResponseEntity<IdaSendOtpResponse> responseEntity = new ResponseEntity<IdaSendOtpResponse>(idaSendOtpResponse,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(any(), eq(IdaSendOtpResponse.class))).thenReturn(responseEntity);
-
-		Assert.assertThrows(SendOtpException.class, () -> idaAuthenticatorImpl.sendOtp("rly123", "cli123", sendOtpDto));
-	}
-	
-	@Test
-	public void sendOtp_withInvalidDetails_throwsException() throws SendOtpException, Exception {
+	public void sendOtp_withErrorResponse_throwsException() throws Exception {
 		SendOtpDto sendOtpDto = new SendOtpDto();
 		sendOtpDto.setIndividualId(null);
 		sendOtpDto.setTransactionId("4567");
@@ -473,40 +330,14 @@ public class IdaAuthenticatorImplTest {
 		otpChannelsList.add("channel");
 		sendOtpDto.setOtpChannels(otpChannelsList);
 
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
+		Mockito.when(helperService.sendOTP(any(),any(),any())).thenThrow(new SendOtpException("error-100"));
 
-		JWTSignatureResponseDto responseDto = Mockito.mock(JWTSignatureResponseDto.class);
-		responseDto.setJwtSignedData("jwtSignedData");
-
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
-
-		IdaSendOtpResponse idaSendOtpResponse = new IdaSendOtpResponse();
-		idaSendOtpResponse.setTransactionID("1324");
-		idaSendOtpResponse.setVersion("Version123");
-		idaSendOtpResponse.setId("123");
-		Error error = new Error("ERR-001", "Invalid Input");
-		idaSendOtpResponse.setErrors(Arrays.asList(error));
-		idaSendOtpResponse.setResponse(null);
-
-		ResponseEntity<IdaSendOtpResponse> responseEntity = new ResponseEntity<IdaSendOtpResponse>(idaSendOtpResponse,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(any(), eq(IdaSendOtpResponse.class))).thenReturn(responseEntity);
-
-		Assert.assertThrows(SendOtpException.class, () -> idaAuthenticatorImpl.sendOtp("rly123", "cli123", sendOtpDto));
-	}
-
-	private X509Certificate getCertificate() throws Exception {
-		X509V3CertificateGenerator generator = new X509V3CertificateGenerator();
-		X500Principal dnName = new X500Principal("CN=Test");
-		generator.setSubjectDN(dnName);
-		generator.setIssuerDN(dnName); // use the same
-		generator.setNotBefore(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
-		generator.setNotAfter(new Date(System.currentTimeMillis() + 24 * 365 * 24 * 60 * 60 * 1000));
-		generator.setPublicKey(clientJWK.toRSAKey().toPublicKey());
-		generator.setSignatureAlgorithm("SHA256WITHRSA");
-		generator.setSerialNumber(new BigInteger(String.valueOf(System.currentTimeMillis())));
-		return generator.generate(clientJWK.toRSAKey().toPrivateKey());
+		try {
+			idaAuthenticatorImpl.sendOtp("rly123", "cli123", sendOtpDto);
+			Assert.fail();
+		} catch (SendOtpException e) {
+			Assert.assertEquals("error-100", e.getErrorCode());
+		}
 	}
 
 	@Test

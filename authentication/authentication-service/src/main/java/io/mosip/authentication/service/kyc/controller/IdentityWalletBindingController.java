@@ -107,7 +107,7 @@ public class IdentityWalletBindingController {
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/identiy-key-binding/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/identity-key-binding/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Identity Key Binding Request", description = "to authenticate and bind key with the identity", tags = { "identity-wallet-binding-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
