@@ -2,9 +2,11 @@ package io.mosip.authentication.common.service.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -31,7 +34,11 @@ import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -47,17 +54,23 @@ public class BioMatcherUtilTest {
 	@Mock
 	private BioAPIFactory bioApiFactory;
 	
+	@Mock
+	private CbeffUtil cbeffUtil;
+	
 	@InjectMocks
 	private BioMatcherUtil bioMatcherUtil;
 
 	Map<String, String> valueMap = new HashMap<>();
 	private final String value = "MTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLC5bXXt9Oyc6Ijw+Lz8=";
+	
+	
 	@Before
-	public void before() {
+	public void before() throws Exception {
 		//valueMap.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
 		ReflectionTestUtils.setField(bioMatcherUtil, "bdbProcessedLevel", "Raw");
+		when(cbeffUtil.getBIRDataFromXML(Mockito.any())).thenReturn(List.of(Mockito.mock(BIRType.class)));
 	}
-
+	
 	@Test
 	public void TestmatchValueFinger() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
@@ -66,6 +79,10 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 
 		mockBioProvider();
+		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FINGER, new String[] {SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()});
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
 		
 		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
@@ -80,6 +97,10 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
+		BioInfo bioInfo = new BioInfo(value, SingleType.IRIS, new String[] {SingleAnySubtypeType.RIGHT.value()});
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
+		
 		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
 	}
@@ -91,6 +112,10 @@ public class BioMatcherUtilTest {
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		mockBioProvider();
+		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0] );
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
 		
 		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
@@ -118,9 +143,13 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0]);
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
+		
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
-		} catch (IdAuthenticationBusinessException e) {
+		} catch (IdAuthenticationBusinessException e) {e.printStackTrace();
 			assertEquals(IdAuthenticationErrorConstants.QUALITY_CHECK_FAILED.getErrorCode(), e.getErrorCode());
 		}
 	}
@@ -133,6 +162,10 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
 		mockBioProvider();
+		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0]);
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
 		
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
@@ -150,6 +183,10 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0]);
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
+		
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
 		} catch (IdAuthenticationBusinessException e) {
@@ -166,6 +203,10 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0]);
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
+		
 		bioMatcherUtil.match(valueMap, valueMap, properties);
 	}
 
@@ -179,6 +220,10 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
 		mockBioProvider();
+		
+		BioInfo bioInfo = new BioInfo(value, SingleType.FINGER, new String[] {SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()});
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(Mockito.anyList())).thenReturn(List.of(bir));
 		
 		double matchValue = bioMatcherUtil.match(valueMap, invalidMap, properties);
 		assertNotEquals("90.0", matchValue);
@@ -236,10 +281,10 @@ public class BioMatcherUtilTest {
 	}
 
 	@Test
-	public void TestMultipleValues() throws IdAuthenticationBusinessException, BiometricException {
+	public void TestMultipleValues() throws Exception {
 		Map<String, String> valueMap = new HashMap<>();
-		valueMap.put("Face", value);
-		valueMap.put("Finger", value);
+		valueMap.put("Face", "Face");
+		valueMap.put("Finger", "Finger");
 		
 		HashMap<String, Object> properties = new HashMap<>();
 		IdMapping[] idMappings = new IdMapping[0];
@@ -249,6 +294,18 @@ public class BioMatcherUtilTest {
 		Mockito.when(idInfoFetcher.getTypeForIdName("Finger", idMappings)).thenReturn(Optional.of(SingleType.FINGER.value()));
 		
 		mockBioProvider();
+		
+		List<BIRType> faceBirTypes = List.of(Mockito.mock(BIRType.class));
+		when(cbeffUtil.getBIRDataFromXML("Face".getBytes())).thenReturn(faceBirTypes);
+		BioInfo bioInfo = new BioInfo(value, SingleType.FACE, new String[0]);
+		BIR bir = BioInfo.getBir(value.getBytes(), bioInfo);
+		when(cbeffUtil.convertBIRTypeToBIR(faceBirTypes)).thenReturn(List.of(bir));
+		
+		List<BIRType> fingerBirTypes = List.of(Mockito.mock(BIRType.class));
+		when(cbeffUtil.getBIRDataFromXML("Finger".getBytes())).thenReturn(fingerBirTypes);
+		BioInfo bioInfo1 = new BioInfo(value, SingleType.FINGER, new String[] {SingleAnySubtypeType.RIGHT.value(), SingleAnySubtypeType.THUMB.value()});
+		BIR bir1 = BioInfo.getBir(value.getBytes(), bioInfo1);
+		when(cbeffUtil.convertBIRTypeToBIR(fingerBirTypes)).thenReturn(List.of(bir1));
 		
 		double matchMultiValue = bioMatcherUtil.match(valueMap, valueMap, properties);
 		assertEquals(0, Double.compare(SUCCESS_SCORE, matchMultiValue));

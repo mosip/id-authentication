@@ -127,7 +127,8 @@ public class MatchInputBuilder {
 									.collect(Collectors.toList());
 					} else {
 						if(idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).size() > 0) {
-							return List.of(contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, language));
+							MatchInput matchInput = contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, language);
+							return matchInput == null ? List.of() : List.of(matchInput);
 						}
 					}
 				}
