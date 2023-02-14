@@ -44,7 +44,3 @@ VALUES ('mpartner-default-esignet', 'mpartner-default-esignet','94d4be61-31f0-42
 
 INSERT INTO ida.policy_data(policy_id, policy_data, policy_name, policy_status, policy_description, policy_commence_on, policy_expires_on, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
 VALUES ('mpolicy-default-esignet', '{"trustBindedAuthVerificationToken":true,"allowAuthRequestDelegation":true,"allowKycRequestDelegation":true}', 'mpolicy-default-esignet', 'ACTIVE', 'mpolicy-default-esignet', '2023-12-16 12:30:14.183', '2028-04-28 09:37:00.000', 'superadmin', '2020-12-16 12:30:14.100', NULL, NULL, false, NULL);
-
-INSERT INTO ida.partner_mapping(partner_id, policy_id, api_key_id, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
-VALUES ('mpartner-default-esignet', 'mpolicy-default-esignet', 'mpolicy_part_esignet_api', 'superadmin', '2022-02-21 07:02:26.223', NULL, NULL, false, NULL);
-
