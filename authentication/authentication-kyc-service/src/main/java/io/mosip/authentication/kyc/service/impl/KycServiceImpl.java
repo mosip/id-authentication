@@ -76,7 +76,7 @@ public class KycServiceImpl implements KycService {
 	private CbeffUtil cbeffUtil;
 	
 	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
-	private boolean fetchFaceAsCbeffXml;
+	private boolean sendFaceAsCbeffXml;
 
 	/**
 	 * Retrieve kyc info.
