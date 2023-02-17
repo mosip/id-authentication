@@ -112,7 +112,7 @@ public class KycServiceImpl implements KycService {
 						: null;
 				
 				String face;
-				if(fetchFaceAsCbeffXml) {
+				if(sendFaceAsCbeffXml) {
 					face = faceCbeff;
 				} else {
 					try {
