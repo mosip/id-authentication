@@ -1,6 +1,10 @@
 package io.mosip.authentication.kyc.service.impl;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,17 +37,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
@@ -51,14 +63,53 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  *
  * @author Sanjay Murali
  */
-//TODO remove the ignore . This is ignored due to Java 11 mockito error
-@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @WebMvcTest
 @Import(IDAMappingConfig.class)
 @TestPropertySource("classpath:sample-data-test.properties")
 public class KycServiceImplTest {
+
+	private static final String FACE_CBEFF = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"
+			+ "<BIR xmlns=\"http://standards.iso.org/iso-iec/19785/-3/ed-2/\">\r\n"
+			+ "    <BIRInfo>\r\n"
+			+ "        <Integrity>false</Integrity>\r\n"
+			+ "    </BIRInfo>\r\n"
+			+ "    <BIR>\r\n"
+			+ "        <Version>\r\n"
+			+ "            <Major>1</Major>\r\n"
+			+ "            <Minor>1</Minor>\r\n"
+			+ "        </Version>\r\n"
+			+ "        <CBEFFVersion>\r\n"
+			+ "            <Major>1</Major>\r\n"
+			+ "            <Minor>1</Minor>\r\n"
+			+ "        </CBEFFVersion>\r\n"
+			+ "        <BIRInfo>\r\n"
+			+ "            <Integrity>false</Integrity>\r\n"
+			+ "        </BIRInfo>\r\n"
+			+ "        <BDBInfo>\r\n"
+			+ "            <Index>c61490b8-8337-4816-ac7d-5b90a356542b</Index>\r\n"
+			+ "            <Format>\r\n"
+			+ "                <Organization>Mosip</Organization>\r\n"
+			+ "                <Type>8</Type>\r\n"
+			+ "            </Format>\r\n"
+			+ "            <CreationDate>2021-08-11T10:32:48.123196800Z</CreationDate>\r\n"
+			+ "            <Type>Face</Type>\r\n"
+			+ "            <Subtype></Subtype>\r\n"
+			+ "            <Level>Raw</Level>\r\n"
+			+ "            <Purpose>Enroll</Purpose>\r\n"
+			+ "            <Quality>\r\n"
+			+ "                <Algorithm>\r\n"
+			+ "                    <Organization>HMAC</Organization>\r\n"
+			+ "                    <Type>SHA-256</Type>\r\n"
+			+ "                </Algorithm>\r\n"
+			+ "                <Score>80</Score>\r\n"
+			+ "            </Quality>\r\n"
+			+ "        </BDBInfo>\r\n"
+			+ "        <BDB>UkFXX0ZBQ0VfSU1BR0U=</BDB>\r\n"
+			+ "    </BIR>\r\n"
+			+ "</BIR>\r\n"
+			+ "";
 
 	@Autowired
 	Environment env;
@@ -74,24 +125,33 @@ public class KycServiceImplTest {
 
 	@Autowired
 	private MappingConfig mappingConfig;
+	
+	@Mock
+	private CbeffUtil cbeffUtil;
 
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
 
 	@Value("${sample.demo.entity}")
 	String value;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	Map<String, List<IdentityInfoDTO>> idInfo;
 
 	@Before
-	public void before() throws IdAuthenticationDaoException {
+	public void before() throws Exception {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(kycServiceImpl, "mappingConfig", mappingConfig);
+		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
 		idInfo = getIdInfo("12232323121");
-
+		BIRType birType = new BIRType();
+		birType.setBDB("RAW_FACE_IMAGE".getBytes());
+		Mockito.when(cbeffUtil.getBIRDataFromXMLType(FACE_CBEFF.getBytes(), CbeffDocType.FACE.getName())).thenReturn(List.of(birType));
 	}
 
 	@Test
@@ -191,6 +251,44 @@ public class KycServiceImplTest {
 	}
 	
 	@Test
+	public void validUINWithoutFace2_withFace() throws JsonParseException, JsonMappingException, IOException {
+		try {
+			ReflectionTestUtils.setField(kycServiceImpl, "sendFaceAsCbeffXml", false);
+			deleteBootStrapFile();
+			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "fra", idInfo);
+			assertNotNull(k);
+			String identity = k.getIdentity();
+			Map identityMap = mapper.readValue(identity.getBytes(), Map.class);
+			assertTrue(identityMap.containsKey("Face"));
+			assertArrayEquals(CryptoUtil.decodeBase64((String) identityMap.get("Face")), "RAW_FACE_IMAGE".getBytes());
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		} finally {
+			ReflectionTestUtils.setField(kycServiceImpl, "sendFaceAsCbeffXml", false);
+		}
+	}
+	
+	@Test
+	public void validUINWithoutFace2_withFace_as_XML() throws JsonParseException, JsonMappingException, IOException {
+		try {
+			ReflectionTestUtils.setField(kycServiceImpl, "sendFaceAsCbeffXml", true);
+			deleteBootStrapFile();
+			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			KycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), "fra", idInfo);
+			assertNotNull(k);
+			String identity = k.getIdentity();
+			Map identityMap = mapper.readValue(identity.getBytes(), Map.class);
+			assertTrue(identityMap.containsKey("Face"));
+			assertArrayEquals(((String)identityMap.get("Face")).getBytes(), FACE_CBEFF.getBytes());
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		} finally {
+			ReflectionTestUtils.setField(kycServiceImpl, "sendFaceAsCbeffXml", false);
+		}
+	}
+	
+	@Test
 	public void validUINWithoutAttributes() {
 		try {
 			deleteBootStrapFile();
@@ -274,9 +372,12 @@ public class KycServiceImplTest {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("uin.masking.required", "true");
 		environment.setProperty("uin.masking.charcount", "2");
+		environment.setProperty("mosip.primary-language", "eng");
 		ReflectionTestUtils.setField(kycServiceImpl, "env", environment);
-
-		kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+		KycResponseDTO kycInfo = kycServiceImpl.retrieveKycInfo(fullKycList(), "ara", idInfo);
+		assertNotNull(kycInfo);
+		
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -324,19 +425,21 @@ public class KycServiceImplTest {
 	}
 
 	private List<String> limitedList() {
-		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		String s = "fullName,firstName,middleName,lastName,gender,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,photo,documents.individualBiometrics";
 		List<String> allowedKycList = Arrays.asList(s.split(","));
 		return allowedKycList;
 	}
 
 	private List<String> fullKycList() {
-		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,face,documents.individualBiometrics";
+		String s = "fullName,firstName,middleName,lastName,dateOfBirth,gender,phone,email,addressLine1,addressLine2,addressLine3,city,province,region,postalCode,photo,documents.individualBiometrics";
 		return Arrays.asList(s.split(","));
 	}
 	
 	private Map<String, String> entityInfo(){
 		Map<String, String> map = new HashMap<>();
-		map.put("FACE", "agsafkjsaufdhkjesadfjdsklkasnfdkjbsafdjbnadsfkjfds");
+		map.put("Face", FACE_CBEFF);
 		return map;
 	}
+	
+	
 }
