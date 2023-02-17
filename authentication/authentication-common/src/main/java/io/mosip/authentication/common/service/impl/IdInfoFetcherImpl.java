@@ -296,6 +296,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		try {
 			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.get().getBytes(), type.getName(),
 					null);
+			logger.debug("bdbBasedOnType: " + bdbBasedOnType);
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()), e);
