@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +74,9 @@ public class KycServiceImpl implements KycService {
 	
 	@Autowired
 	private CbeffUtil cbeffUtil;
+	
+	@Value("${ida.kyc.fetch-face-as-cbeff-xml:false}")
+	private boolean fetchFaceAsCbeffXml;
 
 	/**
 	 * Retrieve kyc info.
@@ -108,11 +112,15 @@ public class KycServiceImpl implements KycService {
 						: null;
 				
 				String face;
-				try {
-					face = getFaceBDB(faceCbeff);
-				} catch (Exception e) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
+				if(fetchFaceAsCbeffXml) {
+					face = faceCbeff;
+				} else {
+					try {
+						face = getFaceBDB(faceCbeff);
+					} catch (Exception e) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
+					}
 				}
 				
 				if (Objects.nonNull(faceEntityInfoMap)) {
