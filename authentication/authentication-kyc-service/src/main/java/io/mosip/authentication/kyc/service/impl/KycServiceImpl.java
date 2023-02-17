@@ -159,7 +159,7 @@ public class KycServiceImpl implements KycService {
 			//This is unlikely as if empty the exception would have been thrown already
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
-		return CryptoUtil.encodeBase64Url(birDataFromXMLType.get(0).getBDB());
+		return CryptoUtil.encodeBase64(birDataFromXMLType.get(0).getBDB());
 	}
 
 	/**
