@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,9 @@ import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -67,6 +71,12 @@ public class KycServiceImpl implements KycService {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
+	private CbeffUtil cbeffUtil;
+	
+	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
+	private boolean sendFaceAsCbeffXml;
 
 	/**
 	 * Retrieve kyc info.
@@ -97,9 +107,22 @@ public class KycServiceImpl implements KycService {
 				Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 						null);
 				List<IdentityInfoDTO> bioValue = null;
-				String face = Objects.nonNull(faceEntityInfoMap)
+				String faceCbeff = Objects.nonNull(faceEntityInfoMap)
 						? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
 						: null;
+				
+				String face;
+				if(sendFaceAsCbeffXml) {
+					face = faceCbeff;
+				} else {
+					try {
+						face = getFaceBDB(faceCbeff);
+					} catch (Exception e) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
+					}
+				}
+				
 				if (Objects.nonNull(faceEntityInfoMap)) {
 					bioValue = new ArrayList<>();
 					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -128,6 +151,15 @@ public class KycServiceImpl implements KycService {
 			}
 		}
 		return kycResponseDTO;
+	}
+
+	private String getFaceBDB(String faceCbeff) throws Exception {
+		List<BIRType> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(faceCbeff.getBytes(), CbeffDocType.FACE.getName());
+		if(birDataFromXMLType.isEmpty()) {
+			//This is unlikely as if empty the exception would have been thrown already
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
+		return CryptoUtil.encodeBase64(birDataFromXMLType.get(0).getBDB());
 	}
 
 	/**
