@@ -33,6 +33,8 @@ CREATE TABLE ida.ident_binding_cert_store (
 );
 -- ddl-end --
 
+ALTER TABLE ida.kyc_token_store ADD COLUMN request_trn_id character varying(64);
+
 INSERT INTO ida.key_policy_def (app_id, key_validity_duration, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, pre_expire_days, access_allowed) 
 VALUES('IDA_KYC_EXCHANGE', 1095, true, 'mosipadmin', now(), NULL, NULL, false, NULL, 60, 'NA');
 
