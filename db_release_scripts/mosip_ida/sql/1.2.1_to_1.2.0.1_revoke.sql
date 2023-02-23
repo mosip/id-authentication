@@ -18,7 +18,12 @@
 
 DROP TABLE IF EXISTS ida.ident_binding_cert_store CASCADE;
 
+ALTER TABLE ida.kyc_token_store DROP COLUMN request_trn_id;
+
 DELETE FROM ida.key_policy_def WHERE app_id='IDA_KYC_EXCHANGE';
 
 DELETE FROM ida.key_policy_def WHERE app_id='IDA_KEY_BINDING'
 
+DELETE FROM ida.partner_data WHERE partner_id='mpartner-default-esignet';
+
+DELETE FROM ida.policy_data WHERE policy_id='mpolicy-default-esignet';
