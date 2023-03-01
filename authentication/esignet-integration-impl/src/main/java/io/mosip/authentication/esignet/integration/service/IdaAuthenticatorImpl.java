@@ -5,7 +5,6 @@
  */
 package io.mosip.authentication.esignet.integration.service;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.esignet.integration.dto.ClientIdSecretKeyRequest;
 import io.mosip.authentication.esignet.integration.dto.GetAllCertificatesResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthResponse;
@@ -32,6 +30,7 @@ import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
+import io.mosip.authentication.esignet.integration.helper.AuthTransactionHelper;
 import io.mosip.esignet.api.dto.KycAuthDto;
 import io.mosip.esignet.api.dto.KycAuthResult;
 import io.mosip.esignet.api.dto.KycExchangeDto;
@@ -45,7 +44,6 @@ import io.mosip.esignet.api.exception.KycSigningCertificateException;
 import io.mosip.esignet.api.exception.SendOtpException;
 import io.mosip.esignet.api.spi.Authenticator;
 import io.mosip.esignet.api.util.ErrorConstants;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,23 +84,14 @@ public class IdaAuthenticatorImpl implements Authenticator {
     @Value("${mosip.esignet.authenticator.ida.get-certificates-url}")
     private String getCertsUrl;
     
-    @Value("${mosip.esignet.authenticator.ida.auth-token-url}")
-    private String authTokenUrl;
-    
-    @Value("${mosip.esignet.authenticator.ida.client-id}")
-    private String clientId;
-    
-    @Value("${mosip.esignet.authenticator.ida.secret-key}")
-    private String secretKey;
-    
-    @Value("${mosip.esignet.authenticator.ida.app-id}")
-    private String appId;
-    
     @Value("${mosip.esignet.authenticator.ida.application-id:IDA}")
     private String applicationId;
     
     @Value("${mosip.esignet.authenticator.ida.reference-id:SIGN}")
     private String referenceId;
+    
+    @Value("${mosip.esignet.authenticator.ida.client-id}")
+    private String clientId;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -112,7 +101,9 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
     @Autowired
     HelperService helperService;
-
+    
+    @Autowired
+    private AuthTransactionHelper authTransactionHelper;
 
     @Override
     public KycAuthResult doKycAuth(String relyingPartyId, String clientId, KycAuthDto kycAuthDto)
@@ -234,7 +225,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
     @Override
     public List<KycSigningCertificateData> getAllKycSigningCertificates() throws KycSigningCertificateException {
     	try {
-    		String authToken = getAuthToken();
+    		String authToken = authTransactionHelper.getAuthToken();
 
             RequestEntity requestEntity = RequestEntity
                      .get(UriComponentsBuilder.fromUriString(getCertsUrl).queryParam("applicationId", applicationId).queryParam("referenceId", referenceId).build().toUri())
@@ -260,21 +251,4 @@ public class IdaAuthenticatorImpl implements Authenticator {
         }
     	throw new KycSigningCertificateException();
     }
-
-    private String getAuthToken() throws Exception {
-    	RequestWrapper<ClientIdSecretKeyRequest> authRequest = new RequestWrapper<>();
-    	authRequest.setRequesttime(LocalDateTime.now());
-    	ClientIdSecretKeyRequest clientIdSecretKeyRequest = new ClientIdSecretKeyRequest(clientId, secretKey, appId);
-    	authRequest.setRequest(clientIdSecretKeyRequest);
-    	
-    	String requestBody = objectMapper.writeValueAsString(authRequest);
-    	RequestEntity requestEntity = RequestEntity
-                 .post(UriComponentsBuilder.fromUriString(authTokenUrl).build().toUri())
-                 .contentType(MediaType.APPLICATION_JSON)
-                 .body(requestBody);
-        ResponseEntity<ResponseWrapper> responseEntity = restTemplate.exchange(requestEntity,
-                 new ParameterizedTypeReference<ResponseWrapper>() {});
-        
-        return responseEntity.getHeaders().getFirst("authorization");
-	}
 }
