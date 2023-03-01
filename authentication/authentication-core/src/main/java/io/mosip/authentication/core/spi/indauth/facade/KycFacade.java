@@ -49,6 +49,23 @@ public interface KycFacade {
 	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey, ObjectWithMetadata requestWithMetadata)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
 
+	/**
+	 * Authenticate individual.
+	 *
+	 * @param authRequest the auth request
+	 * @param request the request
+	 * @param partnerId the partner id
+	 * @param partnerApiKey the partner api key id
+	 * @param requestWithMetadata the request object with metadata
+	 * @param markVidConsumed flag to mark id/vid consumed.
+	 * @return the auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationDaoException the id authentication dao exception
+	 */
+	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey, 
+						ObjectWithMetadata requestWithMetadata, boolean markVidConsumed)
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
+
 	
 	
 	/**

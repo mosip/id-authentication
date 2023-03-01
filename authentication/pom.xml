@@ -76,6 +76,7 @@
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-otp-service</module>
+		<module>esignet-integration-impl</module>
 	</modules>
 
 	<properties>

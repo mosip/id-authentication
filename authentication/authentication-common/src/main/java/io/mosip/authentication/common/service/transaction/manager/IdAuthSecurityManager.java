@@ -3,17 +3,23 @@ import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Map.Entry;
+import java.util.AbstractMap.SimpleEntry;
 
 import javax.crypto.SecretKey;
+import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -24,6 +30,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TokenEncoderUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -32,6 +39,8 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.idrepository.core.util.SaltUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.keymanager.model.CertificateParameters;
+import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
@@ -41,9 +50,13 @@ import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.hsm.util.CertificateUtility;
+import io.mosip.kernel.keymanagerservice.dto.SignatureCertificate;
 import io.mosip.kernel.keymanagerservice.entity.DataEncryptKeystore;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepository;
+import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
+import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.signature.constant.SignatureConstant;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
@@ -105,6 +118,31 @@ public class IdAuthSecurityManager {
 	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
 
+	/** The token ID length. */
+	@Value("${mosip.kernel.tokenid.length}")
+	private int tokenIDLength;
+
+	/** KeySplitter. */
+	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
+	private String keySplitter;
+
+	/** The token ID length. */
+	@Value("${mosip.ida.kyc.token.secret}")
+	private String kycTokenSecret;
+
+	@Value("${mosip.ida.kyc.exchange.sign.include.certificate:false}")
+	private boolean includeCertificate;
+
+	/** The sign applicationid. */
+	@Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KYC_EXCHANGE}")
+	private String kycExchSignApplicationId;
+
+	@Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KEY_BINDING}")
+	private String idKeyBindSignKeyAppId;
+
+	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
+    private String signAlgorithm;
+
 	/** The uin hash salt repo. */
 	@Autowired
 	private IdaUinHashSaltRepo uinHashSaltRepo;
@@ -125,21 +163,19 @@ public class IdAuthSecurityManager {
 	@Autowired
 	private KeyGenerator keyGenerator;
 
-	/** The token ID length. */
-	@Value("${mosip.kernel.tokenid.length}")
-	private int tokenIDLength;
-
-	/** KeySplitter. */
-	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
-	private String keySplitter;
-
-	/** The token ID length. */
-	@Value("${mosip.ida.kyc.token.secret}")
-	private String kycTokenSecret;
-	
 	/** The cryptomanager utils. */
 	@Autowired
 	private CryptomanagerUtils cryptomanagerUtils;
+
+	@Autowired
+    private KeymanagerService keymanagerService;
+
+	@Autowired
+    private KeyStore keyStore;
+
+	@Autowired
+    private KeymanagerUtil keymanagerUtil;
+	
 	/**
 	 * Gets the user.
 	 *
@@ -547,12 +583,31 @@ public class IdAuthSecurityManager {
 	@WithRetry
 	public String signWithPayload(String data) {
 		JWTSignatureRequestDto request = new JWTSignatureRequestDto();
-		request.setApplicationId(signApplicationid);
+		request.setApplicationId(kycExchSignApplicationId);
 		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
 		request.setIncludeCertHash(false);
-		request.setIncludeCertificate(true);
+		request.setIncludeCertificate(includeCertificate);
 		request.setIncludePayload(true);
-		request.setReferenceId(signRefid);
+		request.setReferenceId(IdAuthCommonConstants.EMPTY);
 		return signatureService.jwtSign(request).getJwtSignedData();
+	}
+
+	@WithRetry
+	public Entry<String, String> generateKeyBindingCertificate(PublicKey publicKey, CertificateParameters certParams) 
+				throws CertificateEncodingException {
+		String timestamp = DateUtils.getUTCCurrentDateTimeString();
+		SignatureCertificate certificateResponse = keymanagerService.getSignatureCertificate(idKeyBindSignKeyAppId,
+                                                        Optional.of(IdAuthCommonConstants.EMPTY), timestamp);
+		PrivateKey signPrivateKey = certificateResponse.getCertificateEntry().getPrivateKey();
+		X509Certificate signCert = certificateResponse.getCertificateEntry().getChain()[0];
+		X500Principal signerPrincipal = signCert.getSubjectX500Principal();
+		// Need to add new method to keymanager CertificateUtility class to generate certificate without CA 
+		// and digital signature key usage
+		X509Certificate signedCert = CertificateUtility.generateX509Certificate(signPrivateKey, publicKey, certParams,
+                signerPrincipal, signAlgorithm, keyStore.getKeystoreProviderName(), true);
+		String certThumbprint = generateHashAndDigestAsPlainText(signedCert.getEncoded());
+		String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
+
+		return new SimpleEntry<>(certThumbprint, certificateData);
 	}
 }

@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -110,6 +112,9 @@ public class InternalOTPControllerTest {
 	@Mock
 	private InternalOTPRequestValidator internalOtpValidator;
 
+	@Mock
+	private IdAuthSecurityManager securityManager;
+
 	private static Validator validator;
 
 	@Before
@@ -136,6 +141,7 @@ public class InternalOTPControllerTest {
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
 		Errors errors = new BeanPropertyBindingResult(otpRequestDto, "otpRequestDto");
+		Mockito.when(securityManager.hash(anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		internalotpController.generateOTP(otpRequestDto, errors, new TestHttpServletRequest());
 
 	}

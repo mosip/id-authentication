@@ -21,4 +21,8 @@ public interface IdentityCacheRepository extends BaseRepository<IdentityEntity, 
 	@Query("SELECT i.id, i.demographicData, i.expiryTimestamp, i.transactionLimit, i.token, i.crBy, i.crDTimes, "
 			+ "i.updBy, i.updDTimes, i.isDeleted, i.delDTimes FROM IdentityEntity i where i.id = :id")
 	List<Object[]> findDemoDataById(@Param("id") String id);
+
+	@Query("SELECT i.id, i.expiryTimestamp, i.transactionLimit "
+			+ " FROM IdentityEntity i where i.id = :id")
+	List<Object[]> findTransactionLimitById(@Param("id") String id);
 }

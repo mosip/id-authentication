@@ -51,6 +51,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
@@ -117,6 +118,11 @@ public class BaseIDAFilterTest {
 		protected boolean isAMRValidationRequired() {
 			return false;
 		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+        }
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

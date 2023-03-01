@@ -751,6 +751,7 @@ public class KycFacadeImplTest {
 //		authResponseDTO.setMetadata(authResMetadata);
 		
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(kycResponseDTO);
+		Mockito.when(idService.getIdHash(Mockito.any())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		doThrow(new IDDataValidationException()).when(auditHelper).audit((AuditModules) any(),
 				(AuditEvents) any(), anyString(), (IdType) any(), anyString());
 		kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
