@@ -453,10 +453,10 @@ public class IdInfoHelper {
 				}
 				if (null != reqInfo && reqInfo.size() > 0) {
 
+					Map<String, Object> matchProperties = input.getMatchProperties();
+
 					Map<String, String> entityInfo = getEntityInfo(idEntity, uin, authRequestDTO, input,
 							entityValueFetcher, matchType, strategy, idName, partnerId);
-
-					Map<String, Object> matchProperties = input.getMatchProperties();
 					
 					int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
 					boolean matchOutput = mtOut >= input.getMatchValue();
@@ -512,27 +512,30 @@ public class IdInfoHelper {
 		if (null == entityInfo || entityInfo.isEmpty()
 				|| entityInfo.entrySet().stream().anyMatch(value -> value.getValue() == null
 						|| value.getValue().isEmpty() || value.getValue().trim().length() == 0)) {
-			Category category = matchType.getCategory();
-			if (category == Category.BIO) {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(),
-								input.getAuthType().getType()));
-
-			} else if (category == Category.DEMO) {
-				if (null == input.getLanguage()) {
+			switch (matchType.getCategory()) {
+				case BIO:
 					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorMessage(),
-									idName));
-
-				} else {
+							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(),
+									input.getAuthType().getType()));
+				case DEMO:
+					if(null == input.getLanguage())  {
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorMessage(),
+										idName));
+					}
+					else {
+						throw new IdAuthenticationBusinessException(
+								IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
+										idName, input.getLanguage()));
+					}
+				case TOKEN:
 					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
-									idName, input.getLanguage()));
-				}
-
+							IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorMessage(),
+									input.getAuthType().getType()));
 			}
 		}
 		return entityInfo;

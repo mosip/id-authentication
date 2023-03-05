@@ -1050,6 +1050,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.OTP.name()));
 				}
+				if (AuthTypeUtil.isToken(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.TOKEN.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.TOKEN.name()));
+				}
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

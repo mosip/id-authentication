@@ -9,17 +9,36 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
+import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.impl.*;
+import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
+import io.mosip.authentication.common.service.util.TokenMatcherUtil;
+import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.indauth.service.TokenAuthService;
+import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
+import org.assertj.core.util.Arrays;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.x509.X509V3CertificateGenerator;
+import org.jose4j.jws.JsonWebSignature;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,9 +64,6 @@ import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
-import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
@@ -61,26 +77,14 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.indauth.dto.DigitalId;
-import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.indauth.dto.IdentityDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import reactor.util.function.Tuples;
+
+import javax.security.auth.x500.X500Principal;
 
 /**
  * @author Dinesh Karuppiah.T
@@ -98,7 +102,7 @@ public class KycFacadeImplTest {
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
 
-	@Mock
+	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
 	@Autowired
@@ -148,9 +152,31 @@ public class KycFacadeImplTest {
 	
 	@Mock
 	private IdAuthFraudAnalysisEventManager fraudEventManager;
-	
+
+	@InjectMocks
+	private TokenAuthServiceImpl tokenAuthService;
+
+	@InjectMocks
+	private MatchInputBuilder matchInputBuilder;
+
+	@InjectMocks
+	private IdInfoFetcherImpl idInfoFetcher;
+
+	@InjectMocks
+	private TokenMatcherUtil tokenMatcherUtil;
+
+	@Mock
+	private IdentityBindingCertificateRepository identityBindingCertificateRepository;
+
+	@Mock
+	private KeymanagerUtil keymanagerUtil;
+
+	private KeyPair keyPair;
+	private String audienceId = "test-ida-binding";
+
+
 	@Before
-	public void beforeClass() {
+	public void beforeClass() throws NoSuchAlgorithmException {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "idService", idService);
@@ -167,7 +193,126 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "authTransactionHelper", authTransactionHelper);
 		ReflectionTestUtils.setField(authFacadeImpl, "idService", idService);
 		ReflectionTestUtils.setField(authFacadeImpl, "otpAuthService", otpAuthService);
+		ReflectionTestUtils.setField(authFacadeImpl, "tokenAuthService", tokenAuthService);
 		ReflectionTestUtils.setField(partnerService, "mapper", mapper);
+
+		ReflectionTestUtils.setField(idInfoFetcher, "tokenMatcherUtil", tokenMatcherUtil);
+		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcher);
+		ReflectionTestUtils.setField(tokenAuthService, "matchInputBuilder", matchInputBuilder);
+		ReflectionTestUtils.setField(tokenAuthService, "idInfoHelper", idInfoHelper);
+
+		ReflectionTestUtils.setField(tokenMatcherUtil, "audienceId", audienceId);
+
+		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+		gen.initialize(2048);
+		keyPair = gen.generateKeyPair();
+	}
+
+	@Test
+	public void authenticateIndividualTokenTest() throws Exception {
+		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"token\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
+		PartnerPolicyResponseDTO partnerPolicyResponseDTO = mapper.readValue(partnerData, PartnerPolicyResponseDTO.class);
+		Optional<PartnerPolicyResponseDTO> policyForPartner = Optional.of(partnerPolicyResponseDTO);
+
+		Map<String, Object> idRepo = new HashMap<>();
+		String uin = "274390482564";
+		idRepo.put("uin", uin);
+		idRepo.put("registrationId", "1234567890");
+		HashMap<Object, Object> response = new HashMap<>();
+		idRepo.put("response", response);
+		HashMap<Object, Object> identity = new HashMap<>();
+		identity.put("UIN", Long.valueOf(uin));
+		response.put("identity", identity );
+		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
+		authStatusInfo.setStatus(true);
+		authStatusInfo.setErr(Collections.emptyList());
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO("en", "mosip"));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+
+		X509Certificate x509Certificate = getCertificate();
+		String wlaToken = signJwt(uin, x509Certificate, true);
+
+		KycAuthRequestDTO authRequestDTO = new KycAuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		authRequestDTO.setId("IDA");
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setRequestTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+		KycRequestDTO requestDTO = new KycRequestDTO();
+		TokenInfoDTO tokenInfoDTO = new TokenInfoDTO();
+		tokenInfoDTO.setToken(wlaToken);
+		tokenInfoDTO.setTokenFormat("jwt");
+		tokenInfoDTO.setTokenType("WLA");
+		requestDTO.setTokenInfo(tokenInfoDTO);
+		authRequestDTO.setRequest(requestDTO);
+
+		HashMap<String, Object> reqMetadata = new HashMap<>();
+		reqMetadata.put("AuthTransactionBuilder", AuthTransactionBuilder.newInstance());
+		reqMetadata.put("123456"+"12345", partnerPolicyResponseDTO);
+		authRequestDTO.setMetadata(reqMetadata);
+
+		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(idRepo);
+		Mockito.when(idService.getIdByUin(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anySet())).thenReturn(idRepo);
+		Mockito.when(idService.getToken(idRepo)).thenReturn(uin);
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
+		Mockito.when(securityManager.getUser()).thenReturn("ida_app_user");
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("id-vid-hash");
+		Mockito.when(partnerService.getPolicyForPartner("123456","12345", authRequestDTO.getMetadata())).thenReturn(policyForPartner);
+		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString())).thenReturn("234567890");
+		Mockito.when(keymanagerUtil.convertToCertificate(Mockito.anyString())).thenReturn(x509Certificate);
+
+		List<Object[]> result = new ArrayList<>();
+		result.add(new String[] {"cert-thumbprint", getPemData(x509Certificate)});
+		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(Mockito.anyString(), Mockito.anyString())).thenReturn(result);
+		assertEquals(true, kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse().isAuthStatus());
+	}
+
+	private X509Certificate getCertificate() throws Exception {
+		X509V3CertificateGenerator generator = new X509V3CertificateGenerator();
+		X500Principal dnName = new X500Principal("CN=Test");
+		generator.setSubjectDN(dnName);
+		generator.setIssuerDN(dnName); // use the same
+		generator.setNotBefore(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
+		generator.setNotAfter(new Date(System.currentTimeMillis() + 2 * 365 * 24 * 60 * 60 * 1000));
+		generator.setPublicKey(keyPair.getPublic());
+		generator.setSignatureAlgorithm("SHA256WITHRSA");
+		generator.setSerialNumber(new BigInteger(String.valueOf(System.currentTimeMillis())));
+		return generator.generate(keyPair.getPrivate());
+	}
+
+	private String getPemData(Object anyObject) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		try (JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)) {
+			pemWriter.writeObject(anyObject);
+			pemWriter.flush();
+			return stringWriter.toString();
+		}
+	}
+
+	private String signJwt(String individualId, X509Certificate certificate, boolean addSha256Thumbprint) throws Exception {
+		long epochInSeconds = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
+		JSONObject payload = new JSONObject();
+		payload.put("iss", "test-app");
+		payload.put("aud", audienceId);
+		payload.put("sub", individualId);
+		payload.put("iat", epochInSeconds);
+		payload.put("exp", epochInSeconds+3600);
+
+		JsonWebSignature jwSign = new JsonWebSignature();
+		jwSign.setKeyIdHeaderValue(certificate.getSerialNumber().toString(10));
+		if(addSha256Thumbprint) {
+			jwSign.setX509CertSha256ThumbprintHeaderValue(certificate);
+		}
+		jwSign.setPayload(payload.toJSONString());
+		jwSign.setAlgorithmHeaderValue("RS256");
+		jwSign.setKey(keyPair.getPrivate());
+		jwSign.setDoKeyValidation(false);
+		return jwSign.getCompactSerialization();
 	}
 
 	@Test
