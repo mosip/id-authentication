@@ -18,7 +18,9 @@ public enum RequestType {
 	EKYC_AUTH_REQUEST("EKYC-AUTH","EKYC Authentication Request"),
 	KYC_AUTH_REQUEST("KYC-AUTH","KYC Authentication Request"),
 	KYC_EXCHANGE_REQUEST("KYC-EXCHANGE","KYC Exchange Request"),
-	IDENTITY_KEY_BINDING("IDENTITY-KEY-BINDING","Identity Key Binding Request");
+	IDENTITY_KEY_BINDING("IDENTITY-KEY-BINDING","Identity Key Binding Request"),
+	TOKEN_REQUEST("TOKEN-REQUEST", "Token Request"),
+	TOKEN_AUTH("TOKEN-AUTH","Token based Authentication");
 
 	String type;
 	String message;
