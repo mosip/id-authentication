@@ -88,7 +88,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Autowired(required = false)
 	private DemoMatcherUtil demoMatcherUtil;
 
-	@Autowired
+	@Autowired(required = false)
 	private TokenMatcherUtil tokenMatcherUtil;
 	
 	/**
