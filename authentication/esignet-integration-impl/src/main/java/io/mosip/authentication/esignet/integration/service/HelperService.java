@@ -235,10 +235,6 @@ public class HelperService {
                     List<IdaKycAuthRequest.Biometric> biometrics = objectMapper.readValue(decodedBio,
                             new TypeReference<List<IdaKycAuthRequest.Biometric>>(){});
                     authRequest.setBiometrics(biometrics);
-                    if(biometrics != null && !biometrics.isEmpty()) {
-                        JWT jwt = JWTParser.parse(authRequest.getBiometrics().get(0).getData());
-                        idaKycAuthRequest.setTransactionID(jwt.getJWTClaimsSet().getStringClaim("transactionId"));
-                    }
                 } catch (Exception e) {
                     log.error("Failed to parse biometric capture response", e);
                 }
