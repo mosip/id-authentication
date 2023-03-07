@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * This Class Holds the values for Token Related data
  *
- * @author Prem Kumar
+ * @author Anusha SE
  *
  */
 @Data
