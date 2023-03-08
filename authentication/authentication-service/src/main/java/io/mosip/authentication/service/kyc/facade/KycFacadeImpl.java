@@ -324,7 +324,7 @@ public class KycFacadeImpl implements KycFacade {
 			idHash = idService.getIdHash(idResDTO);
 
 			Entry<KycAuthResponseDTO, Boolean> kycAuthResponse = doProcessKycAuth(kycAuthRequestDTO, authResponseDTO, partnerId, 
-							oidcClientId, token, idHash);
+							oidcClientId, idHash);
 			kycAuthResponseDTO = kycAuthResponse.getKey();
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata, true);
@@ -342,7 +342,7 @@ public class KycFacadeImpl implements KycFacade {
 	}
 
 	private Entry<KycAuthResponseDTO, Boolean> doProcessKycAuth(AuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
-			String partnerId, String oidcClientId, String token, String idHash) throws IdAuthenticationBusinessException, IDDataValidationException {
+			String partnerId, String oidcClientId, String idHash) throws IdAuthenticationBusinessException, IDDataValidationException {
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
@@ -358,7 +358,7 @@ public class KycFacadeImpl implements KycFacade {
 			String requestTime = kycAuthRequestDTO.getRequestTime();
 			String kycToken = null;
 			if (Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
-				kycToken = kycService.generateAndSaveKycToken(idHash, token, oidcClientId, requestTime, responseTime, kycAuthRequestDTO.getTransactionID());
+				kycToken = kycService.generateAndSaveKycToken(idHash, authResponse.getAuthToken(), oidcClientId, requestTime, responseTime, kycAuthRequestDTO.getTransactionID());
 				response.setKycToken(kycToken);
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {

@@ -80,7 +80,7 @@ public class KycServiceImpl implements KycService {
 	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
 	private String consentedPictureAttributePrefix;
 
-	@Value("${ida.idp.consented.address.subset.attributes:}")
+	@Value("${mosip.ida.idp.consented.address.subset.attributes:}")
 	private String[] addressSubsetAttributes;
 
 	@Value("${ida.idp.consented.address.value.separator: }")
@@ -546,24 +546,30 @@ public class KycServiceImpl implements KycService {
 			for (String idSchemaAttribute : idSchemaSubsetAttributes) {
 				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
 				Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+				if (identityInfoValue.length() > 0) {
+					identityInfoValue.append(addressValueSeparator);
+				}
 				if (mappedLangCodes.keySet().contains(localeValue)) {
 					String langCode = mappedLangCodes.get(localeValue);
 					for (IdentityInfoDTO identityInfo : idInfoList) { 
+						if (identityInfoValue.length() > 0) {
+							identityInfoValue.append(addressValueSeparator);
+						}
 						if (identityInfo.getLanguage().equals(langCode)) {
 							langCodeFound = true;
-							identityInfoValue.append(identityInfo.getValue() + addressValueSeparator);
+							identityInfoValue.append(identityInfo.getValue());
 						}
 					}
 				} else {
 					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
-						identityInfoValue.append(idInfoList.get(0).getValue() + addressValueSeparator);
+						identityInfoValue.append(idInfoList.get(0).getValue());
 					}
 				}
 			}
 		}
-		String identityInfoValueStr = identityInfoValue.toString();
-		String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
-		addressMap.put(IdAuthCommonConstants.ADDRESS_FORMATTED + localeAppendValue, trimmedValue);
+		//String identityInfoValueStr = identityInfoValue.toString();
+		//String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
+		addressMap.put(IdAuthCommonConstants.ADDRESS_FORMATTED + localeAppendValue, identityInfoValue.toString());
 		if (langCodeFound && addLocale)
 			respMap.put(consentedAddressAttributeName + localeAppendValue, addressMap);
 		else
@@ -580,23 +586,29 @@ public class KycServiceImpl implements KycService {
 			for (String idSchemaAttribute : idSchemaSubsetAttributes) {
 				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
 				Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+				if (identityInfoValue.length() > 0) {
+					identityInfoValue.append(addressValueSeparator);
+				}
 				if (mappedLangCodes.keySet().contains(consentedLocaleValue)) {
 					String langCode = mappedLangCodes.get(consentedLocaleValue);
-					for (IdentityInfoDTO identityInfo : idInfoList) { 
+					for (IdentityInfoDTO identityInfo : idInfoList) {
+						if (identityInfoValue.length() > 0) {
+							identityInfoValue.append(addressValueSeparator);
+						}
 						if (identityInfo.getLanguage().equals(langCode)) {
 							langCodeFound = true;
-							identityInfoValue.append(identityInfo.getValue() + addressValueSeparator);
+							identityInfoValue.append(identityInfo.getValue());
 						}
 					}
 				} else {
 					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
-						identityInfoValue.append(idInfoList.get(0).getValue() + addressValueSeparator);
+						identityInfoValue.append(idInfoList.get(0).getValue());
 					}
 				}
 			}
-			String identityInfoValueStr = identityInfoValue.toString();
-			String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
-			addressMap.put(addressAttribute + localeAppendValue, trimmedValue);
+			// Added below condition to skip if the data is not available in DB. MOSIP-26472
+			if (identityInfoValue.toString().trim().length() > 0)
+				addressMap.put(addressAttribute + localeAppendValue, identityInfoValue.toString());
 		}
 		if (langCodeFound && addLocale)
 			respMap.put(consentedAddressAttributeName + localeAppendValue, addressMap);
