@@ -6,6 +6,7 @@
 package io.mosip.authentication.esignet.integration.service;
 
 import static org.mockito.ArgumentMatchers.any;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,18 +26,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.jwk.JWK;
 
 import io.mosip.authentication.esignet.integration.dto.GetAllCertificatesResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest.Biometric;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaKycExchangeResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
+import io.mosip.authentication.esignet.integration.helper.AuthTransactionHelper;
 import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.KycAuthDto;
 import io.mosip.esignet.api.dto.KycAuthResult;
@@ -51,9 +50,7 @@ import io.mosip.esignet.api.exception.KycSigningCertificateException;
 import io.mosip.esignet.api.exception.SendOtpException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.signature.dto.JWTSignatureResponseDto;
 
-@SuppressWarnings("deprecation")
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class IdaAuthenticatorImplTest {
@@ -70,6 +67,8 @@ public class IdaAuthenticatorImplTest {
 	@Mock
 	HelperService helperService;
 
+	@Mock
+	AuthTransactionHelper authTransactionHelper;
 
 	@Before
 	public void setUp() {
@@ -83,7 +82,6 @@ public class IdaAuthenticatorImplTest {
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "kycExchangeUrl", "https://dev.mosip.net");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "idaVersion", "VersionIDA");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "kycAuthUrl", "https://testkycAuthUrl");
-		ReflectionTestUtils.setField(idaAuthenticatorImpl, "authTokenUrl", "https://testAuthTokenUrl");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "getCertsUrl", "https://testGetCertsUrl");
 		ReflectionTestUtils.setField(idaAuthenticatorImpl, "otpChannels", Arrays.asList("otp", "pin", "bio"));
 	}
@@ -171,7 +169,6 @@ public class IdaAuthenticatorImplTest {
 				() -> idaAuthenticatorImpl.doKycAuth("relyingId", "clientId", kycAuthDto));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void doKycAuth_withBIOAuthChallenge_thenPass() throws Exception {
 		KycAuthDto kycAuthDto = new KycAuthDto();
@@ -350,20 +347,9 @@ public class IdaAuthenticatorImplTest {
 		Assert.assertTrue(idaAuthenticatorImpl.isSupportedOtpChannel("OTP"));
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Test
 	public void getAllKycSigningCertificates_withValidDetails_thenPass() throws Exception {
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		ResponseWrapper responseWrapper = new ResponseWrapper();
-
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("authorization", "test-auth-token");
-		ResponseEntity<ResponseWrapper> responseEntity = new ResponseEntity<ResponseWrapper>(responseWrapper, headers,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
-				Mockito.<ParameterizedTypeReference<ResponseWrapper>>any())).thenReturn(responseEntity);
+		Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("test-token");
 
 		GetAllCertificatesResponse getAllCertificatesResponse = new GetAllCertificatesResponse();
 		getAllCertificatesResponse.setAllCertificates(new ArrayList<KycSigningCertificateData>());
@@ -386,20 +372,9 @@ public class IdaAuthenticatorImplTest {
 		Assert.assertSame(signingCertificates, getAllCertificatesResponse.getAllCertificates());
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Test
 	public void getAllKycSigningCertificates_withInvalidResponse_throwsException() throws Exception {
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		ResponseWrapper responseWrapper = new ResponseWrapper();
-
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("authorization", "test-auth-token");
-		ResponseEntity<ResponseWrapper> responseEntity = new ResponseEntity<ResponseWrapper>(responseWrapper, headers,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
-				Mockito.<ParameterizedTypeReference<ResponseWrapper>>any())).thenReturn(responseEntity);
+		Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("test-token");
 
 		ResponseWrapper<GetAllCertificatesResponse> certsResponseWrapper = new ResponseWrapper<GetAllCertificatesResponse>();
 		certsResponseWrapper.setId("test-id");
@@ -419,20 +394,9 @@ public class IdaAuthenticatorImplTest {
 				() -> idaAuthenticatorImpl.getAllKycSigningCertificates());
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Test
 	public void getAllKycSigningCertificates_withErrorResponse_throwsException() throws Exception {
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
-
-		ResponseWrapper responseWrapper = new ResponseWrapper();
-
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("authorization", "test-auth-token");
-		ResponseEntity<ResponseWrapper> responseEntity = new ResponseEntity<ResponseWrapper>(responseWrapper, headers,
-				HttpStatus.OK);
-
-		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
-				Mockito.<ParameterizedTypeReference<ResponseWrapper>>any())).thenReturn(responseEntity);
+		Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("test-token");
 
 		ResponseWrapper<GetAllCertificatesResponse> certsResponseWrapper = new ResponseWrapper<GetAllCertificatesResponse>();
 		certsResponseWrapper.setId("test-id");
@@ -455,7 +419,7 @@ public class IdaAuthenticatorImplTest {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void getAllKycSigningCertificates_withInvalidToken_thenFail() throws Exception {
-		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
+		Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("test-token");
 
 		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
 				Mockito.<ParameterizedTypeReference<ResponseWrapper>>any())).thenThrow(RuntimeException.class);
