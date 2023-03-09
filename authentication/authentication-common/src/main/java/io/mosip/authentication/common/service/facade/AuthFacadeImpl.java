@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import io.mosip.authentication.core.spi.indauth.service.TokenAuthService;
+import io.mosip.authentication.core.spi.indauth.service.KeyBindedTokenAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,7 +128,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private IdInfoHelper idInfoHelper;
 
 	@Autowired
-	private TokenAuthService tokenAuthService;
+	private KeyBindedTokenAuthService keyBindedTokenAuthService;
 	
 	/*
 	 * (non-Javadoc)
@@ -496,10 +496,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void processTokenAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String token,
 								  boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId,
 								  AuthTransactionBuilder authTxnBuilder, String idvidHash) throws IdAuthenticationBusinessException {
-		if (AuthTypeUtil.isToken(authRequestDTO)) {
+		if (AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
 			AuthStatusInfo tokenValidationStatus = null;
 			try {
-				tokenValidationStatus = tokenAuthService.authenticate(authRequestDTO, token, idInfo, partnerId);
+				tokenValidationStatus = keyBindedTokenAuthService.authenticate(authRequestDTO, token, idInfo, partnerId);
 				authStatusList.add(tokenValidationStatus);
 
 				boolean isStatus = tokenValidationStatus != null && tokenValidationStatus.isStatus();

@@ -13,8 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.impl.match.TokenAuthType;
-import io.mosip.authentication.common.service.util.TokenMatcherUtil;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -89,7 +89,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	private DemoMatcherUtil demoMatcherUtil;
 
 	@Autowired(required = false)
-	private TokenMatcherUtil tokenMatcherUtil;
+	private KeyBindedTokenMatcherUtil keyBindedTokenMatcherUtil;
 	
 	/**
 	 * Gets the demo normalizer.
@@ -461,8 +461,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		if (authType instanceof BioAuthType) {
 			return bioMatcherUtil::match;
 		}
-		if (authType instanceof TokenAuthType) {
-			return tokenMatcherUtil::match;
+		if (authType instanceof KeyBindedTokenAuthType) {
+			return keyBindedTokenMatcherUtil::match;
 		} else {
 			return defaultFunc;
 		}

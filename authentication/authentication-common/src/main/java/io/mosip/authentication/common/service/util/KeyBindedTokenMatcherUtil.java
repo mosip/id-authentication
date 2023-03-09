@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-public class TokenMatcherUtil {
+public class KeyBindedTokenMatcherUtil {
 
-    private static Logger logger = IdaLogger.getLogger(TokenMatcherUtil.class);
+    private static Logger logger = IdaLogger.getLogger(KeyBindedTokenMatcherUtil.class);
 
     private final static String X5t_HEADER = "x5t#S256";
 
