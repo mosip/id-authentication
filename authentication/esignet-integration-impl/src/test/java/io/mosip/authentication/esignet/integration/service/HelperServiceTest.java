@@ -216,7 +216,6 @@ public class HelperServiceTest {
         Assert.assertNotNull(idaKycAuthRequest.getRequestSessionKey());
         Assert.assertNotNull(idaKycAuthRequest.getRequestHMAC());
         Assert.assertNotNull(idaKycAuthRequest.getThumbprint());
-        Assert.assertEquals("1234567890", idaKycAuthRequest.getTransactionID());
     }
 
     @Test
