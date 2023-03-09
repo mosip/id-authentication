@@ -4,8 +4,8 @@ import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.match.TokenAuthType;
-import io.mosip.authentication.common.service.impl.match.TokenMatchType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenMatchType;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -14,7 +14,7 @@ import io.mosip.authentication.core.indauth.dto.*;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import io.mosip.authentication.core.spi.indauth.service.TokenAuthService;
+import io.mosip.authentication.core.spi.indauth.service.KeyBindedTokenAuthService;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +22,10 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @NoArgsConstructor
-public class TokenAuthServiceImpl implements TokenAuthService {
+public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService {
 
     @Autowired
     private IdInfoHelper idInfoHelper;
@@ -62,13 +61,13 @@ public class TokenAuthServiceImpl implements TokenAuthService {
         // Using AND condition on the match output for Bio auth.
         boolean isMatched = !listMatchOutputs.isEmpty() && listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
         return AuthStatusInfoBuilder.buildStatusInfo(isMatched, listMatchInputs, listMatchOutputs,
-                TokenAuthType.values(), idaMappingConfig);
+                KeyBindedTokenAuthType.values(), idaMappingConfig);
 
     }
 
     public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO,
                                                 Map<String, List<IdentityInfoDTO>> idInfo) {
-        return matchInputBuilder.buildMatchInput(authRequestDTO, TokenAuthType.values(), TokenMatchType.values(),
+        return matchInputBuilder.buildMatchInput(authRequestDTO, KeyBindedTokenAuthType.values(), KeyBindedTokenMatchType.values(),
                 idInfo);
     }
 

@@ -139,6 +139,8 @@ public final class IdAuthCommonConstants {
 	public static final String HOTLIST = "hotlist";
 
 	public static final String BIOMETRICS = "biometrics";
+
+	public static final String KEY_BINDED_TOKEN = "keyBindedToken";
 	
 	public static final String DEMOGRAPHICS = "demographics";
 

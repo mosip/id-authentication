@@ -6,11 +6,11 @@ import io.mosip.authentication.core.spi.indauth.match.*;
 
 import java.util.Map;
 
-public enum TokenMatchingStrategy implements MatchingStrategy {
+public enum KeyBindedTokenMatchingStrategy implements MatchingStrategy {
 
     EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
         if (reqInfo instanceof Map && entityInfo instanceof Map) {
-            Object object = props.get(IdaIdMapping.TOKEN.getIdname());
+            Object object = props.get(IdaIdMapping.KEYBINDEDTOKEN.getIdname());
             if (object instanceof TriFunctionWithBusinessException) {
                 TriFunctionWithBusinessException<Map<String, String>,
                         Map<String, String>,
@@ -40,7 +40,7 @@ public enum TokenMatchingStrategy implements MatchingStrategy {
      * @param matchStrategyType the match strategy type
      * @param matchFunction the match function
      */
-    private TokenMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
+    private KeyBindedTokenMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
         this.matchFunction = matchFunction;
         this.matchStrategyType = matchStrategyType;
     }

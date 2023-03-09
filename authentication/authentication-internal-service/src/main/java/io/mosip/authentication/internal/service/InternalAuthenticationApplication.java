@@ -30,7 +30,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
-import io.mosip.authentication.common.service.impl.TokenAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.KeyBindedTokenAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
@@ -105,7 +105,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, TokenAuthServiceImpl.class, 
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
 		MasterDataCache.class, MasterDataCacheUpdateServiceImpl.class, MasterDataUpdateEventInitializer.class, MatchInputBuilder.class,
