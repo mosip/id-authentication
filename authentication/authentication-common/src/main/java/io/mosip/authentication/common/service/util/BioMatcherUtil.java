@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
@@ -189,6 +190,12 @@ public class BioMatcherUtil {
 				String key = e.getKey();
 				
 				reqInfoObj[index] = getBir(e.getValue(), getType(key, idMappings));
+				if (Objects.isNull(entityInfo.get(key))) {
+					logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "getBirValues", 
+							"BIO Value not available in DB. BIO Key: " + key);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), 
+							String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), key));
+				}
 				entityInfoObj[index] = getBirFromCbeff(entityInfo.get(key));
 				index++;
 			}
