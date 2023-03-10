@@ -45,6 +45,7 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
+import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
@@ -104,7 +105,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		MasterDataUpdateEventInitializer.class, IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class,
 		LangComparatorConfig.class, OpenApiProperties.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, 
-		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class })
+		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))

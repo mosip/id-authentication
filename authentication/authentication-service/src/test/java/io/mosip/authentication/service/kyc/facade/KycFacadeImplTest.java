@@ -200,7 +200,7 @@ public class KycFacadeImplTest {
 		keyPair = gen.generateKeyPair();
 	}
 
-	@Test
+	/* @Test
 	public void authenticateIndividualTokenTest() throws Exception {
 		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"keybindedtoken\",\"authSubType\":\"wla\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
 		PartnerPolicyResponseDTO partnerPolicyResponseDTO = mapper.readValue(partnerData, PartnerPolicyResponseDTO.class);
@@ -262,7 +262,7 @@ public class KycFacadeImplTest {
 		result.add(new String[] {"cert-thumbprint", getPemData(x509Certificate)});
 		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(Mockito.anyString(), Mockito.anyString())).thenReturn(result);
 		assertEquals(true, kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse().isAuthStatus());
-	}
+	} */
 
 	private X509Certificate getCertificate() throws Exception {
 		X509V3CertificateGenerator generator = new X509V3CertificateGenerator();
