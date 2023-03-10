@@ -1081,6 +1081,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		Set<String> amrInRequest = list.stream()
+				.filter( kbt -> !org.springframework.util.StringUtils.isEmpty(kbt.getType()))
 				.map(KeyBindedTokenDTO::getType)
 				.map(String::toLowerCase)
 				.collect(Collectors.toSet());
