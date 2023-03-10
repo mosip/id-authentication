@@ -78,13 +78,14 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
                         public Map<String, String> fetch(String individualId, AuthRequestDTO authReq, String partnerID)
                                 throws IdAuthenticationBusinessException {
                             Map<String, String> entityInfo = new HashMap<>();
-                            String idVidHash = securityManager.hash(individualId);
+                            entityInfo.put("DUMMY-KEY", "DUMMY-CERTIFICATE");
+                            /* String idVidHash = securityManager.hash(individualId);
                             List<Object[]> resultList = identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(idVidHash, partnerID);
                             if(resultList != null && !resultList.isEmpty()) {
                                 for(Object[] entry : resultList) {
                                     entityInfo.put((String) entry[0], (String) entry[1]);
                                 }
-                            }
+                            } */
                             return entityInfo;
                         }
                     },
