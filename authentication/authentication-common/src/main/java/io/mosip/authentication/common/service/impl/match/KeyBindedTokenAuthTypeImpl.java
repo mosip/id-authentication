@@ -24,6 +24,6 @@ public class KeyBindedTokenAuthTypeImpl extends AuthTypeImpl {
     @Override
     public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
         return  authReq instanceof KycAuthRequestDTO &&
-                !CollectionUtils.isEmpty(((KycAuthRequestDTO)authReq).getRequest().getKeyBindedToken());
+                !CollectionUtils.isEmpty(((KycAuthRequestDTO)authReq).getRequest().getKeyBindedTokens());
     }
 }

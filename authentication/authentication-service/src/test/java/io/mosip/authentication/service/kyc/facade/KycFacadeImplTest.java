@@ -240,7 +240,7 @@ public class KycFacadeImplTest {
 		keyBindedTokenDTO.setToken(wlaToken);
 		keyBindedTokenDTO.setFormat("jwt");
 		keyBindedTokenDTO.setType("WLA");
-		requestDTO.setKeyBindedToken(Arrays.asList(keyBindedTokenDTO));
+		requestDTO.setKeyBindedTokens(Arrays.asList(keyBindedTokenDTO));
 		authRequestDTO.setRequest(requestDTO);
 
 		HashMap<String, Object> reqMetadata = new HashMap<>();

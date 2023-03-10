@@ -9,5 +9,5 @@ import java.util.List;
 public class KycRequestDTO extends RequestDTO {
 
     /** H/W or S/W token  */
-    private List<KeyBindedTokenDTO> keyBindedToken;
+    private List<KeyBindedTokenDTO> keyBindedTokens;
 }

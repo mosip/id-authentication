@@ -13,6 +13,7 @@ import com.nimbusds.jwt.JWTParser;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
+import io.mosip.authentication.esignet.integration.dto.KeyBindedToken;
 import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.SendOtpResult;
 import io.mosip.esignet.api.exception.KycAuthException;
@@ -50,6 +51,7 @@ import java.security.cert.X509Certificate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -113,7 +115,7 @@ public class HelperService {
         authRequest.setTimestamp(HelperService.getUTCDateTime());
         challengeList.stream()
                 .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
-                .forEach( auth -> { buildAuthRequest(auth.getAuthFactorType(), auth.getChallenge(), authRequest, idaKycAuthRequest); });
+                .forEach( auth -> { buildAuthRequest(auth, authRequest); });
 
         KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
         final SecretKey symmetricKey = keyGenerator.generateKey();
@@ -221,16 +223,15 @@ public class HelperService {
         return urlSafeDecoder.decode(value);
     }
 
-    private void buildAuthRequest(String authFactor, String authChallenge,
-                                  IdaKycAuthRequest.AuthRequest authRequest, IdaKycAuthRequest idaKycAuthRequest) {
-        log.info("Build kyc-auth request with authFactor : {}",  authFactor);
-        switch (authFactor.toUpperCase()) {
-            case "OTP" : authRequest.setOtp(authChallenge);
+    private void buildAuthRequest(AuthChallenge authChallenge, IdaKycAuthRequest.AuthRequest authRequest) {
+        log.info("Build kyc-auth request with authFactor : {}",  authChallenge.getAuthFactorType());
+        switch (authChallenge.getAuthFactorType().toUpperCase()) {
+            case "OTP" : authRequest.setOtp(authChallenge.getChallenge());
                 break;
-            case "PIN" : authRequest.setStaticPin(authChallenge);
+            case "PIN" : authRequest.setStaticPin(authChallenge.getChallenge());
                 break;
             case "BIO" :
-                byte[] decodedBio = HelperService.b64Decode(authChallenge);
+                byte[] decodedBio = HelperService.b64Decode(authChallenge.getChallenge());
                 try {
                     List<IdaKycAuthRequest.Biometric> biometrics = objectMapper.readValue(decodedBio,
                             new TypeReference<List<IdaKycAuthRequest.Biometric>>(){});
@@ -238,6 +239,15 @@ public class HelperService {
                 } catch (Exception e) {
                     log.error("Failed to parse biometric capture response", e);
                 }
+                break;
+            case "WLA" :
+                List<KeyBindedToken> list = new ArrayList<>();
+                KeyBindedToken keyBindedToken = new KeyBindedToken();
+                keyBindedToken.setType(authChallenge.getAuthFactorType());
+                keyBindedToken.setToken(authChallenge.getChallenge());
+                keyBindedToken.setFormat(authChallenge.getFormat());
+                list.add(keyBindedToken);
+                authRequest.setKeyBindedTokens(list);
                 break;
             default:
                 throw new NotImplementedException("KYC auth not implemented");

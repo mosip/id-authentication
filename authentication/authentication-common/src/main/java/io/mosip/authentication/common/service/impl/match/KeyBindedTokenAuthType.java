@@ -33,10 +33,10 @@ public enum KeyBindedTokenAuthType implements AuthType {
     public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
         if(authRequestDTO instanceof KycAuthRequestDTO) {
             KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO)authRequestDTO;
-            return !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedToken()) &&
-                    kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getToken() != null &&
-                    kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getFormat() != null &&
-                    kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getType() != null;
+            return !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens()) &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken() != null &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat() != null &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType() != null;
         }
         return false;
     }

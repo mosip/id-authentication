@@ -43,10 +43,10 @@ public enum KeyBindedTokenMatchType implements MatchType {
         return (AuthRequestDTO authRequestDto) -> {
             Map<String, String> map = new HashMap<>();
             KycAuthRequestDTO kycAuthRequestDTO =  (KycAuthRequestDTO)authRequestDto;
-            if(kycAuthRequestDTO != null && !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedToken())) {
-                map.put("token", kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getToken());
-                map.put("tokenType", kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getType());
-                map.put("tokenFormat", kycAuthRequestDTO.getRequest().getKeyBindedToken().get(0).getFormat());
+            if(kycAuthRequestDTO != null && !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens())) {
+                map.put("token", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken());
+                map.put("tokenType", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType());
+                map.put("tokenFormat", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat());
             }
             map.put("individualId", kycAuthRequestDTO.getIndividualId());
             return map;

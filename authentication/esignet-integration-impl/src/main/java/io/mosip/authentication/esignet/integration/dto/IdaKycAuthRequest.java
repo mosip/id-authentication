@@ -36,6 +36,7 @@ public class IdaKycAuthRequest {
         private String staticPin;
         private String timestamp;
         private List<Biometric> biometrics;
+        private List<KeyBindedToken> keyBindedTokens;
     }
 
     @Data
