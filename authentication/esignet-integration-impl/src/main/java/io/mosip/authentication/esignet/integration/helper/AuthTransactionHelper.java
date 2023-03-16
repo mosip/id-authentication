@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthTransactionHelper {
 	
 	private static final String AUTH_TOKEN_CACHE = "AUTH_TOKEN_CACHE";
+	
+	public static final String AUTH_TOKEN_CACHE_KEY = "auth_token";
 
 	@Autowired
     private ObjectMapper objectMapper;
@@ -45,7 +47,7 @@ public class AuthTransactionHelper {
     @Value("${mosip.esignet.authenticator.ida.app-id}")
     private String appId;
 	
-    @Cacheable(value = AUTH_TOKEN_CACHE, key = "auth_token")
+    @Cacheable(value = AUTH_TOKEN_CACHE, key = "#root.target.AUTH_TOKEN_CACHE_KEY")
 	public String getAuthToken() throws Exception {
     	log.info("Started to get auth-token with appId : {} && clientId : {}",
                 appId, clientId);
