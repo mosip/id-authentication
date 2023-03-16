@@ -25,20 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthTransactionHelper {
 	
-	private static final String AUTH_TOKEN_CACHE = "AUTH_TOKEN_CACHE";
+    private static final String AUTH_TOKEN_CACHE = "authtokens";
 	
-	public static final String AUTH_TOKEN_CACHE_KEY = "auth_token";
+    public static final String AUTH_TOKEN_CACHE_KEY = "auth_token";
 
-	@Autowired
+    @Autowired
     private ObjectMapper objectMapper;
 	
-	@Autowired
+    @Autowired
     private RestTemplate restTemplate;
 	
-	@Value("${mosip.esignet.authenticator.ida.auth-token-url}")
+    @Value("${mosip.esignet.authenticator.ida.auth-token-url}")
     private String authTokenUrl;
 	
-	@Value("${mosip.esignet.authenticator.ida.client-id}")
+    @Value("${mosip.esignet.authenticator.ida.client-id}")
     private String clientId;
     
     @Value("${mosip.esignet.authenticator.ida.secret-key}")
@@ -48,11 +48,11 @@ public class AuthTransactionHelper {
     private String appId;
 	
     @Cacheable(value = AUTH_TOKEN_CACHE, key = "#root.target.AUTH_TOKEN_CACHE_KEY")
-	public String getAuthToken() throws Exception {
+    public String getAuthToken() throws Exception {
     	log.info("Started to get auth-token with appId : {} && clientId : {}",
                 appId, clientId);
     	
-		RequestWrapper<ClientIdSecretKeyRequest> authRequest = new RequestWrapper<>();
+	RequestWrapper<ClientIdSecretKeyRequest> authRequest = new RequestWrapper<>();
     	authRequest.setRequesttime(LocalDateTime.now());
     	ClientIdSecretKeyRequest clientIdSecretKeyRequest = new ClientIdSecretKeyRequest(clientId, secretKey, appId);
     	authRequest.setRequest(clientIdSecretKeyRequest);
@@ -67,7 +67,7 @@ public class AuthTransactionHelper {
         
         String authToken = responseEntity.getHeaders().getFirst("authorization");
         return authToken;
-	}
+     }
     
     @CacheEvict(value = AUTH_TOKEN_CACHE, allEntries = true)
     public void purgeAuthTokenCache() {
