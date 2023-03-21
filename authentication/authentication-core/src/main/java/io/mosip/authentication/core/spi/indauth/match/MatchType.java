@@ -40,7 +40,7 @@ public interface MatchType {
 		/** s-pin category. */
 		SPIN("pin"),
 		/** Token category */
-		KEYBINDEDTOKEN("keybindedtoken");
+		KBT("kbt");
 
 		/** The type. */
 		String type;

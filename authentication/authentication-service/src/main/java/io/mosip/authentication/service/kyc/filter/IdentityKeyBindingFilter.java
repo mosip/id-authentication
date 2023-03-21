@@ -48,6 +48,7 @@ public class IdentityKeyBindingFilter extends IdAuthFilter {
 					IdAuthenticationErrorConstants.UNAUTHORISED_KEY_BINDING_PARTNER.getErrorMessage());
 
 		}
+		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 	}
 
 	/* (non-Javadoc)
@@ -107,7 +108,7 @@ public class IdentityKeyBindingFilter extends IdAuthFilter {
 		// check whether policy is allowed for key binding or not.
 		if (!mispPolicy.isAllowKeyBindingDelegation()) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "checkMispPolicyAllowed", 
-					"MISP Partner not allowed for key binding for an identity - identiy-key-binding.");
+					"MISP Partner not allowed for key binding for an identity - identity-key-binding.");
 			throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.KEY_BINDING_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.KEY_BINDING_NOT_ALLOWED.getErrorMessage(), "KEY-BINDING"));

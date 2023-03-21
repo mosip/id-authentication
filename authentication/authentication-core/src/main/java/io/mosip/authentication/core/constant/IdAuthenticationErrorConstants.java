@@ -92,7 +92,10 @@ public enum IdAuthenticationErrorConstants {
 	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
 	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
-	
+	BINDED_KEY_NOT_FOUND("IDA-KBT-001", "Certificate not found for the input x5t#S256: %s and authtype: %s"),
+	BINDED_TOKEN_EXPIRED("IDA-KBT-002", "Signed token issued at (iat) is not in allowed time range."),
+	ERROR_TOKEN_VERIFICATION("IDA-KBT-003", "Error verifying key binded token. Error: %s"),
+
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
 	INVALID_REQ_PRINT_FORMAT("IDA-EKA-002", "Invalid value in print format request"),
@@ -138,9 +141,9 @@ public enum IdAuthenticationErrorConstants {
 			"Please try after updating misp policy"),
 	UNAUTHORISED_KEY_BINDING_PARTNER("IDA-MPA-033", "Partner is unauthorised for KeyBinding"),
 	KEY_BINDING_MISSING("IDA-MPA-034", "KeyBinding not available in database",
-			"Your KeyBinding data is not available in MOSIP"),
-	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBinding check failed for the given token",
-			"KeyBinding check failed for the given token"),
+			"KeyBinding data is not available in MOSIP"),
+	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBindedToken check failed for the given token.",
+			"Provide Valid KeyBindedToken to perform auth."),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),

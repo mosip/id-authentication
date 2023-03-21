@@ -140,7 +140,7 @@ public final class IdAuthCommonConstants {
 
 	public static final String BIOMETRICS = "biometrics";
 
-	public static final String KEY_BINDED_TOKEN = "keyBindedToken";
+	public static final String KEY_BINDED_TOKEN = "keyBindedTokens";
 	
 	public static final String DEMOGRAPHICS = "demographics";
 
@@ -400,6 +400,8 @@ public final class IdAuthCommonConstants {
 	public static final String NAME = "name";
 	
 	public static final String EMPTY = "";
+
+	public static final String CERT_TP_AF_SEPERATOR = "-";
 
 	private IdAuthCommonConstants() {
 	}

@@ -10,7 +10,7 @@ public enum KeyBindedTokenMatchingStrategy implements MatchingStrategy {
 
     EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
         if (reqInfo instanceof Map && entityInfo instanceof Map) {
-            Object object = props.get(IdaIdMapping.KEYBINDEDTOKEN.getIdname());
+            Object object = props.get(IdaIdMapping.KEY_BINDED_TOKENS.getIdname());
             if (object instanceof TriFunctionWithBusinessException) {
                 TriFunctionWithBusinessException<Map<String, String>,
                         Map<String, String>,

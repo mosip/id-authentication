@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -123,6 +124,12 @@ public class BaseIDAFilterTest {
         protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
             // Nothing required, Ignoring for other filters.
         }
+
+		@Override
+		protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+			throws IdAuthenticationAppException {
+			// Nothing required.
+		}
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

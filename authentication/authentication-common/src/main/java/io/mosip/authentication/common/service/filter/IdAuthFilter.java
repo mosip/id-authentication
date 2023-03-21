@@ -777,9 +777,6 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 								MatchType.Category.OTP.name()));
 			}
-			if (AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
-				checkAllowedAuthTypeForKeyBindedToken(requestBody, authPolicies);
-			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
@@ -840,12 +837,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		}
 	}
 
-	private void checkAllowedAuthTypeForKeyBindedToken(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+	protected void checkAllowedAuthTypeForKeyBindedToken(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
 			throws IdAuthenticationAppException, IOException {
 
 		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
-				.filter(obj -> obj instanceof Map).orElse(Collections.emptyMap());
+				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
 		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<KeyBindedTokenDTO>>() {
 				});
@@ -857,10 +854,10 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		}
 
 		//TODO need to check all the elements in the list instead of only first element
-		if (!isAllowedAuthType(MatchType.Category.KEYBINDEDTOKEN.getType(), list.get(0).getType(), authPolicies)) {
+		if (!isAllowedAuthType(MatchType.Category.KBT.getType(), null, authPolicies)) {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), list.get(0).getType()));
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), MatchType.Category.KBT.getType()));
 		}
 	}
 
@@ -1055,21 +1052,20 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.OTP.name()));
 				}
-				if (AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
-					checkAllowedAMRForKeyBindedToken(requestBody, allowedAMRs);
-				}
+				checkAllowedAMRForKBT(requestBody, allowedAMRs);
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 
-	private void checkAllowedAMRForKeyBindedToken(Map<String, Object> requestBody, Set<String> allowedAMRs)
+	protected void checkAllowedAMRForKeyBindedToken(Map<String, Object> requestBody, Set<String> allowedAMRs)
 			throws IdAuthenticationAppException, IOException {
 
 		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
-				.filter(obj -> obj instanceof Map).orElse(Collections.emptyMap());
+				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
+				
 		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<KeyBindedTokenDTO>>() {
 				});
@@ -1104,6 +1100,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 				List<AuthenticationFactor> amrs = allowedAMRs.get(key);
 				// not considering count in AuthenticationFactor. Need to handle later.
 				for (AuthenticationFactor amr : amrs) {
+					if (Objects.nonNull(amr.getSubTypes())) {
+						filterAMRs.addAll(amr.getSubTypes().stream()
+										 .filter( subtype -> !org.springframework.util.StringUtils.isEmpty(subtype))
+				 						 .map(String::toLowerCase)
+										 .collect(Collectors.toSet()));
+					}
 					filterAMRs.add(amr.getType().toLowerCase());
 				}
 			}
@@ -1171,6 +1173,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
         // Nothing required, Ignoring for other filters.
     }
+
+	@Override
+	protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+		throws IdAuthenticationAppException {
+		// Nothing required, Ignoring for other filters.
+	}
 
 	/**
 	 * Checks if is trust validation required.
