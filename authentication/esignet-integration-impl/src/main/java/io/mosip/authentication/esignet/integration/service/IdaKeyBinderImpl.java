@@ -50,8 +50,8 @@ public class IdaKeyBinderImpl implements KeyBinder {
         supportedFormats.put("WLA", Arrays.asList("jwt"));
     }
 
-    private static final String PARTNER_ID_HEADER = "partner_id";
-    private static final String PARTNER_API_KEY_HEADER = "partner_api_key";
+    private static final String PARTNER_ID_HEADER = "partner-id";
+    private static final String PARTNER_API_KEY_HEADER = "partner-api-key";
     public static final String SIGNATURE_HEADER_NAME = "signature";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     public static final String BINDING_TRANSACTION = "bindingtransaction";
