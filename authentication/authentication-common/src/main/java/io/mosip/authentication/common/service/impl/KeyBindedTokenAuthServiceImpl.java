@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CERT_TP_AF_SEPERATOR;
+
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
@@ -45,7 +47,6 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
     private IdentityBindingCertificateRepository identityBindingCertificateRepository;
 
 
-
     public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String individualId,
                                        Map<String,List<IdentityInfoDTO>> idInfo,String partnerId)
             throws IdAuthenticationBusinessException {
@@ -78,14 +79,14 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
                         public Map<String, String> fetch(String individualId, AuthRequestDTO authReq, String partnerID)
                                 throws IdAuthenticationBusinessException {
                             Map<String, String> entityInfo = new HashMap<>();
-                            entityInfo.put("DUMMY-KEY", "DUMMY-CERTIFICATE");
-                            /* String idVidHash = securityManager.hash(individualId);
+                            String idVidHash = securityManager.hash(authReq.getIndividualId());
                             List<Object[]> resultList = identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(idVidHash, partnerID);
                             if(resultList != null && !resultList.isEmpty()) {
                                 for(Object[] entry : resultList) {
-                                    entityInfo.put((String) entry[0], (String) entry[1]);
+                                    String mapKey = ((String) entry[0]) + CERT_TP_AF_SEPERATOR + ((String) entry[1]);
+                                    entityInfo.put(mapKey.toUpperCase(), (String) entry[2]);
                                 }
-                            } */
+                            } 
                             return entityInfo;
                         }
                     },

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -548,6 +549,8 @@ public abstract class BaseIDAFilter implements Filter {
 	protected abstract boolean isCertificateValidationRequired();
 
 	protected abstract boolean isAMRValidationRequired();
+
+	protected abstract void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) throws IdAuthenticationAppException;
 
 	protected abstract void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException;
 

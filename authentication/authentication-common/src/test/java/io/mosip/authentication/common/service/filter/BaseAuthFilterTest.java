@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ReadListener;
@@ -143,7 +144,13 @@ public class BaseAuthFilterTest {
 		@Override
         protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
         	// Nothing required, Ignoring for other filters.
-       }
+        }
+
+	    @Override
+		protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+			throws IdAuthenticationAppException {
+			// Nothing required.
+		}
 	};
 
 	ObjectMapper mapper = new ObjectMapper();

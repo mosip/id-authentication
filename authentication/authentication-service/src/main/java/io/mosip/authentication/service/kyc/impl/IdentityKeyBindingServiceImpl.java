@@ -121,6 +121,8 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
         bindingCertStore.setCertThumbprint(certThumbprint);
         bindingCertStore.setPublicKeyHash(IdAuthSecurityManager.generateHashAndDigestAsPlainText(publicKey.getEncoded()));
         bindingCertStore.setPartnerName(partnerId);
+        bindingCertStore.setCertExpireDateTime(notAfterDate);
+        bindingCertStore.setAuthFactor(identityKeyBindingRequestDTO.getIdentityKeyBinding().getAuthFactorType());
         bindingCertStore.setCreatedBy(EnvUtil.getAppId());
 		bindingCertStore.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		bindingCertificateRepo.saveAndFlush(bindingCertStore);

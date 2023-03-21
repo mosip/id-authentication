@@ -23,7 +23,7 @@ public interface IdentityBindingCertificateRepository extends BaseRepository<Ide
 	public int countPublicKeysByIdHash(@Param("idVidHash") String idVidHash, @Param("publicKeyHash") String publicKeyHash);
 
 
-	@Query("SELECT i.certThumbprint, i.certificateData FROM IdentityBindingCertificateStore i where i.idVidHash = :idVidHash and i.partnerName = :partnerId and " +
+	@Query("SELECT i.certThumbprint, i.authFactor, i.certificateData, i.authFactor FROM IdentityBindingCertificateStore i where i.idVidHash = :idVidHash and i.partnerName = :partnerId and " +
 			" ( i.isDeleted is null or i.isDeleted = false )")
-	List<Object[]> findAllByIdVidHashAndPartnerId(String idVidHash, String partnerId);
+	List<Object[]> findAllByIdVidHashAndPartnerId(@Param("idVidHash") String idVidHash, @Param("partnerId") String partnerId);
 }

@@ -530,7 +530,7 @@ public class IdInfoHelper {
 								String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
 										idName, input.getLanguage()));
 					}
-				case KEYBINDEDTOKEN:
+				case KBT:
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorMessage(),
