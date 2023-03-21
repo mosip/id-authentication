@@ -42,8 +42,8 @@ public class IdaKeyBinderImplTest {
     private RestTemplate restTemplate;
 
     private ObjectMapper objectMapper = new ObjectMapper();
-    private static final String PARTNER_ID_HEADER = "partner_id";
-    private static final String PARTNER_API_KEY_HEADER = "partner_api_key";
+    private static final String PARTNER_ID_HEADER = "partner-id";
+    private static final String PARTNER_API_KEY_HEADER = "partner-api-key";
 
     @Before
     public void setUp() {
