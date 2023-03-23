@@ -32,10 +32,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -56,7 +58,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Component
+@Service
 @Slf4j
 public class HelperService {
 
@@ -66,6 +68,7 @@ public class HelperService {
     public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String INVALID_PARTNER_CERTIFICATE = "invalid_partner_cert";
     public static final String OIDC_PARTNER_APP_ID = "OIDC_PARTNER";
+    public static final String BINDING_TRANSACTION = "bindingtransaction";
     private static Base64.Encoder urlSafeEncoder;
     private static Base64.Decoder urlSafeDecoder;
 
@@ -109,6 +112,11 @@ public class HelperService {
 
     private Certificate idaPartnerCertificate;
 
+    @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
+    public String getTransactionId(String idHash) {
+        log.info("getTransactionId invoked for idhash : {}", idHash);
+        return HelperService.generateTransactionId(10);
+    }
 
     protected void setAuthRequest(List<AuthChallenge> challengeList, IdaKycAuthRequest idaKycAuthRequest) throws Exception {
         IdaKycAuthRequest.AuthRequest authRequest = new IdaKycAuthRequest.AuthRequest();

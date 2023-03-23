@@ -54,7 +54,6 @@ public class IdaKeyBinderImpl implements KeyBinder {
     private static final String PARTNER_API_KEY_HEADER = "partner-api-key";
     public static final String SIGNATURE_HEADER_NAME = "signature";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    public static final String BINDING_TRANSACTION = "bindingtransaction";
     public static final String REQUIRED_HEADERS_MISSING = "required_header_missing";
 
     @Value("${mosip.esignet.binder.ida.key-binding-url}")
@@ -92,7 +91,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             IdaSendOtpRequest idaSendOtpRequest = new IdaSendOtpRequest();
             idaSendOtpRequest.setOtpChannel(otpChannels);
             idaSendOtpRequest.setIndividualId(individualId);
-            idaSendOtpRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId.trim())));
+            idaSendOtpRequest.setTransactionID(helperService.getTransactionId(HelperService.generateHash(individualId.trim())));
             return helperService.sendOTP(requestHeaders.get(PARTNER_ID_HEADER),
                     requestHeaders.get(PARTNER_API_KEY_HEADER), idaSendOtpRequest);
         } catch (SendOtpException e) {
@@ -119,7 +118,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             keyBindingRequest.setEnv(idaEnv);
             keyBindingRequest.setConsentObtained(true);
             keyBindingRequest.setIndividualId(individualId);
-            keyBindingRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId.trim())));
+            keyBindingRequest.setTransactionID(helperService.getTransactionId(HelperService.generateHash(individualId.trim())));
             helperService.setAuthRequest(challengeList, keyBindingRequest);
 
             KeyBindingRequest.IdentityKeyBinding identityKeyBinding = new KeyBindingRequest.IdentityKeyBinding();
@@ -169,12 +168,5 @@ public class IdaKeyBinderImpl implements KeyBinder {
     public List<String> getSupportedChallengeFormats(String authFactorType) {
         return supportedFormats.getOrDefault(authFactorType, Arrays.asList());
     }
-
-    @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
-    public String getTransactionId(String idHash) {
-        log.info("getTransactionId invoked for idhash : {}", idHash);
-        return HelperService.generateTransactionId(10);
-    }
-
 
 }
