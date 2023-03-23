@@ -84,7 +84,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
     @Override
     public SendOtpResult sendBindingOtp(String individualId, List<String> otpChannels, Map<String, String> requestHeaders)
             throws SendOtpException {
-        log.info("Started to send-binding-otp request");
+        log.info("Started to send-binding-otp request {}", individualId);
         try {
             if(StringUtils.isEmpty(requestHeaders.get(PARTNER_ID_HEADER)) || StringUtils.isEmpty(requestHeaders.get(PARTNER_API_KEY_HEADER)))
                 throw new SendOtpException(REQUIRED_HEADERS_MISSING);
@@ -106,7 +106,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
     @Override
     public KeyBindingResult doKeyBinding(String individualId, List<AuthChallenge> challengeList, Map<String, Object> publicKeyJWK,
                                          String bindAuthFactorType, Map<String, String> requestHeaders) throws KeyBindingException {
-        log.info("Started to key-binding request for auth-factor-type {}", bindAuthFactorType);
+        log.info("Started to key-binding request {} for auth-factor-type {}", individualId, bindAuthFactorType);
         if(StringUtils.isEmpty(requestHeaders.get(PARTNER_ID_HEADER)) || StringUtils.isEmpty(requestHeaders.get(PARTNER_API_KEY_HEADER)))
             throw new KeyBindingException(REQUIRED_HEADERS_MISSING);
 
@@ -172,6 +172,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
 
     @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
     public String getTransactionId(String idHash) {
+        log.info("getTransactionId invoked for idhash : {}", idHash);
         return HelperService.generateTransactionId(10);
     }
 
