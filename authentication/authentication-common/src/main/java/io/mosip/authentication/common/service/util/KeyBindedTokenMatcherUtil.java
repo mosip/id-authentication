@@ -165,9 +165,11 @@ public class KeyBindedTokenMatcherUtil {
 
     private boolean isIatWithinAllowedTime(Date issuedDateTime) {
         LocalDateTime currentTime = LocalDateTime.now();
-		
+        
         LocalDateTime issuedLDT = DateUtils.parseDateToLocalDateTime(issuedDateTime);
+        
 		long diffSeconds = ChronoUnit.SECONDS.between(issuedLDT, currentTime);
+        mosipLogger.info("CurrentTime: {}, issuedLDT: {}, diffSeconds: {}, iatAdjSeconds: {}", currentTime, issuedLDT, diffSeconds, iatAdjSeconds);
 
 		if (issuedDateTime != null && iatAdjSeconds < diffSeconds) {
 			return true;
