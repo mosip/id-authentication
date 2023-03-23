@@ -172,7 +172,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
     }
 
     @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
-    private String getTransactionId(String idHash) {
+    public String getTransactionId(String idHash) {
         return HelperService.generateTransactionId(10);
     }
 }
