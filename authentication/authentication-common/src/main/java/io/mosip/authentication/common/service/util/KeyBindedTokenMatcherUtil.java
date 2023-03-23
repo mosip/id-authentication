@@ -171,7 +171,7 @@ public class KeyBindedTokenMatcherUtil {
 		long diffSeconds = ChronoUnit.SECONDS.between(issuedLDT, currentTime);
         mosipLogger.info("CurrentTime: {}, issuedLDT: {}, diffSeconds: {}, iatAdjSeconds: {}", currentTime, issuedLDT, diffSeconds, iatAdjSeconds);
 
-		if (issuedDateTime != null && iatAdjSeconds < diffSeconds) {
+		if (issuedDateTime != null && diffSeconds <= iatAdjSeconds) {
 			return true;
 		}
 		return false;
