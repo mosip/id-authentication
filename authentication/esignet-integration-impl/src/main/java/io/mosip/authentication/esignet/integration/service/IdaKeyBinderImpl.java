@@ -83,7 +83,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
     @Override
     public SendOtpResult sendBindingOtp(String individualId, List<String> otpChannels, Map<String, String> requestHeaders)
             throws SendOtpException {
-        log.info("Started to send-binding-otp request {}", individualId);
+        log.info("Started to send-binding-otp request");
         try {
             if(StringUtils.isEmpty(requestHeaders.get(PARTNER_ID_HEADER)) || StringUtils.isEmpty(requestHeaders.get(PARTNER_API_KEY_HEADER)))
                 throw new SendOtpException(REQUIRED_HEADERS_MISSING);
@@ -105,7 +105,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
     @Override
     public KeyBindingResult doKeyBinding(String individualId, List<AuthChallenge> challengeList, Map<String, Object> publicKeyJWK,
                                          String bindAuthFactorType, Map<String, String> requestHeaders) throws KeyBindingException {
-        log.info("Started to key-binding request {} for auth-factor-type {}", individualId, bindAuthFactorType);
+        log.info("Started to key-binding request for auth-factor-type {}", bindAuthFactorType);
         if(StringUtils.isEmpty(requestHeaders.get(PARTNER_ID_HEADER)) || StringUtils.isEmpty(requestHeaders.get(PARTNER_API_KEY_HEADER)))
             throw new KeyBindingException(REQUIRED_HEADERS_MISSING);
 
@@ -146,8 +146,10 @@ public class IdaKeyBinderImpl implements KeyBinder {
                             ErrorConstants.KEY_BINDING_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
                 }
 
-                if(!responseWrapper.getResponse().isKycStatus())
+                if(!responseWrapper.getResponse().isBindingAuthStatus()) {
+                    log.error("Binding-Auth-status : {}", responseWrapper.getResponse().isBindingAuthStatus());
                     throw new KeyBindingException(ErrorConstants.BINDING_AUTH_FAILED);
+                }
 
                 KeyBindingResult keyBindingResult = new KeyBindingResult();
                 keyBindingResult.setCertificate(responseWrapper.getResponse().getIdentityCertificate());

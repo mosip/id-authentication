@@ -103,7 +103,7 @@ public class IdaKeyBinderImplTest {
         IdaResponseWrapper<KeyBindingResponse> idaResponseWrapper = new IdaResponseWrapper<>();
         KeyBindingResponse keyBindingResponse = new KeyBindingResponse();
         keyBindingResponse.setAuthToken("auth-token");
-        keyBindingResponse.setKycStatus(true);
+        keyBindingResponse.setBindingAuthStatus(true);
         keyBindingResponse.setIdentityCertificate("certificate");
         idaResponseWrapper.setResponse(keyBindingResponse);
         ResponseEntity<IdaResponseWrapper<KeyBindingResponse>> responseEntity = new ResponseEntity<IdaResponseWrapper<KeyBindingResponse>>(
@@ -128,7 +128,7 @@ public class IdaKeyBinderImplTest {
         IdaResponseWrapper<KeyBindingResponse> idaResponseWrapper = new IdaResponseWrapper<>();
         KeyBindingResponse keyBindingResponse = new KeyBindingResponse();
         keyBindingResponse.setAuthToken("auth-token");
-        keyBindingResponse.setKycStatus(false);
+        keyBindingResponse.setBindingAuthStatus(false);
         keyBindingResponse.setIdentityCertificate("certificate");
         idaResponseWrapper.setResponse(keyBindingResponse);
         ResponseEntity<IdaResponseWrapper<KeyBindingResponse>> responseEntity = new ResponseEntity<IdaResponseWrapper<KeyBindingResponse>>(

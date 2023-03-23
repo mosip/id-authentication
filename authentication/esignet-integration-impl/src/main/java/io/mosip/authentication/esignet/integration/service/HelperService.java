@@ -114,7 +114,6 @@ public class HelperService {
 
     @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
     public String getTransactionId(String idHash) {
-        log.info("getTransactionId invoked for idhash : {}", idHash);
         return HelperService.generateTransactionId(10);
     }
 
