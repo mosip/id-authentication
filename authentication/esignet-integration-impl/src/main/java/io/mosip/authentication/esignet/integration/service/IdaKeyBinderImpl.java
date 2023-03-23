@@ -92,7 +92,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             IdaSendOtpRequest idaSendOtpRequest = new IdaSendOtpRequest();
             idaSendOtpRequest.setOtpChannel(otpChannels);
             idaSendOtpRequest.setIndividualId(individualId);
-            idaSendOtpRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId)));
+            idaSendOtpRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId.trim())));
             return helperService.sendOTP(requestHeaders.get(PARTNER_ID_HEADER),
                     requestHeaders.get(PARTNER_API_KEY_HEADER), idaSendOtpRequest);
         } catch (SendOtpException e) {
@@ -103,7 +103,6 @@ public class IdaKeyBinderImpl implements KeyBinder {
         throw new SendOtpException();
     }
 
-    @CacheEvict(value = BINDING_TRANSACTION, key = "#HelperService.generateHash(individualId)")
     @Override
     public KeyBindingResult doKeyBinding(String individualId, List<AuthChallenge> challengeList, Map<String, Object> publicKeyJWK,
                                          String bindAuthFactorType, Map<String, String> requestHeaders) throws KeyBindingException {
@@ -120,7 +119,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             keyBindingRequest.setEnv(idaEnv);
             keyBindingRequest.setConsentObtained(true);
             keyBindingRequest.setIndividualId(individualId);
-            keyBindingRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId)));
+            keyBindingRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId.trim())));
             helperService.setAuthRequest(challengeList, keyBindingRequest);
 
             KeyBindingRequest.IdentityKeyBinding identityKeyBinding = new KeyBindingRequest.IdentityKeyBinding();
@@ -175,4 +174,6 @@ public class IdaKeyBinderImpl implements KeyBinder {
     public String getTransactionId(String idHash) {
         return HelperService.generateTransactionId(10);
     }
+
+
 }
