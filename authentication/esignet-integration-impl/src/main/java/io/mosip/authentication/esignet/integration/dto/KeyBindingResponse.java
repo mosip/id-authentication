@@ -12,5 +12,5 @@ public class KeyBindingResponse {
 
     private String identityCertificate;
     private String authToken;
-    private boolean kycStatus;
+    private boolean bindingAuthStatus;
 }
