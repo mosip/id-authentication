@@ -16,6 +16,8 @@
 ----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
+ALTER TABLE ida.kyc_token_store ADD request_trn_id character varying(64);
+
 CREATE TABLE ida.ident_binding_cert_store (
 	cert_id character varying(36) NOT NULL,
 	id_vid_hash character varying(256) NOT NULL,
@@ -31,7 +33,8 @@ CREATE TABLE ida.ident_binding_cert_store (
 	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
-	del_dtimes timestamp
+	del_dtimes timestamp,
+	CONSTRAINT uni_public_key_hash_const UNIQUE (public_key_hash)
 );
 -- ddl-end --
 
