@@ -140,8 +140,8 @@ public enum IdAuthenticationErrorConstants {
 	KEY_BINDING_NOT_ALLOWED("IDA-MPA-032", "%s not allowed as per policy",
 			"Please try after updating misp policy"),
 	UNAUTHORISED_KEY_BINDING_PARTNER("IDA-MPA-033", "Partner is unauthorised for KeyBinding"),
-	KEY_BINDING_MISSING("IDA-MPA-034", "KeyBinding not available in database",
-			"KeyBinding data is not available in MOSIP"),
+	KEY_BINDING_MISSING("IDA-MPA-034", "For the input VID/UIN - No Binded key found in DB or binded key is expired.",
+			"Please bind a key for the input VID/UIN before performing KBT Auth."),
 	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBindedToken check failed for the given token.",
 			"Provide Valid KeyBindedToken to perform auth."),
 
@@ -196,7 +196,7 @@ public enum IdAuthenticationErrorConstants {
 	
 	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
 	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
-	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binding to another Id."),
+	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
 	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
 	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
 	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),;

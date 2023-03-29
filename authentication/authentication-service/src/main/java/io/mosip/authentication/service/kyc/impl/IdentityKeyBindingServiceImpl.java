@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.IdentityBindingCertificateStore;
@@ -42,7 +43,8 @@ import io.mosip.authentication.common.service.util.EnvUtil;
  * @author Mahammed Taheer
  */
 
- @Service
+@Service
+@Transactional
 public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService {
 
     /** The logger. */
@@ -125,6 +127,7 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
         bindingCertStore.setAuthFactor(identityKeyBindingRequestDTO.getIdentityKeyBinding().getAuthFactorType());
         bindingCertStore.setCreatedBy(EnvUtil.getAppId());
 		bindingCertStore.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+        updateCertDataForSameTokenId(token, partnerId, certificateData, certThumbprint, notAfterDate);
 		bindingCertificateRepo.saveAndFlush(bindingCertStore);
         return certificateData;
     }
@@ -175,4 +178,12 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
 		certParams.setNotAfter(notAfter);
         return certParams;
 	}
+
+    private void updateCertDataForSameTokenId(String tokenId, String partnerName, String certificateData, 
+            String certThumbprint, LocalDateTime notAfterDate) {
+        int updateCount = bindingCertificateRepo.updateBindingCertificateForSameToken(tokenId,
+                         partnerName, certificateData, certThumbprint, notAfterDate);
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "updateCertDataForSameTokenId",
+                         String.format("Total Updated Count for Token Id: %s, count: %s.", tokenId, updateCount));
+    }
 }
