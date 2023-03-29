@@ -241,6 +241,5 @@ public interface MappingConfig {
 	 *
 	 * @return the dynamic attributes
 	 */
-	public Map<String, List<String>> getDynamicAttributes(); 
-
+	public Map<String, List<String>> getDynamicAttributes();
 }

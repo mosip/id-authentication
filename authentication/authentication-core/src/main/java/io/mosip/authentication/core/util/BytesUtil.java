@@ -62,11 +62,4 @@ public final class BytesUtil {
 		assert(xorBytes.length >= lastBytesNum);
 		return Arrays.copyOfRange(xorBytes, xorBytes.length - lastBytesNum, xorBytes.length);
 	}
-	
-	public static void main(String[]args) {
-		byte[] xor = BytesUtil.getXOR("1234567890", "abcde");
-		byte[] lastBytes = getLastBytes(xor, 3);
-		System.out.println(new String(lastBytes));
-	}
-
 }

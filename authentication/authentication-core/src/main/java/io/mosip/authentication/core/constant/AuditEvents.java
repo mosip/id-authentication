@@ -41,7 +41,11 @@ public enum AuditEvents {
 	
 	CREDENTIAL_STORED_EVENT("IDA_013", "System", "Credential Issued"),
 
-	KYC_REQUEST_RESPONSE("IDA_014", "User", "Kyc Auth Request"),
+	KYC_REQUEST_RESPONSE("IDA_014", "System", "Kyc Auth Request"),
+
+	KYC_EXCHANGE_REQUEST_RESPONSE("IDA_015", "System", "Kyc Exchange Request"),
+
+	KEY_BINDIN_REQUEST_RESPONSE("IDA_016", "System", "Identity Key Binding Request"),
 	
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1

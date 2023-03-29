@@ -102,7 +102,6 @@ public class PartnerServiceCallbackController {
 
 	@PostMapping(value = "/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePolicyUpdated", description = "handlePolicyUpdated", tags = { "partner-service-callback-controller" })
-	
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
@@ -203,7 +202,7 @@ public class PartnerServiceCallbackController {
 		try {
 			logger.debug(securityManager.getUser(), "PartnerServiceCallbackController", "handleOIDCClientCreatedEvent",
 						OIDC_CLIENT_CREATED + " EVENT RECEIVED");
-			partnerManager.updateOIDCClientData(eventModel);
+			partnerManager.createOIDCClientData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
 					ExceptionUtils.getFullStackTrace(e));

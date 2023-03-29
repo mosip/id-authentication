@@ -39,6 +39,10 @@ public class KycTokenData {
 	private String oidcClientId;
 
 	@NotNull
+	@Column(name = "request_trn_id")
+	private String requestTransactionId;
+	
+	@NotNull
 	@Column(name = "token_issued_dtimes")
 	private LocalDateTime tokenIssuedDateTime;
 
