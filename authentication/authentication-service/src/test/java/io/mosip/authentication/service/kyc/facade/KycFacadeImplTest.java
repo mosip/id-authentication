@@ -16,6 +16,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -262,7 +263,7 @@ public class KycFacadeImplTest {
 
 		List<Object[]> result = new ArrayList<>();
 		result.add(new String[] {"cert-thumbprint", "WLA", getPemData(x509Certificate)});
-		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(Mockito.anyString(), Mockito.anyString())).thenReturn(result);
+		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndCertNotExpired(Mockito.anyString(), LocalDateTime.now())).thenReturn(result);
 		assertEquals(true, kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse().isAuthStatus());
 	}
 
