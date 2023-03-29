@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -51,6 +52,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
@@ -116,6 +118,17 @@ public class BaseIDAFilterTest {
 		@Override
 		protected boolean isAMRValidationRequired() {
 			return false;
+		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+        }
+
+		@Override
+		protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+			throws IdAuthenticationAppException {
+			// Nothing required.
 		}
 	};
 

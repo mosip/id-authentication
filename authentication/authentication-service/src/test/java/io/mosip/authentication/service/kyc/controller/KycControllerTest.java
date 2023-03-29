@@ -155,7 +155,7 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(partnerService, "mapper", mapper);
 		ReflectionTestUtils.setField(partnerService, "partnerServiceManager", partnerServiceManager);
-		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
+		ReflectionTestUtils.invokeMethod(kycAuthController, "initEKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
 		ReflectionTestUtils.setField(kycAuthController, "authTransactionHelper", authTransactionHelper);
 		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);

@@ -139,6 +139,8 @@ public final class IdAuthCommonConstants {
 	public static final String HOTLIST = "hotlist";
 
 	public static final String BIOMETRICS = "biometrics";
+
+	public static final String KEY_BINDED_TOKEN = "keyBindedTokens";
 	
 	public static final String DEMOGRAPHICS = "demographics";
 
@@ -370,6 +372,36 @@ public final class IdAuthCommonConstants {
 	public static final String ACR_AMR = "acr_amr";
 	
 	public static final String AMR = "amr";
+
+	public static final String ADDRESS_FORMATTED = "formatted";
+
+	public static final String NO_TRANSACTION_ID = "NO_TRANSACTION_ID";
+
+	public static final String  KYC_EXCHANGE_SUCCESS = "KycExchange status : true";
+
+	public static final boolean KYC_AUTH_CONSUME_VID_DEFAULT = false;
+
+	public static final boolean KYC_EXCHANGE_CONSUME_VID_DEFAULT = true;
+
+	public static final boolean KEY_BINDING_CONSUME_VID_DEFAULT = false;
+
+	public static final String IDENTITY_KEY_BINDING_OBJECT = "identityKeyBinding";
+
+	public static final String BINDING_PUBLIC_KEY = "publicKeyJWK";
+
+	public static final String PUBLIC_KEY_EXPONENT_KEY = "e";
+
+	public static final String PUBLIC_KEY_MODULUS_KEY = "n";
+
+	public static final String AUTH_FACTOR_TYPE = "authFactorType";
+
+	public static final String ALGORITHM_RSA = "RSA";
+
+	public static final String NAME = "name";
+	
+	public static final String EMPTY = "";
+
+	public static final String CERT_TP_AF_SEPERATOR = "-";
 
 	private IdAuthCommonConstants() {
 	}
