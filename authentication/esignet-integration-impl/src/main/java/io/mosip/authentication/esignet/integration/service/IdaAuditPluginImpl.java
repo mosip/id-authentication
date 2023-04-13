@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -70,12 +68,12 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setEventName(action.name());
 			auditRequest.setEventType(status.name());
 			auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
-			auditRequest.setHostName(null);
-			auditRequest.setHostIp(null);
+			auditRequest.setHostName("localhost");
+			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
 			auditRequest.setApplicationName(ESIGNET);
-			auditRequest.setSessionUserId(username);
-			auditRequest.setSessionUserName(username);
+			auditRequest.setSessionUserId(StringUtils.isEmpty(username)?"no-user":username);
+			auditRequest.setSessionUserName(StringUtils.isEmpty(username)?"no-user":username);
 			auditRequest.setIdType(TRANSACTION);
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
 			auditRequest.setModuleName(getModuleByAction(action));
@@ -102,6 +100,13 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 					log.error("Error response received from audit service with errors: {}",
 							responseWrapper.getErrors());
 				}
+			}
+
+			if(responseEntity.getStatusCode() == HttpStatus.FORBIDDEN ||
+					responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				log.error("Audit call failed with error: {}, issue with auth-token hence purging the auth-token-cache",
+						responseEntity.getStatusCode());
+				authTransactionHelper.purgeAuthTokenCache();
 			}
 		} catch (Exception e) {
 			log.error("LogAudit failed with error : {}", e);

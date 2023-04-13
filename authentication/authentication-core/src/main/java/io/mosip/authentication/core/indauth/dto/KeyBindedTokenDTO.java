@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenInfoDTO {
+public class KeyBindedTokenDTO {
 
-    private String tokenType;
+    private String type;
     private String token;
-    private String tokenFormat;
+    private String format;
 }

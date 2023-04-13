@@ -6,14 +6,15 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum TokenAuthType implements AuthType {
+public enum KeyBindedTokenAuthType implements AuthType {
 
-    TOKEN(IdaIdMapping.TOKEN.getIdname(), AuthType.setOf(TokenMatchType.TOKEN));
+    KEYBINDEDTOKEN(IdaIdMapping.KEY_BINDED_TOKENS.getIdname(), AuthType.setOf(KeyBindedTokenMatchType.KEY_BINDED_TOKENS));
 
     private AuthTypeImpl authTypeImpl;
 
@@ -23,8 +24,8 @@ public enum TokenAuthType implements AuthType {
      * @param type                 the type
      * @param associatedMatchTypes the associated match types
      */
-    private TokenAuthType(String type, Set<MatchType> associatedMatchTypes) {
-        authTypeImpl = new TokenAuthTypeImpl(type, associatedMatchTypes);
+    private KeyBindedTokenAuthType(String type, Set<MatchType> associatedMatchTypes) {
+        authTypeImpl = new KeyBindedTokenAuthTypeImpl(type, associatedMatchTypes);
     }
 
 
@@ -32,10 +33,10 @@ public enum TokenAuthType implements AuthType {
     public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
         if(authRequestDTO instanceof KycAuthRequestDTO) {
             KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO)authRequestDTO;
-            return kycAuthRequestDTO.getRequest().getTokenInfo() != null &&
-                    kycAuthRequestDTO.getRequest().getTokenInfo().getToken() != null &&
-                    kycAuthRequestDTO.getRequest().getTokenInfo().getTokenFormat() != null &&
-                    kycAuthRequestDTO.getRequest().getTokenInfo().getTokenType() != null;
+            return !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens()) &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken() != null &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat() != null &&
+                    kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType() != null;
         }
         return false;
     }
@@ -45,8 +46,8 @@ public enum TokenAuthType implements AuthType {
                                                   String language) {
         Map<String, Object> valueMap = new HashMap<>();
         if(isAuthTypeInfoAvailable(authRequestDTO)) {
-            valueMap.put(IdaIdMapping.TOKEN.getIdname(), idInfoFetcher.getMatchFunction(this));
-            valueMap.put(TokenAuthType.class.getSimpleName(), this);
+            valueMap.put(IdaIdMapping.KEY_BINDED_TOKENS.getIdname(), idInfoFetcher.getMatchFunction(this));
+            valueMap.put(KeyBindedTokenAuthType.class.getSimpleName(), this);
         }
         return valueMap;
     }

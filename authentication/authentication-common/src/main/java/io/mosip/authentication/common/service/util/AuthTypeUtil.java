@@ -8,8 +8,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
-import io.mosip.authentication.common.service.impl.match.TokenAuthType;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
@@ -35,8 +34,8 @@ public final class AuthTypeUtil {
 		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {PinAuthType.SPIN});
 	}
 
-	public static boolean isToken(AuthRequestDTO authReqDto) {
-		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {TokenAuthType.TOKEN});
+	public static boolean isKeyBindedToken(AuthRequestDTO authReqDto) {
+		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {KeyBindedTokenAuthType.KEYBINDEDTOKEN});
 	}
 
 	private static boolean isAuthTypeInfoAvailable(AuthRequestDTO authReqDto, AuthType[] values) {
@@ -62,7 +61,7 @@ public final class AuthTypeUtil {
 				requestTypes.add(RequestType.FACE_AUTH);
 			}
 		}
-		if(AuthTypeUtil.isToken(authRequestDTO)) {
+		if(AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
 			requestTypes.add(RequestType.TOKEN_AUTH);
 		}
 		if(authRequestDTO instanceof EkycAuthRequestDTO) {

@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -203,3 +204,4 @@ public interface MatchType {
 	}
 
 }
+

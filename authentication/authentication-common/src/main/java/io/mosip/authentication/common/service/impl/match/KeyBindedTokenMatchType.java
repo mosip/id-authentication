@@ -2,24 +2,25 @@ package io.mosip.authentication.common.service.impl.match;
 
 import io.mosip.authentication.core.indauth.dto.*;
 import io.mosip.authentication.core.spi.indauth.match.*;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public enum TokenMatchType implements MatchType {
+public enum KeyBindedTokenMatchType implements MatchType {
 
 
-    TOKEN(IdaIdMapping.TOKEN, MatchType.setOf(TokenMatchingStrategy.EXACT));
+    KEY_BINDED_TOKENS(IdaIdMapping.KEY_BINDED_TOKENS, MatchType.setOf(KeyBindedTokenMatchingStrategy.EXACT));
 
     private IdMapping idMapping;
     private Category category;
     private Set<MatchingStrategy> allowedMatchingStrategy;
 
-    private TokenMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
+    private KeyBindedTokenMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
         this.idMapping = idMapping;
         this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
-        this.category = Category.TOKEN;
+        this.category = Category.KBT;
     }
 
     @Override
@@ -42,10 +43,10 @@ public enum TokenMatchType implements MatchType {
         return (AuthRequestDTO authRequestDto) -> {
             Map<String, String> map = new HashMap<>();
             KycAuthRequestDTO kycAuthRequestDTO =  (KycAuthRequestDTO)authRequestDto;
-            if(kycAuthRequestDTO != null && kycAuthRequestDTO.getRequest().getTokenInfo() != null) {
-                map.put("token", kycAuthRequestDTO.getRequest().getTokenInfo().getToken());
-                map.put("tokenType", kycAuthRequestDTO.getRequest().getTokenInfo().getTokenType());
-                map.put("tokenFormat", kycAuthRequestDTO.getRequest().getTokenInfo().getTokenFormat());
+            if(kycAuthRequestDTO != null && !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens())) {
+                map.put("token", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken());
+                map.put("type", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType());
+                map.put("format", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat());
             }
             map.put("individualId", kycAuthRequestDTO.getIndividualId());
             return map;

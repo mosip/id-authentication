@@ -13,6 +13,7 @@ import com.nimbusds.jwt.JWTParser;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
+import io.mosip.authentication.esignet.integration.dto.KeyBindedToken;
 import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.SendOtpResult;
 import io.mosip.esignet.api.exception.KycAuthException;
@@ -31,10 +32,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -50,11 +53,12 @@ import java.security.cert.X509Certificate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Component
+@Service
 @Slf4j
 public class HelperService {
 
@@ -64,6 +68,7 @@ public class HelperService {
     public static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String INVALID_PARTNER_CERTIFICATE = "invalid_partner_cert";
     public static final String OIDC_PARTNER_APP_ID = "OIDC_PARTNER";
+    public static final String BINDING_TRANSACTION = "bindingtransaction";
     private static Base64.Encoder urlSafeEncoder;
     private static Base64.Decoder urlSafeDecoder;
 
@@ -107,13 +112,17 @@ public class HelperService {
 
     private Certificate idaPartnerCertificate;
 
+    @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
+    public String getTransactionId(String idHash) {
+        return HelperService.generateTransactionId(10);
+    }
 
     protected void setAuthRequest(List<AuthChallenge> challengeList, IdaKycAuthRequest idaKycAuthRequest) throws Exception {
         IdaKycAuthRequest.AuthRequest authRequest = new IdaKycAuthRequest.AuthRequest();
         authRequest.setTimestamp(HelperService.getUTCDateTime());
         challengeList.stream()
                 .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
-                .forEach( auth -> { buildAuthRequest(auth.getAuthFactorType(), auth.getChallenge(), authRequest, idaKycAuthRequest); });
+                .forEach( auth -> { buildAuthRequest(auth, authRequest); });
 
         KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
         final SecretKey symmetricKey = keyGenerator.generateKey();
@@ -221,16 +230,15 @@ public class HelperService {
         return urlSafeDecoder.decode(value);
     }
 
-    private void buildAuthRequest(String authFactor, String authChallenge,
-                                  IdaKycAuthRequest.AuthRequest authRequest, IdaKycAuthRequest idaKycAuthRequest) {
-        log.info("Build kyc-auth request with authFactor : {}",  authFactor);
-        switch (authFactor.toUpperCase()) {
-            case "OTP" : authRequest.setOtp(authChallenge);
+    private void buildAuthRequest(AuthChallenge authChallenge, IdaKycAuthRequest.AuthRequest authRequest) {
+        log.info("Build kyc-auth request with authFactor : {}",  authChallenge.getAuthFactorType());
+        switch (authChallenge.getAuthFactorType().toUpperCase()) {
+            case "OTP" : authRequest.setOtp(authChallenge.getChallenge());
                 break;
-            case "PIN" : authRequest.setStaticPin(authChallenge);
+            case "PIN" : authRequest.setStaticPin(authChallenge.getChallenge());
                 break;
             case "BIO" :
-                byte[] decodedBio = HelperService.b64Decode(authChallenge);
+                byte[] decodedBio = HelperService.b64Decode(authChallenge.getChallenge());
                 try {
                     List<IdaKycAuthRequest.Biometric> biometrics = objectMapper.readValue(decodedBio,
                             new TypeReference<List<IdaKycAuthRequest.Biometric>>(){});
@@ -238,6 +246,15 @@ public class HelperService {
                 } catch (Exception e) {
                     log.error("Failed to parse biometric capture response", e);
                 }
+                break;
+            case "WLA" :
+                List<KeyBindedToken> list = new ArrayList<>();
+                KeyBindedToken keyBindedToken = new KeyBindedToken();
+                keyBindedToken.setType(authChallenge.getAuthFactorType());
+                keyBindedToken.setToken(authChallenge.getChallenge());
+                keyBindedToken.setFormat(authChallenge.getFormat());
+                list.add(keyBindedToken);
+                authRequest.setKeyBindedTokens(list);
                 break;
             default:
                 throw new NotImplementedException("KYC auth not implemented");

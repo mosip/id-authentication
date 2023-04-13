@@ -1,29 +1,4 @@
 package io.mosip.authentication.common.service.filter;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.API_KEY;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DATA_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_DIGITALID_INPUT_PARAM_TYPE;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SESSIONKEY_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TIMESTAMP_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_VALUE_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DATA;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEMOGRAPHICS;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DIGITAL_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.HASH_INPUT_PARAM;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.KYC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METADATA;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.MISPLICENSE_KEY;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PARTNER_ID;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_HMAC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SESSION_KEY;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_KEY;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TIMESTAMP;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -53,10 +27,12 @@ import java.util.stream.Stream;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -95,6 +71,8 @@ import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
 
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
@@ -752,9 +730,9 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		if (partnerPolicyResponseDTO != null) {
 			List<AuthPolicy> authPolicies = partnerPolicyResponseDTO.getPolicy().getAllowedAuthTypes();
 			List<KYCAttributes> allowedKycAttributes = partnerPolicyResponseDTO.getPolicy().getAllowedKycAttributes();
-			List<String> allowedTypeList = Optional.ofNullable(allowedKycAttributes).stream()
+			List<String> allowedAttibuteNameList = Optional.ofNullable(allowedKycAttributes).stream()
 					.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
-			requestBody.put("allowedKycAttributes", allowedTypeList);
+			requestBody.put("allowedKycAttributes", allowedAttibuteNameList);
 			checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
 			List<AuthPolicy> mandatoryAuthPolicies = authPolicies.stream().filter(AuthPolicy::isMandatory)
 					.collect(Collectors.toList());
@@ -856,6 +834,30 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			}
 		} else {
 			checkAllowedAuthTypeForBio(authPolicies, bioTypeList, deviceTypeList);
+		}
+	}
+
+	protected void checkAllowedAuthTypeForKeyBindedToken(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+			throws IdAuthenticationAppException, IOException {
+
+		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
+				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
+				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
+		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
+				new TypeReference<List<KeyBindedTokenDTO>>() {
+				});
+
+		if(CollectionUtils.isEmpty(list)) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "keybindedtoken"));
+		}
+
+		//TODO need to check all the elements in the list instead of only first element
+		if (!isAllowedAuthType(MatchType.Category.KBT.getType(), null, authPolicies)) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), MatchType.Category.KBT.getType()));
 		}
 	}
 
@@ -1050,15 +1052,40 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.OTP.name()));
 				}
-				if (AuthTypeUtil.isToken(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.TOKEN.getType())) {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									MatchType.Category.TOKEN.name()));
-				}
+				checkAllowedAMRForKBT(requestBody, allowedAMRs);
 			}
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	protected void checkAllowedAMRForKeyBindedToken(Map<String, Object> requestBody, Set<String> allowedAMRs)
+			throws IdAuthenticationAppException, IOException {
+
+		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
+				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
+				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
+				
+		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
+				new TypeReference<List<KeyBindedTokenDTO>>() {
+				});
+
+		if(CollectionUtils.isEmpty(list)) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "keybindedtoken"));
+		}
+
+		Set<String> amrInRequest = list.stream()
+				.filter( kbt -> !org.springframework.util.StringUtils.isEmpty(kbt.getType()))
+				.map(KeyBindedTokenDTO::getType)
+				.map(String::toLowerCase)
+				.collect(Collectors.toSet());
+
+		if (!allowedAMRs.containsAll(amrInRequest)) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
+					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), list.get(0).getType()));
 		}
 	}
 
@@ -1073,6 +1100,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 				List<AuthenticationFactor> amrs = allowedAMRs.get(key);
 				// not considering count in AuthenticationFactor. Need to handle later.
 				for (AuthenticationFactor amr : amrs) {
+					if (Objects.nonNull(amr.getSubTypes())) {
+						filterAMRs.addAll(amr.getSubTypes().stream()
+										 .filter( subtype -> !org.springframework.util.StringUtils.isEmpty(subtype))
+				 						 .map(String::toLowerCase)
+										 .collect(Collectors.toSet()));
+					}
 					filterAMRs.add(amr.getType().toLowerCase());
 				}
 			}
@@ -1140,6 +1173,12 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
         // Nothing required, Ignoring for other filters.
     }
+
+	@Override
+	protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+		throws IdAuthenticationAppException {
+		// Nothing required, Ignoring for other filters.
+	}
 
 	/**
 	 * Checks if is trust validation required.

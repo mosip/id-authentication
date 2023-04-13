@@ -1,15 +1,19 @@
 package io.mosip.authentication.service.kyc.filter;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
@@ -49,6 +53,15 @@ public class KycAuthFilter extends IdAuthFilter {
 
 		}
 		super.checkAllowedAuthTypeBasedOnPolicy(requestBody, authPolicies);
+		try {
+			KycAuthRequestDTO kycAuthRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+									KycAuthRequestDTO.class);
+			if (AuthTypeUtil.isKeyBindedToken(kycAuthRequestDTO)) {
+				super.checkAllowedAuthTypeForKeyBindedToken(requestBody, authPolicies);
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 	
 	@Override
@@ -102,6 +115,21 @@ public class KycAuthFilter extends IdAuthFilter {
 							"MISP Partner not allowed for the Auth Type - kyc-auth.");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.KYC_AUTH_NOT_ALLOWED.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.KYC_AUTH_NOT_ALLOWED.getErrorMessage(), "KYC-AUTH"));
+		}
+	}
+
+	@Override
+	protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+		throws IdAuthenticationAppException {
+		try {
+			KycAuthRequestDTO kycAuthRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+										KycAuthRequestDTO.class);
+
+			if (AuthTypeUtil.isKeyBindedToken(kycAuthRequestDTO)) {
+				super.checkAllowedAMRForKeyBindedToken(requestBody, allowedAMRs);
+			}
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
 }

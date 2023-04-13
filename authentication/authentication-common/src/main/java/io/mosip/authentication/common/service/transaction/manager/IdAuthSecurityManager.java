@@ -604,7 +604,7 @@ public class IdAuthSecurityManager {
 		// Need to add new method to keymanager CertificateUtility class to generate certificate without CA 
 		// and digital signature key usage
 		X509Certificate signedCert = CertificateUtility.generateX509Certificate(signPrivateKey, publicKey, certParams,
-                signerPrincipal, signAlgorithm, keyStore.getKeystoreProviderName(), true);
+                signerPrincipal, signAlgorithm, keyStore.getKeystoreProviderName(), false);
 		String certThumbprint = generateHashAndDigestAsPlainText(signedCert.getEncoded());
 		String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
 
