@@ -407,7 +407,7 @@ public class IdAuthSecurityManager {
 		if(!identityRepo.existsById(hashWithNewMethod)) {
 			if(legacySaltSelectionEnabled) {
 				String hashWithLegacyMethod = legacyHash(id);
-				if(!identityRepo.existsById(hashWithNewMethod)) {
+				if(!identityRepo.existsById(hashWithLegacyMethod)) {
 					//Throw error
 					throwIdNotAvailabeError(id);
 				}
