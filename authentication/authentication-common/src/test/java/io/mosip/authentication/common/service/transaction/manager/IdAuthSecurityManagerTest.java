@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.kernel.zkcryptoservice.dto.CryptoDataDto;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -89,6 +90,9 @@ public class IdAuthSecurityManagerTest {
 
 	@Mock
 	private IdaUinHashSaltRepo uinHashSaltRepo;
+	
+	@Mock
+	private IdentityCacheRepository identityRepo;
 
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
@@ -300,6 +304,7 @@ public class IdAuthSecurityManagerTest {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(id);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		String response = authSecurityManager.hash(id);
 		assertEquals(response, actualResponse);
 	}
