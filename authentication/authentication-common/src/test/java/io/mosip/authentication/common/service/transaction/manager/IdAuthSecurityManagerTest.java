@@ -315,23 +315,12 @@ public class IdAuthSecurityManagerTest {
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void hashTest_salt_keu_not_exists() throws IdAuthenticationBusinessException {
+	public void hashTest_salt_key_not_exists() throws IdAuthenticationBusinessException {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
 		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		String response = authSecurityManager.hash(id);
-		assertEquals(response, actualResponse);
-	}
-	
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void hashTestLegacy_newIdNotExists() throws IdAuthenticationBusinessException {
-		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
-		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
-		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
-		String response = authSecurityManager.hash(id);
-		assertEquals(response, actualResponse);
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -343,7 +332,6 @@ public class IdAuthSecurityManagerTest {
 		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
 		String response = authSecurityManager.hash(id);
 		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
-		assertEquals(response, actualResponse);
 		} catch (Exception e) {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
@@ -359,7 +347,6 @@ public class IdAuthSecurityManagerTest {
 		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
 		String response = authSecurityManager.hash(id);
 		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
-		assertEquals(response, actualResponse);
 		} catch (Exception e) {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
@@ -395,7 +382,6 @@ public class IdAuthSecurityManagerTest {
 		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(true);
 		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
 		String response = authSecurityManager.hash(id);
-		assertEquals(response, actualResponse);
 		} catch (Exception e) {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;

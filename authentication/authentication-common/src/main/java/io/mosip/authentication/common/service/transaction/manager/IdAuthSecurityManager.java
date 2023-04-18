@@ -409,24 +409,26 @@ public class IdAuthSecurityManager {
 		} catch (IdAuthenticationBusinessException e) {
 			//If salt key is not present in the DB, this error will occur.
 			//If legacy hash is not selected throw back the error.
-			if(!legacySaltSelectionEnabled) {
+			if (e.getErrorCode().equals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode())
+					&& !legacySaltSelectionEnabled) {
 				throw e;
 			}
 		}
 		// If either salt key is not present in uin_hash_salt table
 		// or the new hash is not present in the identity_cache table
 		if(hashWithNewMethod == null || !identityRepo.existsById(hashWithNewMethod)) {
-			if(legacySaltSelectionEnabled) {
-				String hashWithLegacyMethod = legacyHash(id);
-				if(!identityRepo.existsById(hashWithLegacyMethod)) {
-					//Throw error
-					throwIdNotAvailabeError(id);
-				}
-				return hashWithLegacyMethod;
-			} else {
+			if(!legacySaltSelectionEnabled) {
 				//Throw error
 				throwIdNotAvailabeError(id);
 			}
+			
+			String hashWithLegacyMethod = legacyHash(id);
+			if(!identityRepo.existsById(hashWithLegacyMethod)) {
+				//Throw error
+				throwIdNotAvailabeError(id);
+			}
+			
+			return hashWithLegacyMethod;
 		}
 		return hashWithNewMethod;
 	}
