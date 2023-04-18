@@ -315,21 +315,81 @@ public class IdAuthSecurityManagerTest {
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTest_salt_keu_not_exists() throws IdAuthenticationBusinessException {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
+		String response = authSecurityManager.hash(id);
+		assertEquals(response, actualResponse);
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void hashTestLegacy_newIdNotExists() throws IdAuthenticationBusinessException {
 		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(id);
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
+		String response = authSecurityManager.hash(id);
+		assertEquals(response, actualResponse);
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTest_salt_key_not_exists_legacy_hash_enabled() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
 		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
 		String response = authSecurityManager.hash(id);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
 		assertEquals(response, actualResponse);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTest_salt_key_not_exists_legacy_hash_disabled() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
+		String response = authSecurityManager.hash(id);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+		assertEquals(response, actualResponse);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
 	}
 	
 	@Test
 	public void hashTestLegacy_newIdNotExists_legacyEnabled() throws IdAuthenticationBusinessException {
 		try {
 		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(id);
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(id);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById("827050EF00E06C5547A64C9208F244B9B96CFABEB043F6D2ADBC4142FC1B39B2")).thenReturn(false);
+		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(true);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
+		String response = authSecurityManager.hash(id);
+		assertEquals(response, actualResponse);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTestLegacy_newIdNotExists_legacyEnabled_saltKeyNotExists() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
 		Mockito.when(identityRepo.existsById("827050EF00E06C5547A64C9208F244B9B96CFABEB043F6D2ADBC4142FC1B39B2")).thenReturn(false);
 		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(true);

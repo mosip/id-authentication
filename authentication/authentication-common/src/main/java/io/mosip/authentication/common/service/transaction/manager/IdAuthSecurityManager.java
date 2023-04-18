@@ -403,8 +403,19 @@ public class IdAuthSecurityManager {
 	}
 	
 	public String hash(String id) throws IdAuthenticationBusinessException {
-		String hashWithNewMethod = newHash(id);
-		if(!identityRepo.existsById(hashWithNewMethod)) {
+		String hashWithNewMethod = null;
+		try {
+			hashWithNewMethod = newHash(id);
+		} catch (IdAuthenticationBusinessException e) {
+			//If salt key is not present in the DB, this error will occur.
+			//If legacy hash is not selected throw back the error.
+			if(!legacySaltSelectionEnabled) {
+				throw e;
+			}
+		}
+		// If either salt key is not present in uin_hash_salt table
+		// or the new hash is not present in the identity_cache table
+		if(hashWithNewMethod == null || !identityRepo.existsById(hashWithNewMethod)) {
 			if(legacySaltSelectionEnabled) {
 				String hashWithLegacyMethod = legacyHash(id);
 				if(!identityRepo.existsById(hashWithLegacyMethod)) {
