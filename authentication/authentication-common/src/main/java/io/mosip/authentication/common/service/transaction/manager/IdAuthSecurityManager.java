@@ -408,9 +408,16 @@ public class IdAuthSecurityManager {
 			hashWithNewMethod = newHash(id);
 		} catch (IdAuthenticationBusinessException e) {
 			//If salt key is not present in the DB, this error will occur.
-			//If legacy hash is not selected throw back the error.
-			if (e.getErrorCode().equals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode())
-					&& !legacySaltSelectionEnabled) {
+			if (e.getErrorCode().equals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode())) {
+				//If legacy hash is not selected throw back the error.
+				if(!legacySaltSelectionEnabled) {
+					mosipLogger.error("Salt key is missing in the table");
+					throw e;
+				}
+				// Ignoring this error.
+				mosipLogger
+						.debug("Ignoring missing salt key in the table as legacy salt selection will be used further.");
+			} else {
 				throw e;
 			}
 		}

@@ -371,8 +371,60 @@ public class IdAuthSecurityManagerTest {
 		}
 	}
 	
+	@Test
+	public void hashTestLegacy_newIdNotExists_legacyEnabled_newSaltKeyNotExists() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn(null);
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(id);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById("827050EF00E06C5547A64C9208F244B9B96CFABEB043F6D2ADBC4142FC1B39B2")).thenReturn(false);
+		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(true);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
+		String response = authSecurityManager.hash(id);
+		assertEquals(response, actualResponse);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
+	}
+	
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void hashTestLegacy_newIdNotExists_legacyEnabled_saltKeyNotExists() throws IdAuthenticationBusinessException {
+	public void hashTestLegacy_newIdNotExists_legacyDisabled_newSaltKeyNotExists() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn(null);
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(id);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById("827050EF00E06C5547A64C9208F244B9B96CFABEB043F6D2ADBC4142FC1B39B2")).thenReturn(false);
+		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(true);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+		String response = authSecurityManager.hash(id);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTestLegacy_newIdExists_legacyEnabled_legacyHashDoesNotExists() throws IdAuthenticationBusinessException {
+		try {
+		String id = "12";
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
+		Mockito.when(uinHashSaltRepo.retrieveSaltById(12)).thenReturn(id);
+		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
+		Mockito.when(identityRepo.existsById("827050EF00E06C5547A64C9208F244B9B96CFABEB043F6D2ADBC4142FC1B39B2")).thenReturn(false);
+		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
+		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
+		String response = authSecurityManager.hash(id);
+		} catch (Exception e) {
+			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
+			throw e;
+		}
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void hashTestLegacy_newIdNotExists_legacyEnabled_legacySaltKeyNotExists() throws IdAuthenticationBusinessException {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
