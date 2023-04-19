@@ -178,7 +178,7 @@ public class IdAuthSecurityManager {
 	@Autowired
     private KeymanagerUtil keymanagerUtil;
 	
-	@Value("mosip.ida.idhash.legacy-salt-selection-enabled:false")
+	@Value("${mosip.ida.idhash.legacy-salt-selection-enabled:false}")
 	private boolean legacySaltSelectionEnabled;
 	
 	@Autowired
