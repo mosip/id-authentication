@@ -21,5 +21,5 @@ public class IdentityKeyBindingRespDto {
 	private String authToken;
 
 	/** The Variable to hold value of auth status */
-	private boolean kycStatus;
+	private boolean bindingAuthStatus;
 }

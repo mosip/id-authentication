@@ -65,7 +65,7 @@ public class KycFilterConfig {
 	public FilterRegistrationBean<IdentityKeyBindingFilter> getKeyBindingFilter() {
 		FilterRegistrationBean<IdentityKeyBindingFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new IdentityKeyBindingFilter());
-		registrationBean.addUrlPatterns("/identiy-key-binding/*");
+		registrationBean.addUrlPatterns("/identity-key-binding/*");
 		return registrationBean;
 	} 
 }

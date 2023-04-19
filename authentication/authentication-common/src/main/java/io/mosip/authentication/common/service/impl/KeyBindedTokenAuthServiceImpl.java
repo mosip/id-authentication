@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.impl;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CERT_TP_AF_SEPERATOR;
+
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +46,6 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
 
     @Autowired
     private IdentityBindingCertificateRepository identityBindingCertificateRepository;
-
 
 
     public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String individualId,
@@ -78,14 +80,16 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
                         public Map<String, String> fetch(String individualId, AuthRequestDTO authReq, String partnerID)
                                 throws IdAuthenticationBusinessException {
                             Map<String, String> entityInfo = new HashMap<>();
-                            entityInfo.put("DUMMY-KEY", "DUMMY-CERTIFICATE");
-                            /* String idVidHash = securityManager.hash(individualId);
-                            List<Object[]> resultList = identityBindingCertificateRepository.findAllByIdVidHashAndPartnerId(idVidHash, partnerID);
+                            String idVidHash = securityManager.hash(authReq.getIndividualId());
+                            LocalDateTime currentDateTime = LocalDateTime.now();
+                            List<Object[]> resultList = identityBindingCertificateRepository.findAllByIdVidHashAndCertNotExpired(idVidHash, 
+                                                currentDateTime);
                             if(resultList != null && !resultList.isEmpty()) {
                                 for(Object[] entry : resultList) {
-                                    entityInfo.put((String) entry[0], (String) entry[1]);
+                                    String mapKey = ((String) entry[0]) + CERT_TP_AF_SEPERATOR + ((String) entry[1]);
+                                    entityInfo.put(mapKey.toUpperCase(), (String) entry[2]);
                                 }
-                            } */
+                            } 
                             return entityInfo;
                         }
                     },

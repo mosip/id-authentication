@@ -92,7 +92,10 @@ public enum IdAuthenticationErrorConstants {
 	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
 	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
-	
+	BINDED_KEY_NOT_FOUND("IDA-KBT-001", "Certificate not found for the input x5t#S256: %s and authtype: %s"),
+	BINDED_TOKEN_EXPIRED("IDA-KBT-002", "Signed token issued at (iat) is not in allowed time range."),
+	ERROR_TOKEN_VERIFICATION("IDA-KBT-003", "Error verifying key binded token. Error: %s"),
+
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
 	INVALID_REQ_PRINT_FORMAT("IDA-EKA-002", "Invalid value in print format request"),
@@ -137,10 +140,10 @@ public enum IdAuthenticationErrorConstants {
 	KEY_BINDING_NOT_ALLOWED("IDA-MPA-032", "%s not allowed as per policy",
 			"Please try after updating misp policy"),
 	UNAUTHORISED_KEY_BINDING_PARTNER("IDA-MPA-033", "Partner is unauthorised for KeyBinding"),
-	KEY_BINDING_MISSING("IDA-MPA-034", "KeyBinding not available in database",
-			"Your KeyBinding data is not available in MOSIP"),
-	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBinding check failed for the given token",
-			"KeyBinding check failed for the given token"),
+	KEY_BINDING_MISSING("IDA-MPA-034", "For the input VID/UIN - No Binded key found in DB or binded key is expired.",
+			"Please bind a key for the input VID/UIN before performing KBT Auth."),
+	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBindedToken check failed for the given token.",
+			"Provide Valid KeyBindedToken to perform auth."),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -193,7 +196,7 @@ public enum IdAuthenticationErrorConstants {
 	
 	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
 	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
-	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binding to another Id."),
+	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
 	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
 	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
 	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),;

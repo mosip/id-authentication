@@ -14,7 +14,7 @@ import java.util.Set;
 
 public enum KeyBindedTokenAuthType implements AuthType {
 
-    KEYBINDEDTOKEN(IdaIdMapping.KEYBINDEDTOKEN.getIdname(), AuthType.setOf(KeyBindedTokenMatchType.KEYBINDEDTOKEN));
+    KEYBINDEDTOKEN(IdaIdMapping.KEY_BINDED_TOKENS.getIdname(), AuthType.setOf(KeyBindedTokenMatchType.KEY_BINDED_TOKENS));
 
     private AuthTypeImpl authTypeImpl;
 
@@ -46,7 +46,7 @@ public enum KeyBindedTokenAuthType implements AuthType {
                                                   String language) {
         Map<String, Object> valueMap = new HashMap<>();
         if(isAuthTypeInfoAvailable(authRequestDTO)) {
-            valueMap.put(IdaIdMapping.KEYBINDEDTOKEN.getIdname(), idInfoFetcher.getMatchFunction(this));
+            valueMap.put(IdaIdMapping.KEY_BINDED_TOKENS.getIdname(), idInfoFetcher.getMatchFunction(this));
             valueMap.put(KeyBindedTokenAuthType.class.getSimpleName(), this);
         }
         return valueMap;

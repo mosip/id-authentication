@@ -107,7 +107,7 @@ public class IdentityWalletBindingController {
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 */
-	@PostMapping(path = "/identity-key-binding/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/identity-key-binding/delegated/{IdP-LK}/{Auth-Partner-ID}/{API-Key}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Identity Key Binding Request", description = "to authenticate and bind key with the identity", tags = { "identity-wallet-binding-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
@@ -119,7 +119,7 @@ public class IdentityWalletBindingController {
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public IdentityKeyBindingResponseDto processIdKeyBinding(@Validated @RequestBody IdentityKeyBindingRequestDTO identityKeyBindingRequestDTO,
 			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK,@PathVariable("Auth-Partner-ID") String partnerId,
-			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
+			@PathVariable("API-Key") String partnerApiKey, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWrapperWithMetadata = (ObjectWithMetadata) request;
@@ -136,7 +136,7 @@ public class IdentityWalletBindingController {
 				DataValidationUtil.validate(errors);
 				
 				AuthResponseDTO authResponseDTO = keyIdentityFacade.authenticateIndividual(identityKeyBindingRequestDTO, partnerId, 
-									oidcClientId, requestWrapperWithMetadata);
+										partnerApiKey, requestWrapperWithMetadata);
 
 				IdentityKeyBindingResponseDto keyBindingResponseDto = new IdentityKeyBindingResponseDto();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
@@ -145,7 +145,7 @@ public class IdentityWalletBindingController {
 								metadata.get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
 										metadata.get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
 					keyBindingResponseDto = keyIdentityFacade.processIdentityKeyBinding(identityKeyBindingRequestDTO, authResponseDTO, 
-								partnerId, oidcClientId, metadata);
+								partnerId, partnerApiKey, metadata);
 				}
 				return keyBindingResponseDto;
 			} catch (IDDataValidationException e) {

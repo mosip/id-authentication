@@ -20,11 +20,14 @@ CREATE TABLE ida.ident_binding_cert_store (
 	public_key_hash character varying(1024) NOT NULL,
 	cert_thumbprint character varying(100) NOT NULL,
 	partner_name character varying(128) NOT NULL,
+	auth_factor character varying(100) NOT NULL,
+	cert_expire timestamp NOT NULL,
 	cr_by character varying(256) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(256),
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
-	del_dtimes timestamp
+	del_dtimes timestamp,
+	CONSTRAINT uni_public_key_hash_const UNIQUE (public_key_hash)
 );
 -- ddl-end --

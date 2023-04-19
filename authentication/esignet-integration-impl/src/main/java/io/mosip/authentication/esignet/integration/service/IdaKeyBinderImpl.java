@@ -50,11 +50,10 @@ public class IdaKeyBinderImpl implements KeyBinder {
         supportedFormats.put("WLA", Arrays.asList("jwt"));
     }
 
-    private static final String PARTNER_ID_HEADER = "partner_id";
-    private static final String PARTNER_API_KEY_HEADER = "partner_api_key";
+    private static final String PARTNER_ID_HEADER = "partner-id";
+    private static final String PARTNER_API_KEY_HEADER = "partner-api-key";
     public static final String SIGNATURE_HEADER_NAME = "signature";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    public static final String BINDING_TRANSACTION = "bindingtransaction";
     public static final String REQUIRED_HEADERS_MISSING = "required_header_missing";
 
     @Value("${mosip.esignet.binder.ida.key-binding-url}")
@@ -92,7 +91,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             IdaSendOtpRequest idaSendOtpRequest = new IdaSendOtpRequest();
             idaSendOtpRequest.setOtpChannel(otpChannels);
             idaSendOtpRequest.setIndividualId(individualId);
-            idaSendOtpRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId)));
+            idaSendOtpRequest.setTransactionID(helperService.getTransactionId(HelperService.generateHash(individualId.trim())));
             return helperService.sendOTP(requestHeaders.get(PARTNER_ID_HEADER),
                     requestHeaders.get(PARTNER_API_KEY_HEADER), idaSendOtpRequest);
         } catch (SendOtpException e) {
@@ -103,7 +102,6 @@ public class IdaKeyBinderImpl implements KeyBinder {
         throw new SendOtpException();
     }
 
-    @CacheEvict(value = BINDING_TRANSACTION, key = "#HelperService.generateHash(individualId)")
     @Override
     public KeyBindingResult doKeyBinding(String individualId, List<AuthChallenge> challengeList, Map<String, Object> publicKeyJWK,
                                          String bindAuthFactorType, Map<String, String> requestHeaders) throws KeyBindingException {
@@ -120,7 +118,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
             keyBindingRequest.setEnv(idaEnv);
             keyBindingRequest.setConsentObtained(true);
             keyBindingRequest.setIndividualId(individualId);
-            keyBindingRequest.setTransactionID(getTransactionId(HelperService.generateHash(individualId)));
+            keyBindingRequest.setTransactionID(helperService.getTransactionId(HelperService.generateHash(individualId.trim())));
             helperService.setAuthRequest(challengeList, keyBindingRequest);
 
             KeyBindingRequest.IdentityKeyBinding identityKeyBinding = new KeyBindingRequest.IdentityKeyBinding();
@@ -148,8 +146,10 @@ public class IdaKeyBinderImpl implements KeyBinder {
                             ErrorConstants.KEY_BINDING_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
                 }
 
-                if(!responseWrapper.getResponse().isKycStatus())
+                if(!responseWrapper.getResponse().isBindingAuthStatus()) {
+                    log.error("Binding-Auth-status : {}", responseWrapper.getResponse().isBindingAuthStatus());
                     throw new KeyBindingException(ErrorConstants.BINDING_AUTH_FAILED);
+                }
 
                 KeyBindingResult keyBindingResult = new KeyBindingResult();
                 keyBindingResult.setCertificate(responseWrapper.getResponse().getIdentityCertificate());
@@ -171,8 +171,4 @@ public class IdaKeyBinderImpl implements KeyBinder {
         return supportedFormats.getOrDefault(authFactorType, Arrays.asList());
     }
 
-    @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
-    private String getTransactionId(String idHash) {
-        return HelperService.generateTransactionId(10);
-    }
 }

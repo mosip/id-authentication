@@ -177,7 +177,7 @@ public class IdentityKeyBindingFacadeImpl implements IdentityKeyBindingFacade {
 				response.setIdentityCertificate(certificateData);
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
-				response.setKycStatus(authResponse.isAuthStatus());
+				response.setBindingAuthStatus(authResponse.isAuthStatus());
 				response.setAuthToken(authResponse.getAuthToken());
 				keyBindingResponseDTO.setResponse(response);
 				keyBindingResponseDTO.setId(authResponseDTO.getId());
@@ -187,7 +187,7 @@ public class IdentityKeyBindingFacadeImpl implements IdentityKeyBindingFacade {
 				keyBindingResponseDTO.setResponseTime(responseTime);
 			}
 
-			return new SimpleEntry<>(keyBindingResponseDTO, response.isKycStatus());
+			return new SimpleEntry<>(keyBindingResponseDTO, response.isBindingAuthStatus());
 		}
 		return new SimpleEntry<>(keyBindingResponseDTO, false);
 	}

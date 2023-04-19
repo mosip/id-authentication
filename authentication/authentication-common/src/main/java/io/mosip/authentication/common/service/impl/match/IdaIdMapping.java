@@ -178,7 +178,7 @@ public enum IdaIdMapping implements IdMapping {
 			FACE,UNKNOWN_FACE), "DummyType"),
 
 
-	KEYBINDEDTOKEN("keyBindedToken"){
+	KEY_BINDED_TOKENS("keyBindedTokens"){
 		public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 			return (mappingConfig, matchType) -> { return Collections.emptyList(); };
 		}

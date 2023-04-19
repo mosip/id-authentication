@@ -11,7 +11,7 @@ import java.util.function.Function;
 public enum KeyBindedTokenMatchType implements MatchType {
 
 
-    KEYBINDEDTOKEN(IdaIdMapping.KEYBINDEDTOKEN, MatchType.setOf(KeyBindedTokenMatchingStrategy.EXACT));
+    KEY_BINDED_TOKENS(IdaIdMapping.KEY_BINDED_TOKENS, MatchType.setOf(KeyBindedTokenMatchingStrategy.EXACT));
 
     private IdMapping idMapping;
     private Category category;
@@ -20,7 +20,7 @@ public enum KeyBindedTokenMatchType implements MatchType {
     private KeyBindedTokenMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy) {
         this.idMapping = idMapping;
         this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
-        this.category = Category.KEYBINDEDTOKEN;
+        this.category = Category.KBT;
     }
 
     @Override

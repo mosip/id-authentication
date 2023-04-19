@@ -47,6 +47,14 @@ public class IdentityBindingCertificateStore {
 	private String partnerName;
 	
 	@NotNull
+	@Column(name = "auth_factor")
+	private String authFactor;
+	
+	@NotNull
+	@Column(name = "cert_expire")
+	private LocalDateTime certExpireDateTime;
+	
+	@NotNull
 	@Column(name = "cr_by")
 	private String createdBy;
 
