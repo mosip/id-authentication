@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TokenEncoderUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -37,6 +38,7 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.idrepository.core.util.SaltUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.keymanager.model.CertificateParameters;
@@ -175,6 +177,15 @@ public class IdAuthSecurityManager {
 
 	@Autowired
     private KeymanagerUtil keymanagerUtil;
+	
+	@Value("${mosip.ida.idhash.legacy-salt-selection-enabled:false}")
+	private boolean legacySaltSelectionEnabled;
+	
+	@Autowired
+	private IdentityCacheRepository identityRepo;
+	
+	@Autowired
+	private IdTypeUtil idTypeUtil;
 	
 	/**
 	 * Gets the user.
@@ -381,15 +392,62 @@ public class IdAuthSecurityManager {
 				: jwtResponse.isSignatureValid();
 	}
 
-	/**
-	 * Hash.
-	 *
-	 * @param id the id
-	 * @return the string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public String hash(String id) throws IdAuthenticationBusinessException {
+	private String newHash(String id) throws IdAuthenticationBusinessException {
 		Integer idModulo = getSaltKeyForHashOfId(id);
+		return doGetHashForIdAndSaltKey(id, idModulo);
+	}
+	
+	private String legacyHash(String id) throws IdAuthenticationBusinessException {
+		Integer idModulo = getSaltKeyForId(id);
+		return doGetHashForIdAndSaltKey(id, idModulo);
+	}
+	
+	public String hash(String id) throws IdAuthenticationBusinessException {
+		String hashWithNewMethod = null;
+		try {
+			hashWithNewMethod = newHash(id);
+		} catch (IdAuthenticationBusinessException e) {
+			//If salt key is not present in the DB, this error will occur.
+			if (e.getErrorCode().equals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode())) {
+				//If legacy hash is not selected throw back the error.
+				if(!legacySaltSelectionEnabled) {
+					mosipLogger.error("Salt key is missing in the table");
+					throw e;
+				}
+				// Ignoring this error.
+				mosipLogger
+						.debug("Ignoring missing salt key in the table as legacy salt selection will be used further.");
+			} else {
+				throw e;
+			}
+		}
+		// If either salt key is not present in uin_hash_salt table
+		// or the new hash is not present in the identity_cache table
+		if(hashWithNewMethod == null || !identityRepo.existsById(hashWithNewMethod)) {
+			if(!legacySaltSelectionEnabled) {
+				//Throw error
+				throwIdNotAvailabeError(id);
+			}
+			
+			String hashWithLegacyMethod = legacyHash(id);
+			if(!identityRepo.existsById(hashWithLegacyMethod)) {
+				//Throw error
+				throwIdNotAvailabeError(id);
+			}
+			
+			return hashWithLegacyMethod;
+		}
+		return hashWithNewMethod;
+	}
+
+	private void throwIdNotAvailabeError(String id) throws IdAuthenticationBusinessException {
+		throw new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+						idTypeUtil.getIdType(id)));
+	}
+
+	private String doGetHashForIdAndSaltKey(String id, Integer idModulo) throws IdAuthenticationBusinessException {
 		String hashSaltValue = uinHashSaltRepo.retrieveSaltById(idModulo);
 		if (hashSaltValue != null) {
 			try {
@@ -404,6 +462,11 @@ public class IdAuthSecurityManager {
 					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
 							SALT_FOR_THE_GIVEN_ID));
 		}
+	}
+
+	public int getSaltKeyForId(String id) {
+		Integer saltKeyLength = EnvUtil.getSaltKeyLength();
+		return SaltUtil.getIdvidModulo(id, saltKeyLength);
 	}
 
 	/**
