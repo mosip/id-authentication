@@ -328,8 +328,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			MatchType matchType, String biometricCbeff) throws IdAuthenticationBusinessException {
 		Map<String, String> birBasedOnType;
 		try {
-//			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(biometricCbeff.getBytes(), type.getName(),
-//					null);
+			
 			List<BIR> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(biometricCbeff.getBytes(), type.getName());
 			Function<? super BIR, ? extends String> keyFunction = bir -> {
 				BDBInfo bdbInfo = bir.getBdbInfo();
