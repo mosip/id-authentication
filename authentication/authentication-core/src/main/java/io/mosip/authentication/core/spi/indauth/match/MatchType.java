@@ -40,8 +40,8 @@ public interface MatchType {
 		BIO("bio"),
 		/** s-pin category. */
 		SPIN("pin"),
-		/** WLA category */
-		TOKEN("token");
+		/** Token category */
+		KBT("kbt");
 
 		/** The type. */
 		String type;
