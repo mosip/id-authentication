@@ -49,6 +49,9 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
+import io.mosip.kernel.biometrics.entities.BIR;
+import io.mosip.kernel.biometrics.spi.CbeffUtil;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -85,6 +88,9 @@ public class KycServiceImpl implements KycService {
 
 	@Value("${ida.idp.consented.address.value.separator: }")
 	private String addressValueSeparator;
+	
+	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
+	private boolean sendFaceAsCbeffXml;
 
 	/** The env. */
 	@Autowired
@@ -107,6 +113,9 @@ public class KycServiceImpl implements KycService {
 
 	@Autowired
 	private KycTokenDataRepository kycTokenDataRepo;
+	
+	@Autowired
+	private CbeffUtil cbeffUtil;
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -132,14 +141,26 @@ public class KycServiceImpl implements KycService {
 			if(faceAttribute.isPresent()) {
 				Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 						null);
-				if (Objects.nonNull(faceEntityInfoMap)) {
-					String face = faceEntityInfoMap.get(CbeffDocType.FACE.getType().value());
+				String faceCbeff = Objects.nonNull(faceEntityInfoMap)
+						? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
+						: null;
+				
+				String face;
+				if(sendFaceAsCbeffXml) {
+					face = faceCbeff;
+				} else {
+					try {
+						face = getFaceBDB(faceCbeff);
+					} catch (Exception e) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
+					}
+				}
 					List<IdentityInfoDTO> bioValue = new ArrayList<>();
 					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 					identityInfoDTO.setValue(face);
 					bioValue.add(identityInfoDTO);
 					identityInfo.put(faceAttribute.get(), bioValue);
-				}
 			}
 
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes,
@@ -663,5 +684,14 @@ public class KycServiceImpl implements KycService {
 			}
 		}
 		return availableLangCodes;
+	}
+	
+	private String getFaceBDB(String faceCbeff) throws Exception {
+		List<BIR> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(faceCbeff.getBytes(), CbeffDocType.FACE.getName());
+		if(birDataFromXMLType.isEmpty()) {
+			//This is unlikely as if empty the exception would have been thrown already
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
+		return CryptoUtil.encodeBase64(birDataFromXMLType.get(0).getBdb());
 	}
 }

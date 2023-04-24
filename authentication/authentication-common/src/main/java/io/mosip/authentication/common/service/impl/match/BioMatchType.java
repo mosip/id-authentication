@@ -67,30 +67,30 @@ public enum BioMatchType implements MatchType {
 			setOf(MultiFingerprintMatchingStrategy.PARTIAL)),
 
 	// Left Finger Image FGRIMG
-	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_LEFT_THUMB(IdaIdMapping.LEFTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.THUMB),
-	FGRIMG_LEFT_INDEX(IdaIdMapping.LEFTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_LEFT_INDEX(IdaIdMapping.LEFTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.INDEX_FINGER),
-	FGRIMG_LEFT_MIDDLE(IdaIdMapping.LEFTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_LEFT_MIDDLE(IdaIdMapping.LEFTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.MIDDLE_FINGER),
-	FGRIMG_LEFT_RING(IdaIdMapping.LEFTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_LEFT_RING(IdaIdMapping.LEFTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.RING_FINGER),
-	FGRIMG_LEFT_LITTLE(IdaIdMapping.LEFTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_LEFT_LITTLE(IdaIdMapping.LEFTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.LEFT, SingleAnySubtypeType.LITTLE_FINGER),
 
 	// Right Finger Image
-	FGRIMG_RIGHT_THUMB(IdaIdMapping.RIGHTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_RIGHT_THUMB(IdaIdMapping.RIGHTTHUMB, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.THUMB),
-	FGRIMG_RIGHT_INDEX(IdaIdMapping.RIGHTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_RIGHT_INDEX(IdaIdMapping.RIGHTINDEX, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.INDEX_FINGER),
-	FGRIMG_RIGHT_MIDDLE(IdaIdMapping.RIGHTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_RIGHT_MIDDLE(IdaIdMapping.RIGHTMIDDLE, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.MIDDLE_FINGER),
-	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.RING_FINGER),
-	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), CbeffDocType.FINGER,
+	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR),
 			SingleAnySubtypeType.RIGHT, SingleAnySubtypeType.LITTLE_FINGER),
 	
-	FGRIMG_UNKNOWN(IdaIdMapping.UNKNOWN_FINGER, CbeffDocType.FINGER, null, null,
+	FGRIMG_UNKNOWN(IdaIdMapping.UNKNOWN_FINGER, setOf(CbeffDocType.FINGER, CbeffDocType.FMR), null, null,
 			setOf(MultiFingerprintMatchingStrategy.PARTIAL)),
 
 	// Multi-fingerPrint
@@ -101,7 +101,7 @@ public enum BioMatchType implements MatchType {
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FMR, null,
 			null),
 
-	FGRIMG_COMPOSITE(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FINGER, null,
+	FGRIMG_COMPOSITE(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), setOf(CbeffDocType.FINGER, CbeffDocType.FMR), null,
 			null),
 	
 	FGRIMG_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FINGER, null,
@@ -141,6 +141,11 @@ public enum BioMatchType implements MatchType {
 
 	/** The single any subtype. */
 	private SingleAnySubtypeType singleAnySubtype;
+	
+	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, Set<CbeffDocType> cbeffDocTypes,
+			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
+		this(idMapping,cbeffDocTypes.toArray(s -> new CbeffDocType[s]), subType, singleAnySubtype,allowedMatchingStrategy);
+	}
 
 	/**
 	 * Instantiates a new bio match type.
@@ -169,6 +174,11 @@ public enum BioMatchType implements MatchType {
 			this.identityInfoFunction = requestDto -> getIdInfoFromSubIdMappings(requestDto, subIdMappings);
 		}
 	}
+	
+	private BioMatchType(IdMapping idMapping, CbeffDocType cbeffDocType, SingleAnySubtypeType subType,
+			SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
+		this(idMapping, setOf(cbeffDocType), subType, singleAnySubtype, allowedMatchingStrategy);
+	}
 
 	/**
 	 * Instantiates a new bio match type for UNKNOWN scenarios
@@ -180,11 +190,11 @@ public enum BioMatchType implements MatchType {
 	 * @param allowedMatchingStrategy the allowed matching strategy
 	 */
 
-	private BioMatchType(IdMapping idMapping, CbeffDocType cbeffDocType, SingleAnySubtypeType subType,
+	private BioMatchType(IdMapping idMapping, Set<CbeffDocType> cbeffDocType, SingleAnySubtypeType subType,
 			SingleAnySubtypeType singleAnySubtype, Set<MatchingStrategy> allowedMatchingStrategy) {
 		// This constructor is called for UNKNOWN match types only. Make sure its id
 		// info function only calls by self instead of its sub-idmappings
-		this(idMapping, allowedMatchingStrategy, new CbeffDocType[] { cbeffDocType }, subType, singleAnySubtype, null);
+		this(idMapping, allowedMatchingStrategy, cbeffDocType.toArray(s -> new CbeffDocType[s]), subType, singleAnySubtype, null);
 		this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 	}
 

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +31,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
@@ -45,7 +47,11 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.constant.BiometricType;
+import io.mosip.kernel.biometrics.entities.BDBInfo;
+import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * Helper class to fetch identity values from request.
@@ -314,27 +320,53 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 *
 	 * @param type the type
 	 * @param matchType the match type
-	 * @param identityValue the identity value
+	 * @param biometricCbeff  the identity value
 	 * @return the cbeff values for cbeff doc type
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValuesForCbeffDocType(CbeffDocType type,
-			MatchType matchType, String identityValue) throws IdAuthenticationBusinessException {
-		Map<String, String> bdbBasedOnType;
+			MatchType matchType, String biometricCbeff) throws IdAuthenticationBusinessException {
+		Map<String, String> birBasedOnType;
 		try {
-			bdbBasedOnType = cbeffUtil.getBDBBasedOnType(identityValue.getBytes(), type.getName(),
-					null);
+			
+			List<BIR> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(biometricCbeff.getBytes(), type.getName());
+			Function<? super BIR, ? extends String> keyFunction = bir -> {
+				BDBInfo bdbInfo = bir.getBdbInfo();
+				return bdbInfo.getType().get(0).toString() + "_" 
+						+ (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty()? "" : bdbInfo.getSubtype().get(0))
+						+ (bdbInfo.getSubtype().size() > 1 ?  " "  + bdbInfo.getSubtype().get(1) : "") + "_" 
+						+ bdbInfo.getFormat().getType();
+			};
+			if(birDataFromXMLType.size() == 1) {
+				//This is the segmented cbeff
+				//This is the most possible case
+				birBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> biometricCbeff));
+			} else if(birDataFromXMLType.isEmpty()) {
+				//This is unlikely
+				birBasedOnType = Collections.emptyMap();
+			} else {
+				//If size is more than one, which is unlikely
+				birBasedOnType = birDataFromXMLType.stream().collect(Collectors.toMap(keyFunction, bir -> {
+					try {
+						return new String(cbeffUtil.createXML(List.of(bir)));
+					} catch (Exception e) {
+						//Mostly this is unlikely
+						throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+					}
+				}));
+			}
+			
 		} catch (Exception e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()), e);
 		}
-		return bdbBasedOnType.entrySet().stream()
+		return birBasedOnType.entrySet().stream()
 				.collect(Collectors.toMap(Entry<String, String>::getKey, (Entry<String, String> entry) -> {
 					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 					identityInfoDTO.setValue(entry.getValue());
 					List<IdentityInfoDTO> idenityList = new ArrayList<>(1);
 					idenityList.add(identityInfoDTO);
-					return new SimpleEntry<>(getNameForCbeffName(entry.getKey(), matchType), idenityList);
+					return new SimpleEntry<>(getNameForCbeffName(entry.getKey(), matchType), List.of(identityInfoDTO));
 				}));
 	}
 
