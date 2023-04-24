@@ -156,15 +156,11 @@ public class KycServiceImpl implements KycService {
 								String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
 					}
 				}
-				
-				//if (Objects.nonNull(faceEntityInfoMap)) {
-					//String face = faceEntityInfoMap.get(CbeffDocType.FACE.getType().value());
 					List<IdentityInfoDTO> bioValue = new ArrayList<>();
 					IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 					identityInfoDTO.setValue(face);
 					bioValue.add(identityInfoDTO);
 					identityInfo.put(faceAttribute.get(), bioValue);
-				//}
 			}
 
 			Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = filterIdentityInfo(allowedkycAttributes,
