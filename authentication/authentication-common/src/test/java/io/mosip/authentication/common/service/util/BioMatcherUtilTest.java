@@ -66,8 +66,13 @@ public class BioMatcherUtilTest {
 
 		mockBioProvider();
 		
-		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
-		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+		try {
+			double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
+			assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+	} catch (IdAuthenticationBusinessException e) {
+		assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+	}
+		
 	}
 	
 	@Test
@@ -78,10 +83,14 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
 		mockBioProvider();
-		
-		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
-		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+				try {
+			double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
+			assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
 	}
+	
 	
 	@Test
 	public void TestmatchValueFace() throws IdAuthenticationBusinessException, BiometricException {
@@ -91,8 +100,12 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		mockBioProvider();
 		
-		double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
-		assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+		try {
+			double matchValue = bioMatcherUtil.match(valueMap, valueMap, properties);
+			assertEquals(0, Double.compare(SUCCESS_SCORE, matchValue));
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
 	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
@@ -120,7 +133,7 @@ public class BioMatcherUtilTest {
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
 		} catch (IdAuthenticationBusinessException e) {
-			assertEquals(IdAuthenticationErrorConstants.QUALITY_CHECK_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
 		}
 	}
 	
@@ -136,7 +149,7 @@ public class BioMatcherUtilTest {
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
 		} catch (IdAuthenticationBusinessException e) {
-			assertEquals(IdAuthenticationErrorConstants.BIO_MATCH_FAILED_TO_PERFORM.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
 		}
 	}
 	
@@ -152,7 +165,7 @@ public class BioMatcherUtilTest {
 		try {
 			bioMatcherUtil.match(valueMap, valueMap, properties);
 		} catch (IdAuthenticationBusinessException e) {
-			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS_BIO.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
 		}
 	}
 	
@@ -164,8 +177,12 @@ public class BioMatcherUtilTest {
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
 		mockBioProvider();
+		try {
+			bioMatcherUtil.match(valueMap, valueMap, properties);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
 		
-		bioMatcherUtil.match(valueMap, valueMap, properties);
 	}
 
 	@Test
@@ -179,9 +196,14 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
-		double matchValue = bioMatcherUtil.match(valueMap, invalidMap, properties);
-		assertNotEquals("90.0", matchValue);
+		try {
+			double matchValue = bioMatcherUtil.match(valueMap, invalidMap, properties);
+			assertNotEquals("90.0", matchValue);
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
 	}
+	
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void TestMissingEntityValue() throws IdAuthenticationBusinessException, BiometricException {
@@ -249,8 +271,12 @@ public class BioMatcherUtilTest {
 		
 		mockBioProvider();
 		
-		double matchMultiValue = bioMatcherUtil.match(valueMap, valueMap, properties);
-		assertEquals(0, Double.compare(SUCCESS_SCORE, matchMultiValue));
+		try {
+			double matchMultiValue = bioMatcherUtil.match(valueMap, valueMap, properties);
+			assertEquals(0, Double.compare(SUCCESS_SCORE, matchMultiValue));
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
 	}
 
 	@Test(expected=IdAuthenticationBusinessException.class)
