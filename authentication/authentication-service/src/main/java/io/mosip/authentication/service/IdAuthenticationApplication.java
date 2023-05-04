@@ -60,6 +60,7 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
@@ -96,7 +97,7 @@ import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 		KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, PartnerServiceCache.class, PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class,
 		WebSubSubscriptionHelper.class, PartnerServiceCallbackControllerDelegate.class, IdAuthWebSubInitializer.class,
 		PartnerServiceEventsSubscriber.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
-		RetryAspect.class, AuthTransactionHelper.class, SessionKeyDecrytorHelper.class })
+		RetryAspect.class, AuthTransactionHelper.class, SessionKeyDecrytorHelper.class, HSMHealthCheck.class })
 @ComponentScan({ "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config" })
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.keymanagerservice.repository.*" })
 public class IdAuthenticationApplication {
