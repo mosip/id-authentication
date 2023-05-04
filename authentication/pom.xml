@@ -64,6 +64,7 @@
 		<module>authentication-internal-service</module>
 		<module>authentication-kyc-service</module>
 		<module>authentication-otp-service</module>
+		<module>esignet-integration-impl</module>
 	</modules>
 
 	<properties>
