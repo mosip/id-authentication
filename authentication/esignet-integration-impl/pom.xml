@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.1.5.5-P1-rc3</version>
+		<version>1.1.5.5-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>esignet-integration-impl</artifactId>
@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<kernel-biometrics-util>1.1.5</kernel-biometrics-util>
+		<kernel-cbeffutil-api.version>1.1.5.3</kernel-cbeffutil-api.version>
 	</properties>
 
 	<dependencies>
@@ -38,6 +39,12 @@
     		<artifactId>esignet-integration-api</artifactId>
     		<version>1.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
@@ -55,6 +62,30 @@
 					<groupId>org.springframework.security</groupId>
 					<artifactId>spring-security-test</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -64,15 +95,131 @@
 			<version>${jackson.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			  <groupId>org.springframework.boot</groupId>
+			  <artifactId>spring-boot-starter-webflux</artifactId>
+			  <version>2.3.6.RELEASE</version>
+		</dependency>
 		 <dependency>
             <groupId>io.mosip.authentication</groupId>
             <artifactId>authentication-common</artifactId>
             <version>${authentication-common.version}</version>
-        </dependency>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-cache</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-web</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-webflux</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>io.mosip.kernel</groupId>
+            		<artifactId>kernel-biosdk-provider</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>io.mosip.kernel</groupId>
+            		<artifactId>kernel-websubclient-api</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>io.mosip.idrepository</groupId>
+            		<artifactId>id-repository-core</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>io.mosip.kernel</groupId>
+            		<artifactId>kernel-dataaccess-hibernate</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>io.mosip.kernel</groupId>
+            		<artifactId>kernel-pinvalidator</artifactId>
+            	</exclusion>
+            </exclusions>
+		 </dependency>
         <dependency>
             <groupId>io.mosip.biometric.util</groupId>
             <artifactId>biometrics-util</artifactId>
             <version>${kernel-biometrics-util}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-web</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>io.mosip.kernel</groupId>
+        	<artifactId>kernel-core</artifactId>
+        	<version>${kernel-core.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>org.springframework.boot</groupId>
+        			<artifactId>
+        				spring-boot-starter-security
+        			</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework.boot</groupId>
+        			<artifactId>spring-boot-starter</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework.boot</groupId>
+        			<artifactId>spring-boot</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-jdbc</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-aop</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-core</artifactId>
+        		</exclusion>
+        	</exclusions>
+        </dependency>
+        <dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-cbeffutil-api</artifactId>
+			<version>${kernel-cbeffutil-api.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+        <dependency>
+        	<groupId>io.springfox</groupId>
+        	<artifactId>springfox-swagger2</artifactId>
+        	<version>${maven.swagger.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-aop</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>org.springframework</groupId>
+        			<artifactId>spring-core</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
 	</dependencies>
 </project>
