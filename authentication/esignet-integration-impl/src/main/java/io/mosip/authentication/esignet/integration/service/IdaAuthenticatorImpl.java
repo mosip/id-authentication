@@ -212,15 +212,14 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<IdaKycResponse> responseWrapper = responseEntity.getBody();
-                Tuple2<String, String> result = processKycResponse(responseWrapper);
+                String psut = generatePsut(relyingPartyId, kycAuthDto.getIndividualId());
+                Tuple2<String, String> result = processKycResponse(responseWrapper, psut);
                 if(result != null) {
 	                String kycToken = result.getT1();
 	                String encryptedIdentityData = result.getT2();
-	                String psut = generatePsut(relyingPartyId, kycAuthDto.getIndividualId());
 	                identityDataCache.putEncryptedIdentityData(kycToken, psut, encryptedIdentityData);
 	                if(kycToken != null) {
-						return new KycAuthResult(kycToken,
-	                            responseEntity.getBody().getResponse().getAuthToken());
+						return new KycAuthResult(kycToken, psut);
 	                }
                 }
                 
@@ -244,11 +243,11 @@ public class IdaAuthenticatorImpl implements Authenticator {
 		return tokenIdManager.generateTokenId(individualId, relyingPartyId);
 	}
 
-	private Tuple2<String, String> processKycResponse(IdaResponseWrapper<IdaKycResponse> responseWrapper) throws DecoderException, NoSuchAlgorithmException {
+	private Tuple2<String, String> processKycResponse(IdaResponseWrapper<IdaKycResponse> responseWrapper, String psut) throws DecoderException, NoSuchAlgorithmException {
     	if(responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus()) {
     		IdaKycResponse response = responseWrapper.getResponse();
     		String encryptedIdentityData = response.getIdentity();
-    		String kycToken = generateKycToken(responseWrapper.getTransactionID(), response.getAuthToken());
+    		String kycToken = generateKycToken(responseWrapper.getTransactionID(), psut);
     		return Tuples.of(kycToken, encryptedIdentityData);
     	}
 		return null;
