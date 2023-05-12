@@ -280,6 +280,7 @@ public class BioMatcherUtil {
 		}
 		String[] subTypes = Arrays.stream(idName.split(" "))
 				.filter(str -> !str.isEmpty())
+			        .map(str -> str.replaceAll("\\d", ""))
 				.toArray(s -> new String[s]);
 		return new BioInfo(String.valueOf(type), singleType, subTypes);
 	}
