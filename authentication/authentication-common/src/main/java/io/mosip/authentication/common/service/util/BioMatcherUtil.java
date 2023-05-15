@@ -278,10 +278,11 @@ public class BioMatcherUtil {
 						"Found invalid type: " + typeForIdName);
 			 throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
-		String[] subTypes = Arrays.stream(idName.split(" "))
-				.filter(str -> !str.isEmpty())
-			        .map(str -> str.replaceAll("\\d", ""))
-				.toArray(s -> new String[s]);
+		String[] subTypes = List.of(idName.split(" ")).stream().filter(str -> !str.isEmpty())
+				.map(str -> str.replaceAll("\\d", "")).toArray(String[]::new);
+		if (Set.of(subTypes).contains(IdAuthCommonConstants.UNKNOWN_BIO)) {
+			subTypes = new String[] { IdAuthCommonConstants.UNKNOWN_BIO };
+		}
 		return new BioInfo(String.valueOf(type), singleType, subTypes);
 	}
 
