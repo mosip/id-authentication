@@ -4,6 +4,7 @@ import org.mockito.Mockito;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
@@ -32,6 +33,7 @@ import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 
 @EnableCaching
 @Configuration
+@Import(value= {IDAMappingConfig.class})
 public class IdaConfig {
 
 	@Bean
@@ -42,11 +44,6 @@ public class IdaConfig {
 	@Bean
 	public TokenIdManager getTokenIdManager() {
 		return new TokenIdManager();
-	}
-
-	@Bean
-	public IDAMappingConfig getIDAMappingConfig() {
-		return new IDAMappingConfig();
 	}
 
 	@Bean

@@ -279,7 +279,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
     		}
     		String thumbprint = response.getThumbprint();
     		if(thumbprint != null) {
-    			combinedData = CryptoUtil.encodeToURLSafeBase64(CryptoUtil.combineByteArray(Hex.decodeHex(thumbprint), CryptoUtil.decodeURLSafeBase64(encryptedIdentityData), ""));
+    			combinedData = CryptoUtil.encodeToURLSafeBase64(CryptoUtil.combineByteArray(CryptoUtil.decodeURLSafeBase64(combinedData), Hex.decodeHex(thumbprint), EMPTY));
     		}
 			return Tuples.of(kycToken, combinedData);
     	}
@@ -345,21 +345,23 @@ public class IdaAuthenticatorImpl implements Authenticator {
         	Map<String, Object> idResDTO;
         	if(encryptedIdentityData != null) {
 	        	String decrptIdentityData = helperService.decrptData(encryptedIdentityData);
-	        	idResDTO = objectMapper.readValue(decrptIdentityData, Map.class);
+	        	idResDTO = objectMapper.readValue(CryptoUtil.decodeURLSafeBase64(decrptIdentityData), Map.class);
         	} else {
         		idResDTO = Map.of();
         	}
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			
-			String respJson = buildKycExchangeResponse(psut, idInfo, kycExchangeDto.getAcceptedClaims(), List.of(kycExchangeDto.getClaimsLocales()), kycExchangeDto.getIndividualId());
+			String respJson =idInfo.isEmpty() ? null:  buildKycExchangeResponse(psut, idInfo, kycExchangeDto.getAcceptedClaims(), List.of(kycExchangeDto.getClaimsLocales()), kycExchangeDto.getIndividualId());
 			IdaResponseWrapper<IdaKycExchangeResponse> responseWrapper = new IdaResponseWrapper<>();
 			IdaKycExchangeResponse respose = new IdaKycExchangeResponse();
 			responseWrapper.setResponse(respose);
 			respose.setEncryptedKyc(respJson);
             return new KycExchangeResult(responseWrapper.getResponse().getEncryptedKyc());
-        } catch (KycExchangeException e) { throw e; } catch (Exception e) {
-            log.error("IDA Kyc-exchange failed with clientId : {}", clientId, e);
-        }
+		} catch (KycExchangeException e) {
+			throw e;
+		} catch (Exception e) {e.printStackTrace();
+			log.error("IDA Kyc-exchange failed with clientId : {}", clientId, e);
+		}
         throw new KycExchangeException();
     }
 	
