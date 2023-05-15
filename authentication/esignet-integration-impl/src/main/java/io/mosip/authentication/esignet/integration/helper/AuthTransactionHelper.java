@@ -52,6 +52,8 @@ public class AuthTransactionHelper {
     	log.info("Started to get auth-token with appId : {} && clientId : {}",
                 appId, clientId);
     	
+    
+    	
 	RequestWrapper<ClientIdSecretKeyRequest> authRequest = new RequestWrapper<>();
     	authRequest.setRequesttime(LocalDateTime.now());
     	ClientIdSecretKeyRequest clientIdSecretKeyRequest = new ClientIdSecretKeyRequest(clientId, secretKey, appId);

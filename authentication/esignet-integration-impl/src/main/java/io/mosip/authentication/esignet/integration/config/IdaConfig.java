@@ -1,10 +1,12 @@
 package io.mosip.authentication.esignet.integration.config;
 
 import org.mockito.Mockito;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.common.service.cache.MasterDataCache;
+import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
@@ -27,6 +29,7 @@ import io.mosip.kernel.tokenidgenerator.service.TokenIDGeneratorService;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.spi.ZKCryptoManagerService;
 
+@EnableCaching
 @Configuration
 public class IdaConfig {
 
@@ -34,10 +37,15 @@ public class IdaConfig {
 	public TokenIDGeneratorService getTokenIdGeneratorService() {
 		return new TokenIDGeneratorServiceImpl();
 	}
-
+	
 	@Bean
 	public TokenIdManager getTokenIdManager() {
 		return new TokenIdManager();
+	}
+
+	@Bean
+	public IDAMappingConfig getIDAMappingConfig() {
+		return new IDAMappingConfig();
 	}
 
 	@Bean

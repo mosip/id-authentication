@@ -29,7 +29,8 @@ public class IdaKycAuthRequest {
     private String requestSessionKey;
     private Map<String, Object> metadata;
     private List<String> allowedKycAttributes;
-
+    private Map<String, Boolean> requestedAuth;
+    
     @Data
     public static class AuthRequest {
         private String otp;

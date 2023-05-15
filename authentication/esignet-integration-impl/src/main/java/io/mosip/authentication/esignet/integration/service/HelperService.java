@@ -40,6 +40,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
+import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest.AuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
 import io.mosip.authentication.esignet.integration.dto.KeyBindedToken;
@@ -121,7 +122,7 @@ public class HelperService {
         authRequest.setTimestamp(HelperService.getUTCDateTime());
         challengeList.stream()
                 .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
-                .forEach( auth -> { buildAuthRequest(auth, authRequest); });
+                .forEach( auth -> { buildAuthRequest(auth, authRequest, idaKycAuthRequest); });
 
         KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
         final SecretKey symmetricKey = keyGenerator.generateKey();
@@ -229,14 +230,19 @@ public class HelperService {
         return urlSafeDecoder.decode(value);
     }
 
-    private void buildAuthRequest(AuthChallenge authChallenge, IdaKycAuthRequest.AuthRequest authRequest) {
+    private void buildAuthRequest(AuthChallenge authChallenge, AuthRequest authRequest, IdaKycAuthRequest kycAauthRequest) {
         log.info("Build kyc-auth request with authFactor : {}",  authChallenge.getAuthFactorType());
         switch (authChallenge.getAuthFactorType().toUpperCase()) {
-            case "OTP" : authRequest.setOtp(authChallenge.getChallenge());
+            case "OTP" : 
+            	authRequest.setOtp(authChallenge.getChallenge());
+            	kycAauthRequest.getRequestedAuth().put("otp", true);
                 break;
-            case "PIN" : authRequest.setStaticPin(authChallenge.getChallenge());
+            case "PIN" : 
+            	authRequest.setStaticPin(authChallenge.getChallenge());
+        		kycAauthRequest.getRequestedAuth().put("pin", true);
                 break;
             case "BIO" :
+        		kycAauthRequest.getRequestedAuth().put("bio", true);
                 byte[] decodedBio = HelperService.b64Decode(authChallenge.getChallenge());
                 try {
                     List<IdaKycAuthRequest.Biometric> biometrics = objectMapper.readValue(decodedBio,

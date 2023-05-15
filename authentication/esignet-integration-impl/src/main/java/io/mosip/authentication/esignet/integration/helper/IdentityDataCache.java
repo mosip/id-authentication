@@ -1,25 +1,32 @@
 package io.mosip.authentication.esignet.integration.helper;
 
-import java.util.Objects;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+/**
+ * 
+ * @author Loganathan S
+ *
+ */
 @Component
-public class IdentityDataCache {
+public class IdentityDataCache<T> {
 	
-	public void putEncryptedIdentityData(String kycToken, String psut, String encryptedIdentityData) {
-		Objects.requireNonNull(encryptedIdentityData);
-		internalCacheData(kycToken, psut, encryptedIdentityData);
+	private static final String ENCRYPTED_IDENTITY_DATA = "encryptedIdentityData";
+	
+	@Autowired
+	private CacheManager cacheManager;
+	
+	public void storeToCache(String key, T data) {
+		Cache dataCache = cacheManager.getCache(ENCRYPTED_IDENTITY_DATA);
+		dataCache.put(key, data);
 	}
 	
-	public String getEncryptedIdentityData(String kycToken, String psut) {
-		return internalCacheData(kycToken, psut, null);
-	}
-	
-	@Cacheable(value="encryptedIdentityData", key="#kycToken + #psut")
-	private String internalCacheData(String kycToken, String psut, String encryptedIdentityData) {
-		return encryptedIdentityData;		
+	public T retrieveFromCache(String key, Class<T> clazz) {
+		Cache encryptedIdentityDataCache = cacheManager.getCache(ENCRYPTED_IDENTITY_DATA);
+		return encryptedIdentityDataCache.get(key, clazz);
 	}
 	
 

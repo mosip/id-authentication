@@ -50,7 +50,7 @@ import io.mosip.authentication.esignet.integration.dto.IdaKycResponse;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
 import io.mosip.authentication.esignet.integration.helper.AuthTransactionHelper;
-import io.mosip.authentication.esignet.integration.helper.IdentityDataCache;
+import io.mosip.authentication.esignet.integration.helper.IdentityDataStore;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.esignet.api.dto.KycAuthDto;
@@ -123,6 +123,10 @@ public class IdaAuthenticatorImpl implements Authenticator {
     @Value("${mosip.esignet.authenticator.ida.wrapper.auth.partner.id}")
     private String esignetAuthPartnerId;
     
+    
+    @Value("${mosip.esignet.authenticator.ida.wrapper.auth.partner.apikey}")
+    private String esignetAuthPartnerApiKey;
+    
     @Value("${mosip.esignet.authenticator.ida.wrapper.auth.reference.id}")
     private String esignetRefId;
     
@@ -167,7 +171,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
     private AuthTransactionHelper authTransactionHelper;
     
     @Autowired
-    private IdentityDataCache identityDataCache;
+    private IdentityDataStore identityDataStore;
     
     @Autowired
     private TokenIdManager tokenIdManager;
@@ -197,12 +201,16 @@ public class IdaAuthenticatorImpl implements Authenticator {
             idaKycAuthRequest.setConsentObtained(true);
             idaKycAuthRequest.setIndividualId(kycAuthDto.getIndividualId());
             idaKycAuthRequest.setTransactionID(kycAuthDto.getTransactionId());
+            //Needed in pre-LTS version (such as 1.1.5.X)
+            Map<String, Boolean> requestedAuth = new HashMap<>();
+			idaKycAuthRequest.setRequestedAuth(requestedAuth);
+			
             helperService.setAuthRequest(kycAuthDto.getChallengeList(), idaKycAuthRequest);
 
             //set signature header, body and invoke kyc auth endpoint
             String requestBody = objectMapper.writeValueAsString(idaKycAuthRequest);
             RequestEntity requestEntity = RequestEntity
-                    .post(UriComponentsBuilder.fromUriString(kycUrl).pathSegment(esignetAuthPartnerId, clientId).build().toUri())
+                    .post(UriComponentsBuilder.fromUriString(kycUrl).pathSegment(esignetAuthPartnerId, esignetAuthPartnerApiKey).build().toUri())
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .header(SIGNATURE_HEADER_NAME, helperService.getRequestSignature(requestBody))
                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
@@ -217,7 +225,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 if(result != null) {
 	                String kycToken = result.getT1();
 	                String encryptedIdentityData = result.getT2();
-	                identityDataCache.putEncryptedIdentityData(kycToken, psut, encryptedIdentityData);
+	                identityDataStore.putEncryptedIdentityData(kycToken, psut, encryptedIdentityData);
 	                if(kycToken != null) {
 						return new KycAuthResult(kycToken, psut);
 	                }
@@ -254,8 +262,8 @@ public class IdaAuthenticatorImpl implements Authenticator {
 	}
 
 	private String generateKycToken(String transactionID, String authToken) throws DecoderException, NoSuchAlgorithmException {
-		String uuid = UUID.randomUUID().toString();
-		return doGenerateKycToken(uuid, transactionID + authToken);// TODO check the logic
+		String uuid = UUID.nameUUIDFromBytes(transactionID.getBytes()).toString();
+		return doGenerateKycToken(uuid, authToken);
 	}
 	
 	private String doGenerateKycToken(String uuid, String idHash) throws DecoderException, NoSuchAlgorithmException {
@@ -313,7 +321,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 kycExchangeDto.getTransactionId(), clientId);
         try {
         	String psut = generatePsut(relyingPartyId, kycExchangeDto.getIndividualId());
-        	String encryptedIdentityData = identityDataCache.getEncryptedIdentityData(kycExchangeDto.getKycToken(), psut);
+        	String encryptedIdentityData = identityDataStore.getEncryptedIdentityData(kycExchangeDto.getKycToken(), psut);
         	String decrptIdentityData = decrptIdentityData(encryptedIdentityData);
         	
         	Map<String, Object> idResDTO = objectMapper.readValue(decrptIdentityData, Map.class);
