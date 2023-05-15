@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -92,6 +93,9 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
     @Value("${mosip.esignet.authenticator.ida-kyc-id:mosip.identity.kyc}")
     private String kycId;
+    
+    @Value("${mosip.esignet.authenticator.ida-authonly-id:mosip.identity.auth}")
+    private String authOnlyId;
 
     @Value("${mosip.esignet.authenticator.ida-version:1.0}")
     private String idaVersion;
@@ -104,6 +108,9 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
     @Value("${mosip.esignet.authenticator.ida.kyc-url}")
     private String kycUrl;
+    
+    @Value("${mosip.esignet.authenticator.ida.auth-url}")
+    private String authUrl;
 
     @Value("${mosip.esignet.authenticator.ida.otp-channels}")
     private List<String> otpChannels;
@@ -157,8 +164,12 @@ public class IdaAuthenticatorImpl implements Authenticator {
 	/** The sign applicationid. */
 	@Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KYC_EXCHANGE}")
 	private String kycExchSignApplicationId;
-    
-    @Autowired
+	
+	/** The key splitter. */
+	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
+	private String keySplitter;
+
+	@Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -186,6 +197,9 @@ public class IdaAuthenticatorImpl implements Authenticator {
 	@Autowired
 	private SignatureService signatureService;
 	
+	@Value("${mosip.ida.kyc.exchange.skip:false}")
+	private boolean skipKycExchange;
+	
     @Override
     public KycAuthResult doKycAuth(String relyingPartyId, String clientId, KycAuthDto kycAuthDto)
             throws KycAuthException {
@@ -193,7 +207,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 kycAuthDto.getTransactionId(), clientId);
         try {
             IdaKycAuthRequest idaKycAuthRequest = new IdaKycAuthRequest();
-            idaKycAuthRequest.setId(kycId);
+            idaKycAuthRequest.setId(skipKycExchange ? authOnlyId: kycId);
             idaKycAuthRequest.setVersion(idaVersion);
             idaKycAuthRequest.setRequestTime(HelperService.getUTCDateTime());
             idaKycAuthRequest.setDomainUri(idaDomainUri);
@@ -210,7 +224,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
             //set signature header, body and invoke kyc auth endpoint
             String requestBody = objectMapper.writeValueAsString(idaKycAuthRequest);
             RequestEntity requestEntity = RequestEntity
-                    .post(UriComponentsBuilder.fromUriString(kycUrl).pathSegment(esignetAuthPartnerId, esignetAuthPartnerApiKey).build().toUri())
+                    .post(UriComponentsBuilder.fromUriString(skipKycExchange? authUrl : kycUrl).pathSegment(esignetAuthPartnerId, esignetAuthPartnerApiKey).build().toUri())
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .header(SIGNATURE_HEADER_NAME, helperService.getRequestSignature(requestBody))
                     .header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME)
@@ -225,15 +239,17 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 if(result != null) {
 	                String kycToken = result.getT1();
 	                String encryptedIdentityData = result.getT2();
-	                identityDataStore.putEncryptedIdentityData(kycToken, psut, encryptedIdentityData);
+	                if(encryptedIdentityData != null) {
+	                	identityDataStore.putEncryptedIdentityData(kycToken, psut, encryptedIdentityData);
+	                }
 	                if(kycToken != null) {
 						return new KycAuthResult(kycToken, psut);
 	                }
                 }
                 
                 
-                log.error("Error response received from IDA KycStatus : {} && Errors: {}",
-                        responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());
+                log.error("Error response received from IDA status : {} && Errors: {}",
+                        (responseWrapper.getResponse().isKycStatus() ||  responseWrapper.getResponse().isAuthStatus()), responseWrapper.getErrors());
                 throw new KycAuthException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
                          ErrorConstants.AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
@@ -252,13 +268,33 @@ public class IdaAuthenticatorImpl implements Authenticator {
 	}
 
 	private Tuple2<String, String> processKycResponse(IdaResponseWrapper<IdaKycResponse> responseWrapper, String psut) throws DecoderException, NoSuchAlgorithmException {
+		String kycToken = generateKycToken(responseWrapper.getTransactionID(), psut);
     	if(responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus()) {
     		IdaKycResponse response = responseWrapper.getResponse();
     		String encryptedIdentityData = response.getIdentity();
-    		String kycToken = generateKycToken(responseWrapper.getTransactionID(), psut);
-    		return Tuples.of(kycToken, encryptedIdentityData);
+    		String combinedData = encryptedIdentityData;
+    		String sessionKey = response.getSessionKey();
+    		if(sessionKey != null) {
+    			combinedData = CryptoUtil.encodeToURLSafeBase64(combineDataForDecryption(CryptoUtil.decodeURLSafeBase64(sessionKey), CryptoUtil.decodeURLSafeBase64(encryptedIdentityData)));
+    		}
+    		String thumbprint = response.getThumbprint();
+    		if(thumbprint != null) {
+    			combinedData = CryptoUtil.encodeToURLSafeBase64(CryptoUtil.combineByteArray(Hex.decodeHex(thumbprint), CryptoUtil.decodeURLSafeBase64(encryptedIdentityData), ""));
+    		}
+			return Tuples.of(kycToken, combinedData);
     	}
-		return null;
+		return Tuples.of(kycToken, null);
+	}
+	
+	/**
+	 * Combine data for decryption.
+	 *
+	 * @param encryptedSessionKey the encrypted session key
+	 * @param encryptedData the encrypted data
+	 * @return the string
+	 */
+	private byte[] combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
+		return CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
 	}
 
 	private String generateKycToken(String transactionID, String authToken) throws DecoderException, NoSuchAlgorithmException {
@@ -298,22 +334,6 @@ public class IdaAuthenticatorImpl implements Authenticator {
 		}
 	}
 	
-	private String decrptIdentityData(String identityStr) {
-//		KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
-//        final SecretKey symmetricKey = keyGenerator.generateKey();
-//        String hexEncodedHash = HMACUtils2.digestAsPlainText(request.getBytes(StandardCharsets.UTF_8));
-//        idaKycAuthRequest.setRequest(HelperService.b64Encode(cryptoCore.symmetricEncrypt(symmetricKey,
-//                request.getBytes(StandardCharsets.UTF_8), null)));
-//        idaKycAuthRequest.setRequestHMAC(HelperService.b64Encode(cryptoCore.symmetricEncrypt(symmetricKey,
-//                hexEncodedHash.getBytes(StandardCharsets.UTF_8), null)));
-//        Certificate certificate = getIdaPartnerCertificate();
-//        idaKycAuthRequest.setThumbprint(HelperService.b64Encode(getCertificateThumbprint(certificate)));
-//        log.info("IDA certificate thumbprint {}", idaKycAuthRequest.getThumbprint());
-//        idaKycAuthRequest.setRequestSessionKey(HelperService.b64Encode(
-//                cryptoCore.asymmetricEncrypt(certificate.getPublicKey(), symmetricKey.getEncoded())));
-		return null;
-	}
-
 	@Override
     public KycExchangeResult doKycExchange(String relyingPartyId, String clientId, KycExchangeDto kycExchangeDto)
             throws KycExchangeException {
@@ -322,9 +342,13 @@ public class IdaAuthenticatorImpl implements Authenticator {
         try {
         	String psut = generatePsut(relyingPartyId, kycExchangeDto.getIndividualId());
         	String encryptedIdentityData = identityDataStore.getEncryptedIdentityData(kycExchangeDto.getKycToken(), psut);
-        	String decrptIdentityData = decrptIdentityData(encryptedIdentityData);
-        	
-        	Map<String, Object> idResDTO = objectMapper.readValue(decrptIdentityData, Map.class);
+        	Map<String, Object> idResDTO;
+        	if(encryptedIdentityData != null) {
+	        	String decrptIdentityData = helperService.decrptData(encryptedIdentityData);
+	        	idResDTO = objectMapper.readValue(decrptIdentityData, Map.class);
+        	} else {
+        		idResDTO = Map.of();
+        	}
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			
 			String respJson = buildKycExchangeResponse(psut, idInfo, kycExchangeDto.getAcceptedClaims(), List.of(kycExchangeDto.getClaimsLocales()), kycExchangeDto.getIndividualId());

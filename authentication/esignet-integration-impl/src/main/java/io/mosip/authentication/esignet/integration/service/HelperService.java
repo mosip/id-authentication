@@ -48,8 +48,12 @@ import io.mosip.esignet.api.dto.AuthChallenge;
 import io.mosip.esignet.api.dto.SendOtpResult;
 import io.mosip.esignet.api.exception.KycAuthException;
 import io.mosip.esignet.api.exception.SendOtpException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.util.PartnerCertificateManagerUtil;
@@ -111,6 +115,10 @@ public class HelperService {
     private CryptoCore cryptoCore;
 
     private Certificate idaPartnerCertificate;
+    
+    @Autowired
+    private CryptomanagerService cryptomanagerService;
+
 
     @Cacheable(value = BINDING_TRANSACTION, key = "#idHash")
     public String getTransactionId(String idHash) {
@@ -180,6 +188,15 @@ public class HelperService {
         log.debug("Request signature ---> {}", responseDto.getJwtSignedData());
         return responseDto.getJwtSignedData();
     }
+    
+    public String decrptData(String identityStr) {
+		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
+		cryptomanagerRequestDto.setApplicationId(OIDC_PARTNER_APP_ID);
+		cryptomanagerRequestDto.setData(identityStr);
+		cryptomanagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+		CryptomanagerResponseDto cryptomanagerResponseDto = cryptomanagerService.decrypt(cryptomanagerRequestDto);
+		return cryptomanagerResponseDto.getData();
+	}
 
     protected Certificate getIdaPartnerCertificate() throws KycAuthException {
         if(StringUtils.isEmpty(idaPartnerCertificate)) {

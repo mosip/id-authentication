@@ -25,8 +25,8 @@ public class IdentityDataCache<T> {
 	}
 	
 	public T retrieveFromCache(String key, Class<T> clazz) {
-		Cache encryptedIdentityDataCache = cacheManager.getCache(ENCRYPTED_IDENTITY_DATA);
-		return encryptedIdentityDataCache.get(key, clazz);
+		Cache dataCache = cacheManager.getCache(ENCRYPTED_IDENTITY_DATA);
+		return dataCache.get(key, clazz);
 	}
 	
 

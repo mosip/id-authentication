@@ -12,11 +12,16 @@ public class IdaKycResponse {
 
 	/** The Variable to hold value of kyc Status */
 	private boolean kycStatus;
+	
+	/** The Variable to hold value of kyc Status */
+	private boolean authStatus;
 
 	/** The Variable to hold value of auth Token */
 	private String authToken;
 	
 	private String thumbprint;
+	
+	private String sessionKey;
 
 	/** The Variable to hold value of identity */
 	private String identity;

@@ -24,6 +24,7 @@ import io.mosip.authentication.core.spi.notification.service.NotificationService
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
+import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.TokenIDGeneratorService;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
@@ -67,17 +68,16 @@ public class IdaConfig {
 	public OTPManager getOTPManager() {
 		return new OTPManager();
 	}
+	
+	@Bean
+	public CryptomanagerService getCryptomanagerService() {
+		return new CryptomanagerServiceImpl();
+	}
 
 	@Bean("external")
 	public RestHelper getRestHelper() {
 		// Just using mock rest helper as it is not used here
 		return Mockito.mock(RestHelper.class);
-	}
-
-	@Bean
-	public CryptomanagerService getCryptomanagerService() {
-		// Just using mock rest helper as it is not used here
-		return Mockito.mock(CryptomanagerService.class);
 	}
 
 	@Bean
