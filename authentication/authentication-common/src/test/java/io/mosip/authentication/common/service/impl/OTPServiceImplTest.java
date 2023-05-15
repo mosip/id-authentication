@@ -40,6 +40,7 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
+import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.PartnerMappingRepository;
@@ -135,6 +136,12 @@ public class OTPServiceImplTest {
 
     @Mock
     private IdAuthFraudAnalysisEventManager fraudEventManager;
+    
+    
+    /** The auth lock repository. */
+    @Mock
+	private AuthLockRepository authLockRepository;
+
 
     @Before
     public void before() {

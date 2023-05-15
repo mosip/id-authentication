@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,7 +173,7 @@ public class AuthAnonymousProfileServiceImplTest {
 	}
 	
 	@Test
-	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, JsonMappingException, JsonProcessingException  {
+	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, IOException {
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage("eng");

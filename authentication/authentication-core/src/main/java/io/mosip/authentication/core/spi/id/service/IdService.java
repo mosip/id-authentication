@@ -73,5 +73,23 @@ public interface IdService<T> {
 	 * @return the token
 	 */
 	String getToken(Map<String, Object> idResDTO);
+
+	/**
+	 * Gets the IdHash.
+	 *
+	 * @param idResDTO the id res DTO
+	 * @return the Id Hash
+	 */
+	String getIdHash(Map<String, Object> idResDTO);
+
+	/**
+	 * Gets the Identity Transaction Limit.
+	 *
+	 * @param idvId the id/vid
+	 * @param idvIdType the id/vid type
+	 * @return the Id Hash
+	 */
+	void checkIdKeyBindingPermitted(String idvId, String idvIdType) throws IdAuthenticationBusinessException;
+
 	
 }

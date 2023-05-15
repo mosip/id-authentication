@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -541,6 +543,16 @@ public abstract class BaseIDAFilter implements Filter {
 	protected abstract boolean isThumbprintValidationRequired();
 	
 	protected abstract boolean isTrustValidationRequired();
+
+	protected abstract boolean isMispPolicyValidationRequired();
+
+	protected abstract boolean isCertificateValidationRequired();
+
+	protected abstract boolean isAMRValidationRequired();
+
+	protected abstract void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) throws IdAuthenticationAppException;
+
+	protected abstract void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException;
 
 	/*
 	 * (non-Javadoc)

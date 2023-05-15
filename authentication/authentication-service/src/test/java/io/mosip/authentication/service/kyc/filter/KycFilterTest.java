@@ -34,7 +34,7 @@ public class KycFilterTest {
 	@Autowired
 	EnvUtil env;
 
-	KycAuthFilter kycAuthFilter = new KycAuthFilter();
+	KycAuthenticationFilter kycAuthFilter = new KycAuthenticationFilter();
 
 	@Autowired
 	ObjectMapper mapper;

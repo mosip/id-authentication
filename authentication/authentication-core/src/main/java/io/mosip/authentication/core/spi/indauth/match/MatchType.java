@@ -31,15 +31,16 @@ public interface MatchType {
 	 */
 	public enum Category {
 
-	/** Demo category */
-	DEMO("demo"),
-	/** OTP category */
-	OTP("otp"),
-	/** Bio category */
-	BIO("bio"),
-
-	/** s-pin category. */
-	SPIN("pin");
+		/** Demo category */
+		DEMO("demo"),
+		/** OTP category */
+		OTP("otp"),
+		/** Bio category */
+		BIO("bio"),
+		/** s-pin category. */
+		SPIN("pin"),
+		/** Token category */
+		KBT("kbt");
 
 		/** The type. */
 		String type;

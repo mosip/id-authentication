@@ -44,7 +44,7 @@ public class PartnerServiceImplTest {
 
 	@Test
 	public void testVallidateAndGetPolicy() throws IdAuthenticationBusinessException {
-		partnerService.validateAndGetPolicy("partner_id", "partner_api_key", "misp_license_key", false);
+		partnerService.validateAndGetPolicy("partner_id", "partner_api_key", "misp_license_key", false, "partner_header_certificate", false);
 	}
 
 	private PartnerPolicyResponseDTO getPolicyData() {

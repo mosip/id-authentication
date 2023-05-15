@@ -4,6 +4,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERSION;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
@@ -34,6 +36,7 @@ import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.exception.ParseException;
 
 /**
  * The Class IdaRequestResponsConsumerUtil.
@@ -163,5 +166,17 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 				dateTimePattern, TimeZone.getTimeZone(ZoneOffset.UTC)),
 				dateTimePattern, TimeZone.getTimeZone(zone));
 		return resTime;
+	}
+
+	public static LocalDateTime convertStringDateTimeToLDT(String stringDateTime) {
+		LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
+		try {
+			strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(stringDateTime, EnvUtil.getDateTimePattern())));
+		} catch (ParseException e) {
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, IdaRequestResponsConsumerUtil.class.getClass().getName(), e.getMessage(),
+					"Invalid  DateTime - setting to current date time");
+		}
+		return strUTCDate;
 	}
 }

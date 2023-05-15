@@ -176,7 +176,14 @@ public enum IdaIdMapping implements IdMapping {
 			RIGHTINDEX, RIGHTLITTLE, RIGHTMIDDLE, RIGHTRING, RIGHTTHUMB, UNKNOWN_FINGER,
 			RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS,
 			FACE,UNKNOWN_FACE), "DummyType"),
-	
+
+
+	KEY_BINDED_TOKENS("keyBindedTokens"){
+		public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
+			return (mappingConfig, matchType) -> { return Collections.emptyList(); };
+		}
+	},
+
 	/** The dynamic demographics ID Mapping. */
 	DYNAMIC("demographics") {
 		

@@ -42,7 +42,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.idrepository.core.helper.RestHelper;
 
@@ -93,7 +93,7 @@ public class AuthControllerTest {
 	private AuthRequestValidator authRequestValidator;
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
-	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
+	Errors errors = new BindException(EkycAuthRequestDTO.class, "kycAuthReqDTO");
 
 	@Before
 	public void before() {

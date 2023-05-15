@@ -19,8 +19,7 @@ public class AuthTypeStatusUpdateAckEvent implements EventInterface{
 	/** The request id. */
 	private String requestId;
 	
-	/** The status. */
-	private String status;
+
 	
 	/** The timestamp. */
 	private LocalDateTime timestamp;

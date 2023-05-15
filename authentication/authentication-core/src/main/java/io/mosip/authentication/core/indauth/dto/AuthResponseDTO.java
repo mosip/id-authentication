@@ -1,9 +1,6 @@
 package io.mosip.authentication.core.indauth.dto;
 
-import java.util.Map;
-
 import io.mosip.authentication.core.dto.ObjectWithIdVersionTransactionID;
-import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,7 +16,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AuthResponseDTO extends BaseAuthResponseDTO implements ObjectWithIdVersionTransactionID{
+public class AuthResponseDTO extends BaseAuthResponseDTO implements ObjectWithIdVersionTransactionID {
 
 	/** The Variable to hold response */
 	private ResponseDTO response;

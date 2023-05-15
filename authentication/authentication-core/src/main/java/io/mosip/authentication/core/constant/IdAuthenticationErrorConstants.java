@@ -65,11 +65,10 @@ public enum IdAuthenticationErrorConstants {
 			"Please capture biometrics within %s seconds of previous biometric capture"),
 	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics not captured within %s seconds of previous biometrics",
 			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
-	
-	
-	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
+		
+	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
 				"Please re-enter your %s in %s"),
-		DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
+	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "Please provide valid Language"),
     DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
@@ -93,7 +92,10 @@ public enum IdAuthenticationErrorConstants {
 	BIO_MATCH_FAILED_TO_PERFORM("IDA-BIA-017", "Unable to Perform Biometric Match due to a Technical Issue"),
 	UNABLE_TO_PROCESS_BIO("IDA-BIA-018", "Unable to Process the Request due to a Technical Issue"),
 
-	
+	BINDED_KEY_NOT_FOUND("IDA-KBT-001", "Certificate not found for the input x5t#S256: %s and authtype: %s"),
+	BINDED_TOKEN_EXPIRED("IDA-KBT-002", "Signed token issued at (iat) is not in allowed time range."),
+	ERROR_TOKEN_VERIFICATION("IDA-KBT-003", "Error verifying key binded token. Error: %s"),
+
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
 	INVALID_REQ_PRINT_FORMAT("IDA-EKA-002", "Invalid value in print format request"),
@@ -120,6 +122,29 @@ public enum IdAuthenticationErrorConstants {
 	AUTHTYPE_MANDATORY("IDA-MPA-015", "%s-authentiation usage is mandatory as per policy"),
 	INVALID_POLICY_ID("IDA-MPA-018", "Policy ID does not belong to a registered Partner"),
 	PARTNER_POLICY_NOT_ACTIVE("IDA-MPA-019", "Partner policy is not active"),
+	PARTNER_CERTIFICATE_NOT_FOUND("IDA-MPA-020", "Partner (Auth) Certificate not found in DB."),
+	PARTNER_CERTIFICATE_NOT_MATCHED("IDA-MPA-021", "Partner (Auth) Certificate not matching with signature header certificate."),
+	PARTNER_CERTIFICATE_NOT_FOUND_IN_REQ_HEADER("IDA-MPA-022", "Partner (Auth) Certificate not found in Request signature header."),
+	MISP_POLICY_NOT_FOUND("IDA-MPA-023", "MISP Partner Policy not availble."),
+	OIDC_CLIENT_NOT_FOUND("IDA-MPA-024", "OIDC Client not availble."),
+	UNAUTHORISED_KYC_AUTH_PARTNER("IDA-MPA-025", "Partner is unauthorised for KYC-Auth"),
+	UNAUTHORISED_KYC_EXCHANGE_PARTNER("IDA-MPA-026", "Partner is unauthorised for KYC-Exchange"),
+	OIDC_CLIENT_DEACTIVATED("IDA-MPA-027", "OIDC Client is deactivated"),
+	OIDC_CLIENT_NOT_REGISTERED("IDA-MPA-028", "OIDC Client is not registered"),
+	OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED("IDA-MPA-029", "%s Authentication usage not allowed as per client AMR configuration",
+			"Please use other Authentication Types in the request"),
+	KYC_AUTH_NOT_ALLOWED("IDA-MPA-030", "%s Authentication usage not allowed as per policy",
+			"Please try after updating misp policy"),
+	KYC_EXCHANGE_NOT_ALLOWED("IDA-MPA-031", "%s not allowed as per policy",
+			"Please try after updating misp policy"),
+	KEY_BINDING_NOT_ALLOWED("IDA-MPA-032", "%s not allowed as per policy",
+			"Please try after updating misp policy"),
+	UNAUTHORISED_KEY_BINDING_PARTNER("IDA-MPA-033", "Partner is unauthorised for KeyBinding"),
+	KEY_BINDING_MISSING("IDA-MPA-034", "For the input VID/UIN - No Binded key found in DB or binded key is expired.",
+			"Please bind a key for the input VID/UIN before performing KBT Auth."),
+	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBindedToken check failed for the given token.",
+			"Provide Valid KeyBindedToken to perform auth."),
+
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 
@@ -131,6 +156,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occurred"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	DOWNLOAD_ERROR("IDA-RST-009", "Error Downloading the data file/config file."),
 	
 	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed"),
 
@@ -147,11 +173,33 @@ public enum IdAuthenticationErrorConstants {
 	PARTNER_NOT_REGISTRED("PMS_PMP_024","Partner is not registered."),
 	MISP_IS_BLOCKED("PMS_PMP_025","License key of MISP is blocked"),
 	
+	POLICY_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_026","Policy Data is not available in Event data."),
+	PARTNER_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_027","Partner Data is not available in Event data."),
+	OIDC_CLIENT_DATA_NOT_FOUND_EVENT_DATA("PMS_PMP_028","OIDC Client Data is not available in Event data."),
+	OIDC_CLIENT_DATA_ALREADY_EXIST("PMS_PMP_029","OIDC Client ID already exist in DB."),
+	OIDC_CLIENT_DATA_INVALID_PARTNER("PMS_PMP_030","Not Allowed to change the Partner mapping of OIDC Client."),
+
+	
 	// UIN and VID validations
 	UIN_VAL_ILLEGAL_LENGTH("IDA-MLC-026", "UIN length should be - %s."),
 	UIN_VAL_ILLEGAL_CHECKSUM("IDA-MLC-027", "UIN should match checksum."),
 	VID_VAL_ILLEGAL_LENGTH("IDA-MLC-028", "UIN length should be  - %s."),
-	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum.");
+	VID_VAL_ILLEGAL_CHECKSUM("IDA-MLC-029", "UIN should match checksum."),
+
+
+	KYC_TOKEN_NOT_FOUND("IDA-KYE-001", "KYC Token not found in Store."),
+	KYC_TOKEN_EXPIRED("IDA-KYE-002", "KYC Token Expired."),
+	KYC_TOKEN_ALREADY_PROCESSED("IDA-KYE-003", "KYC Token already processed."),
+	KYC_TOKEN_INVALID_OIDC_CLIENT_ID("IDA-KYE-004", "KYC Token does not belong to the input oidc client id."),
+	KYC_TOKEN_INVALID_TRANSACTION_ID("IDA-KYE-005", "KYC Auth and KYC Exchange transaction ids are different."),
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-004", "Partner Policy not found."),
+	
+	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
+	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
+	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
+	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
+	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
+	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),;
 	
 	private final String errorCode;
 	private final String errorMessage;

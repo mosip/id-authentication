@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
 @RunWith(SpringRunner.class)
@@ -79,6 +81,32 @@ public class FilterValidatorTest {
 			// TODO Auto-generated method stub
 			return "";
 		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+       }
+
+	    @Override
+		protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+			throws IdAuthenticationAppException {
+			// Nothing required.
+		}
 	};
 
 	BaseAuthFilter baseAuthFilter = new BaseAuthFilter() {
@@ -116,6 +144,32 @@ public class FilterValidatorTest {
 		protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 			// TODO Auto-generated method stub
 			return "";
+		}
+
+		@Override
+		protected boolean isMispPolicyValidationRequired() {
+			return false;
+		}
+		
+		@Override
+		protected boolean isCertificateValidationRequired() {
+			return false;
+		}
+
+		@Override
+		protected boolean isAMRValidationRequired() {
+			return false;
+		}
+
+		@Override
+        protected void checkMispPolicyAllowed(MispPolicyDTO mispPolicy) throws IdAuthenticationAppException {
+            // Nothing required, Ignoring for other filters.
+       }
+
+	    @Override
+		protected void checkAllowedAMRForKBT(Map<String, Object> requestBody, Set<String> allowedAMRs) 
+			throws IdAuthenticationAppException {
+			// Nothing required.
 		}
 	};
 

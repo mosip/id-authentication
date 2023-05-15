@@ -68,17 +68,8 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		entities.forEach(entity -> authLockRepository.findByTokenAndAuthtypecode(tokenId, entity.getAuthtypecode())
 				.forEach(authLockRepository::delete));
 		authLockRepository.saveAll(entities);
-
-		entitiesForRequestId.stream().forEach(entry -> {
-			String requestId = entry.getKey();
-			if (requestId != null) {
-				AuthtypeLock authtypeLock = entry.getValue();
-				String status = Boolean.valueOf(authtypeLock.getStatuscode()) ? STAUTS_LOCKED : STATUS_UNLOCKED;
-				authTypeStatusEventPublisherManager.publishEvent(status, requestId, authtypeLock.getCrDTimes());
-			} else {
-				mosipLogger.error("requestId is null; Websub Notification for {} topic is not sent.", AUTH_TYPE_STATUS_ACK_TOPIC);
-			}
-		});
+		mosipLogger.debug("List of Auth Type Status- "+ authTypeStatusList);
+		authTypeStatusEventPublisherManager.publishEvent(authTypeStatusList);
 	}
 
 	/**
@@ -92,7 +83,7 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 		AuthtypeLock authtypeLock = new AuthtypeLock();
 		authtypeLock.setToken(token);
 		String authType = authtypeStatus.getAuthType();
-		if (authType.equalsIgnoreCase(Category.BIO.getType())) {
+		if (authType.equalsIgnoreCase(Category.BIO.getType()) || authType.equalsIgnoreCase(Category.OTP.getType())) {
 			authType = authType + "-" + authtypeStatus.getAuthSubType();
 		}
 		authtypeLock.setAuthtypecode(authType);

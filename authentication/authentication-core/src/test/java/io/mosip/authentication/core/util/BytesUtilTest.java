@@ -63,14 +63,4 @@ public class BytesUtilTest {
         byte[] ans = {-22};
         Assert.assertArrayEquals(ans, ReflectionTestUtils.invokeMethod(bytesUtil, "getLastBytes", xorBytes, lastBytesNum));
     }
-
-    /**
-     * This class tests the main method
-     */
-    @Test
-    public void mainTest(){
-        String[]args = new String[10];
-        ReflectionTestUtils.invokeMethod(bytesUtil, "main", (Object) args);
-    }
-
 }

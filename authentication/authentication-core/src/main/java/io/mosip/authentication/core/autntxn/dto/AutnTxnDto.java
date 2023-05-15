@@ -16,4 +16,7 @@ public class AutnTxnDto {
 	String entityName;
 	String requestSignature;
 	String responseSignature;
+	String tokenId;
+	String entityId;
+	String individualId;
 }

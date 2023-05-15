@@ -21,6 +21,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.InternalRestHelperConfig;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.impl.AuthContextClazzRefProvider;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
@@ -29,6 +30,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPServiceImpl;
+import io.mosip.authentication.common.service.impl.KeyBindedTokenAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
 import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
@@ -48,6 +50,7 @@ import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
+import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
@@ -103,7 +106,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication(exclude = { HibernateDaoConfig.class })
-@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyManager.class,
+@Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
+		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
 		MasterDataCache.class, MasterDataCacheUpdateServiceImpl.class, MasterDataUpdateEventInitializer.class, MatchInputBuilder.class,
 		NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class,
@@ -129,7 +133,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		io.mosip.kernel.keymanagerservice.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.partnercertservice.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
-		EnvUtil.class })
+		EnvUtil.class, KeyBindedTokenMatcherUtil.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {

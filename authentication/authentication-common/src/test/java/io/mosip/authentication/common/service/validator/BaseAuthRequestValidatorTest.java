@@ -63,7 +63,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@Import(IDAMappingConfig.class)
+@Import({ IDAMappingConfig.class, EnvUtil.class })
 @ConfigurationProperties("mosip.id")
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class BaseAuthRequestValidatorTest {

@@ -49,7 +49,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
@@ -842,7 +842,7 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void containsPhotoKYCAttributeTest() {
-		KycAuthRequestDTO KycAuthRequestDTO = new  KycAuthRequestDTO();
+		EkycAuthRequestDTO KycAuthRequestDTO = new  EkycAuthRequestDTO();
 		List<String> allowedKycAttributes = new ArrayList<String>();
 		allowedKycAttributes.add("photo");
 		allowedKycAttributes.add("fullName");

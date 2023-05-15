@@ -21,10 +21,18 @@ public enum AuditModules {
 	
 	/** The FACE_AUTH. */
 	FACE_AUTH("IDA-FAA", "Face Authentication Request", "Face Authenticator"),
+
+	TOKEN_AUTH("IDA-TOA","Token Authentication requested", "Token Authenticator"),
 	
 	/** The e KY C AUTH. */
 	EKYC_AUTH("IDA-EKA", "E-KYC Authentication Request", "eKYC Authenticator"),
+
+	KYC_AUTH("IDA-KAT", "KYC Authentication Request", "KYC Authenticator"),
+
+	KYC_EXCHANGE("IDA-KEX", "KYC Exchange Request", "KYC Exchange"),
 	
+	IDENTITY_KEY_BINDING("IDA-IKB", "Identity Key Binding Request", "Key Binding"),
+
 	/** The otp request. */
 	OTP_REQUEST("IDA-OTR","OTP Request", "OTP Requestor"),
 	
@@ -47,7 +55,6 @@ public enum AuditModules {
 	
 	CREDENTIAL_STORAGE("IDA-MOD-110","Credential Storage websub-callback", ""),//not applicable for release v1
 
-	
 	;
 
 	/** The module id. */
