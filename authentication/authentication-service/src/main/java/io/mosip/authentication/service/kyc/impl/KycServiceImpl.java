@@ -487,6 +487,8 @@ public class KycServiceImpl implements KycService {
 				return;
 			}
 			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "faceEntityInfoMap",
+				faceEntityInfoMap);
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				String face = convertJP2ToJpeg(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()));
 				if (Objects.nonNull(face))
@@ -639,6 +641,8 @@ public class KycServiceImpl implements KycService {
 
 	private String convertJP2ToJpeg(String jp2Image) {
 		try {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "jp2Image",
+								jp2Image);
 			ConvertRequestDto convertRequestDto = new ConvertRequestDto();
 			convertRequestDto.setVersion(IdAuthCommonConstants.FACE_ISO_NUMBER);
 			convertRequestDto.setInputBytes(CryptoUtil.decodeBase64(jp2Image));
