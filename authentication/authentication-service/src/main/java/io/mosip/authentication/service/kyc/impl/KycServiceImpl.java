@@ -487,12 +487,17 @@ public class KycServiceImpl implements KycService {
 				return;
 			}
 			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "faceEntityInfoMap",
-				faceEntityInfoMap);
 			if (Objects.nonNull(faceEntityInfoMap)) {
-				String face = convertJP2ToJpeg(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value()));
-				if (Objects.nonNull(face))
-					respMap.put(consentedAttribute, consentedPictureAttributePrefix + face);
+				try {
+					String face = convertJP2ToJpeg(getFaceBDB(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())));
+					if (Objects.nonNull(face))
+						respMap.put(consentedAttribute, consentedPictureAttributePrefix + face);
+				} catch (Exception e) {
+					// Not throwing any exception because others claims will be returned without photo.
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "",
+							"Error Adding photo to the claims. " + e.getMessage(), e);
+				}
+				
 			}
 			return;
 		}
@@ -641,8 +646,6 @@ public class KycServiceImpl implements KycService {
 
 	private String convertJP2ToJpeg(String jp2Image) {
 		try {
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "jp2Image",
-						jp2Image);
 			ConvertRequestDto convertRequestDto = new ConvertRequestDto();
 			convertRequestDto.setVersion(IdAuthCommonConstants.FACE_ISO_NUMBER);
 			convertRequestDto.setInputBytes(CryptoUtil.decodeBase64(jp2Image));
