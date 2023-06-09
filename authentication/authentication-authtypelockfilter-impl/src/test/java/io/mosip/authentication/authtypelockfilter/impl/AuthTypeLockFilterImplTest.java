@@ -57,7 +57,10 @@ public class AuthTypeLockFilterImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setLocked(false);
-		ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status);
+		status.setAuthSubType("");
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
+		ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,authtypeStatusList);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -72,9 +75,10 @@ public class AuthTypeLockFilterImplTest {
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.DEMO.getType());
 		status.setLocked(true);
-
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
 		try {
-			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status);
+			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,authtypeStatusList);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -97,14 +101,15 @@ public class AuthTypeLockFilterImplTest {
 		status.setAuthType(MatchType.Category.BIO.getType());
 		status.setAuthSubType(BioAuthType.FACE_IMG.getType());
 		status.setLocked(true);
-
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
 		Map<String, String> value = new HashMap<>();
 		value.put("Face", "--face-image--");
 		Mockito.when(idInfoFetcher.getIdentityRequestInfo(BioMatchType.FACE, authRequestDTO.getRequest(), null))
 				.thenReturn(value);
 
 		try {
-			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status);
+			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,authtypeStatusList);
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
@@ -115,16 +120,22 @@ public class AuthTypeLockFilterImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setOtp("123");
+		Map<String, List<IdentityInfoDTO>> identityData = new HashMap<>();
 		authRequestDTO.setRequest(request);
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.OTP.getType());
+		status.setAuthSubType("phone");
 		status.setLocked(true);
-
-		try {
-			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status);
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("TOKEN", "1122");
+		IdAuthenticationBusinessException exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+						MatchType.Category.OTP.getType()));
+		Mockito.doThrow(exception).when(authTypeStatusService).fetchAuthtypeStatus("1122");
+		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+			
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -136,12 +147,16 @@ public class AuthTypeLockFilterImplTest {
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.SPIN.getType());
 		status.setLocked(true);
-
-		try {
-			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status);
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
+		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
+		authtypeStatusList.add(status);
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("TOKEN", "1122");
+		Map<String, List<IdentityInfoDTO>> identityData = new HashMap<>();
+		IdAuthenticationBusinessException exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+						MatchType.Category.SPIN.getType()));
+		Mockito.doThrow(exception).when(authTypeStatusService).fetchAuthtypeStatus("1122");
+		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
 	}
 
 	@Test(expected = IdAuthenticationFilterException.class)
@@ -155,6 +170,7 @@ public class AuthTypeLockFilterImplTest {
 		properties.put("TOKEN", "1122");
 		AuthtypeStatus status = new AuthtypeStatus();
 		status.setAuthType(MatchType.Category.SPIN.getType());
+		status.setAuthSubType("phone");
 		status.setLocked(true);
 		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
 		authtypeStatusList.add(status);
