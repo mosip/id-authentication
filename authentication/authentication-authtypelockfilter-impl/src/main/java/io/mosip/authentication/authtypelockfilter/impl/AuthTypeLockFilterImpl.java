@@ -61,7 +61,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 					.fetchAuthtypeStatus(token);
 			if (Objects.nonNull(authtypeStatusList) && !authtypeStatusList.isEmpty()) {
 				for (AuthtypeStatus authTypeStatus : authtypeStatusList) {
-					validateAuthTypeStatus(authRequestDTO, authTypeStatus);
+					validateAuthTypeStatus(authRequestDTO, authTypeStatus,authtypeStatusList);
 				}
 			}
 		} catch (IdAuthenticationFilterException e) {
@@ -71,7 +71,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 		}
 	}
 
-	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus)
+	private void validateAuthTypeStatus(AuthRequestDTO authRequestDTO, AuthtypeStatus authTypeStatus,List<AuthtypeStatus> authtypeStatusList)
 			throws IdAuthenticationFilterException {
 		if (authTypeStatus.getLocked()) {
 			if (AuthTypeUtil.isDemo(authRequestDTO)
@@ -98,13 +98,32 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 				}
 			}
 
-			else if (AuthTypeUtil.isOtp(authRequestDTO)
-					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())) {
-				throw new IdAuthenticationFilterException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								MatchType.Category.OTP.getType()));
-			}
+			else if (AuthTypeUtil.isOtp(authRequestDTO))
+				if (authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())
+						&& (authTypeStatus.getAuthSubType().isEmpty() || authTypeStatus.getAuthSubType() == null)) {
+					throw new IdAuthenticationFilterException(
+							IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+									MatchType.Category.OTP.getType()));
+				} else {
+					if ((authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.PHONE_NUMBER)
+							|| authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.EMAIL))
+									&& authTypeStatus.getLocked().equals(true)) {
+						boolean otherSubOtpTypeLocked = authtypeStatusList.stream()
+								.anyMatch(authTypeStatus1 -> authTypeStatus1.getAuthType()
+										.equalsIgnoreCase(MatchType.Category.OTP.getType())
+										&& !authTypeStatus1.getAuthSubType()
+												.equalsIgnoreCase(authTypeStatus.getAuthSubType())
+										&& authTypeStatus.getLocked());
+						if (otherSubOtpTypeLocked) {
+							throw new IdAuthenticationFilterException(
+									IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+									String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+											MatchType.Category.OTP.getType()));
+						}
+
+					}
+				}
 
 			else if (AuthTypeUtil.isPin(authRequestDTO)
 					&& authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.SPIN.getType())) {
