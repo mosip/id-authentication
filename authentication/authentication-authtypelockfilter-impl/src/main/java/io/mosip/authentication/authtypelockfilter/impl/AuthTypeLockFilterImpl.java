@@ -3,6 +3,7 @@ package io.mosip.authentication.authtypelockfilter.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -108,14 +109,15 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 				} else {
 					if ((authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.PHONE_NUMBER)
 							|| authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.EMAIL))
-									&& authTypeStatus.getLocked().equals(true)) {
-						boolean otherSubOtpTypeLocked = authtypeStatusList.stream()
-								.anyMatch(authTypeStatus1 -> authTypeStatus1.getAuthType()
+							&& authTypeStatus.getLocked().equals(true)) {
+						Optional<AuthtypeStatus> otherSubOtpTypeLocked = authtypeStatusList.stream()
+								.filter(authTypeStatus1 -> authTypeStatus1.getAuthType()
 										.equalsIgnoreCase(MatchType.Category.OTP.getType())
 										&& !authTypeStatus1.getAuthSubType()
 												.equalsIgnoreCase(authTypeStatus.getAuthSubType())
-										&& authTypeStatus.getLocked());
-						if (otherSubOtpTypeLocked) {
+										&& authTypeStatus1.getLocked())
+								.findAny();
+						if (otherSubOtpTypeLocked.isPresent()) {
 							throw new IdAuthenticationFilterException(
 									IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
 									String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
