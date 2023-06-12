@@ -139,6 +139,7 @@ public class AuthTypeLockFilterImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
