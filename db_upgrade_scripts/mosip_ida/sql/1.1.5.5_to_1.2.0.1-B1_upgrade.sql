@@ -1,4 +1,10 @@
-\c mosip_ida sysadmin
+ALTER DATABASE mosip_ida OWNER TO postgres;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida TO postgres;
+
+REVOKE ALL PRIVILEGES ON DATABASE your_database_name FROM idauser, sysadmin;
+
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA ida TO idauser;
 
 DROP TABLE IF EXISTS ida.api_key_data CASCADE;
 DROP TABLE IF EXISTS ida.partner_data CASCADE;
