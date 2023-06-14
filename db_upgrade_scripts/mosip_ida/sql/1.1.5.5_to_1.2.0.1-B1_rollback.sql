@@ -1,3 +1,5 @@
+\c mosip_ida
+
 ALTER TABLE ida.uin_auth_lock DROP COLUMN unlock_expiry_datetime;
 
 -- -------------------------------------------------------------------------------------------------

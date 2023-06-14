@@ -1,3 +1,5 @@
+\c mosip_ida
+
 ALTER TABLE ida.kyc_token_store DROP COLUMN request_trn_id;
 
 DROP TABLE IF EXISTS ida.ident_binding_cert_store CASCADE;
