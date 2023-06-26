@@ -101,18 +101,21 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 
 			else if (AuthTypeUtil.isOtp(authRequestDTO))
 				if (authTypeStatus.getAuthType().equalsIgnoreCase(MatchType.Category.OTP.getType())
-						&& (authTypeStatus.getAuthSubType().isEmpty() || authTypeStatus.getAuthSubType() == null)) {
+						&& (authTypeStatus.getAuthSubType() == null || authTypeStatus.getAuthSubType().isEmpty())) {
 					throw new IdAuthenticationFilterException(
 							IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
 									MatchType.Category.OTP.getType()));
 				} else {
-					if ((authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.PHONE_NUMBER)
-							|| authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.EMAIL))
+					if ((authTypeStatus.getAuthSubType() == null || authTypeStatus.getAuthSubType().isEmpty())
+							&& (authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.PHONE_NUMBER)
+									|| authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.EMAIL))
 							&& authTypeStatus.getLocked().equals(true)) {
 						Optional<AuthtypeStatus> otherSubOtpTypeLocked = authtypeStatusList.stream()
-								.filter(authTypeStatus1 -> authTypeStatus1.getAuthType()
-										.equalsIgnoreCase(MatchType.Category.OTP.getType())
+								.filter(authTypeStatus1 -> authTypeStatus1.getAuthType() != null
+										&& authTypeStatus1.getAuthType()
+												.equalsIgnoreCase(MatchType.Category.OTP.getType())
+										&& authTypeStatus1.getAuthSubType() != null
 										&& !authTypeStatus1.getAuthSubType()
 												.equalsIgnoreCase(authTypeStatus.getAuthSubType())
 										&& authTypeStatus1.getLocked())
