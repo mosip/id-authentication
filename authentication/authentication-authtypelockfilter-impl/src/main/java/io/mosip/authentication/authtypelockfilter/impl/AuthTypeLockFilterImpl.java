@@ -107,7 +107,7 @@ public class AuthTypeLockFilterImpl implements IMosipAuthFilter {
 							String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
 									MatchType.Category.OTP.getType()));
 				} else {
-					if ((authTypeStatus.getAuthSubType() == null || authTypeStatus.getAuthSubType().isEmpty())
+					if (authTypeStatus.getAuthSubType() != null && !authTypeStatus.getAuthSubType().isEmpty()
 							&& (authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.PHONE_NUMBER)
 									|| authTypeStatus.getAuthSubType().equalsIgnoreCase(IdAuthCommonConstants.EMAIL))
 							&& authTypeStatus.getLocked().equals(true)) {
