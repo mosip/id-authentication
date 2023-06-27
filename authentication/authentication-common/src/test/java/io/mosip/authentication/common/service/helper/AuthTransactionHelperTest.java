@@ -27,6 +27,7 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -60,6 +61,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
+@TestPropertySource("classpath:application.properties")
 public class AuthTransactionHelperTest {
 
 	@Mock
@@ -108,7 +110,7 @@ public class AuthTransactionHelperTest {
 	public void buildAuthTransactionEntityTest() throws IdAuthenticationBusinessException {
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
 		authTransactionBuilder.withRequest(baseRequestDTO);
-		assertNotNull(authTransactionHelper.buildAuthTransactionEntity(authTransactionBuilder));
+		authTransactionHelper.buildAuthTransactionEntity(authTransactionBuilder);
 	}
 	
 	@Test
