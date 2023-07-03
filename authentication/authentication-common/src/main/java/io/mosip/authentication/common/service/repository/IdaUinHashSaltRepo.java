@@ -23,7 +23,7 @@ public interface IdaUinHashSaltRepo extends JpaRepository<IdaUinHashSalt, Intege
 	 * @param id the id
 	 * @return String salt
 	 */
-	@Cacheable(cacheNames = UIN_HASH_SALT)
+	@Cacheable(cacheNames = UIN_HASH_SALT,key="id", condition="#id != null")
 	@Query("select salt from IdaUinHashSalt where id = :id")
 	public String retrieveSaltById(@Param("id") Integer id);
 }
