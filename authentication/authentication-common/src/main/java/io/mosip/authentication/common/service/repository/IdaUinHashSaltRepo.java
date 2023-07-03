@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.repository;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UIN_HASH_SALT;
 
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +24,7 @@ public interface IdaUinHashSaltRepo extends JpaRepository<IdaUinHashSalt, Intege
 	 * @return String salt
 	 */
 
-	@Cacheable(value = UIN_HASH_SALT, key = "id", unless = "#result != null")
+	@Cacheable(value = UIN_HASH_SALT, key = "#id", unless = "#result != null")
 	@Query("select salt from IdaUinHashSalt where id = :id")
 	public String retrieveSaltById(@Param("id") Integer id);
 }
