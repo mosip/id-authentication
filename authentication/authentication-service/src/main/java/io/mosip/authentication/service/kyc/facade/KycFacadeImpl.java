@@ -387,7 +387,7 @@ public class KycFacadeImpl implements KycFacade {
 					"Processing Kyc Exchange request.");
 			
 			String kycToken = kycExchangeRequestDTO.getKycToken();
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "isKycTokenExist",
 						"Check Token Exists or not, associated with oidc client and active status.");
 						
 			Optional<KycTokenData> kycTokenDataOpt = kycTokenDataRepo.findByKycToken(kycToken);
@@ -444,8 +444,7 @@ public class KycFacadeImpl implements KycFacade {
 			}
 
 
-			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, 
-														kycExchangeRequestDTO);
+			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());

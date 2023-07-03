@@ -49,8 +49,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.JWTCipherResponseDto;
-import io.mosip.kernel.cryptomanager.dto.JWTEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -188,7 +186,7 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
-
+	
 	/**
 	 * Gets the user.
 	 *
@@ -674,16 +672,5 @@ public class IdAuthSecurityManager {
 		String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
 
 		return new SimpleEntry<>(certThumbprint, certificateData);
-	}
-
-	@WithRetry
-	public String jwtEncrypt(String dataToEncrypt, String certificateData) {
-		JWTEncryptRequestDto encryptRequestDto = new JWTEncryptRequestDto();
-		encryptRequestDto.setData(CryptoUtil.encodeBase64Url(dataToEncrypt.getBytes()));
-		encryptRequestDto.setX509Certificate(certificateData);
-		encryptRequestDto.setEnableDefCompression(true);
-		encryptRequestDto.setIncludeCertHash(true);
-		JWTCipherResponseDto cipherResponseDto = cryptomanagerService.jwtEncrypt(encryptRequestDto);
-		return cipherResponseDto.getData();
 	}
 }

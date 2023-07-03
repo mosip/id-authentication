@@ -41,7 +41,6 @@ import io.mosip.authentication.core.constant.KycTokenStatusType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
@@ -92,9 +91,6 @@ public class KycServiceImpl implements KycService {
 	
 	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
 	private boolean sendFaceAsCbeffXml;
-
-	@Value("${ida.idp.jwe.response.type.constant:JWE}")
-	private String jweResponseType;
 
 	/** The env. */
 	@Autowired
@@ -449,8 +445,7 @@ public class KycServiceImpl implements KycService {
 
 	@Override
 	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> consentedLocales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) 
-					throws IdAuthenticationBusinessException {
+				List<String> consentedAttributes, List<String> consentedLocales, String idVid) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
 					"Building claims response for PSU token: " + subject);
@@ -475,13 +470,7 @@ public class KycServiceImpl implements KycService {
 		}
 
 		try {
-			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
-			String respType = kycExchangeRequestDTO.getRespType();
-			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
-				String partnerCertData = (String) kycExchangeRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
-				return securityManager.jwtEncrypt(signedData, partnerCertData);
-			}
-			return signedData;
+			return securityManager.signWithPayload(mapper.writeValueAsString(respMap));
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
