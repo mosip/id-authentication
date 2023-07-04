@@ -8,6 +8,8 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+\c mosip_ida
+
 ALTER TABLE ida.kyc_token_store ADD request_trn_id character varying(64);
 
 CREATE TABLE ida.ident_binding_cert_store (
