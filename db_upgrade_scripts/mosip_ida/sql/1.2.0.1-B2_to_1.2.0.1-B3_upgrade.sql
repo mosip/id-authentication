@@ -1,3 +1,13 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name	: mosip_ida
+-- Release Version 	: 1.2
+-- Purpose    		: Database Alter scripts for the release for ID Authentication DB.       
+-- Create By   		: Ram Bhatt
+-- Created Date		: Apr-2021
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- -------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 \c mosip_ida
 
 ALTER TABLE ida.kyc_token_store ADD request_trn_id character varying(64);

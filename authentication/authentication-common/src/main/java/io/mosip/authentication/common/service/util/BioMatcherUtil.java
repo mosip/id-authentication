@@ -27,6 +27,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
+import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.biometrics.constant.BiometricFunction;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.constant.ProcessedLevelType;
@@ -35,13 +36,14 @@ import io.mosip.kernel.biometrics.entities.BDBInfo;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.entities.BIR.BIRBuilder;
 import io.mosip.kernel.biometrics.entities.RegistryIDType;
+import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -67,6 +69,9 @@ public class BioMatcherUtil {
 	
 	@Value("${" + IDA_BDB_PROCESSED_LEVEL + ":" + BDB_DEAULT_PROCESSED_LEVEL + "}")
 	private String bdbProcessedLevel;
+	
+	@Autowired
+	private CbeffUtil cbeffUtil;
 
 	/**
 	 * Match function.
@@ -177,18 +182,18 @@ public class BioMatcherUtil {
 		int index = 0;
 		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
 			reqInfoObj = new BIR[reqInfo.size()];
-			entityInfoObj = new BIR[reqInfo.size()];
+			entityInfoObj = new BIR[entityInfo.size()];
 	
 			for (Map.Entry<String, String> e : reqInfo.entrySet()) {
 				String key = e.getKey();
 				
 				reqInfoObj[index] = getBir(e.getValue(), getType(key, idMappings));
-				entityInfoObj[index] = getBir(entityInfo.get(key), getType(key, idMappings));
+				entityInfoObj[index] = getBirFromCbeff(entityInfo.get(key));
 				index++;
 			}
 		} else {
 			List<IdAuthenticationBusinessException> reqMapexceptions = new ArrayList<>();
-			Function<? super Entry<String, String>, ? extends BIR> birMapper = e -> {
+			Function<? super Entry<String, String>, ? extends BIR> probeBirMapper = e -> {
 				try {
 					return getBir(e.getValue(), getType(e.getKey(), idMappings));
 				} catch (IdAuthenticationBusinessException e1) {
@@ -197,17 +202,26 @@ public class BioMatcherUtil {
 				}
 			};
 			reqInfoObj = reqInfo.entrySet().stream()
-							.map(birMapper)
+							.map(probeBirMapper)
 							.toArray(s -> new BIR[s]);
 			if(!reqMapexceptions.isEmpty()) {
 				throw reqMapexceptions.get(0);
 			}
 			
 			List<IdAuthenticationBusinessException> entityMapexceptions = new ArrayList<>();
+			
+			Function<? super Entry<String, String>, ? extends BIR> galleryBirMapper = e -> {
+				try {
+					return getBirFromCbeff(e.getValue());
+				} catch (IdAuthenticationBusinessException e1) {
+					entityMapexceptions.add(e1);
+					return null;
+				}
+			};
 
 			entityInfoObj = entityInfo.entrySet()
 								.stream()
-								.map(birMapper)
+								.map(galleryBirMapper)
 								.toArray(s -> new BIR[s]);
 			
 			if(!entityMapexceptions.isEmpty()) {
@@ -216,6 +230,16 @@ public class BioMatcherUtil {
 		}
 	
 		return new BIR[][] { reqInfoObj, entityInfoObj };
+	}
+	
+	private BIR getBirFromCbeff(String cbeff) throws IdAuthenticationBusinessException {
+		try {
+			List<BIR> birList = cbeffUtil.getBIRDataFromXML(cbeff.getBytes());
+			return birList.get(0);
+		} catch (Exception e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "getBirFromCbeff", "Cabit convert cbeff to BIR, " + ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}		
 	}
 
 	/**

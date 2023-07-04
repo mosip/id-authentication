@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.kyc.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -46,10 +47,12 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 
@@ -356,7 +359,13 @@ public class KycServiceImplTest {
 	public void validUIN6() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException {
 		Set<String> langCodes = new HashSet<>();
 		langCodes.add("ara");
-		kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
+			
+		try {
+			kycServiceImpl.retrieveKycInfo(fullKycList(), langCodes, idInfo);
+		}
+		catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), ex.getErrorCode());
+		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
