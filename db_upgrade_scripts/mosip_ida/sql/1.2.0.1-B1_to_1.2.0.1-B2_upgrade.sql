@@ -23,6 +23,10 @@ CREATE TABLE ida.oidc_client_data (
 
 );
 
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
+   ON ida.oidc_client_data
+   TO idauser;
+
 -- DROP TABLE IF EXISTS ida.kyc_token_store CASCADE;
 CREATE TABLE ida.kyc_token_store(
     id character varying(36) NOT NULL,
@@ -42,3 +46,7 @@ CREATE TABLE ida.kyc_token_store(
     CONSTRAINT pk_key_id PRIMARY KEY (id),
     CONSTRAINT kyc_token_const UNIQUE (kyc_token)
 );
+
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
+   ON ida.kyc_token_store
+   TO idauser;

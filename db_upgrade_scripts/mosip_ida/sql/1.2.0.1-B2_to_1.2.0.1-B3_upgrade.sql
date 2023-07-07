@@ -30,6 +30,10 @@ CREATE TABLE ida.ident_binding_cert_store (
 	del_dtimes timestamp,
 	CONSTRAINT uni_public_key_hash_const UNIQUE (public_key_hash)
 );
+
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
+   ON ida.ident_binding_cert_store
+   TO idauser;
 -- ddl-end --
 
 INSERT INTO ida.key_policy_def (app_id, key_validity_duration, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes, pre_expire_days, access_allowed) 
