@@ -1,5 +1,9 @@
 \c mosip_ida
 
+REASSIGN OWNED BY postgres TO sysadmin;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida TO sysadmin;
+
 ALTER TABLE ida.uin_auth_lock DROP COLUMN unlock_expiry_datetime;
 
 -- -------------------------------------------------------------------------------------------------
