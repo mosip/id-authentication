@@ -1,1 +1,3 @@
-\echo 'Upgrade Queries not required for transition from $CURRENT_VERSION to $UPGRADE_VERSION'
+\c mosip_ida
+
+DROP TABLE IF EXISTS ida.key_policy_def_h;
