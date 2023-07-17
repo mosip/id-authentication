@@ -23,7 +23,7 @@ CREATE TABLE ida.oidc_client_data (
 
 );
 
-GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
+GRANT SELECT, INSERT, REFERENCES, UPDATE, DELETE
    ON ida.oidc_client_data
    TO idauser;
 
@@ -47,6 +47,6 @@ CREATE TABLE ida.kyc_token_store(
     CONSTRAINT kyc_token_const UNIQUE (kyc_token)
 );
 
-GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
+GRANT SELECT, INSERT, REFERENCES, UPDATE, DELETE
    ON ida.kyc_token_store
    TO idauser;
