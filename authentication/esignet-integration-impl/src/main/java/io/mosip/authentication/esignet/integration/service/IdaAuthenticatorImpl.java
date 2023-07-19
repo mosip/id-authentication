@@ -165,7 +165,11 @@ public class IdaAuthenticatorImpl implements Authenticator {
             idaKycExchangeRequest.setRequestTime(HelperService.getUTCDateTime());
             idaKycExchangeRequest.setTransactionID(kycExchangeDto.getTransactionId());
             idaKycExchangeRequest.setKycToken(kycExchangeDto.getKycToken());
-            idaKycExchangeRequest.setConsentObtained(kycExchangeDto.getAcceptedClaims());
+	    if (!CollectionUtils.isEmpty(kycExchangeDto.getAcceptedClaims())) {
+                idaKycExchangeRequest.setConsentObtained(kycExchangeDto.getAcceptedClaims());
+            } else {
+                idaKycExchangeRequest.setConsentObtained(List.of("sub"));
+            }
             idaKycExchangeRequest.setLocales(Arrays.asList(kycExchangeDto.getClaimsLocales()));
             idaKycExchangeRequest.setRespType(kycExchangeDto.getUserInfoResponseType()); //may be either JWT or JWE
             idaKycExchangeRequest.setIndividualId(kycExchangeDto.getIndividualId());
