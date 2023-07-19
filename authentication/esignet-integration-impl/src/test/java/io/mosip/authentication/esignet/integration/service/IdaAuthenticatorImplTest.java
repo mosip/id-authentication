@@ -248,6 +248,41 @@ public class IdaAuthenticatorImplTest {
 		Assert.assertEquals(idaKycExchangeResponse.getEncryptedKyc(), kycExchangeResult.getEncryptedKyc());
 	}
 
+
+	@Test
+	public void doKycExchange_withValidDetailsEmptyAcceptedClaims_thenPass() throws Exception {
+		KycExchangeDto kycExchangeDto = new KycExchangeDto();
+		kycExchangeDto.setIndividualId("IND1234");
+		kycExchangeDto.setKycToken("KYCT123");
+		kycExchangeDto.setTransactionId("TRAN123");
+		List<String> acceptedClaims = List.of();
+		kycExchangeDto.setAcceptedClaims(acceptedClaims);
+		String[] claimsLacales = new String[] { "claims", "locales" };
+		kycExchangeDto.setClaimsLocales(claimsLacales);
+
+		Mockito.when(mapper.writeValueAsString(Mockito.any())).thenReturn("value");
+
+		IdaKycExchangeResponse idaKycExchangeResponse = new IdaKycExchangeResponse();
+		idaKycExchangeResponse.setEncryptedKyc("ENCRKYC123");
+
+		IdaResponseWrapper<IdaKycExchangeResponse> idaResponseWrapper = new IdaResponseWrapper<>();
+		idaResponseWrapper.setResponse(idaKycExchangeResponse);
+		idaResponseWrapper.setTransactionID("TRAN123");
+		idaResponseWrapper.setVersion("VER1");
+
+		ResponseEntity<IdaResponseWrapper<IdaKycExchangeResponse>> responseEntity = new ResponseEntity<IdaResponseWrapper<IdaKycExchangeResponse>>(
+				idaResponseWrapper, HttpStatus.OK);
+
+		Mockito.when(restTemplate.exchange(Mockito.<RequestEntity<Void>>any(),
+						Mockito.<ParameterizedTypeReference<IdaResponseWrapper<IdaKycExchangeResponse>>>any()))
+				.thenReturn(responseEntity);
+
+		KycExchangeResult kycExchangeResult = idaAuthenticatorImpl.doKycExchange("relyingPartyId", "clientId",
+				kycExchangeDto);
+
+		Assert.assertEquals(idaKycExchangeResponse.getEncryptedKyc(), kycExchangeResult.getEncryptedKyc());
+	}
+
 	@Test
 	public void doKycExchange_withInvalidDetails_thenFail() throws Exception {
 		KycExchangeDto kycExchangeDto = new KycExchangeDto();
