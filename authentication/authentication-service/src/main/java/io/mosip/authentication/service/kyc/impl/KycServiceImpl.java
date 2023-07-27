@@ -78,6 +78,9 @@ public class KycServiceImpl implements KycService {
 	@Value("${ida.idp.consented.address.attribute.name:address}")
 	private String consentedAddressAttributeName;
 
+	@Value("${ida.idp.consented.name.attribute.name:name}")
+	private String consentedNameAttributeName;
+
 	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
 	private String consentedIndividualAttributeName;
 
@@ -545,6 +548,9 @@ public class KycServiceImpl implements KycService {
 				}
 			}
 		} else {
+			if (consentedAttribute.equals(consentedNameAttributeName)) {
+				addNameClaim(mappedConsentedLocales, idInfo, respMap, consentedAttribute, idSchemaAttributes);
+			}
 			if (consentedAttribute.equals(consentedAddressAttributeName)) {
 				if (mappedConsentedLocales.size() > 1) {
 					for (String consentedLocale: mappedConsentedLocales.keySet()) {
@@ -600,12 +606,14 @@ public class KycServiceImpl implements KycService {
 						}
 					}
 				} else {
-					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1 && langCodeFound) {
 						identityInfoValue.append(idInfoList.get(0).getValue());
 					}
 				}
 			}
 		}
+		if (identityInfoValue.toString().trim().length() == 0) 
+			return;
 		//String identityInfoValueStr = identityInfoValue.toString();
 		//String trimmedValue = identityInfoValueStr.substring(0, identityInfoValueStr.lastIndexOf(addressValueSeparator));
 		addressMap.put(IdAuthCommonConstants.ADDRESS_FORMATTED + localeAppendValue, identityInfoValue.toString());
@@ -640,7 +648,7 @@ public class KycServiceImpl implements KycService {
 						}
 					}
 				} else {
-					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1) {
+					if (Objects.nonNull(idInfoList) && idInfoList.size() == 1 && langCodeFound) {
 						identityInfoValue.append(idInfoList.get(0).getValue());
 					}
 				}
@@ -649,10 +657,74 @@ public class KycServiceImpl implements KycService {
 			if (identityInfoValue.toString().trim().length() > 0)
 				addressMap.put(addressAttribute + localeAppendValue, identityInfoValue.toString());
 		}
+		if (addressMap.size() == 0) 
+			return;
+
 		if (langCodeFound && addLocale)
 			respMap.put(consentedAddressAttributeName + localeAppendValue, addressMap);
 		else 
 			respMap.put(consentedAddressAttributeName, addressMap);
+	}
+
+	private void addNameClaim(Map<String, String> mappedConsentedLocales, Map<String, List<IdentityInfoDTO>> idInfo, 
+				Map<String, Object> respMap, String consentedAttribute, List<String> idSchemaAttributes) throws IdAuthenticationBusinessException{
+		if(mappedConsentedLocales.size() > 1) {
+			for (String consentedLocale: mappedConsentedLocales.keySet()) {
+				String consentedLocaleValue = mappedConsentedLocales.get(consentedLocale);
+				StringBuilder nameBuffer = new StringBuilder();
+				for (String idSchemaAttribute : idSchemaAttributes) {
+					List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+
+					if (Objects.isNull(idInfoList)) {
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+							"Data not available in Identity Info for the claim. So not adding to response claims. Claim Name: " + idSchemaAttribute);
+						continue;
+					}
+					if (nameBuffer.length() > 0) {
+						nameBuffer.append(" ");
+					}
+					Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+					if (!mappedLangCodes.keySet().contains(consentedLocaleValue)) {
+						break;
+					}
+					for (IdentityInfoDTO identityInfo : idInfoList) {
+						String langCode = mappedLangCodes.get(consentedLocaleValue);
+						if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+							nameBuffer.append(identityInfo.getValue());
+						}
+					}
+				}
+				if (nameBuffer.toString().trim().length() > 0)
+					respMap.put(consentedAttribute + IdAuthCommonConstants.CLAIMS_LANG_SEPERATOR + consentedLocaleValue, nameBuffer.toString());
+			}
+		} else {
+			StringBuilder nameBuffer = new StringBuilder();
+			for (String idSchemaAttribute : idSchemaAttributes) {
+				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
+
+				if (Objects.isNull(idInfoList)) {
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addEntityForLangCodes",
+						"Data not available in Identity Info for the claim. So not adding to response claims. Claim Name: " + idSchemaAttribute);
+					continue;
+				}
+				if (nameBuffer.length() > 0) {
+					nameBuffer.append(" ");
+				}
+				Map<String, String> mappedLangCodes = langCodeMapping(idInfoList);
+				List<String> availableLangCodes = getAvailableLangCodes(mappedConsentedLocales, mappedLangCodes);
+				if (availableLangCodes.size() == 0) {
+					continue;
+				} 
+				for (IdentityInfoDTO identityInfo : idInfoList) {
+					String langCode = mappedLangCodes.get(availableLangCodes.get(0));
+					if (identityInfo.getLanguage().equalsIgnoreCase(langCode)) {
+						nameBuffer.append(identityInfo.getValue());
+					}
+				}
+			}
+			if (nameBuffer.toString().trim().length() > 0)
+				respMap.put(consentedAttribute, nameBuffer.toString());
+		}
 	}
 
 	private String convertJP2ToJpeg(String jp2Image) {
