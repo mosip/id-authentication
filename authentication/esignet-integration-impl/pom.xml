@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
-			<version>1.2.0.1-SNAPSHOT</version>
+			<version>${kernel-keymanager-service.version}</version>
 			<scope>provided</scope>
 			<classifier>lib</classifier>
 			<exclusions>
