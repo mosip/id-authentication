@@ -226,12 +226,8 @@ public class OTPServiceImplTest {
         otpRequestDto.setIndividualIdType(IdType.UIN.getType());
         otpRequestDto.setRequestTime("2019-02-18T18:17:48.923+05:30");
         Map<String, Object> valueMap = new HashMap<>();
-        Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-        List<IdentityInfoDTO> mailList = new ArrayList<>();
-        IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-        identityInfoDTO.setValue("abc@test.com");
-        mailList.add(identityInfoDTO);
-        idInfo.put("email", mailList);
+        Map<String, Object> idInfo = new HashMap<>();
+        idInfo.put("email", "abc@test.com");
         valueMap.put("response", idInfo);
         Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
                 .thenReturn(valueMap);
@@ -246,12 +242,14 @@ public class OTPServiceImplTest {
         map.put("otp", "123456");
         response.setResponse(map);
         Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+        		Mockito.any())).thenReturn(true);
         try {
             otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
         }
         catch(IdAuthenticationBusinessException ex) {
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
-            assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(), ex.getErrorText());
+            assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage() + ". Both Phone Number and Email ID are not found in identity data.", ex.getErrorText());
         }
     }
 
