@@ -106,7 +106,7 @@
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
 		<id-repository-core.version>1.2.0.1-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel-demoapi.version>${kernel.parent.version}</kernel-demoapi.version>
+		<kernel-demoapi.version>1.2.0.1-SNAPSHOT</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
 		<kernel-biometrics-util>1.2.0</kernel-biometrics-util>
 
