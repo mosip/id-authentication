@@ -224,7 +224,22 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
 			
-			if((phoneNumber == null || phoneNumber.isEmpty()) && (email == null || email.isEmpty())) {
+			List<String> otpChannel = otpRequestDto.getOtpChannel();
+			if ((phoneNumber == null || phoneNumber.isEmpty()) && otpChannel.contains(PHONE) && !otpChannel.contains(EMAIL)) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
+								+ ". Phone Number is not found in identity data.");
+			}
+			
+			if ((email == null || email.isEmpty()) && otpChannel.contains(EMAIL) && !otpChannel.contains(PHONE)) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
+								+ ". Email ID is not found in identity data.");
+			}
+			
+			if((phoneNumber == null || phoneNumber.isEmpty()) && (email == null || email.isEmpty()) && (otpChannel.contains(PHONE) && otpChannel.contains(EMAIL))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
