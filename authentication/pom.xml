@@ -101,7 +101,7 @@
 		<kernel-cbeffutil-api.version>${kernel.parent.version}</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>${kernel.parent.version}</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>${kernel.parent.version}</kernel-biometrics-api.version>
+		<kernel-biometrics-api.version>1.2.0.1-SNAPSHOT</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>${kernel.parent.version}</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
 		<id-repository-core.version>1.2.0.1-SNAPSHOT</id-repository-core.version>
