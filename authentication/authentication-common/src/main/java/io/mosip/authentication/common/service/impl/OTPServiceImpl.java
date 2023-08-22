@@ -224,6 +224,28 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.PHONE_NUMBER, phoneNumber);
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
 			
+			List<String> otpChannel = otpRequestDto.getOtpChannel();
+			if ((phoneNumber == null || phoneNumber.isEmpty()) && otpChannel.contains(PHONE) && !otpChannel.contains(EMAIL)) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
+								+ ". Phone Number is not found in identity data.");
+			}
+			
+			if ((email == null || email.isEmpty()) && otpChannel.contains(EMAIL) && !otpChannel.contains(PHONE)) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
+								+ ". Email ID is not found in identity data.");
+			}
+			
+			if((phoneNumber == null || phoneNumber.isEmpty()) && (email == null || email.isEmpty()) && (otpChannel.contains(PHONE) && otpChannel.contains(EMAIL))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
+								+ ". Both Phone Number and Email ID are not found in identity data.");
+			}
+			
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, individualId, individualIdType, valueMap,
 					templateLanguages);
 
@@ -321,9 +343,17 @@ public class OTPServiceImpl implements OTPService {
 
 	private void processChannel(String value, String phone, String email, MaskedResponseDTO maskedResponseDTO) throws IdAuthenticationBusinessException {
 		if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
-			maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
+			if(phone != null && !phone.isEmpty()) {
+				maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
+			} else {
+				mosipLogger.warn("Phone Number is not available in identity data. But PHONE channel is requested for OTP.");
+			}
 		} else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {
-			maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			if(email != null && !email.isEmpty()) {
+				maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			} else {
+				mosipLogger.warn("Email ID is not available in identity data. But email channel is requested for OTP.");
+			}
 		}
 
 	}
