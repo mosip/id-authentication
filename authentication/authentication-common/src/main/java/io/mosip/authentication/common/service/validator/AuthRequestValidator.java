@@ -78,7 +78,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private List<String> allowedDomainUris;
 	
 	@Value("${mosip.ida.validate-allowed-env-enabled:true}")
-	private boolean isallowedEnabled;
+	private boolean isAllowedEnvValidationEnabled;
 	
 	@PostConstruct
 	public void initialize() {
@@ -650,7 +650,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @return
 	 */
 	private boolean isValuesContainsIgnoreCase(List<String> values, String value) {
-		if (isallowedEnabled) {
+		if (isAllowedEnvValidationEnabled) {
 			if (value != null) {
 				return values.stream().anyMatch(value::equalsIgnoreCase);
 			}
