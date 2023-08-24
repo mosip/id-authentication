@@ -51,6 +51,7 @@ import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -165,15 +166,19 @@ public class OTPServiceImpl implements OTPService {
 
 	private void validateAllowedOtpChannles(String token, List<String> otpChannel) throws IdAuthenticationFilterException {
 
-		if(otpChannel.stream().anyMatch(channel -> OTP.equalsIgnoreCase(channel))) {
+		if(containsChannel(otpChannel, OTP)) {
 			checkAuthLock(token, OTP);
 		}
-		else if(otpChannel.stream().anyMatch(channel -> PHONE.equalsIgnoreCase(channel))) {
+		else if(containsChannel(otpChannel, PHONE)) {
 			checkAuthLock(token, OTP_SMS);
 		}
-		else if(otpChannel.stream().anyMatch(channel -> EMAIL.equalsIgnoreCase(channel))) {
+		else if(containsChannel(otpChannel, EMAIL)) {
 			checkAuthLock(token, OTP_EMAIL);
 		}
+	}
+
+	private static boolean containsChannel(List<String> otpChannel, String channel) {
+		return otpChannel.stream().anyMatch(channelItem -> channel.equalsIgnoreCase(channelItem));
 	}
 
 	private void checkAuthLock(String token, String authTypeCode) throws IdAuthenticationFilterException {
@@ -225,21 +230,21 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.EMAIL, email);
 			
 			List<String> otpChannel = otpRequestDto.getOtpChannel();
-			if ((phoneNumber == null || phoneNumber.isEmpty()) && otpChannel.contains(PHONE) && !otpChannel.contains(EMAIL)) {
+			if (StringUtils.isBlank(phoneNumber) && containsChannel(otpChannel, PHONE) && !containsChannel(otpChannel, EMAIL)) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
 								+ ". Phone Number is not found in identity data.");
 			}
 			
-			if ((email == null || email.isEmpty()) && otpChannel.contains(EMAIL) && !otpChannel.contains(PHONE)) {
+			if (StringUtils.isBlank(email) && containsChannel(otpChannel, EMAIL) && !containsChannel(otpChannel, PHONE)) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
 								+ ". Email ID is not found in identity data.");
 			}
 			
-			if((phoneNumber == null || phoneNumber.isEmpty()) && (email == null || email.isEmpty()) && (otpChannel.contains(PHONE) && otpChannel.contains(EMAIL))) {
+			if(StringUtils.isBlank(phoneNumber) && StringUtils.isBlank(email) && (containsChannel(otpChannel, PHONE) && containsChannel(otpChannel, EMAIL))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 						IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage()
