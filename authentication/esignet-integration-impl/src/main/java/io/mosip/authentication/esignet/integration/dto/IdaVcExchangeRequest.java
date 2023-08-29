@@ -35,10 +35,8 @@ public class IdaVcExchangeRequest {
 	private String id;
 	private String version;
 	private String individualId;
-    private String transactionID;
-    private String requestTime;
-    private VciCredentialsDefinitionRequestDTO credentialsDefinition;
-
-
+	private String transactionID;
+	private String requestTime;
+	private VciCredentialsDefinitionRequestDTO credentialsDefinition;
 
 }
