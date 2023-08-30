@@ -9,12 +9,12 @@ import lombok.Data;
 public class VciCredentialsDefinitionRequestDTO {
 	
 	/**  */
-	private Map<String, Object> credentialRequest;
+	private Map<String, Object> credentialSubject;
 
 	/**  */
-	private String credentialType;
+	private List<String> type;
 
 	/** */
-	private List<String> credentialContexts;
+	private List<String> context;
 
 }

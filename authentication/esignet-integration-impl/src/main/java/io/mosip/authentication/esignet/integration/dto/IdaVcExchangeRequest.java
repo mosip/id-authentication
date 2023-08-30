@@ -10,7 +10,7 @@ import lombok.Data;
 public class IdaVcExchangeRequest {
 
 	@NotNull
-	private String authToken;
+	private String vcAuthToken;
 
 	/** The Variable to hold value of Credential Subject Id */
 	@NotNull
@@ -20,23 +20,21 @@ public class IdaVcExchangeRequest {
 	@NotNull
 	private String vcFormat;
 
-	/** The Variable to hold value of Credential Type */
-	@NotNull
-	private String credentialType;
-
-	/** The Variable to hold value of list of consents (UserClaims) */
-	private List<String> consentObtained;
-
 	/** The Variable to hold value of list of user selected locales */
 	private List<String> locales;
 
 	private Map<String, Object> metadata;
 
 	private String id;
+	
 	private String version;
+	
 	private String individualId;
+	
 	private String transactionID;
+	
 	private String requestTime;
+	
 	private VciCredentialsDefinitionRequestDTO credentialsDefinition;
 
 }

@@ -1,5 +1,6 @@
 package io.mosip.authentication.esignet.integration.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -77,13 +78,12 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			idaVciExchangeRequest.setVersion(vciExchangeVersion);// Configuration
 			idaVciExchangeRequest.setRequestTime(HelperService.getUTCDateTime());
 			idaVciExchangeRequest.setTransactionID(vciTransaction.get(AUTH_TRANSACTION_ID).toString());// Cache input
-			idaVciExchangeRequest.setAuthToken(vciTransaction.get(KYC_TOKEN).toString()); // Cache input
+			idaVciExchangeRequest.setVcAuthToken(vciTransaction.get(KYC_TOKEN).toString()); // Cache input
 			idaVciExchangeRequest.setIndividualId(vciTransaction.get(INDIVIDUAL_ID).toString());
-			idaVciExchangeRequest.setCredentialType(
-					vcRequestDto.getTypes().length > 1 ? vcRequestDto.getTypes()[1] : vcRequestDto.getTypes()[0]);
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
-			vciCred.setCredentialRequest(vcRequestDto.getCredentialSubject());
+			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
+			vciCred.setType(List.of((vcRequestDto.getTypes().length > 1 ? vcRequestDto.getTypes()[1] : vcRequestDto.getTypes()[0])));
 			idaVciExchangeRequest.setCredentialsDefinition(vciCred);
 
 			String requestBody = objectMapper.writeValueAsString(idaVciExchangeRequest);
