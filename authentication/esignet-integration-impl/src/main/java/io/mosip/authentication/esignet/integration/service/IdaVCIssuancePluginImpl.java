@@ -102,8 +102,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 				ResponseEntity<IdaResponseWrapper<JsonLDObject>> responseEntity = restTemplate.exchange(requestEntity,
 						new ParameterizedTypeReference<IdaResponseWrapper<JsonLDObject>>() {
 						});
-				getLinkedDataProofCredential(responseEntity);
-
+				return getLinkedDataProofCredential(responseEntity);
 			default:
 				log.error("Errors in response received from IDA VCI Exchange: {}");
 				break;
