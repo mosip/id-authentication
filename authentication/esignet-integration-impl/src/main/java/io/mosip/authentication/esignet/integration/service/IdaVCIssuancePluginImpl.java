@@ -83,7 +83,8 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
 			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
-			vciCred.setType(List.of((vcRequestDto.getTypes().length > 1 ? vcRequestDto.getTypes()[1] : vcRequestDto.getTypes()[0])));
+			vciCred.setType(List.of(
+					(vcRequestDto.getTypes().length > 1 ? vcRequestDto.getTypes()[1] : vcRequestDto.getTypes()[0])));
 			idaVciExchangeRequest.setCredentialsDefinition(vciCred);
 
 			String requestBody = objectMapper.writeValueAsString(idaVciExchangeRequest);
