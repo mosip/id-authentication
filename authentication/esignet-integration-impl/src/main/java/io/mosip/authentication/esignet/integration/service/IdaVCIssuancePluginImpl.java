@@ -1,7 +1,14 @@
 package io.mosip.authentication.esignet.integration.service;
 
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.crypto.Cipher;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.assertj.core.util.Arrays;
@@ -21,11 +28,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.jsonld.JsonLDObject;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeRequest;
-import io.mosip.authentication.esignet.integration.dto.VciCredentialsDefinitionRequestDTO;
+import io.mosip.authentication.esignet.integration.dto.CredentialDefinitionDTO;
 import io.mosip.authentication.esignet.integration.helper.VCITransactionHelper;
 import io.mosip.esignet.api.dto.VCRequestDto;
 import io.mosip.esignet.api.dto.VCResult;
 import io.mosip.esignet.api.spi.VCIssuancePlugin;
+import io.mosip.kernel.core.keymanager.spi.KeyStore;
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
+import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
+import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -40,6 +51,10 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	private static final String AUTH_TRANSACTION_ID = "authTransactionId";
 	public static final String SIGNATURE_HEADER_NAME = "signature";
 	public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+	public static final String OIDC_SERVICE_APP_ID = "OIDC_SERVICE";
+	private static Base64.Decoder urlSafeDecoder;
+	public static final String AES_CIPHER_FAILED = "aes_cipher_failed";
+	public static final String NO_UNIQUE_ALIAS = "no_unique_alias";
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -49,6 +64,12 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 
 	@Autowired
 	HelperService helperService;
+
+	@Autowired
+	private KeyStore keyStore;
+
+	@Autowired
+	private KeymanagerDBHelper dbHelper;
 
 	@Autowired
 	VCITransactionHelper vciTransactionHelper;
@@ -62,6 +83,18 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	@Value("${mosip.esignet.ida.vci-exchange-version}")
 	private String vciExchangeVersion;
 
+	@Value("${mosip.esignet.cache.secure.individual-id}")
+	private boolean secureIndividualId;
+
+	@Value("${mosip.esignet.cache.store.individual-id}")
+	private boolean storeIndividualId;
+
+	@Value("${mosip.esignet.cache.security.algorithm-name}")
+	private String aesECBTransformation;
+
+	@Value("${mosip.esignet.cache.security.secretkey.reference-id}")
+	private String cacheSecretKeyRefId;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public VCResult getVerifiableCredentialWithLinkedDataProof(VCRequestDto vcRequestDto, String holderId,
@@ -70,16 +103,18 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 		log.info("Started to build vci-exchange request : {} && clientId : {}",
 				identityDetails.get(CLIENT_ID).toString());
 		try {
+
 			Map<String, Object> vciTransaction = vciTransactionHelper
 					.getOAuthTransaction(identityDetails.get(ACCESS_TOKEN_HASH).toString());
+			String individualId = getIndividualId(vciTransaction.get(INDIVIDUAL_ID).toString());
 			IdaVcExchangeRequest idaVciExchangeRequest = new IdaVcExchangeRequest();
-			VciCredentialsDefinitionRequestDTO vciCred = new VciCredentialsDefinitionRequestDTO();
+			CredentialDefinitionDTO vciCred = new CredentialDefinitionDTO();
 			idaVciExchangeRequest.setId(vciExchangeId);// Configuration
 			idaVciExchangeRequest.setVersion(vciExchangeVersion);// Configuration
 			idaVciExchangeRequest.setRequestTime(HelperService.getUTCDateTime());
 			idaVciExchangeRequest.setTransactionID(vciTransaction.get(AUTH_TRANSACTION_ID).toString());// Cache input
 			idaVciExchangeRequest.setVcAuthToken(vciTransaction.get(KYC_TOKEN).toString()); // Cache input
-			idaVciExchangeRequest.setIndividualId(vciTransaction.get(INDIVIDUAL_ID).toString());
+			idaVciExchangeRequest.setIndividualId(individualId);
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
 			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
@@ -134,4 +169,44 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 		throw new NotImplementedException("This method is not implemented");
 	}
 
+	protected String getIndividualId(String encryptedIndividualId) throws Exception {
+		if (!storeIndividualId)
+			return null;
+		return secureIndividualId ? decryptIndividualId(encryptedIndividualId) : encryptedIndividualId;
+	}
+
+	private String decryptIndividualId(String encryptedIndividualId) throws Exception {
+		try {
+			Cipher cipher = Cipher.getInstance(aesECBTransformation);
+			byte[] decodedBytes = b64Decode(encryptedIndividualId);
+			cipher.init(Cipher.DECRYPT_MODE, getSecretKeyFromHSM());
+			return new String(cipher.doFinal(decodedBytes, 0, decodedBytes.length));
+		} catch (Exception e) {
+			log.error("Error Cipher Operations of provided secret data.", e);
+			throw new Exception(AES_CIPHER_FAILED);
+		}
+	}
+
+	private Key getSecretKeyFromHSM() throws Exception {
+		String keyAlias = getKeyAlias(OIDC_SERVICE_APP_ID, cacheSecretKeyRefId);
+		if (Objects.nonNull(keyAlias)) {
+			return keyStore.getSymmetricKey(keyAlias);
+		}
+		throw new Exception(NO_UNIQUE_ALIAS);
+	}
+
+	private String getKeyAlias(String keyAppId, String keyRefId) throws Exception {
+		Map<String, List<KeyAlias>> keyAliasMap = dbHelper.getKeyAliases(keyAppId, keyRefId,
+				LocalDateTime.now(ZoneOffset.UTC));
+		List<KeyAlias> currentKeyAliases = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
+		if (!currentKeyAliases.isEmpty() && currentKeyAliases.size() == 1) {
+			return currentKeyAliases.get(0).getAlias();
+		}
+		log.error("CurrentKeyAlias is not unique. KeyAlias count: {}", currentKeyAliases.size());
+		throw new Exception(NO_UNIQUE_ALIAS);
+	}
+
+	public static byte[] b64Decode(String value) {
+		return urlSafeDecoder.decode(value);
+	}
 }

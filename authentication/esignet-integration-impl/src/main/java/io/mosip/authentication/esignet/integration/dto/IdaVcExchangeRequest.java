@@ -35,6 +35,6 @@ public class IdaVcExchangeRequest {
 	
 	private String requestTime;
 	
-	private VciCredentialsDefinitionRequestDTO credentialsDefinition;
+	private CredentialDefinitionDTO credentialsDefinition;
 
 }

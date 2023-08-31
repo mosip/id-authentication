@@ -6,7 +6,7 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class VciCredentialsDefinitionRequestDTO {
+public class CredentialDefinitionDTO {
 	
 	/**  */
 	private Map<String, Object> credentialSubject;
