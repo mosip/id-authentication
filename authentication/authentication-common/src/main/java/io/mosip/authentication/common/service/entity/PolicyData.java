@@ -97,7 +97,7 @@ public class PolicyData {
 			return OBJECT_MAPPER.readValue(CryptoUtil.decodeBase64Url(new String(this.policy)), JSONObject.class);
 		} catch (IOException e) {
 			// This block will never be executed
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 	}

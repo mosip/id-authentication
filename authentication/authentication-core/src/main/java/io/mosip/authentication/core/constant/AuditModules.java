@@ -31,6 +31,8 @@ public enum AuditModules {
 
 	KYC_EXCHANGE("IDA-KEX", "KYC Exchange Request", "KYC Exchange"),
 	
+	VCI_EXCHANGE("IDA-VCI", "VCI Exchange Request", "VCI Exchange"),
+
 	IDENTITY_KEY_BINDING("IDA-IKB", "Identity Key Binding Request", "Key Binding"),
 
 	/** The otp request. */

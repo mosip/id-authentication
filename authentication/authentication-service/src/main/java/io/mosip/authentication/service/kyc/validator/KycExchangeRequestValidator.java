@@ -61,9 +61,10 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 				validateKycToken(kycExchangeRequestDTO.getKycToken(), errors, IdAuthCommonConstants.KYC_TOKEN);
 			}
 
-			if (!errors.hasErrors()) {
+			// commented below validation because end user can provide nil consent.
+			/* if (!errors.hasErrors()) {
 				validateConsentObtainedList(kycExchangeRequestDTO.getConsentObtained(), errors, IdAuthCommonConstants.CONSENT_OBTAINED);
-			}
+			} */
 
 			if (!errors.hasErrors()) {
 				validateTxnId(kycExchangeRequestDTO.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);

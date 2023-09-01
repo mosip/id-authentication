@@ -29,9 +29,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * The Class For IdentityKeyBindingRequestValidator extending the
  * BaseAuthRequestValidator{@link BaseAuthRequestValidator}}
  *
- * @author Prem Kumar
- * @author Dinesh Karuppiah.T
- * 
+ * @author Mahammed Taheer
  * 
  */
 
