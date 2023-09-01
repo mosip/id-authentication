@@ -4,3 +4,4 @@ ROOT,1826,TRUE,mosipadmin,now(),90,NA
 BASE,730,TRUE,mosipadmin,now(),30,NA
 IDA_KEY_BINDING,1095,TRUE,mosipadmin,now(),60,NA
 IDA_KYC_EXCHANGE,1095,TRUE,mosipadmin,now(),60,NA
+IDA_VCI_EXCHANGE,1095,TRUE,mosipadmin,now(),60,NA

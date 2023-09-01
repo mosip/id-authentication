@@ -210,6 +210,11 @@
 			<artifactId>opencv</artifactId>
 			<version>4.5.3-4</version>
 	    </dependency>
+        <dependency>
+			<groupId>info.weboftrust</groupId>
+			<artifactId>ld-signatures-java</artifactId>
+			<version>1.0.0</version>
+		</dependency>
     </dependencies>
     <build>
         <plugins>

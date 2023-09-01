@@ -8,6 +8,7 @@ import io.mosip.authentication.service.kyc.filter.IdentityKeyBindingFilter;
 import io.mosip.authentication.service.kyc.filter.KycAuthFilter;
 import io.mosip.authentication.service.kyc.filter.KycAuthenticationFilter;
 import io.mosip.authentication.service.kyc.filter.KycExchangeFilter;
+import io.mosip.authentication.service.kyc.filter.VciExchangeFilter;
 
 /**
  * The configuration for adding filters.
@@ -66,6 +67,19 @@ public class KycFilterConfig {
 		FilterRegistrationBean<IdentityKeyBindingFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new IdentityKeyBindingFilter());
 		registrationBean.addUrlPatterns("/identity-key-binding/*");
+		return registrationBean;
+	} 
+
+	/**
+	 * Gets the VCI Exchange filter.
+	 *
+	 * @return the VCI Exchange filter
+	 */
+	@Bean
+	public FilterRegistrationBean<VciExchangeFilter> getVciExchangeFilter() {
+		FilterRegistrationBean<VciExchangeFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new VciExchangeFilter());
+		registrationBean.addUrlPatterns("/vci-exchange/*");
 		return registrationBean;
 	} 
 }

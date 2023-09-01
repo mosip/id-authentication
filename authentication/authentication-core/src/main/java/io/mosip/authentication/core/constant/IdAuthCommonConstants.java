@@ -403,6 +403,46 @@ public final class IdAuthCommonConstants {
 
 	public static final String CERT_TP_AF_SEPERATOR = "-";
 
+	public static final String CREDENTIAL_SUBJECT_ID = "credSubjectId";
+
+	public static final String VC_FORMAT = "vcFormat";
+
+	public static final String VC_AUTH_TOKEN = "vcAuthToken";
+
+	public static final String VC_CREDENTIAL_TYPE = "credentialType";
+
+	public static final boolean VCI_EXCHANGE_CONSUME_VID_DEFAULT = true;
+
+	public static final Character COLON = ':';
+
+	public static final String JWK_KEY_TYPE = "kty";
+
+	public static final String VC_ID = "id";
+
+	public static final String LANGUAGE_STRING = "language";
+
+	public static final String VALUE_STRING = "value";
+
+	public static final String VC_AT_CONTEXT = "@context";
+
+	public static final String VC_TYPE = "type";
+
+	public static final String VC_ISSUER = "issuer";
+
+	public static final String VC_ISSUANCE_DATE = "issuanceDate";
+
+	public static final String VC_PROOF_CREATED = "created";
+
+	public static final String VC_PROOF_PURPOSE = "proofPurpose";
+
+	public static final String VC_PROOF_TYPE = "type";
+
+	public static final String VC_PROOF_VERIFICATION_METHOD = "verificationMethod";
+
+	public static final String CREDENTIALSUBJECT = "credentialSubject";
+
+	public static final String  VCI_EXCHANGE_SUCCESS = "VciExchange status : true";
+
 	private IdAuthCommonConstants() {
 	}
 }

@@ -17,4 +17,6 @@ public class MispPolicyDTO {
     private boolean allowOTPRequestDelegation;
 
     private boolean allowKeyBindingDelegation;
+
+    private boolean allowVciRequestDelegation;
 }

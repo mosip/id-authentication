@@ -62,6 +62,7 @@ import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepositor
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.signature.constant.SignatureConstant;
+import io.mosip.kernel.signature.dto.JWSSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyResponseDto;
@@ -146,6 +147,10 @@ public class IdAuthSecurityManager {
 
 	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
     private String signAlgorithm;
+
+	/** The sign applicationid. */
+	@Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
+	private String vciExchSignApplicationId;
 
 	/** The uin hash salt repo. */
 	@Autowired
@@ -655,6 +660,20 @@ public class IdAuthSecurityManager {
 		request.setIncludePayload(true);
 		request.setReferenceId(IdAuthCommonConstants.EMPTY);
 		return signatureService.jwtSign(request).getJwtSignedData();
+	}
+
+	@WithRetry
+	public String jwsSignWithPayload(String data) {
+		JWSSignatureRequestDto request = new JWSSignatureRequestDto();
+		request.setApplicationId(vciExchSignApplicationId);
+		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
+		request.setIncludeCertHash(false);
+		request.setIncludeCertificate(includeCertificate);
+		request.setIncludePayload(false);
+		request.setReferenceId(IdAuthCommonConstants.EMPTY);
+		request.setB64JWSHeaderParam(false);
+		request.setValidateJson(false);
+		return signatureService.jwsSign(request).getJwtSignedData();
 	}
 
 	@WithRetry

@@ -80,7 +80,7 @@ public class AuthContextClazzRefProvider {
             logger.error(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "createAuthMethodsRefValuesObject", 
                         "Not able to download the AMR-ACR Json config file. URI: " + amracrMappingUri, e);
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DOWNLOAD_ERROR.getErrorCode(),
-            IdAuthenticationErrorConstants.DOWNLOAD_ERROR.getErrorMessage());
+                        IdAuthenticationErrorConstants.DOWNLOAD_ERROR.getErrorMessage());
         }
 
         /* ClientResponse clientResponse = webClient.get().uri(amracrMappingUri).accept(MediaType.APPLICATION_JSON).exchange().block();
