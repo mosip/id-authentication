@@ -63,5 +63,10 @@
 			<version>${jackson.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>info.weboftrust</groupId>
+			<artifactId>ld-signatures-java</artifactId>
+			<version>0.8.0</version>
+		</dependency>
 	</dependencies>
 </project>
