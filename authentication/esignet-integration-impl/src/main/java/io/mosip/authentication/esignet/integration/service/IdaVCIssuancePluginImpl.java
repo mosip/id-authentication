@@ -52,7 +52,6 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	public static final String SIGNATURE_HEADER_NAME = "signature";
 	public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 	public static final String OIDC_SERVICE_APP_ID = "OIDC_SERVICE";
-	private static Base64.Decoder urlSafeDecoder;
 	public static final String AES_CIPHER_FAILED = "aes_cipher_failed";
 	public static final String NO_UNIQUE_ALIAS = "no_unique_alias";
 
@@ -95,13 +94,14 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	@Value("${mosip.esignet.cache.security.secretkey.reference-id}")
 	private String cacheSecretKeyRefId;
 
+	private Base64.Decoder urlSafeDecoder = Base64.getUrlDecoder();
+
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public VCResult getVerifiableCredentialWithLinkedDataProof(VCRequestDto vcRequestDto, String holderId,
 			Map<String, Object> identityDetails) {
 		log.info("Started to created the VCIssuance");
-		log.info("Started to build vci-exchange request : {} && clientId : {}",
-				identityDetails.get(CLIENT_ID).toString());
 		try {
 
 			Map<String, Object> vciTransaction = vciTransactionHelper
@@ -118,8 +118,8 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
 			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
-			vciCred.setType(List.of(
-					(vcRequestDto.getTypes().length > 1 ? vcRequestDto.getTypes()[1] : vcRequestDto.getTypes()[0])));
+			vciCred.setType(vcRequestDto.getType());
+			vciCred.setContext(vcRequestDto.getContext());
 			idaVciExchangeRequest.setCredentialsDefinition(vciCred);
 
 			String requestBody = objectMapper.writeValueAsString(idaVciExchangeRequest);
@@ -206,7 +206,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 		throw new Exception(NO_UNIQUE_ALIAS);
 	}
 
-	public static byte[] b64Decode(String value) {
+	private byte[] b64Decode(String value) {
 		return urlSafeDecoder.decode(value);
 	}
 }
