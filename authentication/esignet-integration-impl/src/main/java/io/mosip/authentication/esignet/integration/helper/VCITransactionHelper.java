@@ -1,6 +1,8 @@
 package io.mosip.authentication.esignet.integration.helper;
 
 import java.util.Map;
+
+import io.mosip.esignet.core.dto.OIDCTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -16,11 +18,13 @@ public class VCITransactionHelper {
 	private String userinfoCache;
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getOAuthTransaction(String accessTokenHash) throws Exception {
+	public OIDCTransaction getOAuthTransaction(String accessTokenHash) throws Exception {
 		if (cacheManager.getCache(userinfoCache) != null) {
-			return (Map<String, Object>) cacheManager.getCache(userinfoCache).get(accessTokenHash, Map.class);
+			return cacheManager.getCache(userinfoCache).get(accessTokenHash, OIDCTransaction.class);
 		}
 		throw new Exception("cache_missing");
 	}
+
+
 
 }

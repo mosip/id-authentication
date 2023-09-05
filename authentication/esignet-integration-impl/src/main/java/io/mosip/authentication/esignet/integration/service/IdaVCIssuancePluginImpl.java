@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import javax.crypto.Cipher;
 
+import io.mosip.esignet.core.dto.OIDCTransaction;
 import org.apache.commons.lang3.NotImplementedException;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,17 +104,16 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			Map<String, Object> identityDetails) {
 		log.info("Started to created the VCIssuance");
 		try {
-
-			Map<String, Object> vciTransaction = vciTransactionHelper
+			OIDCTransaction transaction = vciTransactionHelper
 					.getOAuthTransaction(identityDetails.get(ACCESS_TOKEN_HASH).toString());
-			String individualId = getIndividualId(vciTransaction.get(INDIVIDUAL_ID).toString());
+			String individualId = getIndividualId(transaction.getIndividualId());
 			IdaVcExchangeRequest idaVciExchangeRequest = new IdaVcExchangeRequest();
 			CredentialDefinitionDTO vciCred = new CredentialDefinitionDTO();
 			idaVciExchangeRequest.setId(vciExchangeId);// Configuration
 			idaVciExchangeRequest.setVersion(vciExchangeVersion);// Configuration
 			idaVciExchangeRequest.setRequestTime(HelperService.getUTCDateTime());
-			idaVciExchangeRequest.setTransactionID(vciTransaction.get(AUTH_TRANSACTION_ID).toString());// Cache input
-			idaVciExchangeRequest.setVcAuthToken(vciTransaction.get(KYC_TOKEN).toString()); // Cache input
+			idaVciExchangeRequest.setTransactionID(transaction.getAuthTransactionId());// Cache input
+			idaVciExchangeRequest.setVcAuthToken(transaction.getKycToken()); // Cache input
 			idaVciExchangeRequest.setIndividualId(individualId);
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
@@ -125,7 +125,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			String requestBody = objectMapper.writeValueAsString(idaVciExchangeRequest);
 			RequestEntity requestEntity = RequestEntity
 					.post(UriComponentsBuilder.fromUriString(vciExchangeUrl)
-							.pathSegment(vciTransaction.get(RELYING_PARTY_ID).toString(),
+							.pathSegment(transaction.getRelyingPartyId(),
 									identityDetails.get(CLIENT_ID).toString())
 							.build().toUri())
 					.contentType(MediaType.APPLICATION_JSON_UTF8)
