@@ -154,7 +154,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
 			if (responseWrapper.getResponse() != null) {
 				VCResult vCResult = new VCResult();
-				vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredential());
+				vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
 				vCResult.setFormat("ldp_vc");
 				return vCResult;
 			}
