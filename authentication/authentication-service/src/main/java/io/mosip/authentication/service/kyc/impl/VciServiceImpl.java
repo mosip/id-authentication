@@ -279,7 +279,7 @@ public class VciServiceImpl implements VciService {
 			case LDP_VC: 
 				JsonLDObject ldObject = generateLdpVc(credSubjectId, idInfo, locales, allowedAttributes, vciExchangeRequestDTO, psuToken);
 				VCResponseDTO<JsonLDObject> vcResponseDTO = new VCResponseDTO<>();
-				vcResponseDTO.setVerificableCredentials(ldObject);
+				vcResponseDTO.setVerifiableCredentials(ldObject);
 				return vcResponseDTO;
 			case JWT_VC_JSON:
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VCI_NOT_SUPPORTED_ERROR);
@@ -299,9 +299,8 @@ public class VciServiceImpl implements VciService {
 			Map<String, Object> verCredJsonObject = new HashMap<>();
 
 			// @Context
-			List<String> contextInputList = vciExchangeRequestDTO.getCredentialsDefinition().getContext();
-			Object contextObj = contextInputList != null && contextInputList.size() > 0  ? contextInputList : 
-										vcContextJsonld.get("context"); 
+			
+			Object contextObj = vcContextJsonld.get("context"); 
 			verCredJsonObject.put(IdAuthCommonConstants.VC_AT_CONTEXT, contextObj);
 
 			// vc type
