@@ -13,6 +13,6 @@ import lombok.Data;
 public class VCResponseDTO<T> {
 
 	/** The Variable to hold value of Verifiable Credentials data */
-	private T verificableCredentials;
+	private T verifiableCredentials;
 	
 }

@@ -46,6 +46,8 @@ import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.EncryptedKycRespDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.indauth.dto.VCResponseDTO;
+import io.mosip.authentication.core.indauth.dto.VciExchangeResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
@@ -382,6 +384,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
 			kycExchangeResponseDTO.setResponse(encryptedKycRespDTO);
 			return kycExchangeResponseDTO;
+		case "vci-exchange":
+			VciExchangeResponseDTO vciExchangeResponseDTO = new VciExchangeResponseDTO();
+			vciExchangeResponseDTO.setErrors(errors);
+			vciExchangeResponseDTO.setResponseTime(responseTime);
+			VCResponseDTO<?> vcResponseDTO = null;
+			vciExchangeResponseDTO.setResponse(vcResponseDTO);
+			return vciExchangeResponseDTO;
 		case "internal":
 			if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
 				OtpResponseDTO internalotpresponsedto = new OtpResponseDTO();

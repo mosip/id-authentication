@@ -57,7 +57,7 @@ public class TokenValidationHelper {
     public KycTokenData findAndValidateIssuedToken(String tokenData, String oidcClientId, String reqTransactionId, 
         String idvidHash) throws IdAuthenticationBusinessException {
 
-        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processVciExchange",
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 						"Check Token Exists or not, associated with oidc client and active status.");
 						
         Optional<KycTokenData> tokenDataOpt = kycTokenDataRepo.findByKycToken(tokenData);
@@ -77,7 +77,7 @@ public class TokenValidationHelper {
 				throws IdAuthenticationBusinessException {
 		String kycToken = kycTokenData.getKycToken();
 		if (kycTokenData.getKycTokenStatus().equals(KycTokenStatusType.PROCESSED.getStatus())) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Token already processed: " + kycToken);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_ALREADY_PROCESSED.getErrorCode(),
@@ -85,7 +85,7 @@ public class TokenValidationHelper {
 		}
 
 		if (kycTokenData.getKycTokenStatus().equals(KycTokenStatusType.EXPIRED.getStatus())) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Token expired: " + kycToken);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_EXPIRED.getErrorCode(),
@@ -93,7 +93,7 @@ public class TokenValidationHelper {
 		}
 
 		if (!kycTokenData.getOidcClientId().equals(oidcClientId)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Token does not belongs to the provided OIDC Client Id: " + kycToken);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_OIDC_CLIENT_ID.getErrorCode(),
@@ -101,7 +101,7 @@ public class TokenValidationHelper {
 		}
 
 		if (!kycTokenData.getIdVidHash().equals(idvidHash)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Token does not belongs to the provided UIN/VID: " + kycToken);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_UIN_VID.getErrorCode(),
@@ -109,20 +109,20 @@ public class TokenValidationHelper {
 		}
 
 		if (!kycTokenData.getRequestTransactionId().equals(reqTransactionId)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Auth & KYC Exchange Transaction Ids are not same: " + kycToken);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_TRANSACTION_ID.getErrorCode(),
 						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_TRANSACTION_ID.getErrorMessage());
 		}
 
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken",
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken",
 					"KYC Token found, Check Token expire.");
 		LocalDateTime tokenIssuedDateTime = kycTokenData.getTokenIssuedDateTime();
 		boolean isExpired = kycService.isKycTokenExpire(tokenIssuedDateTime, kycToken);
 
 		if (isExpired) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateKycToken", 
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken", 
 					"KYC Token expired.");
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.EXPIRED.getStatus());
 			kycTokenDataRepo.saveAndFlush(kycTokenData);
