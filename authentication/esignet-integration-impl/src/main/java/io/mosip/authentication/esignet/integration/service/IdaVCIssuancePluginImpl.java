@@ -3,16 +3,12 @@ package io.mosip.authentication.esignet.integration.service;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.crypto.Cipher;
 
 import io.mosip.esignet.core.dto.OIDCTransaction;
 import org.apache.commons.lang3.NotImplementedException;
-import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -117,6 +113,8 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			idaVciExchangeRequest.setIndividualId(individualId);
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
+			idaVciExchangeRequest.setLocales(transaction.getClaimsLocales() != null ?
+					Arrays.asList(transaction.getClaimsLocales()) : List.of("eng"));
 			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
 			vciCred.setType(vcRequestDto.getType());
 			vciCred.setContext(vcRequestDto.getContext());
