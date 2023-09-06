@@ -7,6 +7,7 @@ import java.util.*;
 
 import javax.crypto.Cipher;
 
+import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeResponse;
 import io.mosip.esignet.core.dto.OIDCTransaction;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,8 +133,8 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 
 			switch (vcRequestDto.getFormat()) {
 			case "ldp_vc":
-				ResponseEntity<IdaResponseWrapper<JsonLDObject>> responseEntity = restTemplate.exchange(requestEntity,
-						new ParameterizedTypeReference<IdaResponseWrapper<JsonLDObject>>() {
+				ResponseEntity<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseEntity = restTemplate.exchange(requestEntity,
+						new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {
 						});
 				return getLinkedDataProofCredential(responseEntity);
 			default:
@@ -148,15 +149,16 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public VCResult getLinkedDataProofCredential(ResponseEntity responseEntity) {
+	public VCResult getLinkedDataProofCredential(ResponseEntity<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseEntity) {
 		if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
-			IdaResponseWrapper<JsonLDObject> responseWrapper = (IdaResponseWrapper<JsonLDObject>) responseEntity
-					.getBody();
+			IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
 			if (responseWrapper.getResponse() != null) {
 				VCResult vCResult = new VCResult();
-				vCResult.setCredential(responseWrapper.getResponse());
+				vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredential());
+				vCResult.setFormat("ldp_vc");
 				return vCResult;
 			}
+			log.error("Errors in response received from IDA VC Exchange: {}", responseWrapper.getErrors());
 		}
 		return null;
 	}
