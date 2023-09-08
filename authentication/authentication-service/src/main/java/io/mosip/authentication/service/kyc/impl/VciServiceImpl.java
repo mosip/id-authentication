@@ -299,7 +299,6 @@ public class VciServiceImpl implements VciService {
 			Map<String, Object> verCredJsonObject = new HashMap<>();
 
 			// @Context
-			
 			Object contextObj = vcContextJsonld.get("context"); 
 			verCredJsonObject.put(IdAuthCommonConstants.VC_AT_CONTEXT, contextObj);
 
@@ -307,7 +306,8 @@ public class VciServiceImpl implements VciService {
 			verCredJsonObject.put(IdAuthCommonConstants.VC_TYPE, vciExchangeRequestDTO.getCredentialsDefinition().getType());
 
 			// vc id
-			verCredJsonObject.put(IdAuthCommonConstants.VC_ID, verCredIdUrl + psuToken);
+			String vcId = UUID.randomUUID().toString();
+			verCredJsonObject.put(IdAuthCommonConstants.VC_ID, verCredIdUrl + vcId);
 
 			// vc issuer
 			verCredJsonObject.put(IdAuthCommonConstants.VC_ISSUER, verCredIssuer);
@@ -393,19 +393,24 @@ public class VciServiceImpl implements VciService {
 						credSubjectMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
 					else {
 						Map<String, String> valueMap = new HashMap<>();
-						valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, identityInfo.getLanguage());
-						valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
-						credSubjectMap.put(idSchemaAttribute, valueMap);
+						String lang = identityInfo.getLanguage();
+						if (locales.contains(lang)) {
+							valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, lang);
+							valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
+							credSubjectMap.put(idSchemaAttribute, valueMap);
+						}
 					}
 					continue;
 				}
 				List<Map<String, String>> valueList = new ArrayList<>();
 				for (IdentityInfoDTO identityInfo : idInfoList) {
 					Map<String, String> valueMap = new HashMap<>();
-					valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, identityInfo.getLanguage());
-					valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
-					credSubjectMap.put(idSchemaAttribute, valueMap);
-					valueList.add(valueMap);
+					String lang = identityInfo.getLanguage();
+					if (locales.contains(lang)) {
+						valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, identityInfo.getLanguage());
+						valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
+						valueList.add(valueMap);
+					}
 				}
 				credSubjectMap.put(idSchemaAttribute, valueList);
 			}

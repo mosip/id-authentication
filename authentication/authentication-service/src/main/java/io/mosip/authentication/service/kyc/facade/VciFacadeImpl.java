@@ -3,11 +3,13 @@
  */
 package io.mosip.authentication.service.kyc.facade;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -161,7 +163,8 @@ public class VciFacadeImpl implements VciFacade {
 			
 			String psuToken = kycTokenData.getPsuToken();
 			List<String> locales = vciExchangeRequestDTO.getLocales();
-			if (locales.size() == 0) {
+			if (Objects.isNull(locales) || locales.size() == 0) {
+				locales = new ArrayList<>(); // throws NullPointer if locales is null
 				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 			}
 
