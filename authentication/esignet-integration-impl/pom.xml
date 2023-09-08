@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.0.1-SNAPSHOT</version>
+		<version>1.2.0.1-B5-SNAPSHOT</version>
 	</parent>
-	
+	<version>1.2.0.1-B5-SNAPSHOT</version>
 	<artifactId>esignet-integration-impl</artifactId>
 	<name>esignet-integration-impl</name>
     <description>e-Signet Integration Implementation Library</description>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
-			<version>1.2.0.1-SNAPSHOT</version>
+			<version>${kernel-keymanager-service.version}</version>
 			<scope>provided</scope>
 			<classifier>lib</classifier>
 			<exclusions>
