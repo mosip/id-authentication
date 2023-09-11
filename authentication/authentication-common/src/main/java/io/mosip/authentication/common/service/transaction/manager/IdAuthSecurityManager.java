@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.cryptomanager.dto.JWTEncryptRequestDto;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -49,6 +50,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.cryptomanager.dto.JWTCipherResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -60,6 +62,7 @@ import io.mosip.kernel.keymanagerservice.repository.DataEncryptKeystoreRepositor
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.signature.constant.SignatureConstant;
+import io.mosip.kernel.signature.dto.JWSSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyRequestDto;
 import io.mosip.kernel.signature.dto.JWTSignatureVerifyResponseDto;
@@ -145,6 +148,10 @@ public class IdAuthSecurityManager {
 	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
     private String signAlgorithm;
 
+	/** The sign applicationid. */
+	@Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
+	private String vciExchSignApplicationId;
+
 	/** The uin hash salt repo. */
 	@Autowired
 	private IdaUinHashSaltRepo uinHashSaltRepo;
@@ -186,7 +193,7 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
-	
+
 	/**
 	 * Gets the user.
 	 *
@@ -656,6 +663,20 @@ public class IdAuthSecurityManager {
 	}
 
 	@WithRetry
+	public String jwsSignWithPayload(String data) {
+		JWSSignatureRequestDto request = new JWSSignatureRequestDto();
+		request.setApplicationId(vciExchSignApplicationId);
+		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
+		request.setIncludeCertHash(false);
+		request.setIncludeCertificate(includeCertificate);
+		request.setIncludePayload(false);
+		request.setReferenceId(IdAuthCommonConstants.EMPTY);
+		request.setB64JWSHeaderParam(false);
+		request.setValidateJson(false);
+		return signatureService.jwsSign(request).getJwtSignedData();
+	}
+
+	@WithRetry
 	public Entry<String, String> generateKeyBindingCertificate(PublicKey publicKey, CertificateParameters certParams) 
 				throws CertificateEncodingException {
 		String timestamp = DateUtils.getUTCCurrentDateTimeString();
@@ -672,5 +693,16 @@ public class IdAuthSecurityManager {
 		String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
 
 		return new SimpleEntry<>(certThumbprint, certificateData);
+	}
+
+	@WithRetry
+	public String jwtEncrypt(String dataToEncrypt, String certificateData) {
+		JWTEncryptRequestDto encryptRequestDto = new JWTEncryptRequestDto();
+		encryptRequestDto.setData(CryptoUtil.encodeBase64Url(dataToEncrypt.getBytes()));
+		encryptRequestDto.setX509Certificate(certificateData);
+		encryptRequestDto.setEnableDefCompression(true);
+		encryptRequestDto.setIncludeCertHash(true);
+		JWTCipherResponseDto cipherResponseDto = cryptomanagerService.jwtEncrypt(encryptRequestDto);
+		return cipherResponseDto.getData();
 	}
 }

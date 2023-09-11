@@ -169,7 +169,7 @@ public class KeyBindedTokenMatcherUtil {
         LocalDateTime issuedLDT = DateUtils.parseDateToLocalDateTime(issuedDateTime);
 		long diffSeconds = ChronoUnit.SECONDS.between(issuedLDT, currentTime);
         
-		if (issuedDateTime != null && diffSeconds > 0 && diffSeconds <= iatAdjSeconds) {
+		if (issuedDateTime != null && diffSeconds >= 0 && diffSeconds <= iatAdjSeconds) {
 			return true;
 		}
 		return false;
