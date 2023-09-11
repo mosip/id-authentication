@@ -435,6 +435,7 @@ public class KycFacadeImpl implements KycFacade {
 			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, 
 														kycExchangeRequestDTO);
 			// update kyc token status 
+			//KycTokenData kycTokenData = kycTokenDataOpt.get();
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());
 			kycTokenDataRepo.saveAndFlush(kycTokenData);
 			KycExchangeResponseDTO kycExchangeResponseDTO = new KycExchangeResponseDTO();
@@ -457,6 +458,7 @@ public class KycFacadeImpl implements KycFacade {
 			throw e;
 		}
 	}
+
 
 	// Need to move below duplicate code to common to be used by OTPService and KycExchange.
 	private void saveToTxnTable(KycExchangeRequestDTO kycExchangeRequestDTO, boolean isInternal, boolean status, String partnerId, String token, 

@@ -10,13 +10,13 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Map.Entry;
-import java.util.AbstractMap.SimpleEntry;
 
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.cryptomanager.dto.JWTEncryptRequestDto;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -50,7 +51,6 @@ import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.JWTCipherResponseDto;
-import io.mosip.kernel.cryptomanager.dto.JWTEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -193,7 +193,7 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
-
+	
 	/**
 	 * Gets the user.
 	 *
