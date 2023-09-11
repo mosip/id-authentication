@@ -20,7 +20,8 @@ public enum RequestType {
 	KYC_EXCHANGE_REQUEST("KYC-EXCHANGE","KYC Exchange Request"),
 	IDENTITY_KEY_BINDING("IDENTITY-KEY-BINDING","Identity Key Binding Request"),
 	TOKEN_REQUEST("TOKEN-REQUEST", "Token Request"),
-	TOKEN_AUTH("TOKEN-AUTH","Token based Authentication");
+	TOKEN_AUTH("TOKEN-AUTH","Token based Authentication"),
+	VCI_EXCHANGE_REQUEST("VCI-EXCHANGE-REQUEST","VCI Exchange Request");
 
 	String type;
 	String message;

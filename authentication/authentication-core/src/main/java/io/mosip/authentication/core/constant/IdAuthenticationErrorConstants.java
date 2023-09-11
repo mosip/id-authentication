@@ -144,6 +144,9 @@ public enum IdAuthenticationErrorConstants {
 			"Please bind a key for the input VID/UIN before performing KBT Auth."),
 	KEY_BINDING_CHECK_FAILED("IDA-MPA-035", "KeyBindedToken check failed for the given token.",
 			"Provide Valid KeyBindedToken to perform auth."),
+	UNAUTHORISED_VCI_EXCHANGE_PARTNER("IDA-MPA-036", "Partner is unauthorised for VCI-Exchange"),
+	VCI_EXCHANGE_NOT_ALLOWED("IDA-MPA-037", "%s not allowed as per policy",
+			"Please try after updating misp policy"),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -192,14 +195,23 @@ public enum IdAuthenticationErrorConstants {
 	KYC_TOKEN_ALREADY_PROCESSED("IDA-KYE-003", "KYC Token already processed."),
 	KYC_TOKEN_INVALID_OIDC_CLIENT_ID("IDA-KYE-004", "KYC Token does not belong to the input oidc client id."),
 	KYC_TOKEN_INVALID_TRANSACTION_ID("IDA-KYE-005", "KYC Auth and KYC Exchange transaction ids are different."),
-	PARTNER_POLICY_NOT_FOUND("IDA-KYE-004", "Partner Policy not found."),
+	PARTNER_POLICY_NOT_FOUND("IDA-KYE-006", "Partner Policy not found."),
+	KYC_TOKEN_INVALID_UIN_VID("IDA-KYE-007", "KYC Token does not belong to the input UIN/VID."),
 	
 	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
 	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
 	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
 	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
 	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
-	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),;
+	
+	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),
+	
+	KEY_TYPE_NOT_SUPPORT("IDA-VCI-001", "Not Supported JWK Key Type."),
+	CREATE_VCI_PUBLIC_KEY_OBJECT_ERROR("IDA-VCI-002", "Error creating Public Key object."),
+	KEY_ALREADY_MAPPED_ERROR("IDA-VCI-003", "Error Key already mapped to different id/vid."),
+	VCI_NOT_SUPPORTED_ERROR("IDA-VCI-004", "Error VCI not supported."),
+	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed.");
+
 	
 	private final String errorCode;
 	private final String errorMessage;

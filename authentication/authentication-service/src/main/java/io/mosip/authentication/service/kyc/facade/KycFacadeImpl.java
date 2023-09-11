@@ -30,6 +30,7 @@ import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.helper.TokenValidationHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
@@ -134,10 +135,7 @@ public class KycFacadeImpl implements KycFacade {
 	private KycTokenDataRepository kycTokenDataRepo;
 
 	@Autowired
-	private IdInfoHelper idInfoHelper;
-
-	@Autowired
-	private OIDCClientDataRepository oidcClientDataRepo; 
+	private TokenValidationHelper tokenValidationHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -382,32 +380,22 @@ public class KycFacadeImpl implements KycFacade {
 			String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException {
 		String idHash = null;
 		try {
-			idHash = securityManager.hash(kycExchangeRequestDTO.getIndividualId()); 
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 					"Processing Kyc Exchange request.");
 			
-			String kycToken = kycExchangeRequestDTO.getKycToken();
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "isKycTokenExist",
-						"Check Token Exists or not, associated with oidc client and active status.");
-						
-			Optional<KycTokenData> kycTokenDataOpt = kycTokenDataRepo.findByKycToken(kycToken);
-			if (!kycTokenDataOpt.isPresent()) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
-						"KYC Token not found: " + kycToken);
-				throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.KYC_TOKEN_NOT_FOUND.getErrorCode(),
-							IdAuthenticationErrorConstants.KYC_TOKEN_NOT_FOUND.getErrorMessage());
-			}
-			KycTokenData kycTokenData = kycTokenDataOpt.get();
-			validateKycToken(kycTokenData, oidcClientId, kycExchangeRequestDTO.getTransactionID());
-
+			String vciAuthToken = kycExchangeRequestDTO.getKycToken();
 			String idVid = kycExchangeRequestDTO.getIndividualId();
+			String idvidHash = securityManager.hash(idVid);
+
+			KycTokenData kycTokenData = tokenValidationHelper.findAndValidateIssuedToken(vciAuthToken, oidcClientId, 
+						kycExchangeRequestDTO.getTransactionID(), idvidHash);
+
 			String idvIdType = kycExchangeRequestDTO.getIndividualIdType();
 			Optional<PartnerPolicyResponseDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId,	oidcClientId, metadata);
 			Optional<PolicyDTO> policyDtoOpt = policyForPartner.map(PartnerPolicyResponseDTO::getPolicy);
 
 			if (!policyDtoOpt.isPresent()) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 						"Partner Policy not found: " + partnerId + ", client id: " + oidcClientId);
 				throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorCode(),
@@ -415,15 +403,15 @@ public class KycFacadeImpl implements KycFacade {
 			}
 
 			List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
-			List<String> allowedConsentAttributes = filterAllowedUserClaims(oidcClientId, consentAttributes);
+			List<String> allowedConsentAttributes = tokenValidationHelper.filterAllowedUserClaims(oidcClientId, consentAttributes);
 
 			PolicyDTO policyDto = policyDtoOpt.get();
 			List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 						.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 
 			Set<String> filterAttributes = new HashSet<>();
-			mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
-			Set<String> policyAllowedAttributes = filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
+			tokenValidationHelper.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
+			Set<String> policyAllowedAttributes = tokenValidationHelper.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 			boolean isBioRequired = false;
 			if (filterAttributes.contains(CbeffDocType.FACE.getType().value().toLowerCase()) || 
@@ -437,14 +425,15 @@ public class KycFacadeImpl implements KycFacade {
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO);
 			
 			String token = idService.getToken(idResDTO);
-			String psuToken = kycTokenDataOpt.get().getPsuToken();
+			String psuToken = kycTokenData.getPsuToken();
 			List<String> locales = kycExchangeRequestDTO.getLocales();
 			if (locales.size() == 0) {
 				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 			}
 
 
-			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid);
+			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, 
+														kycExchangeRequestDTO);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());
@@ -453,7 +442,7 @@ public class KycFacadeImpl implements KycFacade {
 			kycExchangeResponseDTO.setId(kycExchangeRequestDTO.getId());
 			kycExchangeResponseDTO.setTransactionID(kycExchangeRequestDTO.getTransactionID());
 			kycExchangeResponseDTO.setVersion(kycExchangeRequestDTO.getVersion());
-			kycExchangeResponseDTO.setResponseTime(getKycExchangeResponseTime(kycExchangeRequestDTO));
+			kycExchangeResponseDTO.setResponseTime(tokenValidationHelper.getKycExchangeResponseTime(kycExchangeRequestDTO));
 
 			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
 			encryptedKycRespDTO.setEncryptedKyc(respJson);
@@ -470,88 +459,6 @@ public class KycFacadeImpl implements KycFacade {
 		}
 	}
 
-	private void validateKycToken(KycTokenData kycTokenData, String oidcClientId, String reqTransactionId) 
-				throws IdAuthenticationBusinessException {
-		String kycToken = kycTokenData.getKycToken();
-		if (kycTokenData.getKycTokenStatus().equals(KycTokenStatusType.PROCESSED.getStatus())) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
-					"KYC Token already processed: " + kycToken);
-			throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.KYC_TOKEN_ALREADY_PROCESSED.getErrorCode(),
-						IdAuthenticationErrorConstants.KYC_TOKEN_ALREADY_PROCESSED.getErrorMessage());
-		}
-		if (!kycTokenData.getOidcClientId().equals(oidcClientId)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
-					"KYC Token does not belongs to the provided OIDC Client Id: " + kycToken);
-			throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_OIDC_CLIENT_ID.getErrorCode(),
-						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_OIDC_CLIENT_ID.getErrorMessage());
-		}
-		if (!kycTokenData.getRequestTransactionId().equals(reqTransactionId)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
-					"KYC Auth & KYC Exchange Transaction Ids are not same: " + kycToken);
-			throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_TRANSACTION_ID.getErrorCode(),
-						IdAuthenticationErrorConstants.KYC_TOKEN_INVALID_TRANSACTION_ID.getErrorMessage());
-		}
-
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchance",
-					"KYC Token found, Check Token expire.");
-		LocalDateTime tokenIssuedDateTime = kycTokenData.getTokenIssuedDateTime();
-		boolean isExpired = kycService.isKycTokenExpire(tokenIssuedDateTime, kycToken);
-
-		if (isExpired) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkKycTokenExpire", 
-					"KYC Token expired.");
-			kycTokenData.setKycTokenStatus(KycTokenStatusType.EXPIRED.getStatus());
-			kycTokenDataRepo.saveAndFlush(kycTokenData);
-			throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.KYC_TOKEN_EXPIRED.getErrorCode(),
-						IdAuthenticationErrorConstants.KYC_TOKEN_EXPIRED.getErrorMessage());
-		}
-	}
-
-	private void mapConsentedAttributesToIdSchemaAttributes(List<String> consentAttributes, Set<String> filterAttributes, 
-			List<String> policyAllowedKycAttribs) throws IdAuthenticationBusinessException {
-
-		if(consentAttributes != null && !consentAttributes.isEmpty()) {
-			for (String attrib : consentAttributes) {
-				Collection<? extends String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
-				filterAttributes.addAll(idSchemaAttribute);
-			}
-			// removing individual id from consent if the claim is not allowed in policy.
-			if (!policyAllowedKycAttribs.contains(consentedIndividualIdAttributeName)) {
-				consentAttributes.remove(consentedIndividualIdAttributeName);
-			}
-		}
-	} 
-
-	private Set<String> filterByPolicyAllowedAttributes(Set<String> filterAttributes, List<String> policyAllowedKycAttribs) {
-		return policyAllowedKycAttribs.stream()
-							.filter(attribute -> filterAttributes.contains(attribute))
-							.collect(Collectors.toSet());
-	}
-
-	private String getKycExchangeResponseTime(KycExchangeRequestDTO kycExchangeRequestDTO) {
-		String dateTimePattern = EnvUtil.getDateTimePattern();
-		return IdaRequestResponsConsumerUtil.getResponseTime(kycExchangeRequestDTO.getRequestTime(), dateTimePattern);
-	}
-
-	private List<String> filterAllowedUserClaims(String oidcClientId, List<String> consentAttributes) {
-		mosipLogger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "processKycExchange", 
-					"Checking for OIDC client allowed userclaims");
-		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
-
-		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims())
-													   .stream()
-													   .map(String::toLowerCase)
-													   .collect(Collectors.toList());
-
-		return consentAttributes.stream()
-							    .filter(claim -> oidcClientAllowedUserClaims.contains(claim.toLowerCase()))
-								.collect(Collectors.toList());
-
-	}
 
 	// Need to move below duplicate code to common to be used by OTPService and KycExchange.
 	private void saveToTxnTable(KycExchangeRequestDTO kycExchangeRequestDTO, boolean isInternal, boolean status, String partnerId, String token, 
