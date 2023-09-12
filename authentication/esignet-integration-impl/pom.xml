@@ -35,15 +35,15 @@
 		
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
-    		<artifactId>esignet-integration-api</artifactId>
-    		<version>1.2.1-SNAPSHOT</version>
+			<artifactId>esignet-core</artifactId>
+			<version>1.2.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
-			<artifactId>esignet-core</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+    		<artifactId>esignet-integration-api</artifactId>
+    		<version>1.2.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		
