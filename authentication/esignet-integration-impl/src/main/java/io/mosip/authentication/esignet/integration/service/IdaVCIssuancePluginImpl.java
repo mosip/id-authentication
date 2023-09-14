@@ -8,8 +8,9 @@ import java.util.*;
 import javax.crypto.Cipher;
 
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeResponse;
+import io.mosip.esignet.api.exception.VCIExchangeException;
+import io.mosip.esignet.api.util.ErrorConstants;
 import io.mosip.esignet.core.dto.OIDCTransaction;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -42,11 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(value = "mosip.esignet.integration.vci-plugin", havingValue = "IdaVCIssuancePluginImpl")
 public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	private static final String CLIENT_ID = "client_id";
-	private static final String RELYING_PARTY_ID = "relyingPartyId";
 	private static final String ACCESS_TOKEN_HASH = "accessTokenHash";
-	private static final String INDIVIDUAL_ID = "individualId";
-	private static final String KYC_TOKEN = "kycToken";
-	private static final String AUTH_TRANSACTION_ID = "authTransactionId";
 	public static final String SIGNATURE_HEADER_NAME = "signature";
 	public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 	public static final String OIDC_SERVICE_APP_ID = "OIDC_SERVICE";
@@ -95,10 +93,9 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 	private Base64.Decoder urlSafeDecoder = Base64.getUrlDecoder();
 
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public VCResult getVerifiableCredentialWithLinkedDataProof(VCRequestDto vcRequestDto, String holderId,
-			Map<String, Object> identityDetails) {
+	public VCResult<JsonLDObject> getVerifiableCredentialWithLinkedDataProof(VCRequestDto vcRequestDto, String holderId,
+			Map<String, Object> identityDetails) throws VCIExchangeException {
 		log.info("Started to created the VCIssuance");
 		try {
 			OIDCTransaction transaction = vciTransactionHelper
@@ -131,42 +128,31 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 					.header(SIGNATURE_HEADER_NAME, helperService.getRequestSignature(requestBody))
 					.header(AUTHORIZATION_HEADER_NAME, AUTHORIZATION_HEADER_NAME).body(requestBody);
 
-			switch (vcRequestDto.getFormat()) {
-			case "ldp_vc":
-				ResponseEntity<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseEntity = restTemplate.exchange(requestEntity,
-						new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {
-						});
-				return getLinkedDataProofCredential(responseEntity);
-			default:
-				log.error("Errors in response received from IDA VCI Exchange: {}");
-				break;
+			ResponseEntity<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseEntity = restTemplate.exchange(
+					requestEntity, new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {});
+			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
+				IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
+				if (responseWrapper.getResponse() != null) {
+					VCResult vCResult = new VCResult();
+					vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
+					vCResult.setFormat(vcRequestDto.getFormat());
+					return vCResult;
+				}
+				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());
+				throw new VCIExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+						ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
 			}
+			log.error("Error response received from IDA (VCI-exchange) with status : {}", responseEntity.getStatusCode());
 		} catch (Exception e) {
 			log.error("IDA Vci-exchange failed ", e);
 		}
-		return null;
-
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public VCResult getLinkedDataProofCredential(ResponseEntity<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseEntity) {
-		if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
-			IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
-			if (responseWrapper.getResponse() != null) {
-				VCResult vCResult = new VCResult();
-				vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
-				vCResult.setFormat("ldp_vc");
-				return vCResult;
-			}
-			log.error("Errors in response received from IDA VC Exchange: {}", responseWrapper.getErrors());
-		}
-		return null;
+		throw new VCIExchangeException();
 	}
 
 	@Override
 	public VCResult<String> getVerifiableCredential(VCRequestDto vcRequestDto, String holderId,
-			Map<String, Object> identityDetails) {
-		throw new NotImplementedException("This method is not implemented");
+			Map<String, Object> identityDetails) throws VCIExchangeException {
+		throw new VCIExchangeException(ErrorConstants.NOT_IMPLEMENTED);
 	}
 
 	protected String getIndividualId(String encryptedIndividualId) throws Exception {
