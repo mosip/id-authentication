@@ -104,7 +104,7 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 			}
 
 			if (!errors.hasErrors()) {
-				validateCredentialType(vciExchangeRequestDTO.getCredentialsDefinition().getType(), errors, IdAuthCommonConstants.VC_CREDENTIAL_TYPE);
+				validateCredentialType(vciExchangeRequestDTO.getCredentialsDefinition().getType(), errors, IdAuthCommonConstants.VC_CREDENTIAL_DEF);
 			}
 
 		} else {
@@ -150,16 +150,16 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 	private void validateCredentialType(List<String> credentialType, Errors errors, String paramName) {
 		if (credentialType == null || credentialType.isEmpty()) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					MISSING_INPUT_PARAMETER + paramName);
+					MISSING_INPUT_PARAMETER + paramName + "/type" );
 			errors.rejectValue(paramName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { paramName },
+					new Object[] { paramName + "/type" },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			if(!supportedCredTypes.containsAll(credentialType)) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					MISSING_INPUT_PARAMETER + paramName);
+					MISSING_INPUT_PARAMETER + paramName + "/type" );
 				errors.rejectValue(paramName, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { paramName },
+						new Object[] { paramName + "/type" },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}

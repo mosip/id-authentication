@@ -443,6 +443,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String  VCI_EXCHANGE_SUCCESS = "VciExchange status : true";
 
+	public static final String VC_CREDENTIAL_DEF = "credentialsDefinition";
+
 	private IdAuthCommonConstants() {
 	}
 }
