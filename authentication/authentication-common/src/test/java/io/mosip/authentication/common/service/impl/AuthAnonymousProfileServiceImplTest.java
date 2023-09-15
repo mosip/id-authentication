@@ -71,6 +71,7 @@ public class AuthAnonymousProfileServiceImplTest {
 	Map<String, Object> requestMetadata = null;
 	Map<String, Object> responseMetadata = null;
 	Map<String,List<IdentityInfoDTO>> idInfoMap = null;
+	List<AuthError> errorCodes = null;
 	
 	@Before
 	public void before() {
@@ -79,6 +80,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		 requestMetadata = new HashMap<>();
 		 responseMetadata = new HashMap<>();
 		 idInfoMap = new HashMap<String, List<IdentityInfoDTO>>();
+		 errorCodes = new ArrayList<>();
 			
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
@@ -103,7 +105,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
 	}
 	
@@ -123,7 +125,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getDynamicEntityInfoAsString(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("eng"), anonymousProfile.getPreferredLanguages());
 	}
 	
@@ -143,7 +145,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals("Female", anonymousProfile.getGender());
 	}
 	
@@ -168,7 +170,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		responseBody.put("response", authResponse);
 		
 		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}
 	
@@ -202,7 +204,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(1, anonymousProfile.getBiometricInfo().size());
 		assertEquals("Iris", anonymousProfile.getBiometricInfo().get(0).getType());
 		assertEquals("LEFT", anonymousProfile.getBiometricInfo().get(0).getSubtype());
@@ -221,7 +223,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(3, anonymousProfile.getAuthFactors().size());
 		assertEquals(List.of("OTP-REQUEST","DEMO-AUTH","BIO-AUTH"), anonymousProfile.getAuthFactors());
 
@@ -234,7 +236,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		partner.setPartnerId("abc");
 		requestMetadata.put("partnerId", "abc");
 		requestMetadata.put("abc", partner);
-		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, null);
+		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(partner.getPartnerName(), anonymousProfile.getPartnerName());
 	}
 	
