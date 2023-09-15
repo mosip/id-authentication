@@ -25,8 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -91,6 +89,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_YourOfBirthTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		List<IdentityInfoDTO> dobList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO dob = new IdentityInfoDTO();
 		dob.setLanguage("Eng");
@@ -98,6 +98,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		dobList.add(dob);
 		idInfoMap.put("dateOfBirth", dobList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
+
 		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
@@ -111,6 +112,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_PreferredLangTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage("eng");
@@ -131,6 +134,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_GenderTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		List<IdentityInfoDTO> genderList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO gender = new IdentityInfoDTO();
 		gender.setLanguage("eng");
@@ -151,6 +156,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_LocationTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage(null);
@@ -176,6 +183,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, IOException {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		List<IdentityInfoDTO> preferedLangList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO lang = new IdentityInfoDTO();
 		lang.setLanguage("eng");
@@ -214,6 +223,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_AuthFactorsTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		AutnTxn authTxn = new AutnTxn();
 		authTxn.setAuthTypeCode("OTP-REQUEST,DEMO-AUTH,BIO-AUTH");
 		responseMetadata.put("AutnTxn",authTxn);
@@ -231,6 +242,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileWith_PartnerTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		PartnerDTO partner = new PartnerDTO();
 		partner.setPartnerName("SyncByte");
 		partner.setPartnerId("abc");
@@ -243,6 +256,8 @@ public class AuthAnonymousProfileServiceImplTest {
 	
 	@Test
 	public void createAnonymousProfileExceptionTest() throws IdAuthenticationBusinessException  {
+		requestBody = new HashMap<>();
+		requestMetadata = new HashMap<>();
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "false");
 		authResponse.put("authToken", "");
