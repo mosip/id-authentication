@@ -9,6 +9,7 @@ import javax.crypto.Cipher;
 
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeResponse;
 import io.mosip.esignet.core.dto.OIDCTransaction;
+import io.mosip.esignet.core.util.IdentityProviderUtil;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
