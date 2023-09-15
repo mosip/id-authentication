@@ -89,6 +89,9 @@ public class VciServiceImpl implements VciService {
 		OBJECT_MAPPER.registerModule(new AfterburnerModule());
 	}
 
+	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
+	private String consentedIndividualAttributeName;
+
 	@Value("${mosip.ida.config.server.file.storage.uri:}")
 	private String configServerFileStorageUrl;
 	
@@ -294,7 +297,7 @@ public class VciServiceImpl implements VciService {
 				List<String> locales, Set<String> allowedAttributes, VciExchangeRequestDTO vciExchangeRequestDTO, 
 				String psuToken) throws IdAuthenticationBusinessException {
 
-		Map<String, Object> credSubjectMap = getCredSubjectMap(credSubjectId, idInfo, locales, allowedAttributes);
+		Map<String, Object> credSubjectMap = getCredSubjectMap(credSubjectId, idInfo, locales, allowedAttributes, vciExchangeRequestDTO);
 		try {
 			Map<String, Object> verCredJsonObject = new HashMap<>();
 
@@ -361,13 +364,18 @@ public class VciServiceImpl implements VciService {
 	}
 
 	private Map<String, Object> getCredSubjectMap(String credSubjectId, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> locales, Set<String> allowedAttributes) throws IdAuthenticationBusinessException {
+				List<String> locales, Set<String> allowedAttributes, VciExchangeRequestDTO vciExchangeRequestDTO) 
+				throws IdAuthenticationBusinessException {
 		Map<String, Object> credSubjectMap = new HashMap<>();
 			
 		credSubjectMap.put(IdAuthCommonConstants.VC_ID, credSubjectId);
-		
+
 		for (String attrib : allowedAttributes) {
-			List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(attrib);
+			if (consentedIndividualAttributeName.equals(attrib)) {
+				credSubjectMap.put(vciExchangeRequestDTO.getIndividualIdType(), vciExchangeRequestDTO.getIndividualId());
+				continue;
+			}
+			
 			if (attrib.equalsIgnoreCase(BiometricType.FACE.value())) {
 				Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 				if (Objects.nonNull(faceEntityInfoMap)) {
@@ -382,7 +390,9 @@ public class VciServiceImpl implements VciService {
 					}
 					
 				}
+				continue;
 			}
+			List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(attrib);
 			for (String idSchemaAttribute : idSchemaAttributes) {
 				List<IdentityInfoDTO> idInfoList = idInfo.get(idSchemaAttribute);
 				if (Objects.isNull(idInfoList))
