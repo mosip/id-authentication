@@ -107,8 +107,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		MasterDataUpdateEventInitializer.class, IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class,
 		LangComparatorConfig.class, OpenApiProperties.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, 
-		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class,
-	HSMHealthCheck.class, PrivateKeyDecryptorHelper.class })
+		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class, 
+		HSMHealthCheck.class, PrivateKeyDecryptorHelper.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
@@ -124,4 +124,5 @@ public class OtpApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OtpApplication.class, args);
 	}
+
 }

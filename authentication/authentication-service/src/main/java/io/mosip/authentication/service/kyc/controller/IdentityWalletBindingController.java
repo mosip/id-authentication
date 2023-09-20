@@ -147,7 +147,7 @@ public class IdentityWalletBindingController {
 						metadata != null && 
 								metadata.get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
 										metadata.get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
-					keyBindingResponseDto = keyIdentityFacade.processIdentityKeyBinding(identityKeyBindingRequestDTO, authResponseDTO, 
+ 					keyBindingResponseDto = keyIdentityFacade.processIdentityKeyBinding(identityKeyBindingRequestDTO, authResponseDTO, 
 								partnerId, oidcClientId, metadata);
 				}
 				return keyBindingResponseDto;

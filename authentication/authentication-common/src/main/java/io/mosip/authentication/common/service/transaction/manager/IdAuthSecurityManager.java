@@ -10,13 +10,13 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Map.Entry;
-import java.util.AbstractMap.SimpleEntry;
 
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
@@ -193,7 +193,7 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
-
+	
 	/**
 	 * Gets the user.
 	 *
