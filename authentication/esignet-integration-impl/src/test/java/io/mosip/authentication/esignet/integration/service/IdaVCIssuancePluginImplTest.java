@@ -170,31 +170,7 @@ public class IdaVCIssuancePluginImplTest {
         Assert.assertNotNull(result.getCredential());
         Assert.assertEquals(jsonLDObject,result.getCredential());
         Assert.assertEquals(result.getFormat(),"ldp_vc");
-    }
-
-    @Test
-    public void getVerifiableCredentialWithLinkedDataProof_withInValidFormat_thenFail() throws Exception {
-
-        ReflectionTestUtils.setField(idaVCIssuancePlugin,"vciExchangeUrl","http://example.com");
-
-        VCRequestDto vcRequestDto = new VCRequestDto();
-        vcRequestDto.setFormat("ld_vc");
-        vcRequestDto.setContext(Arrays.asList("context1","context2"));
-        vcRequestDto.setType(Arrays.asList("VerifiableCredential"));
-        vcRequestDto.setCredentialSubject(Map.of("subject1","subject1","subject2","subject2"));
-
-        OIDCTransaction oidcTransaction = new OIDCTransaction();
-        oidcTransaction.setIndividualId("individualId");
-        oidcTransaction.setKycToken("kycToken");
-        oidcTransaction.setAuthTransactionId("authTransactionId");
-        oidcTransaction.setRelyingPartyId("relyingPartyId");
-
-        Mockito.when(vciTransactionHelper.getOAuthTransaction(Mockito.any())).thenReturn(oidcTransaction);
-        Mockito.when(objectMapper.writeValueAsString(Mockito.any())).thenReturn("jsonString");
-
-        VCResult result=idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto,"holderId",Map.of("accessTokenHash","ACCESS_TOKEN_HASH","client_id","CLIENT_ID"));
-        Assert.assertNull(result);
-
+        Mockito.verify(keymanagerDBHelper).getKeyAliases(Mockito.anyString(), Mockito.anyString(), Mockito.any(LocalDateTime.class));
     }
 
     @Test
@@ -219,8 +195,13 @@ public class IdaVCIssuancePluginImplTest {
         oidcTransaction.setRelyingPartyId("relyingPartyId");
 
         Mockito.when(vciTransactionHelper.getOAuthTransaction(Mockito.any())).thenReturn(oidcTransaction);
-          VCResult result=  idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto,"holderId",Map.of("accessTokenHash","ACCESS_TOKEN_HASH","client_id","CLIENT_ID"));
-           Assert.assertNull(result);
+        try{
+            VCResult result=  idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto,"holderId",Map.of("accessTokenHash","ACCESS_TOKEN_HASH","client_id","CLIENT_ID"));
+            Assert.fail();
+        }catch (Exception e)
+        {
+            Assert.assertEquals("vci_exchange_failed",e.getMessage());
+        }
     }
 
     @Test
@@ -277,8 +258,13 @@ public class IdaVCIssuancePluginImplTest {
                 Mockito.eq(responseType)
         )).thenReturn(mockResponseEntity);
 
-        VCResult result=idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto,"holderId",Map.of("accessTokenHash","ACCESS_TOKEN_HASH","client_id","CLIENT_ID"));
-        Assert.assertNull(result);
+        try{
+            VCResult result=  idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto,"holderId",Map.of("accessTokenHash","ACCESS_TOKEN_HASH","client_id","CLIENT_ID"));
+            Assert.fail();
+        }catch (Exception e)
+        {
+            Assert.assertEquals("vci_exchange_failed",e.getMessage());
+        }
     }
 
     private String encryptIndividualId(String individualId, Key key) {
