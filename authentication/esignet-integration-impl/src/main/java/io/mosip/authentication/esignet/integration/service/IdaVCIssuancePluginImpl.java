@@ -201,7 +201,12 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 		if(langCodes == null || langCodes.length == 0)
 			return List.of("eng");
 		return Arrays.stream(langCodes)
-				.map(langCode -> new Locale(langCode).getISO3Language())
+				.map(langCode -> {
+					if(langCode.contains("-"))
+						return new Locale(langCode.split("-")[0]).getISO3Language();
+					else
+						return new Locale(langCode).getISO3Language();
+				})
 				.collect(Collectors.toList());
 	}
 }
