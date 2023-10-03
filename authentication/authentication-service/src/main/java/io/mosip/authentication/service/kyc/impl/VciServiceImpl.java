@@ -1,4 +1,3 @@
-package io.mosip.authentication.service.kyc.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COLON;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.JWK_KEY_TYPE;
@@ -399,15 +398,21 @@ public class VciServiceImpl implements VciService {
 					continue;
 				if (idInfoList.size() == 1) {
 					IdentityInfoDTO identityInfo = idInfoList.get(0);
-					if (Objects.isNull(identityInfo.getLanguage()))
-						credSubjectMap.put(idSchemaAttribute, idInfoList.get(0).getValue());
+					if (Objects.isNull(identityInfo.getLanguage())) {
+						String value = identityInfo.getValue();
+						if (Objects.nonNull(value) && (value.trim().length() > 0))
+							credSubjectMap.put(idSchemaAttribute, value);
+					}
 					else {
 						Map<String, String> valueMap = new HashMap<>();
 						String lang = identityInfo.getLanguage();
 						if (locales.contains(lang)) {
-							valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, lang);
-							valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
-							credSubjectMap.put(idSchemaAttribute, valueMap);
+							String value = identityInfo.getValue();
+							if (Objects.nonNull(value) && (value.trim().length() > 0)) {
+								valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, lang);
+								valueMap.put(IdAuthCommonConstants.VALUE_STRING, value);
+								credSubjectMap.put(idSchemaAttribute, valueMap);
+							}
 						}
 					}
 					continue;
@@ -417,12 +422,16 @@ public class VciServiceImpl implements VciService {
 					Map<String, String> valueMap = new HashMap<>();
 					String lang = identityInfo.getLanguage();
 					if (locales.contains(lang)) {
-						valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, identityInfo.getLanguage());
-						valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
-						valueList.add(valueMap);
+						String value = identityInfo.getValue();
+						if (Objects.nonNull(value) && (value.trim().length() > 0)) {
+							valueMap.put(IdAuthCommonConstants.LANGUAGE_STRING, identityInfo.getLanguage());
+							valueMap.put(IdAuthCommonConstants.VALUE_STRING, identityInfo.getValue());
+							valueList.add(valueMap);
+						}
 					}
 				}
-				credSubjectMap.put(idSchemaAttribute, valueList);
+				if (valueList.size() > 0)
+					credSubjectMap.put(idSchemaAttribute, valueList);
 			}
 		}
 		return credSubjectMap;

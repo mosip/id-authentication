@@ -3,6 +3,7 @@
  */
 package io.mosip.authentication.service.kyc.facade;
 
+import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,11 +27,13 @@ import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.KycTokenData;
+import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.TokenValidationHelper;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
+import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
@@ -70,6 +73,7 @@ import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import reactor.util.function.Tuple3;
 
@@ -132,6 +136,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private TokenValidationHelper tokenValidationHelper;
+
+	@Autowired
+	private ExchangeDataAttributesUtil exchangeDataAttributesUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -399,15 +406,15 @@ public class KycFacadeImpl implements KycFacade {
 			}
 
 			List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
-			List<String> allowedConsentAttributes = tokenValidationHelper.filterAllowedUserClaims(oidcClientId, consentAttributes);
+			List<String> allowedConsentAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
 
 			PolicyDTO policyDto = policyDtoOpt.get();
 			List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 						.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 
 			Set<String> filterAttributes = new HashSet<>();
-			tokenValidationHelper.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
-			Set<String> policyAllowedAttributes = tokenValidationHelper.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
+			exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
+			Set<String> policyAllowedAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 			boolean isBioRequired = false;
 			if (filterAttributes.contains(CbeffDocType.FACE.getType().value().toLowerCase()) || 
@@ -438,7 +445,7 @@ public class KycFacadeImpl implements KycFacade {
 			kycExchangeResponseDTO.setId(kycExchangeRequestDTO.getId());
 			kycExchangeResponseDTO.setTransactionID(kycExchangeRequestDTO.getTransactionID());
 			kycExchangeResponseDTO.setVersion(kycExchangeRequestDTO.getVersion());
-			kycExchangeResponseDTO.setResponseTime(tokenValidationHelper.getKycExchangeResponseTime(kycExchangeRequestDTO));
+			kycExchangeResponseDTO.setResponseTime(exchangeDataAttributesUtil.getKycExchangeResponseTime(kycExchangeRequestDTO));
 
 			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
 			encryptedKycRespDTO.setEncryptedKyc(respJson);
@@ -454,7 +461,6 @@ public class KycFacadeImpl implements KycFacade {
 			throw e;
 		}
 	}
-
 
 	// Need to move below duplicate code to common to be used by OTPService and KycExchange.
 	private void saveToTxnTable(KycExchangeRequestDTO kycExchangeRequestDTO, boolean isInternal, boolean status, String partnerId, String token, 
