@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.authentication.service.kyc.facade;
 
 import java.util.ArrayList;
@@ -52,6 +49,7 @@ import io.mosip.authentication.core.spi.indauth.facade.VciFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.service.kyc.impl.VciServiceImpl;
+import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -104,6 +102,9 @@ public class VciFacadeImpl implements VciFacade {
 	@Autowired
 	private KycTokenDataRepository kycTokenDataRepo;
 
+	@Autowired
+	private ExchangeDataAttributesUtil exchangeDataAttributesUtil;
+
 	@Override
 	public VciExchangeResponseDTO processVciExchange(VciExchangeRequestDTO vciExchangeRequestDTO, String partnerId, 
 			String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException {
@@ -133,15 +134,15 @@ public class VciFacadeImpl implements VciFacade {
 
 			// Will implement later the consent claims based on credential definition input
 			List<String> consentAttributes = Collections.emptyList();  
-			List<String> allowedConsentAttributes = tokenValidationHelper.filterAllowedUserClaims(oidcClientId, consentAttributes);
+			List<String> allowedConsentAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
 
 			PolicyDTO policyDto = policyDtoOpt.get();
 			List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 						.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 
 			Set<String> filterAttributes = new HashSet<>();
-			tokenValidationHelper.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
-			Set<String> policyAllowedAttributes = tokenValidationHelper.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
+			exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
+			Set<String> policyAllowedAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 			boolean isBioRequired = false;
 			if (filterAttributes.contains(CbeffDocType.FACE.getType().value().toLowerCase()) || 
@@ -178,7 +179,7 @@ public class VciFacadeImpl implements VciFacade {
 			vciExchangeResponseDTO.setId(vciExchangeRequestDTO.getId());
 			vciExchangeResponseDTO.setTransactionID(vciExchangeRequestDTO.getTransactionID());
 			vciExchangeResponseDTO.setVersion(vciExchangeRequestDTO.getVersion());
-			vciExchangeResponseDTO.setResponseTime(tokenValidationHelper.getKycExchangeResponseTime(vciExchangeRequestDTO));
+			vciExchangeResponseDTO.setResponseTime(exchangeDataAttributesUtil.getKycExchangeResponseTime(vciExchangeRequestDTO));
 			vciExchangeResponseDTO.setResponse(vcResponseDTO);
 			saveToTxnTable(vciExchangeRequestDTO, false, true, partnerId, token, vciExchangeResponseDTO, requestWithMetadata);
 			auditHelper.audit(AuditModules.VCI_EXCHANGE, AuditEvents.VCI_EXCHANGE_REQUEST_RESPONSE,

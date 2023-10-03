@@ -4,6 +4,7 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.crypto.Cipher;
 
@@ -111,8 +112,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			idaVciExchangeRequest.setIndividualId(individualId);
 			idaVciExchangeRequest.setCredSubjectId(holderId);
 			idaVciExchangeRequest.setVcFormat(vcRequestDto.getFormat());
-			idaVciExchangeRequest.setLocales(transaction.getClaimsLocales() != null ?
-					Arrays.asList(transaction.getClaimsLocales()) : List.of("eng"));
+			idaVciExchangeRequest.setLocales(convertLangCodesToISO3LanguageCodes(transaction.getClaimsLocales()));
 			vciCred.setCredentialSubject(vcRequestDto.getCredentialSubject());
 			vciCred.setType(vcRequestDto.getType());
 			vciCred.setContext(vcRequestDto.getContext());
@@ -194,5 +194,14 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 
 	private byte[] b64Decode(String value) {
 		return urlSafeDecoder.decode(value);
+	};
+
+	//Converts an array of two-letter language codes to their corresponding ISO 639-2/T language codes.
+	private List<String> convertLangCodesToISO3LanguageCodes(String[] langCodes) {
+		if(langCodes == null || langCodes.length == 0)
+			return List.of("eng");
+		return Arrays.stream(langCodes)
+				.map(langCode -> new Locale(langCode).getISO3Language())
+				.collect(Collectors.toList());
 	}
 }
