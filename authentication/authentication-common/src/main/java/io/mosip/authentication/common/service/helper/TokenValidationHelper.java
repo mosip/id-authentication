@@ -1,26 +1,17 @@
+package io.mosip.authentication.common.service.helper;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.entity.KycTokenData;
-import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
-import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
-import io.mosip.authentication.common.service.util.EnvUtil;
-import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.KycTokenStatusType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.logger.spi.Logger;

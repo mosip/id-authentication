@@ -1,3 +1,4 @@
+package io.mosip.authentication.service.kyc.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COLON;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.JWK_KEY_TYPE;
