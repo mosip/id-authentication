@@ -139,7 +139,7 @@ public class VCIController {
 				
 				return vciExchangeResponseDTO;
 			} catch (IDDataValidationException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processIdKeyBinding",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "vciExchange",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
@@ -148,7 +148,7 @@ public class VCIController {
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, vciExchangeRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWrapperWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processIdKeyBinding",
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "vciExchange",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				authTransactionHelper.setAuthTransactionEntityMetadata(e, authTxnBuilder, requestWrapperWithMetadata);

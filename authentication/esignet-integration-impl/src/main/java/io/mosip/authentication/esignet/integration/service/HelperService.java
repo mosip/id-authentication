@@ -47,6 +47,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -71,10 +72,12 @@ public class HelperService {
     public static final String BINDING_TRANSACTION = "bindingtransaction";
     private static Base64.Encoder urlSafeEncoder;
     private static Base64.Decoder urlSafeDecoder;
+    private static SecureRandom secureRandom;
 
     static {
         urlSafeEncoder = Base64.getUrlEncoder().withoutPadding();
         urlSafeDecoder = Base64.getUrlDecoder();
+        secureRandom = new SecureRandom();
     }
 
     @Value("${mosip.esignet.authenticator.ida-send-otp-id:mosip.identity.otp}")
@@ -264,7 +267,7 @@ public class HelperService {
     protected static String generateTransactionId(int length) {
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<length; i++) {
-            int index = ThreadLocalRandom.current().nextInt(CHARACTERS.length());
+            int index = secureRandom.nextInt(CHARACTERS.length());
             builder.append(CHARACTERS.charAt(index));
         }
         return builder.toString();
