@@ -72,6 +72,9 @@ public class ExchangeDataAttributesUtil {
 		mosipLogger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "filterAllowedUserClaims", 
 					"Checking for OIDC client allowed userclaims");
 		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+		if(oidcClientData.isEmpty()) {
+			return List.of();
+		}
 
 		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims())
 													   .stream()
