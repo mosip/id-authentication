@@ -20,7 +20,7 @@ public class VCITransactionHelper {
 	@SuppressWarnings("unchecked")
 	public OIDCTransaction getOAuthTransaction(String accessTokenHash) throws Exception {
 		if (cacheManager.getCache(userinfoCache) != null) {
-			return cacheManager.getCache(userinfoCache).get(accessTokenHash, OIDCTransaction.class);
+			return cacheManager.getCache(userinfoCache).get(accessTokenHash, OIDCTransaction.class);	//NOSONAR getCache() will not be returning null here.
 		}
 		throw new Exception("cache_missing");
 	}
