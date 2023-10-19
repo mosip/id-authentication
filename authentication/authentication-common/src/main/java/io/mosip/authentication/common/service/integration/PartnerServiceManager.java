@@ -209,8 +209,8 @@ public class PartnerServiceManager {
 				if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
 						|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
 						.isBefore(DateUtils.getUTCCurrentDateTime())) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
-							IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorMessage());
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorCode(),
+							IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorMessage());
 				}
 			} else {
 				logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "OIDC_client_validation", 

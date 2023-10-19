@@ -147,6 +147,9 @@ public enum IdAuthenticationErrorConstants {
 	UNAUTHORISED_VCI_EXCHANGE_PARTNER("IDA-MPA-036", "Partner is unauthorised for VCI-Exchange"),
 	VCI_EXCHANGE_NOT_ALLOWED("IDA-MPA-037", "%s not allowed as per policy",
 			"Please try after updating misp policy"),
+	URI_PATH_PARAMS_MISSING("IDA-MPA-038", "Required Number of Path parameters are missing in URI",
+			"Please try adding all the required path parameters."),
+	PARTNER_API_EXPIRED("IDA-MPA-039", "Partner API is expired or using before Commence Start Date."),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
