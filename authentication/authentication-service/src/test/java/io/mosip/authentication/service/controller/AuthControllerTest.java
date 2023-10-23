@@ -5,7 +5,16 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
+import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.util.TestHttpServletRequest;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.partner.dto.PartnerDTO;
+import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,7 +62,6 @@ import io.mosip.idrepository.core.helper.RestHelper;
  * 
  * @author Prem Kumar
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -62,9 +70,9 @@ public class AuthControllerTest {
 	@Mock
 	private RestHelper restHelper;
 
-	@Autowired
+	@Mock
 	EnvUtil env;
-	
+
 	@Autowired
 	Environment environment;
 
@@ -92,17 +100,31 @@ public class AuthControllerTest {
 	@Mock
 	private AuthRequestValidator authRequestValidator;
 
+	@Mock
+	private IdTypeUtil idTypeUtil;
+
+	@Mock
+	private AuthTransactionHelper authTransactionHelper;
+
+	@Mock
+	private PartnerService partnerService;
+
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(EkycAuthRequestDTO.class, "kycAuthReqDTO");
+
+	TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(env, "env", environment);
-		ReflectionTestUtils.setField(auditFactory, "env", env);
+		//ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authFacade);
 		ReflectionTestUtils.setField(authFacade, "env", env);
+
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
 	}
 
 	/*
@@ -116,7 +138,17 @@ public class AuthControllerTest {
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", null);
+		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
+		Optional<PartnerDTO> partner = Optional.empty();
+		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+				.thenReturn(AuthTransactionBuilder.newInstance());
+		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
+
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
 	}
 
@@ -125,9 +157,17 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
+		Optional<PartnerDTO> partner = Optional.empty();
+		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
+		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+				.thenReturn(authTransactionBuilder);
+		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", null);
+
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
 	}
 
@@ -137,7 +177,7 @@ public class AuthControllerTest {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
-		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", null);
+		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
 	}
 
@@ -145,21 +185,21 @@ public class AuthControllerTest {
 	public void TestValidOtpRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", null);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", requestWithMetadata);
 	}
 
 	@Test
 	public void TestValidDemoRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", null);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", requestWithMetadata);
 	}
 
 	@Test
 	public void TestValidPinRequest()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authRequestDTO = getRequestDto();
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", null);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", requestWithMetadata);
 	}
 
 	@Test
@@ -194,7 +234,7 @@ public class AuthControllerTest {
 
 		request.setBiometrics(bioIdentityList);
 		authRequestDTO.setRequest(request);
-		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", null);
+		authController.authenticateIndividual(authRequestDTO, error, "123456", "123456","1234567", requestWithMetadata);
 	}
 
 	private AuthRequestDTO getRequestDto() {
@@ -203,7 +243,7 @@ public class AuthControllerTest {
 		authRequestDTO.setIndividualId("274390482564");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		return authRequestDTO;

@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.controller;
+package io.mosip.authentication.service.kyc.controller;
 
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
@@ -88,11 +88,10 @@ public class VCIControllerTest {
         VciExchangeResponseDTO vciExchangeResponseDTO = new VciExchangeResponseDTO();
 
         vciExchangeRequestDTO.setIndividualIdType(IdType.UIN.getType());
-        AuthTransactionBuilder authTxnBuilder = AuthTransactionBuilder.newInstance();
         Optional<PartnerDTO> partner = Optional.empty();
         Mockito.when(partnerService.getPartner("partnerId", vciExchangeRequestDTO.getMetadata())).thenReturn(partner);
         Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(vciExchangeRequestDTO, !false, partner))
-                .thenReturn(authTxnBuilder);
+                .thenReturn(AuthTransactionBuilder.newInstance());
 
         Mockito.when(vciFacade.processVciExchange(vciExchangeRequestDTO, "auth-partner-id",
                 "oidc-client-id", vciExchangeRequestDTO.getMetadata(), requestWithMetadata)).thenReturn(vciExchangeResponseDTO);
