@@ -205,7 +205,7 @@ public class IdaVCIssuancePluginImplTest {
     }
 
     @Test
-    public void getVerifiableCredentialWithLinkedDataProof_withInVlidResponse_thenFail() throws Exception {
+    public void getVerifiableCredentialWithLinkedDataProof_withInValidResponse_thenFail() throws Exception {
 
         ReflectionTestUtils.setField(idaVCIssuancePlugin,"vciExchangeUrl","http://example.com");
         ReflectionTestUtils.setField(idaVCIssuancePlugin,"storeIndividualId",true);
