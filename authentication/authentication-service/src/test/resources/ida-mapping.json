@@ -95,6 +95,9 @@
 		},
 		"fullAddress": {
 			"value": "addressLine1,addressLine2,addressLine3,city,region,province,postalCode"
+		},
+		"address": {
+			"value": "addressLine1,addressLine2,addressLine3,city,region,province,postalCode"
 		}
 	},
 	"metaInfo": {
