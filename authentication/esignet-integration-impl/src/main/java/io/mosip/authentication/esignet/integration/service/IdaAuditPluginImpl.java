@@ -72,8 +72,15 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
 			auditRequest.setApplicationName(ESIGNET);
-			auditRequest.setSessionUserId(StringUtils.isEmpty(username)?"no-user":username);
-			auditRequest.setSessionUserName(StringUtils.isEmpty(username)?"no-user":username);
+			String sessionUserId = StringUtils.isEmpty(username) ? "" : username;
+			String sessionUserName = StringUtils.isEmpty(username) ? "" : username;
+			if (StringUtils.isEmpty(username)) {
+				throw new IllegalArgumentException("Username cannot be empty");
+			}
+			else {
+				auditRequest.setSessionUserId(sessionUserId);
+				auditRequest.setSessionUserName(sessionUserName);
+			}
 			auditRequest.setIdType(TRANSACTION);
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
 			auditRequest.setModuleName(getModuleByAction(action));

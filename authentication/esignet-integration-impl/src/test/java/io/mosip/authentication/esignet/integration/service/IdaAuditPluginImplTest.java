@@ -81,20 +81,6 @@ public class IdaAuditPluginImplTest {
     }
 
     @Test
-    public void logAudit_WithEmptyUsername_ThenPass() {
-        String username = "";
-        Action action = Action.GET_USERINFO;
-        ActionStatus status = ActionStatus.ERROR;
-        AuditDTO auditDTO = new AuditDTO();
-        try {
-            idaAuditPlugin.logAudit(username, action, status, auditDTO, null);
-            Assert.assertTrue(true);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
     public void logAudit_WithUsername_WithThrowable_ThenPass() throws Exception {
         String username = "username";
         Action action = Action.GENERATE_TOKEN;
