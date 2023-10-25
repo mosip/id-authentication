@@ -41,7 +41,6 @@ public class AuthTransactionHelperTest {
 
         when(restTemplate.exchange(Mockito.any(RequestEntity.class), Mockito.any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);
-
         String authToken = authTransactionHelper.getAuthToken();
         Assert.assertEquals(expectedAuthToken, authToken);
     }
