@@ -66,6 +66,7 @@ public class IdaAuditPluginImplTest {
             Assert.fail();
         }
     }
+
     @Test
     public void logAudit_WithUsername_WithValidDetails_ThenPass() {
         String username = "username";
@@ -93,7 +94,7 @@ public class IdaAuditPluginImplTest {
         } catch (Exception e) {
             Assert.fail();
         }
-}
+    }
 
     @Test
     public void logAudit_WithValidStatus_ThenPass() throws Exception {
