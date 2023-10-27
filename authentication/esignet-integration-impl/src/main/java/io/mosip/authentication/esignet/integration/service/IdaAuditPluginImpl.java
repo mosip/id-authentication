@@ -54,6 +54,9 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 
 	@Override
 	public void logAudit(String username, Action action, ActionStatus status, AuditDTO audit, Throwable t) {
+		if (t!=null && StringUtils.isEmpty(username)) {
+			throw new IllegalArgumentException("Username cannot be empty or null in the audit");
+		}
 		audit(username, action, status, audit);
 	}
 
@@ -72,15 +75,11 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
 			auditRequest.setApplicationName(ESIGNET);
-			String sessionUserId = StringUtils.isEmpty(username) ? "" : username;
-			String sessionUserName = StringUtils.isEmpty(username) ? "" : username;
-			if (StringUtils.isEmpty(username)) {
-				throw new IllegalArgumentException("Username cannot be empty");
-			}
-			else {
-				auditRequest.setSessionUserId(sessionUserId);
-				auditRequest.setSessionUserName(sessionUserName);
-			};
+			String sessionUserId = username;
+			String sessionUserName = username;
+
+			auditRequest.setSessionUserId(sessionUserId);
+			auditRequest.setSessionUserName(sessionUserName);
 			auditRequest.setIdType(TRANSACTION);
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
 			auditRequest.setModuleName(getModuleByAction(action));

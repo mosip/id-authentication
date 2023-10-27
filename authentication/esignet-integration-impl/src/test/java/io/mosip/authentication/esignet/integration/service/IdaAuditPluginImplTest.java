@@ -80,7 +80,17 @@ public class IdaAuditPluginImplTest {
     }
 
     @Test
-    public void logAudit_WithUsername_WithThrowable_ThenPass() throws Exception {
+    public void logAudit_WithEmptyUsername_ThenFail() {
+        String username = "";
+        Action action = Action.OIDC_CLIENT_UPDATE;
+        ActionStatus status = ActionStatus.SUCCESS;
+        AuditDTO auditDTO = new AuditDTO();
+        Throwable throwable = new RuntimeException("Test Exception");
+        Assert.assertThrows(IllegalArgumentException.class,() -> idaAuditPlugin.logAudit(username, action, status, auditDTO, throwable));
+    }
+
+    @Test
+    public void logAudit_WithUsername_WithThrowable() throws Exception {
         String username = "username";
         Action action = Action.GENERATE_TOKEN;
         ActionStatus status = ActionStatus.SUCCESS;
@@ -101,7 +111,6 @@ public class IdaAuditPluginImplTest {
         Action action = Action.SAVE_CONSENT;
         ActionStatus status = ActionStatus.SUCCESS;
         AuditDTO auditDTO = new AuditDTO();
-        Throwable throwable = new RuntimeException("Test Exception");
         ResponseWrapper<AuditResponse> mockresponseWrapper = new ResponseWrapper<>();
         ResponseEntity<ResponseWrapper> responseEntity = ResponseEntity.ok(mockresponseWrapper);
         ParameterizedTypeReference<ResponseWrapper> responseType =
@@ -114,7 +123,7 @@ public class IdaAuditPluginImplTest {
                 Mockito.eq(responseType)
         )).thenReturn(responseEntity);
         try {
-            idaAuditPlugin.logAudit(username,action, status, auditDTO, throwable);
+            idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
         } catch (Exception e) {
             Assert.fail();
@@ -128,7 +137,6 @@ public class IdaAuditPluginImplTest {
         Action action = Action.SAVE_CONSENT;
         ActionStatus status = ActionStatus.SUCCESS;
         AuditDTO auditDTO = new AuditDTO();
-        Throwable throwable = new RuntimeException("Test Exception");
         ResponseWrapper<AuditResponse> mockresponseWrapper = new ResponseWrapper<>();
         ResponseEntity<ResponseWrapper> responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mockresponseWrapper);
         ParameterizedTypeReference<ResponseWrapper> responseType =
@@ -141,7 +149,7 @@ public class IdaAuditPluginImplTest {
                 Mockito.eq(responseType)
         )).thenReturn(responseEntity);
         try {
-            idaAuditPlugin.logAudit(username,action, status, auditDTO, throwable);
+            idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
         } catch (Exception e) {
             Assert.fail();
@@ -156,7 +164,6 @@ public class IdaAuditPluginImplTest {
         Action action = Action.SAVE_CONSENT;
         ActionStatus status = ActionStatus.SUCCESS;
         AuditDTO auditDTO = new AuditDTO();
-        Throwable throwable = new RuntimeException("Test Exception");
         ResponseWrapper<AuditResponse> mockresponseWrapper = new ResponseWrapper<>();
         ResponseEntity<ResponseWrapper> responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body(mockresponseWrapper);
         ParameterizedTypeReference<ResponseWrapper> responseType =
@@ -169,7 +176,7 @@ public class IdaAuditPluginImplTest {
                 Mockito.eq(responseType)
         )).thenReturn(responseEntity);
         try {
-            idaAuditPlugin.logAudit(username,action, status, auditDTO, throwable);
+            idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
         } catch (Exception e) {
             Assert.fail();
