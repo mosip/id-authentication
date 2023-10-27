@@ -75,11 +75,8 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
 			auditRequest.setApplicationName(ESIGNET);
-			String sessionUserId = username;
-			String sessionUserName = username;
-
-			auditRequest.setSessionUserId(sessionUserId);
-			auditRequest.setSessionUserName(sessionUserName);
+			auditRequest.setSessionUserId(StringUtils.isEmpty(username)?"no-user":username);
+			auditRequest.setSessionUserName(StringUtils.isEmpty(username)?"no-user":username);
 			auditRequest.setIdType(TRANSACTION);
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
 			auditRequest.setModuleName(getModuleByAction(action));
