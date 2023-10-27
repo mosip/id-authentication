@@ -38,10 +38,8 @@ public class AuthTransactionHelperTest {
         ResponseEntity<ResponseWrapper> responseEntity = ResponseEntity.ok()
                 .header("authorization", expectedAuthToken)
                 .build();
-
         when(restTemplate.exchange(Mockito.any(RequestEntity.class), Mockito.any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);
-
         String authToken = authTransactionHelper.getAuthToken();
         Assert.assertEquals(expectedAuthToken, authToken);
     }
