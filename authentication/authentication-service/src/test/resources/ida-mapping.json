@@ -95,7 +95,16 @@
 		},
 		"fullAddress": {
 			"value": "addressLine1,addressLine2,addressLine3,city,region,province,postalCode"
-		}
+		},
+		"address": {
+			"value": "addressLine1,addressLine2,addressLine3,city,region,province,postalCode"
+		},
+		"street_address": {
+           "value":  "addressLine1,addressLine2,addressLine3"
+        },
+        "locality": {
+           "value":  "city"
+        }
 	},
 	"metaInfo": {
 		"value": "metaInfo"
