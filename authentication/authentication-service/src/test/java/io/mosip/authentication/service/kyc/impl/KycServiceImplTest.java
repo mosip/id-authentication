@@ -747,7 +747,7 @@ public class KycServiceImplTest {
 	public void buildKycExchangeResponseTest() throws IdAuthenticationBusinessException {
 		
 		String dummySubject = "dummyPSUToken";
-		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "picture");
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "sub");
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
@@ -755,7 +755,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
 		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
-		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
@@ -776,5 +776,228 @@ public class KycServiceImplTest {
 		idInfo.put("Face", identityList);
 		return Map.of("Face", new String(CryptoUtil.decodeBase64Url(faceData)));
 	}
+
+	@Test
+	public void buildKycExchangeResponseWithFaceDataTest() throws IdAuthenticationBusinessException {
 		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "picture", "sub");
+		List<String> consentedLocales = Arrays.asList("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
+		
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		Map<String, String> faceMap = prepareFaceData(idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeResponseTypeJWETest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "sub");
+		List<String> consentedLocales = Arrays.asList("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		kycExchangeRequestDTO.setRespType("JWE");
+		Map<String, Object> metadata = Map.of("PARTNER_CERTIFICATE", "DUMMY-X509-CERTIFICATE");
+		kycExchangeRequestDTO.setMetadata(metadata);
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+		ReflectionTestUtils.setField(kycServiceImpl2, "jweResponseType", "JWE");
+		
+		String resKycToken = "responseJWEToken";
+		String dummyTokenData = "dummyJWTTokenData";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(dummyTokenData); 
+		Map<String, String> faceMap = prepareFaceData(idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(securityManager.jwtEncrypt(Mockito.anyString(), Mockito.anyString())).thenReturn(resKycToken);
+		
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+	
+	@Test
+	public void buildKycExchangeNoLangTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "sub");
+		List<String> consentedLocales = List.of();		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeNoFaceDataTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "picture", "sub");
+		List<String> consentedLocales = List.of("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
+
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeNoFullnameDataTest() throws IdAuthenticationBusinessException {
+		
+		idInfo.remove("fullName");
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "individual_id", "sub");
+		List<String> consentedLocales = List.of("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		Map<String, String> faceMap = prepareFaceData(idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeResponseMultiLangTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "phone", "individual_id", "sub");
+		List<String> consentedLocales = Arrays.asList("ara", "fre");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+		
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		Map<String, String> faceMap = prepareFaceData(idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeResponseMultiLangAddressAttributesTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "phone", "individual_id", "sub");
+		List<String> consentedLocales = Arrays.asList("ara", "fre");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+		
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		Map<String, String> faceMap = prepareFaceData(idInfo);
+		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeResponseAddressAttributesTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name", "gender", "dob", "address", "phone", "individual_id", "sub");
+		List<String> consentedLocales = Arrays.asList("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
+		
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeTwoNameAttributesTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name");
+		List<String> consentedLocales = List.of("ara");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
+
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		List<String> attributes = List.of("middleName", "lastName");
+		Mockito.when(idInfoHelper.getIdentityAttributesForIdName(Mockito.anyString())).thenReturn(attributes);
+		
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
+
+	@Test
+	public void buildKycExchangeTwoNameAttributesMultiLangTest() throws IdAuthenticationBusinessException {
+		
+		String dummySubject = "dummyPSUToken";
+		List<String> consentedAttributes = Arrays.asList("name");
+		List<String> consentedLocales = List.of("ara", "fre");		
+		String idVid = "12232323121";
+		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
+		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
+		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
+		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
+
+		String resKycToken = "responseJWTToken";
+		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
+		List<String> attributes = List.of("middleName", "lastName");
+		Mockito.when(idInfoHelper.getIdentityAttributesForIdName(Mockito.anyString())).thenReturn(attributes);
+		
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		assertEquals(response, resKycToken);
+	}
 }
