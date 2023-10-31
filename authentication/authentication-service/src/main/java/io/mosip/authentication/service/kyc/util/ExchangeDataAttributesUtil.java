@@ -76,10 +76,8 @@ public class ExchangeDataAttributesUtil {
 			return List.of();
 		}
 
-		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims())
-													   .stream()
-													   .map(String::toLowerCase)
-													   .collect(Collectors.toList());
+		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims());
+													  
 		if (consentAttributes.isEmpty()) {
 			return oidcClientAllowedUserClaims;
 		}
