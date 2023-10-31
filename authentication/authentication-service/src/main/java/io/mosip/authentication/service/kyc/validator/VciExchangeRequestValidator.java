@@ -177,8 +177,8 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 			String identityJwk = new String(CryptoUtil.decodeBase64(didArray[2]));
 			try {
 				JSONObject jsonObject = OBJECT_MAPPER.readValue(identityJwk, JSONObject.class);
-				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_EXPONENT_KEY);
-				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_MODULUS_KEY);
+				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_MODULUS_KEY, paramName);
+				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_EXPONENT_KEY, paramName);
 			} catch (IOException ioe) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"Error formating Identity JWK", ioe);
@@ -189,12 +189,12 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 		}
 	}
 
-	private void validatePublicKeyAttributes(JSONObject jsonObject, Errors errors, String publicKeyAttribute) {
+	private void validatePublicKeyAttributes(JSONObject jsonObject, Errors errors, String publicKeyAttribute, String paramName) {
 		String value = jsonObject.getAsString(publicKeyAttribute);
 		if (value == null || StringUtils.isEmpty(value.trim())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + publicKeyAttribute);
-			errors.rejectValue(publicKeyAttribute, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { publicKeyAttribute }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(paramName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { paramName }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 

@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
-			<version>1.2.0.1-B2</version>
+			<version>${kernel-keymanager-service.version}</version>
 			<scope>provided</scope>
 			<classifier>lib</classifier>
 			<exclusions>
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>info.weboftrust</groupId>
 			<artifactId>ld-signatures-java</artifactId>
-			<version>0.8.0</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
