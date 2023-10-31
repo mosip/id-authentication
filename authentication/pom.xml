@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -112,7 +112,8 @@
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>1.2.0.1-SNAPSHOT</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
-		<kernel-biometrics-util>1.2.0</kernel-biometrics-util>
+		<kernel-biometrics-util>${kernel.parent.version}</kernel-biometrics-util>
+		<kernel-openid-bridge-api.version>${kernel.parent.version}</kernel-openid-bridge-api.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
@@ -161,6 +162,7 @@
 		<objenesis.version>3.1</objenesis.version>
 
 		<springdoc.version>1.5.10</springdoc.version>
+		
 	</properties>
 
 	<dependencies>
@@ -247,6 +249,12 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<version>${spring.boot.version}</version>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-openid-bridge-api</artifactId>
+			<version>${kernel-openid-bridge-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -422,7 +430,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+		
 		<profiles>
 			<profile>
 				<id>sonar</id>

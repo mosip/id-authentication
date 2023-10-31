@@ -47,6 +47,8 @@ import io.mosip.authentication.core.spi.indauth.service.IdentityKeyBindingServic
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+import javax.validation.constraints.NotNull;
+
 /**
  *
  * Facade for Identity Key Binding
@@ -125,7 +127,7 @@ public class IdentityKeyBindingFacadeImpl implements IdentityKeyBindingFacade {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public IdentityKeyBindingResponseDto processIdentityKeyBinding(IdentityKeyBindingRequestDTO identityKeyBindingRequestDTO, 
+	public IdentityKeyBindingResponseDto processIdentityKeyBinding(@NotNull IdentityKeyBindingRequestDTO identityKeyBindingRequestDTO,
 					AuthResponseDTO authResponseDTO, String partnerId, String oidcClientId, Map<String, Object>  metadata) 
 					throws IdAuthenticationBusinessException {
 		boolean status;
