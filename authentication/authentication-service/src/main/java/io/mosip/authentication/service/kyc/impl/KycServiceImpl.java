@@ -4,6 +4,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_C
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.ValueRange;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -441,9 +442,11 @@ public class KycServiceImpl implements KycService {
 		LocalDateTime currentTime = LocalDateTime.now();
 		
 		long diffSeconds = ChronoUnit.SECONDS.between(tokenIssuedDateTime, currentTime);
+		
 		long adjustmentSeconds = EnvUtil.getKycTokenExpireTimeAdjustmentSeconds();
+		ValueRange valueRange = ValueRange.of(0, adjustmentSeconds);
 
-		if (tokenIssuedDateTime != null && adjustmentSeconds < diffSeconds) {
+		if (tokenIssuedDateTime != null && !valueRange.isValidIntValue(diffSeconds)) {
 			return true;
 		}
 		return false;

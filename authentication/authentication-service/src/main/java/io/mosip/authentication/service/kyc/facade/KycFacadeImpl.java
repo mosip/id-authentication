@@ -70,6 +70,7 @@ import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import reactor.util.function.Tuple3;
 
@@ -132,6 +133,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private TokenValidationHelper tokenValidationHelper;
+
+	@Autowired
+	private ExchangeDataAttributesUtil exchangeDataAttributesUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -399,15 +403,15 @@ public class KycFacadeImpl implements KycFacade {
 			}
 
 			List<String> consentAttributes = kycExchangeRequestDTO.getConsentObtained();
-			List<String> allowedConsentAttributes = tokenValidationHelper.filterAllowedUserClaims(oidcClientId, consentAttributes);
+			List<String> allowedConsentAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
 
 			PolicyDTO policyDto = policyDtoOpt.get();
 			List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
 						.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
 
 			Set<String> filterAttributes = new HashSet<>();
-			tokenValidationHelper.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
-			Set<String> policyAllowedAttributes = tokenValidationHelper.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
+			exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
+			Set<String> policyAllowedAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
 
 			boolean isBioRequired = false;
 			if (filterAttributes.contains(CbeffDocType.FACE.getType().value().toLowerCase()) || 
@@ -438,7 +442,7 @@ public class KycFacadeImpl implements KycFacade {
 			kycExchangeResponseDTO.setId(kycExchangeRequestDTO.getId());
 			kycExchangeResponseDTO.setTransactionID(kycExchangeRequestDTO.getTransactionID());
 			kycExchangeResponseDTO.setVersion(kycExchangeRequestDTO.getVersion());
-			kycExchangeResponseDTO.setResponseTime(tokenValidationHelper.getKycExchangeResponseTime(kycExchangeRequestDTO));
+			kycExchangeResponseDTO.setResponseTime(exchangeDataAttributesUtil.getKycExchangeResponseTime(kycExchangeRequestDTO));
 
 			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
 			encryptedKycRespDTO.setEncryptedKyc(respJson);

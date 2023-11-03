@@ -1119,19 +1119,28 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestWrapper the request wrapper
 	 * @return the auth part
 	 */
-	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
+	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) throws IdAuthenticationAppException{
 		Map<String, String> params = new HashMap<>();
 		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
 		if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 			String[] splitedUrlByContext = url.split(contextPath);
 			String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
-					.toArray(size -> new String[size]);
+									.toArray(size -> new String[size]);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getAuthPart", 
+					"List of Path Parameters received in url: " + Stream.of(paramsArray).collect(Collectors.joining(", ")));
 
 			if (paramsArray.length >= 3) {
 				params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
 				params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
 				params.put(API_KEY, paramsArray[paramsArray.length - 1]);
+			} else {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getAuthPart", 
+					"Required Number of Path Parameters are not available in URL.");
+				throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.URI_PATH_PARAMS_MISSING.getErrorCode(), 
+					IdAuthenticationErrorConstants.URI_PATH_PARAMS_MISSING.getErrorMessage());
+					
 			}
 		}
 		return params;

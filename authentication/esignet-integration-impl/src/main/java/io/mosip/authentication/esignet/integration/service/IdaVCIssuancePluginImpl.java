@@ -202,11 +202,12 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 			return List.of("eng");
 		return Arrays.stream(langCodes)
 				.map(langCode -> {
-					if(langCode.contains("-"))
-						return new Locale(langCode.split("-")[0]).getISO3Language();
-					else
+					try {
 						return new Locale(langCode).getISO3Language();
+					} catch (MissingResourceException ex) {}
+					return null;
 				})
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 }
