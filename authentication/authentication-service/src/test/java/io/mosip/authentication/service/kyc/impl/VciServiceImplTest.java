@@ -82,6 +82,8 @@ public class VciServiceImplTest {
 
     Map<String, List<IdentityInfoDTO>> idInfo;
 
+    String credSubjectId;
+
 
     @Before
     public void beforeTest(){
@@ -111,6 +113,7 @@ public class VciServiceImplTest {
         vciCredentialsDefinitionRequestDTO.setContext(List.of("https://www.w3.org/2018/credentials/v1"));
         vciCredentialsDefinitionRequestDTO.setType(List.of("VerifiableCredential"));
         vciCredentialsDefinitionRequestDTO.setCredentialSubject(new HashMap<>());
+        credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
 
     }
 
@@ -126,17 +129,13 @@ public class VciServiceImplTest {
 
     @Test
     public void addCredSubjectIdTestWithValidDetailsAndWithoutSubIdList_thenPass() throws IdAuthenticationBusinessException {
-
-          String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
-        //Mockito.when(objectMapper.readValues(Mockito.anyString(),Mockito.any(Class.class))).thenReturn(null);
-            vciServiceImpl.addCredSubjectId(credSubjectId,"hash","123456789","12");
+          vciServiceImpl.addCredSubjectId(credSubjectId,"hash","123456789","12");
 
     }
 
     @Test
     public void addCredSubjectIdTestWithValidDetailsWithSameVid_thenPass() throws IdAuthenticationBusinessException {
 
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
         List<CredSubjectIdStore> credSubjectIdList = new ArrayList<>();
         CredSubjectIdStore credSubjectIdStore=new CredSubjectIdStore();
         credSubjectIdStore.setCredSubjectId("12345");
@@ -152,7 +151,6 @@ public class VciServiceImplTest {
     @Test
     public void addCredSubjectIdTestWithValidDetailsWithDiffSameVid_thenPass() throws IdAuthenticationBusinessException {
 
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
         List<CredSubjectIdStore> credSubjectIdList = new ArrayList<>();
         CredSubjectIdStore credSubjectIdStore=new CredSubjectIdStore();
         credSubjectIdStore.setCredSubjectId("12345");
@@ -227,7 +225,6 @@ public class VciServiceImplTest {
 
     @Test
     public void buildVerifiableCredentialswithjwt_vc_jsonldTest() throws IdAuthenticationBusinessException {
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
 
         Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
@@ -318,7 +315,6 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
         ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
         ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
         IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
         identityInfoDTO.setLanguage("eng");
         identityInfoDTO.setValue("value");

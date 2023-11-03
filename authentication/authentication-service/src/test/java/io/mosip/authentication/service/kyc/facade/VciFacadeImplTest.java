@@ -161,7 +161,6 @@ public class VciFacadeImplTest {
 
         Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("1234567890");
         Mockito.when(tokenValidationHelper.findAndValidateIssuedToken("12345678901234567890123456789012","12345","12345","1234567890")).thenReturn(kycTokenData);
-        Mockito.when(tokenValidationHelper.filterAllowedUserClaims(Mockito.anyString(),Mockito.anyList())).thenReturn(Arrays.asList("1234567890"));
         Mockito.when(partnerService.getPolicyForPartner(Mockito.anyString(),Mockito.anyString(),Mockito.anyMap())).thenReturn(Optional.of(partnerPolicyResponseDTO));
         Mockito.when(idService.getToken(Mockito.any())).thenReturn("token");
         Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString())).thenReturn("1234567890");
