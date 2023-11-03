@@ -171,7 +171,6 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
         ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
         ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
         Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
 
@@ -209,7 +208,6 @@ public class VciServiceImplTest {
 
     @Test
     public void buildVerifiableCredentialswithjwt_vc_jsonTest() throws IdAuthenticationBusinessException {
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
 
         Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
@@ -244,7 +242,6 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
         ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
         ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
 
         Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("face");
@@ -276,7 +273,6 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
         ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
         ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
-        String credSubjectId="12345:54321:ewogICAgImt0eSI6ICJSU0EiLAogICAgImUiOiAiQVFBQiIsCiAgICAidXNlIjogInNpZyIsCiAgICAia2lkIjogInBicy1GY1B6N1Jwbm42UUI1WG8xLWxrdVBEWHlxRlBZUzB5V296S0VpUjgiLAogICAgImFsZyI6ICJSUzI1NiIsCiAgICAibiI6ICJzSzhLTE55d0JoVVloYWhIREpTN0lPNkN2SkYxeTNmX0xsTEJvTV81eGFvcXVPckxDb084R0llaWJ1ai1YOWV0S3d1SkoycTdjdzRnTEJocXFOd2x3T2ZTOXZ2X1BnRTZkTTYtSDkxVVgtbGljQzh6YUFDSkdCV1N2TlVjSmtSNFJpOW5laGQ3NmRMSTJ5SDdlYVh3N0lRVERyMDVtSFFyR1ZaNVBVZTRMR3haZlVqcmxQUGttcTZfUTBIbk5RN1ZGTjVFLUxDejNvUWtKbHl4OTQyenhJdk5TV2V1enNMQU5xZWdSQzVWd3YtWlJtNmgxb1BNSWY1MThoZHdwaEhqeU5fRGs5djExYV8yT2VaNzd0T3Ria0RUaUxtamVLS1dTNXZldW1rOWMzTkw4OU00LS1yMFJMZ0Jrb3k1X0RMNHNmRXpSRnZYWVF0eHI4c3R1aURaRFEiCn0=";
         IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
         identityInfoDTO.setLanguage("eng");
         identityInfoDTO.setValue("value");
