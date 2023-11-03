@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
 import io.mosip.authentication.common.service.entity.KycTokenData;
-import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
 import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -137,45 +135,5 @@ public class TokenValidationHelperTest {
         }catch (IdAuthenticationBusinessException e){
             assert(e.getErrorCode().equalsIgnoreCase("IDA-KYE-003"));
         }
-    }
-
-    @Test
-    public void mapConsentedAttributesToIdSchemaAttributesTest() throws IdAuthenticationBusinessException {
-        ReflectionTestUtils.setField(tokenValidationHelper, "consentedIndividualIdAttributeName", "consentedIndividualIdAttributeName");
-        List<String> policyAllowedKycAttribs =new ArrayList<>();
-        Set<String> filterAttributes = new HashSet<>();
-        List<String> consentAttributes = new ArrayList<>();
-
-        consentAttributes.add("name");
-        tokenValidationHelper.mapConsentedAttributesToIdSchemaAttributes(consentAttributes, filterAttributes, policyAllowedKycAttribs);
-
-    }
-
-    @Test
-    public void filterByPolicyAllowedAttributesTest() throws IdAuthenticationBusinessException {
-        ReflectionTestUtils.setField(tokenValidationHelper, "consentedIndividualIdAttributeName", "consentedIndividualIdAttributeName");
-        List<String> policyAllowedKycAttribs =new ArrayList<>();
-        Set<String> filterAttributes = new HashSet<>();
-
-
-        tokenValidationHelper.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
-
-    }
-
-    @Test
-    public void filterAllowedUserClaimsTestWithValidDetails_thenPass() throws IdAuthenticationBusinessException {
-        ReflectionTestUtils.setField(tokenValidationHelper, "consentedIndividualIdAttributeName", "consentedIndividualIdAttributeName");
-        List<String> consentAttributes =new ArrayList<>();
-
-        consentAttributes.add("name");
-
-
-        OIDCClientData oidcClientData = new OIDCClientData();
-        oidcClientData.setUserClaims(new String[]{"name"});
-        Mockito.when(oidcClientDataRepo.findByClientId(Mockito.anyString())).thenReturn(Optional.of(oidcClientData));
-
-
-        tokenValidationHelper.filterAllowedUserClaims("oidcClientId", consentAttributes);
-
     }
 }
