@@ -171,6 +171,27 @@ public class HelperServiceTest {
     }
 
     @Test
+    public void setAuthRequest_withPWDChallengeType_thenPass() throws Exception {
+        List<AuthChallenge> challengeList = new ArrayList<>();
+        AuthChallenge authChallenge = new AuthChallenge();
+        authChallenge.setChallenge("password");
+        authChallenge.setAuthFactorType("pwd");
+        authChallenge.setFormat("numeric");
+        challengeList.add(authChallenge);
+
+        Mockito.when(restTemplate.getForObject("https://test/test", String.class)).thenReturn("test-certificate");
+        Mockito.when(keymanagerUtil.convertToCertificate(Mockito.any(String.class))).thenReturn(TestUtil.getCertificate());
+        Mockito.when(cryptoCore.asymmetricEncrypt(Mockito.any(), Mockito.any())).thenReturn("test".getBytes());
+
+        IdaKycAuthRequest idaKycAuthRequest = new IdaKycAuthRequest();
+        helperService.setAuthRequest(challengeList, idaKycAuthRequest);
+        Assert.assertNotNull(idaKycAuthRequest.getRequest());
+        Assert.assertNotNull(idaKycAuthRequest.getRequestSessionKey());
+        Assert.assertNotNull(idaKycAuthRequest.getRequestHMAC());
+        Assert.assertNotNull(idaKycAuthRequest.getThumbprint());
+    }
+
+    @Test
     public void setAuthRequest_withPINChallengeType_thenPass() throws Exception {
         List<AuthChallenge> challengeList = new ArrayList<>();
         AuthChallenge authChallenge = new AuthChallenge();
