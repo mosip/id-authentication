@@ -259,6 +259,8 @@ public class HelperService {
                 list.add(keyBindedToken);
                 authRequest.setKeyBindedTokens(list);
                 break;
+            case "PWD" : authRequest.setPassword(authChallenge.getChallenge());
+                break;
             default:
                 throw new NotImplementedException("KYC auth not implemented");
         }
