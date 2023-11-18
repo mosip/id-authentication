@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -75,6 +76,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * Allowed domainUris
 	 */
 	private List<String> allowedDomainUris;
+	
+	@Value("${mosip.ida.validate-env-disabled:false}")
+	private boolean isEnvValidationDisabled;
 	
 	@PostConstruct
 	public void initialize() {
@@ -645,9 +649,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @return
 	 */
 	private boolean isValuesContainsIgnoreCase(List<String> values, String value) {
-		if (value != null) {
-			return values.stream().anyMatch(value::equalsIgnoreCase);
+		if (!isEnvValidationDisabled) {
+			if (value != null) {
+				return values.stream().anyMatch(value::equalsIgnoreCase);
+			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 }
