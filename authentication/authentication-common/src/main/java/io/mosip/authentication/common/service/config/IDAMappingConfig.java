@@ -126,4 +126,7 @@ public class IDAMappingConfig implements MappingConfig {
 	/** The dynamic attributes. */
 	private Map<String, List<String>> dynamicAttributes;
 
+	/** The password. */
+	private List<String> password;
+
 }

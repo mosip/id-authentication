@@ -1,5 +1,8 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PASSWORD;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SEMI_COLON;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -234,8 +237,22 @@ public interface IdInfoFetcher {
 				IdentityInfoDTO idInfo = new IdentityInfoDTO();
 				idInfo.setValue(String.valueOf(val));
 				return Stream.of(idInfo).collect(Collectors.toList());
+			} else if (entry.getKey().equals(PASSWORD) && val instanceof Map) {
+				Map<String, String> map = (Map<String, String>) val;
+				String passwordData = map.entrySet().stream().map(mapEntry -> mapEntry.getValue() ).collect(Collectors.joining(SEMI_COLON));
+				IdentityInfoDTO idInfo = new IdentityInfoDTO();
+				idInfo.setValue(String.valueOf(passwordData));
+				return Stream.of(idInfo).collect(Collectors.toList());
 			}
+
 			return Collections.emptyList();
 		}));
 	}
+
+	/**
+	 * To Get match Password function.
+	 *
+	 * @return the ComparePasswordFunction
+	 */
+	public ComparePasswordFunction getMatchPasswordFunction();
 }

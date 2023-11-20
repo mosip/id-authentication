@@ -21,7 +21,8 @@ public enum RequestType {
 	IDENTITY_KEY_BINDING("IDENTITY-KEY-BINDING","Identity Key Binding Request"),
 	TOKEN_REQUEST("TOKEN-REQUEST", "Token Request"),
 	TOKEN_AUTH("TOKEN-AUTH","Token based Authentication"),
-	VCI_EXCHANGE_REQUEST("VCI-EXCHANGE-REQUEST","VCI Exchange Request");
+	VCI_EXCHANGE_REQUEST("VCI-EXCHANGE-REQUEST","VCI Exchange Request"),
+	PASSWORD_AUTH("PASSWORD-AUTH","Password Auth");
 
 	String type;
 	String message;

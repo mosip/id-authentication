@@ -445,6 +445,12 @@ public final class IdAuthCommonConstants {
 
 	public static final String VC_CREDENTIAL_DEF = "credentialsDefinition";
 
+	public static final String PASSWORD_BASED_AUTH = "PasswordBasedAuth";
+
+	public static final String PASSWORD = "password";
+
+	public static final String SEMI_COLON = ";";
+
 	private IdAuthCommonConstants() {
 	}
 }

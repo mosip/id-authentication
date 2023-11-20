@@ -213,9 +213,12 @@ public enum IdAuthenticationErrorConstants {
 	CREATE_VCI_PUBLIC_KEY_OBJECT_ERROR("IDA-VCI-002", "Error creating Public Key object."),
 	KEY_ALREADY_MAPPED_ERROR("IDA-VCI-003", "Error Key already mapped to different id/vid."),
 	VCI_NOT_SUPPORTED_ERROR("IDA-VCI-004", "Error VCI not supported."),
-	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed.");
+	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed."),
 
-	
+	PASSWORD_MISMATCH("IDA-PSD-001", "Password value did not match", "Please re-enter your password"),
+	PASSWORD_MISSING("IDA-PSD-002", "For the input VID/UIN - No Password found in DB.",
+			"Please use UIN/VID with Password Auth.");
+
 	private final String errorCode;
 	private final String errorMessage;
 	private String actionMessage;

@@ -29,6 +29,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -47,6 +48,7 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -58,6 +60,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
+import io.mosip.authentication.core.spi.indauth.service.PasswordAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -129,6 +132,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	private KeyBindedTokenAuthService keyBindedTokenAuthService;
+
+	@Autowired
+	private PasswordAuthService passwordAuthService;
 	
 	/*
 	 * (non-Javadoc)
@@ -160,6 +166,14 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 			
 			addKycPolicyAttributes(filterAttributes, kycAuthRequestDTO);
+		}
+
+		if(authRequestDTO instanceof KycAuthRequestDTO) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+			// In case of kyc-auth request and password auth is requested
+			if(AuthTypeUtil.isPassword(kycAuthRequestDTO)) {
+				filterAttributes.add(IdaIdMapping.PASSWORD.getIdname());
+			}
 		}
 		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),
@@ -312,6 +326,11 @@ public class AuthFacadeImpl implements AuthFacade {
 					authTxnBuilder, idvidHash);
 		}
 
+		if (!isMatchFailed(authStatusList)) {
+			processPasswordAuth(authRequestDTO, idInfo, token, isAuth, authStatusList, idType, authTokenId, partnerId,
+					authTxnBuilder, idvidHash);
+		}
+	
 		return authStatusList;
 	}
 
@@ -510,6 +529,40 @@ public class AuthFacadeImpl implements AuthFacade {
 				logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
 						AUTH_FACADE, "Token Authentication status : " + isStatus);
 				authTxnBuilder.addRequestType(RequestType.TOKEN_AUTH);
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param authRequestDTO
+	 * @param token
+	 * @param isAuth
+	 * @param authStatusList
+	 * @param idType
+	 * @param authTokenId
+	 * @param partnerId
+	 * @param authTxnBuilder
+	 * @param idvidHash
+	 * @throws IdAuthenticationBusinessException
+	 */
+	private void processPasswordAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String token,
+								  boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType, String authTokenId, String partnerId,
+								  AuthTransactionBuilder authTxnBuilder, String idvidHash) throws IdAuthenticationBusinessException {
+		if (AuthTypeUtil.isPassword(authRequestDTO)) {
+			AuthStatusInfo passwordMatchStatus = null;
+			try {
+				passwordMatchStatus = passwordAuthService.authenticate(authRequestDTO, token, idInfo, partnerId);
+				authStatusList.add(passwordMatchStatus);
+
+				boolean isStatus = passwordMatchStatus != null && passwordMatchStatus.isStatus();
+				auditHelper.audit(AuditModules.PASSWORD_AUTH, AuditEvents.PASSWORD_BASED_AUTH_REQUEST, idvidHash,
+						idType, "authenticateApplicant status(Password) : " + isStatus);
+			} finally {
+				boolean isStatus = passwordMatchStatus != null && passwordMatchStatus.isStatus();
+				logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
+						AUTH_FACADE, "Password Authentication status : " + isStatus);
+				authTxnBuilder.addRequestType(RequestType.PASSWORD_AUTH);
 			}
 		}
 	}
