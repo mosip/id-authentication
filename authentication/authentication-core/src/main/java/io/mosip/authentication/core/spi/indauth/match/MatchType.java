@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 
 /**
@@ -41,7 +42,9 @@ public interface MatchType {
 		/** s-pin category. */
 		SPIN("pin"),
 		/** Token category */
-		KBT("kbt");
+		KBT("kbt"),
+		/** Password category */
+		PASSWORD("password");
 
 		/** The type. */
 		String type;

@@ -9,6 +9,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.PasswordAuthType;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
@@ -36,6 +37,10 @@ public final class AuthTypeUtil {
 
 	public static boolean isKeyBindedToken(AuthRequestDTO authReqDto) {
 		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {KeyBindedTokenAuthType.KEYBINDEDTOKEN});
+	}
+
+	public static boolean isPassword(AuthRequestDTO authReqDto) {
+		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {PasswordAuthType.PASSWORD});
 	}
 
 	private static boolean isAuthTypeInfoAvailable(AuthRequestDTO authReqDto, AuthType[] values) {
@@ -66,6 +71,10 @@ public final class AuthTypeUtil {
 		}
 		if(authRequestDTO instanceof EkycAuthRequestDTO) {
 			requestTypes.add(RequestType.EKYC_AUTH_REQUEST);
+		}
+
+		if (AuthTypeUtil.isPassword(authRequestDTO)) {
+			requestTypes.add(RequestType.PASSWORD_AUTH);
 		}
 		
 		return requestTypes;

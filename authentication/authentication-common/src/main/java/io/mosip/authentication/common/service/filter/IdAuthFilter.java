@@ -28,6 +28,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -843,6 +845,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
 				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
+
 		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<KeyBindedTokenDTO>>() {
 				});
@@ -858,6 +861,19 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
 					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), MatchType.Category.KBT.getType()));
+		}
+	}
+
+	protected void checkAllowedAuthTypeForPassword(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+			throws IdAuthenticationAppException, IOException {
+		KycAuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					KycAuthRequestDTO.class);
+
+		if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PASSWORD.getType(), authPolicies)) {
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+								MatchType.Category.PASSWORD.name()));
 		}
 	}
 

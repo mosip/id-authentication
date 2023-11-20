@@ -242,4 +242,11 @@ public interface MappingConfig {
 	 * @return the dynamic attributes
 	 */
 	public Map<String, List<String>> getDynamicAttributes();
+
+	/**
+	 * List of value to hold password.
+	 *
+	 * @return the password
+	 */
+	public List<String> getPassword();
 }

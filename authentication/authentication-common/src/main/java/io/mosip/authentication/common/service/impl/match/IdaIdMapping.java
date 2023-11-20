@@ -177,12 +177,13 @@ public enum IdaIdMapping implements IdMapping {
 			RIGHTIRIS, LEFTIRIS, UNKNOWN_IRIS,
 			FACE,UNKNOWN_FACE), "DummyType"),
 
-
 	KEY_BINDED_TOKENS("keyBindedTokens"){
 		public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 			return (mappingConfig, matchType) -> { return Collections.emptyList(); };
 		}
 	},
+
+	PASSWORD("password", MappingConfig::getPassword),
 
 	/** The dynamic demographics ID Mapping. */
 	DYNAMIC("demographics") {

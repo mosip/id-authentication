@@ -91,6 +91,8 @@ ENV current_module_env=authentication-otp-service
 
 ADD configure_start.sh configure_start.sh
 
+ADD ./lib/* "${loader_path_env}"/
+
 RUN chmod +x configure_start.sh
 
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar

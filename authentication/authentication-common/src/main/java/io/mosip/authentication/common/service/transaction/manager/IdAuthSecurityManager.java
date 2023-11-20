@@ -49,6 +49,8 @@ import io.mosip.kernel.core.retry.WithRetry;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
+import io.mosip.kernel.cryptomanager.dto.Argon2GenerateHashRequestDto;
+import io.mosip.kernel.cryptomanager.dto.Argon2GenerateHashResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.JWTCipherResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -704,5 +706,13 @@ public class IdAuthSecurityManager {
 		encryptRequestDto.setIncludeCertHash(true);
 		JWTCipherResponseDto cipherResponseDto = cryptomanagerService.jwtEncrypt(encryptRequestDto);
 		return cipherResponseDto.getData();
+	}
+
+	public String generateArgon2Hash(String anyString, String salt) {
+		Argon2GenerateHashRequestDto hashRequestDto = new Argon2GenerateHashRequestDto(); 
+		hashRequestDto.setInputData(anyString);
+		hashRequestDto.setSalt(salt);
+		Argon2GenerateHashResponseDto hashResponseDto = cryptomanagerService.generateArgon2Hash(hashRequestDto);
+		return hashResponseDto.getHashValue();
 	}
 }
