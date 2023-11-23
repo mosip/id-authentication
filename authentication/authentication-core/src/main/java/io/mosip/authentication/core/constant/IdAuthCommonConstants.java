@@ -449,6 +449,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String PASSWORD = "password";
 
+	public static final String SALT = "salt";
+
 	public static final String SEMI_COLON = ";";
 
 	private IdAuthCommonConstants() {

@@ -1,8 +1,11 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SEMI_COLON;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COLON;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -24,9 +27,13 @@ public enum PasswordMatchingStrategy implements MatchingStrategy {
                 ComparePasswordFunction func = (ComparePasswordFunction) object;
                 Map<String, String> entityInfoMap = (Map<String, String>) entityInfo;
                 Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-                String[] hashSaltValue = entityInfoMap.get("password").split(SEMI_COLON);
-                String passwordHashedValue = hashSaltValue[0];
-                String salt = hashSaltValue[1];
+                String hashSaltValue = entityInfoMap.get(IdaIdMapping.PASSWORD.getIdname());
+                Map<String, String> passwordMap = Arrays.stream(hashSaltValue.split(SEMI_COLON))
+                                                        .map(str -> str.split(String.valueOf(COLON), 2))
+        						                        .collect(Collectors.toMap(strArr -> strArr[0].trim(), strArr -> strArr[1].trim()));
+
+                String passwordHashedValue = passwordMap.get(IdAuthCommonConstants.HASH);
+                String salt = passwordMap.get(IdAuthCommonConstants.SALT);
                 String reqInfoValue = reqInfoMap.get(IdaIdMapping.PASSWORD.getIdname());
 				boolean matched = func.matchPasswordFunction(reqInfoValue, passwordHashedValue, salt);
                 return !matched ? 0 : 100;
