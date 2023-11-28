@@ -453,6 +453,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String SEMI_COLON = ";";
 
+	public static final String OIDC_CLIENT_DATA = "oidc_client_data";
+
 	private IdAuthCommonConstants() {
 	}
 }

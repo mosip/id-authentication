@@ -869,7 +869,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		KycAuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
 					KycAuthRequestDTO.class);
 
-		if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PASSWORD.getType(), authPolicies)) {
+			if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PASSWORD.getType(), authPolicies)) {
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
