@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PASSWORD;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SEMI_COLON;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COLON;
 
 import java.util.Collections;
 import java.util.List;
@@ -239,7 +240,9 @@ public interface IdInfoFetcher {
 				return Stream.of(idInfo).collect(Collectors.toList());
 			} else if (entry.getKey().equals(PASSWORD) && val instanceof Map) {
 				Map<String, String> map = (Map<String, String>) val;
-				String passwordData = map.entrySet().stream().map(mapEntry -> mapEntry.getValue() ).collect(Collectors.joining(SEMI_COLON));
+				String passwordData = map.entrySet().stream()
+										 .map(mapEntry -> mapEntry.getKey().trim() + String.valueOf(COLON) + mapEntry.getValue().trim())
+										 .collect(Collectors.joining(SEMI_COLON));
 				IdentityInfoDTO idInfo = new IdentityInfoDTO();
 				idInfo.setValue(String.valueOf(passwordData));
 				return Stream.of(idInfo).collect(Collectors.toList());

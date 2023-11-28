@@ -449,7 +449,11 @@ public final class IdAuthCommonConstants {
 
 	public static final String PASSWORD = "password";
 
+	public static final String SALT = "salt";
+
 	public static final String SEMI_COLON = ";";
+
+	public static final String OIDC_CLIENT_DATA = "oidc_client_data";
 
 	private IdAuthCommonConstants() {
 	}
