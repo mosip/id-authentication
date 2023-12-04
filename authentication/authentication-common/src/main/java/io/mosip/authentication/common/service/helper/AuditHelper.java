@@ -135,7 +135,7 @@ public class AuditHelper {
 			IdAuthenticationBaseException e) throws IDDataValidationException {
 		List<AuditModules> auditModules = getAuditModules(authRequestDTO);
 		for (AuditModules auditModule : auditModules) {
-			audit(auditModule, authAuditEvent, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(),
+			audit(auditModule, authAuditEvent, authRequestDTO.getTransactionID(), authRequestDTO.getIndividualIdType(),
 					e);
 		}
 	}
@@ -144,7 +144,7 @@ public class AuditHelper {
 			String status) throws IDDataValidationException {
 		List<AuditModules> auditModules = getAuditModules(authRequestDTO);
 		for (AuditModules auditModule : auditModules) {
-			audit(auditModule, authAuditEvent, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(),
+			audit(auditModule, authAuditEvent, authRequestDTO.getTransactionID(), authRequestDTO.getIndividualIdType(),
 					status);
 		}
 	}
@@ -181,6 +181,14 @@ public class AuditHelper {
 					auditModules.add(AuditModules.FACE_AUTH);
 				}
 			}
+		}
+
+		if (AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
+			auditModules.add(AuditModules.TOKEN_AUTH);
+		}
+
+		if (AuthTypeUtil.isPassword(authRequestDTO)) {
+			auditModules.add(AuditModules.PASSWORD_AUTH);
 		}
 		return auditModules;
 	}

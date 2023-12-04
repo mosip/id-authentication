@@ -21,7 +21,7 @@ import io.mosip.authentication.common.service.entity.OIDCClientData;
 @Repository
 public interface OIDCClientDataRepository extends JpaRepository<OIDCClientData, String> {
 
-    @Cacheable(value = OIDC_CLIENT_DATA, key="#oidc_client_id", condition="#oidc_client_id!=null")
+    @Cacheable(value = OIDC_CLIENT_DATA,  unless ="#result == null")
     @Query("select oi from OIDCClientData oi where oi.clientId = :clientId")
     Optional<OIDCClientData> findByClientId(@Param("clientId") String clientId);
 }
