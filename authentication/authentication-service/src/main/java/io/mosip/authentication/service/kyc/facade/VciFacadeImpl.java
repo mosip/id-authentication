@@ -186,12 +186,12 @@ public class VciFacadeImpl implements VciFacade {
 			vciExchangeResponseDTO.setResponse(vcResponseDTO);
 			saveToTxnTable(vciExchangeRequestDTO, false, true, partnerId, token, vciExchangeResponseDTO, requestWithMetadata);
 			auditHelper.audit(AuditModules.VCI_EXCHANGE, AuditEvents.VCI_EXCHANGE_REQUEST_RESPONSE,
-					idvidHash,	IdType.getIDTypeOrDefault(vciExchangeRequestDTO.getIndividualIdType()),
+					vciExchangeRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(vciExchangeRequestDTO.getIndividualIdType()),
 					IdAuthCommonConstants.VCI_EXCHANGE_SUCCESS);
 			return vciExchangeResponseDTO; 
 		} catch(IdAuthenticationBusinessException e) {
 			auditHelper.audit(AuditModules.VCI_EXCHANGE, AuditEvents.VCI_EXCHANGE_REQUEST_RESPONSE,
-							  idvidHash, IdType.getIDTypeOrDefault(vciExchangeRequestDTO.getIndividualIdType()), e); 
+							  vciExchangeRequestDTO.getTransactionID(), IdType.getIDTypeOrDefault(vciExchangeRequestDTO.getIndividualIdType()), e); 
 			throw e;
 		}
 	}
