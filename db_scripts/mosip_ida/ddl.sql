@@ -29,3 +29,4 @@
 \ir ddl/ida-ident_binding_cert_store.sql
 \ir ddl/ida-kyc_token_store.sql
 \ir ddl/ida-oidc_client_data.sql
+\ir ddl/ida-cred_subject_id_store.sql
