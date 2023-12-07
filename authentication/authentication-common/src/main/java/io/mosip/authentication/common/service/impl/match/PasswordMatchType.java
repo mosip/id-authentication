@@ -24,7 +24,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 public enum PasswordMatchType implements MatchType {
 
 	/** Primary password Match Type. */
-	PASSWORD(IdaIdMapping.PASSWORD, Category.PASSWORD, setOf(PasswordMatchingStrategy.EXACT), authReq -> {
+	PASSWORD(IdaIdMapping.PASSWORD, Category.PWD, setOf(PasswordMatchingStrategy.EXACT), authReq -> {
         KycAuthRequestDTO kycAuthRequestDTO =  (KycAuthRequestDTO)authReq;
 		return (Objects.nonNull(kycAuthRequestDTO.getRequest())  && 
 				Objects.nonNull(kycAuthRequestDTO.getRequest().getPassword()))? kycAuthRequestDTO.getRequest().getPassword() : "";

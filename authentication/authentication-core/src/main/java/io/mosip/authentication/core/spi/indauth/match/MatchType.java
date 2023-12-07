@@ -44,7 +44,7 @@ public interface MatchType {
 		/** Token category */
 		KBT("kbt"),
 		/** Password category */
-		PASSWORD("password");
+		PWD("pwd");
 
 		/** The type. */
 		String type;

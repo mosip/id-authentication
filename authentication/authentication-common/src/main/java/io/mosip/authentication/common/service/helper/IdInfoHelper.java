@@ -536,7 +536,7 @@ public class IdInfoHelper {
 							String.format(IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorMessage(),
 									input.getAuthType().getType()));
 
-				case PASSWORD: 
+				case PWD: 
 					throw new IdAuthenticationBusinessException(
 							IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorMessage(),

@@ -869,11 +869,11 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		KycAuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
 					KycAuthRequestDTO.class);
 
-			if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PASSWORD.getType(), authPolicies)) {
-				throw new IdAuthenticationAppException(
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-								MatchType.Category.PASSWORD.name()));
+		if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PWD.getType(), authPolicies)) {
+			throw new IdAuthenticationAppException(
+			IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+			String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+					MatchType.Category.PWD.name()));
 		}
 	}
 
@@ -1058,15 +1058,24 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 				if (AuthTypeUtil.isPin(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.SPIN.getType())) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.SPIN.name()));
 				}
 				if (AuthTypeUtil.isOtp(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.OTP.getType())) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.OTP.name()));
+				}
+
+				KycAuthRequestDTO kycAuthRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+										KycAuthRequestDTO.class);
+				if (AuthTypeUtil.isPassword(kycAuthRequestDTO)  && !allowedAMRs.contains(MatchType.Category.PWD.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.PWD.name()));
 				}
 				checkAllowedAMRForKBT(requestBody, allowedAMRs);
 			}
