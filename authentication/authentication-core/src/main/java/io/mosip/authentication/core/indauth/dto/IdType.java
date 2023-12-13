@@ -24,7 +24,8 @@ public enum IdType {
 	/** The uin. */
 	UIN("UIN"), 
 	/** The vid. */
-	VID("VID")
+	VID("VID"),
+	HANDLE("HANDLE")
 	;
 
 	/**
