@@ -1,9 +1,11 @@
 package io.mosip.authentication.core.util;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
+
 /**
  * @author Manoj SP
  * @author Nagarjuna
@@ -22,6 +26,8 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
  */
 @Component
 public class IdTypeUtil {
+
+	private static Logger mosipLogger = IdaLogger.getLogger(IdTypeUtil.class);
 
 	@Autowired
 	IdValidationUtil idValidator;
@@ -52,19 +58,24 @@ public class IdTypeUtil {
 	}
 
 	public boolean validateHandle(String handle) {
-		if(Objects.nonNull(handleTypesRegex)) {
-			if(StringUtils.isEmpty(handle))
-				return false;
+		try {
+			if(Objects.nonNull(handleTypesRegex)) {
+				if(StringUtils.isEmpty(handle))
+					return false;
 
-			int index = handle.lastIndexOf("@");
-			if(index <= 0)
-				return false;
+				int index = handle.lastIndexOf("@");
+				if(index <= 0)
+					return false;
 
-			String handleType = handle.substring(index);
-			if(!handleTypesRegex.containsKey(handleType))
-				return false;
+				String handleType = handle.substring(index);
+				if(!handleTypesRegex.containsKey(handleType))
+					return false;
 
-			return handle.matches(handleTypesRegex.get(handleType));
+				return handle.matches(handleTypesRegex.get(handleType));
+			}
+		} catch (BaseUncheckedException e) {
+			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "VALIDATE_HANDLE",
+					"Failed to validate handle >> "+ e.getMessage());
 		}
 		return false;
 	}
