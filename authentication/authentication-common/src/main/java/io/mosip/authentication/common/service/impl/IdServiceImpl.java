@@ -118,7 +118,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
 			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
-		if (idvIdType.equals(IdType.UIN.getType())) {
+		if (idvIdType.equals(IdType.UIN.getType()) || idvIdType.equals(IdType.HANDLE.getType())) {
 			try {
 				idResDTO = getIdByUin(idvId, isBio, filterAttributes);
 			} catch (IdAuthenticationBusinessException e) {
@@ -205,6 +205,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 								idType.getType()));
 			}
 
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+					"Generated HASHID >> " + hashedId);
+
 			if (isBio) {
 				entity = identityRepo.getOne(hashedId);
 			} else {
@@ -254,6 +257,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			}
 			responseMap.put(TOKEN, entity.getToken());
 			responseMap.put(ID_HASH, hashedId);
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+					"TOKEN in responseMap >> " + entity.getToken());
 			return responseMap;
 		} catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
