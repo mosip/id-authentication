@@ -34,6 +34,11 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 	private static final String ESIGNET = "e-signet";
 
 	private static final String TRANSACTION = "transaction";
+	private static final String CLIENT_ID = "client_id";
+	private static final String ACCESS_TOKEN_HASH = "access_token_hash";
+	private static final String LINKED_CODE = "link_code";
+	private static final String LINKED_TRANSACTION = "link_transaction";
+	private static final String APPLICATION_ID = "application_id";
 
 	@Autowired
 	private AuthTransactionHelper authTransactionHelper;
@@ -79,7 +84,7 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setModuleName(action.getModule());
 			auditRequest.setModuleId(action.getModule());
 			auditRequest.setDescription(getAuditDescription(audit));
-			auditRequest.setId(audit.getTransactionId());
+			setIdAndRefIdType(action, status, audit, auditRequest);
 
 			request.setRequest(auditRequest);
 			request.setId("ida");
@@ -125,4 +130,131 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 		return json.toString();
 	}
 
+	private String getModuleByAction(Action action) {
+		switch (action) {
+		case OIDC_CLIENT_CREATE:
+		case OIDC_CLIENT_UPDATE:
+			return "ClientManagementController";
+		case GET_OAUTH_DETAILS:
+		case TRANSACTION_STARTED:
+		case SEND_OTP:
+		case AUTHENTICATE:
+		case GET_AUTH_CODE:
+		case DO_KYC_AUTH:
+		case DO_KYC_EXCHANGE:
+			return "AuthorizationController";
+		case GENERATE_TOKEN:
+			return "OAuthController";
+		case GET_USERINFO:
+			return "OpenIdConnectController";
+		case LINK_AUTH_CODE:
+		case LINK_AUTHENTICATE:
+		case LINK_CODE:
+		case LINK_SEND_OTP:
+		case LINK_STATUS:
+		case LINK_TRANSACTION:
+		case SAVE_CONSENT:
+			return "LinkedAuthorizationController";
+		case GET_CERTIFICATE:
+		case UPLOAD_CERTIFICATE:
+			return "SystemInfoController";
+		default:
+			return "EsignetService";
+		}
+	}
+
+	private void setIdAndRefIdType(Action action, ActionStatus status, AuditDTO audit, AuditRequest auditRequest) {
+		// for setting id and refIdType of auditRequest Object
+		String refId = audit.getTransactionId();
+		String refIdType = TRANSACTION;
+		switch(action) {
+			// all below uses clientId for audit log
+			case OIDC_CLIENT_CREATE:
+			case OIDC_CLIENT_UPDATE:
+            case OAUTH_CLIENT_CREATE:
+            case OAUTH_CLIENT_UPDATE:
+            case GET_OAUTH_DETAILS:
+			case GET_USER_CONSENT:
+			case SAVE_USER_CONSENT:
+				refIdType = CLIENT_ID;
+				refId = audit.getClientId();
+				break;
+			case GENERATE_TOKEN:
+				// if success then using transaction & transactionId
+				// for error uses clientId
+				if (status == ActionStatus.ERROR) {
+					refIdType = CLIENT_ID;
+					refId = audit.getClientId();
+				}
+				break;
+			case GET_USERINFO:
+				// if success uses transaction & transactionId
+				// for error uses accessTokenHash & transactionId
+				if (status == ActionStatus.ERROR) {
+					refIdType = ACCESS_TOKEN_HASH;
+				}
+				break;
+			case LINK_TRANSACTION:
+				// if success uses transaction & transactionId
+				// for error uses linkCode & transactionId
+				if (status == ActionStatus.ERROR) {
+					refIdType = LINKED_CODE;
+				} else {
+					refIdType = LINKED_TRANSACTION;
+				}
+				break;
+			case LINK_AUTHENTICATE:
+			case SAVE_CONSENT:
+				// for both success and error it uses
+				// linkedTransaction & transactionId
+				refIdType = LINKED_TRANSACTION;
+				break;
+    		case VC_ISSUANCE:
+				// uses accessTokenHash & transactionId
+				refIdType = ACCESS_TOKEN_HASH;
+				break;
+			case GET_CERTIFICATE:
+			case UPLOAD_CERTIFICATE:
+				// uses applicationId & referenceId
+				refIdType = APPLICATION_ID;
+				refId = audit.clientId();
+				break;
+			case LINK_CODE:
+				// if success linkCode & transactionId
+				// for error transaction & transactionId
+				if (status == ActionStatus.SUCCESS) {
+					refIdType = LINKED_CODE;
+				}
+				break;
+			case LINK_SEND_OTP:
+				// if success then uses linkedTransactionId
+				// for error is uses transactionId
+				if (status == ActionStatus.SUCCESS) {
+					refIdType = LINKED_TRANSACTION;
+				}
+				break;
+			case LINK_AUTH_CODE:
+				if (status == ActionStatus.SUCCESS) {
+					refIdType = LINKED_CODE;
+				} else {
+					refIdType = LINKED_TRANSACTION;
+				}
+			// all below are using transaction & transactionId
+			// for audit log
+			case TRANSACTION_STARTED:
+			case SEND_OTP:
+			case AUTHENTICATE:
+			case GET_AUTH_CODE:
+			case DO_KYC_AUTH:
+			case DO_KYC_EXCHANGE:
+			case LINK_STATUS:
+			case UPDATE_USER_CONSENT:
+			case DELETE_USER_CONSENT:
+			default:
+				refIdType = TRANSACTION;
+				refId = audit.getTransactionId();
+		}
+		auditRequest.setId(refId);
+		auditRequest.setIdType(refIdType);
+	}
 }
