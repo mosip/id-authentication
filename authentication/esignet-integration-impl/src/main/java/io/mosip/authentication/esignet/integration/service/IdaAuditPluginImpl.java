@@ -54,6 +54,9 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 
 	@Override
 	public void logAudit(String username, Action action, ActionStatus status, AuditDTO audit, Throwable t) {
+		if (t!=null && StringUtils.isEmpty(username)) {
+			throw new IllegalArgumentException("Username cannot be empty or null in the audit");
+		}
 		audit(username, action, status, audit);
 	}
 
