@@ -147,6 +147,9 @@ public enum IdAuthenticationErrorConstants {
 	UNAUTHORISED_VCI_EXCHANGE_PARTNER("IDA-MPA-036", "Partner is unauthorised for VCI-Exchange"),
 	VCI_EXCHANGE_NOT_ALLOWED("IDA-MPA-037", "%s not allowed as per policy",
 			"Please try after updating misp policy"),
+	URI_PATH_PARAMS_MISSING("IDA-MPA-038", "Required Number of Path parameters are missing in URI",
+			"Please try adding all the required path parameters."),
+	PARTNER_API_EXPIRED("IDA-MPA-039", "Partner API is expired or using before Commence Start Date."),
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
@@ -203,16 +206,18 @@ public enum IdAuthenticationErrorConstants {
 	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
 	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
 	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
-	
 	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),
-	
+
 	KEY_TYPE_NOT_SUPPORT("IDA-VCI-001", "Not Supported JWK Key Type."),
 	CREATE_VCI_PUBLIC_KEY_OBJECT_ERROR("IDA-VCI-002", "Error creating Public Key object."),
 	KEY_ALREADY_MAPPED_ERROR("IDA-VCI-003", "Error Key already mapped to different id/vid."),
 	VCI_NOT_SUPPORTED_ERROR("IDA-VCI-004", "Error VCI not supported."),
-	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed.");
+	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed."),
 
-	
+	PASSWORD_MISMATCH("IDA-PSD-001", "Password value did not match", "Please re-enter your password"),
+	PASSWORD_MISSING("IDA-PSD-002", "For the input VID/UIN - No Password found in DB.",
+			"Please use UIN/VID with Password Auth.");
+
 	private final String errorCode;
 	private final String errorMessage;
 	private String actionMessage;

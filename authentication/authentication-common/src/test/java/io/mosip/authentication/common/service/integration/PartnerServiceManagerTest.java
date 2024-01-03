@@ -865,7 +865,7 @@ public class PartnerServiceManagerTest {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
 						.getUndeclaredThrowable();
-				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorCode(),
 						idAuthenticationBaseException.getErrorCode());
 			}
 		}
@@ -898,7 +898,7 @@ public class PartnerServiceManagerTest {
 			if (e.getUndeclaredThrowable() instanceof IdAuthenticationBaseException) {
 				IdAuthenticationBaseException idAuthenticationBaseException = (IdAuthenticationBaseException) e
 						.getUndeclaredThrowable();
-				assertEquals(IdAuthenticationErrorConstants.PARTNER_NOT_REGISTERED.getErrorCode(),
+				assertEquals(IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorCode(),
 						idAuthenticationBaseException.getErrorCode());
 			}
 		}

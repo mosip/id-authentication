@@ -535,6 +535,12 @@ public class IdInfoHelper {
 							IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorMessage(),
 									input.getAuthType().getType()));
+
+				case PWD: 
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorMessage(),
+									input.getAuthType().getType()));
 			}
 		}
 		return entityInfo;

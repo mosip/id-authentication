@@ -41,7 +41,9 @@ public interface MatchType {
 		/** s-pin category. */
 		SPIN("pin"),
 		/** Token category */
-		KBT("kbt");
+		KBT("kbt"),
+		/** Password category */
+		PWD("pwd");
 
 		/** The type. */
 		String type;

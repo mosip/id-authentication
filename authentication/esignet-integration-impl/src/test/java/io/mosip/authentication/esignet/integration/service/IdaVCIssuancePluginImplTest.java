@@ -81,7 +81,7 @@ public class IdaVCIssuancePluginImplTest {
         oidcTransaction.setKycToken("kycToken");
         oidcTransaction.setAuthTransactionId("authTransactionId");
         oidcTransaction.setRelyingPartyId("relyingPartyId");
-        oidcTransaction.setClaimsLocales(new String[]{"eng"});
+        oidcTransaction.setClaimsLocales(new String[]{"en-US", "en", "en-CA", "fr-FR", "fr-CA"});
 
         IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> mockResponseWrapper = new IdaResponseWrapper<>();
         IdaVcExchangeResponse<JsonLDObject> mockResponse = new IdaVcExchangeResponse<>();

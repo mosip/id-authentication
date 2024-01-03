@@ -445,6 +445,26 @@ public final class IdAuthCommonConstants {
 
 	public static final String VC_CREDENTIAL_DEF = "credentialsDefinition";
 
+	public static final String PASSWORD_BASED_AUTH = "PasswordBasedAuth";
+
+	public static final String PASSWORD = "password";
+
+	public static final String SALT = "salt";
+
+	public static final String SEMI_COLON = ";";
+
+	public static final String OIDC_CLIENT_DATA = "oidc_client_data";
+
+	public static final String PARTNER_API_KEY_DATA = "partner_api_key_data";
+
+	public static final String PARTNER_API_KEY_POLICY_ID_DATA = "partner_api_key_policy_id_data";
+
+	public static final String PARTNER_DATA = "partner_data";
+
+	public static final String POLICY_DATA = "policy_data";
+
+	public static final String MISP_LIC_DATA = "misp_lic_data";
+
 	private IdAuthCommonConstants() {
 	}
 }

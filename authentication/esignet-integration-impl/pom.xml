@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.0.1-B5</version>
+		<version>1.2.1-SNAPSHOT</version>
 	</parent>
-	<version>1.2.0.1-B5</version>
+	
 	<artifactId>esignet-integration-impl</artifactId>
 	<name>esignet-integration-impl</name>
     <description>e-Signet Integration Implementation Library</description>
@@ -31,16 +31,18 @@
 			<version>1.18.22</version>
 			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
 			<artifactId>esignet-core</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>1.2.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
     		<artifactId>esignet-integration-api</artifactId>
-    		<version>1.2.0-SNAPSHOT</version>
+    		<version>1.2.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		

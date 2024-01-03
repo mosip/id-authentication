@@ -23,6 +23,8 @@ public enum AuditModules {
 	FACE_AUTH("IDA-FAA", "Face Authentication Request", "Face Authenticator"),
 
 	TOKEN_AUTH("IDA-TOA","Token Authentication requested", "Token Authenticator"),
+
+	PASSWORD_AUTH("IDA-PSD","Password Authentication requested", "Password Authenticator"),
 	
 	/** The e KY C AUTH. */
 	EKYC_AUTH("IDA-EKA", "E-KYC Authentication Request", "eKYC Authenticator"),

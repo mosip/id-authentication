@@ -28,6 +28,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -843,6 +845,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		Object value = Optional.ofNullable(requestBody.get(IdAuthCommonConstants.REQUEST))
 				.filter(obj -> obj instanceof Map).map(obj -> ((Map<String, Object>) obj).get(KEY_BINDED_TOKEN))
 				.filter(obj -> obj instanceof List).orElse(Collections.emptyMap());
+
 		List<KeyBindedTokenDTO> list = mapper.readValue(mapper.writeValueAsBytes(value),
 				new TypeReference<List<KeyBindedTokenDTO>>() {
 				});
@@ -858,6 +861,19 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			throw new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
 					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), MatchType.Category.KBT.getType()));
+		}
+	}
+
+	protected void checkAllowedAuthTypeForPassword(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
+			throws IdAuthenticationAppException, IOException {
+		KycAuthRequestDTO authRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+					KycAuthRequestDTO.class);
+
+		if (AuthTypeUtil.isPassword(authRequestDTO) && !isAllowedAuthType(MatchType.Category.PWD.getType(), authPolicies)) {
+			throw new IdAuthenticationAppException(
+			IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+			String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+					MatchType.Category.PWD.name()));
 		}
 	}
 
@@ -1042,15 +1058,24 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 				if (AuthTypeUtil.isPin(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.SPIN.getType())) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.SPIN.name()));
 				}
 				if (AuthTypeUtil.isOtp(authRequestDTO)  && !allowedAMRs.contains(MatchType.Category.OTP.getType())) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
 									MatchType.Category.OTP.name()));
+				}
+
+				KycAuthRequestDTO kycAuthRequestDTO = mapper.readValue(mapper.writeValueAsBytes(requestBody),
+										KycAuthRequestDTO.class);
+				if (AuthTypeUtil.isPassword(kycAuthRequestDTO)  && !allowedAMRs.contains(MatchType.Category.PWD.getType())) {
+					throw new IdAuthenticationAppException(
+							IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OIDC_CLIENT_AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									MatchType.Category.PWD.name()));
 				}
 				checkAllowedAMRForKBT(requestBody, allowedAMRs);
 			}
@@ -1119,19 +1144,28 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	 * @param requestWrapper the request wrapper
 	 * @return the auth part
 	 */
-	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) {
+	protected Map<String, String> getAuthPart(ResettableStreamHttpServletRequest requestWrapper) throws IdAuthenticationAppException{
 		Map<String, String> params = new HashMap<>();
 		String url = requestWrapper.getRequestURL().toString();
 		String contextPath = requestWrapper.getContextPath();
 		if ((Objects.nonNull(url) && !url.isEmpty()) && (Objects.nonNull(contextPath) && !contextPath.isEmpty())) {
 			String[] splitedUrlByContext = url.split(contextPath);
 			String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
-					.toArray(size -> new String[size]);
+									.toArray(size -> new String[size]);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getAuthPart", 
+					"List of Path Parameters received in url: " + Stream.of(paramsArray).collect(Collectors.joining(", ")));
 
 			if (paramsArray.length >= 3) {
 				params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 3]);
 				params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
 				params.put(API_KEY, paramsArray[paramsArray.length - 1]);
+			} else {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "getAuthPart", 
+					"Required Number of Path Parameters are not available in URL.");
+				throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.URI_PATH_PARAMS_MISSING.getErrorCode(), 
+					IdAuthenticationErrorConstants.URI_PATH_PARAMS_MISSING.getErrorMessage());
+					
 			}
 		}
 		return params;

@@ -6,22 +6,14 @@
 package io.mosip.authentication.esignet.integration.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.authentication.esignet.integration.dto.*;
-import io.mosip.esignet.api.dto.AuthChallenge;
-import io.mosip.esignet.api.dto.KeyBindingResult;
-import io.mosip.esignet.api.dto.SendOtpResult;
-import io.mosip.esignet.api.exception.KeyBindingException;
-import io.mosip.esignet.api.exception.KycAuthException;
-import io.mosip.esignet.api.exception.SendOtpException;
-import io.mosip.esignet.api.spi.KeyBinder;
-import io.mosip.esignet.api.util.ErrorConstants;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -32,10 +24,20 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
+import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
+import io.mosip.authentication.esignet.integration.dto.KeyBindingRequest;
+import io.mosip.authentication.esignet.integration.dto.KeyBindingResponse;
+import io.mosip.esignet.api.dto.AuthChallenge;
+import io.mosip.esignet.api.dto.KeyBindingResult;
+import io.mosip.esignet.api.dto.SendOtpResult;
+import io.mosip.esignet.api.exception.KeyBindingException;
+import io.mosip.esignet.api.exception.SendOtpException;
+import io.mosip.esignet.api.spi.KeyBinder;
+import io.mosip.esignet.api.util.ErrorConstants;
+import lombok.extern.slf4j.Slf4j;
 
 @ConditionalOnProperty(value = "mosip.esignet.integration.key-binder", havingValue = "IdaKeyBinderImpl")
 @Component

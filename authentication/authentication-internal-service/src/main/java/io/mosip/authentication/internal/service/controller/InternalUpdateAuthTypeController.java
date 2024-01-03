@@ -84,11 +84,11 @@ public class InternalUpdateAuthTypeController {
 					authtypeStatusService.updateAuthTypeStatus(event.getTokenId(), event.getAuthTypeStatusList());
 	
 					auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
-							event.getTokenId(), IdType.UIN, "internal auth type status update status : " + true);
+							eventModel.getEvent().getId(), IdType.UIN, "internal auth type status update status : " + true);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				auditHelper.audit(AuditModules.AUTH_TYPE_STATUS, AuditEvents.UPDATE_AUTH_TYPE_STATUS_REQUEST_RESPONSE,
-						event.getTokenId(), IdType.UIN, e);
+						eventModel.getEvent().getId(), IdType.UIN, e);
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}
 		}

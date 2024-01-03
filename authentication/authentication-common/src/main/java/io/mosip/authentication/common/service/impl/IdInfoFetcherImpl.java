@@ -26,6 +26,7 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -37,6 +38,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.ComparePasswordFunction;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
@@ -96,6 +98,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	@Autowired(required = false)
 	private KeyBindedTokenMatcherUtil keyBindedTokenMatcherUtil;
+
+	@Autowired(required = false)
+	private PasswordComparator passwordComparator;
 	
 	/**
 	 * Gets the demo normalizer.
@@ -571,5 +576,16 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			return Collections.emptyList();
 		}
 		return Collections.emptyList();
+	}
+
+	/*
+	 * Get Match password Function
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#
+	 * getMatchPasswordFunction()
+	 */
+	@Override
+	public ComparePasswordFunction getMatchPasswordFunction() {
+		return passwordComparator::matchPasswordFunction;
 	}
 }
