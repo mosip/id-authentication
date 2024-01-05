@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
@@ -74,9 +74,6 @@ public class InternalAuthTxnController {
 	@Autowired
 	private AuditHelper auditHelper;
 
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.setValidator(authTxnValidator);
@@ -124,8 +121,9 @@ public class InternalAuthTxnController {
 				Objects.isNull(individualIdType) ? idTypeUtil.getIdType(individualId).getType() : individualIdType);
 		authtxnrequestdto.setPageStart(pageStart);
 		authtxnrequestdto.setPageFetch(pageFetch);
-		String idvidHash = securityManager.hash(individualId);
-
+		// Removed Storing the idvid hash value in audit entries. 
+		// For this type of request storing a UUID instead of idvid hash.
+		String randomId = UUID.randomUUID().toString();
 		try {
 			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
 			authTxnValidator.validate(authtxnrequestdto, errors);
@@ -137,20 +135,20 @@ public class InternalAuthTxnController {
 			autnTxnResponseDto.setResponseTime(getResponseTime());
 			
 			boolean status = true;
-			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, idvidHash,
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, randomId,
 					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), "auth transaction history status : " + status );
 			return new ResponseEntity<>(autnTxnResponseDto, HttpStatus.OK);
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
 					e.getErrorText());
 			
-			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, idvidHash,
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, randomId,
 					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), e );
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			
-			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, idvidHash,
+			auditHelper.audit(AuditModules.AUTH_TRANSACTION_HISTORY, AuditEvents.RETRIEVE_AUTH_TRANSACTION_HISTORY_REQUEST_RESPONSE, randomId,
 					IdType.getIDTypeOrDefault(authtxnrequestdto.getIndividualIdType()), e );
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}

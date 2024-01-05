@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,10 +77,9 @@ public class ExchangeDataAttributesUtil {
 			return List.of();
 		}
 
-		List<String> oidcClientAllowedUserClaims = List.of(oidcClientData.get().getUserClaims())
-													   .stream()
-													   .map(String::toLowerCase)
-													   .collect(Collectors.toList());
+		List<String> oidcClientAllowedUserClaims = Stream.of(oidcClientData.get().getUserClaims())
+													.collect(Collectors.toList());
+													  
 		if (consentAttributes.isEmpty()) {
 			return oidcClientAllowedUserClaims;
 		}

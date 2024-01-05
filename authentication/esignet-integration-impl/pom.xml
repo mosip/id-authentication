@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.0.1-B5</version>
+		<version>1.2.0.1-SNAPSHOT</version>
 	</parent>
-	<version>1.2.0.1-B5</version>
+	<version>1.2.0.1-SNAPSHOT</version>
 	<artifactId>esignet-integration-impl</artifactId>
 	<name>esignet-integration-impl</name>
     <description>e-Signet Integration Implementation Library</description>
@@ -24,7 +24,7 @@
 			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -43,7 +43,7 @@
     		<version>1.2.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>

@@ -59,6 +59,8 @@ public class KycAuthFilter extends IdAuthFilter {
 			if (AuthTypeUtil.isKeyBindedToken(kycAuthRequestDTO)) {
 				super.checkAllowedAuthTypeForKeyBindedToken(requestBody, authPolicies);
 			}
+			
+			super.checkAllowedAuthTypeForPassword(requestBody, authPolicies);
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}

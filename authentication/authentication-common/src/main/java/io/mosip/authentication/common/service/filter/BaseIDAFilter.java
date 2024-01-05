@@ -465,6 +465,12 @@ public abstract class BaseIDAFilter implements Filter {
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
 			String responseSignature = null;
 			if(isSigningRequired()) {
+				if (Objects.isNull(responseAsString) || responseAsString.trim().length() == 0) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+									" Response String is null or empty for response (JWT) signing");
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), 
+								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+				}
 				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(EnvUtil.getSignResponse(), responseSignature);
 			}

@@ -18,7 +18,7 @@
 CREATE TABLE ida.credential_event_store(
 	event_id character varying(36) NOT NULL,
 	event_topic character varying(256) NOT NULL,
-	credential_transaction_id character varying(36) NOT NULL,
+	credential_transaction_id character varying(64) NOT NULL,
 	publisher character varying(128),
 	published_on_dtimes timestamp,
 	event_object character varying,

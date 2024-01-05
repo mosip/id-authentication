@@ -197,14 +197,14 @@ public class KycFacadeImpl implements KycFacade {
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata, false);
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
-				idHash, IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
-					"kycAuthentication status : " + status);
+						kycAuthRequestDTO.getTransactionID(), IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+						"kycAuthentication status : " + status);
 			return kycAuthResponseDTO;
 		} catch (IdAuthenticationBusinessException e) {
 			status = false;
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata, false);
 			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE,
-					idHash,	IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
+					kycAuthRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
 			throw e;
 		}
 	}
@@ -330,14 +330,14 @@ public class KycFacadeImpl implements KycFacade {
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata, true);
 			auditHelper.audit(AuditModules.KYC_AUTH, AuditEvents.KYC_REQUEST_RESPONSE,
-					idHash,	IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
+					kycAuthRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
 					"kycAuthentication status : " + status);
 			return kycAuthResponseDTO;
 		} catch (IdAuthenticationBusinessException e) {
 			status = false;
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTO, metadata, true);
 			auditHelper.audit(AuditModules.KYC_AUTH, AuditEvents.KYC_REQUEST_RESPONSE,
-							  idHash, IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
+							  kycAuthRequestDTO.getTransactionID(), IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
 			throw e;
 		}
 	}
@@ -452,15 +452,16 @@ public class KycFacadeImpl implements KycFacade {
 			kycExchangeResponseDTO.setResponse(encryptedKycRespDTO);
 			saveToTxnTable(kycExchangeRequestDTO, false, true, partnerId, token, kycExchangeResponseDTO, requestWithMetadata);
 			auditHelper.audit(AuditModules.KYC_EXCHANGE, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE,
-					idHash,	IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()),
+					kycExchangeRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()),
 					IdAuthCommonConstants.KYC_EXCHANGE_SUCCESS);
 			return kycExchangeResponseDTO;
 		} catch(IdAuthenticationBusinessException e) {
 			auditHelper.audit(AuditModules.KYC_EXCHANGE, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE,
-							  idHash, IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()), e);
+							  kycExchangeRequestDTO.getTransactionID(), IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()), e);
 			throw e;
 		}
 	}
+
 
 	// Need to move below duplicate code to common to be used by OTPService and KycExchange.
 	private void saveToTxnTable(KycExchangeRequestDTO kycExchangeRequestDTO, boolean isInternal, boolean status, String partnerId, String token, 
