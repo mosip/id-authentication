@@ -71,12 +71,13 @@
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel-logger-logback.version}</version>
 			<exclusions>
-				<exclusion>
+				<!--<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>
 						spring-boot-starter-security
 					</artifactId>
 				</exclusion>
+				-->
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-databind</artifactId>
