@@ -21,11 +21,27 @@
             <groupId>io.mosip.authentication</groupId>
             <artifactId>authentication-core</artifactId>
             <version>${authentication-core.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.mosip.authentication</groupId>
             <artifactId>authentication-common</artifactId>
             <version>${authentication-common.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.mosip.authentication</groupId>
@@ -82,6 +98,10 @@
             		<groupId>com.fasterxml.jackson.core</groupId>
             		<artifactId>jackson-databind</artifactId>
             	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -115,6 +135,10 @@
             	<exclusion>
             		<groupId>com.fasterxml.jackson.core</groupId>
             		<artifactId>jackson-databind</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-annotations</artifactId>
             	</exclusion>
             </exclusions>
         </dependency>
@@ -153,6 +177,14 @@
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
@@ -170,6 +202,14 @@
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
@@ -180,6 +220,10 @@
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
         		</exclusion>
         	</exclusions>
         </dependency>
@@ -236,6 +280,14 @@
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
@@ -246,6 +298,14 @@
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
         		</exclusion>
         	</exclusions>
         </dependency>
