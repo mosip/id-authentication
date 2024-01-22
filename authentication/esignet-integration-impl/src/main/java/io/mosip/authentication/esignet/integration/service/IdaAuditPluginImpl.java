@@ -74,10 +74,10 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setApplicationName(ESIGNET);
 			auditRequest.setSessionUserId(StringUtils.isEmpty(username)?"no-user":username);
 			auditRequest.setSessionUserName(StringUtils.isEmpty(username)?"no-user":username);
-			auditRequest.setIdType(TRANSACTION);
+			auditRequest.setIdType(audit.getIdType());
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
-			auditRequest.setModuleName(getModuleByAction(action));
-			auditRequest.setModuleId(getModuleByAction(action));
+			auditRequest.setModuleName(action.getModule());
+			auditRequest.setModuleId(action.getModule());
 			auditRequest.setDescription(getAuditDescription(audit));
 			auditRequest.setId(audit.getTransactionId());
 
@@ -120,40 +120,9 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 		json.put("state", audit.getState());
 		json.put("codeHash", audit.getCodeHash());
 		json.put("accessTokenHash", audit.getAccessTokenHash());
+		json.put("linkCodeHash", audit.getLinkedCodeHash());
+		json.put("linkTransactionId", audit.getLinkedTransactionId());
 		return json.toString();
-	}
-
-	private String getModuleByAction(Action action) {
-		switch (action) {
-		case OIDC_CLIENT_CREATE:
-		case OIDC_CLIENT_UPDATE:
-			return "ClientManagementController";
-		case GET_OAUTH_DETAILS:
-		case TRANSACTION_STARTED:
-		case SEND_OTP:
-		case AUTHENTICATE:
-		case GET_AUTH_CODE:
-		case DO_KYC_AUTH:
-		case DO_KYC_EXCHANGE:
-			return "AuthorizationController";
-		case GENERATE_TOKEN:
-			return "OAuthController";
-		case GET_USERINFO:
-			return "OpenIdConnectController";
-		case LINK_AUTH_CODE:
-		case LINK_AUTHENTICATE:
-		case LINK_CODE:
-		case LINK_SEND_OTP:
-		case LINK_STATUS:
-		case LINK_TRANSACTION:
-		case SAVE_CONSENT:
-			return "LinkedAuthorizationController";
-		case GET_CERTIFICATE:
-		case UPLOAD_CERTIFICATE:
-			return "SystemInfoController";
-		default:
-			return "EsignetService";
-		}
 	}
 
 }
