@@ -100,27 +100,27 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 		webSubHelper.publishEvent(onDemadTemplateExtractionTopic, eventModel);
 	}
 
-	public void notify(Object authrequestdto, String headerSignature, Optional<PartnerDTO> partner,
+	public void notify(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		try {
-			sendEvents(authrequestdto, headerSignature, partner, e, metadata);
+			sendEvents(baserequestdto, headerSignature, partner, e, metadata);
 		} catch (Exception exception) {
 			logger.error(IdRepoSecurityManager.getUser(), "On demand template  extraction", "notify",
 					exception.getMessage());
 		}
 	}
 
-	private void sendEvents(Object authrequestdto, String headerSignature, Optional<PartnerDTO> partner,
+	private void sendEvents(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		logger.info("Inside sendEvents ondemand extraction");
 		Map<String, Object> eventData = new HashMap<>();
 		eventData.put(ERROR_CODE, e.getErrorCode());
 		eventData.put(ERROR_MESSAGE, e.getErrorText());
 		eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
-		eventData.put(INDIVIDUAL_ID, encryptIndividualId(((BaseRequestDTO) authrequestdto).getIndividualId(),
+		eventData.put(INDIVIDUAL_ID, encryptIndividualId(baserequestdto.getIndividualId(),
 				metadata.get(IdAuthCommonConstants.PARTNER_CERTIFICATE).toString()));
 		eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
-		eventData.put(INDIVIDUAL_ID_TYPE, ((BaseRequestDTO) authrequestdto).getIndividualIdType());
+		eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
 		eventData.put(ENTITY_NAME, partner.get().getPartnerName());
 		eventData.put(REQUEST_SIGNATURE, headerSignature);
 		EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
@@ -144,7 +144,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 
 	private byte[] encryptIndividualId(String id, String partnerCertificate) {
 		try {
-			return securityManager.encryptIdData(id.getBytes(), partnerCertificate);
+			return securityManager.asymmetricEncryption(id.getBytes(), partnerCertificate);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
