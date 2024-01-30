@@ -52,7 +52,9 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 	private static final String PUBLISHER_IDA = "IDA";
 
 	/** The Constant logger. */
-	private static final Logger logger = IdaLogger.getLogger(CredentialStoreStatusEventPublisher.class);
+
+	private static final Logger logger = IdaLogger.getLogger(OndemandTemplateEventPublisher.class);
+
 
 	/** The on demand template extraction topic. */
 	@Value("${" + ON_DEMAND_TEMPLATE_EXTRACTION_TOPIC + "}")
