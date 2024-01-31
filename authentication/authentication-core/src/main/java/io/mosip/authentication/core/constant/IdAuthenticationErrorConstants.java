@@ -94,7 +94,8 @@ public enum IdAuthenticationErrorConstants {
 
 	BINDED_KEY_NOT_FOUND("IDA-KBT-001", "Certificate not found for the input x5t#S256: %s and authtype: %s"),
 	BINDED_TOKEN_EXPIRED("IDA-KBT-002", "Signed token issued at (iat) is not in allowed time range."),
-	ERROR_TOKEN_VERIFICATION("IDA-KBT-003", "Error verifying key binded token. Error: %s"),
+	ERROR_TOKEN_VERIFICATION("IDA-KBT-003", "Binded Token verification failed.", 
+					"Please retry token generation with correct Key."),
 
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
@@ -214,7 +215,7 @@ public enum IdAuthenticationErrorConstants {
 	VCI_NOT_SUPPORTED_ERROR("IDA-VCI-004", "Error VCI not supported."),
 	LDP_VC_GENERATION_FAILED("IDA-VCI-005", "Ldp VC generation Failed."),
 
-	PASSWORD_MISMATCH("IDA-PSD-001", "Password value did not match", "Please re-enter your password"),
+	PASSWORD_MISMATCH("IDA-PSD-001", "Password value did not match", "Please re-enter your correct password"),
 	PASSWORD_MISSING("IDA-PSD-002", "For the input VID/UIN - No Password found in DB.",
 			"Please use UIN/VID with Password Auth.");
 
