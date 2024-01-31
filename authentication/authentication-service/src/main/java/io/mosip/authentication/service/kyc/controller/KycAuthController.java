@@ -107,7 +107,7 @@ public class KycAuthController {
 	 *
 	 * @param binder the binder
 	 */
-	@InitBinder("authRequestDTO")
+	@InitBinder("kycAuthRequestDTO")
 	private void initKycAuthRequestBinder(WebDataBinder binder) {
 		binder.setValidator(authRequestValidator);
 	} 
