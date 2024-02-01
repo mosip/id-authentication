@@ -571,7 +571,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		if (userPreferredLangAttribute != null) {
 			List<IdentityInfoDTO> identityInfoList = idInfo.get(userPreferredLangAttribute);
 			if (identityInfoList != null) {
-				return identityInfoList.stream().map(IdentityInfoDTO::getValue).collect(Collectors.toList());
+				return identityInfoList.stream().map(info -> info.getValue().split(","))
+				                                .flatMap(java.util.Arrays::stream)
+												.collect(Collectors.toList());
 			}
 			return Collections.emptyList();
 		}

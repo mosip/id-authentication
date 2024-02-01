@@ -324,7 +324,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private boolean isOtpFlooded(String token, String requestTime) throws IdAuthenticationBusinessException {
-		boolean isOtpFlooded = false;
+ 		boolean isOtpFlooded = false;
 		LocalDateTime reqTime;
 		try {
 			String strUTCDate = DateUtils.getUTCTimeFromDate(
@@ -340,7 +340,9 @@ public class OTPServiceImpl implements OTPService {
 		int addMinutes = EnvUtil.getOtpRequestFloodingDuration();
 		LocalDateTime addMinutesInOtpRequestDTimes = reqTime.minus(addMinutes, ChronoUnit.MINUTES);
 		int maxCount = EnvUtil.getOtpRequestFloodingMaxCount();
-		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, token) > maxCount) {
+		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, token) >= maxCount) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
+						" OTP requested Flooded: " + reqTime + "," + addMinutesInOtpRequestDTimes + "," + maxCount);
 			isOtpFlooded = true;
 		}
 		return isOtpFlooded;
