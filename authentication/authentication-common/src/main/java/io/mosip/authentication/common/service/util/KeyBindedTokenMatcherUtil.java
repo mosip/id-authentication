@@ -157,10 +157,11 @@ public class KeyBindedTokenMatcherUtil {
             return true;
         } catch (BadJOSEException | JOSEException e) {
             mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "",
-                        "Failed to verify WLA token", e);
-            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ERROR_TOKEN_VERIFICATION.getErrorCode(),
-                        String.format(IdAuthenticationErrorConstants.ERROR_TOKEN_VERIFICATION.getErrorMessage(), e.getMessage()));
+                        "Failed to verify WLA token" + e.getMessage(), e);
+            /* throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ERROR_TOKEN_VERIFICATION.getErrorCode(),
+                        String.format(IdAuthenticationErrorConstants.ERROR_TOKEN_VERIFICATION.getErrorMessage())); */
         }
+        return false;
     }
 
     private boolean isIatWithinAllowedTime(Date issuedDateTime) {

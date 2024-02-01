@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -23,6 +24,9 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenMatchType;
+import io.mosip.authentication.common.service.impl.match.PasswordMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -34,6 +38,9 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -184,6 +191,61 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 							"INVALID_INPUT_PARAMETER - OtppinValue - value -> " + otp.get());
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { OTP2 },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+			}
+		}
+	}
+
+	private void validatePasswordDetails(AuthRequestDTO authRequestDTO, Errors errors) {
+		
+		if (isMatchtypeEnabled(PasswordMatchType.PASSWORD)) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+			Optional<String> passwordOpt = Optional.ofNullable(kycAuthRequestDTO.getRequest()).map(KycRequestDTO::getPassword);
+			if (!passwordOpt.isPresent()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthCommonConstants.VALIDATE, "Missing Password value in the request");
+				errors.rejectValue(IdAuthCommonConstants.REQUEST,
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+						new Object[] { Category.PWD.getType() },
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
+			} else {
+				if (passwordOpt.get().isBlank()) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validatePasswordDetails",
+							"INVALID_INPUT_PARAMETER - Pwd value -> " + passwordOpt.get());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "PWD" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+			}
+		}
+	}
+
+	private void validateKBTDetails(AuthRequestDTO authRequestDTO, Errors errors) {
+		if(authRequestDTO instanceof KycAuthRequestDTO) {
+            KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO)authRequestDTO;
+			boolean isKbt = CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens());
+			if (!isKbt) {
+				KeyBindedTokenDTO kbtDto = kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0);
+				if (Objects.isNull(kbtDto.getFormat()) || kbtDto.getFormat().isBlank()) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateKBTDetails",
+							"INVALID_INPUT_PARAMETER - KBT value -> " + kbtDto.getFormat());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "KeyBindedTokens.Format" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (Objects.isNull(kbtDto.getToken()) || kbtDto.getToken().isBlank()) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateKBTDetails",
+							"INVALID_INPUT_PARAMETER - KBT value -> " + kbtDto.getToken());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "KeyBindedTokens.Token" },
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+				}
+				if (Objects.isNull(kbtDto.getType()) || kbtDto.getType().isBlank()) {
+					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateKBTDetails",
+							"INVALID_INPUT_PARAMETER - KBT value -> " + kbtDto.getType());
+					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							new Object[] { "KeyBindedTokens.Type" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
 			}
@@ -964,7 +1026,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		if (!(AuthTypeUtil.isDemo(authRequestDto) 
 				|| AuthTypeUtil.isBio(authRequestDto) 
 				|| AuthTypeUtil.isOtp(authRequestDto) 
-				|| AuthTypeUtil.isPin(authRequestDto))) {
+				|| AuthTypeUtil.isPin(authRequestDto)
+				|| AuthTypeUtil.isPassword(authRequestDto)
+				|| AuthTypeUtil.isKeyBindedToken(authRequestDto))) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
@@ -1043,8 +1107,30 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 		}
 
+		boolean isKeyBindedToken = AuthTypeUtil.isKeyBindedToken(requestDTO);
+		if (isKeyBindedToken && !allowedAuthType.contains(MatchType.Category.KBT.getType())) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
+					new Object[] { MatchType.Category.KBT.getType() },
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
+		}
+
+		boolean isPassword = AuthTypeUtil.isPassword(requestDTO);
+		if (isPassword && !allowedAuthType.contains(MatchType.Category.PWD.getType())) {
+			errors.rejectValue(IdAuthCommonConstants.REQUEST,
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
+					new Object[] { MatchType.Category.PWD.getType() },
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
+		}
+
 		if ((isOtp || isPin) && !errors.hasErrors()) {
 			validateAdditionalFactorsDetails(requestDTO, errors);
+		}
+		if(isPassword && !errors.hasErrors()) {
+			validatePasswordDetails(requestDTO, errors);
+		}
+		if (!errors.hasErrors()) {
+			validateKBTDetails(requestDTO, errors);
 		}
 	}
 
@@ -1066,7 +1152,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
 			}
 		}
-
 	}
 
 	/**

@@ -10,6 +10,8 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.PasswordAuthType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.ActionableAuthError;
@@ -121,6 +123,10 @@ public class AuthStatusInfoBuilder {
 				constructDemoError(matchOutput, statusInfoBuilder, idMappingConfig);
 			} else if (category.equalsIgnoreCase(Category.OTP.getType())) {
 				constructOTPError(matchOutput, statusInfoBuilder);
+			} else if (category.equalsIgnoreCase(Category.PWD.getType())) {
+				constructPWDError(matchOutput, statusInfoBuilder);
+			} else if (category.equalsIgnoreCase(Category.KBT.getType())) {
+				constructKBTError(matchOutput, statusInfoBuilder);
 			}
 		}
 	}
@@ -178,6 +184,30 @@ public class AuthStatusInfoBuilder {
 
 		if (authTypeForMatchType.isPresent()) {
 			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.INVALID_OTP, "");
+			statusInfoBuilder.addErrors(errors);
+		}
+	}
+
+	private static void constructPWDError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType[] authTypes;
+		authTypes = PasswordAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.PASSWORD_MISMATCH, "");
+			statusInfoBuilder.addErrors(errors);
+		}
+	}
+
+	private static void constructKBTError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType[] authTypes;
+		authTypes = KeyBindedTokenAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+
+		if (authTypeForMatchType.isPresent()) {
+			AuthError errors = createActionableAuthError(IdAuthenticationErrorConstants.ERROR_TOKEN_VERIFICATION, "");
 			statusInfoBuilder.addErrors(errors);
 		}
 	}
