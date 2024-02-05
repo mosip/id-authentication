@@ -1,10 +1,15 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -52,9 +57,6 @@ public class OTPManager {
 	@Autowired
 	private RestHelper restHelper;
 
-	@Autowired
-	private EnvUtil environment;
-
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
@@ -67,6 +69,12 @@ public class OTPManager {
 
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Value("${mosip.ida.otp.validation-attempt-threshold:5}")
+	private int numberOfValidationAttemptsAllowed;
+	
+	@Value("${mosip.ida.otp.frozen.time.minutes:30}")
+	private int otpFrozenTimeMinutes;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
@@ -84,16 +92,32 @@ public class OTPManager {
 	 */
 	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
+		
+		String refIdHash = securityManager.hash(idvid);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(refIdHash);
 
+		if(otpEntityOpt.isPresent()) {
+			OtpTransaction otpEntity = otpEntityOpt.get();
+			if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
+				if(DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
+					otpEntity.setValidationRetryCount(0);
+					otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+				} else {
+					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
+									otpFrozenTimeMinutes + "seconds"));
+				}
+			}
+		}
+		
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
 		String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
 				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
 				+ EnvUtil.getKeySplitter() + otp).getBytes());
-
-		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-		if (otpTxnOpt.isPresent()) {
-			OtpTransaction otpTxn = otpTxnOpt.get();
+		
+		if (otpEntityOpt.isPresent()) {
+			OtpTransaction otpTxn = otpEntityOpt.get();
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(otpGenerationTime);
@@ -139,7 +163,7 @@ public class OTPManager {
 			}
 			if(response !=null && response.getResponse()!=null){
 				return response.getResponse().get("otp");
-			}else{
+			} else{
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
 
@@ -164,25 +188,67 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		String otpHash;
-		otpHash = IdAuthSecurityManager.digestAsPlainText(
-				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
-		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-		if (otpTxnOpt.isPresent()) {
-			OtpTransaction otpTxn = otpTxnOpt.get();
-			//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-			otpRepo.save(otpTxn);
-			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-				return true;
+	public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
+		String refIdHash = securityManager.hash(individualId);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(refIdHash);
+
+		requireKeyNotFound(otpEntityOpt);
+		
+		OtpTransaction otpEntity = otpEntityOpt.get();
+		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
+		
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
+			if(DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
+				otpEntity.setValidationRetryCount(0);
+				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			} else {
-				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(), otpFrozenTimeMinutes + "seconds"));
+			}
+		}
+		
+		//Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
+			String otpHash = getOtpHash(pinValue, otpKey);
+			if (otpEntity.getOtpHash().equals(otpHash)) {
+				//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
+				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+				otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+				otpRepo.save(otpEntity);
+				if (otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+					return true;
+				} else {
+					logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+				}
+			} else {
+				// This condition increases the validation attempt count.
+				if (attemptCount <= numberOfValidationAttemptsAllowed) {
+					otpEntity.setValidationRetryCount(attemptCount);
+				} else {
+					otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+				}
+				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+				otpRepo.save(otpEntity);
+				return false;
 			}
 		} else {
-			return false;
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
+		}
+	}
+
+	private String getOtpHash(String pinValue, String otpKey) {
+		return IdAuthSecurityManager.digestAsPlainText(
+				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
+	}
+	
+	private void requireKeyNotFound(Optional<OtpTransaction> entityOpt) {
+		/*
+		 * Checking whether the key exists in repository or not. If not, throw an
+		 * exception.
+		 */
+		if (entityOpt.isEmpty()) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
 		}
 	}
 }

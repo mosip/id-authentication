@@ -248,6 +248,8 @@ public final class IdAuthCommonConstants {
 
 	/** The Constant USED_STATUS. */
 	public static final String USED_STATUS = "used";
+	
+	public static final String FROZEN = "frozen";
 
 	/** The Constant EXPIRY_DT. */
 	public static final String EXPIRY_DT = "expiryDt";

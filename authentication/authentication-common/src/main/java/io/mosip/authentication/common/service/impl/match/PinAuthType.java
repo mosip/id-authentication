@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -29,6 +30,7 @@ public enum PinAuthType implements AuthType {
 			if (isAuthTypeInfoAvailable(authRequestDTO)) {
 				ValidateOtpFunction func = idInfoFetcher.getValidateOTPFunction();
 				valueMap.put(ValidateOtpFunction.class.getSimpleName(), func);
+				valueMap.put(IdAuthCommonConstants.IDVID, authRequestDTO.getIndividualId());
 			}
 			return valueMap;
 		}

@@ -25,6 +25,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.OtpTxnRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
@@ -98,6 +99,7 @@ public class OtpMatchingStrategyTest {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), "");
+		matchProperties.put(IdAuthCommonConstants.IDVID, "");
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(0, value);
 	}

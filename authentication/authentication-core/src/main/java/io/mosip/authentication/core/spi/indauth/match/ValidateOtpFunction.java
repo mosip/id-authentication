@@ -17,6 +17,6 @@ public interface ValidateOtpFunction {
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public boolean validateOtp(String otpValue, String otpKey) throws IdAuthenticationBusinessException;
+	public boolean validateOtp(String otpValue, String otpKey, String individualId) throws IdAuthenticationBusinessException;
 
 }
