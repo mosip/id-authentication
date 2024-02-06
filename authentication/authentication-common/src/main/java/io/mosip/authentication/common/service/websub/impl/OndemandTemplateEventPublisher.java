@@ -122,22 +122,25 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 
 	private void sendEvents(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
+		logger.info("Inside sendEvents ondemand extraction");
 		logger.info("Inside partner data to get certificate for ondemand extraction encryption");
 		Optional<PartnerData> partnerDataCert = partnerDataRepo.findByPartnerId(partnerId);
-		logger.info("End process to get partner data certificate for ondemand extraction encryption");
-		logger.info("Inside sendEvents ondemand extraction");
-		Map<String, Object> eventData = new HashMap<>();
-		eventData.put(ERROR_CODE, e.getErrorCode());
-		eventData.put(ERROR_MESSAGE, e.getErrorText());
-		eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
-		eventData.put(INDIVIDUAL_ID, encryptIndividualId(baserequestdto.getIndividualId(),
-				partnerDataCert.get().getCertificateData()));
-		eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
-		eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
-		eventData.put(ENTITY_NAME, partner.get().getPartnerName());
-		eventData.put(REQUEST_SIGNATURE, headerSignature);
-		EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
-		publishEvent(eventModel);
+		if (partnerDataCert.isEmpty()) {
+			logger.info("Partner is not configured for on demand extraction.");
+		} else {
+			Map<String, Object> eventData = new HashMap<>();
+			eventData.put(ERROR_CODE, e.getErrorCode());
+			eventData.put(ERROR_MESSAGE, e.getErrorText());
+			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+			eventData.put(INDIVIDUAL_ID,
+					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
+			eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
+			eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
+			eventData.put(ENTITY_NAME, partner.get().getPartnerName());
+			eventData.put(REQUEST_SIGNATURE, headerSignature);
+			EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
+			publishEvent(eventModel);
+		}
 	}
 
 	private EventModel createEventModel(String topic, Map<String, Object> eventData) {
