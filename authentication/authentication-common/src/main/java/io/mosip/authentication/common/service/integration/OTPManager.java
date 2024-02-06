@@ -195,16 +195,17 @@ public class OTPManager {
 		requireKeyNotFound(otpEntityOpt);
 		
 		OtpTransaction otpEntity = otpEntityOpt.get();
-		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
 		
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
+			if(otpEntity.getUpdDTimes() != null && DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
 				otpEntity.setValidationRetryCount(0);
 				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			} else {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(), otpFrozenTimeMinutes + "seconds"));
 			}
 		}
+		
+		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
 		
 		//Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {

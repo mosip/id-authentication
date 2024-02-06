@@ -3,6 +3,9 @@ package io.mosip.authentication.common.service.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -618,13 +621,387 @@ public class OTPManagerTest {
 		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
-			otpManager.validateOtp("Test123", "123456", "426789089018");
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertFalse(result);
+			assertEquals((long)1, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), ex.getErrorCode());
-			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorMessage(), ex.getErrorText());
+			fail();
 		}
 	}
+	
+	public void TestInvalidAttemptWith_1UpdateCount()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
 
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpEntity.setValidationRetryCount(1);
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertFalse(result);
+			assertEquals((long)2, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthenticationBusinessException ex) {
+			fail();
+		}
+	}
+	
+	public void TestInvalidAttemptWith_4UpdateCount()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpEntity.setValidationRetryCount(4);
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertFalse(result);
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthenticationBusinessException ex) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void TestInvalidAttemptWith_FrozenStatus()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestInvalidAttemptWith_FrozenStatusWithin25Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestInvalidAttemptWith_FrozenStatusWithin30Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(30, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestInvalidAttemptWith_FrozenStatusWithin31Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("otphash");
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertEquals((long)1, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthUncheckedException ex) {
+			fail();
+		}
+	}
+	
+	
+	@Test
+	public void TestValidAttemptWith_nullUpdateCount()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertTrue(result);
+			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthenticationBusinessException ex) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_1UpdateCount()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpEntity.setValidationRetryCount(1);
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertTrue(result);
+			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthenticationBusinessException ex) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_4UpdateCount()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpEntity.setValidationRetryCount(4);
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertTrue(result);
+			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthenticationBusinessException ex) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_FrozenStatus()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_FrozenStatusWithin25Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_FrozenStatusWithin30Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(30, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			fail();
+		} catch (IdAuthUncheckedException ex) {
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
+			verify(otpRepo, times(0)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_FrozenStatusWithin31Mins()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+			assertEquals((long)0, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+		} catch (IdAuthUncheckedException ex) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void TestValidAttemptWith_FrozenStatusWithin31Mins_expiredOtp()
+			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
+		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
+		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
+				.thenReturn(restRequestDTO);
+
+		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
+		OtpTransaction otpEntity = new OtpTransaction();
+		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setValidationRetryCount(5);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setOtpHash("3132333435366E756C6C54657374313233");
+		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().minus(1, ChronoUnit.MINUTES));
+		
+		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		
+		try {
+			otpManager.validateOtp("Test123", "123456", "426789089018");
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals((long)0, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			verify(otpRepo, times(1)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), ex.getErrorCode());
+		}
+	}
+	
 	@Test
 	public void TestThrowOtpException_UINLocked()
 			throws RestServiceException, IdAuthUncheckedException, IdAuthenticationBusinessException {
