@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.common.service.entity.PartnerData;
 import io.mosip.authentication.common.service.helper.WebSubHelper;
+import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -59,6 +61,9 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 	/** The on demand template extraction topic. */
 	@Value("${" + ON_DEMAND_TEMPLATE_EXTRACTION_TOPIC + "}")
 	private String onDemadTemplateExtractionTopic;
+	
+	@Value("${mosip.ida.ondemand.template.extraction.partner.id}")
+	 private String partnerId;
 
 	/** The web sub event publish helper. */
 	@Autowired
@@ -66,6 +71,9 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	@Autowired
+	private PartnerDataRepository partnerDataRepo;
 
 	/**
 	 * Do subscribe.
@@ -115,18 +123,24 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 	private void sendEvents(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		logger.info("Inside sendEvents ondemand extraction");
-		Map<String, Object> eventData = new HashMap<>();
-		eventData.put(ERROR_CODE, e.getErrorCode());
-		eventData.put(ERROR_MESSAGE, e.getErrorText());
-		eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
-		eventData.put(INDIVIDUAL_ID, encryptIndividualId(baserequestdto.getIndividualId(),
-				metadata.get(IdAuthCommonConstants.PARTNER_CERTIFICATE).toString()));
-		eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
-		eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
-		eventData.put(ENTITY_NAME, partner.get().getPartnerName());
-		eventData.put(REQUEST_SIGNATURE, headerSignature);
-		EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
-		publishEvent(eventModel);
+		logger.info("Inside partner data to get certificate for ondemand extraction encryption");
+		Optional<PartnerData> partnerDataCert = partnerDataRepo.findByPartnerId(partnerId);
+		if (partnerDataCert.isEmpty()) {
+			logger.info("Partner is not configured for on demand extraction.");
+		} else {
+			Map<String, Object> eventData = new HashMap<>();
+			eventData.put(ERROR_CODE, e.getErrorCode());
+			eventData.put(ERROR_MESSAGE, e.getErrorText());
+			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+			eventData.put(INDIVIDUAL_ID,
+					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
+			eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
+			eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
+			eventData.put(ENTITY_NAME, partner.get().getPartnerName());
+			eventData.put(REQUEST_SIGNATURE, headerSignature);
+			EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
+			publishEvent(eventModel);
+		}
 	}
 
 	private EventModel createEventModel(String topic, Map<String, Object> eventData) {
@@ -146,6 +160,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 
 	private byte[] encryptIndividualId(String id, String partnerCertificate) {
 		try {
+			logger.info("Inside the method of encryptIndividualId using partner certificate ");
 			return securityManager.asymmetricEncryption(id.getBytes(), partnerCertificate);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
