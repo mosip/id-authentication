@@ -99,7 +99,8 @@ public class OTPManager {
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
 			if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-				if(DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
+				if(checkFrozenStatusAndDuration(otpEntity)) {
+					logger.info("OTP Frozen wait time is over. Allowing further.");
 					otpEntity.setValidationRetryCount(0);
 					otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 				} else {
@@ -197,11 +198,12 @@ public class OTPManager {
 		OtpTransaction otpEntity = otpEntityOpt.get();
 		
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(otpEntity.getUpdDTimes() != null && DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES))) {
+			if(otpEntity.getUpdDTimes() != null && checkFrozenStatusAndDuration(otpEntity)) {
+				logger.info("OTP Frozen wait time is over. Allowing further.");
 				otpEntity.setValidationRetryCount(0);
 				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			} else {
-				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(), otpFrozenTimeMinutes + "seconds"));
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(), otpFrozenTimeMinutes + "seconds"));
 			}
 		}
 		
@@ -224,9 +226,8 @@ public class OTPManager {
 				}
 			} else {
 				// This condition increases the validation attempt count.
-				if (attemptCount <= numberOfValidationAttemptsAllowed) {
-					otpEntity.setValidationRetryCount(attemptCount);
-				} else {
+				otpEntity.setValidationRetryCount(attemptCount);
+				if (attemptCount >= numberOfValidationAttemptsAllowed) {
 					otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 				}
 				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
@@ -234,8 +235,12 @@ public class OTPManager {
 				return false;
 			}
 		} else {
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
 		}
+	}
+
+	private boolean checkFrozenStatusAndDuration(OtpTransaction otpEntity) {
+		return DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
 	}
 
 	private String getOtpHash(String pinValue, String otpKey) {
@@ -243,13 +248,13 @@ public class OTPManager {
 				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
 	}
 	
-	private void requireKeyNotFound(Optional<OtpTransaction> entityOpt) {
+	private void requireKeyNotFound(Optional<OtpTransaction> entityOpt) throws IdAuthenticationBusinessException {
 		/*
 		 * Checking whether the key exists in repository or not. If not, throw an
 		 * exception.
 		 */
 		if (entityOpt.isEmpty()) {
-			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
 		}
 	}
 }
