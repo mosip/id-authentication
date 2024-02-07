@@ -98,15 +98,7 @@ public class OTPManager {
 
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
-			if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-				if(isAfterFrozenDuration(otpEntity)) {
-					logger.info("OTP Frozen wait time is over. Allowing further.");
-					otpEntity.setValidationRetryCount(0);
-					otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-				} else {
-					throw createOTPFrozenException();
-				}
-			}
+			requireOtpNotFrozen(otpEntity);
 		}
 		
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
@@ -201,15 +193,7 @@ public class OTPManager {
 		
 		OtpTransaction otpEntity = otpEntityOpt.get();
 		
-		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(otpEntity.getUpdDTimes() != null && isAfterFrozenDuration(otpEntity)) {
-				logger.info("OTP Frozen wait time is over. Allowing further.");
-				otpEntity.setValidationRetryCount(0);
-				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-			} else {
-				throw createOTPFrozenException();
-			}
-		}
+		requireOtpNotFrozen(otpEntity);
 		
 		// Increment the validation attempt count.
 		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
@@ -239,6 +223,18 @@ public class OTPManager {
 			}
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
+		}
+	}
+
+	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
+			if(otpEntity.getUpdDTimes() != null && isAfterFrozenDuration(otpEntity)) {
+				logger.info("OTP Frozen wait time is over. Allowing further.");
+				otpEntity.setValidationRetryCount(0);
+				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			} else {
+				throw createOTPFrozenException();
+			}
 		}
 	}
 
