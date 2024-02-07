@@ -165,12 +165,10 @@ public class AuthController {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
-							String.format(
-									IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
-									authrequestdto.getIndividualIdType()),
-							e);
+					e.addInfo(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
+									authrequestdto.getIndividualIdType()));
+					throw e;
 
 				}
 				

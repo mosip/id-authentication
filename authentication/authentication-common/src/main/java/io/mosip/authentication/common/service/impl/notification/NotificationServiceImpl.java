@@ -24,6 +24,8 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.PasswordAuthType;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
@@ -105,7 +107,8 @@ public class NotificationServiceImpl implements NotificationService {
 		// TODO add for all auth types
 		String authTypeStr = Stream
 				.of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
-						Stream.<AuthType>of(PinAuthType.values()))
+						Stream.<AuthType>of(PinAuthType.values()), Stream.<AuthType>of(PasswordAuthType.values()), 
+						Stream.<AuthType>of(KeyBindedTokenAuthType.values()))
 				.flatMap(Function.identity())
 				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
 				.peek(System.out::println)
