@@ -165,13 +165,7 @@ public class AuthController {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
-					e.addInfo(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
-									authrequestdto.getIndividualIdType()));
-					throw e;
-
 				}
-				
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authrequestdto.getTransactionID());

@@ -162,11 +162,6 @@ public class OTPController {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
 							otpRequestDto.getMetadata());
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
-									otpRequestDto.getIndividualIdType()),
-							e);
 				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);

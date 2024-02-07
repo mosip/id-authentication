@@ -201,11 +201,6 @@ public class KycAuthController {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"), partner,
 							e, ekycAuthRequestDTO.getMetadata());
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
-									ekycAuthRequestDTO.getIndividualIdType()),
-							e);
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
@@ -288,11 +283,6 @@ public class KycAuthController {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(authRequestDTO, request.getHeader("signature"), partner, e,
 							authRequestDTO.getMetadata());
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.UNABLE_TO_IDENTIFY_ID.getErrorMessage(),
-									authRequestDTO.getIndividualIdType()),
-							e);
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
