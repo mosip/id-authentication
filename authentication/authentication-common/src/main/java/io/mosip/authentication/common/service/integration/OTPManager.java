@@ -70,10 +70,10 @@ public class OTPManager {
 	@Autowired
 	private NotificationService notificationService;
 	
-	@Value("${mosip.ida.otp.validation-attempt-threshold:5}")
+	@Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
 	private int numberOfValidationAttemptsAllowed;
 	
-	@Value("${mosip.ida.otp.frozen.time.minutes:30}")
+	@Value("${mosip.ida.otp.frozen.duration.minutes:30}")
 	private int otpFrozenTimeMinutes;
 
 	/** The logger. */
@@ -207,13 +207,12 @@ public class OTPManager {
 			}
 		}
 		
+		// Increment the validation attempt count.
 		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
 		
-		//Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
 			String otpHash = getOtpHash(pinValue, otpKey);
 			if (otpEntity.getOtpHash().equals(otpHash)) {
-				//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
 				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 				otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
 				otpRepo.save(otpEntity);
@@ -225,7 +224,7 @@ public class OTPManager {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 				}
 			} else {
-				// This condition increases the validation attempt count.
+				//Set the incremented validation attempt count
 				otpEntity.setValidationRetryCount(attemptCount);
 				if (attemptCount >= numberOfValidationAttemptsAllowed) {
 					otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
