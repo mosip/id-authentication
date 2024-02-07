@@ -466,7 +466,7 @@ otpChannel | Y | OTP channel for sending OTP request. Allowed OTP Channels - EMA
 ### Failure Details
 Error Code|Error Message|Description|Action Message
 -----------|-------------|-----------|----------------
-IDA-MLC-001|Request to be received at MOSIP within&lt;x&gt; hrs/min|Invalid Time stamp|Please send the request within &lt;x&gt; hrs/min
+IDA-MLC-001|Request to be received at MOSIP within&lt;x&gt; seconds|Invalid Time stamp|Please send the request within &lt;x&gt; seconds
 IDA-MLC-002|Invalid UIN|Invalid UIN|Please retry with the correct UIN.
 IDA-MLC-003|UIN has been deactivated|UIN Deactivated|Your UIN status is not active.
 IDA-MLC-004|Invalid VID|Invalid VID|Please retry with correct VID.
@@ -494,3 +494,21 @@ IDA-OTA-002|Could not generate/send OTP|Could not generate/send OTP|
 IDA-OTA-006|UIN is locked for OTP generation. Please try again later |Try to generate OTP for a frozen Account|
 IDA-OTA-008|OTP Notification Channel not provided.|No OTP Channel is provided in the input|
 IDA-OTA-009|&lt;Notification Channel&gt; not configured for the country|&lt;Notification Channel&gt; not configured (Phone/e-mail/both)|
+IDA-MLC-022|&lt;Partner ID/Individual ID/Device / Device Provider&gt; is blocked| |
+IDA-MLC-030|Biometrics not captured within &lt;x&gt; seconds of previous biometrics|Please capture biometrics within &lt;x&gt; seconds of previous biometric capture|
+IDA-MLC-031|DigitalId of Biometrics not captured within &lt;x&gt; seconds of previous biometrics|Please capture DigitalId of biometrics within &lt;x&gt; seconds of previous biometric capture
+IDA-MPA-001|Digital signature verification failed for &lt;header or biometrics/data or biometrics/data/digitalId&gt;
+IDA-MPA-020|Partner (Auth) Certificate not found in DB.
+IDA-MPA-021|Partner (Auth) Certificate not matching with signature header certificate.
+IDA-MPA-022|Partner (Auth) Certificate not found in Request signature header.
+IDA-MPA-023|MISP Partner Policy not availble.
+IDA-MPA-024|OIDC Client not availble.
+IDA-MPA-025|Partner is unauthorised for KYC-Auth
+IDA-MPA-026|Partner is unauthorised for KYC-Exchange
+IDA-MPA-027|OIDC Client is deactivated
+IDA-MPA-028|OIDC Client is not registered
+IDA-MPA-029|&lt;DEMO/BIO/SPIN/OTP/PWD&gt; Authentication usage not allowed as per client AMR configuration
+IDA-MLC-026|UIN length should be - &lt;x&gt;.
+IDA-MLC-027|UIN should match checksum.
+IDA-MLC-028|VID length should be - &lt;x&gt;.
+IDA-MLC-029|VID should match checksum.
