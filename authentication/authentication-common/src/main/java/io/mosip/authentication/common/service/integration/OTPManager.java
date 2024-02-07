@@ -99,7 +99,7 @@ public class OTPManager {
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
 			if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-				if(checkFrozenStatusAndDuration(otpEntity)) {
+				if(isAfterFrozenDuration(otpEntity)) {
 					logger.info("OTP Frozen wait time is over. Allowing further.");
 					otpEntity.setValidationRetryCount(0);
 					otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
@@ -198,7 +198,7 @@ public class OTPManager {
 		OtpTransaction otpEntity = otpEntityOpt.get();
 		
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(otpEntity.getUpdDTimes() != null && checkFrozenStatusAndDuration(otpEntity)) {
+			if(otpEntity.getUpdDTimes() != null && isAfterFrozenDuration(otpEntity)) {
 				logger.info("OTP Frozen wait time is over. Allowing further.");
 				otpEntity.setValidationRetryCount(0);
 				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
@@ -239,7 +239,7 @@ public class OTPManager {
 		}
 	}
 
-	private boolean checkFrozenStatusAndDuration(OtpTransaction otpEntity) {
+	private boolean isAfterFrozenDuration(OtpTransaction otpEntity) {
 		return DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
 	}
 
