@@ -43,6 +43,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
+ * @author Loganathan S
  */
 @Component
 public class OTPManager {
@@ -61,18 +62,23 @@ public class OTPManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
+	/** The otp transaction repo. */
 	@Autowired
 	private OtpTxnRepository otpRepo;
 
+	/** The notification service. */
 	@Autowired
 	private NotificationService notificationService;
 	
+	/** The number of validation attempts allowed. */
 	@Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
 	private int numberOfValidationAttemptsAllowed;
 	
+	/** The otp frozen time minutes. */
 	@Value("${mosip.ida.otp.frozen.duration.minutes:30}")
 	private int otpFrozenTimeMinutes;
 
@@ -84,8 +90,10 @@ public class OTPManager {
 	 * time-out.
 	 *
 	 * @param otpRequestDTO the otp request DTO
-	 * @param uin           the uin
+	 * @param idvid the idvid
+	 * @param idvidType the idvid type
 	 * @param valueMap      the value map
+	 * @param templateLanguages the template languages
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -138,12 +146,24 @@ public class OTPManager {
 		return true;
 	}
 
+	/**
+	 * Creates the OTP frozen exception.
+	 *
+	 * @return the id authentication business exception
+	 */
 	private IdAuthenticationBusinessException createOTPFrozenException() {
 		return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
 				String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
 						otpFrozenTimeMinutes + " seconds", numberOfValidationAttemptsAllowed));
 	}
 
+	/**
+	 * Generate OTP.
+	 *
+	 * @param uin the uin
+	 * @return the string
+	 * @throws IdAuthUncheckedException the id auth unchecked exception
+	 */
 	private String generateOTP(String uin) throws IdAuthUncheckedException {
 		try {
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
@@ -181,6 +201,7 @@ public class OTPManager {
 	 *
 	 * @param pinValue the pin value
 	 * @param otpKey   the otp key
+	 * @param individualId the individual id
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -226,6 +247,12 @@ public class OTPManager {
 		}
 	}
 
+	/**
+	 * Require otp not frozen.
+	 *
+	 * @param otpEntity the otp entity
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
 			if(otpEntity.getUpdDTimes() != null && isAfterFrozenDuration(otpEntity)) {
@@ -238,15 +265,34 @@ public class OTPManager {
 		}
 	}
 
+	/**
+	 * Checks if the entity is after frozen duration.
+	 *
+	 * @param otpEntity the otp entity
+	 * @return true, if is after frozen duration
+	 */
 	private boolean isAfterFrozenDuration(OtpTransaction otpEntity) {
 		return DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
 	}
 
+	/**
+	 * Gets the otp hash.
+	 *
+	 * @param pinValue the pin value
+	 * @param otpKey the otp key
+	 * @return the otp hash
+	 */
 	private String getOtpHash(String pinValue, String otpKey) {
 		return IdAuthSecurityManager.digestAsPlainText(
 				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
 	}
 	
+	/**
+	 * Require key not found.
+	 *
+	 * @param entityOpt the entity opt
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void requireKeyNotFound(Optional<OtpTransaction> entityOpt) throws IdAuthenticationBusinessException {
 		/*
 		 * Checking whether the key exists in repository or not. If not, throw an
