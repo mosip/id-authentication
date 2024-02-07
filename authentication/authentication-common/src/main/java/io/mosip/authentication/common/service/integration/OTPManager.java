@@ -106,7 +106,7 @@ public class OTPManager {
 				} else {
 					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
-									otpFrozenTimeMinutes + "seconds"));
+									otpFrozenTimeMinutes + "seconds", numberOfValidationAttemptsAllowed));
 				}
 			}
 		}
