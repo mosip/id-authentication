@@ -168,8 +168,9 @@ public class OTPManagerTest {
 		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
-		} catch(IdAuthUncheckedException ex) {
+		} catch(IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -255,8 +256,9 @@ public class OTPManagerTest {
 		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
-		} catch(IdAuthUncheckedException ex) {
+		} catch(IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 
@@ -295,8 +297,6 @@ public class OTPManagerTest {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
-		OtpTransaction otpEntry = new OtpTransaction();
-		Mockito.when(otpRepo.findByOtpHashAndStatusCode(Mockito.anyString(), Mockito.anyString())).thenReturn(Optional.of(otpEntry ));
 		boolean sendOtpResponse = otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		assertEquals(sendOtpResponse, true);
 	}
@@ -867,6 +867,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -894,6 +895,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -921,6 +923,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -1052,6 +1055,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -1080,6 +1084,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	
@@ -1108,6 +1113,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
+			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
 		}
 	}
 	

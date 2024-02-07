@@ -104,9 +104,7 @@ public class OTPManager {
 					otpEntity.setValidationRetryCount(0);
 					otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 				} else {
-					throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
-									otpFrozenTimeMinutes + "seconds", numberOfValidationAttemptsAllowed));
+					throw createOTPFrozenException();
 				}
 			}
 		}
@@ -146,6 +144,12 @@ public class OTPManager {
 		notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty, otpGenerationTime);
 
 		return true;
+	}
+
+	private IdAuthenticationBusinessException createOTPFrozenException() {
+		return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
+						otpFrozenTimeMinutes + " seconds", numberOfValidationAttemptsAllowed));
 	}
 
 	private String generateOTP(String uin) throws IdAuthUncheckedException {
@@ -203,7 +207,7 @@ public class OTPManager {
 				otpEntity.setValidationRetryCount(0);
 				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(), otpFrozenTimeMinutes + "seconds"));
+				throw createOTPFrozenException();
 			}
 		}
 		
