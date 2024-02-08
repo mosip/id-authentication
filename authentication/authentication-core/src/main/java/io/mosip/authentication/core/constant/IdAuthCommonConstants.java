@@ -464,6 +464,8 @@ public final class IdAuthCommonConstants {
 	public static final String POLICY_DATA = "policy_data";
 
 	public static final String MISP_LIC_DATA = "misp_lic_data";
+	
+	public static final String UNABLE_TO_IDENTIFY_ID = "Unable to identify the entered %s. Please try after few minutes";
 
 	private IdAuthCommonConstants() {
 	}
