@@ -48,6 +48,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class OTPManager {
 
+	/** The Constant QUERIED_STATUS_CODES. */
 	private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
 
 	/** The Constant OTP_EXPIRED. */
@@ -254,7 +255,6 @@ public class OTPManager {
 	 * Require otp not frozen.
 	 *
 	 * @param otpEntity the otp entity
-	 * @param save 
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
