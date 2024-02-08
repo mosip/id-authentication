@@ -7,7 +7,7 @@ This section details about the REST services in ID Authentication module.
 # Authentication Service (Public)
 This service details authentication methods that can be used by authentication partners to authenticate an individual. Below are various authentication types currently supported by this service:
 
-* OTP based - OTP (Time based OTP)
+* OTP based
 * Demographic based - Name, Date of Birth, Age, Gender, Address, Full Address
 * Biometric based - Fingerprint, Iris and Face
 
@@ -59,7 +59,7 @@ request | Y | Request block to be used for authenticating the resident. This is 
 request.otp | N | OTP used for authentication.
 request.timestamp | N | Timestamp when request block was captured.
 request.demographics | N | Demographic data of the residnet.
-request.biometrics | N | Biometric data of an Individual which is sent in the response from the Capture API of SBI spec v1.0. Refer to the [SBI spec v1.0](Secure-Biometric-Interface-Specification.md#capture) specification for complete information.
+request.biometrics | N | Biometric data of an Individual which is sent in the response from the Capture API of SBI spec v1.0. Refer to the [SBI spec v1.0](https://docs.mosip.io/1.1.5/biometrics/mosip-device-service-specification#capture-response) specification for complete information.
 
 ### Request Body
 ```JSON
@@ -113,7 +113,7 @@ request.biometrics | N | Biometric data of an Individual which is sent in the re
         }
       ]
     },
-    //Same as the response from the Capture API of SBI v1.0. Refer to the [SBI v1.0 specification]() for complete information.
+    //Same as the response from the Capture API of SBI v1.0. Refer to the [SBI spec v1.0](https://docs.mosip.io/1.1.5/biometrics/mosip-device-service-specification#capture-response) for complete information.
     "biometrics": [
       {
         "specVersion" : "<SBI specification version>",
@@ -233,7 +233,7 @@ request | Y | Request block to be used for authenticating the resident. This is 
 request.otp | N | OTP used for authentication.
 request.timestamp | N | Timestamp when request block was captured.
 request.demographics | N | Demographic data of the residnet.
-request.biometrics | N | Biometric data of an Individual which is sent in the response from the Capture API of SBI spec v1.0. Refer to the [SBI spec v1.0](Secure-Biometric-Interface-Specification.md#capture) specification for complete information.
+request.biometrics | N | Biometric data of an Individual which is sent in the response from the Capture API of SBI spec v1.0. Refer to the [SBI spec v1.0](https://docs.mosip.io/1.1.5/biometrics/mosip-device-service-specification#capture-response) specification for complete information.
 
 ### Request Body
 ```JSON
@@ -253,7 +253,7 @@ request.biometrics | N | Biometric data of an Individual which is sent in the re
   "request": {
     "timestamp": "2019-02-15T10:01:56.086+05:30 - ISO format time-stamp",
     "otp": "123456",
-    //biometric section is same as the response from Capture API mentioned in [SBIv1.0 specification]()
+    //biometric section is same as the response from Capture API mentioned in [SBI spec v1.0](https://docs.mosip.io/1.1.5/biometrics/mosip-device-service-specification#capture-response)
     "biometrics": [
       {
         "specVersion" : "<SBI specification version>",
