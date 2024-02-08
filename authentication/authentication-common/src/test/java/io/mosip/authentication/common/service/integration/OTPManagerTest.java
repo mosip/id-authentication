@@ -65,6 +65,8 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPManagerTest {
 
+	private static final String FROZEN_ERROR_MESSAGE = "OTP request/validation has been frozen for the Individual-ID for 30 seconds due to consecutive failure attempts for 5 times.";
+
 	@InjectMocks
 	private OTPManager otpManager;
 
@@ -166,12 +168,12 @@ public class OTPManagerTest {
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(30, ChronoUnit.MINUTES));
-		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
+		when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		} catch(IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -194,12 +196,14 @@ public class OTPManagerTest {
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
-		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
+		when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
+			when(otpRepo.save(Mockito.any())).thenAnswer(invocation -> {
+				assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, ((OtpTransaction)invocation.getArguments()[0]).getStatusCode());
+				return null;
+			});
 			boolean result =  otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 			assertTrue(result);
-			verify(otpRepo, times(1)).save(entity);
-			assertEquals(entity.getStatusCode(), IdAuthCommonConstants.ACTIVE_STATUS);
 		} catch(IdAuthUncheckedException ex) {
 			fail();
 		}
@@ -224,12 +228,14 @@ public class OTPManagerTest {
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
 		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
-		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
+		when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
+			when(otpRepo.save(Mockito.any())).thenAnswer(invocation -> {
+				assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, ((OtpTransaction)invocation.getArguments()[0]).getStatusCode());
+				return null;
+			});
 			boolean result =  otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 			assertTrue(result);
-			verify(otpRepo, times(1)).save(entity);
-			assertEquals(entity.getStatusCode(), IdAuthCommonConstants.ACTIVE_STATUS);
 		} catch(IdAuthUncheckedException ex) {
 			fail();
 		}
@@ -254,12 +260,12 @@ public class OTPManagerTest {
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
-		when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(entity));
+		when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
 		} catch(IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 
@@ -537,7 +543,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		boolean expactedOTP = otpManager.validateOtp("Test123", "123456", "426789089018");
 		assertFalse(expactedOTP);
@@ -743,7 +749,7 @@ public class OTPManagerTest {
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -759,12 +765,12 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -780,7 +786,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -806,7 +812,7 @@ public class OTPManagerTest {
 		otpEntity.setValidationRetryCount(1);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -832,7 +838,7 @@ public class OTPManagerTest {
 		otpEntity.setValidationRetryCount(4);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -855,10 +861,11 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setValidationRetryCount(5);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -868,7 +875,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -886,7 +893,7 @@ public class OTPManagerTest {
 		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -896,7 +903,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -914,7 +921,7 @@ public class OTPManagerTest {
 		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(29, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -924,7 +931,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -942,15 +949,15 @@ public class OTPManagerTest {
 		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
-			assertEquals((long)1, (long)otpEntity.getValidationRetryCount());
-			assertEquals(IdAuthCommonConstants.ACTIVE_STATUS, otpEntity.getStatusCode());
-			verify(otpRepo, times(1)).save(otpEntity);
 		} catch (IdAuthenticationBusinessException ex) {
-			fail();
+			assertEquals(IdAuthCommonConstants.UNFROZEN, otpEntity.getStatusCode());
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			verify(otpRepo, times(1)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -968,7 +975,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -994,7 +1001,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1020,7 +1027,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			boolean result = otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1042,11 +1049,12 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setValidationRetryCount(5);
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1056,7 +1064,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -1075,7 +1083,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1085,7 +1093,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -1104,7 +1112,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1114,7 +1122,7 @@ public class OTPManagerTest {
 			assertEquals(IdAuthCommonConstants.FROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(0)).save(otpEntity);
 			assertEquals(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), ex.getErrorCode());
-			assertEquals("OTP request/validation has been frozen for the Individual ID for 30 seconds due to consecutive failure attempts for 5 times.", ex.getErrorText());
+			assertEquals(FROZEN_ERROR_MESSAGE, ex.getErrorText());
 		}
 	}
 	
@@ -1133,15 +1141,15 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
-			assertEquals((long)0, (long)otpEntity.getValidationRetryCount());
-			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
-			verify(otpRepo, times(1)).save(otpEntity);
 		} catch (IdAuthenticationBusinessException ex) {
-			fail();
+			assertEquals(IdAuthCommonConstants.UNFROZEN, otpEntity.getStatusCode());
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			verify(otpRepo, times(1)).save(otpEntity);
+			assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -1160,15 +1168,15 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
 		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().minus(1, ChronoUnit.MINUTES));
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals((long)0, (long)otpEntity.getValidationRetryCount());
-			assertEquals(IdAuthCommonConstants.USED_STATUS, otpEntity.getStatusCode());
+			assertEquals((long)5, (long)otpEntity.getValidationRetryCount());
+			assertEquals(IdAuthCommonConstants.UNFROZEN, otpEntity.getStatusCode());
 			verify(otpRepo, times(1)).save(otpEntity);
-			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -1193,7 +1201,7 @@ public class OTPManagerTest {
 		otpEntity.setOtpHash("otphash");
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1221,7 +1229,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
@@ -1249,7 +1257,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setOtpHash("otphash");
 		
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntity ));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {
@@ -1276,7 +1284,7 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		otpEntry.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntry.setOtpHash("otphash");
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntry));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntry));
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {
@@ -1303,7 +1311,7 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		otpEntry.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntry.setOtpHash("otphash");
-		Mockito.when(otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(Mockito.anyString())).thenReturn(Optional.of(otpEntry));
+		Mockito.when(otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntry));
 		try {
 			otpManager.validateOtp("Test123", "123456", "426789089018");
 		} catch (IdAuthenticationBusinessException ex) {

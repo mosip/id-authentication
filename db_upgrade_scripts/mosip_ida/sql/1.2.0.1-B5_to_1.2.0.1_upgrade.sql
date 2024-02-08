@@ -4,5 +4,5 @@ ALTER TABLE ida.credential_event_store ALTER COLUMN credential_transaction_id ty
 
 DROP INDEX IF EXISTS ida.ind_otphsh;
 
-CREATE INDEX ind_refid ON ida.otp_transaction (ref_id);
+CREATE INDEX ind_refid ON ida.otp_transaction (ref_id,status_code);
 

@@ -48,6 +48,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class OTPManager {
 
+	private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
+
 	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
 
@@ -102,7 +104,7 @@ public class OTPManager {
 			throws IdAuthenticationBusinessException {
 		
 		String refIdHash = securityManager.hash(idvid);
-		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(refIdHash);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
@@ -115,13 +117,13 @@ public class OTPManager {
 				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
 				+ EnvUtil.getKeySplitter() + otp).getBytes());
 		
-		if (otpEntityOpt.isPresent()) {
-			OtpTransaction otpTxn = otpEntityOpt.get();
+		OtpTransaction otpTxn;
+		if (otpEntityOpt.isPresent()
+				&& (otpTxn = otpEntityOpt.get()).getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(otpGenerationTime);
 			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
-			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(otpTxn);
 		} else {
 			OtpTransaction txn = new OtpTransaction();
@@ -207,20 +209,23 @@ public class OTPManager {
 	 */
 	public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
 		String refIdHash = securityManager.hash(individualId);
-		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdOrderByGeneratedDtimesDesc(refIdHash);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
-		requireKeyNotFound(otpEntityOpt);
+		if (otpEntityOpt.isEmpty()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
+		}
 		
 		OtpTransaction otpEntity = otpEntityOpt.get();
-		
 		requireOtpNotFrozen(otpEntity);
 		
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.UNFROZEN)) {
+			otpRepo.save(otpEntity);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
+		}
+		
+		// At this point it should be active status alone.
 		// Increment the validation attempt count.
 		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
-		
-		if(!otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
-		}
 		
 		String otpHash = getOtpHash(pinValue, otpKey);
 		if (otpEntity.getOtpHash().equals(otpHash)) {
@@ -249,17 +254,16 @@ public class OTPManager {
 	 * Require otp not frozen.
 	 *
 	 * @param otpEntity the otp entity
+	 * @param save 
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(otpEntity.getUpdDTimes() == null || !isAfterFrozenDuration(otpEntity)) {
+			if(!isAfterFrozenDuration(otpEntity)) {
 				throw createOTPFrozenException();
 			}
-
 			logger.info("OTP Frozen wait time is over. Allowing further.");
-			otpEntity.setValidationRetryCount(0);
-			otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+			otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);
 		}
 	}
 
@@ -285,19 +289,4 @@ public class OTPManager {
 				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
 	}
 	
-	/**
-	 * Require key not found.
-	 *
-	 * @param entityOpt the entity opt
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private void requireKeyNotFound(Optional<OtpTransaction> entityOpt) throws IdAuthenticationBusinessException {
-		/*
-		 * Checking whether the key exists in repository or not. If not, throw an
-		 * exception.
-		 */
-		if (entityOpt.isEmpty()) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
-		}
-	}
 }
