@@ -30,7 +30,7 @@ public enum IdAuthenticationErrorConstants {
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
 	OTP_AUTH_IDTYPE_MISMATCH("IDA-OTA-010", "Input Identity Type does not match Identity Type of OTP Request"),
 	PARTNER_ID_MISMATCH("IDA-OTA-011", "Input Partner-ID does not match Partner-ID of OTP Request"),
-	OTP_VAL_KEY_NOT_FOUND("IDA-OTA-012", "Validation can't be performed against this key. Generate OTP first."),
+	OTP_VAL_KEY_NOT_FOUND("IDA-OTA-012", "OTP Validation can't be performed against this ID. Generate OTP first."),
 	OTP_FROZEN("IDA-OTA-013",
 			"OTP request/validation has been frozen for the Individual ID for %s due to consecutive failure attempts for %s times."),
 
