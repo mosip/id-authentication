@@ -178,11 +178,10 @@ public class OTPManager {
 						IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 			}
-			if(response !=null && response.getResponse()!=null){
-				return response.getResponse().get("otp");
-			} else{
+			if(response == null || response.getResponse() == null) {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
+			return response.getResponse().get("otp");
 
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
@@ -219,31 +218,30 @@ public class OTPManager {
 		// Increment the validation attempt count.
 		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
 		
-		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
-			String otpHash = getOtpHash(pinValue, otpKey);
-			if (otpEntity.getOtpHash().equals(otpHash)) {
-				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-				otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-				otpRepo.save(otpEntity);
-				if (otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-					return true;
-				} else {
-					logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-							IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
-				}
-			} else {
-				//Set the incremented validation attempt count
-				otpEntity.setValidationRetryCount(attemptCount);
-				if (attemptCount >= numberOfValidationAttemptsAllowed) {
-					otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
-				}
-				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-				otpRepo.save(otpEntity);
-				return false;
-			}
-		} else {
+		if(!otpEntity.getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VAL_KEY_NOT_FOUND);
+		}
+		
+		String otpHash = getOtpHash(pinValue, otpKey);
+		if (otpEntity.getOtpHash().equals(otpHash)) {
+			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+			otpRepo.save(otpEntity);
+			if (!otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+			}
+			return true;
+		} else {
+			//Set the incremented validation attempt count
+			otpEntity.setValidationRetryCount(attemptCount);
+			if (attemptCount >= numberOfValidationAttemptsAllowed) {
+				otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+			}
+			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpRepo.save(otpEntity);
+			return false;
 		}
 	}
 
@@ -255,13 +253,13 @@ public class OTPManager {
 	 */
 	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-			if(otpEntity.getUpdDTimes() != null && isAfterFrozenDuration(otpEntity)) {
-				logger.info("OTP Frozen wait time is over. Allowing further.");
-				otpEntity.setValidationRetryCount(0);
-				otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-			} else {
+			if(otpEntity.getUpdDTimes() == null || !isAfterFrozenDuration(otpEntity)) {
 				throw createOTPFrozenException();
 			}
+
+			logger.info("OTP Frozen wait time is over. Allowing further.");
+			otpEntity.setValidationRetryCount(0);
+			otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		}
 	}
 
