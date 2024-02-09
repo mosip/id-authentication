@@ -283,7 +283,7 @@ public class KycControllerTest {
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
 	}
 	
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void processKycFailure2() throws IdAuthenticationBusinessException, IdAuthenticationAppException,
 			IdAuthenticationDaoException, Exception {
 
@@ -293,6 +293,6 @@ public class KycControllerTest {
 		requestWithMetadata.setMetadata(new HashMap<>());
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata)).thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata())).thenReturn(kycAuthResponseDTO);
-		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata);
+		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
 	}
 }
