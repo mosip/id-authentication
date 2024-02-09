@@ -101,7 +101,7 @@ public class ValidateOtpRequestTest {
 //		ReflectionTestUtils.setField(otpManager, "otpvalidateresponsedto", otpvalidateresponsedto);
 
 		// TODO: for validate OTP as true
-		assertEquals(false, otpManager.validateOtp("12345", "23232"));
+		assertEquals(false, otpManager.validateOtp("12345", "23232", "426789089018"));
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class ValidateOtpRequestTest {
 		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(valuemap);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 
-		assertFalse(otpManager.validateOtp("2323", "2323"));
+		assertFalse(otpManager.validateOtp("2323", "2323", "426789089018"));
 	}
 
 }
