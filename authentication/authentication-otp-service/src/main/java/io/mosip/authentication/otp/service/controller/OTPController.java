@@ -134,8 +134,9 @@ public class OTPController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
-			String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
+			
 			try {
+				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
 				otpRequestDto.setIndividualIdType(idType);
