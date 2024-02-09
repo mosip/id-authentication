@@ -125,6 +125,7 @@ public class OTPManager {
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(otpGenerationTime);
 			otpTxn.setGeneratedDtimes(otpGenerationTime);
+			otpTxn.setValidationRetryCount(0);
 			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
 			otpRepo.save(otpTxn);
 		} else {
