@@ -118,26 +118,18 @@ public class OTPManager {
 				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
 				+ EnvUtil.getKeySplitter() + otp).getBytes());
 		
-		OtpTransaction otpTxn;
-		if (otpEntityOpt.isPresent()
-				&& (otpTxn = otpEntityOpt.get()).getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
-			otpTxn.setOtpHash(otpHash);
-			otpTxn.setUpdBy(securityManager.getUser());
-			otpTxn.setUpdDTimes(otpGenerationTime);
-			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
-			otpRepo.save(otpTxn);
-		} else {
-			OtpTransaction txn = new OtpTransaction();
-			txn.setId(UUID.randomUUID().toString());
-			txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
-			txn.setOtpHash(otpHash);
-			txn.setCrBy(securityManager.getUser());
-			txn.setCrDtimes(otpGenerationTime);
-			txn.setExpiryDtimes(otpGenerationTime.plusSeconds(
-					EnvUtil.getOtpExpiryTime()));
-			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
-			otpRepo.save(txn);
-		}
+		OtpTransaction txn = new OtpTransaction();
+		txn.setId(UUID.randomUUID().toString());
+		txn.setRefId(securityManager.hash(otpRequestDTO.getIndividualId()));
+		txn.setOtpHash(otpHash);
+		txn.setCrBy(securityManager.getUser());
+		txn.setGeneratedDtimes(otpGenerationTime);
+		txn.setCrDtimes(otpGenerationTime);
+		txn.setExpiryDtimes(otpGenerationTime.plusSeconds(
+				EnvUtil.getOtpExpiryTime()));
+		txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
+		otpRepo.save(txn);
+			
 		String notificationProperty = null;
 		notificationProperty = otpRequestDTO
 				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
