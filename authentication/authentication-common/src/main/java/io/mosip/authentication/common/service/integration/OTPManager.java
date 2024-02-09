@@ -1,10 +1,15 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +43,13 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
+ * @author Loganathan S
  */
 @Component
 public class OTPManager {
+
+	/** The Constant QUERIED_STATUS_CODES. */
+	private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
 
 	/** The Constant OTP_EXPIRED. */
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
@@ -52,21 +61,29 @@ public class OTPManager {
 	@Autowired
 	private RestHelper restHelper;
 
-	@Autowired
-	private EnvUtil environment;
-
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/** The security manager. */
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 
+	/** The otp transaction repo. */
 	@Autowired
 	private OtpTxnRepository otpRepo;
 
+	/** The notification service. */
 	@Autowired
 	private NotificationService notificationService;
+	
+	/** The number of validation attempts allowed. */
+	@Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
+	private int numberOfValidationAttemptsAllowed;
+	
+	/** The otp frozen time minutes. */
+	@Value("${mosip.ida.otp.frozen.duration.minutes:30}")
+	private int otpFrozenTimeMinutes;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
@@ -76,29 +93,38 @@ public class OTPManager {
 	 * time-out.
 	 *
 	 * @param otpRequestDTO the otp request DTO
-	 * @param uin           the uin
+	 * @param idvid the idvid
+	 * @param idvidType the idvid type
 	 * @param valueMap      the value map
+	 * @param templateLanguages the template languages
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
+		
+		String refIdHash = securityManager.hash(idvid);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
+		if(otpEntityOpt.isPresent()) {
+			OtpTransaction otpEntity = otpEntityOpt.get();
+			requireOtpNotFrozen(otpEntity, false);
+		}
+		
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
 		String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
 				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
 				+ EnvUtil.getKeySplitter() + otp).getBytes());
-
-		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-		if (otpTxnOpt.isPresent()) {
-			OtpTransaction otpTxn = otpTxnOpt.get();
+		
+		OtpTransaction otpTxn;
+		if (otpEntityOpt.isPresent()
+				&& (otpTxn = otpEntityOpt.get()).getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
 			otpTxn.setOtpHash(otpHash);
 			otpTxn.setUpdBy(securityManager.getUser());
 			otpTxn.setUpdDTimes(otpGenerationTime);
 			otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
-			otpTxn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(otpTxn);
 		} else {
 			OtpTransaction txn = new OtpTransaction();
@@ -123,6 +149,24 @@ public class OTPManager {
 		return true;
 	}
 
+	/**
+	 * Creates the OTP frozen exception.
+	 *
+	 * @return the id authentication business exception
+	 */
+	private IdAuthenticationBusinessException createOTPFrozenException() {
+		return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
+				String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
+						otpFrozenTimeMinutes + " seconds", numberOfValidationAttemptsAllowed));
+	}
+
+	/**
+	 * Generate OTP.
+	 *
+	 * @param uin the uin
+	 * @return the string
+	 * @throws IdAuthUncheckedException the id auth unchecked exception
+	 */
 	private String generateOTP(String uin) throws IdAuthUncheckedException {
 		try {
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
@@ -137,11 +181,10 @@ public class OTPManager {
 						IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
 			}
-			if(response !=null && response.getResponse()!=null){
-				return response.getResponse().get("otp");
-			}else{
+			if(response == null || response.getResponse() == null) {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
+			return response.getResponse().get("otp");
 
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
@@ -160,29 +203,92 @@ public class OTPManager {
 	 *
 	 * @param pinValue the pin value
 	 * @param otpKey   the otp key
+	 * @param individualId the individual id
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		String otpHash;
-		otpHash = IdAuthSecurityManager.digestAsPlainText(
-				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
-		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-		if (otpTxnOpt.isPresent()) {
-			OtpTransaction otpTxn = otpTxnOpt.get();
-			//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-			otpRepo.save(otpTxn);
-			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-				return true;
-			} else {
+	public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
+		String refIdHash = securityManager.hash(individualId);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
+
+		if (otpEntityOpt.isEmpty()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
+		}
+		
+		OtpTransaction otpEntity = otpEntityOpt.get();
+		requireOtpNotFrozen(otpEntity, true);
+		
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.UNFROZEN)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
+		}
+		
+		// At this point it should be active status alone.
+		// Increment the validation attempt count.
+		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
+		
+		String otpHash = getOtpHash(pinValue, otpKey);
+		if (otpEntity.getOtpHash().equals(otpHash)) {
+			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+			otpRepo.save(otpEntity);
+			if (!otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 			}
+			return true;
 		} else {
+			//Set the incremented validation attempt count
+			otpEntity.setValidationRetryCount(attemptCount);
+			if (attemptCount >= numberOfValidationAttemptsAllowed) {
+				otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+			}
+			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpRepo.save(otpEntity);
 			return false;
 		}
 	}
+
+	/**
+	 * Require otp not frozen.
+	 *
+	 * @param otpEntity the otp entity
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	private void requireOtpNotFrozen(OtpTransaction otpEntity, boolean saveEntity) throws IdAuthenticationBusinessException {
+		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
+			if(!isAfterFrozenDuration(otpEntity)) {
+				throw createOTPFrozenException();
+			}
+			logger.info("OTP Frozen wait time is over. Allowing further.");
+			otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);
+			if(saveEntity) {
+				otpRepo.save(otpEntity);
+			}
+		}
+	}
+
+	/**
+	 * Checks if the entity is after frozen duration.
+	 *
+	 * @param otpEntity the otp entity
+	 * @return true, if is after frozen duration
+	 */
+	private boolean isAfterFrozenDuration(OtpTransaction otpEntity) {
+		return DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
+	}
+
+	/**
+	 * Gets the otp hash.
+	 *
+	 * @param pinValue the pin value
+	 * @param otpKey the otp key
+	 * @return the otp hash
+	 */
+	private String getOtpHash(String pinValue, String otpKey) {
+		return IdAuthSecurityManager.digestAsPlainText(
+				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
+	}
+	
 }
