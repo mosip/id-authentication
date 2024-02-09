@@ -512,7 +512,7 @@ public class IdAuthSecurityManager {
 		byte[] certificateThumbprint = cryptomanagerUtils.getCertificateThumbprint(x509Certificate);
 		return Tuples.of(CryptoUtil.encodeBase64Url(encryptedData.getT1()), CryptoUtil.encodeBase64Url(encryptedData.getT2()), digestAsPlainText(certificateThumbprint));
 	}
-	
+
 	public byte[] asymmetricEncryption(byte[] dataToEncrypt, String partnerCertificate)
 			throws IdAuthenticationBusinessException {
 		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);

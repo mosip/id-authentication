@@ -161,7 +161,7 @@ public class AuthController {
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						"authenticateApplication",  e.getErrorCode() + " : " + e.getErrorText());
+						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					ondemandTemplateEventPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
