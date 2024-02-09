@@ -14,11 +14,11 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 public interface OtpTxnRepository extends BaseRepository<OtpTransaction, String> {
 	
 	/**
-	 * Find first element by ref_id ordered by generated_dtimes in descending order.
+	 * Find first element by ref_id ordered by generated_dtimes in descending order and for the given status codes.
 	 *
 	 * @param refIdHash the ref id hash
 	 * @return the optional
 	 */
-	Optional<OtpTransaction> findFirstByRefIdInStatusCodesOrderByGeneratedDtimesDesc(String refIdHash, List<String> statusCodes);
+	Optional<OtpTransaction> findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc(String refIdHash, List<String> statusCodes);
 	
 }
