@@ -109,7 +109,7 @@ public class OTPManager {
 
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
-			requireOtpNotFrozen(otpEntity);
+			requireOtpNotFrozen(otpEntity, false);
 		}
 		
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
@@ -217,10 +217,9 @@ public class OTPManager {
 		}
 		
 		OtpTransaction otpEntity = otpEntityOpt.get();
-		requireOtpNotFrozen(otpEntity);
+		requireOtpNotFrozen(otpEntity, true);
 		
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.UNFROZEN)) {
-			otpRepo.save(otpEntity);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
 		}
 		
@@ -257,13 +256,16 @@ public class OTPManager {
 	 * @param otpEntity the otp entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	private void requireOtpNotFrozen(OtpTransaction otpEntity) throws IdAuthenticationBusinessException {
+	private void requireOtpNotFrozen(OtpTransaction otpEntity, boolean saveEntity) throws IdAuthenticationBusinessException {
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
 			if(!isAfterFrozenDuration(otpEntity)) {
 				throw createOTPFrozenException();
 			}
 			logger.info("OTP Frozen wait time is over. Allowing further.");
 			otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);
+			if(saveEntity) {
+				otpRepo.save(otpEntity);
+			}
 		}
 	}
 
