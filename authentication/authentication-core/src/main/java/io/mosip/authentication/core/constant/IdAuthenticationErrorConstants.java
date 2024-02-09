@@ -54,7 +54,7 @@ public enum IdAuthenticationErrorConstants {
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-015", "Identity Type - %s not configured for the country"),
 	INVALID_TXNID_BIO("IDA-MLC-016", "Transaction ID parameters in the request does not match"),
 	INVALID_USERID( "IDA-MLC-017","Invalid UserID"),
-	ID_NOT_AVAILABLE("IDA-MLC-018", "Unable to identify the entered %s. Please try after few minutes"),
+	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
 	AUTH_TYPE_LOCKED("IDA-MLC-019", "%s Auth Type is Locked for the UIN"),
 	FAILED_TO_ENCRYPT("IDA-MLC-020", "Unable to encrypt data"),
 	FAILED_TO_FETCH_KEY("IDA-MLC-021", "Failed to fetch key from HSM"),
@@ -67,7 +67,7 @@ public enum IdAuthenticationErrorConstants {
 			"Please capture biometrics within %s seconds of previous biometric capture"),
 	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics not captured within %s seconds of previous biometrics",
 			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
-
+	
 	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
 				"Please re-enter your %s in %s"),
 	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
