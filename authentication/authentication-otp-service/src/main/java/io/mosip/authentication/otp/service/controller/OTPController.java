@@ -30,6 +30,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
+import io.mosip.authentication.common.service.websub.impl.OndemandTemplateEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -90,6 +91,9 @@ public class OTPController {
 
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+	
+	@Autowired
+	private OndemandTemplateEventPublisher ondemandTemplateEventPublisher;
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -155,6 +159,11 @@ public class OTPController {
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				
+				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+					ondemandTemplateEventPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
+							otpRequestDto.getMetadata());
+				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
 				authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);

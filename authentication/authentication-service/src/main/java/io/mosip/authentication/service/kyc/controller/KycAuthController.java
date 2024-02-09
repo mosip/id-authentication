@@ -24,6 +24,7 @@ import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.websub.impl.OndemandTemplateEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -98,6 +99,9 @@ public class KycAuthController {
 	/** The KycExchangeRequestValidator */
 	@Autowired
 	private KycExchangeRequestValidator kycExchangeValidator;
+	
+	@Autowired
+	private OndemandTemplateEventPublisher ondemandTemplateEventPublisher;
 
 	/**
 	 *
@@ -194,6 +198,10 @@ public class KycAuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processEKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
+				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+					ondemandTemplateEventPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"), partner,
+							e, ekycAuthRequestDTO.getMetadata());
+				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, ekycAuthRequestDTO.getTransactionID());
@@ -272,6 +280,10 @@ public class KycAuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
+				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+					ondemandTemplateEventPublisher.notify(authRequestDTO, request.getHeader("signature"), partner, e,
+							authRequestDTO.getMetadata());
+				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
