@@ -21,11 +21,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public enum OtpMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+		Object idvidObj = props.get(IdAuthCommonConstants.IDVID);
+		if (reqInfo instanceof String && entityInfo instanceof String && idvidObj instanceof String) {
 			Object object = props.get(ValidateOtpFunction.class.getSimpleName());
 			if (object instanceof ValidateOtpFunction) {
 				ValidateOtpFunction func = (ValidateOtpFunction) object;
-				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo);
+				boolean otpValid = func.validateOtp((String) reqInfo, (String) entityInfo, (String) idvidObj);
 				if (!otpValid) {
 					return 0;
 				} else {

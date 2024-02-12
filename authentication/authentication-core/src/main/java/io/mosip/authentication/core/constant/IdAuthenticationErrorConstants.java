@@ -30,7 +30,9 @@ public enum IdAuthenticationErrorConstants {
 	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
 	OTP_AUTH_IDTYPE_MISMATCH("IDA-OTA-010", "Input Identity Type does not match Identity Type of OTP Request"),
 	PARTNER_ID_MISMATCH("IDA-OTA-011", "Input Partner-ID does not match Partner-ID of OTP Request"),
-
+	OTP_REQUEST_REQUIRED("IDA-OTA-012", "OTP validation can't be performed against this Individual-ID. Generate OTP first."),
+	OTP_FROZEN("IDA-OTA-013",
+			"OTP request/validation has been frozen for the Individual-ID for %s due to consecutive failure attempts for %s times."),
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s seconds",
 			"Please send the request within %s seconds"),
@@ -65,7 +67,7 @@ public enum IdAuthenticationErrorConstants {
 			"Please capture biometrics within %s seconds of previous biometric capture"),
 	INVALID_BIO_DIGITALID_TIMESTAMP("IDA-MLC-031", "DigitalId of Biometrics not captured within %s seconds of previous biometrics",
 			"Please capture DigitalId of biometrics within %s seconds of previous biometric capture"),
-		
+	
 	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
 				"Please re-enter your %s in %s"),
 	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
@@ -207,8 +209,9 @@ public enum IdAuthenticationErrorConstants {
 	PUBLIC_KEY_BINDING_NOT_ALLOWED("IDA-IKB-003", "Publick Key already Binded to another Id."),
 	IDENTITY_NAME_NOT_FOUND("IDA-IKB-004", "Identity Name not found."),
 	CREATE_CERTIFICATE_OBJECT_ERROR("IDA-IKB-005", "Error creating Certificate object."),
+	
 	TOKEN_AUTH_IDTYPE_MISMATCH("IDA-TOA-001", "Input Identity Type does not match Identity Type of Token Request"),
-
+	
 	KEY_TYPE_NOT_SUPPORT("IDA-VCI-001", "Not Supported JWK Key Type."),
 	CREATE_VCI_PUBLIC_KEY_OBJECT_ERROR("IDA-VCI-002", "Error creating Public Key object."),
 	KEY_ALREADY_MAPPED_ERROR("IDA-VCI-003", "Error Key already mapped to different id/vid."),
