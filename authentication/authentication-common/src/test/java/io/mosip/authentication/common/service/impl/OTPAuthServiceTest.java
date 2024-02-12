@@ -139,7 +139,7 @@ public class OTPAuthServiceTest {
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
-		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(true);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456", Collections.emptyMap(),
 				"PARTNER1");
 		assertNotNull(authStatusInfo);
