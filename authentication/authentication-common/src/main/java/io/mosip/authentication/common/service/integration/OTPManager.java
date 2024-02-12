@@ -105,7 +105,7 @@ public class OTPManager {
 			throws IdAuthenticationBusinessException {
 		
 		String refIdHash = securityManager.hash(idvid);
-		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
 		if(otpEntityOpt.isPresent()) {
 			OtpTransaction otpEntity = otpEntityOpt.get();
@@ -214,7 +214,7 @@ public class OTPManager {
 	 */
 	public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
 		String refIdHash = securityManager.hash(individualId);
-		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
 		if (otpEntityOpt.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
