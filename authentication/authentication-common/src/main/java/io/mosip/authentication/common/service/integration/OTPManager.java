@@ -88,6 +88,7 @@ public class OTPManager {
     /** The logger. */
     private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
+
     /**
      * Generate OTP with information of {@link MediaType } and OTP generation
      * time-out.

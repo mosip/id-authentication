@@ -130,6 +130,7 @@ public class OTPController {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 			
+			OtpResponseDTO otpResponseDTO=null;
 			boolean isPartnerReq = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
@@ -142,7 +143,7 @@ public class OTPController {
 				otpRequestDto.setIndividualIdType(idType);
 				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 				DataValidationUtil.validate(errors);
-				OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
+				otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
 				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 						otpResponseDTO.getResponseTime());
 				
@@ -161,7 +162,7 @@ public class OTPController {
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
+					ondemandTemplateEventPublisher.notify(otpRequestDto, otpResponseDTO.getResponseTime(), request.getHeader("signature"), partner, e,
 							otpRequestDto.getMetadata());
 				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
