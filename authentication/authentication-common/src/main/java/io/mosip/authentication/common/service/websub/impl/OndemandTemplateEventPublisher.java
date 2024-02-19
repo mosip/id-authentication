@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.repository.PartnerDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -110,17 +111,17 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 		webSubHelper.publishEvent(onDemadTemplateExtractionTopic, eventModel);
 	}
 
-	public void notify(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
+	public void notify(BaseRequestDTO baserequestdto, String apiresponsedate, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		try {
-			sendEvents(baserequestdto, headerSignature, partner, e, metadata);
+			sendEvents(baserequestdto,apiresponsedate, headerSignature, partner, e, metadata);
 		} catch (Exception exception) {
 			logger.error(IdRepoSecurityManager.getUser(), "On demand template  extraction", "notify",
 					exception.getMessage());
 		}
 	}
 
-	private void sendEvents(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
+	private void sendEvents(BaseRequestDTO baserequestdto, String apiresponsedate, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		logger.info("Inside sendEvents ondemand extraction");
 		logger.info("Inside partner data to get certificate for ondemand extraction encryption");
@@ -131,7 +132,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 			Map<String, Object> eventData = new HashMap<>();
 			eventData.put(ERROR_CODE, e.getErrorCode());
 			eventData.put(ERROR_MESSAGE, e.getErrorText());
-			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+			eventData.put(REQUESTDATETIME, apiresponsedate);
 			eventData.put(INDIVIDUAL_ID,
 					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
 			eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());

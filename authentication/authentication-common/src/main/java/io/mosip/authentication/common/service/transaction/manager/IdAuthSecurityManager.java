@@ -518,6 +518,7 @@ public class IdAuthSecurityManager {
 		X509Certificate x509Certificate = getX509Certificate(partnerCertificate);
 		PublicKey publicKey = x509Certificate.getPublicKey();
 		byte[] encryptedData = cryptoCore.asymmetricEncrypt(publicKey, dataToEncrypt);
+		mosipLogger.info("AssymetricEncrypted data -- Start" + encryptedData+ " End--AssymetricEncrypted data" );
 		return CryptoUtil.encodeBase64Url(encryptedData);
 	}
 
