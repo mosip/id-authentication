@@ -158,7 +158,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 		return model;
 	}
 
-	private byte[] encryptIndividualId(String id, String partnerCertificate) {
+	private String encryptIndividualId(String id, String partnerCertificate) {
 		try {
 			logger.info("Inside the method of encryptIndividualId using partner certificate ");
 			return securityManager.asymmetricEncryption(id.getBytes(), partnerCertificate);
