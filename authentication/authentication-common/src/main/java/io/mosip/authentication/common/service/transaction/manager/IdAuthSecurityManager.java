@@ -676,7 +676,8 @@ public class IdAuthSecurityManager {
 	public String jwsSignWithPayload(String data) {
 		JWSSignatureRequestDto request = new JWSSignatureRequestDto();
 		request.setApplicationId(vciExchSignApplicationId);
-		request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
+		//request.setDataToSign(CryptoUtil.encodeBase64Url(data.getBytes()));
+		request.setDataToSign(data);
 		request.setIncludeCertHash(false);
 		request.setIncludeCertificate(includeCertificate);
 		request.setIncludePayload(false);
