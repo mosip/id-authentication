@@ -141,7 +141,7 @@ public class OTPController {
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
 				logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
-						idType);
+						"IdType...."+ idType);
 				otpRequestDto.setIndividualIdType(idType);
 				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 				DataValidationUtil.validate(errors);
