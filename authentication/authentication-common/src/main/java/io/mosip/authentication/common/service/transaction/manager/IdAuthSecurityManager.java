@@ -520,6 +520,7 @@ public class IdAuthSecurityManager {
 		byte[] encryptedData = cryptoCore.asymmetricEncrypt(publicKey, dataToEncrypt);
 		mosipLogger.info("AssymetricEncrypted data -- Start" + encryptedData+ " End--AssymetricEncrypted data" );
 		return CryptoUtil.encodeBase64(encryptedData);
+
 	}
 
 	/**
