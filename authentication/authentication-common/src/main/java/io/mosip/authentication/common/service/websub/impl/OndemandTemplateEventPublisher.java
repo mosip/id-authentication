@@ -111,17 +111,17 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 		webSubHelper.publishEvent(onDemadTemplateExtractionTopic, eventModel);
 	}
 
-	public void notify(BaseRequestDTO baserequestdto, String apiresponsedate, String headerSignature, Optional<PartnerDTO> partner,
+	public void notify(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		try {
-			sendEvents(baserequestdto,apiresponsedate, headerSignature, partner, e, metadata);
+			sendEvents(baserequestdto, headerSignature, partner, e, metadata);
 		} catch (Exception exception) {
 			logger.error(IdRepoSecurityManager.getUser(), "On demand template  extraction", "notify",
 					exception.getMessage());
 		}
 	}
 
-	private void sendEvents(BaseRequestDTO baserequestdto, String apiresponsedate, String headerSignature, Optional<PartnerDTO> partner,
+	private void sendEvents(BaseRequestDTO baserequestdto, String headerSignature, Optional<PartnerDTO> partner,
 			IdAuthenticationBusinessException e, Map<String, Object> metadata) {
 		logger.info("Inside sendEvents ondemand extraction");
 		logger.info("Inside partner data to get certificate for ondemand extraction encryption");
@@ -132,7 +132,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 			Map<String, Object> eventData = new HashMap<>();
 			eventData.put(ERROR_CODE, e.getErrorCode());
 			eventData.put(ERROR_MESSAGE, e.getErrorText());
-			eventData.put(REQUESTDATETIME, apiresponsedate);
+			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 			eventData.put(INDIVIDUAL_ID,
 					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
 			eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
