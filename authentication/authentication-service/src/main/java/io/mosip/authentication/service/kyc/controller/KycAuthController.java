@@ -160,7 +160,6 @@ public class KycAuthController {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWrapperWithMetadata = (ObjectWithMetadata) request;
 			
-			AuthResponseDTO authResponseDTO= null;
 			boolean isAuth = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, ekycAuthRequestDTO.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
@@ -176,7 +175,7 @@ public class KycAuthController {
 				}
 				DataValidationUtil.validate(errors);
 				boolean externalAuthRequest = true;
-				 authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, externalAuthRequest, 
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, externalAuthRequest, 
 														partnerId, partnerApiKey, requestWrapperWithMetadata);
 				EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
@@ -200,7 +199,7 @@ public class KycAuthController {
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(ekycAuthRequestDTO,authResponseDTO.getResponseTime(), request.getHeader("signature"), partner,
+					ondemandTemplateEventPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"), partner,
 							e, ekycAuthRequestDTO.getMetadata());
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
@@ -247,7 +246,6 @@ public class KycAuthController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(authRequestDTO, !isAuth, partner);
-			KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 			try {
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
@@ -260,6 +258,7 @@ public class KycAuthController {
 				boolean externalAuthRequest = true;
 				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, externalAuthRequest, partnerId, 
 								oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
+				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
 				if (authResponseDTO != null && 
 						metadata != null && 
@@ -281,7 +280,7 @@ public class KycAuthController {
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 				
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(authRequestDTO, kycAuthResponseDTO.getResponseTime(), request.getHeader("signature"), partner, e,
+					ondemandTemplateEventPublisher.notify(authRequestDTO, request.getHeader("signature"), partner, e,
 							authRequestDTO.getMetadata());
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);

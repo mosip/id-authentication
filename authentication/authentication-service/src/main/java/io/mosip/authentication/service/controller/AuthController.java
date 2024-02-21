@@ -131,7 +131,7 @@ public class AuthController {
 		
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
-			AuthResponseDTO authResponsedto = null;
+
 			boolean isAuth = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authrequestdto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
@@ -146,7 +146,7 @@ public class AuthController {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 				}
 				DataValidationUtil.validate(errors);
-			    authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
+				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
 						partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT, requestWithMetadata);
 				// Note: Auditing of success or failure status of each authentication (but not
 				// the exception) is handled in respective authentication invocations in the facade
@@ -163,7 +163,7 @@ public class AuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(authrequestdto, authResponsedto.getResponseTime(), request.getHeader("signature"), partner, e,
+					ondemandTemplateEventPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);

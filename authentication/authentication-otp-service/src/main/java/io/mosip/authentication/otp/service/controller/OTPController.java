@@ -130,22 +130,21 @@ public class OTPController {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 			
-			OtpResponseDTO otpResponseDTO=null;
 			boolean isPartnerReq = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
 			
 			try {
-				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
 				logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 						"IdType...."+ idType);
 				otpRequestDto.setIndividualIdType(idType);
+				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 				DataValidationUtil.validate(errors);
-				otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
+				OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
 				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 						otpResponseDTO.getResponseTime());
 				
@@ -164,7 +163,7 @@ public class OTPController {
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(otpRequestDto, otpResponseDTO.getResponseTime(), request.getHeader("signature"), partner, e,
+					ondemandTemplateEventPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
 							otpRequestDto.getMetadata());
 				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
