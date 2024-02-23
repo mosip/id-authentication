@@ -165,7 +165,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 			return securityManager.asymmetricEncryption(id.getBytes(), partnerCertificate);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error occurred during encryption of individual ID", e);
 		}
 		return null;
 
