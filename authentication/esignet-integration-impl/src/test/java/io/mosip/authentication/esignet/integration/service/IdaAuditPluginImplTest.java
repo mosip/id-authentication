@@ -95,11 +95,11 @@ public class IdaAuditPluginImplTest {
                 new ParameterizedTypeReference<ResponseWrapper>() {
                 };
         Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("authToken");
-        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
-        Mockito.when(restTemplate.exchange(
-                Mockito.any(RequestEntity.class),
-                Mockito.eq(responseType)
-        )).thenReturn(responseEntity);
+//        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
+//        Mockito.when(restTemplate.exchange(
+//                Mockito.any(RequestEntity.class),
+//                Mockito.eq(responseType)
+//        )).thenReturn(responseEntity);
         try {
             idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
@@ -120,11 +120,11 @@ public class IdaAuditPluginImplTest {
                 new ParameterizedTypeReference<ResponseWrapper>() {
                 };
         Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("authToken");
-        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
-        Mockito.when(restTemplate.exchange(
-                Mockito.any(RequestEntity.class),
-                Mockito.eq(responseType)
-        )).thenReturn(responseEntity);
+//        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
+//        Mockito.when(restTemplate.exchange(
+//                Mockito.any(RequestEntity.class),
+//                Mockito.eq(responseType)
+//        )).thenReturn(responseEntity);
         try {
             idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
@@ -145,11 +145,11 @@ public class IdaAuditPluginImplTest {
                 new ParameterizedTypeReference<ResponseWrapper>() {
                 };
         Mockito.when(authTransactionHelper.getAuthToken()).thenReturn("authToken");
-        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
-        Mockito.when(restTemplate.exchange(
-                Mockito.any(RequestEntity.class),
-                Mockito.eq(responseType)
-        )).thenReturn(responseEntity);
+//        Mockito.when(objectMapper.writeValueAsString(any())).thenReturn("requestBody");
+//        Mockito.when(restTemplate.exchange(
+//                Mockito.any(RequestEntity.class),
+//                Mockito.eq(responseType)
+//        )).thenReturn(responseEntity);
         try {
             idaAuditPlugin.logAudit(username,action, status, auditDTO, null);
             Assert.assertTrue(true);
