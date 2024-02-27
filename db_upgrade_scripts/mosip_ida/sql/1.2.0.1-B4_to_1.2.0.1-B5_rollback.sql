@@ -1,4 +1,3 @@
-\echo 'Upgrade Queries not required for transition from $CURRENT_VERSION to $UPGRADE_VERSION'
 
 DROP TABLE IF EXISTS ida.cred_subject_id_store CASCADE;
 
