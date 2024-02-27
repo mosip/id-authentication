@@ -1,13 +1,3 @@
--- -------------------------------------------------------------------------------------------------
--- Database Name	: mosip_ida
--- Release Version 	: 1.2.1
--- Purpose    		: Database Alter scripts for the release for ID Authentication DB.       
--- Create By   		: Mahammed Taheer
--- Created Date		: Aug-2023
--- 
--- Modified Date        Modified By         Comments / Remarks
--- -------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------
 \c mosip_ida sysadmin
 
 CREATE TABLE ida.cred_subject_id_store(

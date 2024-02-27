@@ -1,4 +1,4 @@
-\echo 'Upgrade Queries not required for the transition from 1.2.0.1-B5 to 1.2.0.1'
+\c mosip_ida
 
 ALTER TABLE ida.credential_event_store ALTER COLUMN credential_transaction_id type character varying(36);
 
