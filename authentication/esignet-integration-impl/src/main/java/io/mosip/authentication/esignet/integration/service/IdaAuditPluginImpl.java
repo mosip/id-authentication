@@ -1,5 +1,6 @@
 package io.mosip.authentication.esignet.integration.service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +48,20 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 	@Value("${mosip.esignet.authenticator.ida.audit-manager-url}")
 	private String auditManagerUrl;
 
+	@Value("${mosip.audit.description.max-length:2048}")
+	private Integer auditDescriptionMaxLength;
+
 	@Override
 	public void logAudit(Action action, ActionStatus status, AuditDTO audit, Throwable t) {
-		audit(null, action, status, audit);
+		audit(null, action, status, audit,t);
 	}
 
 	@Override
 	public void logAudit(String username, Action action, ActionStatus status, AuditDTO audit, Throwable t) {
-		audit(username, action, status, audit);
+		audit(username, action, status, audit,t);
 	}
 
-	private void audit(String username, Action action, ActionStatus status, AuditDTO audit) {
+	private void audit(String username, Action action, ActionStatus status, AuditDTO audit, Throwable t) {
 		try {
 			String authToken = authTransactionHelper.getAuthToken();
 
@@ -78,7 +82,11 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setCreatedBy(this.getClass().getSimpleName());
 			auditRequest.setModuleName(action.getModule());
 			auditRequest.setModuleId(action.getModule());
-			auditRequest.setDescription(getAuditDescription(audit));
+			String auditDescription = t != null ? ExceptionUtils.getStackTrace(t) : getAuditDescription(audit);
+			if (auditDescription != null && auditDescription.length() > auditDescriptionMaxLength) {
+				auditDescription = auditDescription.substring(0, auditDescriptionMaxLength);
+			}
+			auditRequest.setDescription(auditDescription);
 			auditRequest.setId(audit.getTransactionId());
 
 			request.setRequest(auditRequest);
