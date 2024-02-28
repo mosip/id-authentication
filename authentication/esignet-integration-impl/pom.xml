@@ -34,13 +34,13 @@
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
 			<artifactId>esignet-core</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
+			<version>1.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
     		<artifactId>esignet-integration-api</artifactId>
-    		<version>1.3.0-SNAPSHOT</version>
+    		<version>1.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 
