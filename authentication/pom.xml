@@ -113,7 +113,7 @@
 		<kernel-demoapi.version>1.2.0.1-B1</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
 		<kernel-biometrics-util>${kernel.parent.version}</kernel-biometrics-util>
-		<kernel-openid-bridge-api.version>1.2.0.1-B2</kernel-openid-bridge-api.version>
+		<kernel-openid-bridge-api.version>1.2.0.1-B3</kernel-openid-bridge-api.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
