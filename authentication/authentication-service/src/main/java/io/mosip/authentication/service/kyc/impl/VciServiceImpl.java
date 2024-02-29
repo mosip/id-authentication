@@ -342,6 +342,9 @@ public class VciServiceImpl implements VciService {
 			byte[] vcSignBytes = canonicalizer.canonicalize(vcLdProof, vcJsonLdObject);			
 			String vcEncodedData = CryptoUtil.encodeBase64Url(vcSignBytes);
 
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getCanonicalName(), "generateLdpVc",
+							"Hash value for the generated VC: " + vcEncodedData);
+
 			String jws = securityManager.jwsSignWithPayload(vcEncodedData);
 
 			LdProof ldProofWithJWS = LdProof.builder()

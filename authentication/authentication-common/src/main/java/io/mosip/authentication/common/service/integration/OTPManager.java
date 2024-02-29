@@ -39,7 +39,7 @@ import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
- * 
+ *
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
@@ -76,11 +76,11 @@ public class OTPManager {
 	/** The notification service. */
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	/** The number of validation attempts allowed. */
 	@Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
 	private int numberOfValidationAttemptsAllowed;
-	
+
 	/** The otp frozen time minutes. */
 	@Value("${mosip.ida.otp.frozen.duration.minutes:30}")
 	private int otpFrozenTimeMinutes;
@@ -103,7 +103,7 @@ public class OTPManager {
 	 */
 	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
-		
+
 		String refIdHash = securityManager.hash(idvid);
 		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
@@ -111,13 +111,13 @@ public class OTPManager {
 			OtpTransaction otpEntity = otpEntityOpt.get();
 			requireOtpNotFrozen(otpEntity, false);
 		}
-		
+
 		String otp = generateOTP(otpRequestDTO.getIndividualId());
 		LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
 		String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
 				+ EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
 				+ EnvUtil.getKeySplitter() + otp).getBytes());
-		
+
 		OtpTransaction otpTxn;
 		if (otpEntityOpt.isPresent()
 				&& (otpTxn = otpEntityOpt.get()).getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
@@ -141,7 +141,7 @@ public class OTPManager {
 			txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 			otpRepo.save(txn);
 		}
-			
+
 		String notificationProperty = null;
 		notificationProperty = otpRequestDTO
 				.getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
@@ -219,18 +219,18 @@ public class OTPManager {
 		if (otpEntityOpt.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
 		}
-		
+
 		OtpTransaction otpEntity = otpEntityOpt.get();
 		requireOtpNotFrozen(otpEntity, true);
-		
+
 		if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.UNFROZEN)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
 		}
-		
+
 		// At this point it should be active status alone.
 		// Increment the validation attempt count.
 		int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
-		
+
 		String otpHash = getOtpHash(pinValue, otpKey);
 		if (otpEntity.getOtpHash().equals(otpHash)) {
 			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
@@ -247,6 +247,9 @@ public class OTPManager {
 			otpEntity.setValidationRetryCount(attemptCount);
 			if (attemptCount >= numberOfValidationAttemptsAllowed) {
 				otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
+				otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+				otpRepo.save(otpEntity);
+				throw createOTPFrozenException();
 			}
 			otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			otpRepo.save(otpEntity);
@@ -294,5 +297,5 @@ public class OTPManager {
 		return IdAuthSecurityManager.digestAsPlainText(
 				(otpKey + EnvUtil.getKeySplitter() + pinValue).getBytes());
 	}
-	
+
 }
