@@ -21,11 +21,27 @@
             <groupId>io.mosip.authentication</groupId>
             <artifactId>authentication-core</artifactId>
             <version>${authentication-core.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.mosip.authentication</groupId>
             <artifactId>authentication-common</artifactId>
             <version>${authentication-common.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.mosip.authentication</groupId>
@@ -82,6 +98,10 @@
             		<groupId>com.fasterxml.jackson.core</groupId>
             		<artifactId>jackson-databind</artifactId>
             	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-core</artifactId>
+            	</exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -115,6 +135,10 @@
             	<exclusion>
             		<groupId>com.fasterxml.jackson.core</groupId>
             		<artifactId>jackson-databind</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-annotations</artifactId>
             	</exclusion>
             </exclusions>
         </dependency>
@@ -153,6 +177,14 @@
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
@@ -170,6 +202,14 @@
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
         		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
@@ -180,6 +220,10 @@
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
         		</exclusion>
         	</exclusions>
         </dependency>
@@ -204,6 +248,12 @@
             <groupId>io.mosip.biometric.util</groupId>
             <artifactId>biometrics-util</artifactId>
             <version>${kernel-biometrics-util}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.fasterxml.jackson.core</groupId>
+            		<artifactId>jackson-databind</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
 			<groupId>org.openpnp</groupId>
@@ -214,7 +264,62 @@
 			<groupId>info.weboftrust</groupId>
 			<artifactId>ld-signatures-java</artifactId>
 			<version>1.0.0</version>
-		</dependency>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+			</exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.module</groupId>
+        	<artifactId>jackson-module-jaxb-annotations</artifactId>
+        	<version>${jackson.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
+        	</exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.dataformat</groupId>
+        	<artifactId>jackson-dataformat-xml</artifactId>
+        	<version>${jackson.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-core</artifactId>
+        		</exclusion>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-annotations</artifactId>
+        		</exclusion>
+        	</exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>io.mosip.kernel</groupId>
+        	<artifactId>kernel-openid-bridge-api</artifactId>
+        	<version>${kernel-openid-bridge-api.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>com.fasterxml.jackson.core</groupId>
+        			<artifactId>jackson-databind</artifactId>
+        		</exclusion>
+        	</exclusions>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
