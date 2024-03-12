@@ -137,7 +137,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
 			eventData.put(AUTH_PARTNER_ID, partner.map(PartnerDTO::getPartnerId).orElse(null));
 			eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
-			eventData.put(ENTITY_NAME, partner.isPresent() ? partner.get().getPartnerName() : null);
+			eventData.put(ENTITY_NAME, partner.map(PartnerDTO::getPartnerName).orElse(null));
 			eventData.put(REQUEST_SIGNATURE, headerSignature);
 			EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
 			publishEvent(eventModel);
