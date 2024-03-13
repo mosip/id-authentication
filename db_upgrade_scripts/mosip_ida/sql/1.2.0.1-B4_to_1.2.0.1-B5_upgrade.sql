@@ -8,7 +8,7 @@
 -- Modified Date        Modified By         Comments / Remarks
 -- -------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
-\c mosip_ida sysadmin
+\c mosip_ida 
 
 CREATE TABLE ida.cred_subject_id_store(
     id character varying(36) NOT NULL,
