@@ -142,21 +142,23 @@ public class IdaKeyBinderImpl implements KeyBinder {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<KeyBindingResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper == null || responseWrapper.getResponse() == null) {
-                    log.error("Error response received from IDA (Key-binding) Errors: {}", responseWrapper.getErrors());
-                    throw new KeyBindingException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                            ErrorConstants.KEY_BINDING_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
-                }
+                if (responseWrapper != null) {
+                    if (responseWrapper.getResponse() == null) {
+                        log.error("Error response received from IDA (Key-binding) Errors: {}", responseWrapper.getErrors());
+                        throw new KeyBindingException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+                                ErrorConstants.KEY_BINDING_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                    }
 
-                if(!responseWrapper.getResponse().isBindingAuthStatus()) {
-                    log.error("Binding-Auth-status : {}", responseWrapper.getResponse().isBindingAuthStatus());
-                    throw new KeyBindingException(ErrorConstants.BINDING_AUTH_FAILED);
-                }
+                    if (!responseWrapper.getResponse().isBindingAuthStatus()) {
+                        log.error("Binding-Auth-status : {}", responseWrapper.getResponse().isBindingAuthStatus());
+                        throw new KeyBindingException(ErrorConstants.BINDING_AUTH_FAILED);
+                    }
 
-                KeyBindingResult keyBindingResult = new KeyBindingResult();
-                keyBindingResult.setCertificate(responseWrapper.getResponse().getIdentityCertificate());
-                keyBindingResult.setPartnerSpecificUserToken(responseWrapper.getResponse().getAuthToken());
-                return keyBindingResult;
+                    KeyBindingResult keyBindingResult = new KeyBindingResult();
+                    keyBindingResult.setCertificate(responseWrapper.getResponse().getIdentityCertificate());
+                    keyBindingResult.setPartnerSpecificUserToken(responseWrapper.getResponse().getAuthToken());
+                    return keyBindingResult;
+                }
             }
 
             log.error("Error response received from IDA (Key-binding) with status : {}", responseEntity.getStatusCode());
