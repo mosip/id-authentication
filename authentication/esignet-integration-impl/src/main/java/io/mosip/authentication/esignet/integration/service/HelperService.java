@@ -160,7 +160,8 @@ public class HelperService {
         ResponseEntity<IdaSendOtpResponse> responseEntity = restTemplate.exchange(requestEntity, IdaSendOtpResponse.class);
         if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
             IdaSendOtpResponse idaSendOtpResponse = responseEntity.getBody();
-            if(idaSendOtpRequest.getTransactionID().equals(idaSendOtpResponse.getTransactionID()) && idaSendOtpResponse.getResponse() != null){
+            if (idaSendOtpResponse != null && idaSendOtpRequest.getTransactionID().equals(idaSendOtpResponse.getTransactionID()) &&
+                    idaSendOtpResponse.getResponse() != null) {
                 return new SendOtpResult(idaSendOtpResponse.getTransactionID(),
                         idaSendOtpResponse.getResponse().getMaskedEmail(),
                         idaSendOtpResponse.getResponse().getMaskedMobile());

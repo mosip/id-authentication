@@ -135,7 +135,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<IdaKycAuthResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus() && responseWrapper.getResponse().getKycToken() != null) {
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus() && responseWrapper.getResponse().getKycToken() != null) {
                     return new KycAuthResult(responseEntity.getBody().getResponse().getKycToken(),
                             responseEntity.getBody().getResponse().getAuthToken());
                 }
@@ -188,7 +188,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<IdaKycExchangeResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper.getResponse() != null && responseWrapper.getResponse().getEncryptedKyc() != null) {
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getEncryptedKyc() != null) {
                     return new KycExchangeResult(responseWrapper.getResponse().getEncryptedKyc());
                 }
                 log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());
@@ -241,7 +241,7 @@ public class IdaAuthenticatorImpl implements Authenticator {
             
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
             	ResponseWrapper<GetAllCertificatesResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null) {
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null) {
                     return responseWrapper.getResponse().getAllCertificates();
                 }
                 log.error("Error response received from getAllSigningCertificates with errors: {}",

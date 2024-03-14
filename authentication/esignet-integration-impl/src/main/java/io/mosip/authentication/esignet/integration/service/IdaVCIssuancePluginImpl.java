@@ -132,7 +132,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 					requestEntity, new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {});
 			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
 				IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
-				if (responseWrapper.getResponse() != null) {
+				if (responseWrapper != null || responseWrapper.getResponse() != null) {
 					VCResult vCResult = new VCResult();
 					vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
 					vCResult.setFormat(vcRequestDto.getFormat());
