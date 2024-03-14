@@ -166,9 +166,9 @@ public class HelperService {
                     return new SendOtpResult(idaSendOtpResponse.getTransactionID(),
                             idaSendOtpResponse.getResponse().getMaskedEmail(),
                             idaSendOtpResponse.getResponse().getMaskedMobile());
-                } else {
-                    log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());
-                    throw new SendOtpException(idaSendOtpResponse.getErrors().get(0).getErrorCode());
+                } else if(idaSendOtpResponse.getErrors()!=null) {
+                        log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());
+                        throw new SendOtpException(idaSendOtpResponse.getErrors().get(0).getErrorCode());
                 }
             }
         }

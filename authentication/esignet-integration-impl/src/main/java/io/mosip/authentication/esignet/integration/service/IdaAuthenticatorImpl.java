@@ -139,11 +139,11 @@ public class IdaAuthenticatorImpl implements Authenticator {
                     if (responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus() && responseWrapper.getResponse().getKycToken() != null) {
                         return new KycAuthResult(responseWrapper.getResponse().getKycToken(),
                                 responseWrapper.getResponse().getAuthToken());
-                    } else {
-                        log.error("Error response received from IDA KycStatus: {} && Errors: {}",
-                                responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());
-                        throw new KycAuthException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                                ErrorConstants.AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                    } else if (responseWrapper.getErrors() != null && responseWrapper.getResponse() != null) {
+                            log.error("Error response received from IDA KycStatus: {} && Errors: {}",
+                                        responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());
+                            throw new KycAuthException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+                                    ErrorConstants.AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
                     }
                 }
             }
@@ -194,10 +194,10 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 if (responseWrapper != null) {
                     if (responseWrapper.getResponse() != null && responseWrapper.getResponse().getEncryptedKyc() != null) {
                         return new KycExchangeResult(responseWrapper.getResponse().getEncryptedKyc());
-                    } else {
-                        log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());
-                        throw new KycExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                                ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                    } else if (responseWrapper.getErrors() != null) {
+                            log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());
+                            throw new KycExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+                                    ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
                     }
                 }
             }
@@ -250,10 +250,10 @@ public class IdaAuthenticatorImpl implements Authenticator {
                 if (responseWrapper != null) {
                     if (responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null) {
                         return responseWrapper.getResponse().getAllCertificates();
-                    } else {
-                        log.error("Error response received from getAllSigningCertificates with errors: {}", responseWrapper.getErrors());
-                        throw new KycSigningCertificateException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                                ErrorConstants.KYC_SIGNING_CERTIFICATE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                    } else if (responseWrapper.getErrors() != null) {
+                            log.error("Error response received from getAllSigningCertificates with errors: {}", responseWrapper.getErrors());
+                            throw new KycSigningCertificateException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+                                    ErrorConstants.KYC_SIGNING_CERTIFICATE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
                     }
                 }
             }
