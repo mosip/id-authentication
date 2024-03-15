@@ -134,9 +134,9 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 			eventData.put(INDIVIDUAL_ID,
 					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
-			eventData.put(AUTH_PARTNER_ID, partner.get().getPartnerId());
+			eventData.put(AUTH_PARTNER_ID, partner.map(PartnerDTO::getPartnerId).orElse(null));
 			eventData.put(INDIVIDUAL_ID_TYPE, baserequestdto.getIndividualIdType());
-			eventData.put(ENTITY_NAME, partner.get().getPartnerName());
+			eventData.put(ENTITY_NAME, partner.map(PartnerDTO::getPartnerName).orElse(null));
 			eventData.put(REQUEST_SIGNATURE, headerSignature);
 			EventModel eventModel = createEventModel(onDemadTemplateExtractionTopic, eventData);
 			publishEvent(eventModel);
@@ -158,7 +158,7 @@ public class OndemandTemplateEventPublisher extends BaseWebSubEventsInitializer 
 		return model;
 	}
 
-	private byte[] encryptIndividualId(String id, String partnerCertificate) {
+	private String encryptIndividualId(String id, String partnerCertificate) {
 		try {
 			logger.info("Inside the method of encryptIndividualId using partner certificate ");
 			return securityManager.asymmetricEncryption(id.getBytes(), partnerCertificate);

@@ -136,10 +136,10 @@ public class OTPController {
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
 			
 			try {
-				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
 				otpRequestDto.setIndividualIdType(idType);
+				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
 				DataValidationUtil.validate(errors);
 				OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId, requestWithMetadata);
