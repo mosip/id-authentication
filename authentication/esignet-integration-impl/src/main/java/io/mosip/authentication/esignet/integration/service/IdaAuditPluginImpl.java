@@ -104,7 +104,8 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 
 			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
 				ResponseWrapper<AuditResponse> responseWrapper = responseEntity.getBody();
-				if (responseWrapper != null && responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty()) {
+				if (responseWrapper.getErrors() != null && !responseWrapper.getErrors().isEmpty())  //NOSONAR responseWrapper is already evaluated to be not null
+				{
 					log.error("Error response received from audit service with errors: {}",
 							responseWrapper.getErrors());
 				}

@@ -132,18 +132,16 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 					requestEntity, new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {});
 			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
 				IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
-				if (responseWrapper != null) {
-					if (responseWrapper.getResponse() != null) {
-						VCResult vCResult = new VCResult();
-						vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
-						vCResult.setFormat(vcRequestDto.getFormat());
-						return vCResult;
-					} else {
-						log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());
-						throw new VCIExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-								ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
-					}
+				if (responseWrapper.getResponse() != null) //NOSONAR responseWrapper is already evaluated to be not null
+				{
+					VCResult vCResult = new VCResult();
+					vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
+					vCResult.setFormat(vcRequestDto.getFormat());
+					return vCResult;
 				}
+				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());
+				throw new VCIExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
+						ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
 			}
 			log.error("Error response received from IDA (VCI-exchange) with status : {}", responseEntity.getStatusCode());
 		} catch (Exception e) {
