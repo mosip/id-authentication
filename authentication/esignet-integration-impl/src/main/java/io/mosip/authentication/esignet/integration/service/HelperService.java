@@ -160,14 +160,13 @@ public class HelperService {
         ResponseEntity<IdaSendOtpResponse> responseEntity = restTemplate.exchange(requestEntity, IdaSendOtpResponse.class);
         if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
             IdaSendOtpResponse idaSendOtpResponse = responseEntity.getBody();
-            if (idaSendOtpRequest.getTransactionID().equals(idaSendOtpResponse.getTransactionID()) &&
-                    idaSendOtpResponse.getResponse() != null)   //NOSONAR idaSendOtpResponse is already evaluated to be not null
-            {
+            if (idaSendOtpResponse != null && idaSendOtpRequest.getTransactionID().equals(idaSendOtpResponse.getTransactionID()) &&
+                    idaSendOtpResponse.getResponse() != null) {
                 return new SendOtpResult(idaSendOtpResponse.getTransactionID(),
                         idaSendOtpResponse.getResponse().getMaskedEmail(),
                         idaSendOtpResponse.getResponse().getMaskedMobile());
             }
-            log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());
+            log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());  //NOSONAR idaSendOtpResponse is already evaluated to be not null
             throw new SendOtpException(idaSendOtpResponse.getErrors().get(0).getErrorCode());
         }
         log.error("Error response received from IDA (send-otp) with status : {}", responseEntity.getStatusCode());

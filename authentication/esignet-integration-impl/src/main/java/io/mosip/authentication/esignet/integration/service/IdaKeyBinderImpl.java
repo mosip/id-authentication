@@ -142,7 +142,7 @@ public class IdaKeyBinderImpl implements KeyBinder {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<KeyBindingResponse> responseWrapper = responseEntity.getBody();
-                    if (responseWrapper.getResponse() == null)  //NOSONAR responseWrapper is already evaluated to be not null
+                    if (responseWrapper == null && responseWrapper.getResponse() == null)  //NOSONAR responseWrapper is already evaluated to be not null
                     {
                         log.error("Error response received from IDA (Key-binding) Errors: {}", responseWrapper.getErrors());
                         throw new KeyBindingException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
