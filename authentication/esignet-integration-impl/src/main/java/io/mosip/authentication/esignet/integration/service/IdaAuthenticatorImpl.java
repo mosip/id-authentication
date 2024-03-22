@@ -135,12 +135,12 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<IdaKycAuthResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus() && responseWrapper.getResponse().getKycToken() != null) {
-                    return new KycAuthResult(responseEntity.getBody().getResponse().getKycToken(),
-                            responseEntity.getBody().getResponse().getAuthToken());
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().isKycStatus() && responseWrapper.getResponse().getKycToken() != null)  {
+                    return new KycAuthResult(responseWrapper.getResponse().getKycToken(),
+                            responseWrapper.getResponse().getAuthToken());
                 }
                 log.error("Error response received from IDA KycStatus : {} && Errors: {}",
-                        responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());
+                        responseWrapper.getResponse().isKycStatus(), responseWrapper.getErrors());  //NOSONAR responseWrapper is already evaluated to be not null
                 throw new KycAuthException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
                          ErrorConstants.AUTH_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
@@ -188,12 +188,12 @@ public class IdaAuthenticatorImpl implements Authenticator {
 
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
                 IdaResponseWrapper<IdaKycExchangeResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getEncryptedKyc() != null) {
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getEncryptedKyc() != null)  {
                     return new KycExchangeResult(responseWrapper.getResponse().getEncryptedKyc());
                 }
-                log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());
+                log.error("Errors in response received from IDA Kyc Exchange: {}", responseWrapper.getErrors());  //NOSONAR responseWrapper is already evaluated to be not null
                 throw new KycExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                		ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                            ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
 
             log.error("Error response received from IDA (Kyc-exchange) with status : {}", responseEntity.getStatusCode());
@@ -241,13 +241,13 @@ public class IdaAuthenticatorImpl implements Authenticator {
             
             if(responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
             	ResponseWrapper<GetAllCertificatesResponse> responseWrapper = responseEntity.getBody();
-                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null) {
+                if(responseWrapper != null && responseWrapper.getResponse() != null && responseWrapper.getResponse().getAllCertificates() != null)  {
                     return responseWrapper.getResponse().getAllCertificates();
                 }
                 log.error("Error response received from getAllSigningCertificates with errors: {}",
-                        responseWrapper.getErrors());
+                        responseWrapper.getErrors());  //NOSONAR responseWrapper is already evaluated to be not null
                 throw new KycSigningCertificateException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
-                		ErrorConstants.KYC_SIGNING_CERTIFICATE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
+                            ErrorConstants.KYC_SIGNING_CERTIFICATE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
             }
             log.error("Error response received from getAllSigningCertificates with status : {}", responseEntity.getStatusCode());
     	} catch (KycSigningCertificateException e) { throw e; } catch (Exception e) {
