@@ -17,9 +17,9 @@ mosip.ida.ondemand.template.extraction.partner.id=mpartner-default-tempextractio
 ## Image source
 ```
 ![On demand-template-extraction](https://github.com/mosip/id-authentication/blob/release-1.2.0.2/docs/images/On_demand_template_extraction.png)
-
-Steps of sequence diagram:
-
+```
+## Steps of sequence diagram:
+```
 1. Client -> IDA : The client sends Authentication or OTP request to IDA.
 2. IDA ->IDA: Query the Record with the Individual Id.
 3. IDA ->IDA :If the requested data (UIN/VID) is not available in the database the server throws an exception
