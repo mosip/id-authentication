@@ -143,7 +143,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 						ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
 			}
 			log.error("Error response received from IDA (VCI-exchange) with status : {}", responseEntity.getStatusCode());
-		} catch (Exception e) {
+		} catch (VCIExchangeException e) { throw e; } catch (Exception e) {
 			log.error("IDA Vci-exchange failed ", e);
 		}
 		throw new VCIExchangeException();
