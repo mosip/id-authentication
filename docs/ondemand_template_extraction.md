@@ -15,18 +15,17 @@ mosip.ida.ondemand.template.extraction.partner.id=mpartner-default-tempextractio
 ```
 
 ## Image source
-```
 ![On demand-template-extraction](https://github.com/mosip/id-authentication/blob/release-1.2.0.2/docs/images/On_demand_template_extraction.png)
-```
+
 ## Steps of sequence diagram:
-```
+
 1. Client -> IDA : The client sends Authentication or OTP request to IDA.
 2. IDA ->IDA: Query the Record with the Individual Id.
 3. IDA ->IDA :If the requested data (UIN/VID) is not available in the database the server throws an exception
 4. IDA-> WebSub:IDA triggers a Websub event for topic AUTHENTICATION_ERRORS
 5. WebSub->Subscriber : The subscriber to the topic(AUTHENTICATION_ERRORS) will receive a message for futher processing.
 
-```
+
 ## Event Structure publish to kafka
 ```
 {
