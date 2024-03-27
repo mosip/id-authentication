@@ -16,7 +16,7 @@ mosip.ida.ondemand.template.extraction.partner.id=mpartner-default-tempextractio
 
 ## Image source
 
-![On demand-template-extraction](images/On_demand_template_extraction.png)
+![On demand-template-extraction](Images/On_demand_template_extraction.png)
 
 ## Steps of sequence diagram:
 ```
