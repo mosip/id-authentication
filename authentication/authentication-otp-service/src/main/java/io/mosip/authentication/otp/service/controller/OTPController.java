@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEventingPublisher;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
-import io.mosip.authentication.common.service.websub.impl.OndemandTemplateEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -93,7 +93,7 @@ public class OTPController {
 	private IdAuthSecurityManager securityManager;
 	
 	@Autowired
-	private OndemandTemplateEventPublisher ondemandTemplateEventPublisher;
+	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -163,7 +163,7 @@ public class OTPController {
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
+					authenticationErrorEventingPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
 							otpRequestDto.getMetadata());
 				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
