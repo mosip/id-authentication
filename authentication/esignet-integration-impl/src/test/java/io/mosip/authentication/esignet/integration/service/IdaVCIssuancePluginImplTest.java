@@ -2,12 +2,14 @@ package io.mosip.authentication.esignet.integration.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.jsonld.JsonLDObject;
+import io.mosip.authentication.esignet.integration.dto.IdaError;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeResponse;
 import io.mosip.authentication.esignet.integration.helper.VCITransactionHelper;
 import io.mosip.esignet.api.dto.VCRequestDto;
 import io.mosip.esignet.api.dto.VCResult;
+import io.mosip.esignet.api.exception.VCIExchangeException;
 import io.mosip.esignet.core.constants.ErrorConstants;
 import io.mosip.esignet.core.dto.OIDCTransaction;
 import io.mosip.esignet.core.exception.EsignetException;
@@ -34,10 +36,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant.CURRENTKEYALIAS;
 
@@ -201,6 +200,38 @@ public class IdaVCIssuancePluginImplTest {
         }catch (Exception e)
         {
             Assert.assertEquals("vci_exchange_failed",e.getMessage());
+        }
+    }
+
+    @Test
+    public void getVerifiableCredentialWithLinkedDataProof_withInValidDetails_thenFail() throws Exception {
+
+        ReflectionTestUtils.setField(idaVCIssuancePlugin,"vciExchangeUrl","http://example.com");
+
+        VCRequestDto vcRequestDto = new VCRequestDto();
+        vcRequestDto.setFormat("ldp_vc");
+        vcRequestDto.setContext(Arrays.asList("context1","context2"));
+        vcRequestDto.setType(Arrays.asList("VerifiableCredential"));
+        vcRequestDto.setCredentialSubject(Map.of("subject1","subject1","subject2","subject2"));
+
+        OIDCTransaction oidcTransaction = new OIDCTransaction();
+        oidcTransaction.setIndividualId("individualId");
+        oidcTransaction.setKycToken("kycToken");
+        oidcTransaction.setAuthTransactionId("authTransactionId");
+        oidcTransaction.setRelyingPartyId("relyingPartyId");
+        oidcTransaction.setClaimsLocales(new String[]{"en-US", "en", "en-CA", "fr-FR", "fr-CA"});
+
+        IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> mockResponseWrapper = new IdaResponseWrapper<>();
+        mockResponseWrapper.setErrors(Collections.singletonList(new IdaError()));
+        ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseType =
+                new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {
+                };
+
+        try {
+            idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto, "holderId", Map.of("accessTokenHash", "ACCESS_TOKEN_HASH", "client_id", "CLIENT_ID"));
+            Assert.fail();
+        } catch (VCIExchangeException e) {
+            Assert.assertEquals("vci_exchange_failed", e.getErrorCode());
         }
     }
 
