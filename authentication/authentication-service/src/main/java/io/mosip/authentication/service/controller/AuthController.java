@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEventingPublisher;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
-import io.mosip.authentication.common.service.websub.impl.OndemandTemplateEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -91,7 +91,7 @@ public class AuthController {
 	private PartnerService partnerService;
 	
 	@Autowired
-	private OndemandTemplateEventPublisher ondemandTemplateEventPublisher;
+	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
 
 
 	/**
@@ -163,7 +163,7 @@ public class AuthController {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					ondemandTemplateEventPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
+					authenticationErrorEventingPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);

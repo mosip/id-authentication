@@ -1,4 +1,4 @@
-# On demand Template Extraction Guide
+# Authentication Error Eventing Guide
 
 ## Overview
 The resident has registered and obtain a valid UIN/VID and proceed with authentication by entering UIN/VID and get error as UIN is not available in database, then resident couldn’t proceed with authentication further as the provided UIN/VID is not available in IDA DB.
@@ -9,22 +9,22 @@ While getting the error UIN/VID is not available in database the websub event is
 ## Configuration files
 id-authentication-default.properties: 
 ```
-ida-topic-on-demand-template-extraction=AUTHENTICATION_ERRORS
-mosip.ida.ondemand.template.extraction.partner.id=mpartner-default-tempextraction
+ida-topic-authentication-error-eventing=AUTHENTICATION_ERRORS
+mosip.ida.authentication.error.eventing.encrypt.partner.id=mpartner-default-tempextraction
 
 ```
 
 ## Image source
 
-![On demand-template-extraction](Images/On_demand_template_extraction.png)
+![On demand-template-extraction](Images/Authentication_error_eventing.png)
 
 ## Steps of sequence diagram:
 ```
 1. Client -> IDA : The client sends Authentication or OTP request to IDA.
 2. IDA ->IDA: Query the Record with the Individual Id.
 3. IDA ->IDA :If the requested data (UIN/VID) is not available in the database the server throws an exception
-4. IDA-> WebSub:IDA triggers a Websub event for topic AUTHENTICATION_ERRORS
-5. WebSub->Subscriber : The subscriber to the topic(AUTHENTICATION_ERRORS) will receive a message for futher processing.
+4. IDA-> Kafka:IDA triggers a event for topic AUTHENTICATION_ERRORS
+5. Kafka->Subscriber : The subscriber to the topic(AUTHENTICATION_ERRORS) will receive a message for futher processing.
 
 ```
 ## Event Structure publish to kafka
