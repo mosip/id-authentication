@@ -95,6 +95,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- Kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>2.1.7.RELEASE</version>
+		</dependency>
 		<!-- Kernel Template -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
