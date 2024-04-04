@@ -21,12 +21,14 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
 public class KafkaProducerConfig {
+	private static final Logger logger = IdaLogger.getLogger(KafkaProducerConfig.class);
 
 	@Value(value = "${mosip.ida.kafka.bootstrap.servers}")
 	private String bootstrapAddress;
 
 	@Bean
 	public ProducerFactory<String, Object> producerFactory() {
+		logger.info("Kafka address-----"+   bootstrapAddress);
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
