@@ -13,6 +13,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
  * The Class KafkaProducerConfig.
  * 
@@ -21,12 +24,14 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
 public class KafkaProducerConfig {
+	private static final Logger logger = IdaLogger.getLogger(KafkaProducerConfig.class);
 
 	@Value(value = "${mosip.ida.kafka.bootstrap.servers}")
 	private String bootstrapAddress;
 
 	@Bean
 	public ProducerFactory<String, Object> producerFactory() {
+		logger.info("Kafka bootstrap address" + bootstrapAddress);
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
