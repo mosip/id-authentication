@@ -2,7 +2,6 @@ package io.mosip.authentication.esignet.integration.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.jsonld.JsonLDObject;
-import io.mosip.authentication.esignet.integration.dto.IdaError;
 import io.mosip.authentication.esignet.integration.dto.IdaResponseWrapper;
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaVcExchangeResponse;
@@ -220,18 +219,12 @@ public class IdaVCIssuancePluginImplTest {
         oidcTransaction.setAuthTransactionId("authTransactionId");
         oidcTransaction.setRelyingPartyId("relyingPartyId");
         oidcTransaction.setClaimsLocales(new String[]{"en-US", "en", "en-CA", "fr-FR", "fr-CA"});
-
-        IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> mockResponseWrapper = new IdaResponseWrapper<>();
-        mockResponseWrapper.setErrors(Collections.singletonList(new IdaError()));
-        ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>> responseType =
-                new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {
-                };
-
+        Mockito.when(vciTransactionHelper.getOAuthTransaction(Mockito.any())).thenThrow(new VCIExchangeException("IDA-VCI-003"));
         try {
             idaVCIssuancePlugin.getVerifiableCredentialWithLinkedDataProof(vcRequestDto, "holderId", Map.of("accessTokenHash", "ACCESS_TOKEN_HASH", "client_id", "CLIENT_ID"));
             Assert.fail();
         } catch (VCIExchangeException e) {
-            Assert.assertEquals("vci_exchange_failed", e.getErrorCode());
+            Assert.assertEquals("IDA-VCI-003", e.getErrorCode());
         }
     }
 
