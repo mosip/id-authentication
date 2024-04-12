@@ -1,21 +1,12 @@
 FROM openjdk:11
 
-ARG SOURCE
-ARG COMMIT_HASH
-ARG COMMIT_ID
-ARG BUILD_TIME
-LABEL source=${SOURCE}
-LABEL commit_hash=${COMMIT_HASH}
-LABEL commit_id=${COMMIT_ID}
-LABEL build_time=${BUILD_TIME}
-
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
 
-# can be passed during Docker build as build time environment for spring profiles active 
+# can be passed during Docker build as build time environment for spring profiles active
 ARG active_profile
 
-# can be passed during Docker build as build time environment for config server URL 
+# can be passed during Docker build as build time environment for config server URL
 ARG spring_config_url
 
 #ARG bio_sdk_folder=mock/0.9
@@ -32,6 +23,24 @@ ARG is_glowroot
 
 # can be passed during Docker build as build time environment for artifactory URL
 ARG artifactory_url
+
+ARG biosdk_local_dir=biosdk-client
+
+ARG demosdk_local_dir=demosdk
+
+ARG hsm_local_dir=hsm-client
+
+# can be passed during Docker build as build time environment for github branch to pickup configuration from.
+ARG container_user=mosip
+ARG container_user_group=mosip
+ARG container_user_uid=1001
+ARG container_user_gid=1001
+
+# can be passed during Docker build as build time environment for label related addition to docker.
+ARG SOURCE
+ARG COMMIT_HASH
+ARG COMMIT_ID
+ARG BUILD_TIME
 
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
@@ -60,38 +69,17 @@ ENV demosdk_zip_file_path=${demosdk_zip_path}
 #ENV zip_file_path=${client_zip_path}
 ENV hsm_zip_file_path=${hsm_client_zip_path}
 
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
-ARG container_user=mosip
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
-ARG container_user_group=mosip
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
-ARG container_user_uid=1001
-
-# can be passed during Docker build as build time environment for github branch to pickup configuration from.
-ARG container_user_gid=1001
-
-ARG hsm_local_dir=hsm-client
-
 ENV hsm_local_dir_name=${hsm_local_dir}
-
-ARG biosdk_local_dir=biosdk-client
-
-ARG demosdk_local_dir=demosdk
 
 ENV biosdk_local_dir_name=${biosdk_local_dir}
 
 ENV demosdk_local_dir_name=${demosdk_local_dir}
 
-# install packages and create user
-RUN apt-get -y update \
-&& apt-get install -y unzip sudo \
-&& groupadd -g ${container_user_gid} ${container_user_group} \
-&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
-&& adduser ${container_user} sudo \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers
+# can be passed during Docker build as build time environment for label.
+LABEL source=${SOURCE}
+LABEL commit_hash=${COMMIT_HASH}
+LABEL commit_id=${COMMIT_ID}
+LABEL build_time=${BUILD_TIME}
 
 # set working directory for the user
 WORKDIR /home/${container_user}
@@ -118,8 +106,15 @@ EXPOSE 8093
 
 EXPOSE 9010
 
-# change permissions of file inside working dir
-RUN chown -R ${container_user}:${container_user} /home/${container_user}
+# install packages, create user and change permissions of file inside working dir
+RUN apt-get -y update \
+&& apt-get install -y unzip sudo \
+&& groupadd -g ${container_user_gid} ${container_user_group} \
+&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
+&& adduser ${container_user} sudo \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers \
+&& chown -R ${container_user}:${container_user} /home/${container_user}
 
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
