@@ -138,6 +138,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
+		ReflectionTestUtils.setField(kycServiceImpl2, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
 		idInfo = getIdInfo("12232323121");
 
