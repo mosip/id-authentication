@@ -1,0 +1,25 @@
+{
+		"demographics": {
+			"gender": [
+      {{#each gender}}
+            {
+            "language": "{{language}}",
+            "value": "{{value}}"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+			],
+			"residenceStatus": [
+      {{#each residenceStatus}}
+            {
+            "language": "{{language}}",
+            "value": "{{value}}"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+			]
+		},
+		"timestamp": "{{requestTime}}",
+		"transactionID": "{{transactionId}}"
+		
+}

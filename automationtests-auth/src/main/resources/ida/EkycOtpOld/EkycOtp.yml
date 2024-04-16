@@ -1,0 +1,788 @@
+EkycOtp:
+  auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/ekycOtpResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/EkycOtp/EkycotpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Missing_individualIdType_smoke:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/ekycOtpResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/EkycOtp/EkycotpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/ekycOtpResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_revoke_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018",
+      "errorMessage": "VID not available in database"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$IGNORE$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_individualId_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "@@###cndjdhe77473838",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-002",
+      "errorMessage": "Invalid UIN"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_individualId_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "@@###cndjdhe77473838",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_individualId_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_individualId_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Missing_individualId_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Missing_individualId_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_transactionId_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "76544ddffgg@@@3444",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_transactionId_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "76544ddffgg@@@3444",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_transactionId_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_transactionId_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_individualIdType_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "ndjshswhw3277272",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Invalid_individualIdType_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "ndjshswhw3277272",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_individualIdType_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Blank_individualIdType_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Different_transaction_id_VID_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567891",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_Different_transaction_id_uin_neg:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567891",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_EkycOtp_With_invalid_partner:
+      endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    },
+    {
+      "errorCode": "IDA-MPA-001",
+      "errorMessage": "Digital signature verification failed for signature header"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'

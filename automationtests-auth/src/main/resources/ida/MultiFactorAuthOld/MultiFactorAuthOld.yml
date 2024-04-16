@@ -1,0 +1,4177 @@
+MultiFactorAuth:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_InValid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "123@@###4567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_Missing_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_vid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_revoked_vid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018",
+      "errorMessage": "VID not available in database"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_InValid_vid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567@@EDD890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_Face_With_blank_vid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_missing_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "12345@33ff67890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_invalid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "12345@33ff67890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_vid_InValid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "12345@Eed67890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_vid_blank_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_InValid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234@@###567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_blank_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left Thumb",
+          "bioType": "Finger",
+          "bioValue": "$LEFTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left Thumb",
+          "bioType": "Finger",
+          "bioValue": "$LEFTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right Thumb",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right Thumb",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_InValid_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UI@@@N",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_blank_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/multiFactorAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_InValid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "12345@@#67890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_InValid_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "12345@@#67890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_blank_transactionId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_blank_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "12dd4@#$",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_individualIdType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "12dd4@#$",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Le233@wft",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Le233@wft",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioSubType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_blank_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioSubType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "$REMOVE$",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_missing_bioSubType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "$REMOVE$",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_BLANK_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_BLANK_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "$REMOVE$",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_missing_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "$REMOVE$",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "ssss@34",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioType:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "ssss@34",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_valid_bioType_and_invalid_digitalId_type:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "dhdhhdh@3647",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    },
+    {
+      "errorCode": "IDA-DPM-004",
+      "errorMessage": "Device Type and Biometric Type do not match"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_valid_bioType_and_invalid_digitalId_type:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "dhdhhdh@3647",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    },
+    {
+      "errorCode": "IDA-DPM-004",
+      "errorMessage": "Device Type and Biometric Type do not match"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_INvalid_bioValue:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "sgshshsh",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_INvalid_bioValue:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "sgshshsh",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Face_Invalid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Face_Invalid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Finger_Invalid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Finger_Invalid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_Bio-Type_value_as_IR_instead_of_Iris:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Ir",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_Bio-Type_value_as_IR_instead_of_Iris:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Ir",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_With_VID_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "FiR",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_Biometric_With_UIN_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "FiR",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_MultiFactorAuth_with_invalid_partner:
+      endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      role: resident
+      restMethod: post
+      inputTemplate: ida/MultiFactorAuth/multiFactorAuth
+      outputTemplate: ida/MultiFactorAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": true,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "1234567890",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    },
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "key": "dob",
+          "value": "1970/07/08",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/MultiFactorAuth/MultiFactorIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    },
+    {
+      "errorCode": "IDA-MPA-001",
+      "errorMessage": "Digital signature verification failed for signature header"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "1234567890",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'

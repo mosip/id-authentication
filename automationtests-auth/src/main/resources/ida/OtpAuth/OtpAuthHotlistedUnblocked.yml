@@ -1,0 +1,39 @@
+OtpAuth:
+  auth_OTP_Auth_With_blocked_partnerid_Pos:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$&partnerUrlSuffix=$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+         "otp": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+      "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_blocked_misp_Pos:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$&partnerUrlSuffix=$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+         "otp": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+      "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'

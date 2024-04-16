@@ -1,0 +1,20 @@
+{
+    "transactionID": "$IGNORE$",
+    "version": "$IGNORE$",
+    "id": "$IGNORE$",
+    "errors": [
+      {{#each errors}}
+        {
+          "errorCode": "IDA-BIA-001",
+          "errorMessage": "Biometric data - FACE did not match",
+          "actionMessage": "Please give your biometrics again"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+    "responseTime": "$IGNORE$",
+    "response": {
+        "authStatus": false,
+        "authToken": "$IGNORE$"
+    }
+}
