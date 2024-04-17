@@ -32,7 +32,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  * @author Neha
  */
 @Component
-@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
 public class AuthenticationErrorEventingPublisher {
 
 	private static final String REQUEST_SIGNATURE = "requestSignature";

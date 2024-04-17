@@ -16,7 +16,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
-@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
 public class KafkaProducerConfig {
 
 	@Value(value = "${mosip.ida.kafka.bootstrap.servers}")
