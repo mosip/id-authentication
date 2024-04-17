@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -23,6 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 
 @Configuration
+@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
 public class KafkaProducerConfig {
 	private static final Logger logger = IdaLogger.getLogger(KafkaProducerConfig.class);
 
