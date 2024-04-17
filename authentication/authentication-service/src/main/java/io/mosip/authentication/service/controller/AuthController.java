@@ -90,7 +90,7 @@ public class AuthController {
 	@Autowired
 	private PartnerService partnerService;
 	
-	@Autowired
+	@Autowired(required = false)
 	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
 
 
@@ -162,9 +162,11 @@ public class AuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
+				if(authenticationErrorEventingPublisher != null) {
 				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 					authenticationErrorEventingPublisher.notify(authrequestdto, request.getHeader("signature"), partner, e,
 							authrequestdto.getMetadata());
+				}
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authrequestdto, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
