@@ -2,10 +2,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>io.mosip.testrig.apirig.automationtests.auth</groupId>
-	<artifactId>automationtests-auth</artifactId>
+	<groupId>io.mosip.testrig.apitest.auth</groupId>
+	<artifactId>apitest-auth</artifactId>
 	<packaging>jar</packaging>
-	<name>automationtests-auth</name>
+	<name>apitest-auth</name>
 	<description>Parent project of MOSIP functional tests</description>
 	<url>https://github.com/mosip/mosip-functional-tests</url>
 	<version>1.2.0.1-SNAPSHOT</version>
