@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.kafka.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_TOPIC;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
  * @author Neha
  */
 @Component
-@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(value = AUTHENTICATION_ERROR_EVENTING_ENABLED, havingValue = "true", matchIfMissing = false)
 public class AuthenticationErrorEventingPublisher {
 
 	private static final String REQUEST_SIGNATURE = "requestSignature";

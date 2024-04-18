@@ -13,6 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
 
 /**
  * The Class KafkaProducerConfig.
@@ -21,7 +22,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
  */
 
 @Configuration
-@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(value = AUTHENTICATION_ERROR_EVENTING_ENABLED, havingValue = "true", matchIfMissing = false)
 public class KafkaProducerConfig {
 
 	@Value(value = "${mosip.ida.kafka.bootstrap.servers}")
