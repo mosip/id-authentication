@@ -100,7 +100,7 @@ public class KycAuthController {
 	@Autowired
 	private KycExchangeRequestValidator kycExchangeValidator;
 	
-	@Autowired
+	@Autowired(required = false)
 	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
 
 	/**
@@ -197,10 +197,11 @@ public class KycAuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processEKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				
-				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					authenticationErrorEventingPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"), partner,
-							e, ekycAuthRequestDTO.getMetadata());
+				if (authenticationErrorEventingPublisher != null) {
+					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+						authenticationErrorEventingPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"),
+								partner, e, ekycAuthRequestDTO.getMetadata());
+					}
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.EKYC_REQUEST_RESPONSE, ekycAuthRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
@@ -279,10 +280,11 @@ public class KycAuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				
-				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					authenticationErrorEventingPublisher.notify(authRequestDTO, request.getHeader("signature"), partner, e,
-							authRequestDTO.getMetadata());
+				if (authenticationErrorEventingPublisher != null) {
+					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+						authenticationErrorEventingPublisher.notify(authRequestDTO, request.getHeader("signature"),
+								partner, e, authRequestDTO.getMetadata());
+					}
 				}
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);

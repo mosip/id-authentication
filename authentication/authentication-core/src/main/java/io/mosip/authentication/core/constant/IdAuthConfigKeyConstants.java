@@ -173,4 +173,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String KYC_EXCHANGE_DEFAULT_LANGUAGE = "mosip.ida.kyc.exchange.default.lang";
 
 	public static final String IDP_AMR_ACR_IDA_MAPPING_SOURCE = "idp.amr-acr.ida.mapping.property.source";
+	
+	public static final String AUTHENTICATION_ERROR_EVENTING_ENABLED = "mosip.ida.authentication.error.eventing.enabled";
 }
