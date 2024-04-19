@@ -287,7 +287,7 @@ public class IdaVCIssuancePluginImplTest {
             Assert.fail();
         }catch (Exception e)
         {
-            Assert.assertEquals("vci_exchange_failed",e.getMessage());
+            Assert.assertEquals("data_exchange_failed",e.getMessage());
         }
     }
 

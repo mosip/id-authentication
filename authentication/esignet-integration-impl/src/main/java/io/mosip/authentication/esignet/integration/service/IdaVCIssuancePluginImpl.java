@@ -132,13 +132,14 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 					requestEntity, new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {});
 			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
 				IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
-				if (responseWrapper != null || responseWrapper.getResponse() != null) {
+				if (responseWrapper != null && responseWrapper.getResponse() != null)
+				{
 					VCResult vCResult = new VCResult();
 					vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
 					vCResult.setFormat(vcRequestDto.getFormat());
 					return vCResult;
 				}
-				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());
+				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());  //NOSONAR responseWrapper is already evaluated to be not null
 				throw new VCIExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
 						ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
 			}
