@@ -92,7 +92,7 @@ public class OTPController {
 	@Autowired
 	private IdAuthSecurityManager securityManager;
 	
-	@Autowired
+	@Autowired(required = false)
 	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
 
 	@InitBinder
@@ -162,9 +162,12 @@ public class OTPController {
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-				if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
-					authenticationErrorEventingPublisher.notify(otpRequestDto, request.getHeader("signature"), partner, e,
-							otpRequestDto.getMetadata());
+				
+				if (authenticationErrorEventingPublisher != null) {
+					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+						authenticationErrorEventingPublisher.notify(otpRequestDto, request.getHeader("signature"),
+								partner, e, otpRequestDto.getMetadata());
+					}
 				}
 				auditHelper.audit(AuditModules.OTP_REQUEST,  AuditEvents.OTP_TRIGGER_REQUEST_RESPONSE , otpRequestDto.getTransactionID(),
 						IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), e);
