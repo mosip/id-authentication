@@ -1,0 +1,128 @@
+AuthLock:
+   auth_AuthLock_Valid_UIN_All:
+      endPoint: /resident/v1/req/auth-lock
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "demo"},{auth: "bio-FACE"}],
+        "otp": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
+   auth_AuthLock_Valid_UIN_locked_All:
+      endPoint: /resident/v1/req/auth-lock
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_lock_unlock_forever_smoke_sid_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "demo"},{auth: "bio-FACE"}],
+        "otp": "$ID:AddIdentity_lock_unlock_forever_smoke_sid_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_lock_unlock_forever_smoke_sid_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
+   auth_AuthLock_Valid_UIN_for_bio_auth:
+      endPoint: /resident/v1/req/auth-lock
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "bio-Finger"}],
+        "otp": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
+#   auth_AuthLock_Valid_UIN_without_phon_email_uin:
+#      endPoint: /resident/v1/req/auth-lock
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/AuthLock/createAuthLock
+#      outputTemplate: ida/AuthLock/createAuthLockResult
+#      input: '{
+#        "transactionID": "$TRANSACTIONID$",
+#        "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
+#        "individualIdType": "UIN",
+#        "requesttime": "$TIMESTAMP$",
+#        "id": "mosip.resident.authlock",
+#        "version": "v1",
+#        "authType": [{auth: "bio-Finger"}],
+#        "otp": "$ID:AddIdentity_no_email_no_phone_sid_Pos_EMAIL$",
+#        "sendOtp":{
+#    "transactionID": "$TRANSACTIONID$",
+#    "requestTime": "$TIMESTAMP$",
+#    "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
+#    "individualIdType": "UIN",
+#    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+#    "sendOtpEndPoint": "/resident/v1/req/otp"
+#    }
+#    }'
+#      output: '{
+#  "message": "Notification has been sent to the provided contact detail(s)",
+#  "sendOtpResp":{
+#        "maskedMobile": "XXXXXX8531",
+#       "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+#    }
+#}'

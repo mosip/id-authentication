@@ -1,0 +1,13 @@
+GetDraft:
+  auth_GetDraft_all_valid_smoke_sid:
+      endPoint: /idrepository/v1/identity/draft/{registrationId}
+      role: idrepo
+      restMethod: get
+      inputTemplate: ida/GetDraft/getDraft
+      outputTemplate: ida/GetDraft/getDraftResult
+      input: '{
+      "registrationId":"$RID$"
+      }'
+      output: '{
+      "status": "DRAFT"
+}'

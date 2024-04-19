@@ -1,0 +1,14 @@
+CreateDraft:
+  auth_CreateDraft_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/draft/create/{registrationId}
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/CreateDraft/createDraft
+      outputTemplate: ida/CreateDraft/createDraftResult
+      input: '{
+      "registrationId":"$RID$"
+      }'
+      output: '{
+    "status": "DRAFTED"
+}'

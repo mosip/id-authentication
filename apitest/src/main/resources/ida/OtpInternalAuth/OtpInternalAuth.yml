@@ -1,0 +1,379 @@
+OTPInternalAuth:
+  auth_OTP_Internal_Auth_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/otpInternalAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/otpInternalAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "6053189263576413",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "6053189263576413",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_With_Invalid_individualId_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "45363739490101816352722838733773",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_With_Blank_individualId_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_With_Missing_individualId_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_Invalid_transactionId_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "ef$##@@$%536267272",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_Blank_transactionId_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_Invalid_individualIdType_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "dhduddb7e3737382828",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_Blank_individualIdType_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
+  auth_OTP_Internal_Auth_Missing_individualIdType_neg:
+      endPoint: /idauthentication/v1/internal/auth
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OTPInternalAuth/otpInternalAuth
+      outputTemplate: ida/OTPInternalAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
+    "otpIdentyEnryptRequestPath": "ida/OtpInternalAuth/OtpInternalIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "XXXXXX8538",
+        "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
+        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+    }
+}'
