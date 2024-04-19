@@ -179,6 +179,7 @@ public class AuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
+				
 				if (isEventingEnabled) {
 					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 						authenticationErrorEventingPublisher.notify(authrequestdto, request.getHeader("signature"),
