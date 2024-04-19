@@ -1,0 +1,61 @@
+EkycDemo:
+  auth_EkycDemo_Auth_With_blocked_UIN_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/ekycDemoResult
+      input: '{
+        "id": "mosip.identity.kyc",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-022",
+      "errorMessage": "individualId is blocked"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_blocked_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/ekycDemoResult
+      input: '{
+        "id": "mosip.identity.kyc",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-022",
+      "errorMessage": "individualId is blocked"
+    }
+  ]
+}'
