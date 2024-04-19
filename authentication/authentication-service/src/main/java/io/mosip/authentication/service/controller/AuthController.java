@@ -1,11 +1,16 @@
 package io.mosip.authentication.service.controller;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
+
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -92,6 +97,9 @@ public class AuthController {
 	
 	@Autowired(required = false)
 	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
+	
+	@Value("${"+ AUTHENTICATION_ERROR_EVENTING_ENABLED +":false}")
+	private boolean isEventingEnabled;
 
 
 	/**
@@ -101,6 +109,15 @@ public class AuthController {
 	@InitBinder("authRequestDTO")
 	private void initAuthRequestBinder(WebDataBinder binder) {
 		binder.setValidator(authRequestValidator);
+	}
+	
+	@PostConstruct
+	public void init() {
+		if (isEventingEnabled) {
+			if (Objects.isNull(authenticationErrorEventingPublisher)) {
+				throw new BeanCreationException(AuthenticationErrorEventingPublisher.class.getName(), "Failed to create a bean");
+			}
+		}
 	}
 
 	/**
@@ -162,7 +179,7 @@ public class AuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						"authenticateApplication", e.getErrorCode() + " : " + e.getErrorText());
-				if (authenticationErrorEventingPublisher != null) {
+				if (isEventingEnabled) {
 					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 						authenticationErrorEventingPublisher.notify(authrequestdto, request.getHeader("signature"),
 								partner, e, authrequestdto.getMetadata());
