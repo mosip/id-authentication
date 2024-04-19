@@ -16,6 +16,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
 
 /**
  * The Class KafkaProducerConfig.
@@ -24,7 +25,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 
 @Configuration
-@ConditionalOnProperty(value = "mosip.ida.authentication.error.eventing.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(value = AUTHENTICATION_ERROR_EVENTING_ENABLED, havingValue = "true", matchIfMissing = false)
 public class KafkaProducerConfig {
 	private static final Logger logger = IdaLogger.getLogger(KafkaProducerConfig.class);
 
