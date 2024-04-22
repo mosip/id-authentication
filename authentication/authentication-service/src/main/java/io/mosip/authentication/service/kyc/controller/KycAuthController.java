@@ -1,13 +1,19 @@
 package io.mosip.authentication.service.kyc.controller;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import io.mosip.authentication.core.indauth.dto.*;
+
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -102,6 +108,9 @@ public class KycAuthController {
 	
 	@Autowired(required = false)
 	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
+	
+	@Value("${"+ AUTHENTICATION_ERROR_EVENTING_ENABLED +":false}")
+	private boolean isEventingEnabled;
 
 	/**
 	 *
@@ -128,6 +137,15 @@ public class KycAuthController {
 	@InitBinder("kycExchangeRequestDTO")
 	private void initKycExchangeBinder(WebDataBinder binder) {
 		binder.setValidator(kycExchangeValidator);
+	}
+	
+	@PostConstruct
+	public void init() {
+		if (isEventingEnabled) {
+			if (Objects.isNull(authenticationErrorEventingPublisher)) {
+				throw new BeanCreationException(AuthenticationErrorEventingPublisher.class.getName(), "Failed to create a bean");
+			}
+		}
 	}
 
 	
@@ -197,7 +215,8 @@ public class KycAuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processEKyc",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				if (authenticationErrorEventingPublisher != null) {
+				
+				if (isEventingEnabled) {
 					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 						authenticationErrorEventingPublisher.notify(ekycAuthRequestDTO, request.getHeader("signature"),
 								partner, e, ekycAuthRequestDTO.getMetadata());
@@ -280,7 +299,8 @@ public class KycAuthController {
 			} catch (IdAuthenticationBusinessException e) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				if (authenticationErrorEventingPublisher != null) {
+
+				if (isEventingEnabled) {
 					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
 						authenticationErrorEventingPublisher.notify(authRequestDTO, request.getHeader("signature"),
 								partner, e, authRequestDTO.getMetadata());
