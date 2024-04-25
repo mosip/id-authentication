@@ -199,7 +199,7 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 
 	//Converts an array of two-letter language codes to their corresponding ISO 639-2/T language codes.
 	private List<String> convertLangCodesToISO3LanguageCodes(String[] langCodes) {
-		if(langCodes == null || langCodes.length == 0)
+		if(langCodes == null || langCodes.length == 0 || (langCodes.length == 1 && langCodes[0].isEmpty()))
 			return List.of("eng");
 		return Arrays.stream(langCodes)
 				.map(langCode -> {
