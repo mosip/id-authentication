@@ -271,7 +271,7 @@ EkycBio:
   auth_EkycBio_RightRingFinger_With_Valid_uin_Smoke_Pos:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_Positive_EKYC_smoke_UIN$&isKyc=true&partnerUrlSuffix=$KycPartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$KycPartnerName$
       role: resident
-      kycFields: ["fullName"]
+      kycFields: ["dob"]
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
@@ -361,7 +361,7 @@ EkycBio:
   auth_EkycBio_LeftThumb_With_Valid_uin_Smoke_Pos:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_Positive_EKYC_smoke_UIN$&isKyc=true&partnerUrlSuffix=$KycPartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$KycPartnerName$
       role: resident
-      kycFields: ["fullName"]
+      kycFields: ["dob"]
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
@@ -1391,41 +1391,12 @@ EkycBio:
      "kycStatus": "false"
 }'
   auth_EkycBio_Face_With_Deactivated_uin:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$id=$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$&isKyc=true&partnerUrlSuffix=$KycPartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$KycPartnerName$
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID&id=$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$&isKyc=true&partnerUrlSuffix=$KycPartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$KycPartnerName$
       role: resident
       kycFields: ["email"]
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
-      input: '{
-          "bioSubType": "",
-          "bioType": "FACE",
-          "bioValue": "$FACE$",
-          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-          "dateTime": "$DATETIME$",
-          "deviceProviderID": "1873299273",
-          "env": "Staging",
-          "deviceServiceID": "",
-          "deviceServiceVersion": "SB.WIN.001",
-          "deviceProvider": "SYNCBYTE",
-          "deviceProviderId": "SYNCBYTE.LTC165",
-          "deviceSubType": "Single",
-          "make": "Logitech",
-          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467171",
-          "type": "Face",
-        "transactionId": "$TRANSACTIONID$",
-        "timestamp": "$TIMESTAMP$"
-    }'
-      output: '{
-        "kycStatus": "true"
-}'
-  auth_EkycBio_Face_With_Valid_uin_NOAUTH_Smoke_Pos:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_Positive_EKYC_smoke_UIN$&isKyc=true&partnerUrlSuffix=$KycPartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$KycPartnerName$
-      role: resident
-      restMethod: post
-      inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/error
       input: '{
           "bioSubType": "",
           "bioType": "FACE",
