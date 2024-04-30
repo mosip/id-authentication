@@ -171,7 +171,7 @@ public class IdaKeyBinderImplTest {
                     "WLA", headers);
             Assert.fail();
         } catch (KeyBindingException e) {
-            Assert.assertEquals("test-err-code", e.getErrorCode());
+            Assert.assertEquals("key_binding_failed", e.getErrorCode());
         }
     }
 

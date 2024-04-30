@@ -166,7 +166,7 @@ public class HelperService {
                         idaSendOtpResponse.getResponse().getMaskedEmail(),
                         idaSendOtpResponse.getResponse().getMaskedMobile());
             }
-            log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());
+            log.error("Errors in response received from IDA send-otp : {}", idaSendOtpResponse.getErrors());  //NOSONAR idaSendOtpResponse is already evaluated to be not null
             throw new SendOtpException(idaSendOtpResponse.getErrors().get(0).getErrorCode());
         }
         log.error("Error response received from IDA (send-otp) with status : {}", responseEntity.getStatusCode());
