@@ -7,18 +7,26 @@ Since resident is eager to authenticate, we want to prioritize the credential pr
 While getting the error UIN/VID is not available in database the websub event is triggered which publish the data in to the topic and the subscriber will receive a message for futher processing.
 
 ## Configuration files
+These properties needed to be modified to configure this feature
 id-authentication-default.properties: 
-```
+
 It enable and disable the bean init of kafka and Authentication error eventing
+```
 mosip.ida.authentication.error.eventing.enabled=true
+```
 
 If we enable authentication error eventing as true we need all the below property
+```
 ida-topic-authentication-error-eventing=AUTHENTICATION_ERRORS
+```
 
 Partner Id for encryption used in ondemand template extraction
+```
 mosip.ida.authentication.error.eventing.encrypt.partner.id=mpartner-default-tempextraction
+```
 
 kafka Configuration
+```
 mosip.ida.kafka.bootstrap.servers=kafka-0.kafka-headless.${kafka.profile}:${kafka.port},kafka-1.kafka-headless.${kafka.profile}:${kafka.port},kafka-2.kafka-headless.${kafka.profile}:${kafka.port}
 spring.kafka.admin.properties.allow.auto.create.topics=true
 
@@ -26,7 +34,7 @@ spring.kafka.admin.properties.allow.auto.create.topics=true
 
 ## Image source
 
-![On demand-template-extraction](Images/Authentication_error_eventing.png)
+![Authentication_error_eventing](Images/Authentication_error_eventing.png)
 
 ## Steps of sequence diagram:
 ```
