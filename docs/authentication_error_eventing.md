@@ -10,22 +10,22 @@ While getting the error UIN/VID is not available in database the websub event is
 These properties needed to be modified to configure this feature
 id-authentication-default.properties: 
 
-It enable and disable the bean init of kafka and Authentication error eventing
+- It enable and disable the bean init of kafka and Authentication error eventing
 ```
 mosip.ida.authentication.error.eventing.enabled=true
 ```
 
-If we enable authentication error eventing as true we need all the below property
+- If we enable authentication error eventing as true we need all the below property
 ```
 ida-topic-authentication-error-eventing=AUTHENTICATION_ERRORS
 ```
 
-Partner Id for encryption used in ondemand template extraction
+- Partner Id for encryption used in ondemand template extraction
 ```
 mosip.ida.authentication.error.eventing.encrypt.partner.id=mpartner-default-tempextraction
 ```
 
-kafka Configuration
+- kafka Configuration
 ```
 mosip.ida.kafka.bootstrap.servers=kafka-0.kafka-headless.${kafka.profile}:${kafka.port},kafka-1.kafka-headless.${kafka.profile}:${kafka.port},kafka-2.kafka-headless.${kafka.profile}:${kafka.port}
 spring.kafka.admin.properties.allow.auto.create.topics=true
