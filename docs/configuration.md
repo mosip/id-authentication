@@ -13,6 +13,32 @@ id-authentication-internal-default.properties
 id-authentication-otp-default.properties
 identity-mapping.json
 ```
+## Optional Configuration
+Below properties needed to be add in id-authentication-default.properties to configure Authentication Error Eventing feature which is present in 1.2.1.0
+
+id-authentication-default.properties: 
+
+- It enable and disable the bean init of kafka and Authentication error eventing
+```
+mosip.ida.authentication.error.eventing.enabled=true
+```
+
+- If we enable authentication error eventing as true we need all the below property
+```
+ida-topic-authentication-error-eventing=AUTHENTICATION_ERRORS
+```
+
+- Partner Id for encryption used in ondemand template extraction
+```
+mosip.ida.authentication.error.eventing.encrypt.partner.id=mpartner-default-tempextraction
+```
+
+- kafka Configuration
+```
+mosip.ida.kafka.bootstrap.servers=kafka-0.kafka-headless.${kafka.profile}:${kafka.port},kafka-1.kafka-headless.${kafka.profile}:${kafka.port},kafka-2.kafka-headless.${kafka.profile}:${kafka.port}
+spring.kafka.admin.properties.allow.auto.create.topics=true
+
+```
 
 See [Module Configuration](https://docs.mosip.io/1.2.0/modules/module-configuration) for location of these files.
 
