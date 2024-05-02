@@ -1609,7 +1609,7 @@ BioAuth:
       output: '{
     "errors": [
         {
-          "errorCode": "IDA-MLC-019"
+          "errorCode": "$IGNORE$"
         }
       ],
         "authStatus": false

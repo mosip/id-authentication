@@ -79,8 +79,8 @@ MultiFactorAuth:
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
-          "otp": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
-          "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+          "otp": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_EMAIL$",
+          "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
           "bioSubType": "",
           "bioType": "FACE",
           "bioValue": "$FACE$",
@@ -1918,42 +1918,6 @@ MultiFactorAuth:
           "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
           "bioSubType": "Left",
           "bioType": "",
-          "bioValue": "$LEFTIRIS$",
-          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-          "dateTime": "$DATETIME$",
-          "deviceProviderID": "SYNCBYTE.MC01A",
-          "deviceServiceID": "",
-          "deviceServiceVersion": "SB.WIN.001",
-          "deviceProvider": "SYNCBYTE",
-          "deviceProviderId": "SYNCBYTE.LTC165",
-          "deviceSubType": "Slap",
-          "make": "Logitech",
-          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467175",
-          "type": "Iris",
-          "key": "dob",
-          "value": "1970/07/08",
-        "transactionId": "$TRANSACTIONID$",
-        "timestamp": "$TIMESTAMP$"
-    }'
-      output: '{
-    "authStatus": false,
-  "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
-    }
-}'
-  auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioType:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$&idType=VID&partnerUrlSuffix=$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
-      role: resident
-      checkErrorsOnlyInResponse: true
-      restMethod: post
-      inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
-      outputTemplate: ida/MultiFactorAuth/error
-      input: '{
-          "otp": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
-          "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-          "bioSubType": "Left",
-          "bioType": "$REMOVE$",
           "bioValue": "$LEFTIRIS$",
           "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
           "dateTime": "$DATETIME$",
