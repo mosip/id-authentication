@@ -45,7 +45,7 @@ spring.kafka.admin.properties.allow.auto.create.topics=true
 5. Kafka->Subscriber : The subscriber to the topic(AUTHENTICATION_ERRORS) will receive a message for futher processing.
 
 ```
-## Event Structure publish to kafka
+## Event Structure published to kafka:
 ```
 {
 	"publisher": "IDA",
