@@ -4,7 +4,7 @@
 The resident has registered and obtain a valid UIN/VID and proceed with authentication by entering UIN/VID and get error as UIN is not available in database, then resident couldn’t proceed with authentication further as the provided UIN/VID is not available in IDA DB.
 This could happen when a country has large number of registrations completed, processed and issued UINs.
 Since resident is eager to authenticate, we want to prioritize the credential processing (along with template extraction) of this resident, we can tell him/her to retry and complete the authentication.
-While getting the error UIN/VID is not available in database the websub event is triggered which publish the data in to the topic and the subscriber will receive a message for futher processing.
+While getting the error UIN/VID is not available in database the kafka event is triggered which publish the data in to the topic and the subscriber will receive a message for futher processing.
 
 ## Configuration files
 These properties needed to be modified to configure this feature
@@ -45,7 +45,7 @@ spring.kafka.admin.properties.allow.auto.create.topics=true
 5. Kafka->Subscriber : The subscriber to the topic(AUTHENTICATION_ERRORS) will receive a message for futher processing.
 
 ```
-## Event Structure publish to kafka
+## Event Structure published to kafka:
 ```
 {
 	"publisher": "IDA",
