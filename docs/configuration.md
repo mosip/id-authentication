@@ -15,6 +15,7 @@ identity-mapping.json
 ```
 ## Optional Configuration
 Below properties needed to be add in id-authentication-default.properties to configure Authentication Error Eventing feature which is present in 1.2.1.0
+
 id-authentication-default.properties: 
 
 - It enable and disable the bean init of kafka and Authentication error eventing
