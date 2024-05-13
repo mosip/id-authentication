@@ -13,7 +13,7 @@ Refer to [SQL scripts](db_scripts).
 The project requires JDK 1.11. 
 1. Build and install:
     ```
-    $ cd kernel
+    $ cd authentication
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
 1. Build Docker for a service:
