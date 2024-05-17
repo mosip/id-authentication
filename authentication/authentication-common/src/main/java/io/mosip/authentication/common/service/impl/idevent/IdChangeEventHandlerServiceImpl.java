@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.REMOVE_ID_STATUS_TOPIC;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -7,10 +9,12 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.core.constant.AuditEvents;
@@ -75,6 +79,14 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	
 	@Autowired
 	private CredentialStoreService credStorService;
+
+	/** The web sub event publish helper. */
+	@Autowired
+	private WebSubHelper webSubHelper;
+
+	/** The remove id status topic. */
+	@Value("${" + REMOVE_ID_STATUS_TOPIC + "}")
+	private String removeIdStatusTopic;
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
@@ -183,10 +195,18 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
-		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
-		if(identityEntityOpt.isPresent()) {
-			identityCacheRepo.delete(identityEntityOpt.get());
+		if (idHash != null && !idHash.isEmpty()) {
+			identityCacheRepo.deleteById(idHash);
+			publishRemoveIdStatusEvent(idHash);
 		}
+	}
+
+	public void publishRemoveIdStatusEvent(String idHash) {
+		RemoveIdStatusEvent removeIdStatusEvent = new RemoveIdStatusEvent();
+		removeIdStatusEvent.setData(Map.of(ID_HASH, idHash));
+		removeIdStatusEvent.setTimestamp(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		webSubHelper.publishEvent(removeIdStatusTopic,
+				webSubHelper.createEventModel(removeIdStatusTopic, removeIdStatusEvent));
 	}
 	
 	private void handleDeactivateId(EventModel eventModel) throws IdAuthenticationBusinessException {
