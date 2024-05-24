@@ -132,18 +132,19 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 					requestEntity, new ParameterizedTypeReference<IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>>>() {});
 			if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
 				IdaResponseWrapper<IdaVcExchangeResponse<JsonLDObject>> responseWrapper = responseEntity.getBody();
-				if (responseWrapper.getResponse() != null) {
+				if (responseWrapper != null && responseWrapper.getResponse() != null)
+				{
 					VCResult vCResult = new VCResult();
 					vCResult.setCredential(responseWrapper.getResponse().getVerifiableCredentials());
 					vCResult.setFormat(vcRequestDto.getFormat());
 					return vCResult;
 				}
-				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());
+				log.error("Errors in response received from IDA VCI Exchange: {}", responseWrapper.getErrors());  //NOSONAR responseWrapper is already evaluated to be not null
 				throw new VCIExchangeException(CollectionUtils.isEmpty(responseWrapper.getErrors()) ?
 						ErrorConstants.DATA_EXCHANGE_FAILED : responseWrapper.getErrors().get(0).getErrorCode());
 			}
 			log.error("Error response received from IDA (VCI-exchange) with status : {}", responseEntity.getStatusCode());
-		} catch (Exception e) {
+		} catch (VCIExchangeException e) { throw e; } catch (Exception e) {
 			log.error("IDA Vci-exchange failed ", e);
 		}
 		throw new VCIExchangeException();
@@ -198,8 +199,8 @@ public class IdaVCIssuancePluginImpl implements VCIssuancePlugin {
 
 	//Converts an array of two-letter language codes to their corresponding ISO 639-2/T language codes.
 	private List<String> convertLangCodesToISO3LanguageCodes(String[] langCodes) {
-		if(langCodes == null || langCodes.length == 0)
-			return List.of("eng");
+		if(langCodes == null || langCodes.length == 0 || (langCodes.length == 1 && langCodes[0].isEmpty()))
+			return List.of();
 		return Arrays.stream(langCodes)
 				.map(langCode -> {
 					try {
