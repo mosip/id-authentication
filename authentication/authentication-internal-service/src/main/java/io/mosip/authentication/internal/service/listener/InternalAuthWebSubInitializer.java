@@ -16,6 +16,7 @@ import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEve
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.RemoveIdStatusEventPublisher;
 
 /**
  * The Class InternalAuthWebSubInitializer.
@@ -48,6 +49,10 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 	/** The auth transaction status event publisher. */
 	@Autowired
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
+
+	/** The remove id status event publisher. */
+	@Autowired
+	private RemoveIdStatusEventPublisher removeIdStatusEventPublisher;
 
 	/** The partner service events subscriber. */
 	@Autowired
@@ -84,6 +89,7 @@ public class InternalAuthWebSubInitializer extends CacheUpdatingWebsubInitialize
 		webSubHelper.initRegistrar(credentialStoreStatusEventPublisher);
 		webSubHelper.initRegistrar(authTypeStatusEventPublisher);
 		webSubHelper.initRegistrar(authTransactionStatusEventPublisher);
+		webSubHelper.initRegistrar(removeIdStatusEventPublisher);
 		if(Objects.nonNull(fraudEventPublisher))
 			webSubHelper.initRegistrar(fraudEventPublisher);
 		return HttpStatus.SC_OK;
