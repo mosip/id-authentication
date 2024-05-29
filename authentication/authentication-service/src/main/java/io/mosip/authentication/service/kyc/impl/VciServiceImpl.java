@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

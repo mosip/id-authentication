@@ -23,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,7 +62,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPManagerTest {
@@ -70,7 +72,7 @@ public class OTPManagerTest {
 	@InjectMocks
 	private OTPManager otpManager;
 
-	@Mock
+	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
 	@InjectMocks
@@ -78,26 +80,26 @@ public class OTPManagerTest {
 
 	private OtpGeneratorRequestDto otpGeneratorRequestDto;
 
-	@Mock
+	@InjectMocks
 	EnvUtil environment;
 
-	@Mock
+	@InjectMocks
 	private RestHelper restHelper;
 
-	@Mock
+	@InjectMocks
 	private EnvUtil env;
 
-	@Mock
-	RestServiceException e;
+	/*@InjectMocks
+	RestServiceException e;*/
 
-	@Mock
+	@Autowired
 	private OtpTxnRepository otpRepo;
 
-	@Mock
+	@InjectMocks
 	private IdAuthSecurityManager securityManager;
 
-	@Mock
-	private NotificationService notificationService;
+	/*@InjectMocks
+	private NotificationService notificationService;*/
 
 	private int otpExpiryTime;
 

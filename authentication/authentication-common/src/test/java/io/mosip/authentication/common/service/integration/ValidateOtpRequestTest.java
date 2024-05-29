@@ -15,6 +15,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,13 +42,13 @@ import io.mosip.idrepository.core.helper.RestHelper;
  * @author Dinesh Karuppiah
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Ignore
 public class ValidateOtpRequestTest {
 
-	@InjectMocks
+	@Autowired
 	RestHelper restHelper;
 
 	@Autowired
@@ -56,8 +57,8 @@ public class ValidateOtpRequestTest {
 	@Autowired
 	EnvUtil env;
 
-	@Mock
-	OTPValidateResponseDTO otpvalidateresponsedto;
+	/*@Mock
+	OTPValidateResponseDTO otpvalidateresponsedto;*/
 
 	@InjectMocks
 	RestRequestFactory restfactory;

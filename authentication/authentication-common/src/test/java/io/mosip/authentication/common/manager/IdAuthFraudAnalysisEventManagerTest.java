@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,7 +32,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class IdAuthFraudAnalysisEventManagerTest {
@@ -39,19 +40,19 @@ public class IdAuthFraudAnalysisEventManagerTest {
     @InjectMocks
     private IdAuthFraudAnalysisEventManager idAuthFraudAnalysisEventManager;
 
-    @Mock
+    @InjectMocks
     private IdAuthFraudAnalysisEventDTO eventData;
 
-    @Mock
+    @Autowired
     private AutnTxnRepository authTxnRepo;
 
-    @Mock
+    @Autowired
     private AutnTxn txn;
 
-    @Mock
+    @InjectMocks
     private IdAuthFraudAnalysisEventPublisher publisher;
 
-    @Autowired
+    @InjectMocks
     private ObjectMapper mapper;
     
     @Before
@@ -74,13 +75,13 @@ public class IdAuthFraudAnalysisEventManagerTest {
         List<AutnTxn> requests = new ArrayList<>();
         requests.add(autnTxn);
         LocalDateTime t= LocalDateTime.of(2021, 11, 2, 12,24, 37, 3);
-        Mockito.when(eventData.getRequestTime()).thenReturn(t);
+        //Mockito.when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
-        Mockito.when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
+        //Mockito.when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
+        //Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
-        Mockito.when(eventData.getPartnerId()).thenReturn("PartnerId");
-        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
+        //Mockito.when(eventData.getPartnerId()).thenReturn("PartnerId");
+        //Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 

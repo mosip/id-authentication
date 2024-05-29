@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -44,36 +45,36 @@ import io.mosip.idrepository.core.helper.RestHelper;
  *
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @Import(EnvUtil.class)
 public class AuditHelperTest {
 
-	@Mock
-	RestHelper restHelper;
+	/*@Mock
+	RestHelper restHelper;*/
 
 	@InjectMocks
 	AuditHelper auditHelper;
 
-	@Mock
+	/*@Mock
 	IdInfoFetcherImpl idFetcherImpl;
 
 	@Autowired
 	MockMvc mockMvc;
 
 	@Mock
-	AuditRequestFactory auditFactory;
+	AuditRequestFactory auditFactory;*/
 
-	@Mock
+	@InjectMocks
 	RestRequestFactory restFactory;
 
 	@InjectMocks
 	EnvUtil env;
-	
-	@Mock
-	Environment environment;
-	
-	@Autowired
+
+	/*@Mock
+	Environment environment;*/
+
+	@InjectMocks
 	ObjectMapper mapper;
 
 	@Before
@@ -87,93 +88,93 @@ public class AuditHelperTest {
 	public void testAuditStatusWithEnumIdType() throws IDDataValidationException {
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 	}
-	
+
 	@Test
 	public void testAuditStatusWithStringIdType() throws IDDataValidationException {
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN.name(), "desc");
 	}
-	
+
 	@Test
 	public void testAuditExceptionWithEnumIdType() throws IDDataValidationException {
 		IdAuthenticationBaseException e = new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, e);
 	}
-	
+
 	@Test
 	public void testAuditExceptionWithStringIdType() throws IDDataValidationException {
 		IdAuthenticationBaseException e = new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN.name(), e);
 	}
-	
+
 	@Test
 	public void testAuditAuthException() throws IDDataValidationException {
 		IdAuthenticationBaseException e = new IdAuthenticationBaseException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		AuthRequestDTO authRequestDTO = createAuthRequest();
-		
+
 		EnvUtil.setIsFmrEnabled(false);
-		
+
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 
 		EnvUtil.setIsFmrEnabled(true);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		List<BioIdentityInfoDTO> biometrics = authRequestDTO.getRequest().getBiometrics();
 		biometrics.remove(0);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		biometrics.remove(0);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		biometrics.remove(0);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
-		
+
 		biometrics.remove(0);
 		auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , e);
 
 
 	}
-	
+
 	private AuthRequestDTO createAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
-		
+
 		BioIdentityInfoDTO bioId1 = new BioIdentityInfoDTO();
 		DataDTO data1 = new DataDTO();
 		data1.setBioType("FMR");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
-		
+
 		bioId1 = new BioIdentityInfoDTO();
 		data1 = new DataDTO();
 		data1.setBioType("Finger");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
-		
+
 		bioId1 = new BioIdentityInfoDTO();
 		data1 = new DataDTO();
 		data1.setBioType("Iris");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
-		
+
 		bioId1 = new BioIdentityInfoDTO();
 		data1 = new DataDTO();
 		data1.setBioType("FACE");
 		bioId1.setData(data1 );
 		biometrics.add(bioId1);
-		
+
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request );
-		
+
 		return authRequestDTO;
 	}
 
@@ -183,7 +184,7 @@ public class AuditHelperTest {
 		EnvUtil.setIsFmrEnabled(false);
 
 		auditHelper.auditStatusForAuthRequestedModules(AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO , "Status: true");
-	
+
 	}
 
 }

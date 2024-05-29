@@ -11,9 +11,12 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,12 +33,12 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * @author Manoj SP
  * @author Nagarjuna
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class DOBTypeMatchingStrategyTest {
 
-	@Mock
+	@MockBean
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();
@@ -89,7 +92,7 @@ public class DOBTypeMatchingStrategyTest {
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
+		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(100);
 		value = matchFunction.match("V", "V", matchProperties);
 
 		assertEquals(100, value);
@@ -104,7 +107,7 @@ public class DOBTypeMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(0);
+		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(0,0)).thenReturn(0);
 		int value = matchFunction.match(332, "V", matchProperties);
 		assertEquals(0, value);
 

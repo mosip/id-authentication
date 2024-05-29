@@ -2,22 +2,33 @@ package io.mosip.authentication.common.service.impl.match;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class DynamicDemoAttributeMatchingStrategyTest {
 
 
+	@Mock
+	private DemoMatcherUtil demoMatcherUtil;
+
+	@MockBean
+	MappingConfig mappingConfig;
+
 	@Test
 	public void testMatch_EmptyValues() throws Exception {
-		Map<String, Object> properties = Map.of("demoMatcherUtil", Mockito.mock(DemoMatcherUtil.class));
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("demoMatcherUtil",demoMatcherUtil);
 		Map<String, String> reqValues = Map.of();
 		Map<String, String> entityValues = Map.of();
 		int res = DynamicDemoAttributeMatchingStrategy.EXACT.match(reqValues, entityValues, properties);
@@ -26,7 +37,7 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_NonStringValues_positive() throws Exception {
-		Map<String, Object> properties = Map.of("demoMatcherUtil", Mockito.mock(DemoMatcherUtil.class));
+		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil);
 		int res = DynamicDemoAttributeMatchingStrategy.EXACT
 				.getMatchFunction().match(1, 1, properties);
 		assertEquals(100, res);
@@ -34,7 +45,7 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_NonStringValues_negative() throws Exception {
-		Map<String, Object> properties = Map.of("demoMatcherUtil", Mockito.mock(DemoMatcherUtil.class));
+		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil);
 		int res = DynamicDemoAttributeMatchingStrategy.EXACT
 				.getMatchFunction().match(1, 2, properties);
 		assertEquals(0, res);
@@ -42,7 +53,7 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_StringValues_positive() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil);
 		
 		String reqInfo = "abc";
@@ -56,7 +67,7 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_StringValues_negative() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil);
 
 		String reqInfo = "abc";
@@ -69,9 +80,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_StringValues_NotMapped_checkIdName_positive() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "residenceStatus";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);
 		
@@ -86,9 +97,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_StringValues_NotMapped_checkIdName_negative() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "residenceStatus";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);
 		
@@ -103,9 +114,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_Name_Mapped_checkIdName_positive() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "residenceStatus";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Mockito.when(mappingConfig.getName()).thenReturn(List.of(idName));
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);
@@ -121,9 +132,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_Name_Mapped_checkIdName_negative() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "residenceStatus";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Mockito.when(mappingConfig.getName()).thenReturn(List.of(idName));
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);
@@ -139,9 +150,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_Addr_Mapped_checkIdName_positive() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "fullName";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Mockito.when(mappingConfig.getFullAddress()).thenReturn(List.of(idName));
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);
@@ -157,9 +168,9 @@ public class DynamicDemoAttributeMatchingStrategyTest {
 	
 	@Test
 	public void testMatchFunction_Addr_Mapped_checkIdName_negative() throws Exception {
-		DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
+		//DemoMatcherUtil demoMatcherUtil = Mockito.mock(DemoMatcherUtil.class);
 		String idName = "zone";
-		MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
+		//MappingConfig mappingConfig = Mockito.mock(MappingConfig.class);
 		Mockito.when(mappingConfig.getFullAddress()).thenReturn(List.of(idName));
 		Map<String, Object> properties = Map.of("demoMatcherUtil", demoMatcherUtil
 				,"idName",idName,"mappingConfig", mappingConfig);

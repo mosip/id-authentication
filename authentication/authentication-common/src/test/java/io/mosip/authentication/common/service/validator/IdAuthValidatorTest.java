@@ -12,6 +12,9 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -37,7 +40,7 @@ import io.mosip.authentication.core.util.IdValidationUtil;
  * @author Manoj SP
  *
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,IdValidationUtil.class })
 @Import(EnvUtil.class)
@@ -53,7 +56,7 @@ public class IdAuthValidatorTest {
 	private static final String TRANSACTION_ID = "transactionID";
 
 	/** The uin validator. */
-	@Autowired
+	@InjectMocks
 	IdValidationUtil idValidator;
 
 	/** The validator. */
@@ -266,7 +269,7 @@ public class IdAuthValidatorTest {
 	public void testRequestTime_Valid() {
 		String reqTime = null;
 		reqTime = Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		validator.validateReqTime(reqTime, errors, REQUEST_TIME);
 		assertFalse(errors.hasErrors());
 	}

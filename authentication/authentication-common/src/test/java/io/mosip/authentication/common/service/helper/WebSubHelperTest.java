@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class WebSubHelperTest {
@@ -33,20 +35,20 @@ public class WebSubHelperTest {
     @InjectMocks
     private WebSubHelper webSubHelper;
 
-    @Mock
+    @Autowired
     private WebSubEventSubcriber subscriber;
 
-    @Mock
+    @Autowired
     WebSubEventTopicRegistrar registrar;
 
-    @Mock
+    @Autowired
     private SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscriptionClient;
 
-    @Mock
+    @Autowired
     private EventInterface eventInterface;
 
-    @Mock
-    private PublisherClient<String, Object, HttpHeaders> publisher;
+    /*@InjectMocks
+    private PublisherClient<String, Object, HttpHeaders> publisher;*/
 
     /**
      * This class tests the initSubscriber method

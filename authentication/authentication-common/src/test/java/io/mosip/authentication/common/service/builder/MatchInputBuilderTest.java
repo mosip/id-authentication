@@ -15,7 +15,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -35,17 +37,17 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @Import(EnvUtil.class)
 public class MatchInputBuilderTest {
 
-	@Mock
+	@MockBean
 	private IdInfoFetcher idInfoFetcher;
 	
 	@Autowired
 	private EnvUtil environment;
 	
-	@Mock
+	@Autowired
 	private MappingConfig mappingConfig;
 	
 	@InjectMocks

@@ -24,8 +24,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
@@ -60,14 +62,14 @@ import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
 public class NotificationServiceImplTest {
 
-	@InjectMocks
-	AuditRequestFactory auditFactory;
+	/*@InjectMocks
+	AuditRequestFactory auditFactory;*/
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
@@ -75,24 +77,24 @@ public class NotificationServiceImplTest {
 	@Autowired
 	EnvUtil environment;
 
-	@Mock
+	@InjectMocks
 	private RestHelper restHelper;
 
 	@InjectMocks
 	private NotificationServiceImpl notificationService;
 
-	@Mock
+	@MockBean
 	private IdTemplateManager idTemplateManager;
 
-	@Mock
-	private IdService<AutnTxn> idInfoService;
+	/*@Mock
+	private IdService<AutnTxn> idInfoService;*/
 
-	@Mock
+	@InjectMocks
 	private IdInfoHelper demoHelper;
 
-	@Mock
+	@InjectMocks
 	private NotificationManager notificationManager;
-	@Mock
+	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
 	List<String> templateLanguages = new ArrayList<String>();

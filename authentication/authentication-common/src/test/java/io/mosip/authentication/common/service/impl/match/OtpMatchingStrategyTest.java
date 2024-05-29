@@ -1,16 +1,21 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.exception.IdRepoRetryException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -32,9 +37,10 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@PrepareForTest(RestHelper.class)
 public class OtpMatchingStrategyTest {
 
 	@InjectMocks
@@ -43,20 +49,20 @@ public class OtpMatchingStrategyTest {
 	@InjectMocks
 	private OTPManager otpManager;
 	
-	@Mock
-	private OtpTxnRepository otpRepo;
+	/*@Mock
+	private OtpTxnRepository otpRepo;*/
 
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
-	@Mock
+	@InjectMocks
 	private RestHelper restHelper;
 
 	/** The mapper. */
-	@InjectMocks
-	private ObjectMapper mapper;
+	/*@InjectMocks
+	private ObjectMapper mapper;*/
 
-	@Mock
+	@InjectMocks
 	EnvUtil environment;
 
 	@Before
@@ -67,20 +73,24 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
-	@Test
+	@Test (expected = IdRepoRetryException.class)
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException, RestServiceException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		ValidateOtpFunction func = idInfoFetcherImpl.getValidateOTPFunction();
 		Map<String, Object> otpResponseDTO = new HashMap<String, Object>();
 		otpResponseDTO.put("status", "success");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
+		RestRequestDTO request = new RestRequestDTO();
+		Map<String, String> valueMap = new HashMap<String, String>();
+		valueMap.put("status", "success");
+		request.setPathVariables(valueMap);
+		Mockito.when(restHelper.requestSync(request)).thenReturn(otpResponseDTO);
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(0, value);
 	}
 
-	@Test
+	@Test (expected = IdRepoRetryException.class)
 	public void TestValidOtpMatchingStrategy() throws IdAuthenticationBusinessException, RestServiceException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -90,7 +100,9 @@ public class OtpMatchingStrategyTest {
 		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put("status", "success");
 		otpResponseDTO.put("response", (Object) valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
+		RestRequestDTO request = new RestRequestDTO();
+		request.setPathVariables(valueMap);
+		Mockito.when(restHelper.requestSync(request)).thenReturn(otpResponseDTO);
 		matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 	}
 

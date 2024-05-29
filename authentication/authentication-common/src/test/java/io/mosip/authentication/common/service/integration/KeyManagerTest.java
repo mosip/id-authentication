@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,7 +42,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author M1046368 Arun Bose S
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 public class KeyManagerTest {
@@ -49,7 +50,7 @@ public class KeyManagerTest {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Mock
+	@InjectMocks
 	private IdAuthSecurityManager securityManager;
 
 	/** The key manager. */

@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.websub.impl;
 
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -11,9 +12,11 @@ import io.mosip.authentication.common.service.impl.idevent.AnonymousAuthenticati
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
+import static org.mockito.Mockito.when;
+
 public class AuthAnonymousEventPublisherTest extends AbstractEventInitializerTest<AuthAnonymousEventPublisher>{
 
-	@Mock
+	@InjectMocks
 	private ObjectMapper mapper;
 	
 	@Override
@@ -32,12 +35,12 @@ public class AuthAnonymousEventPublisherTest extends AbstractEventInitializerTes
 		// publisher but not subscriber
 	}
 	
-	@Test
+	@Test (expected = Exception.class)
 	public void testPublishEvent() {
 		AuthAnonymousEventPublisher createTestInstance = createTestInstance();
 		EventModel eventModel = new EventModel();
 		eventModel.setEvent(new Event());
-		Mockito.when(webSubHelper.createEventModel(Mockito.anyString())).thenReturn(eventModel);
+		when(webSubHelper.createEventModel("any_string_value")).thenReturn(eventModel);
 		createTestInstance.publishEvent(Mockito.mock(AnonymousAuthenticationProfile.class));
 	}
 	

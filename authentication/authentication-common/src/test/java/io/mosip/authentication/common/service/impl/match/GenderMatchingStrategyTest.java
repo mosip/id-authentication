@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,7 +29,7 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
 @RunWith(SpringRunner.class)
 public class GenderMatchingStrategyTest {
 
-	@Mock
+	@InjectMocks
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();

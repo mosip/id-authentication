@@ -13,8 +13,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -33,7 +35,7 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * @author Nagarjuna
  *
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class
 		})
@@ -43,7 +45,7 @@ public class DOBMatchingStrategyTest {
 	@Autowired
 	private Environment environment;
 	
-	@Mock
+	@InjectMocks
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();
@@ -130,7 +132,7 @@ public class DOBMatchingStrategyTest {
 	public void TestInvalidDate() throws IdAuthenticationBusinessException {
 		matchProperties.put("env", environment);
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
+		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(0);
 		int value = matchFunction.match("test", "test-02-27", matchProperties);
 		assertEquals(0, value);
 	}

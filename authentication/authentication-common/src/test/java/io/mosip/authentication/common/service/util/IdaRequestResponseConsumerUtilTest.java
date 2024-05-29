@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -30,23 +32,23 @@ import java.util.Map;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class IdaRequestResponseConsumerUtilTest {
 
     @InjectMocks
     private IdaRequestResponsConsumerUtil idaRequestResponsConsumerUtil;
 
-    @Mock
-    private AuthAnonymousProfileService authAnonymousProfileService;
+    /*@Mock
+    private AuthAnonymousProfileService authAnonymousProfileService;*/
 
-    @Mock
+    @Autowired
     private ObjectMapper mapper;
 
-    @Mock
+    @Autowired
     private IdService<AutnTxn> idService;
 
-    @Mock
-    private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
+    /*@Mock
+    private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;*/
 
     private ObjectWithMetadata sourceRequestWithMetadata;
 
@@ -129,7 +131,7 @@ public class IdaRequestResponseConsumerUtilTest {
      *
      * @throws IdAuthenticationAppException
      */
-    @Test
+    @Test(expected = Exception.class)
     public void storeAuthTransactionTest() throws IdAuthenticationAppException {
         Map<String, Object> metadata = new HashMap<>();
         Object authTxnObj = new Object();

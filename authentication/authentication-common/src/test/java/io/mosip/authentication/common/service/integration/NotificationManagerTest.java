@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -34,13 +35,13 @@ import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
 public class NotificationManagerTest {
 
-	@Mock
+	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
 	@InjectMocks
@@ -49,13 +50,13 @@ public class NotificationManagerTest {
 	@Autowired
 	EnvUtil environment;
 
-	@Mock
+	@InjectMocks
 	private RestHelper restHelper;
 
 	@InjectMocks
 	private NotificationManager notificationManager;
 
-	@Mock
+	@InjectMocks
 	private IdTemplateManager idTemplateManager;
 
 	@Before

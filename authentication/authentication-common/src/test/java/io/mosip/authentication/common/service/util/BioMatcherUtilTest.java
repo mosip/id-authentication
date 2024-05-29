@@ -15,6 +15,8 @@ import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -33,7 +35,7 @@ import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,  })
 @SuppressWarnings("unchecked")
@@ -41,10 +43,10 @@ public class BioMatcherUtilTest {
 
 	private static final double SUCCESS_SCORE = 100.0;	
 
-	@Mock
+	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 	
-	@Mock
+	@Autowired
 	private BioAPIFactory bioApiFactory;
 	
 	@InjectMocks

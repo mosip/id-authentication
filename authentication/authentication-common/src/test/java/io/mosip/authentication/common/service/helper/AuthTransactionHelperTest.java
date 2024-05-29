@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -57,20 +58,20 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
 @TestPropertySource("classpath:application.properties")
 public class AuthTransactionHelperTest {
 
-	@Mock
-	private IdaUinHashSaltRepo uinHashSaltRepo;
+/*	@Mock
+	private IdaUinHashSaltRepo uinHashSaltRepo;*/
 	
-	@Autowired
+	@InjectMocks
 	private EnvUtil env;
 	
-	@Mock
+	/*@Mock
 	private IdAuthSecurityManager securityManager;
 	
 	@Mock
@@ -80,7 +81,7 @@ public class AuthTransactionHelperTest {
 	private IdService<AutnTxn> idService;
 	
 	@Mock
-	private IdAuthFraudAnalysisEventManager fraudEventManager;
+	private IdAuthFraudAnalysisEventManager fraudEventManager;*/
 	
 	@InjectMocks
 	AuthTransactionHelper authTransactionHelper;
@@ -98,7 +99,7 @@ public class AuthTransactionHelperTest {
 		baseRequestDTO.setVersion("v1");
 		mockenv = new MockEnvironment();
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		mockenv.merge(((AbstractEnvironment) env.getEnvironment()));
+		//mockenv.merge(((AbstractEnvironment) env.getEnvironment()));
 		ReflectionTestUtils.setField(authTransactionHelper, "env", env);
 		baseRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(mockenv.getProperty("datetime.pattern"))).toString());
@@ -184,7 +185,7 @@ public class AuthTransactionHelperTest {
 		otpChannel.add("email");
 		otpChannel.add("mobile");
 		otpRequestDTO.setOtpChannel(otpChannel);
-		otpRequestDTO.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+		//otpRequestDTO.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
 		otpRequestDTO.setVersion("1.0");
 		Set<RequestType> set = new HashSet<>();
 		set.add(RequestType.OTP_REQUEST);

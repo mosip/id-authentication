@@ -18,7 +18,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 @RunWith(SpringRunner.class)
 public class MasterDataCacheUpdateServiceImplTest {
 	
-	@Mock
+	@InjectMocks
 	private MasterDataCache masterDataCache;
 	
 	@InjectMocks

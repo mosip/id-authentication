@@ -3,11 +3,8 @@ package io.mosip.authentication.common.service.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,8 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
@@ -68,20 +67,20 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  *
  * @author Dinesh Karuppiah.T
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class, IDAMappingFactory.class, RestRequestFactory.class})
 @WebMvcTest
 @Import(EnvUtil.class)
 public class OTPServiceImplTest {
 
-    @Mock
+    @Autowired
     AutnTxnRepository autntxnrepository;
 
-    @Mock
+    @MockBean
     IdService<AutnTxn> idAuthService;
 
-    @Mock
-    IdTemplateManager idTemplateService;
+    /*@Mock
+    IdTemplateManager idTemplateService;*/
 
     @InjectMocks
     private IdInfoFetcherImpl idInfoFetcherImpl;
@@ -92,56 +91,56 @@ public class OTPServiceImplTest {
     @Autowired
     private IDAMappingConfig idMappingConfig;
 
-    @Mock
+    @InjectMocks
     private PartnerServiceImpl partnerServiceImpl;
 
-    @Mock
+    @InjectMocks
     private PartnerServiceManager partnerServiceManager;
 
-    @Mock
+    @Autowired
     private PartnerMappingRepository partnerMappingRepo;
 
-    @Mock
+    @InjectMocks
     private OTPManager otpManager;
 
-    @Mock
+    @InjectMocks
     private RestRequestFactory restRequestFactory;
 
-    @Mock
-    private AuditRequestFactory auditRequestFactory;
+   /* @Mock
+    private AuditRequestFactory auditRequestFactory;*/
 
-    @Mock
+    @InjectMocks
     private RestHelper restHelper;
 
-    @Spy
+    //@Spy
     @InjectMocks
     private IdInfoHelper idInfoHelper;
 
-    @Mock
-    private IdInfoHelper idInfoHelperMock;
+    /*@Mock
+    private IdInfoHelper idInfoHelperMock;*/
 
     @Autowired
     private EnvUtil env;
 
-    @Mock
-    private EnvUtil envMock;
+    /*@Mock
+    private EnvUtil envMock;*/
 
-    @Mock
+    @Autowired
     private IdaUinHashSaltRepo uinHashSaltRepo;
 
-    @Mock
+    @InjectMocks
     private IdAuthSecurityManager idAuthSecurityManager;
 
-    @Mock
+    @Autowired
     private PartnerService partnerService;
 
-    @Mock
-    private IdAuthFraudAnalysisEventManager fraudEventManager;
+    /*@Mock
+    private IdAuthFraudAnalysisEventManager fraudEventManager;*/
     
     
     /** The auth lock repository. */
-    @Mock
-	private AuthLockRepository authLockRepository;
+    /*@Mock
+	private AuthLockRepository authLockRepository;*/
 
 
     @Before
@@ -183,7 +182,9 @@ public class OTPServiceImplTest {
         mailList.add(identityInfoDTO);
         idInfo.put("email", mailList);
         idResDTO.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(idResDTO);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("426789089018");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -219,7 +220,7 @@ public class OTPServiceImplTest {
     public void TestPhonenumberisNull_Phone_Channel_Alone() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("PHONE");
         otpRequestDto.setOtpChannel(channelList);
@@ -230,7 +231,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("email", "abc@test.com");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -260,7 +263,7 @@ public class OTPServiceImplTest {
     public void TestPhonenumberisNull_bothChannels() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("PHONE", "EMAIL");
         otpRequestDto.setOtpChannel(channelList);
@@ -271,7 +274,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("email", "abc@test.com");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -294,7 +299,7 @@ public class OTPServiceImplTest {
     public void TestEmailIdisNull_Email_Channel_Alone() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("EMAIL");
         otpRequestDto.setOtpChannel(channelList);
@@ -305,7 +310,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("phone", "9292292934");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -335,7 +342,7 @@ public class OTPServiceImplTest {
     public void TestEmailIdisNull_bothChannels() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("PHONE", "EMAIL");
         otpRequestDto.setOtpChannel(channelList);
@@ -346,7 +353,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("phone", "9384848384");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -368,7 +377,7 @@ public class OTPServiceImplTest {
     public void TestPhoneorEmailisNull_both_channels_provided() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("PHONE", "EMAIL");
         otpRequestDto.setOtpChannel(channelList);
@@ -379,7 +388,9 @@ public class OTPServiceImplTest {
         Map<String, Object> valueMap = new HashMap<>();
         Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn(individualId);
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -415,7 +426,7 @@ public class OTPServiceImplTest {
     public void TestPhonenumberisNull_Phone_Channel_Alone_lowercase() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("phone");
         otpRequestDto.setOtpChannel(channelList);
@@ -426,7 +437,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("email", "abc@test.com");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -456,7 +469,7 @@ public class OTPServiceImplTest {
     public void TestPhonenumberisNull_bothChannels_lowercase() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("phone", "email");
         otpRequestDto.setOtpChannel(channelList);
@@ -467,7 +480,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("email", "abc@test.com");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -490,7 +505,7 @@ public class OTPServiceImplTest {
     public void TestEmailIdisNull_Email_Channel_Alone_lowercase() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("email");
         otpRequestDto.setOtpChannel(channelList);
@@ -501,7 +516,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("phone", "9292292934");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -531,7 +548,7 @@ public class OTPServiceImplTest {
     public void TestEmailIdisNull_bothChannels_lowercase() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("phone", "email");
         otpRequestDto.setOtpChannel(channelList);
@@ -542,7 +559,9 @@ public class OTPServiceImplTest {
         Map<String, Object> idInfo = new HashMap<>();
         idInfo.put("phone", "9384848384");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn("2345678901234");
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -564,7 +583,7 @@ public class OTPServiceImplTest {
     public void TestPhoneorEmailisNull_both_channels_provided_lowercase() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = new OtpRequestDTO();
         otpRequestDto.setId("id");
-        otpRequestDto.setRequestTime(new SimpleDateFormat(EnvUtil.getDateTimePattern()).format(new Date()));
+        otpRequestDto.setRequestTime(String.valueOf(LocalDateTime.now()));
         otpRequestDto.setTransactionID("1234567890");
         List<String> channelList = List.of("phone", "email");
         otpRequestDto.setOtpChannel(channelList);
@@ -575,7 +594,9 @@ public class OTPServiceImplTest {
         Map<String, Object> valueMap = new HashMap<>();
         Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(idAuthService.getToken(Mockito.any())).thenReturn(individualId);
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
@@ -631,7 +652,9 @@ public class OTPServiceImplTest {
         valueMap.put("uin", "426789089018");
         valueMap.put("phone", "426789089018");
         valueMap.put("response", idInfo);
-        Mockito.when(idAuthService.processIdType(Mockito.any(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anySet()))
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.add("Set");
+        Mockito.when(idAuthService.processIdType("idvIdType", "idvId", true, true, filterAttributes))
                 .thenReturn(valueMap);
         Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
         Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");

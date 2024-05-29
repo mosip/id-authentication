@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -65,7 +66,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -76,7 +77,7 @@ public class BioAuthServiceTest {
 	@InjectMocks
 	private BioAuthServiceImpl bioAuthServiceImpl;
 
-	@Mock
+	@InjectMocks
 	private BioMatcherUtil bioMatcherUtil;
 
 	@InjectMocks
@@ -88,20 +89,20 @@ public class BioAuthServiceTest {
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
 
-	@Mock
+	@InjectMocks
 	private RestHelper restHelper;
 
-	@Mock
+	@InjectMocks
 	private RestRequestFactory restBuilder;
 
 	@Autowired
 	EnvUtil environment;
 
-	@Mock
+	@Autowired
 	private CbeffUtil cbeffUtil;
 
-	@Mock
-	IBioApi fingerApi;
+	/*@Mock
+	IBioApi fingerApi;*/
 
 	@Autowired
 	private IDAMappingConfig idMappingConfig;

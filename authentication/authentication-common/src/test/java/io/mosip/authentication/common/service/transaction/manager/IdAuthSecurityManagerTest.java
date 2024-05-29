@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.transaction.manager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -59,45 +62,45 @@ import io.netty.util.internal.ReflectionUtil;
  * @author Manoj SP
  *
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, RestRequestFactory.class,
 		ObjectMapper.class, RestRequestFactory.class })
 @Import(EnvUtil.class)
 public class IdAuthSecurityManagerTest {
 
-	@Mock
+	@Autowired
 	private CryptomanagerService cryptomanagerService;
 
-	@Mock
-	private KeymanagerService keyManager;
+	/*@Mock
+	private KeymanagerService keyManager;*/
 
 	@InjectMocks
 	IdAuthSecurityManager authSecurityManager;
 
-	@Mock
+	@Autowired
 	private ZKCryptoManagerService zkCryptoManagerService;
 
-	@Mock
+	/*@Mock
 	private DataEncryptKeystoreRepository repo;
 
 	@Mock
-	private KeyGenerator keyGenerator;
+	private KeyGenerator keyGenerator;*/
 
-	@Mock
+	@Autowired
 	private CryptoCore cryptoCore;
 
-	@Mock
+	@Autowired
 	private SignatureService signatureService;
 
-	@Mock
+	@Autowired
 	private IdaUinHashSaltRepo uinHashSaltRepo;
 	
-	@Mock
+	@Autowired
 	private IdentityCacheRepository identityRepo;
 	
-	@Mock
-	private IdTypeUtil idTypeUtil;
+	/*@Mock
+	private IdTypeUtil idTypeUtil;*/
 
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
@@ -120,7 +123,7 @@ public class IdAuthSecurityManagerTest {
 
 	@Test
 	public void testEncrypt() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.encrypt(Mockito.any()))
+		lenient().when(cryptomanagerService.encrypt(Mockito.any()))
 				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
 		byte[] encrypt = authSecurityManager.encrypt("Hello", "20190101", null, null);
 		assertEquals("abcd", new String(encrypt));
@@ -128,19 +131,19 @@ public class IdAuthSecurityManagerTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testEncryptNoUniqueAliasException() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
+		lenient().when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
 		authSecurityManager.encrypt("Hello", "20190101", null, null);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testEncryptException() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
+		lenient().when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
 		authSecurityManager.encrypt("Hello", "20190101", null, null);
 	}
 
 	@Test
 	public void testDecrypt() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.decrypt(Mockito.any()))
+		lenient().when(cryptomanagerService.decrypt(Mockito.any()))
 				.thenReturn(new CryptomanagerResponseDto(CryptoUtil.encodeBase64("abcd".getBytes())));
 		byte[] decrypt = authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 		assertEquals("abcd", new String(decrypt));
@@ -148,13 +151,13 @@ public class IdAuthSecurityManagerTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testDecryptNoUniqueAliasException() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
+		lenient().when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
 		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testDecryptException() throws IdAuthenticationBusinessException {
-		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
+		lenient().when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
 		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
 	}
 
@@ -205,7 +208,7 @@ public class IdAuthSecurityManagerTest {
 	public void reEncryptRandomKeyTest() {
 		String encryptedKey = "Ahfsd";
 		ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = new ReEncryptRandomKeyResponseDto();
-		Mockito.when(zkCryptoManagerService.zkReEncryptRandomKey(Mockito.any()))
+		lenient().when(zkCryptoManagerService.zkReEncryptRandomKey(Mockito.any()))
 				.thenReturn(zkReEncryptRandomKeyRespDto);
 		String response = authSecurityManager.reEncryptRandomKey(encryptedKey);
 		assertEquals(response, zkReEncryptRandomKeyRespDto.getEncryptedKey());
@@ -216,7 +219,7 @@ public class IdAuthSecurityManagerTest {
 		String index = "1";
 		String key = "Ahg";
 		ReEncryptRandomKeyResponseDto zkReEncryptRandomKeyRespDto = new ReEncryptRandomKeyResponseDto();
-		Mockito.when(zkCryptoManagerService.zkReEncryptRandomKey(Mockito.any()))
+		lenient().when(zkCryptoManagerService.zkReEncryptRandomKey(Mockito.any()))
 				.thenReturn(zkReEncryptRandomKeyRespDto);
 		authSecurityManager.reEncryptAndStoreRandomKey(index, key);
 	}
@@ -230,7 +233,7 @@ public class IdAuthSecurityManagerTest {
 		zkDecryptResponse.setZkDataAttributes(zkDataAttributes);
 		encryptedAttributes.put("key1", "value1");
 		encryptedAttributes.put("key2", "value2");
-		Mockito.when(zkCryptoManagerService.zkDecrypt(Mockito.any())).thenReturn(zkDecryptResponse);
+		lenient().when(zkCryptoManagerService.zkDecrypt(Mockito.any())).thenReturn(zkDecryptResponse);
 		Map<String, String> response = authSecurityManager.zkDecrypt(id, encryptedAttributes);
 		assertNotNull(response);
 	}
@@ -247,7 +250,7 @@ public class IdAuthSecurityManagerTest {
 	public void createRandomTokenTest() throws IdAuthenticationBusinessException {
 		byte[] dataToEncrypt = "Test".getBytes();
 		byte[] encryptedData = "Test".getBytes();
-		Mockito.when(cryptoCore.symmetricEncrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+		lenient().when(cryptoCore.symmetricEncrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(encryptedData);
 		String actualResponse = "2786";
 		String response = authSecurityManager.createRandomToken(dataToEncrypt);
@@ -267,7 +270,7 @@ public class IdAuthSecurityManagerTest {
 		request.setIncludeCertificate(true);
 		request.setIncludePayload(true);
 		responseDto.setJwtSignedData(data);
-		Mockito.when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
+		lenient().when(signatureService.jwtSign(Mockito.any())).thenReturn(responseDto);
 		String response = authSecurityManager.sign(data);
 		assertEquals(response, data);
 	}
@@ -282,7 +285,7 @@ public class IdAuthSecurityManagerTest {
 		String domain = "https://test";
 		String requestData = "Test";
 		Boolean isTrustValidationRequired = false;
-		Mockito.when(signatureService.jwtVerify(Mockito.any())).thenReturn(jwtResponse);
+		lenient().when(signatureService.jwtVerify(Mockito.any())).thenReturn(jwtResponse);
 		Boolean response = authSecurityManager.verifySignature(signature, domain, requestData,
 				isTrustValidationRequired);
 		assertEquals(response, true);
@@ -298,7 +301,7 @@ public class IdAuthSecurityManagerTest {
 		String domain = "https://test";
 		String requestData = "Test";
 		Boolean isTrustValidationRequired = true;
-		Mockito.when(signatureService.jwtVerify(Mockito.any())).thenReturn(jwtResponse);
+		lenient().when(signatureService.jwtVerify(Mockito.any())).thenReturn(jwtResponse);
 		Boolean response = authSecurityManager.verifySignature(signature, domain, requestData,
 				isTrustValidationRequired);
 		assertEquals(response, false);
@@ -307,9 +310,9 @@ public class IdAuthSecurityManagerTest {
 	@Test
 	public void hashTest() throws IdAuthenticationBusinessException {
 		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(id);
+		lenient().when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(id);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
-		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
+		lenient().when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		String response = authSecurityManager.hash(id);
 		assertEquals(response, actualResponse);
 	}
@@ -327,9 +330,9 @@ public class IdAuthSecurityManagerTest {
 	public void hashTest_salt_key_not_exists_legacy_hash_enabled() throws IdAuthenticationBusinessException {
 		try {
 		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
+		lenient().when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
-		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
+		lenient().when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
 		String response = authSecurityManager.hash(id);
 		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", true);
 		} catch (Exception e) {
@@ -342,9 +345,9 @@ public class IdAuthSecurityManagerTest {
 	public void hashTest_salt_key_not_exists_legacy_hash_disabled() throws IdAuthenticationBusinessException {
 		try {
 		String id = "12";
-		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
+		lenient().when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
-		Mockito.when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
+		lenient().when(identityRepo.existsById("CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481")).thenReturn(false);
 		String response = authSecurityManager.hash(id);
 		ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 		} catch (Exception e) {

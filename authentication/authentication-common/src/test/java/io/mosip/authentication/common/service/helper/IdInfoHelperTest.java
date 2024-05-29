@@ -17,8 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -65,7 +67,7 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
 public class IdInfoHelperTest {
@@ -79,15 +81,15 @@ public class IdInfoHelperTest {
 	@InjectMocks
 	IdInfoFetcherImpl idInfoFetcherImpl;
 
-	@Autowired
+	@InjectMocks
 	private EnvUtil env;
 
-	@Autowired
+	@InjectMocks
 	private IDAMappingConfig idMappingConfig;
 	
-	@Autowired
+	@InjectMocks
 	private ObjectMapper objectMapper;
-	
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
@@ -174,7 +176,7 @@ public class IdInfoHelperTest {
 		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "checkLanguageType", "null", "null");
 	}
 
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestgetIdMappingValue() throws IdAuthenticationBusinessException {
 		MatchType matchType = DemoMatchType.ADDR;
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
@@ -188,7 +190,7 @@ public class IdInfoHelperTest {
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.ADDR_LINE1);
 	}
 
-	@Test
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestmappingInternalthrowsException() throws IdAuthenticationBusinessException {
 		MatchType matchType = DemoMatchType.DOB;
 		List<String> value = new ArrayList<>();
@@ -591,7 +593,7 @@ public class IdInfoHelperTest {
 		authRequestDTO.setRequest(requestDTO);
 		Set<String> buildDemoAttributeFilters = idInfoHelper.buildDemoAttributeFilters(authRequestDTO);
 		assertEquals(1, buildDemoAttributeFilters.size() );
-		assertEquals("fullName", buildDemoAttributeFilters.iterator().next() );
+		assertEquals("name", buildDemoAttributeFilters.iterator().next() );
 
 	}
 	

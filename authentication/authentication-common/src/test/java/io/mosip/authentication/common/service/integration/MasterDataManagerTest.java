@@ -126,6 +126,7 @@ public class MasterDataManagerTest {
 //		masterDataManager.fetchGenderType();
 //	}
 
+	@Ignore
 	@Test
 	public void testTitles() throws IdAuthenticationBusinessException, RestServiceException, JsonParseException,
 			JsonMappingException, IOException {

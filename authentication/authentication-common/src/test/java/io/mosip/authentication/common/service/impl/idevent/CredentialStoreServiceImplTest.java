@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,26 +53,26 @@ import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 
 public class CredentialStoreServiceImplTest {
 
     /** The Credential Store Service impl. */
-    @InjectMocks
+    @Autowired
     private CredentialStoreServiceImpl credentialStoreServiceImpl;
 
-    @Mock
-    private CredentialStoreServiceImpl credentialStoreServiceImplMock;
+   /* @Mock
+    private CredentialStoreServiceImpl credentialStoreServiceImplMock;*/
 
-    @Mock
+    @InjectMocks
     private AuditHelper auditHelper;
 
-    @Mock
+    @Autowired
     private CredentialEventStoreRepository credentialEventRepo;
 
-    @Mock
+    /*@Mock
     private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
 
     @Mock
@@ -81,18 +82,18 @@ public class CredentialStoreServiceImplTest {
     private IdaUinHashSaltRepo uinHashSaltRepo;
 
     @Mock
-    private IdAuthSecurityManager securityManager;
+    private IdAuthSecurityManager securityManager;*/
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Mock
+    @InjectMocks
     private DataShareManager dataShareManager;
 
-    @Mock
+    @Autowired
     private IdentityCacheRepository identityCacheRepo;
 
-    @Mock
+    @Autowired
     private CredentialRequestManager credentialRequestManager;
 
 

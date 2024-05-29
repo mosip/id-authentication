@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -44,14 +45,14 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils2;
-import reactor.ipc.netty.http.HttpResources;
+import reactor.netty.http.HttpResources;
 
 /**
  * 
  * @author Dinesh Karuppiah
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @Import(EnvUtil.class)
 public class OTPAuthServiceTest {
@@ -68,16 +69,16 @@ public class OTPAuthServiceTest {
 	@Autowired
 	EnvUtil env;
 
-	@Mock
+	@Autowired
 	private AutnTxnRepository repository;
 
-	@Mock
+	@InjectMocks
 	OTPManager otpmanager;
 
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
-	@Mock
+	@InjectMocks
 	private IdAuthSecurityManager securityManager;
 
 	@Before

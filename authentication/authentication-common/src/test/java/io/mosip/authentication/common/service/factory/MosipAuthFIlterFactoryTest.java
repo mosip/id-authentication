@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,14 +29,14 @@ import java.util.Map;
 
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 @WebMvcTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class MosipAuthFIlterFactoryTest {
 
-    @Mock
+    @Autowired
     private AutowireCapableBeanFactory beanFactory;
 
-    @Mock
-    private List<IMosipAuthFilter> authFilters;
+  /*  @Mock
+    private List<IMosipAuthFilter> authFilters;*/
 
     @Before
     public void Before(){

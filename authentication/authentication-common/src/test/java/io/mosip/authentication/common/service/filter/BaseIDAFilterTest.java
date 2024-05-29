@@ -14,31 +14,26 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterChain;
-import javax.servlet.ReadListener;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
+import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.Part;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -55,16 +50,16 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @AutoConfigureMockMvc
 public class BaseIDAFilterTest {
 
-	@Mock
+	@Autowired
 	EnvUtil env;
 
-	@Mock
+	@MockBean
 	ResettableStreamHttpServletRequest requestWrapper;
 
 	BaseIDAFilter baseIDAFilter = new BaseIDAFilter() {
@@ -134,25 +129,25 @@ public class BaseIDAFilterTest {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	@Mock
+	@Autowired
 	KeyManager keyManager;
 
-	@Mock
+	/*@Mock
 	ServletRequest request;
 
 	@Mock
 	ServletResponse response;
 
 	@Mock
-	FilterChain chain;
+	FilterChain chain;*/
 
-	@Mock
+	@Autowired
 	CharResponseWrapper responseWrapper;
 
-	@Mock
+	@Autowired
 	ByteArrayOutputStream output;
 
-	@Mock
+	@Autowired
 	IdaRequestResponsConsumerUtil requestResponsConsumerUtil;
 
 	@Before
@@ -273,11 +268,6 @@ public class BaseIDAFilterTest {
 			}
 
 			@Override
-			public String getRealPath(String path) {
-				return null;
-			}
-
-			@Override
 			public BufferedReader getReader() throws IOException {
 				return null;
 			}
@@ -343,6 +333,21 @@ public class BaseIDAFilterTest {
 			}
 
 			@Override
+			public String getRequestId() {
+				return "";
+			}
+
+			@Override
+			public String getProtocolRequestId() {
+				return "";
+			}
+
+			@Override
+			public ServletConnection getServletConnection() {
+				return null;
+			}
+
+			@Override
 			public String getContentType() {
 				return null;
 			}
@@ -401,10 +406,6 @@ public class BaseIDAFilterTest {
 				return false;
 			}
 
-			@Override
-			public boolean isRequestedSessionIdFromUrl() {
-				return false;
-			}
 
 			@Override
 			public boolean isRequestedSessionIdFromURL() {
@@ -822,11 +823,6 @@ public class BaseIDAFilterTest {
 			}
 
 			@Override
-			public String getRealPath(String path) {
-				return null;
-			}
-
-			@Override
 			public BufferedReader getReader() throws IOException {
 				return null;
 			}
@@ -892,6 +888,21 @@ public class BaseIDAFilterTest {
 			}
 
 			@Override
+			public String getRequestId() {
+				return "";
+			}
+
+			@Override
+			public String getProtocolRequestId() {
+				return "";
+			}
+
+			@Override
+			public ServletConnection getServletConnection() {
+				return null;
+			}
+
+			@Override
 			public String getContentType() {
 				return null;
 			}
@@ -950,10 +961,6 @@ public class BaseIDAFilterTest {
 				return false;
 			}
 
-			@Override
-			public boolean isRequestedSessionIdFromUrl() {
-				return false;
-			}
 
 			@Override
 			public boolean isRequestedSessionIdFromURL() {

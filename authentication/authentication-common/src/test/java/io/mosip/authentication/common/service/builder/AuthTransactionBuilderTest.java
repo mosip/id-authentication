@@ -28,6 +28,12 @@ public class AuthTransactionBuilderTest {
 	
 	@Mock
 	IdInfoFetcher idInfoFetcher;
+
+	@Mock
+	IdaUinHashSaltRepo IdaUinHashSaltRepo;
+
+	@Mock
+	IdAuthSecurityManager idAuthSecurityManager;
 	
 	AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
 	
@@ -61,9 +67,10 @@ public class AuthTransactionBuilderTest {
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
 		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
-		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		
-		AutnTxn autnTxn = transactionBuilder.build(Mockito.mock(EnvUtil.class), Mockito.mock(IdaUinHashSaltRepo.class), Mockito.mock(IdAuthSecurityManager.class));
+		EnvUtil envUtil = new EnvUtil();
+		ReflectionTestUtils.setField(envUtil, "dateTimePattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+		AutnTxn autnTxn = transactionBuilder.build(envUtil,IdaUinHashSaltRepo, idAuthSecurityManager);
 		assertTrue(autnTxn.getAuthTypeCode().startsWith(RequestType.EKYC_AUTH_REQUEST.getType()));
 		assertTrue(autnTxn.getStatusComment().startsWith(RequestType.EKYC_AUTH_REQUEST.getMessage()));
 
@@ -80,9 +87,10 @@ public class AuthTransactionBuilderTest {
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
 		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
-		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		EnvUtil envUtil = new EnvUtil();
+		ReflectionTestUtils.setField(envUtil, "dateTimePattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		
-		AutnTxn autnTxn = transactionBuilder.build(Mockito.mock(EnvUtil.class), Mockito.mock(IdaUinHashSaltRepo.class), Mockito.mock(IdAuthSecurityManager.class));
+		AutnTxn autnTxn = transactionBuilder.build(envUtil, IdaUinHashSaltRepo, idAuthSecurityManager);
 		assertTrue(autnTxn.getAuthTypeCode().startsWith(RequestType.EKYC_AUTH_REQUEST.getType()));
 		assertTrue(autnTxn.getStatusComment().startsWith(RequestType.EKYC_AUTH_REQUEST.getMessage()));
 
@@ -97,9 +105,10 @@ public class AuthTransactionBuilderTest {
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
 		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
-		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		
-		AutnTxn autnTxn = transactionBuilder.build(Mockito.mock(EnvUtil.class), Mockito.mock(IdaUinHashSaltRepo.class), Mockito.mock(IdAuthSecurityManager.class));
+		EnvUtil envUtil = new EnvUtil();
+		ReflectionTestUtils.setField(envUtil, "dateTimePattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+		AutnTxn autnTxn = transactionBuilder.build(envUtil, IdaUinHashSaltRepo, idAuthSecurityManager);
 		assertTrue(autnTxn.getAuthTypeCode().startsWith(RequestType.EKYC_AUTH_REQUEST.getType()));
 		assertTrue(autnTxn.getStatusComment().startsWith(RequestType.EKYC_AUTH_REQUEST.getMessage()));
 

@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,10 +30,10 @@ import io.mosip.authentication.core.util.DemoNormalizer;
 @RunWith(SpringRunner.class)
 public class AddressMatchingStrategyTest {
 	
-	@Mock
+	@InjectMocks
 	DemoNormalizer demoNormalizer;
 	
-	@Mock
+	@InjectMocks
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();
@@ -86,7 +87,7 @@ public class AddressMatchingStrategyTest {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("langCode", "fra");
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(),Mockito.anyString())).thenReturn(100);
+		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo","entityInfo")).thenReturn(100);
 		Mockito.when(demoNormalizer.normalizeAddress(Mockito.anyString(), Mockito.anyString())).thenReturn("no 1 second street chennai");
 		int value = matchFunction.match("no 1 second street chennai", "no 1 second street chennai", matchProperties);
 		assertEquals(100, value);
@@ -118,7 +119,7 @@ public class AddressMatchingStrategyTest {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		
 		
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(),Mockito.anyString())).thenReturn(100);
+		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo","entityInfo")).thenReturn(100);
 		int value = matchFunction.match(2, 2, matchProperties);
 		assertEquals(DemoMatcherUtil.EXACT_MATCH_VALUE, value);		
 		

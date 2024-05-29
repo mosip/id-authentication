@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -24,7 +25,7 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class PartnerServiceImplTest {
@@ -32,11 +33,11 @@ public class PartnerServiceImplTest {
 	@InjectMocks
 	private PartnerServiceImpl partnerService;
 
-	@Mock
+	/*@Mock
 	private PartnerServiceManager partnerManager;
 
 	@Mock
-	private ObjectMapper mapper;
+	private ObjectMapper mapper;*/
 
 	@Before
 	public void before() {

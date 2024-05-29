@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -61,7 +62,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Rakesh Roshan
  */
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ConfigurationProperties("mosip.id")
@@ -69,14 +70,14 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 public class BaseAuthRequestValidatorTest {
 
 	/** The validator. */
-	@Mock
-	private SpringValidatorAdapter validator;
+	/*@Mock
+	private SpringValidatorAdapter validator;*/
 
-	@Mock
+	@InjectMocks
 	private PinValidatorImpl pinValidator;
 
 	/** The auth request DTO. */
-	@Mock
+	@InjectMocks
 	AuthRequestDTO authRequestDTO;
 
 	@InjectMocks
@@ -90,7 +91,7 @@ public class BaseAuthRequestValidatorTest {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 	
-	@Mock
+	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcher;
 
 	/** The error. */
@@ -291,7 +292,7 @@ public class BaseAuthRequestValidatorTest {
 
 		authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		List<BioIdentityInfoDTO> bioInfoList = new ArrayList<BioIdentityInfoDTO>();
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
 		DataDTO dataDTOFinger = new DataDTO();
@@ -351,7 +352,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioSubType("Left Thumb");
 		dataDTO.setBioType("Finger");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		fingerValue.setData(dataDTO);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		DataDTO dataDTO1 = new DataDTO();
@@ -1409,7 +1410,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
 		return authRequestDTO;
 	}
@@ -1421,7 +1422,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1459,7 +1460,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testInValidAuthRequest_SecondaryLanguage() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1497,7 +1498,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testInValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1535,7 +1536,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidAuthRequest2() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -1783,7 +1784,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "456789";
@@ -1799,7 +1800,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "";
@@ -1815,7 +1816,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = null;
@@ -1831,7 +1832,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String pin = "123e45";
@@ -1847,7 +1848,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String otp = "123445";
@@ -1863,7 +1864,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 		String otp = null;
@@ -1903,7 +1904,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		authRequestDTO.setId("id");
 		authRequestDTO.setTransactionID("1234567890");
 
@@ -2293,7 +2294,7 @@ public class BaseAuthRequestValidatorTest {
 		digitalId.setDateTime("");
 		dataDTO.setDigitalId(digitalId);
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		dataDTO.setTimestamp(timestamp);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
@@ -2333,7 +2334,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(biometrics);
 		authRequestDTO.setRequest(request);
 		String timestamp = Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString();
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		dataDTO.setTimestamp(timestamp);
 		
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBiometrics", biometrics, "", error);

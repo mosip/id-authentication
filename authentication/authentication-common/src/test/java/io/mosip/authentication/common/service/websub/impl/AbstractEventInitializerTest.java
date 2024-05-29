@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,10 +20,10 @@ public abstract class AbstractEventInitializerTest<T extends BaseWebSubEventsIni
 	@InjectMocks
 	protected EnvUtil env;
 	
-	@Mock
+	@Autowired
 	protected Environment environment;
 	
-	@Mock
+	@InjectMocks
 	protected WebSubHelper webSubHelper;
 	
 	
@@ -35,7 +36,7 @@ public abstract class AbstractEventInitializerTest<T extends BaseWebSubEventsIni
 	
 	
 	protected abstract T doCreateTestInstance();
-	
+
 	@Test
 	public void testSubscribe() {
 		T baseWebSubEventsInitializer = createTestInstance();

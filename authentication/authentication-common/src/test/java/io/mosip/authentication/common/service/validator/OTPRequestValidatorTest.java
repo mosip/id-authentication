@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,18 +43,18 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @Import(EnvUtil.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPRequestValidatorTest {
 
 	/** The error. */
-	@Mock
-	Errors error;
+	/*@Mock
+	Errors error;*/
 
 	/** The uin validator. */
-	@Mock
+	@InjectMocks
 	IdValidationUtil idValidator;
 
 	/** The ida rolling file appender. */
@@ -65,8 +66,8 @@ public class OTPRequestValidatorTest {
 	private OTPRequestValidator otpRequestValidator;
 
 	/** The otp auth service impl. */
-	@Mock
-	private OTPAuthServiceImpl otpAuthServiceImpl;
+	/*@Mock
+	private OTPAuthServiceImpl otpAuthServiceImpl;*/
 
 	/**
 	 * Before.
@@ -103,7 +104,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setTransactionID("1234567890");
 		OtpRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				// offset
-				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		OtpRequestDTO.setIndividualId("5076204698");
 		OtpRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		ArrayList<String> channelList = new ArrayList<String>();
@@ -185,7 +186,7 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setRequestTime(
 				new Date(LocalDate.of(2017, 1, 1).toEpochDay()).toInstant().atOffset(ZoneOffset.of("+0530"))
-						.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+						.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 		OtpRequestDTO.setIndividualId("5371843613598211");
 		OtpRequestDTO.setId("id");
 		ArrayList<String> channelList = new ArrayList<String>();

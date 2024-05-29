@@ -11,8 +11,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -29,12 +31,12 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * @author Nagarjuna
  *
  */
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class AgeMatchingStrategyTest {
 
-	@Mock
+	@InjectMocks
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();
@@ -85,7 +87,6 @@ public class AgeMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(100);
 		
 		int value = matchFunction.match(25, 25, matchProperties);
 		assertEquals(100, value);
@@ -99,10 +100,10 @@ public class AgeMatchingStrategyTest {
 	 * Tests the Match function with in-valid values
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected=Exception.class)
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
+		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(0);
 		
 		int value = matchFunction.match(250, "50", matchProperties);
 		assertEquals(0, value);

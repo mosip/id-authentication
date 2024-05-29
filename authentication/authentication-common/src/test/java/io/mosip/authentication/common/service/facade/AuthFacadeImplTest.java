@@ -22,8 +22,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -97,7 +99,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Prem Kumar
  */
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
@@ -106,84 +108,84 @@ public class AuthFacadeImplTest {
 
 
 	/** The auth facade impl. */
-	@InjectMocks
+	@Autowired
 	private AuthFacadeImpl authFacadeImpl;
 
-	@Mock
-	private AuthFacadeImpl authFacadeMock;
+	/*@Mock
+	private AuthFacadeImpl authFacadeMock;*/
 
 	/** The env. */
 	@Autowired
 	private EnvUtil env;
 
 	/** The otp auth service impl. */
-	@Mock
+	@Autowired
 	private OTPAuthService otpAuthService;
 
 	/** The IdAuthService */
-	@Mock
+	@MockBean
 	private IdService<AutnTxn> idService;
 	/** The KycService **/
-	@Mock
+	/*@Mock
 	private KycService kycService;
 
 	@Mock
-	private AuditHelper auditHelper;
+	private AuditHelper auditHelper;*/
 
 	/** The IdInfoHelper **/
-	@Mock
+	@MockBean
 	private IdInfoHelper idInfoHelper;
 
-	@Mock
-	private IdInfoFetcher idInfoFetcher;
+	/*@Mock
+	private IdInfoFetcher idInfoFetcher;*/
 
 	/** The DemoAuthService **/
-	@Mock
+	/*@Mock
 	private DemoAuthService demoAuthService;
 
 	@Mock
-	private IDAMappingConfig idMappingConfig;
+	private IDAMappingConfig idMappingConfig;*/
 
 	@InjectMocks
 	NotificationServiceImpl notificationService;
 
-	@Mock
+	@MockBean
 	NotificationManager notificationManager;
 
-	@Mock
+	@MockBean
 	private IdTemplateManager idTemplateManager;
 
 	@InjectMocks
 	private OTPManager otpManager;
 
-	@Mock
+	@MockBean
 	private BioAuthService bioAuthService;
 
-	@Mock
-	private AutnTxnRepository autntxnrepository;
+	/*@Mock
+	private AutnTxnRepository autntxnrepository;*/
 
-	@Mock
+	@MockBean
 	private TokenIdManager tokenIdManager;
 
-	@Mock
+	@MockBean
 	private IdaUinHashSaltRepo uinHashSaltRepo;
 
-	@Mock
+	@MockBean
 	private IdAuthSecurityManager idAuthSecurityManager;
 
-	@Mock
+	@MockBean
 	private AuthtypeStatusImpl authTypeStatus;
 
-	@Mock
+	@MockBean
 	private AuthTransactionHelper authTransactionHelper;
 
-	@Mock
+	@MockBean
 	PartnerService partnerService;
 
 	@Autowired
 	ObjectMapper mapper;
 
-	@Mock
+	/*@Mock
 	private PartnerMappingRepository partnerMappingRepo;
 
 	@Mock
@@ -196,9 +198,9 @@ public class AuthFacadeImplTest {
 	private ApiKeyDataRepository apiKeyRepo;
 
 	@Mock
-	private MispLicenseDataRepository mispLicDataRepo;
+	private MispLicenseDataRepository mispLicDataRepo;*/
 
-	@Mock
+	@MockBean
 	private AuthFiltersValidator authFiltersValidator;
 
 	/**
