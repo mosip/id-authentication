@@ -50,7 +50,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.ServletResponseWrapper#getWriter()
+	 * @see jakarta.servlet.ServletResponseWrapper#getWriter()
 	 */
 	public PrintWriter getWriter() {
 		return new PrintWriter(new OutputStreamWriter(output));
@@ -59,7 +59,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+	 * @see jakarta.servlet.ServletResponseWrapper#getOutputStream()
 	 */
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
