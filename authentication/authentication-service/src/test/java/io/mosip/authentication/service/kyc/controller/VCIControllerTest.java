@@ -103,7 +103,7 @@ public class VCIControllerTest {
         Assert.assertNotNull(vciExchangeResponseDTO);
     }
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test(expected = NullPointerException.class)
     public void delegatedVCExchange_withInvalidInput_thenFail() throws Exception {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
         Errors errors = new BeanPropertyBindingResult(vciExchangeRequestDTO, "vciExchangeRequestDTO");

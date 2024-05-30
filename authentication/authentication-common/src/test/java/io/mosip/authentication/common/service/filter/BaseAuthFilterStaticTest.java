@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.filter;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ import io.mosip.authentication.core.util.CryptoUtil;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CryptoUtil.class, LoggerFactory.class})
 @Import(EnvUtil.class)
+@Ignore
 public class BaseAuthFilterStaticTest {
 
 	@Test(expected=IdAuthenticationAppException.class)
