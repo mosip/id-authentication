@@ -10,10 +10,12 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -25,8 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
-
-import io.mosip.authentication.core.dto.ObjectWithMetadata;
 
 public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMetadata {
 
@@ -142,11 +142,6 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 
 	@Override
 	public String getRemoteAddr() {
-		return null;
-	}
-
-	@Override
-	public String getRealPath(String path) {
 		return null;
 	}
 
@@ -271,11 +266,6 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 
 	@Override
 	public boolean isRequestedSessionIdValid() {
-		return false;
-	}
-
-	@Override
-	public boolean isRequestedSessionIdFromUrl() {
 		return false;
 	}
 
@@ -436,6 +426,24 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	@Override
 	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
+	}
+
+	@Override
+	public String getRequestId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProtocolRequestId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServletConnection getServletConnection() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

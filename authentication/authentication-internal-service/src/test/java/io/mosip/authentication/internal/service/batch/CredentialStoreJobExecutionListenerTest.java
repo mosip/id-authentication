@@ -32,8 +32,7 @@ public class CredentialStoreJobExecutionListenerTest {
     public void afterJobTest(){
         Long id = Long.valueOf(1213);
         JobParameters jobParameters = new JobParameters();
-        String jobConfigurationName = "getJobConfigurationName";
-        jobExecution = new JobExecution(id, jobParameters, jobConfigurationName);
+        jobExecution = new JobExecution(id, jobParameters);
 //        case 1
         credentialStoreJobExecutionListener.afterJob(jobExecution);
 
@@ -71,8 +70,7 @@ public class CredentialStoreJobExecutionListenerTest {
     public void beforeJobTest(){
         Long id = Long.valueOf(1213);
         JobParameters jobParameters = new JobParameters();
-        String jobConfigurationName = "getJobConfigurationName";
-        jobExecution = new JobExecution(id, jobParameters, jobConfigurationName);
+        jobExecution = new JobExecution(id, jobParameters);
         credentialStoreJobExecutionListener.beforeJob(jobExecution);
     }
 }
