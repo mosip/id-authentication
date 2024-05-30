@@ -133,7 +133,6 @@
 		<!-- Spring Boot -->
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
-		<jackson.version>2.12.1</jackson.version>
 		<postgresql.version>42.2.2</postgresql.version>
 
 		<!-- Commons -->
@@ -147,8 +146,6 @@
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-
-		<io.micrometer.prometheus.version>1.4.2</io.micrometer.prometheus.version>
 
 		<objenesis.version>3.1</objenesis.version>
 
@@ -226,17 +223,14 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		
 		<dependency>

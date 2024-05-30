@@ -149,12 +149,10 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>${io.micrometer.prometheus.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>${io.micrometer.prometheus.version}</version>
         </dependency>
         <dependency>
             <groupId>io.mosip.kernel</groupId>
@@ -252,7 +250,6 @@
         <dependency>
         	<groupId>com.fasterxml.jackson.module</groupId>
         	<artifactId>jackson-module-jaxb-annotations</artifactId>
-        	<version>${jackson.version}</version>
         	<exclusions>
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
@@ -271,7 +268,6 @@
         <dependency>
         	<groupId>com.fasterxml.jackson.dataformat</groupId>
         	<artifactId>jackson-dataformat-xml</artifactId>
-        	<version>${jackson.version}</version>
         	<exclusions>
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
