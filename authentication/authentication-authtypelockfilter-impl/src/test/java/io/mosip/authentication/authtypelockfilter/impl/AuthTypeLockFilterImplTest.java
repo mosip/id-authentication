@@ -132,7 +132,7 @@ public class AuthTypeLockFilterImplTest {
 		status1.setAuthSubType("phone");
 		status1.setLocked(true);
 		authtypeStatusList.add(status1);
-		Mockito.when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
+		//Mockito.when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
 		try {
 			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,
 					authtypeStatusList);
