@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.spi.idevent;
 
-import java.util.List;
+import org.springframework.batch.item.Chunk;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.authentication.common.service.entity.IdentityEntity;
@@ -20,7 +20,7 @@ public interface CredentialStoreService {
 	 *
 	 * @param idEntities the id entities
 	 */
-	public void storeIdentityEntity(List<? extends IdentityEntity> idEntities);
+	public void storeIdentityEntity(Chunk<? extends IdentityEntity> idEntities);
 
 	/**
 	 * Store event model.
@@ -47,6 +47,6 @@ public interface CredentialStoreService {
 	 *
 	 * @param dto the dto
 	 */
-	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dto);
+	public void processMissingCredentialRequestId(Chunk<? extends CredentialRequestIdsDto> dto);
 
 }

@@ -44,7 +44,6 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils2;
-import reactor.ipc.netty.http.HttpResources;
 
 /**
  * 
@@ -96,7 +95,7 @@ public class OTPAuthServiceTest {
 	 */
 	@AfterClass
 	public static void afterClass() {
-		HttpResources.reset();
+		reactor.netty.http.HttpResources.reset();
 	}
 
 	@Test

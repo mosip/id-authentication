@@ -2,7 +2,7 @@ package io.mosip.authentication.core.spi.indauth.facade;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;

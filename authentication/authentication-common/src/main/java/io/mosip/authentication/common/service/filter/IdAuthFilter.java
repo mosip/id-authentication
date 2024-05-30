@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
 
 import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.batch.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -428,7 +429,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @param idEntities the id entities
 	 */
 	@Override
-	public void storeIdentityEntity(List<? extends IdentityEntity> idEntities) {
+	public void storeIdentityEntity(Chunk<? extends IdentityEntity> idEntities) {
 		identityCacheRepo.saveAll(idEntities);
 	}
 
@@ -475,7 +476,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 *
 	 * @param dtos the dtos
 	 */
-	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dtos) {
+	public void processMissingCredentialRequestId(Chunk<? extends CredentialRequestIdsDto> dtos) {
 		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
 	}
 	

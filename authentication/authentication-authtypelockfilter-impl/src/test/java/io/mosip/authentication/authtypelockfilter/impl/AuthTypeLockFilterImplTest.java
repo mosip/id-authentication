@@ -15,10 +15,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -31,7 +31,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class AuthTypeLockFilterImplTest {
@@ -132,7 +132,7 @@ public class AuthTypeLockFilterImplTest {
 		status1.setAuthSubType("phone");
 		status1.setLocked(true);
 		authtypeStatusList.add(status1);
-		Mockito.when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
+		//Mockito.when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
 		try {
 			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,
 					authtypeStatusList);

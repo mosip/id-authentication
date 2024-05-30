@@ -7,13 +7,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -115,23 +116,22 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
 	 * Method to handle all exception and return as customized response object.
-	 * 
+	 *
 	 * @param ex           Exception
 	 * @param errorMessage List of error messages
 	 * @param headers      Http headers
 	 * @param status       Http status
 	 * @param request      Web request
 	 * @return Customized response object
-	 * 
+	 *
 	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler#handleExceptionInternal(java.lang.Exception,
 	 *      java.lang.Object, org.springframework.http.HttpHeaders,
 	 *      org.springframework.http.HttpStatus,
 	 *      org.springframework.web.context.request.WebRequest)
 	 */
-	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+	@Override
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object errorMessage, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleExceptionInternal",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
@@ -171,7 +171,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			return handleAllExceptions(ex, request);
 		}
 	}
-
 	/**
 	 * Method to handle and customize the response.
 	 *

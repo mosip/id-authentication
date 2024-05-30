@@ -46,7 +46,7 @@ public class MasterDataCacheInitializerTest {
     @Test
     public void onApplicationEventTest(){
         SpringApplication application = new SpringApplication();
-        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null);
+        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null, null);
         masterDataCacheInitializer.onApplicationEvent(event);
     }
 
@@ -60,7 +60,7 @@ public class MasterDataCacheInitializerTest {
     @Test(expected = IdAuthUncheckedException.class)
     public void OnApplicationReadyEventExceptionTest() throws IdAuthenticationBusinessException {
         SpringApplication application = new SpringApplication();
-        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null);
+        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null, null);
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(masterDataCache).getMasterDataTitles();
         masterDataCacheInitializer.onApplicationEvent(event);
     }

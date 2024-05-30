@@ -13,20 +13,21 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.Part;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -449,12 +450,6 @@ public class IdAuthFilterTest {
 			}
 
 			@Override
-			public String getRealPath(String path) {
-
-				return null;
-			}
-
-			@Override
 			public BufferedReader getReader() throws IOException {
 
 				return null;
@@ -599,12 +594,6 @@ public class IdAuthFilterTest {
 
 			@Override
 			public boolean isRequestedSessionIdValid() {
-
-				return false;
-			}
-
-			@Override
-			public boolean isRequestedSessionIdFromUrl() {
 
 				return false;
 			}
@@ -763,6 +752,24 @@ public class IdAuthFilterTest {
 			public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
 
 				return false;
+			}
+
+			@Override
+			public String getRequestId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String getProtocolRequestId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public ServletConnection getServletConnection() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		});
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
