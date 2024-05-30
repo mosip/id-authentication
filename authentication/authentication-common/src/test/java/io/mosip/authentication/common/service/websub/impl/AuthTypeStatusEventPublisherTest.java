@@ -3,7 +3,6 @@ package io.mosip.authentication.common.service.websub.impl;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -15,7 +14,7 @@ import io.mosip.authentication.common.service.impl.idevent.AuthTypeStatusUpdateA
 
 public class AuthTypeStatusEventPublisherTest extends AbstractEventInitializerTest<AuthTypeStatusEventPublisher>{
 
-	@InjectMocks
+	@Mock
 	private ObjectMapper mapper;
 	
 	@Override
@@ -34,7 +33,7 @@ public class AuthTypeStatusEventPublisherTest extends AbstractEventInitializerTe
 		// publisher but not subscriber
 	}
 	
-	@Test (expected = Exception.class)
+	@Test
 	public void testPublishEvent() {
 		AuthTypeStatusEventPublisher createTestInstance = createTestInstance();
 		io.mosip.authentication.common.service.websub.dto.EventModel eventModel = new io.mosip.authentication.common.service.websub.dto.EventModel();

@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -57,7 +56,7 @@ import io.mosip.kernel.core.websub.model.Type;
  * @author Nagarjuna
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class PartnerServiceManagerTest {
@@ -65,28 +64,28 @@ public class PartnerServiceManagerTest {
 	@Autowired
 	ConfigurableEnvironment env;
 
-	@Autowired
+	@Mock
 	private PartnerMappingRepository partnerMappingRepo;
 
-	@Autowired
+	@Mock
 	private PartnerDataRepository partnerDataRepo;
 
-	@Autowired
+	@Mock
 	private PolicyDataRepository policyDataRepo;
 
-	@Autowired
+	@Mock
 	private ApiKeyDataRepository apiKeyRepo;
 
-	@Autowired
+	@Mock
 	private MispLicenseDataRepository mispLicDataRepo;
 
 	@Autowired
 	private ObjectMapper mapper;
 
-	@Autowired
+	@Mock
 	private IdAuthSecurityManager securityManager;
 
-	@Autowired
+	@Mock
 	private OIDCClientDataRepository oidcClientDataRepo; 
 
 	@InjectMocks

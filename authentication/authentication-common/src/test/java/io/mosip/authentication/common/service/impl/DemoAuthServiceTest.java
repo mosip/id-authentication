@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -67,7 +66,7 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * @author Nagarjuna
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
@@ -89,16 +88,16 @@ public class DemoAuthServiceTest {
 	@InjectMocks
 	private MatchInputBuilder matchInputBuilder;
 
-	/*@InjectMocks
-	private IdService<?> idInfoService;*/
+	@Mock
+	private IdService<?> idInfoService;
 
-	@InjectMocks
+	@Mock
 	private DemoNormalizer demoNormalizer;
 
-	@InjectMocks
+	@Mock
 	private DemoMatcherUtil demoMatcherUtil;
 
-	@InjectMocks
+	@Mock
 	private MasterDataManager masterDataManager;
 
 	@Autowired
@@ -649,7 +648,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setId("mosip.identity.auth");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 //		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTransactionID("1234567890");
 		// authRequestDTO.setVer("1.0");

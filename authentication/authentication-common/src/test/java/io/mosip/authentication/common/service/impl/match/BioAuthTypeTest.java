@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,17 +21,14 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
 
 public class BioAuthTypeTest {
-
-	@InjectMocks
-	IdInfoFetcher idInfoFetcher;
-
+	
 	ObjectMapper mapper = new ObjectMapper();
 
 	private void testSingleBioAuthType(BioAuthType testSubject, String bioType, boolean single) throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		authRequestDTO.setRequest(request);
-		//IdInfoFetcher idInfoFetcher = Mockito.mock(IdInfoFetcher.class);
+		IdInfoFetcher idInfoFetcher = Mockito.mock(IdInfoFetcher.class);
 		String language = "";
 		Map<String, Object> result;
 
@@ -109,7 +105,7 @@ public class BioAuthTypeTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		authRequestDTO.setRequest(request);
-		//IdInfoFetcher idInfoFetcher = Mockito.mock(IdInfoFetcher.class);
+		IdInfoFetcher idInfoFetcher = Mockito.mock(IdInfoFetcher.class);
 		String language = "";
 		Map<String, Object> result;
 

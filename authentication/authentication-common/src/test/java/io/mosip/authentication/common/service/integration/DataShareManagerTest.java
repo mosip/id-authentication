@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,18 +32,18 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.helper.RestHelper;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 public class DataShareManagerTest {
 	
-	@InjectMocks
+	@Mock
 	private RestHelper restHelper;
 	
-	@InjectMocks
+	@Mock
 	private RestRequestFactory restRequestFactory;
 	
-	@InjectMocks
+	@Mock
 	private IdAuthSecurityManager securityManager;
 	
 	@Autowired

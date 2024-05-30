@@ -10,14 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.kernel.demographics.spi.IDemoApi;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -39,7 +36,7 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * @author Dinesh Karuppiah
  * @author Nagarjuna
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @Import(EnvUtil.class)
@@ -48,14 +45,11 @@ public class NameMatchingStrategyTest {
 	@Autowired
 	private EnvUtil env;
 
-	@InjectMocks
+	@Mock
 	DemoNormalizer demoNormalizer;
 	
-	@InjectMocks
+	@Mock
 	private DemoMatcherUtil demoMatcherUtil;
-
-	@Autowired
-	private IDemoApi iDemoApi;
 	
 	Map<String, Object> matchProperties = new HashMap<>();
 	
@@ -274,7 +268,7 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestInvalid() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(null);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);

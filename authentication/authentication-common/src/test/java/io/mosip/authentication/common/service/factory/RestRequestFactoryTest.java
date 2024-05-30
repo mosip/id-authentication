@@ -9,9 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -49,7 +47,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
  * @author Manoj SP
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Import(EnvUtil.class)
@@ -60,7 +58,7 @@ public class RestRequestFactoryTest {
 	RestRequestFactory restFactory;
 
 	/** The env. */
-	@InjectMocks
+	@Autowired
 	EnvUtil env;
 
 	/** The mock mvc. */

@@ -5,14 +5,11 @@ import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
 import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -22,27 +19,21 @@ import java.util.*;
 public class TokenValidationHelperTest {
 
     /** The Kyc Service */
-    @Autowired
+    @Mock
     private KycService kycService;
 
-    @Autowired
+    @Mock
     private KycTokenDataRepository kycTokenDataRepo;
 
-   /* @Mock
+    @Mock
     private IdInfoHelper idInfoHelper;
 
     @Mock
-    private OIDCClientDataRepository oidcClientDataRepo;*/
+    private OIDCClientDataRepository oidcClientDataRepo;
 
     @InjectMocks
     TokenValidationHelper tokenValidationHelper;
 
-
-    @Before
-    public void setUp() {
-        kycService = Mockito.spy(kycService);
-        kycTokenDataRepo = Mockito.spy(kycTokenDataRepo);
-    }
 
     @Test
     public void findAndValidateIssuedTokenTestWithValidDetails_thenPass() throws IdAuthenticationBusinessException {

@@ -19,22 +19,22 @@ import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInit
 @RunWith(MockitoJUnitRunner.class)
 public class IdAuthWebSubInitializerTest {
 	
-	@InjectMocks
+	@Mock
 	private WebSubHelper webSubHelper;
 	
-	@InjectMocks
+	@Mock
 	private MasterDataUpdateEventInitializer masterDataUpdateEventInitializer;
 
-	@InjectMocks
+	@Mock
 	private IdAuthFraudAnalysisEventPublisher fraudEventPublisher;
 
-	@InjectMocks
+	@Mock
 	private AuthTransactionStatusEventPublisher authTransactionStatusEventPublisher;
 	
-	@InjectMocks
+	@Mock
 	private AuthAnonymousEventPublisher authAnonymousEventPublisher;
 	
-	@InjectMocks
+	@Mock
 	private PartnerCACertEventInitializer partnerCACertEventInitializer;
 	
 	@InjectMocks

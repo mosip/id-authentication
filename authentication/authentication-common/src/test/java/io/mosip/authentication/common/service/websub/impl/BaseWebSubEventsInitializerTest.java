@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -36,10 +35,10 @@ public class BaseWebSubEventsInitializerTest {
 	}
 	
 	/** The env. */
-	@InjectMocks
+	@Mock
 	protected EnvUtil env;
 	
-	@InjectMocks
+	@Mock
 	protected WebSubHelper webSubHelper;
 	
 	private TestBaseWebSubEventsInitializer createTestInstance() {
@@ -121,14 +120,14 @@ public class BaseWebSubEventsInitializerTest {
 		baseWebSubEventsInitializer.tryRegisterTopicEvent("topic");
 	}
 	
-	@Test (expected = RuntimeException.class)
+	@Test
 	public void testTryRegisterTopicWithException() {
 		TestBaseWebSubEventsInitializer baseWebSubEventsInitializer = createTestInstance();
 		Mockito.doThrow(new RuntimeException()).when(webSubHelper).registerTopic(Mockito.anyString());
 		baseWebSubEventsInitializer.tryRegisterTopicEvent("topic");
 	}
 	
-	@Test (expected = Exception.class)
+	@Test
 	public void testSubscribeForEvent() {
 		TestBaseWebSubEventsInitializer baseWebSubEventsInitializer = createTestInstance();
 		baseWebSubEventsInitializer.subscribeForEvent("topic", "url", "secret");

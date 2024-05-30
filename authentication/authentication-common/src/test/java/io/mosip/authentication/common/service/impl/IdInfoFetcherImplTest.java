@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -41,7 +40,7 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
 public class IdInfoFetcherImplTest {

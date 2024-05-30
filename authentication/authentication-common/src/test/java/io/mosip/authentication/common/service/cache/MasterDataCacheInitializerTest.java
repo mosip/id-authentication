@@ -7,11 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,13 +20,13 @@ import java.io.IOException;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class MasterDataCacheInitializerTest {
 
     @InjectMocks
     private MasterDataCacheInitializer masterDataCacheInitializer;
 
-    @MockBean
+    @Mock
     private MasterDataCache masterDataCache;
 
     /**
@@ -48,7 +46,7 @@ public class MasterDataCacheInitializerTest {
     @Test
     public void onApplicationEventTest(){
         SpringApplication application = new SpringApplication();
-        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null,null);
+        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null, null);
         masterDataCacheInitializer.onApplicationEvent(event);
     }
 
@@ -62,7 +60,7 @@ public class MasterDataCacheInitializerTest {
     @Test(expected = IdAuthUncheckedException.class)
     public void OnApplicationReadyEventExceptionTest() throws IdAuthenticationBusinessException {
         SpringApplication application = new SpringApplication();
-        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null,null);
+        ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null, null);
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(masterDataCache).getMasterDataTitles();
         masterDataCacheInitializer.onApplicationEvent(event);
     }

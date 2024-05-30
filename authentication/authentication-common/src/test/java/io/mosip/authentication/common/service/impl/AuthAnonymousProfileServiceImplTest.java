@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -41,20 +40,20 @@ import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @Import(EnvUtil.class)
 public class AuthAnonymousProfileServiceImplTest {
 
 	
-	@InjectMocks
+	@Mock
 	private IdInfoHelper idInfoHelper;
 	
-	@InjectMocks
+	@Mock
 	private AuthAnonymousEventPublisher authAnonymousEventPublisher;
 	
-	@Autowired
+	@Mock
 	private AuthAnonymousProfileRepository authAnonymousProfileRepository;
 	
 	@InjectMocks
@@ -103,18 +102,18 @@ public class AuthAnonymousProfileServiceImplTest {
 		idInfoMap.put("dateOfBirth", dobList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
 
-
+		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-
+		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",
 			requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
 	}
-
+	
 	@Ignore
 	@Test
 	public void createAnonymousProfileWith_PreferredLangTest() throws IdAuthenticationBusinessException  {
@@ -128,17 +127,17 @@ public class AuthAnonymousProfileServiceImplTest {
 		preferedLangList.add(lang);
 		idInfoMap.put("preferredLanguage", preferedLangList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
-
+		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-
+		
 		Mockito.when(idInfoHelper.getDynamicEntityInfoAsString(idInfoMap, null, "preferredLanguage")).thenReturn("eng");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("eng"), anonymousProfile.getPreferredLanguages());
 	}
-
+	
 	@Ignore
 	@Test
 	public void createAnonymousProfileWith_GenderTest() throws IdAuthenticationBusinessException  {
@@ -152,17 +151,17 @@ public class AuthAnonymousProfileServiceImplTest {
 		genderList.add(gender);
 		idInfoMap.put("gender", genderList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
-
+		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-
+		
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals("Female", anonymousProfile.getGender());
 	}
-
+	
 	@Ignore
 	@Test
 	public void createAnonymousProfileWith_LocationTest() throws IdAuthenticationBusinessException  {
@@ -176,22 +175,22 @@ public class AuthAnonymousProfileServiceImplTest {
 		preferedLangList.add(lang);
 		idInfoMap.put("preferredLanguage", preferedLangList);
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
-
+		
 		Map<String,String> locationMap = new HashMap<>();
 		locationMap.put("zone", "zone1");
 		locationMap.put("postalCode", "123456");
 		responseMetadata.put("IDENTITY_INFO", idInfoMap );
-
+		
 		Map<String, Object> authResponse = new HashMap<>();
 		authResponse.put("authStatus", "true");
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
-
+		
 		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}
-
+	
 	@Ignore
 	@Test
 	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, IOException {

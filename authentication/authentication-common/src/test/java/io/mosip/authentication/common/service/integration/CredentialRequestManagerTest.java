@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
@@ -32,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class CredentialRequestManagerTest {
@@ -41,17 +40,17 @@ public class CredentialRequestManagerTest {
     @InjectMocks
     private CredentialRequestManager credentialRequestManager;
 
-    @InjectMocks
+    @Mock
     private RestRequestFactory restRequestFactory;
 
-    @InjectMocks
+    @Mock
     private RestHelper restHelper;
 
     /** The object mapper. */
     @Autowired
     private ObjectMapper objectMapper;
 
-    @InjectMocks
+    @Mock
     private RestRequestDTO restRequestDTO;
 
     private OtpGeneratorRequestDto otpGeneratorRequestDto;

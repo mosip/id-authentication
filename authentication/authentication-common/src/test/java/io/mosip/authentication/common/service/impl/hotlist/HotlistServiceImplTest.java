@@ -11,10 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,7 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class HotlistServiceImplTest {
@@ -34,7 +32,7 @@ public class HotlistServiceImplTest {
     @InjectMocks
     private HotlistServiceImpl hotlistServiceImpl;
 
-    @Autowired
+    @Mock
     private HotlistCacheRepository hotlistCacheRepo;
 
     /** The object mapper. */

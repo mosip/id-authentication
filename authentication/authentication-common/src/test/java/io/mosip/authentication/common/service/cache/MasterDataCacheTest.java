@@ -11,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -23,16 +21,16 @@ import java.util.Map;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class MasterDataCacheTest {
 
     @InjectMocks
     private MasterDataCache masterDataCache;
 
-    /*@Mock
-    private RestHelper restHelper;*/
+    @Mock
+    private RestHelper restHelper;
 
-    @InjectMocks
+    @Mock
     private RestRequestFactory restFactory;
 
     /**

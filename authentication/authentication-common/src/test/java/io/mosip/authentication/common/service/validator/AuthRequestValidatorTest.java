@@ -26,11 +26,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -78,44 +75,44 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  * @author Rakesh Roshan
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
 public class AuthRequestValidatorTest {
 
-	/*@Mock
+	@Mock
 	private SpringValidatorAdapter validator;
 
 	@Mock
-	private PinValidatorImpl pinValidator;*/
+	private PinValidatorImpl pinValidator;
 
-	@MockBean
+	@Mock
 	Errors error;
 
-	@MockBean
+	@Mock
 	IdValidationUtil idValidator;
 
-	@MockBean
+	@Mock
 	private IdInfoFetcher idInfoFetcher;
 
-	/*@InjectMocks
-	RollingFileAppender idaRollingFileAppender;*/
+	@InjectMocks
+	RollingFileAppender idaRollingFileAppender;
 
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
 
-	@MockBean
+	@Mock
 	private IdInfoHelper idinfoHelper;
 
-	/*@Mock
+	@Mock
 	private MasterDataManager masterDataManager;
 
 	@InjectMocks
-	private IDAMappingConfig idMappingConfig;*/
+	private IDAMappingConfig idMappingConfig;
 
-	@MockBean
+	@Mock
 	private HotlistService hotlistService;
 
 	@Before

@@ -12,10 +12,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -33,15 +31,15 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * @author Dinesh Karuppiah
  * @author Nagarjuna
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class FullAddressMatchingStrategyTest {
 
-	@InjectMocks
+	@Mock
 	private DemoNormalizer demoNormalizer;
 	
-	@InjectMocks
+	@Mock
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	Map<String, Object> matchProperties = new HashMap<>();

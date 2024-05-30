@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.websub.impl;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -13,7 +12,7 @@ import io.mosip.kernel.core.websub.model.EventModel;
 
 public class IdAuthFraudAnalysisEventPublisherTest extends AbstractEventInitializerTest<IdAuthFraudAnalysisEventPublisher>{
 
-	@InjectMocks
+	@Mock
 	private ObjectMapper objectMapper;
 	
 	@Override
@@ -32,7 +31,7 @@ public class IdAuthFraudAnalysisEventPublisherTest extends AbstractEventInitiali
 		// publisher but not subscriber
 	}
 	
-	@Test (expected = Exception.class)
+	@Test
 	public void testPublishEvent() {
 		IdAuthFraudAnalysisEventPublisher createTestInstance = createTestInstance();
 		EventModel eventModel = new EventModel();

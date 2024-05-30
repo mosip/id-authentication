@@ -7,16 +7,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class BaseIDAWebSubInitializerTest {
-
-	@InjectMocks
-	ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
 	@Before
 	public void setUp() throws Exception {
@@ -43,7 +39,7 @@ public class BaseIDAWebSubInitializerTest {
 				return 0;
 			}};
 			
-			ReflectionTestUtils.setField(baseIDAWebSubInitializer, "taskScheduler", threadPoolTaskScheduler);
+			ReflectionTestUtils.setField(baseIDAWebSubInitializer, "taskScheduler", Mockito.mock(ThreadPoolTaskScheduler.class));
 		return baseIDAWebSubInitializer;
 	}
 
@@ -137,7 +133,7 @@ public class BaseIDAWebSubInitializerTest {
 				throw new RuntimeException("error");
 			}};
 			
-			ReflectionTestUtils.setField(baseIDAWebSubInitializer, "taskScheduler", threadPoolTaskScheduler);
+			ReflectionTestUtils.setField(baseIDAWebSubInitializer, "taskScheduler", Mockito.mock(ThreadPoolTaskScheduler.class));
 		return baseIDAWebSubInitializer;
 	}
 

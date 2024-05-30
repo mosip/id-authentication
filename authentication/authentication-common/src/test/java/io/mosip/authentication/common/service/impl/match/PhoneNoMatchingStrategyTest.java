@@ -11,10 +11,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -31,14 +29,14 @@ import io.mosip.authentication.core.util.DemoMatcherUtil;
  * @author Nagarjuna
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 public class PhoneNoMatchingStrategyTest {
 
 	Map<String, Object> matchProperties = new HashMap<>();
 	
-	@InjectMocks
+	@Mock
 	private DemoMatcherUtil demoMatcherUtil;
 	
 	@Before
@@ -87,7 +85,7 @@ public class PhoneNoMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(100);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
 		
 		int value = matchFunction.match("9876543210", "9876543210", matchProperties);
 		assertEquals(100, value);
@@ -109,7 +107,7 @@ public class PhoneNoMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doExactMatch("reqInfo", "entityInfo")).thenReturn(0);
+		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(0);
 		int value = matchFunction.match("9789438210", "1234567890", matchProperties);
 		assertEquals(0, value);
 

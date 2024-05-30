@@ -29,18 +29,18 @@ public class KeyBindedTokenAuthServiceImplTest {
     IdInfoHelper idInfoHelper;
 
     /** The id info helper. */
-   /* @Mock
-    MatchInputBuilder matchInputBuilder;*/
+    @Mock
+    MatchInputBuilder matchInputBuilder;
 
     /** The ida mapping config. */
-   /* @Mock
+    @Mock
     IDAMappingConfig idaMappingConfig;
 
     @Mock
     IdAuthSecurityManager securityManager;
 
     @Mock
-    IdentityBindingCertificateRepository identityBindingCertificateRepository;*/
+    IdentityBindingCertificateRepository identityBindingCertificateRepository;
 
     @InjectMocks
     KeyBindedTokenAuthServiceImpl keyBindedTokenAuthService;

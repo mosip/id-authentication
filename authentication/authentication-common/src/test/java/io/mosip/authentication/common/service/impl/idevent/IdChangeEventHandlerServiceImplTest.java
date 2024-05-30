@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -24,7 +23,7 @@ import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdChangeEventHandlerServiceImplTest {
@@ -32,14 +31,14 @@ public class IdChangeEventHandlerServiceImplTest {
 	@InjectMocks
 	private IdChangeEventHandlerServiceImpl idChangeEventImpl;
 
-	/*@Mock
+	@Mock
 	private IdentityCacheRepository identityCacheRepo;
 
 	@Mock
 	private AuditHelper auditHelper;
 
 	@Mock
-	private CredentialStoreService credStorService;*/
+	private CredentialStoreService credStorService;
 
 	private static final String IDA = "IDA";
 
@@ -53,7 +52,7 @@ public class IdChangeEventHandlerServiceImplTest {
 	public void before() {
 	}
 
-	@Test (expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventTest1() throws IdAuthenticationBusinessException {
 		EventModel eventModel = new EventModel();
 		eventModel.setPublisher("Test");
@@ -64,7 +63,7 @@ public class IdChangeEventHandlerServiceImplTest {
 		idChangeEventImpl.handleIdEvent(eventModel);
 	}
 
-	@Test (expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventTest2() throws IdAuthenticationBusinessException {
 		EventModel eventModel = new EventModel();
 		Map<String, Object> data = new HashMap<String, Object>();

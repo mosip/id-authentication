@@ -13,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -30,24 +28,24 @@ import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthTxnServiceImplTest {
 
-	@InjectMocks
+	@Mock
 	private IdAuthSecurityManager securityManager;
 
-	@InjectMocks
+	@Mock
 	private IdServiceImpl idService;
 
-	@Autowired
+	@Mock
 	private AutnTxnRepository authtxnRepo;
 
 	@InjectMocks
 	private AuthTxnServiceImpl authTxnServiceImpl;
 
-	@Autowired
+	@Mock
 	private IdaUinHashSaltRepo uinHashSaltRepo;
 
 	@Before

@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.DataAccessException;
@@ -55,39 +54,39 @@ import io.mosip.idrepository.core.helper.RestHelper;
  * @author Rakesh Roshan
  */
 @Ignore
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdAuthServiceImplTest {
 
-	/*@Mock
+	@Mock
 	private AuditRequestFactory auditFactory;
 	@Mock
 	private RestRequestFactory restFactory;
 	@Mock
-	private RestHelper restHelper;*/
+	private RestHelper restHelper;
 
-	@InjectMocks
+	@Mock
 	private IdAuthSecurityManager securityManager;
 
 	@InjectMocks
 	IdServiceImpl idServiceImpl;
 
-	/*@Mock
-	IdServiceImpl idServiceImplMock;*/
+	@Mock
+	IdServiceImpl idServiceImplMock;
 
-	@Autowired
+	@Mock
 	IdService<AutnTxn> idAuthService;
 
-	@Autowired
+	@Mock
 	AutnTxnRepository autntxnrepository;
-	@InjectMocks
+	@Mock
 	AutnTxn autnTxn;
 
 	@Autowired
 	EnvUtil env;
 	
-	@Autowired
+	@Mock
 	private IdentityCacheRepository identityRepo;
 	
 	@Autowired

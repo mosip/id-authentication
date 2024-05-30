@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,19 +25,19 @@ import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.partnercertservice.service.spi.PartnerCertificateManagerService;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class PartnerCACertEventServiceImplTest {
 
-	@Autowired
+	@InjectMocks
 	private PartnerCACertEventServiceImpl partnerCACertEventServiceImpl;
 
-	/*@Mock
+	@Mock
 	private DataShareManager dataShareManager;
 
 	@Mock
-	private PartnerCertificateManagerService partnerCertManager;*/
+	private PartnerCertificateManagerService partnerCertManager;
 
 	@Value("${ida-decrypt-ca-cert-data-share-content:false}")
 	private boolean decryptCaCertFromDataShare;

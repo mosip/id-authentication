@@ -66,7 +66,8 @@ public class AuthStatusInfoBuilderTest {
 	public void TestconstructDemoErrorForDOB() {
 		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.DOB.getIdname(), DemoMatchType.DOB, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 	}
@@ -76,14 +77,15 @@ public class AuthStatusInfoBuilderTest {
 		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
 				DemoMatchType.ADDR_LINE1, "eng", IdaIdMapping.ADDRESSLINE1.getIdname());
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.ADDRESSLINE1.getIdname()));
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
 		List<AuthError> err = authStatusInfo.getErr();
 		assertEquals(1, err.size());
 		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
-		assertEquals(err.get(0).getErrorMessage(), "Demographic data addressLine1 in eng did not match");
+		assertEquals(err.get(0).getErrorMessage(), "Demographic data address line item(s) in eng did not match");
 	}
 	
 	@Test
@@ -91,7 +93,9 @@ public class AuthStatusInfoBuilderTest {
 		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
 				DemoMatchType.NAME, "eng", IdaIdMapping.NAME.getIdname());
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
@@ -106,7 +110,8 @@ public class AuthStatusInfoBuilderTest {
 		MatchOutput matchOutput = new MatchOutput(0, false, MatchingStrategyType.EXACT.toString(),
 				DemoMatchType.AGE, "eng", IdaIdMapping.AGE.getIdname());
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.DOB.getIdname()));
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
@@ -121,7 +126,9 @@ public class AuthStatusInfoBuilderTest {
 		MatchOutput matchOutput = new MatchOutput(0, true, MatchingStrategyType.EXACT.toString(),
 				DemoMatchType.NAME, "eng", IdaIdMapping.NAME.getIdname());
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(List.of(IdaIdMapping.NAME.getIdname()));
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 		AuthStatusInfo authStatusInfo = authStatusInfoBuilder.build();
@@ -130,12 +137,13 @@ public class AuthStatusInfoBuilderTest {
 		assertEquals(err.get(0).getErrorCode(), IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG.getErrorCode());
 		assertEquals(err.get(0).getErrorMessage(), "Demographic data name in eng did not match");
 	}
-
+	
 	@Test
 	public void TestconstructDemoWrongMatchType() {
 		MatchOutput matchOutput = new MatchOutput(0, false, IdaIdMapping.NAME.getIdname(), BioMatchType.FACE, null, "id");
 		AuthStatusInfoBuilder authStatusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getFace()).thenReturn(new ArrayList<String>());
 		ReflectionTestUtils.invokeMethod(authStatusInfoBuilder, "constructDemoError", matchOutput,
 				authStatusInfoBuilder, idMappingConfig);
 	}
@@ -175,7 +183,8 @@ public class AuthStatusInfoBuilderTest {
 		listMatchOutputs.add(matchOutput);
 
 		AuthType[] authTypes = DemoAuthType.values();
-		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		IDAMappingConfig idMappingConfig = Mockito.mock(IDAMappingConfig.class);
+		Mockito.when(idMappingConfig.getName()).thenReturn(new ArrayList<String>());
 		AuthStatusInfoBuilder.buildStatusInfo(true, listMatchInputs, listMatchOutputs, authTypes, idMappingConfig);
 	}
 

@@ -22,10 +22,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.http.HttpMethod;
@@ -53,7 +51,7 @@ import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @Import(EnvUtil.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
@@ -67,10 +65,10 @@ public class IdTemplateManagerTest {
 	@InjectMocks
 	private MasterDataManager masterDataManager;
 
-	@MockBean
+	@Mock
 	private TemplateManager templateManager;
 
-	@Autowired
+	@Mock
 	private PDFGenerator pdfGenerator;
 
 	@Autowired
@@ -79,10 +77,10 @@ public class IdTemplateManagerTest {
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
 
-	@InjectMocks
+	@Mock
 	private RestRequestFactory restFactory;
 
-	@InjectMocks
+	@Mock
 	private RestHelper restHelper;
 
 	@InjectMocks
@@ -94,7 +92,7 @@ public class IdTemplateManagerTest {
 	@InjectMocks
 	private MasterDataCache masterDataCache;
 
-	@Autowired
+	@Mock
 	private IdInfoFetcher idInfoFetcher;
 
 	/** UTF type. */

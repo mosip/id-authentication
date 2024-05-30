@@ -10,7 +10,16 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-import jakarta.servlet.*;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -203,21 +212,6 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	}
 
 	@Override
-	public String getRequestId() {
-		return "";
-	}
-
-	@Override
-	public String getProtocolRequestId() {
-		return "";
-	}
-
-	@Override
-	public ServletConnection getServletConnection() {
-		return null;
-	}
-
-	@Override
 	public String getContentType() {
 		return null;
 	}
@@ -275,7 +269,6 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	public boolean isRequestedSessionIdValid() {
 		return false;
 	}
-
 
 	@Override
 	public boolean isRequestedSessionIdFromURL() {
@@ -434,6 +427,24 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	@Override
 	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
+	}
+
+	@Override
+	public String getRequestId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProtocolRequestId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServletConnection getServletConnection() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

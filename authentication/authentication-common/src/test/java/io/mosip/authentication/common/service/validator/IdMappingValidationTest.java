@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -52,7 +51,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdMappingValidationTest {
@@ -60,16 +59,16 @@ public class IdMappingValidationTest {
 	@InjectMocks
 	private AuthRequestValidator authRequestValidator;
 
-	@InjectMocks
+	@Mock
 	private PinValidatorImpl pinValidator;
 
-	@InjectMocks
+	@Mock
 	private IdInfoFetcherImpl idInfoFetcher;
 
-	@InjectMocks
+	@Mock
 	private IdInfoHelper idinfoHelper;
 
-	/*@InjectMocks
+	@InjectMocks
 	private static ObjectMapper mapper;
 
 	@Mock
@@ -79,16 +78,16 @@ public class IdMappingValidationTest {
 	private MasterDataManager masterDataManager;
 
 	@Mock
-	private PinValidatorImpl pinValidatorImpl;*/
+	private PinValidatorImpl pinValidatorImpl;
 
 	/**
 	 * The Rest Helper
 	 */
-	/*@Mock
+	@Mock
 	private RestHelper restHelper;
 
 	@Mock
-	private RestRequestFactory restFactory;*/
+	private RestRequestFactory restFactory;
 
 	@Before
 	public void before() throws IdAuthenticationDaoException {

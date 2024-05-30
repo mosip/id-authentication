@@ -12,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -27,7 +25,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthtypeStatusImplTest {
@@ -35,7 +33,7 @@ public class AuthtypeStatusImplTest {
 	@InjectMocks
 	private AuthtypeStatusImpl authtypeStatusImpl;
 
-	@Autowired
+	@Mock
 	private AuthLockRepository authLockRepository;
 
 	@Test

@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -34,16 +33,16 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
 public class FilterValidatorTest {
 
-	@InjectMocks
+	@Autowired
 	EnvUtil env;
 
-	@InjectMocks
+	@Autowired
 	ObjectMapper mapper;
 
 	BaseIDAFilter baseIDAFilter = new BaseIDAFilter() {
@@ -174,8 +173,8 @@ public class FilterValidatorTest {
 		}
 	};
 
-	/*@Mock
-	PartnerService partnerService;*/
+	@Mock
+	PartnerService partnerService;
 
 	@InjectMocks
 	ExternalAuthFilter idAuthFilter;

@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,17 +38,17 @@ public class IdServiceImplTest {
 	@InjectMocks
 	private IdServiceImpl idServiceImpl;
 
-	@InjectMocks
+	@Mock
 	private IdAuthSecurityManager securityManager;
 
-	@Autowired
+	@Mock
 	private IdentityCacheRepository identityRepo;
 
-	@InjectMocks
+	@Mock
 	private ObjectMapper mapper;
 
-	/*@Mock
-	private AutnTxnRepository autntxnrepository;*/
+	@Mock
+	private AutnTxnRepository autntxnrepository;
 	
 	@Test
 	public void getIdentityTest1() throws IdAuthenticationBusinessException, IOException {
