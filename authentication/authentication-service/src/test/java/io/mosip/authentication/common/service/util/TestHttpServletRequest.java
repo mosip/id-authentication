@@ -10,24 +10,15 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.ReadListener;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
-
+import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.Part;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
-
+import jakarta.servlet.ServletConnection;
 public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMetadata {
 
 	private ByteArrayInputStream bais;
@@ -145,10 +136,6 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 		return null;
 	}
 
-	@Override
-	public String getRealPath(String path) {
-		return null;
-	}
 
 	@Override
 	public BufferedReader getReader() throws IOException {
@@ -216,6 +203,21 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	}
 
 	@Override
+	public String getRequestId() {
+		return "";
+	}
+
+	@Override
+	public String getProtocolRequestId() {
+		return "";
+	}
+
+	@Override
+	public ServletConnection getServletConnection() {
+		return null;
+	}
+
+	@Override
 	public String getContentType() {
 		return null;
 	}
@@ -275,17 +277,12 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	}
 
 	@Override
-	public boolean isRequestedSessionIdFromUrl() {
+	public boolean isRequestedSessionIdFromCookie() {
 		return false;
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromURL() {
-		return false;
-	}
-
-	@Override
-	public boolean isRequestedSessionIdFromCookie() {
 		return false;
 	}
 
@@ -437,5 +434,7 @@ public class TestHttpServletRequest implements HttpServletRequest, ObjectWithMet
 	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
 	}
+
+
 
 }

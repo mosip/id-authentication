@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2.1-java21-SNAPSHOT</version>
 	</parent>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-java21-SNAPSHOT</version>
 	<artifactId>authentication-internal-service</artifactId>
 	<name>authentication-internal-service</name>
 	<properties>
@@ -44,7 +44,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>${spring.boot.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -59,7 +58,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
-			<version>${spring.boot.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -70,7 +68,6 @@
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-integration</artifactId>
-			<version>${spring.batch.version}</version>
 		</dependency>
 		<!-- Kernel Hibernate Impl -->
 		<dependency>
@@ -81,9 +78,8 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${maven.swagger.version}</version>
@@ -98,44 +94,37 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${maven.swagger.version}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
-			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-core</artifactId>
-			<version>${io.micrometer.prometheus.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
-			<version>${io.micrometer.prometheus.version}</version>
 		</dependency>
 		<dependency>
 	  		<groupId>org.projectlombok</groupId>
 	  		<artifactId>lombok</artifactId>
-	  		<version>${lombok.version}</version>
   		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>${spring.security.test.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -181,27 +170,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
-			<version>${spring.boot.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -216,7 +190,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
-			<version>${jackson.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -246,7 +219,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>${jackson.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -261,7 +233,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring.boot.version}</version>
+				<version>3.2.3</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>

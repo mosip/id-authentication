@@ -44,7 +44,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils2;
-import reactor.ipc.netty.http.HttpResources;
+import reactor.netty.http.HttpResources;
 
 /**
  * 

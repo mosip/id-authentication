@@ -13,10 +13,10 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ReadListener;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletInputStream;
 
 import org.junit.Before;
 import org.junit.Test;

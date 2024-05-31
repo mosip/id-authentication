@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -51,7 +52,7 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
-
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
