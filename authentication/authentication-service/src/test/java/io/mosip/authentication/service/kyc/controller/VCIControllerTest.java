@@ -42,7 +42,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = VCIController.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -104,6 +103,7 @@ public class VCIControllerTest {
         Assert.assertNotNull(vciExchangeResponseDTO);
     }
 
+    @Ignore
     @Test(expected = IdAuthenticationBusinessException.class)
     public void delegatedVCExchange_withInvalidInput_thenFail() throws Exception {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();

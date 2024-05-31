@@ -48,7 +48,6 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  * @author Prem Kumar
  *
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

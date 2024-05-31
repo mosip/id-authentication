@@ -38,7 +38,6 @@ import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.constant.BiometricType;
-@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 @RunWith(SpringRunner.class)

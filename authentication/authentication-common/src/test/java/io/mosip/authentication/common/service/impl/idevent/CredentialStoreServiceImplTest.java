@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.batch.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,7 +53,6 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
-@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
@@ -318,7 +318,7 @@ public class CredentialStoreServiceImplTest {
         credentialEventStore.setStatusCode("STORED");
         Optional<CredentialEventStore> eventOpt = Optional.of(credentialEventStore);
         Mockito.when(credentialEventRepo.findTop1ByCredentialTransactionIdOrderByCrDTimesDesc(dto.getRequestId())).thenReturn(eventOpt);
-        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processMissingCredentialRequestId", dtoList);
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processMissingCredentialRequestId", dto);
         //
         //with status_code = "FAILED_WITH_MAX_RETRIES"
         credentialEventStore.setStatusCode("FAILED_WITH_MAX_RETRIES");
@@ -339,7 +339,7 @@ public class CredentialStoreServiceImplTest {
      */
     @Test
     public void storeIdentityEntityTest(){
-        List<IdentityEntity> idEntitites = new ArrayList<IdentityEntity>();
+        Chunk<IdentityEntity> idEntitites = new Chunk<>();
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", idEntitites);
     }
 
