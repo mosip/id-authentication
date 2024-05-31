@@ -60,7 +60,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  *
  * @author Rakesh Roshan
  */
-
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })

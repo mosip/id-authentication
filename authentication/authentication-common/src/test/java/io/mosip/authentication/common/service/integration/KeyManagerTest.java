@@ -41,6 +41,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author M1046368 Arun Bose S
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest

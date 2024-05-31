@@ -64,7 +64,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAUL
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.KYC_EXCHANGE_DEFAULT_LANGUAGE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.DEFAULT_KYC_EXCHANGE_DEFAULT_LANGUAGE;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;

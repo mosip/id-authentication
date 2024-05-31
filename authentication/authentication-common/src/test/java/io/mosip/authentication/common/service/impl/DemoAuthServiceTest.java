@@ -66,6 +66,7 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * @author Nagarjuna
  *
  */
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })

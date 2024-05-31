@@ -4,10 +4,11 @@
 
 CREATE TABLE ida.batch_job_execution_context
 (
-    job_execution_id bigint NOT NULL,
-    short_context character varying(2500) COLLATE pg_catalog."default" NOT NULL,
-    serialized_context text COLLATE pg_catalog."default",
-    CONSTRAINT batch_job_execution_context_pkey PRIMARY KEY (job_execution_id)
+        JOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    	SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+    	SERIALIZED_CONTEXT TEXT ,
+    	constraint JOB_EXEC_CTX_FK foreign key (JOB_EXECUTION_ID)
+    	references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
 )
 WITH (
     OIDS = FALSE
