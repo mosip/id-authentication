@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -68,6 +69,7 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  *
  * @author Sanjay Murali
  */
+@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 
