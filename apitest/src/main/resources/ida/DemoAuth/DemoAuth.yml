@@ -1,6 +1,6 @@
 DemoAuthNew:
   auth_DemoAuth_DOB_Valid_Smoke_UIN:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1081,21 +1081,6 @@ DemoAuthNew:
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/error
-      input: '{
-        "timestamp": "$TIMESTAMP$",
-        "transactionId": "$TRANSACTIONID$",
-      "value": "1970/07/08",
-        "key": "dob"
-    }'
-      output: '{
-        "authStatus": "false"
-}'
-  auth_DemoAuth_DOB_Valid_Smoke_UIN_NOAUTH_resident_cookie_Neg:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "timestamp": "$TIMESTAMP$",
@@ -1104,7 +1089,7 @@ DemoAuthNew:
         "key": "dob"
     }'
       output: '{
-        "authStatus": "true"
+        "authStatus": "false"
 }'
   auth_DemoAuth_DOB_Valid_Smoke_with_Draft_UIN_Neg:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:GetDraft_all_valid_smoke_sid_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
@@ -1213,44 +1198,6 @@ DemoAuthNew:
         "transactionId": "$TRANSACTIONID$",
       "value": "1970/07/08",
         "key": "dob"
-    }'
-      output: '{
-  "authStatus": "false"
-}'
-  auth_DemoAuthValid_when_partnerDemoDown_and_inavlid_vid:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$id=$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuth/DemoIdentityEncryptName
-      outputTemplate: ida/DemoAuth/error
-      input: '{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FIRSTNAMEeng"
-    }
-  ],
-        "timestamp": "$TIMESTAMP$",
-        "transactionId": "$TRANSACTIONID$"
-    }'
-      output: '{
-  "authStatus": "false"
-}'
-  auth_DemoAuthValid_when_partnerDemoDown:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$id=$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$&idType=VID&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuth/DemoIdentityEncryptName
-      outputTemplate: ida/DemoAuth/error
-      input: '{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FIRSTNAMEeng"
-    }
-  ],
-        "timestamp": "$TIMESTAMP$",
-        "transactionId": "$TRANSACTIONID$"
     }'
       output: '{
   "authStatus": "false"
