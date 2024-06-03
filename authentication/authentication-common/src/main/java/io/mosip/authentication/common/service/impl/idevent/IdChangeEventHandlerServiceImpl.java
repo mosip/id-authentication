@@ -187,7 +187,7 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
-		if (idHash != null && !idHash.isEmpty()) {
+		if (idHash != null && !idHash.isEmpty() && identityCacheRepo.existsById(idHash)) {
 			identityCacheRepo.deleteById(idHash);
 			removeIdStatusEventPublisher.publishRemoveIdStatusEvent(idHash);
 		}
