@@ -29,7 +29,6 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.VciCredentialsDefinitionRequestDTO;
 import io.mosip.authentication.core.indauth.dto.VciExchangeRequestDTO;
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -56,6 +55,7 @@ public class VciExchangeRequestValidatorTest {
         Assert.assertFalse(vciExchangeRequestValidator.supports(KycAuthRequestDTO.class));
     }
 
+    @Ignore
     @Test
     public void test_validate_withValidInput_thenPass() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -73,6 +73,7 @@ public class VciExchangeRequestValidatorTest {
         assertFalse(errors.hasErrors());
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidDIDAsCredentialSubjectId_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -100,6 +101,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("requestTime"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidTxnId_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -111,6 +113,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("transactionID"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidAuthToken_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -123,6 +126,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("vcAuthToken"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidCredSubjectId_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -136,6 +140,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("credSubjectId"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidPublicKeyComponentInDID_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -150,6 +155,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("credSubjectId"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidCredentialFormat_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -170,6 +176,7 @@ public class VciExchangeRequestValidatorTest {
         assertTrue(errors.hasFieldErrors("vcFormat"));
     }
 
+    @Ignore
     @Test
     public void test_validate_withInvalidCredentialType_thenFail() {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
@@ -185,7 +192,6 @@ public class VciExchangeRequestValidatorTest {
         vciExchangeRequestValidator.validate(vciExchangeRequestDTO, errors);
         assertTrue(errors.hasErrors());
         assertTrue(errors.hasFieldErrors("credentialsDefinition"));
-
 
         vciCredentialsDefinitionRequestDTO = new VciCredentialsDefinitionRequestDTO();
         vciCredentialsDefinitionRequestDTO.setType(Arrays.asList("VerifiableCredentialssss", "MOSIPVerifiableCredential"));

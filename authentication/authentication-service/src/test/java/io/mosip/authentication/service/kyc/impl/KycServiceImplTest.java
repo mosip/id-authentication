@@ -69,7 +69,6 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
  *
  * @author Sanjay Murali
  */
-@Ignore
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 

@@ -65,7 +65,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
