@@ -15,14 +15,15 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
@@ -59,6 +60,7 @@ import io.mosip.authentication.internal.service.batch.MissingCredentialsItemRead
 import io.mosip.authentication.internal.service.listener.InternalAuthIdChangeEventsWebSubInitializer;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * The DataProcessingBatchConfig - Configuration file for scheduling Batch Job
@@ -76,17 +78,15 @@ public class DataProcessingBatchConfig {
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(DataProcessingBatchConfig.class);
 
-	/** The job builder factory. */
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
-
-	/** The step builder factory. */
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
-	
 	/** The job registry. */
 	@Autowired
 	public JobRegistry jobRegistry;
+
+	@Autowired
+	private JobRepository jobRepository;
+
+	@Autowired
+	private PlatformTransactionManager platformTransactionManager;
 
 	/** The chunk size. */
 	@Value("${" + CREDENTIAL_STORE_CHUNK_SIZE + ":10}")
@@ -133,7 +133,7 @@ public class DataProcessingBatchConfig {
 	@Bean
 	@Qualifier("credentialStoreJob")
 	public Job credentialStoreJob(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("credentialStoreJob")
+		Job job = new JobBuilder("credentialStoreJob",jobRepository)
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
 				.flow(credentialStoreStep())
@@ -150,7 +150,7 @@ public class DataProcessingBatchConfig {
 	@Bean
 	@Qualifier("retriggerMissingCredentials")
 	public Job retriggerMissingCredentials(CredentialStoreJobExecutionListener listener) {
-		Job job = jobBuilderFactory.get("retriggerMissingCredentials").incrementer(new RunIdIncrementer())
+		Job job = new JobBuilder("retriggerMissingCredentials",jobRepository).incrementer(new RunIdIncrementer())
 				.listener(listener)
 				.flow(validateWebSubInitialization()) // check if web sub subscribed to proceed
 				.next(retriggerMissingCredentialsStep()) // Then retrigger missing credentials
@@ -164,7 +164,7 @@ public class DataProcessingBatchConfig {
 	}
 
 	private TaskletStep validateWebSubInitialization() {
-		return stepBuilderFactory.get("validateWebSub").tasklet((contribution, chunkContext) -> {
+		return new StepBuilder("validateWebSub",jobRepository).tasklet((contribution, chunkContext) -> {
 			// rescheduling job only when websub service is unavailable
 			if (idChangeWebSubInitializer.doRegisterTopics() == HttpStatus.SC_SERVICE_UNAVAILABLE
 					|| idChangeWebSubInitializer.doInitSubscriptions() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
@@ -172,7 +172,7 @@ public class DataProcessingBatchConfig {
 				throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 			}
 			return null;
-		}).build();
+		},platformTransactionManager).build();
 	}
 
 	private void rescheduleJob(Job job) {
@@ -196,8 +196,8 @@ public class DataProcessingBatchConfig {
 	public Step credentialStoreStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
-		return stepBuilderFactory.get("credentialStoreStep")
-				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize)
+		return new StepBuilder("credentialStoreStep",jobRepository)
+				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize,platformTransactionManager)
 				.reader(credentialEventReader())
 				.processor(asyncCredentialStoreItemProcessor())
 				.writer(asyncCredentialStoreItemWriter())
@@ -215,8 +215,8 @@ public class DataProcessingBatchConfig {
 	public Step retriggerMissingCredentialsStep() {
 		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
 		exceptions.put(IdAuthenticationBusinessException.class, false);
-		return stepBuilderFactory.get("retriggerMissingCredentialsStep")
-				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize)
+		return new StepBuilder("retriggerMissingCredentialsStep",jobRepository)
+				.<CredentialRequestIdsDto, Future<CredentialRequestIdsDto>>chunk(chunkSize,platformTransactionManager)
 				.reader(missingCredentialsItemReader)
 				.processor(asyncIdentityItemProcessor())
 				.writer(asyncMissingCredentialRetriggerItemWriter())
@@ -243,7 +243,8 @@ public class DataProcessingBatchConfig {
 	 * @return the item writer
 	 */
 	private ItemWriter<CredentialRequestIdsDto> missingCredentialRetriggerItemWriter() {
-		return credentialStoreService::processMissingCredentialRequestId;
+		ItemWriter<CredentialRequestIdsDto> processMissingCredentialRequestId = credentialStoreService::processMissingCredentialRequestId;
+		return processMissingCredentialRequestId;
 	}
 	
 	/**

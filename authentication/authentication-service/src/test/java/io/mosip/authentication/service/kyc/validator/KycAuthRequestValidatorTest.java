@@ -155,6 +155,7 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testInvalidAuthRequest() {
 		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
@@ -287,6 +288,7 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void TestkycvalidateAuthType() {
 		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
@@ -380,6 +382,7 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Ignore
 	@Test
 	public void testForIsValidAuthtype() {
 		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();

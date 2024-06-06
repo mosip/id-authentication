@@ -4,11 +4,11 @@
 
 CREATE TABLE ida.batch_step_execution_context
 (
-    step_execution_id bigint NOT NULL,
-    short_context character varying(2500) COLLATE pg_catalog."default" NOT NULL,
-    serialized_context text COLLATE pg_catalog."default",
-    CONSTRAINT batch_step_execution_context_pkey PRIMARY KEY (step_execution_id)
-    
+        STEP_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    	SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+    	SERIALIZED_CONTEXT TEXT ,
+    	constraint STEP_EXEC_CTX_FK foreign key (STEP_EXECUTION_ID)
+    	references BATCH_STEP_EXECUTION(STEP_EXECUTION_ID)
 )
 WITH (
     OIDS = FALSE
