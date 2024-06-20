@@ -30,9 +30,9 @@ public class MispLicenseData {
 	@Column(name = "misp_commence_on")
 	private LocalDateTime mispCommenceOn;
 
-	@NotNull
+	/*@NotNull
 	@Column(name = "misp_expires_on")
-	private LocalDateTime mispExpiresOn;
+	private LocalDateTime mispExpiresOn;*/
 
 	@NotNull
 	@Column(name = "misp_status")
