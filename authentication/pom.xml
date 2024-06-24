@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -35,31 +35,31 @@
 		</developer>
 	</developers>
 
-    <repositories>
-        <repository>
-            <id>ossrh</id>
-            <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-            <snapshots>
-            <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>MavenCentral</name>
-            <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
-            <snapshots>
-            <enabled>false</enabled>
-            </snapshots>
-        </repository>
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<name>CentralRepository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>danubetech-maven-public</id>
 			<url>https://repo.danubetech.com/repository/maven-public/</url>
-		  </repository>
-    </repositories>
-	
+		</repository>
+	</repositories>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -80,7 +80,6 @@
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-otp-service</module>
-		<module>esignet-integration-impl</module>
 	</modules>
 
 	<properties>
@@ -95,7 +94,7 @@
 		<!-- Kernel components -->
 		<kernel.parent.version>1.2.0.1</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
-		<kernel-keymanager-service.version>1.2.0.1</kernel-keymanager-service.version>
+		<kernel-keymanager-service.version>1.2.0.2-SNAPSHOT</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
@@ -162,7 +161,7 @@
 		<objenesis.version>3.1</objenesis.version>
 
 		<springdoc.version>1.5.10</springdoc.version>
-		
+
 	</properties>
 
 	<dependencies>
@@ -236,7 +235,7 @@
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
@@ -446,13 +445,13 @@
 			</plugin>
 		</plugins>
 	</build>
-		
-		<profiles>
-			<profile>
-				<id>sonar</id>
-				<build>
-					<plugins>
-						<plugin>
+
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<build>
+				<plugins>
+					<plugin>
 						<groupId>org.sonarsource.scanner.maven</groupId>
 						<artifactId>sonar-maven-plugin</artifactId>
 						<version>${maven.sonar.version}</version>
@@ -465,9 +464,9 @@
 							</execution>
 						</executions>
 					</plugin>
-					</plugins>
-				</build>
-			</profile>
-		</profiles>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
