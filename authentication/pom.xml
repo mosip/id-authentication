@@ -5,19 +5,19 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
 	<description>Parent project of MOSIP ID Authentication</description>
 	<url>https://github.com/mosip/id-authentication</url>
 
-	<licenses>
+	<!--<licenses>
 		<license>
 			<name>MPL 2.0</name>
-			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+			<url>https://www.mozilla.org/en-US/MPL/2.0/</url>;
 		</license>
-	</licenses>
+	</licenses>-->
 
 	<scm>
 		<connection>scm:git:git://github.com/mosip/id-authentication.git</connection>
@@ -80,7 +80,6 @@
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-otp-service</module>
-		<module>esignet-integration-impl</module>
 	</modules>
 
 	<properties>
@@ -95,7 +94,7 @@
 		<!-- Kernel components -->
 		<kernel.parent.version>1.2.0.1</kernel.parent.version>
 		<kernel-core.version>${kernel.parent.version}</kernel-core.version>
-		<kernel-keymanager-service.version>1.2.0.1</kernel-keymanager-service.version>
+		<kernel-keymanager-service.version>1.2.0.2-SNAPSHOT</kernel-keymanager-service.version>
 		<kernel-idgenerator-tokenid.version>${kernel.parent.version}</kernel-idgenerator-tokenid.version>
 		<kernel-idobjectvalidator.version>${kernel.parent.version}</kernel-idobjectvalidator.version>
 		<kernel-pinvalidator.version>${kernel.parent.version}</kernel-pinvalidator.version>
