@@ -105,15 +105,15 @@
 		<kernel-cbeffutil-api.version>${kernel.parent.version}</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>${kernel.parent.version}</kernel-templatemanager-velocity.version>
 		<kernel-auth-adapter.version>${kernel.parent.version}</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.2.0.1</kernel-biometrics-api.version>
+		<kernel-biometrics-api.version>${kernel.parent.version}</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>${kernel.parent.version}</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.0.1</id-repository-core.version>
+		<id-repository-core.version>1.2.0.1-B1</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>1.2.0.1</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>${kernel.parent.version}</kernel-idauthenticationfilter-api.version>
 		<kernel-biometrics-util>${kernel.parent.version}</kernel-biometrics-util>
-		<kernel-openid-bridge-api.version>1.2.0.1</kernel-openid-bridge-api.version>
+		<kernel-openid-bridge-api.version>${kernel.parent.version}</kernel-openid-bridge-api.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>11</maven.compiler.source>
@@ -422,7 +422,7 @@
 				</executions>
 				<configuration>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/service-git.properties</generateGitPropertiesFilename>
 					<includeOnlyProperties>
 						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
 						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
