@@ -92,7 +92,7 @@ WORKDIR /home/${container_user}
 
 ENV work_dir=/home/${container_user}
 
-ARG loader_path=${work_dir}/additional_jars/
+ARG loader_path=${work_dir}/additional_jars
 
 RUN mkdir -p ${loader_path}
 
@@ -112,13 +112,13 @@ EXPOSE 9010
 
 # install packages and create user
 RUN apk -q update \
-&& apk add -q unzip sudo curl\
+&& apk add -q unzip sudo curl bash wget \
 && addgroup -g ${container_user_gid} ${container_user_group} \
 && adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user} \
 && addgroup sudo \
 && adduser ${container_user} sudo \
 && echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers\
 && chown -R ${container_user}:${container_user} /home/${container_user} \
 && chmod +x configure_start.sh
 

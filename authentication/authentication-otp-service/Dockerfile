@@ -94,7 +94,7 @@ EXPOSE 9010
 
 # install packages and create user
 RUN apk -q update \
-&& apk add -q unzip sudo curl bash \
+&& apk add -q unzip sudo curl bash wget \
 && addgroup -g ${container_user_gid} ${container_user_group} \
 && adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user} \
 && addgroup sudo \
