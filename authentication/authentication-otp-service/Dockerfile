@@ -68,14 +68,6 @@ ARG hsm_local_dir=hsm-client
 
 ENV hsm_local_dir_name=${hsm_local_dir}
 
-# install packages and create user
-RUN apk -q update \
-&& apk add -q unzip sudo curl \
-&& addgroup -g ${container_user_gid} ${container_user_group} \
-&& adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user} \
-&& addgroup sudo \
-&& adduser ${container_user} sudo \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers
 
 # set working directory for the user
 WORKDIR /home/${container_user}
@@ -94,16 +86,22 @@ ADD configure_start.sh configure_start.sh
 
 ADD ./lib/* "${loader_path_env}"/
 
-RUN chmod +x configure_start.sh
-
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
 EXPOSE 8092
 
 EXPOSE 9010
 
-# change permissions of file inside working dir
-RUN chown -R ${container_user}:${container_user} /home/${container_user}
+# install packages and create user
+RUN apk -q update \
+&& apk add -q unzip sudo curl bash wget \
+&& addgroup -g ${container_user_gid} ${container_user_group} \
+&& adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user} \
+&& addgroup sudo \
+&& adduser ${container_user} sudo \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
+&& chown -R ${container_user}:${container_user} /home/${container_user} \
+&& chmod +x configure_start.sh
 
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
