@@ -1,17 +1,13 @@
 {
-  "authResponse": {
-	    "body": {
-	    "errors": [
-	      {{#each errors}}
-	        {
-	            "errorCode": "{{errorCode}}"
-	        }
-	          {{#unless @last}},{{/unless}}
-	      	{{/each}}
-	  ],
-	      "response": {
-	        "kycStatus": {{kycStatus}}
-	      }
-	    }
-  }
+  "errors": [
+    {{#each errors}}
+    {
+      "errorCode": "{{errorCode}}"
+    }
+     {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+  "response": {
+    "kycStatus": "{{kycStatus}}"
+}
 }

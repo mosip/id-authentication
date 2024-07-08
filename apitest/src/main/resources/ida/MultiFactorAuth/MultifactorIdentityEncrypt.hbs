@@ -1,38 +1,41 @@
 {
-		"otp": "111111",
+		"otp": "931646",
 		"demographics": {
 			"{{key}}": "{{value}}"
 		},
 		"biometrics": [
-        {
-            "data": {
-                "bioSubType": "{{bioSubType}}",
-                "bioType": "{{bioType}}",
-                "bioValue": "{{bioValue}}" ,
-                "deviceCode": "{{deviceCode}}",
-                "deviceProviderID": "{{deviceProviderID}}",
-                "deviceServiceID": "{{deviceServiceID}}",
-                "deviceServiceVersion": "{{deviceServiceVersion}}",
-                "env": "Staging",
-                "domainUri": "https://qa-triple.mosip.net",
-                "digitalId": {
-                    "serialNo": "{{serialNo}}",
-                    "make": "{{make}}",
-                    "model": "{{model}}",
-                    "type": "{{type}}",
-                    "deviceSubType": "{{deviceSubType}}",
-                    "deviceProvider": "{{deviceProvider}}",
-                    "deviceProviderId": "{{deviceProviderId}}",
-                    "dateTime": "{{dateTime}}"
-                },
-                "mosipProcess": "Auth",
-                "purpose": "Auth",
-                "qualityScore": 70,
-                "requestedScore": 70,
-                "timestamp": "{{timestamp}}",
-                "transactionId": "{{transactionId}}"
-            }
-        }
+      {
+        "data": {
+          "bioSubType": "{{bioSubType}}",
+          "bioType": "{{bioType}}",
+          "bioValue": "{{bioValue}}",
+          "deviceCode": "{{deviceCode}}",
+          "deviceProviderID": "{{deviceProviderID}}",
+          "deviceServiceID": "{{deviceServiceID}}",
+          "deviceServiceVersion": "{{deviceServiceVersion}}",
+          "digitalId": {
+            "dateTime": "{{dateTime}}",
+            "deviceProvider": "{{deviceProvider}}",
+            "deviceProviderId": "{{deviceProviderID}}",
+            "deviceSubType": "{{deviceSubType}}",
+            "make": "{{make}}",
+            "model": "{{model}}",
+            "serialNo": "{{serialNo}}",
+            "type": "{{type}}"
+          },
+          "domainUri": "baseurl",
+          "env": "Staging",
+          "purpose": "AUTH",
+          "qualityScore": 70,
+          "requestedScore": 70,
+          "timestamp": "$DATETIME$",
+          "transactionId": "{{transactionId}}"
+        },
+        "hash": "hash",
+        "sessionKey": "sessionKey",
+        "thumbprint": "IDAFIRthumbprint"
+      }
     ],
-		"timestamp": "{{timestamp}}"
+		"timestamp": "$DATETIME$",
+    "transactionID": "{{transactionId}}"
 	}

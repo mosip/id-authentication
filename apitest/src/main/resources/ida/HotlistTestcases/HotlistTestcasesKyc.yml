@@ -4,7 +4,7 @@ EkycDemo:
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
-      outputTemplate: ida/HotlistTestcases/ekycDemoResult
+      outputTemplate: ida/HotlistTestcases/error
       input: '{
         "id": "mosip.identity.kyc",
         "requestTime": "$TIMESTAMP$",
@@ -24,8 +24,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-022",
-      "errorMessage": "individualId is blocked"
+      "errorCode": "IDA-MLC-008"
     }
   ]
 }'
@@ -34,7 +33,7 @@ EkycDemo:
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
-      outputTemplate: ida/HotlistTestcases/ekycDemoResult
+      outputTemplate: ida/HotlistTestcases/error
       input: '{
         "id": "mosip.identity.kyc",
         "requestTime": "$TIMESTAMP$",
@@ -54,8 +53,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-022",
-      "errorMessage": "individualId is blocked"
+      "errorCode": "IDA-MLC-008"
     }
   ]
 }'

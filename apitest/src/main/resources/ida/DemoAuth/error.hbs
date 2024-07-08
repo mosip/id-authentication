@@ -1,9 +1,20 @@
 {
-  "authResponse": {
-    "body": {
-      "response": {
-        "authStatus": {{authStatus}}
-      }
+    "transactionID": "$IGNORE$",
+    "version": "$IGNORE$",
+    "id": "$IGNORE$",
+    "errors": [
+      {{#each errors}}
+        {
+            "errorCode": "{{errorCode}}",
+            "errorMessage": "{{errorMessage}}",
+            "actionMessage": "$IGNORE$"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+    "responseTime": "$IGNORE$",
+    "response": {
+        "authStatus": {{authStatus}},
+        "authToken": "$IGNORE$"
     }
-  }
 }

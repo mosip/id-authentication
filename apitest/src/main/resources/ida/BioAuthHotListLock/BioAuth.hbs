@@ -1,34 +1,29 @@
 {
-    "biometrics": [
-        {
-            "data": {
-                "bioSubType": "{{bioSubType}}",
-                "bioType": "{{bioType}}",
-                "bioValue": "{{bioValue}}" ,
-                "deviceCode": "{{deviceCode}}",
-                "deviceProviderID": "{{deviceProviderID}}",
-                "deviceServiceID": "{{deviceServiceID}}",
-                "deviceServiceVersion": "{{deviceServiceVersion}}",
-                "env": "Staging",
-                "domainUri": "https://qa-triple.mosip.net",
-                "digitalId": {
-                    "serialNo": "{{serialNo}}",
-                    "make": "{{make}}",
-                    "model": "{{model}}",
-                    "type": "{{type}}",
-                    "deviceSubType": "{{deviceSubType}}",
-                    "deviceProvider": "{{deviceProvider}}",
-                    "deviceProviderId": "{{deviceProviderId}}",
-                    "dateTime": "{{dateTime}}"
-                },
-                "mosipProcess": "Auth",
-                "purpose": "Auth",
-                "qualityScore": 70,
-                "requestedScore": 70,
-                "timestamp": "{{timestamp}}",
-                "transactionId": "{{transactionId}}"
-            }
-        }
+	"id": "mosip.identity.auth",
+	"consentObtained": true,
+	"individualId": "{{individualId}}",
+	"individualIdType": "{{individualIdType}}",
+	"request": "wB6n9jA-jZ0NPJQjkyPyugYWzk4fJvgHnP8OKVu4urfnjdrT1O3hycb9HncVXMmgrmgbXwBAX-01RgHyB-EJJN9Ahk_u0JZTKiZfXLnmQI6lBjpruG-L2dJyfR0vAMt3Yb0W8BcNd1i2wMpAcu8tpm-aXz79nnh68_a3HdSM84799kopLW26pFo_iQzqNT0VuOg1OBEjtkb92NsCt-391v20UjRyIr1hIETHReOjCjI",
+	"requestHMAC": "EF4F5925A684CE1CE6D8F6E5C3385C641B06800AAE213C9F55696015FF7D8CFC",
+	"requestTime": "{{requestTime}}",
+	"filters": [
+    {{#each filters}}
+       "{{type}}": {{bio}}
+       {{#unless @last}},{{/unless}}
+      	{{/each}}
     ],
-    "timestamp": "{{timestamp}}"
+	"requestedAuth": {	
+		"bio": {{bio}},
+		"demo": {{demo}},
+		"otp": {{otp}},
+		"pin": false
+	},
+	"requestSessionKey": "sessionkey",
+	"transactionID": "{{transactionId}}",
+	"domainUri": "baseurl",
+	"env": "Staging",
+	"keyIndex": "string",
+	"specVersion": "1.0",
+	"thumbprint": "partnerORinternalthumbprint",
+	"version": "1.0"
 }
