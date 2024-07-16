@@ -1,9 +1,10 @@
 {
-  "authResponse": {
-    "body": {
-      "response": {
-        "kycStatus": {{kycStatus}}
-      }
+  "errors": [
+    {{#each errors}}
+    {
+      "errorCode": "{{errorCode}}"
     }
-  }
+     {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ]
 }

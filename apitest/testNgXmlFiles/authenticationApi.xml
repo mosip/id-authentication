@@ -32,7 +32,7 @@
 	</test>
 
 
-<test name="CreateDraft">
+	<test name="CreateDraft">
 		<parameter name="ymlFile"	value="ida/CreateDraft/CreateDraft.yml" />
 	<classes>
 		<class name="io.mosip.testrig.apirig.testscripts.PostWithOnlyPathParam" />
@@ -111,7 +111,7 @@
 	</test>
 
 	<test name="BioAuth">
-		<parameter name="ymlFile" value="ida/BioAuth/BioAuth.yml" />
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
@@ -119,21 +119,21 @@
 	</test>
 
 	<test name="EkycBio">
-		<parameter name="ymlFile" value="ida/EkycBio/EkycBio.yml" />
+		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
 		</classes>
 	</test>
 	<test name="OtpAuth">
-		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth.yml" />
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
 	<test name="EkycOtp">
-		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp.yml" />
+		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
@@ -141,7 +141,7 @@
 	</test>
 	<test name="MultiFactorAuth">
 		<parameter name="ymlFile"
-			value="ida/MultiFactorAuth/MultiFactorAuth.yml" />
+			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.MultiFactorAuthNew" />
 		</classes>
@@ -222,15 +222,15 @@
 	</test>
 	
 	<test name="DemoAuth">
-		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth.yml" />
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuthSimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
 	</test>
 	<test name="EkycDemo">
-		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo.yml" />
+		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuthSimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
 	</test>
 
@@ -260,7 +260,7 @@
 	
 	
 
-<test name="HotlistTestcasesOtpAuth">
+	<test name="HotlistTestcasesOtpAuth">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>

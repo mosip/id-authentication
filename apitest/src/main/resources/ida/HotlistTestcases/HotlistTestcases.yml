@@ -4,7 +4,7 @@ DemoAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
-      outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
+      outputTemplate: ida/HotlistTestcases/error
       input: '{
         "id": "mosip.identity.auth",
         "requestTime": "$TIMESTAMP$",
@@ -24,7 +24,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
+      "errorCode": "IDA-MLC-008",
       "errorMessage": "$IGNORE$"
     }
   ]
@@ -34,7 +34,7 @@ DemoAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
-      outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
+      outputTemplate: ida/HotlistTestcases/error
       input: '{
         "id": "mosip.identity.auth",
         "requestTime": "$TIMESTAMP$",
@@ -54,7 +54,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
+      "errorCode": "IDA-MLC-008",
       "errorMessage": "$IGNORE$"
     }
   ]
@@ -64,7 +64,7 @@ DemoAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
-      outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
+      outputTemplate: ida/HotlistTestcases/error
       input: '{
         "id": "mosip.identity.auth",
         "requestTime": "$TIMESTAMP$",
@@ -84,7 +84,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
+      "errorCode": "IDA-MLC-008",
       "errorMessage": "$IGNORE$"
     }
   ]

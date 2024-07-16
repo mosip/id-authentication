@@ -4,10 +4,14 @@
     "transactionID": "$IGNORE$",
     "responseTime": "$IGNORE$",
     "errors": [
+      {{#each errors}}
         {
             "errorCode": "{{errorCode}}",
-            "errorMessage": "{{errorMessage}}"
+            "errorMessage": "$IGNORE$",
+            "actionMessage": "$IGNORE$"
         }
-    ],
-    "response": null
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+    "response": "$IGNORE$"
 }

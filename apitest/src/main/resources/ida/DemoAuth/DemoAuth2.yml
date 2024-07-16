@@ -1,0 +1,1783 @@
+DemoAuthNew:
+  auth_DemoAuth_DOB_Valid_Smoke_UIN:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_DOB_InValid_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$IDlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_SpaceValue_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "  ",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_with_updated_edited_policy_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_VID_invalid_transaction_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1254@#45gg",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "2023/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+
+  auth_DemoAuth_DOB_Valid_Smoke_Infant_Uin_which_locked_for_demo_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "2023/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+
+  auth_DemoAuth_DOB_Invalid_Past_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_DOB_Invalid_Future_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "2053-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_DOB_Empty_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_DOB_InValid_uin_Dateofbirth:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "04-11-1965",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_InValid_Dateofbirth_with_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "04-11-1965",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_Email_Valid_Smoke_Pos_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+
+  auth_DemoAuth_Email_Invalid_Past_Timestamp_VID_Neg_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_Email_Invalid_Future_Timestamp_VID_Neg_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "2052-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_Email_Valid_Smoke_Poss_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_Email_InValid_uin_Email:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "raksdgdg@@#$%RFFGVgb",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_Email_InValid_Email_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "raksdgdg@@#$%RFFGVgb",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_gender_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_gender_InValid_LangCode:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$123LANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_InValid_Gender_Invalid_RS:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "M@@33E"
+    }
+  ],
+   "residenceStatus": [
+                {
+                    "language": "$PRIMARYLANG$",
+                    "value": "Ner"
+                }
+            ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGenderRS"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_Valid_Gender_Invalid_RS:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+   "residenceStatus": [
+                {
+                    "language": "$PRIMARYLANG$",
+                    "value": "Ner"
+                }
+            ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGenderRS"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_InValid_Gender_valid_RS:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "ML@@#E"
+    }
+  ],
+   "residenceStatus": [
+                {
+                    "language": "$PRIMARYLANG$",
+                    "value": "Non-Foreigner"
+                }
+            ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGenderRS"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_InValid_Gender_valid_RS_with_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "ML@@#E"
+    }
+  ],
+   "residenceStatus": [
+                {
+                    "language": "$PRIMARYLANG$",
+                    "value": "Non-Foreigner"
+                }
+            ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGenderRS"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_Valid_Gender_valid_RS_with_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+   "residenceStatus": [
+                {
+                    "language": "$PRIMARYLANG$",
+                    "value": "Non-Foreigner"
+                }
+            ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGenderRS"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_InValid_Lang_Valid_Gender:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$363gsbsn$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_Valid_Smoke_Pos_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_gender_Valid_Smoke_Pos_Temp_VID_with_RS_DOB:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_gender_InValid_LangCode_with_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$dhdg212$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_InValid_gender_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "EHEHDB@393939"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_InValid_uin_gender:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "EHEHDB@393939"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_Name_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "TEST_FULLNAMEeng"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name1_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Mr-TitleFromServer Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name4_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_Name_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "TEST_FULLNAMEeng"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_InValid_uin_name:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "FX334@@#R"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_InValid_Name_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "F@@@@ddffR"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_age_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "51",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_age_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "41",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_invalid_age_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "ehdhdh",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_age_InValid_uin:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "ehdhdh",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_PhoneNumber_InValid_uin_PhoneNumber:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "7019878538dkssjw736352521g",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_PhoneNumber_InValid_PhoneNumber_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "7019878538dkssjw736352521g",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_PhoneNumber__with_Valid_TVID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_DOB_InValid_individualId_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "431592366363737337383388037$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Missing_individualId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Blank_individualId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Invalid_transactionId_uin_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "123453636372829267890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Blank_transactionId_uin_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Unlock_Valid_Smoke_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_DOB_Lock_Permanent_Valid_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_revoke_vid_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_dummy_partnerkey_uin_Pos:
+      endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+
+  auth_DemoAuth_DOB_Unlock_AllValid_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Lock_Permanent_AllValid_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_with_Deactivated_UIN:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_with_Draft_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1992/04/15",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "true"
+}'
+#  auth_DemoAuthValid_Smoke_with_addressCopy:
+#      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuth/DemoAuth
+#      outputTemplate: ida/DemoAuth/DemoAuthResult
+#      input: '{
+#        "timestamp": "$TIMESTAMP$",
+#        "transactionId": "$TRANSACTIONID$",
+#      "value": "Y",
+#        "key": "addressCopy"
+#    }'
+#      output: '{
+#        "authStatus": "true"
+#}'
+#  auth_DemoAuthValid_Smoke_with_mobileno:
+#      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuth/DemoAuth
+#      outputTemplate: ida/DemoAuth/DemoAuthResult
+#      input: '{
+#        "timestamp": "$TIMESTAMP$",
+#        "transactionId": "$TRANSACTIONID$",
+#      "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+#        "key": "mobileno"
+#    }'
+#      output: '{
+#        "authStatus": "true"
+#}'
+  auth_DemoAuthValid_with_phone:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+"key": "phone",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+        "authStatus": "true"
+}'
+  auth_DemoAuthValid_with_firstName:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "TEST_FULLNAMEeng"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  auth_DemoAuth_DOB_Valid_Smoke_with_invalid_certs:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      allowedErrorCodes: Internal Server Error
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_DOB_with_invalid_certs_and_invalid_vid:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      role: resident
+      restMethod: post
+      allowedErrorCodes: Internal Server Error
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_gender_IRIS_as_true_anddo_auth_policy:
+      endPoint: /idauthentication/v1/auth/$UpdatedPartnerKeyURL$
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
