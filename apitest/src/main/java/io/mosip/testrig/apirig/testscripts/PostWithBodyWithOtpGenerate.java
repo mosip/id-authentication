@@ -106,6 +106,30 @@ public class PostWithBodyWithOtpGenerate extends AdminTestUtil implements ITest 
 		sendOtpEndPoint = otpReqJson.getString("sendOtpEndPoint");
 		otpReqJson.remove("sendOtpEndPoint");
 		Response otpResponse = null;
+		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int currLoopCount = 0;
+		while (currLoopCount < maxLoopCount) {
+			otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
+					getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
+					GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
+
+			if (otpResponse != null && (otpResponse.asString().contains("RES-SER-524")
+					|| otpResponse.asString().contains("RES-SER-525"))) {
+				logger.info("waiting for: " + properties.getProperty("uinGenDelayTime")
+						+ " to update UIN as previous packet is pending.");
+				try {
+					Thread.sleep(Long.parseLong(properties.getProperty("uinGenDelayTime")));
+
+				} catch (NumberFormatException | InterruptedException e) {
+					logger.error(e.getMessage());
+					Thread.currentThread().interrupt();
+				}
+			} else {
+				break;
+			}
+
+			currLoopCount++;
+		}
 		
 
 		JSONObject res = new JSONObject(testCaseDTO.getOutput());

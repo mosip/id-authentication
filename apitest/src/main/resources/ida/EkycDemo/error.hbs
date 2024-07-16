@@ -1,17 +1,20 @@
 {
-  "authResponse": {
-    "body": {
-    "errors": [
-      {{#each errors}}
-        {
-            "errorCode": "{{errorCode}}"
-        }
-          {{#unless @last}},{{/unless}}
+  "transactionID": "$IGNORE$",
+  "version": "$IGNORE$",
+  "id": "$IGNORE$",
+  "errors": [
+    {{#each errors}}
+    {
+      "errorCode": "{{errorCode}}",
+      "errorMessage": "$IGNORE$",
+      "actionMessage": "$IGNORE$"
+    }
+     {{#unless @last}},{{/unless}}
       	{{/each}}
   ],
-      "response": {
-        "kycStatus": {{kycStatus}}
-      }
-    }
-  }
+  "responseTime": "$IGNORE$",
+  "response": {
+    "kycStatus": "$IGNORE$",
+    "authToken": "$IGNORE$"
+}
 }

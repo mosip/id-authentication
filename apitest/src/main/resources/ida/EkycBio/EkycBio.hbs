@@ -1,34 +1,23 @@
 {
-    "biometrics": [
-        {
-            "data": {
-                "bioSubType": "{{bioSubType}}",
-                "bioType": "{{bioType}}",
-                "bioValue": "{{bioValue}}" ,
-                "deviceCode": "{{deviceCode}}",
-                "deviceProviderID": "{{deviceProviderID}}",
-                "deviceServiceID": "{{deviceServiceID}}",
-                "deviceServiceVersion": "{{deviceServiceVersion}}",
-                "env": "{{env}}",
-                "domainUri": "https://qa-double-rc2.mosip.net",
-                "digitalId": {
-                    "serialNo": "{{serialNo}}",
-                    "make": "{{make}}",
-                    "model": "{{model}}",
-                    "type": "{{type}}",
-                    "deviceSubType": "{{deviceSubType}}",
-                    "deviceProvider": "{{deviceProvider}}",
-                    "deviceProviderId": "{{deviceProviderId}}",
-                    "dateTime": "{{dateTime}}"
-                },
-                "mosipProcess": "Auth",
-                "purpose": "Auth",
-                "qualityScore": 70,
-                "requestedScore": 70,
-                "timestamp": "{{timestamp}}",
-                "transactionId": "{{transactionId}}"
-            }
-        }
-    ],
-    "timestamp": "{{timestamp}}"
+	"id": "mosip.identity.kyc",
+	"consentObtained": true,
+	"individualId": "{{individualId}}",
+	"individualIdType": "{{individualIdType}}",
+	"request": "data",
+	"requestHMAC": "hmac",
+	"requestTime": "{{requestTime}}",
+	"requestedAuth": {	
+		"bio": {{bio}},
+		"demo": {{demo}},
+		"otp": {{otp}},
+		"pin": false
+	},
+	"requestSessionKey": "sessionkey",
+	"transactionID": "{{transactionId}}",
+	"domainUri": "baseurl",
+	"env": "{{env}}",
+	"keyIndex": "string",
+	"specVersion": "1.0",
+	"thumbprint": "partnerORinternalthumbprint",
+	"version": "1.0"
 }
