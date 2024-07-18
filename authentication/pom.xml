@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +22,8 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/mosip/id-authentication.git</connection>
-		<developerConnection>scm:git:ssh://github.com:mosip/id-authentication.git</developerConnection>
+		<developerConnection>
+			scm:git:ssh://github.com:mosip/id-authentication.git</developerConnection>
 		<url>https://github.com/mosip/id-authentication</url>
 		<tag>HEAD</tag>
 	</scm>
@@ -35,31 +37,31 @@
 		</developer>
 	</developers>
 
-    <repositories>
-        <repository>
-            <id>ossrh</id>
-            <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-            <snapshots>
-            <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>MavenCentral</name>
-            <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
-            <snapshots>
-            <enabled>false</enabled>
-            </snapshots>
-        </repository>
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<name>CentralRepository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>danubetech-maven-public</id>
 			<url>https://repo.danubetech.com/repository/maven-public/</url>
-		  </repository>
-    </repositories>
-	
+		</repository>
+	</repositories>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -85,113 +87,107 @@
 
 	<properties>
 		<authentication.parent.version>${project.version}</authentication.parent.version>
-		<authentication-core.version>${authentication.parent.version}</authentication-core.version>
-		<authentication-filter-api.version>${authentication.parent.version}</authentication-filter-api.version>
-		<authentication-common.version>${authentication.parent.version}</authentication-common.version>
-		<authentication-authtypelockfilter-impl.version>${authentication.parent.version}</authentication-authtypelockfilter-impl.version>
-		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
+		<authentication.core.version>${authentication.parent.version}</authentication.core.version>
+		<authentication.filter.api.version>${authentication.parent.version}</authentication.filter.api.version>
+		<authentication.common.version>${authentication.parent.version}</authentication.common.version>
+		<authentication.authtypelockfilter.impl.version>
+			${authentication.parent.version}</authentication.authtypelockfilter.impl.version>
+		<authentication.hotlistfilter.impl.version>
+			${authentication.parent.version}</authentication.hotlistfilter.impl.version>
+			
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<!-- Kernel components -->
-		<kernel.parent.version>1.2.1-java21-SNAPSHOT</kernel.parent.version>
-		<kernel-core.version>1.2.1-java21-SNAPSHOT</kernel-core.version>
-		<kernel-keymanager-service.version>1.2.1-java21-SNAPSHOT</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.2.1-java21-SNAPSHOT</kernel-idgenerator-tokenid.version>
-		<kernel-idobjectvalidator.version>1.2.1-java21-SNAPSHOT</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.2.1-java21-SNAPSHOT</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.2.1-java21-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.2.1-java21-SNAPSHOT</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.2.1-java21-SNAPSHOT</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.2.1-java21-SNAPSHOT</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.2.1-java21-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.2.1-java21-SNAPSHOT</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.2.1-java21-SNAPSHOT</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.2.1-java21-SNAPSHOT</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.2.1-java21-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.0.1-B1</id-repository-core.version>
-		<json.utility.version>20180130</json.utility.version>
-		<kernel-demoapi.version>1.2.1-java21-SNAPSHOT</kernel-demoapi.version>
-		<kernel-idauthenticationfilter-api.version>1.2.1-java21-SNAPSHOT</kernel-idauthenticationfilter-api.version>
-		<kernel-biometrics-util>1.2.1-java21-SNAPSHOT</kernel-biometrics-util>
-		<kernel-openid-bridge-api.version>1.2.1-java21-SNAPSHOT</kernel-openid-bridge-api.version>
+		<java.version>21</java.version>
 
 		<!-- Maven Plugins -->
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
-		<maven.javadoc.version>3.2.0</maven.javadoc.version>
-		<maven.jacoco.version>0.8.11</maven.jacoco.version>
-		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
-		<powermock.version>2.0.9</powermock.version>
-		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-
-		<!-- Test & Logging -->
-		<junit.version>4.13.2</junit.version>
-		<mockito.version>3.4.3</mockito.version>
-		<byte-buddy.version>1.9.3</byte-buddy.version>
-
-		<!-- Spring Boot -->
-		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
-		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
-		<postgresql.version>42.2.2</postgresql.version>
-
-		<!-- Commons -->
-		<commons.lang.version>3.7</commons.lang.version>
-		<commons.codec.version>1.11</commons.codec.version>
-
-		<sourceafis.version>3.4.0</sourceafis.version>
-
-		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
-
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.version>3.11.0</maven.compiler.version>
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-		<objenesis.version>3.1</objenesis.version>
+		<maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
+		<maven.shade.plugin.version>2.3</maven.shade.plugin.version>
+		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+		<maven.deploy.plugin.version>3.1.1</maven.deploy.plugin.version>
+		<maven.source.plugin.version>3.3.1</maven.source.plugin.version>
+		<maven.gpg.plugin.version>3.2.3</maven.gpg.plugin.version>
+		<maven.assembly.plugin.version>3.3.0</maven.assembly.plugin.version>
+		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+		<spring.boot.maven.plugin.version>3.2.5</spring.boot.maven.plugin.version>
+		<nexus.staging.maven.plugin.version>1.6.7</nexus.staging.maven.plugin.version>
+		<maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version>
+		<!-- git -->
+		<git.commit.id.plugin.version>3.0.1</git.commit.id.plugin.version>
+		<!-- springdoc -->
+		<springdoc.openapi.maven.plugin>0.2</springdoc.openapi.maven.plugin>
 
-		<springdoc.version>2.5.0</springdoc.version>
-		
+		<!-- Others components -->
+		<org.apache.httpcomponents.httpmime.version>4.5.9</org.apache.httpcomponents.httpmime.version>
+		<javax.xml.parsers.api.version>1.4.5</javax.xml.parsers.api.version>
+		<org.tensorflow.version>1.15.0</org.tensorflow.version>
+		<sourceafis.version>3.4.0</sourceafis.version>
+		<objenesis.version>3.1</objenesis.version>
+		<json.utility.version>20180130</json.utility.version>
+		<org.openpnp.opencv.version>4.5.3-4</org.openpnp.opencv.version>
+		<info.weboftrust.ld.signatures.java.version>1.0.0</info.weboftrust.ld.signatures.java.version>
+		<org.springframework.kafka.version>2.5.8.RELEASE</org.springframework.kafka.version>
+
+		<!-- Swagger components -->
+		<springdoc.openapi.starter.webmvc.ui.version>2.6.0</springdoc.openapi.starter.webmvc.ui.version>
+
+		<!-- Kernel components -->
+		<kernel.bom.version>1.2.1-java21-SNAPSHOT</kernel.bom.version>
+		<kernel.core.version>1.2.1-java21-SNAPSHOT</kernel.core.version>
+		<kernel.keymanager.service.version>1.2.1-java21-SNAPSHOT</kernel.keymanager.service.version>
+		<kernel.idgenerator.tokenid.version>1.2.1-java21-SNAPSHOT</kernel.idgenerator.tokenid.version>
+		<kernel.idobjectvalidator.version>1.2.1-java21-SNAPSHOT</kernel.idobjectvalidator.version>
+		<kernel.pinvalidator.version>1.2.1-java21-SNAPSHOT</kernel.pinvalidator.version>
+		<kernel.templatemanager.velocity.version>1.2.1-java21-SNAPSHOT</kernel.templatemanager.velocity.version>
+		<kernel.logger.logback.version>1.2.1-java21-SNAPSHOT</kernel.logger.logback.version>
+		<kernel.dataaccess.hibernate.version>1.2.1-java21-SNAPSHOT</kernel.dataaccess.hibernate.version>
+		<kernel.cbeffutil.api.version>1.2.1-java21-SNAPSHOT</kernel.cbeffutil.api.version>
+		<kernel.templatemanager.velocity.version>1.2.1-java21-SNAPSHOT</kernel.templatemanager.velocity.version>
+		<kernel.auth.adapter.version>1.2.1-java21-SNAPSHOT</kernel.auth.adapter.version>
+		<kernel.biometrics.api.version>1.2.1-java21-SNAPSHOT</kernel.biometrics.api.version>
+		<kernel.biosdk.provider.version>1.2.1-java21-SNAPSHOT</kernel.biosdk.provider.version>
+		<kernel.websubclient.api.version>1.2.1-java21-SNAPSHOT</kernel.websubclient.api.version>
+		<id.repository.core.version>1.2.1-java21-SNAPSHOT</id.repository.core.version>
+		<kernel.demoapi.version>1.2.1-java21-SNAPSHOT</kernel.demoapi.version>
+		<kernel.idauthenticationfilter.api.version>1.2.1-java21-SNAPSHOT</kernel.idauthenticationfilter.api.version>
+		<kernel.biometrics.util.version>1.2.1-java21-SNAPSHOT</kernel.biometrics.util.version>
+		<kernel.openid.bridge.api.version>1.2.1-java21-SNAPSHOT</kernel.openid.bridge.api.version>
+		<io.mosip.biosdk.client.version>1.2.1-java21-SNAPSHOT</io.mosip.biosdk.client.version>
+		<io.mosip.demosdk.client.version>1.2.1-java21-SNAPSHOT</io.mosip.demosdk.client.version>
+		<io.mosip.authentication.childauthfilter.impl>1.2.1-java21-SNAPSHOT</io.mosip.authentication.childauthfilter.impl>
+
+		<!-- Sonar components -->
+		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+		<sonar.exclusions>
+			**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
 	</properties>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.2.1-java21-SNAPSHOT</version>
+				<version>${kernel.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<dependencies>
 		<!-- JUnit -->
 		<dependency>
 			<groupId>org.junit.vintage</groupId>
 			<artifactId>junit-vintage-engine</artifactId>
 		</dependency>
-		<!--<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-			<version>${junit.version}</version>
-		</dependency>-->
-		<!-- Lombok -->
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
-		<!-- Swagger -->
-		<!--<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${maven.swagger.version}</version>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${maven.swagger.version}</version>
-		</dependency>-->
 		<!-- TODO - Check if below dependency can be added only in service -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -208,7 +204,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
+			<version>${kernel.logger.logback.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -218,7 +214,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -231,11 +226,10 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel-core.version}</version>
+			<version>${kernel.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -252,7 +246,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${springdoc.version}</version>
+			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -262,7 +256,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-openid-bridge-api</artifactId>
-			<version>${kernel-openid-bridge-api.version}</version>
+			<version>${kernel.openid.bridge.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -280,7 +274,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${maven.javadoc.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -296,7 +290,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+				<version>${nexus.staging.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -307,7 +301,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>${maven.source.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -321,7 +315,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
+				<version>${maven.gpg.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
@@ -341,7 +335,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${maven.jacoco.version}</version>
+				<version>${jacoco.maven.plugin.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>**/constant/**</exclude>
@@ -403,7 +397,7 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${git.commit.id.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>get-the-git-infos</id>
@@ -415,14 +409,14 @@
 				</executions>
 				<configuration>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.outputDirectory}/service-git.properties</generateGitPropertiesFilename>
+					<generateGitPropertiesFilename>
+						${project.build.outputDirectory}/service-git.properties</generateGitPropertiesFilename>
 					<includeOnlyProperties>
 						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
 						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
 					</includeOnlyProperties>
 					<commitIdGenerationMode>full</commitIdGenerationMode>
 					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-					<!-- <format>json</format> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -433,19 +427,19 @@
 					<skipTests>${skipTests}</skipTests>
 					<skip>false</skip>
 					<argLine>
-						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						${argLine} --add-opens
+						java.xml/jdk.xml.internal=ALL-UNNAMED
 					</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-		
-		<profiles>
-			<profile>
-				<id>sonar</id>
-				<build>
-					<plugins>
-						<plugin>
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<build>
+				<plugins>
+					<plugin>
 						<groupId>org.sonarsource.scanner.maven</groupId>
 						<artifactId>sonar-maven-plugin</artifactId>
 						<version>${maven.sonar.version}</version>
@@ -458,9 +452,8 @@
 							</execution>
 						</executions>
 					</plugin>
-					</plugins>
-				</build>
-			</profile>
-		</profiles>
-
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

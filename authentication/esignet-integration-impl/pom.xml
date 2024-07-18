@@ -15,40 +15,50 @@
     <description>e-Signet Integration Implementation Library</description>
 
 	<properties>
-		<java.version>21</java.version>
+		<!-- esignet Plugins -->
+		<io.mosip.esignet.core.version>1.2.1-SNAPSHOT</io.mosip.esignet.core.version>
+		<io.mosip.esignet.integration.api.version>1.2.1-SNAPSHOT</io.mosip.esignet.integration.api.version>
 	</properties>
-
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bom</artifactId>
+				<version>${kernel.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-		</dependency>
-		
+		</dependency>		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		
+			<scope>provided</scope>
+		</dependency>		
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
 			<artifactId>esignet-core</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>${io.mosip.esignet.core.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.esignet</groupId>
     		<artifactId>esignet-integration-api</artifactId>
-    		<version>1.2.1-SNAPSHOT</version>
+    		<version>${io.mosip.esignet.integration.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
-			<version>${kernel-keymanager-service.version}</version>
+			<version>${kernel.keymanager.service.version}</version>
 			<scope>provided</scope>
 			<classifier>lib</classifier>
 			<exclusions>
@@ -62,7 +72,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -71,7 +80,7 @@
 		<dependency>
 			<groupId>info.weboftrust</groupId>
 			<artifactId>ld-signatures-java</artifactId>
-			<version>1.0.0</version>
+			<version>${info.weboftrust.ld.signatures.java.version}</version>
 		</dependency>
 	</dependencies>
 </project>

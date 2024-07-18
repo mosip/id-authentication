@@ -2,6 +2,8 @@ package io.mosip.authentication.otp.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -91,7 +93,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = { HibernateDaoConfig.class })
+@SpringBootApplication
 @Import(value = {IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, MatchInputBuilder.class,
@@ -114,11 +116,17 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class, 
 		HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class })
+
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
-		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
-				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
-@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
-		"io.mosip.kernel.keymanagerservice.repository.*" })
+		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}"  }, excludeFilters = {
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+						"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
+				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { HibernateDaoConfig.class,
+						SecurityAutoConfiguration.class }) })
+@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
+		"io.mosip.kernel.keymanagerservice.repository" })
+@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
+	"io.mosip.kernel.keymanagerservice.entity" })
 public class OtpApplication {
 
 	/**
@@ -129,5 +137,4 @@ public class OtpApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OtpApplication.class, args);
 	}
-
 }

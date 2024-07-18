@@ -1,8 +1,8 @@
 package io.mosip.authentication.service;
 
-import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -32,9 +32,9 @@ import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.impl.KeyBindedTokenAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PasswordAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.KeyBindedTokenAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
 import io.mosip.authentication.common.service.impl.masterdata.MasterDataCacheUpdateServiceImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
@@ -53,6 +53,7 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
+import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
@@ -80,6 +81,7 @@ import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.helper.PrivateKeyDecryptorHelper;
@@ -94,8 +96,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
-import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
-
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -103,35 +103,42 @@ import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
  * @author Dinesh Karuppiah
  * @author Nagarjuna
  */
-@SpringBootApplication(exclude = { HibernateDaoConfig.class, SecurityAutoConfiguration.class })
+@SpringBootApplication
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
-		AuthContextClazzRefProvider.class, CbeffImpl.class, 
-		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
-		NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class,
-		IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class,
-		AuditHelper.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class, AuthFacadeImpl.class,
-		MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
-		SwaggerConfig.class, BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
-		IdAuthSecurityManager.class, RestRequestFactory.class,
-		AuthtypeStatusImpl.class, CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,
+		AuthContextClazzRefProvider.class, CbeffImpl.class, RestRequestFactory.class, AuditRequestFactory.class,
+		AuditRequestFactory.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
+		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class, OTPManager.class,
+		MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class, AuditHelper.class, KeyManager.class,
+		PinValidatorImpl.class, AuthRequestValidator.class, AuthFacadeImpl.class, MatchInputBuilder.class,
+		IdServiceImpl.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
+		SwaggerConfig.class, BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class,
+		BioProviderImpl_V_0_9.class, IdAuthSecurityManager.class, RestRequestFactory.class, AuthtypeStatusImpl.class,
+		CryptoCore.class, PartnerServiceImpl.class, CryptomanagerServiceImpl.class, KeyGenerator.class,
 		CryptomanagerUtils.class, KeymanagerServiceImpl.class, KeymanagerUtil.class, TokenIDGeneratorServiceImpl.class,
-		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class, SignatureServiceImpl.class,
-		KeyStoreImpl.class, KeymanagerDBHelper.class, IdTypeUtil.class, MasterDataCache.class, MasterDataCacheInitializer.class,
-		PartnerCertificateManagerServiceImpl.class, PartnerCertManagerDBHelper.class, WebSubHelper.class,
-		IdAuthWebSubInitializer.class, PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class,
-		RetryListenerImpl.class, RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
+		TokenIDGenerator.class, PartnerServiceManager.class, ZKCryptoManagerServiceImpl.class,
+		SignatureServiceImpl.class, KeyStoreImpl.class, KeymanagerDBHelper.class, IdTypeUtil.class,
+		MasterDataCache.class, MasterDataCacheInitializer.class, PartnerCertificateManagerServiceImpl.class,
+		PartnerCertManagerDBHelper.class, WebSubHelper.class, IdAuthWebSubInitializer.class,
+		PartnerServiceEventsInitializer.class, RetryConfig.class, RetryUtil.class, RetryListenerImpl.class,
+		RetryAspect.class, AuthTransactionHelper.class, HotlistServiceImpl.class,
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, DemoNormalizer.class, DemoMatcherUtil.class,
 		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class,
-		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
-		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class,
-		HSMHealthCheck.class, TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class, 
+		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecrytorHelper.class,
+		ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class, PartnerCACertEventServiceImpl.class,
+		PartnerCACertEventInitializer.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class,
+		TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
-				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
-@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
-		"io.mosip.kernel.keymanagerservice.repository.*" })
+		"io.mosip.authentication.common.service.config", "${mosip.auth.adapter.impl.basepackage}", "io.mosip.kernel.keymanager.hsm.impl" }, excludeFilters = {
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+						"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
+				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { HibernateDaoConfig.class,
+						SecurityAutoConfiguration.class }) })
+@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
+		"io.mosip.kernel.keymanagerservice.repository" })
+@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
+	"io.mosip.kernel.keymanagerservice.entity" })
 public class IdAuthenticationApplication {
 
 	/**
