@@ -1,0 +1,2 @@
+springConfigNameEnv: id-authentication
+softHsmCM: softhsm-ida-share
