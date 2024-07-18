@@ -12,14 +12,29 @@
 	<version>1.2.1-java21-SNAPSHOT</version>
 	<artifactId>authentication-internal-service</artifactId>
 	<name>authentication-internal-service</name>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bom</artifactId>
+				<version>${kernel.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-common</artifactId>
-			<version>${authentication-common.version}</version>
+			<version>${authentication.common.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -34,12 +49,12 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-authtypelockfilter-impl</artifactId>
-			<version>${authentication-authtypelockfilter-impl.version}</version>
+			<version>${authentication.authtypelockfilter.impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-hotlistfilter-impl</artifactId>
-			<version>${authentication-hotlistfilter-impl.version}</version>
+			<version>${authentication.hotlistfilter.impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -73,34 +88,17 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel-dataaccess-hibernate.version}</version>
+			<version>${kernel.dataaccess.hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
-		<!--<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${maven.swagger.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${maven.swagger.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
@@ -115,10 +113,6 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 		<dependency>
-	  		<groupId>org.projectlombok</groupId>
-	  		<artifactId>lombok</artifactId>
-  		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
@@ -129,7 +123,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
+			<version>${kernel.logger.logback.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -146,7 +140,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel-core.version}</version>
+			<version>${kernel.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -171,7 +165,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${springdoc.version}</version>
+			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -208,7 +202,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-openid-bridge-api</artifactId>
-			<version>${kernel-openid-bridge-api.version}</version>
+			<version>${kernel.openid.bridge.api.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -227,13 +221,13 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.2.3</version>
+				<version>${spring.boot.maven.plugin.version}</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>
@@ -265,22 +259,22 @@
 				<dependency>
 					<groupId>io.mosip.kernel</groupId>
 					<artifactId>kernel-auth-adapter</artifactId>
-					<version>1.2.0</version>
+					<version>${kernel.auth.adapter.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>io.mosip.authentication</groupId>
 					<artifactId>authentication-childauthfilter-impl</artifactId>
-					<version>1.2.0</version>
+					<version>${io.mosip.authentication.childauthfilter.impl}</version>
 				</dependency>
 				<dependency>
 					<groupId>io.mosip.biosdk</groupId>
 					<artifactId>biosdk-client</artifactId>
-					<version>1.2.0</version>
+					<version>${io.mosip.biosdk.biosdk.client.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>io.mosip.demosdk</groupId>
 					<artifactId>demosdk-client</artifactId>
-					<version>1.2.0</version>
+					<version>${io.mosip.demosdk.client.version}</version>
 				</dependency>
 			</dependencies>
 			<build>
@@ -288,7 +282,7 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring.boot.version}</version>
+						<version>${spring.boot.maven.plugin.version}</version>
 						<configuration>
 							<executable>true</executable>
 							<layout>ZIP</layout>
@@ -310,7 +304,8 @@
 									</profiles>
 									<arguments>
 										<argument>--server.port=8090</argument>
-										<argument>--server.servlet.context-path=/app/generic</argument>
+										<argument>
+											--server.servlet.context-path=/app/generic</argument>
 									</arguments>
 								</configuration>
 							</execution>
@@ -331,7 +326,7 @@
 					<plugin>
 						<groupId>org.springdoc</groupId>
 						<artifactId>springdoc-openapi-maven-plugin</artifactId>
-						<version>0.2</version>
+						<version>${springdoc.openapi.maven.plugin}</version>
 						<executions>
 							<execution>
 								<id>integration-test</id>
@@ -341,7 +336,8 @@
 							</execution>
 						</executions>
 						<configuration>
-							<apiDocsUrl>http://localhost:8090/app/generic/v3/api-docs/Id%20Authentication%20Internal%20Service
+							<apiDocsUrl>
+								http://localhost:8090/app/generic/v3/api-docs/Id%20Authentication%20Internal%20Service
 							</apiDocsUrl>
 							<outputFileName>${name}-openapi.json</outputFileName>
 							<outputDir>${project.build.directory}</outputDir>

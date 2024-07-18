@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
@@ -11,19 +12,34 @@
 	<version>1.2.1-java21-SNAPSHOT</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bom</artifactId>
+				<version>${kernel.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
-			<version>${authentication-core.version}</version>
+			<version>${authentication.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>${kernel-core.version}</version>
+			<version>${kernel.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -40,12 +56,12 @@
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-filter-api</artifactId>
-			<version>${authentication-filter-api.version}</version>
+			<version>${authentication.filter.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${kernel-dataaccess-hibernate.version}</version>
+			<version>${kernel.dataaccess.hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -58,12 +74,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
-			<version>${kernel-pinvalidator.version}</version>
+			<version>${kernel.pinvalidator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.idrepository</groupId>
 			<artifactId>id-repository-core</artifactId>
-			<version>${id-repository-core.version}</version>
+			<version>${id.repository.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -80,7 +96,7 @@
 					<artifactId>kernel-auth-adapter</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
+		</dependency>
 		<!-- Sprint Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -96,13 +112,13 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
-			<version>2.5.8.RELEASE</version>
+			<!-- <version>${org.springframework.kafka.version}</version>-->
 		</dependency>
 		<!-- Kernel Template -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>${kernel-templatemanager-velocity.version}</version>
+			<version>${kernel.templatemanager.velocity.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
@@ -115,42 +131,39 @@
 			</exclusions>
 		</dependency>
 		<!-- Commons Lang -->
-			<dependency>
-                    <groupId>javax.xml.parsers</groupId>
-                    <artifactId>jaxp-api</artifactId>
-                    <version>1.4.5</version>
-             </dependency>
-             <dependency>
-                    <groupId>org.tensorflow</groupId>
-                    <artifactId>tensorflow</artifactId>
-                    <version>1.15.0</version>
-             </dependency>
-             <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-             </dependency>
-             <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpmime</artifactId>
-                    <version>4.5.9</version>
-             </dependency>
-             
-             <dependency>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-lang3</artifactId>
-             </dependency>
-            
-		
 		<dependency>
-		    <groupId>org.mockito</groupId>
-		    <artifactId>mockito-core</artifactId>
-		    <scope>test</scope>
+			<groupId>javax.xml.parsers</groupId>
+			<artifactId>jaxp-api</artifactId>
+			<version>${javax.xml.parsers.api.version}</version>
 		</dependency>
 		<dependency>
-	      <groupId>net.bytebuddy</groupId>
-	      <artifactId>byte-buddy</artifactId>
-	      <scope>compile</scope>
-	    </dependency>
+			<groupId>org.tensorflow</groupId>
+			<artifactId>tensorflow</artifactId>
+			<version>${org.tensorflow.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>${org.apache.httpcomponents.httpmime.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
@@ -164,7 +177,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
-			<version>${kernel-keymanager-service.version}</version>
+			<version>${kernel.keymanager.service.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -186,7 +199,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-biosdk-provider</artifactId>
-			<version>${kernel-biosdk-provider.version}</version>
+			<version>${kernel.biosdk.provider.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
@@ -201,7 +214,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-cbeffutil-api</artifactId>
-			<version>${kernel-cbeffutil-api.version}</version>
+			<version>${kernel.cbeffutil.api.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.mosip.kernel</groupId>
@@ -222,12 +235,12 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-websubclient-api</artifactId>
-			<version>${kernel-websubclient-api.version}</version>
+			<version>${kernel.websubclient.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${springdoc.version}</version>
+			<version>${springdoc.openapi.starter.webmvc.ui.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -242,7 +255,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
+			<version>${kernel.logger.logback.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
