@@ -20,7 +20,6 @@ on:
       - 1.*
       - develop
       - MOSIP*
-      - patch*
 
 jobs:
   build-maven-authentication:
