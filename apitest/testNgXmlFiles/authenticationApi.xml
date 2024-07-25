@@ -110,7 +110,7 @@
 		</classes>
 	</test>
 
-	<!--<test name="BioAuth">
+	<test name="BioAuth">
 		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
@@ -153,7 +153,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 
 
 	<test name="UpdateIdentity">
@@ -176,7 +176,7 @@
 
 
 
-	<!--<test name="LockUINVIDTestcasesDEMOAuth">
+	<test name="LockUINVIDTestcasesDEMOAuth">
 		<parameter name="ymlFile"
 			value="ida/HotlistTestcases/HotlistTestcases.yml" />
 		<classes>
@@ -202,7 +202,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
 		</classes>
-	</test>-->
+	</test>
 
 
 	<test name="AuthUnLock">
@@ -221,7 +221,7 @@
 		</classes>
 	</test>
 	
-	<!--<test name="DemoAuth">
+	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
@@ -232,7 +232,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="BlockPartnerId">
 		<parameter name="ymlFile"
@@ -250,7 +250,7 @@
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
 	</test>
-	<!--<test name="BioAuthHotListPartner">
+	<test name="BioAuthHotListPartner">
 		<parameter name="ymlFile"
 			value="ida/BioAuthHotListPartner/BioAuth.yml" />
 		<classes>
@@ -266,7 +266,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="UnBlockPartnerId">
 		<parameter name="ymlFile"
@@ -276,13 +276,13 @@
 		</classes>
 	</test>
 	
-	<!--<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
+	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
-	</test>-->
+	</test>
 	
 	
 </suite>
