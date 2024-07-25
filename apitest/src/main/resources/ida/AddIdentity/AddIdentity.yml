@@ -725,6 +725,7 @@ AddIdentity:
    auth_AddIdentity_for_hotlist_id_service_Pos:
       endPoint: /idrepository/v1/identity/
       description: create UIN for Hotlist
+      role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
       outputTemplate: ida/AddIdentity/addIdentityResult
