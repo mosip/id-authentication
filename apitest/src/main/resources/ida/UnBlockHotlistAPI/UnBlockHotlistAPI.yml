@@ -1,6 +1,7 @@
 HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_UIN_without_expirytime_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock UIN without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -16,6 +17,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock UIN with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -31,6 +33,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_VID_without_expirytime_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock Perpetual VID without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -46,6 +49,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_VID_with_expirytime_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock Perpetual VID with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -61,6 +65,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_DEVICE_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock device without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -76,6 +81,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_DEVICE_with_expirytie_sid:
       endPoint: /v1/hotlist/unblock
+      description: unblock device with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -91,6 +97,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_deviceProviderId:
       endPoint: /v1/hotlist/unblock
+      description: unblock device provider id with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI

@@ -1,6 +1,7 @@
 CreateDraftVID:
   auth_CreateDraftVID_Smoke_Pos:
       endPoint: /idrepository/v1/draft/vid
+      description: create Draft Perpetual VID using UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateDraftVID/createDraftVID

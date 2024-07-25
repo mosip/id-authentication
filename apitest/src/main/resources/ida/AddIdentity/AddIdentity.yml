@@ -1,6 +1,7 @@
 AddIdentity:
    auth_AddIdentity_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -29,6 +30,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_new_uin_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -57,6 +59,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_Infant_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create Infant UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -85,6 +88,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create Infant UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -113,6 +117,7 @@ AddIdentity:
 }'
    auth_AddIdentity_ValidParam_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -141,6 +146,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Otp_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for OTP Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -169,6 +175,7 @@ AddIdentity:
 }'
    auth_AddIdentity_UIN_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -197,6 +204,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_EKYC_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Ekyc Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -225,6 +233,7 @@ AddIdentity:
 }'
    auth_AddIdentity_InternalOTP_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Internal OTP Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -253,6 +262,7 @@ AddIdentity:
 }'
    auth_AddIdentity_EKYCOTP_PRE_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Ekyc OTP Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -281,6 +291,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_TRE_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -309,6 +320,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -337,6 +349,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Lock, Unlock and Bio Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -365,6 +378,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Lock,Unlock and Demo Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -399,6 +413,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Locking and Bio Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -433,6 +448,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Locking and Demo Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -467,6 +483,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_unblockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Unblocking
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -501,6 +518,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_LockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Locking
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -535,6 +553,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Biometric Lock
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -568,6 +587,7 @@ AddIdentity:
 }'
    auth_AddIdentity_EkycDemo_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Ekyc Demo Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -601,6 +621,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_EKYCUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Ekyc Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -635,6 +656,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Deactivate_and_auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Deactivation and Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -668,6 +690,7 @@ AddIdentity:
 }'
    auth_AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN to use for VID creation and to Revoke
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -701,7 +724,7 @@ AddIdentity:
 }'
    auth_AddIdentity_for_hotlist_id_service_Pos:
       endPoint: /idrepository/v1/identity/
-      role: idrepo
+      description: create UIN for Hotlist
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
       outputTemplate: ida/AddIdentity/addIdentityResult
@@ -735,6 +758,7 @@ AddIdentity:
 
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Locking ,Unlocking and Bio Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -768,6 +792,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Unlocking and Demo Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -801,6 +826,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Locking and Bio Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -835,6 +861,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Locking and Demo Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -870,6 +897,7 @@ AddIdentity:
 
    auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN for Authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -903,6 +931,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_demoauth_name_smoke:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Demo Authentication
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -938,6 +967,7 @@ AddIdentity:
 }'
    auth_AddIdentity_deactivate_UIN_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Deactivation
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -967,6 +997,7 @@ AddIdentity:
 }'
    auth_AddIdentity_hotlist_UIN_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Hotlisting the UIN
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -1054,6 +1085,7 @@ AddIdentity:
 #}'
    auth_AddIdentity_lock_unlock_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      description: create UIN and use for Locking and Unlocking
       role: idrepo
       regenerateHbs: true      
       restMethod: post

@@ -1,6 +1,7 @@
 AuthUnlock:
    auth_AuthUnLock_Valid_UIN_All:
       endPoint: /resident/v1/req/auth-unlock
+      description: unlock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -35,6 +36,7 @@ AuthUnlock:
 }'
    auth_AuthUnLock_Valid_UIN_DEMO_UNLOCK_All:
       endPoint: /resident/v1/req/auth-unlock
+      description: unlock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

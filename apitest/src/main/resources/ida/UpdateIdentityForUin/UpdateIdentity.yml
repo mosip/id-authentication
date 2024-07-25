@@ -1,6 +1,7 @@
 UpdateIdentityForUin:
   Auth_UpdateIdentityForUin_ACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      description: Deactivate the activated UIN
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity

@@ -1,6 +1,7 @@
 HotlistAPI:
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_without_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block UIN without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -16,6 +17,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_forever_sid:
       endPoint: /v1/hotlist/block
+      description: block UIN for forever without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -31,6 +33,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_id_type_uin_incorrect:
       endPoint: /v1/hotlist/block
+      description: block UIN when id type is incorrect without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -46,6 +49,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_id_type_vid_incorrect:
       endPoint: /v1/hotlist/block
+      description: block VID when id type is incorrect without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -61,6 +65,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_expiry_time_old_incorrect:
       endPoint: /v1/hotlist/block
+      description: block VID when expiry time and id type are incorrect
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -76,6 +81,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block UIN with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -91,6 +97,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_VID_without_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block VID without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -106,6 +113,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_VID_with_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block VID with expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -121,6 +129,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_Device_with_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block device without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -136,6 +145,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_Device_withOUT_expirytime_sid:
       endPoint: /v1/hotlist/block
+      description: block device without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -151,6 +161,7 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_deviceProviderId:
       endPoint: /v1/hotlist/block
+      description: block device provider id without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
