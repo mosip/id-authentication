@@ -685,6 +685,7 @@ public class IdAuthSecurityManager {
 		request.setReferenceId(IdAuthCommonConstants.EMPTY);
 		request.setB64JWSHeaderParam(false);
 		request.setValidateJson(false);
+		request.setSignAlgorithm(SignatureConstant.JWS_RS256_SIGN_ALGO_CONST);
 		return signatureService.jwsSign(request).getJwtSignedData();
 	}
 
