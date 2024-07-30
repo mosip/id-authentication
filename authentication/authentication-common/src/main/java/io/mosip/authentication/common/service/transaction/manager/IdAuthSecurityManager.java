@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
 
+import io.mosip.kernel.keymanagerservice.constant.KeyReferenceIdConsts;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,6 +151,9 @@ public class IdAuthSecurityManager {
 	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
     private String signAlgorithm;
 
+	@Value("${mosip.kernel.certificate.jws.algorithm:PS256}")
+	private String jwsAlgorithm;
+
 	/** The sign applicationid. */
 	@Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
 	private String vciExchSignApplicationId;
@@ -195,6 +199,16 @@ public class IdAuthSecurityManager {
 	
 	@Autowired
 	private IdTypeUtil idTypeUtil;
+
+	private static final Map<String, String> JWT_SIGNATURE_REF_ID_PROVIDER = new HashMap<>();
+
+	static {
+		JWT_SIGNATURE_REF_ID_PROVIDER.put(SignatureConstant.JWS_PS256_SIGN_ALGO_CONST, IdAuthCommonConstants.EMPTY);
+		JWT_SIGNATURE_REF_ID_PROVIDER.put(SignatureConstant.JWS_RS256_SIGN_ALGO_CONST, IdAuthCommonConstants.EMPTY);
+		JWT_SIGNATURE_REF_ID_PROVIDER.put(SignatureConstant.JWS_ES256K_SIGN_ALGO_CONST,KeyReferenceIdConsts.EC_SECP256K1_SIGN.name());
+		JWT_SIGNATURE_REF_ID_PROVIDER.put(SignatureConstant.JWS_ES256_SIGN_ALGO_CONST,KeyReferenceIdConsts.EC_SECP256R1_SIGN.name());
+		JWT_SIGNATURE_REF_ID_PROVIDER.put(SignatureConstant.JWS_EDDSA_SIGN_ALGO_CONST,KeyReferenceIdConsts.ED25519_SIGN.name());
+	}
 	
 	/**
 	 * Gets the user.
@@ -682,10 +696,11 @@ public class IdAuthSecurityManager {
 		request.setIncludeCertHash(false);
 		request.setIncludeCertificate(includeCertificate);
 		request.setIncludePayload(false);
-		request.setReferenceId(IdAuthCommonConstants.EMPTY);
 		request.setB64JWSHeaderParam(false);
 		request.setValidateJson(false);
-		request.setSignAlgorithm(SignatureConstant.JWS_RS256_SIGN_ALGO_CONST);
+		request.setSignAlgorithm(jwsAlgorithm);
+		request.setReferenceId(JWT_SIGNATURE_REF_ID_PROVIDER.get(jwsAlgorithm));
+
 		return signatureService.jwsSign(request).getJwtSignedData();
 	}
 
