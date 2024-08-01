@@ -199,9 +199,9 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 		} else {
 			if (testCaseName.contains("partnerDemoDown")) {
 
-				url = ConfigManager.getAuthDemoServiceUrl() + "local";
+				//url = ConfigManager.getAuthDemoServiceUrl() + "local";
 			} else {
-				url = ConfigManager.getAuthDemoServiceUrl();
+				//url = ConfigManager.getAuthDemoServiceUrl();
 			}
 
 			response = postWithBodyAndCookie(url + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
