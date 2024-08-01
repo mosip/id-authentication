@@ -150,6 +150,9 @@ public class IdAuthSecurityManager {
 	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
     private String signAlgorithm;
 
+	@Value("${mosip.kernel.certificate.jws.algorithm:PS256}")
+	private String jwsAlgorithm;
+
 	/** The sign applicationid. */
 	@Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
 	private String vciExchSignApplicationId;
@@ -684,6 +687,7 @@ public class IdAuthSecurityManager {
 		request.setReferenceId(IdAuthCommonConstants.EMPTY);
 		request.setB64JWSHeaderParam(false);
 		request.setValidateJson(false);
+		request.setSignAlgorithm(jwsAlgorithm);
 		return signatureService.jwsSign(request).getJwtSignedData();
 	}
 
