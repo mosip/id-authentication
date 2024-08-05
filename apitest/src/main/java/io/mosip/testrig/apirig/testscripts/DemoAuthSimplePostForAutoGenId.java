@@ -197,6 +197,12 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 					throw new AdminTestException("Failed at output validation");
 			}
 		} else {
+			if (testCaseName.contains("partnerDemoDown")) {
+
+				//url = ConfigManager.getAuthDemoServiceUrl() + "local";
+			} else {
+				//url = ConfigManager.getAuthDemoServiceUrl();
+			}
 
 			response = postWithBodyAndCookie(url + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());

@@ -6,6 +6,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/ekycOtp
       outputTemplate: ida/EkycOtp/ekycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -40,6 +41,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -74,6 +76,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -108,6 +111,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -142,6 +146,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:GetDraft_all_valid_smoke_sid_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -175,6 +180,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/ekycOtp
       outputTemplate: ida/EkycOtp/ekycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -209,6 +215,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "2022-05-19T06:29:44.809Z",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -243,6 +250,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "2022-05-19T06:29:44.809Z",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -278,6 +286,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "2052-05-19T06:29:44.809Z",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -312,6 +321,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "2052-05-19T06:29:44.809Z",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -347,6 +357,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "2dhdh.809Z",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -381,6 +392,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -415,6 +427,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:GenerateVID_to_revoke_Perpetual_sid_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -455,6 +468,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "ddhdhdh_dy46746",
         "transactionId": "$TRANSACTIONID$",
@@ -495,6 +509,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$464747$",
         "transactionId": "$TRANSACTIONID$",
@@ -535,6 +550,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "",
         "transactionId": "$TRANSACTIONID$",
@@ -574,6 +590,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "",
         "transactionId": "$TRANSACTIONID$",
@@ -613,6 +630,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$REMOVE$",
         "transactionId": "$TRANSACTIONID$",
@@ -631,7 +649,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
    "errors": [
     {
       "errorCode": "IDA-MLC-006",
@@ -653,6 +671,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$REMOVE$",
         "transactionId": "$TRANSACTIONID$",
@@ -671,7 +690,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
    "errors": [
     {
       "errorCode": "IDA-MLC-006",
@@ -693,6 +712,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "374GFBFBCB@%%%%^@@@",
@@ -711,7 +731,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
   "sendOtpResp":{
         "transactionID": "$IGNORE$",
         "maskedMobile": "$IGNORE$",
@@ -727,6 +747,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "36363@@%55677@@@",
@@ -745,7 +766,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
   "sendOtpResp":{
         "transactionID": "$IGNORE$",
         "maskedMobile": "$IGNORE$",
@@ -761,6 +782,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -779,7 +801,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
   "sendOtpResp":{
         "transactionID": "$IGNORE$",
         "maskedMobile": "$IGNORE$",
@@ -795,6 +817,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "",
@@ -813,7 +836,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
   "sendOtpResp":{
         "transactionID": "$IGNORE$",
         "maskedMobile": "$IGNORE$",
@@ -829,6 +852,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -847,7 +871,7 @@ EkycOtp:
     }
     }'
       output: '{
-	   "kycStatus": "false",
+     "kycStatus": "false",
   "sendOtpResp":{
         "transactionID": "$IGNORE$",
         "maskedMobile": "$IGNORE$",
@@ -863,6 +887,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -897,6 +922,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "0987654356",
@@ -931,6 +957,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "0987654356",
@@ -965,6 +992,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "$TRANSACTIONID$",
