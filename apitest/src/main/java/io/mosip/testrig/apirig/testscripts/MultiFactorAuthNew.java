@@ -109,7 +109,11 @@ public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
 //		{
 //			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", ekycPartnerKeyUrl));
 //		}
+		String otpChannel="";
 		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null, otpIdentyEnryptRequestPath = null;
+		if(req.has("otpChannel")) {
+			 otpChannel = req.get("otpChannel").toString();
+		}
 		if(req.has("sendOtp")) {
 			otpRequest = req.get("sendOtp").toString();
 			req.remove("sendOtp");
@@ -171,7 +175,9 @@ public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
 		identityRequestEncUrl = identityReqJson.getString("identityRequestEncUrl");
 		identityReqJson.remove("identityRequestEncUrl");
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
-		String identyEnryptRequest = updateTimestampOtp(identityRequest);
+		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
+		String identyEnryptRequest = updateTimestampOtp(identityRequest, otpChannel, testCaseName);
+		//String identyEnryptRequest = updateTimestampOtp(identityRequest);
 		String encryptedIdentityReq=null;
 		try {
 			encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identyEnryptRequest, getResourcePath()+props.getProperty("bioValueEncryptionTemplate"), testCaseName, false);
