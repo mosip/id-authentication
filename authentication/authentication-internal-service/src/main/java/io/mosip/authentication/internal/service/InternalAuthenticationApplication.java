@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -150,6 +151,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { HibernateDaoConfig.class})})
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
 		"io.mosip.kernel.keymanagerservice.repository" })
+@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
+		"io.mosip.kernel.keymanagerservice.entity" })
 public class InternalAuthenticationApplication {
 
 	/**
