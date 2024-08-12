@@ -112,8 +112,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  *
  * @author Dinesh Karuppiah
  */
-@SpringBootApplication(exclude = { CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-@EnableAutoConfiguration
+@SpringBootApplication
+@EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class, CacheAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
