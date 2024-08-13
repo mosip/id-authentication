@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service;
 
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -115,7 +116,8 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration
+//		(exclude = { CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
@@ -144,18 +146,20 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		io.mosip.kernel.partnercertservice.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
-		PasswordAuthServiceImpl.class, PasswordComparator.class })
+		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class})
 
 @ComponentScan(basePackages = {"io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config" }, excludeFilters = {
-		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
-				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { HibernateDaoConfig.class})})
-@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
-		"io.mosip.kernel.keymanagerservice.repository" })
-@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
-		"io.mosip.kernel.keymanagerservice.entity" })
+		"io.mosip.authentication.common.service.config" }
+//		, excludeFilters = {
+//		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+//				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
+//		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { HibernateDaoConfig.class})}
+)
+//@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
+//		"io.mosip.kernel.keymanagerservice.repository" })
+//@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
+//		"io.mosip.kernel.keymanagerservice.entity" })
 public class InternalAuthenticationApplication {
 
 	/**

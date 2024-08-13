@@ -14,15 +14,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.util.Map;
 
 
-@Configuration
-@EnableJpaRepositories(
-		entityManagerFactoryRef = "entityManagerFactory",
-		basePackages = "io.mosip.kernel.keymanagerservice.repository.*",
-		repositoryBaseClass = HibernateRepositoryImpl.class)
-@EntityScan(
-		basePackages = { "io.mosip.authentication.common.service.entity",
-				"io.mosip.kernel.keymanagerservice.entity" }
-)
+//@Configuration
+//@EnableJpaRepositories(
+//		entityManagerFactoryRef = "entityManagerFactory",
+//		basePackages = "io.mosip.kernel.keymanagerservice.repository.*",
+//		repositoryBaseClass = HibernateRepositoryImpl.class)
+//@EntityScan(
+//		basePackages = { "io.mosip.authentication.common.service.entity",
+//				"io.mosip.kernel.keymanagerservice.entity" }
+//)
 public class IdaInternalServiceDataSourceConfig extends HibernateDaoConfig {
 
 	public Map<String, Object> jpaProperties() {
