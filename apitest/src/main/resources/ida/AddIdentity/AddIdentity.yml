@@ -983,7 +983,7 @@ AddIdentity:
    "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
+  "email": "auth_AddIdentity_deactivate_UIN_smoke_sid_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",

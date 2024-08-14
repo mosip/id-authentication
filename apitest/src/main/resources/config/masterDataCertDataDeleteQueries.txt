@@ -1,0 +1,8 @@
+#####  DB queries to be executed to tear down the data used and generated during the test rig run
+
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=auth_pid%'
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=auth_ekyc_pid%'
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=auth_device_pid%'
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=auth_ftm_pid%'
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=partnernameforautomationesi%'
+delete from master.ca_cert_store WHERE cert_subject LIKE '%O=partnernameforesignet%'
