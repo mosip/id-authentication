@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -52,8 +53,6 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BDBInfo;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * Helper class to fetch identity values from request.
@@ -63,10 +62,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-	
-	/**  The OTPManager. */
-	@Autowired
-	private OTPManager otpManager;
 
 	/** The Cbeff Util. */
 	@Autowired
@@ -101,7 +96,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	@Autowired(required = false)
 	private PasswordComparator passwordComparator;
-	
+
+	@Autowired
+	private ValidateOtpHelper validateOtpHelper;
+
 	/**
 	 * Gets the demo normalizer.
 	 *
@@ -249,7 +247,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
-		return otpManager::validateOtp;
+		return validateOtpHelper::validateOtp;
 	}
 
 	/**
