@@ -100,6 +100,10 @@ public class IdInfoHelperTest {
 	@Mock
 	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
 
+	@Mock
+	private MatchTypeHelper matchTypeHelper;
+	private MatchIdentityDataHelper matchIdentityDataHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
@@ -113,7 +117,7 @@ public class IdInfoHelperTest {
 	@Test
 	public void TestgetAuthReqestInfo() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		idInfoHelper.getAuthReqestInfo(DemoMatchType.ADDR, authRequestDTO);
+		matchTypeHelper.getAuthReqestInfo(DemoMatchType.ADDR, authRequestDTO);
 	}
 
 	@Test
@@ -332,7 +336,7 @@ public class IdInfoHelperTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE, null,
 				60, matchProperties, "fra"));
-		idInfoHelper.matchIdentityData(authRequestDTO,"426789089018", listMatchInputsExp,null,"12523823232");
+		matchIdentityDataHelper.matchIdentityData(authRequestDTO,"426789089018", listMatchInputsExp,null,"12523823232");
 	}
 	
 	@Test

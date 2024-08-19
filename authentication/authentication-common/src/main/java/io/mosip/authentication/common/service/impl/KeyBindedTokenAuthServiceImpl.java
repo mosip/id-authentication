@@ -6,6 +6,7 @@ import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenMatchType;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
@@ -47,6 +48,9 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
     @Autowired
     private IdentityBindingCertificateRepository identityBindingCertificateRepository;
 
+    @Autowired
+    private MatchIdentityDataHelper matchIdentityDataHelper;
+
 
     public AuthStatusInfo authenticate(AuthRequestDTO authRequestDTO,String individualId,
                                        Map<String,List<IdentityInfoDTO>> idInfo,String partnerId)
@@ -75,7 +79,7 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
 
     private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
                                                    String individualId, String partnerId) throws IdAuthenticationBusinessException {
-        return idInfoHelper.matchIdentityData(authRequestDTO, individualId, listMatchInputs, new EntityValueFetcher() {
+        return matchIdentityDataHelper.matchIdentityData(authRequestDTO, individualId, listMatchInputs, new EntityValueFetcher() {
                         @Override
                         public Map<String, String> fetch(String individualId, AuthRequestDTO authReq, String partnerID)
                                 throws IdAuthenticationBusinessException {
