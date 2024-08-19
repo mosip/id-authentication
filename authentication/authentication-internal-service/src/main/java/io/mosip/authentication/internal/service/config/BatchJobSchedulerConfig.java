@@ -34,8 +34,8 @@ public class BatchJobSchedulerConfig {
 	
 	/** The credential store job. */
 	@Autowired
-	@Qualifier("credentialStoreJob1")
-	private Job credentialStoreJob1;
+	@Qualifier("credentialStoreJob")
+	private Job credentialStoreJob;
 	
 	@Autowired
 	@Qualifier("retriggerMissingCredentials")
@@ -56,7 +56,7 @@ public class BatchJobSchedulerConfig {
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 					.toJobParameters();
-			jobLauncher.run(credentialStoreJob1, jobParameters);
+			jobLauncher.run(credentialStoreJob, jobParameters);
 		} catch (Exception e) {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}
