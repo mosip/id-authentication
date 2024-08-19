@@ -7,8 +7,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
@@ -107,9 +106,7 @@ import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 
 /**
@@ -119,7 +116,9 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-//		(exclude = { CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+//		(exclude = {BatchAutoConfiguration.class
+////				CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class
+//		})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
