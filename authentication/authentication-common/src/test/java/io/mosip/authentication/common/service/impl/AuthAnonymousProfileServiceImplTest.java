@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.helper.EntityInfoMapHelper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -71,7 +73,13 @@ public class AuthAnonymousProfileServiceImplTest {
 	Map<String, Object> responseMetadata = null;
 	Map<String,List<IdentityInfoDTO>> idInfoMap = null;
 	List<AuthError> errorCodes = null;
-	
+
+	@Mock
+	private EntityInfoHelper entityInfoHelper;
+
+	@Mock
+	private EntityInfoMapHelper entityInfoMapHelper;
+
 	@Before
 	public void before() {
 		 requestBody = new HashMap<>();
@@ -108,7 +116,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
+		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",
 			requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
@@ -157,7 +165,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
+		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals("Female", anonymousProfile.getGender());
 	}
@@ -186,7 +194,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
+		Mockito.when(entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}

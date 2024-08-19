@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -89,6 +90,9 @@ public class IdMappingValidationTest {
 	@Mock
 	private RestRequestFactory restFactory;
 
+	@Mock
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
+
 	@Before
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
@@ -116,11 +120,11 @@ public class IdMappingValidationTest {
 		pincodeList.add("phone");
 		List<String> dobList = new ArrayList<>();
 		dobList.add("dateofBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE)).thenReturn(phoneList);
-		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL)).thenReturn(emailList);
-		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE)).thenReturn(phoneList);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL)).thenReturn(emailList);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
 				.thenReturn(pincodeList);
-		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB))
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB))
 		.thenReturn(dobList);		
 		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng","fra","ara"));
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);

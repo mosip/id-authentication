@@ -5,22 +5,18 @@ package io.mosip.authentication.common.service.helper;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUBTYPE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE_SEPARATOR;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_DEFAULT_IDENTITY_FILTER_ATTRIBUTES;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,11 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -51,7 +45,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -93,6 +86,21 @@ public class IdInfoHelper {
 	@Autowired
 	private EnvUtil env;
 
+	@Autowired
+	private EntityInfoHelper entityInfoHelper;
+
+	@Autowired
+	private EntityInfoMapHelper entityInfoMapHelper;
+
+	@Autowired
+	private ComputeKeyHelper computeKeyHelper;
+
+	@Autowired
+	private SeparatorHelper seperatorHelper;
+
+	@Autowired
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
+
 	/**
 	 * Get Authrequest Info.
 	 *
@@ -104,68 +112,8 @@ public class IdInfoHelper {
 		return matchType.getReqestInfoFunction().apply(authRequestDTO);
 	}
 
-	/**
-	 * Fetch the identity value.
-	 *
-	 * @param name                 the name
-	 * @param languageForMatchType the language for match type
-	 * @param identityInfo         the demo info
-	 * @param matchType the match type
-	 * @return the identity value
-	 */
-	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
-			Map<String, Entry<String, List<IdentityInfoDTO>>> identityInfo, MatchType matchType) {
-		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
-		if (identityInfoList != null && !identityInfoList.isEmpty()) {
-			return identityInfoList.stream()
-					.filter(idinfo -> (languageForMatchType == null && !matchType.isPropMultiLang(name, idMappingConfig))
-							|| idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
-					.map(idInfo -> idInfo.getValue());
-		}
-		return Stream.empty();
-	}
 
-	/**
-	 * Gets the id mapping value.
-	 *
-	 * @param idMapping the id mapping
-	 * @param matchType the match type
-	 * @return the id mapping value
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
-			throws IdAuthenticationBusinessException {
-		String type = matchType.getCategory().getType();
-		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
-		if (mappings != null && !mappings.isEmpty()) {
-			List<String> fullMapping = new ArrayList<>();
-			for (String mappingStr : mappings) {
-				if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
-					Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values(), idMappingConfig);
-					if (mappingInternal.isPresent() && !idMapping.equals(mappingInternal.get())) {
-						List<String> internalMapping = getIdMappingValue(mappingInternal.get(), matchType);
-						fullMapping.addAll(internalMapping);
-					} else {
-						fullMapping.add(mappingStr);
-					}
-				} else {
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-							IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-				}
-			}
-			return fullMapping;
-		} else {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
-		}
-	}
-
-	/**
+    /**
 	 * To check Whether Match type is Enabled.
 	 *
 	 * @param matchType the match type
@@ -174,162 +122,6 @@ public class IdInfoHelper {
 	public boolean isMatchtypeEnabled(MatchType matchType) {
 		List<String> mappings = matchType.getIdMapping().getMappingFunction().apply(idMappingConfig, matchType);
 		return mappings != null && !mappings.isEmpty();
-	}
-
-	/**
-	 * Gets the entity info as string.
-	 *
-	 * @param matchType  the match type
-	 * @param idEntity the id entity
-	 * @return the entity info as string
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idEntity)
-			throws IdAuthenticationBusinessException {
-		return getEntityInfoAsString(matchType, null, idEntity);
-	}
-
-	/**
-	 * Gets the entity info as string. 
-	 * 
-	 * Note: This method is not used during authentication match, so the
-	 * separator used in concatenation will not be used during the match.
-	 *
-	 * @param matchType the match type
-	 * @param langCode  the lang code
-	 * @param idEntity  the id entity
-	 * @return the entity info as string
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	public String getEntityInfoAsString(MatchType matchType, String langCode,
-			Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
-		Map<String, String> entityInfo = getEntityInfoAsStringWithKey(matchType, langCode,
-						idEntity, null);
-		if(entityInfo == null || entityInfo.isEmpty()) {
-			return null;
-		}
-		return entityInfo.values().iterator().next();
-	}
-	
-	public Map<String, String> getEntityInfoAsStringWithKey(MatchType matchType, String langCode,
-			Map<String, List<IdentityInfoDTO>> idEntity, String key) throws IdAuthenticationBusinessException {
-		Map<String, String> entityInfoMap = getIdEntityInfoMap(matchType, idEntity, langCode);
-		if(entityInfoMap == null || entityInfoMap.isEmpty()) {
-			return Map.of();
-		}
-		String actualKey = entityInfoMap.keySet().iterator().next();
-		return Map.of(key == null ? actualKey :  computeKey(key, entityInfoMap.keySet().iterator().next(), langCode) ,concatValues(getSeparator(matchType.getIdMapping().getIdname()), entityInfoMap.values().toArray(new String[entityInfoMap.size()])));
-	}
-
-	private String computeKey(String newKey, String originalKey, String langCode) {
-		return langCode != null && originalKey.contains(LANG_CODE_SEPARATOR) ? newKey + LANG_CODE_SEPARATOR + langCode: originalKey;
-	}
-
-	private String getSeparator(String idname) {
-		return env.getProperty(IdAuthConfigKeyConstants.IDA_ID_ATTRIBUTE_SEPARATOR_PREFIX + idname, IdAuthCommonConstants.DEFAULT_ID_ATTRIBUTE_SEPARATOR_VALUE);
-	}
-
-	/**
-	 * Gets the identity values map.
-	 *
-	 * @param matchType the match type
-	 * @param propertyNames the property names
-	 * @param languageCode  the language code
-	 * @param idEntity the id entity
-	 * @return the identity values map
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
-			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
-		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity,
-				idInfoFetcher);
-		Function<? super String, ? extends String> keyMapper = propName -> {
-			String key = mappedIdEntity.get(propName).getKey();
-			if (languageCode != null) {
-				key = key + LANG_CODE_SEPARATOR + languageCode;
-			}
-			return key;
-		};
-		Function<? super String, ? extends String> valueMapper = propName -> getIdentityValueFromMap(propName,
-				languageCode, mappedIdEntity, matchType).findAny().orElse("");
-		
-		return propertyNames.stream()
-						.filter(propName -> mappedIdEntity.containsKey(propName))
-						.collect(
-				Collectors.toMap(keyMapper, valueMapper, (p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
-	}
-
-	/**
-	 * Gets the entity info map.
-	 *
-	 * @param matchType     the match type
-	 * @param identityInfos the id entity
-	 * @param language the language
-	 * @return the entity info map
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
-			String language) throws IdAuthenticationBusinessException {
-		return getIdEntityInfoMap(matchType, identityInfos, language, null);
-	}
-	
-	/**
-	 * Gets the entity info map.
-	 *
-	 * @param matchType     the match type
-	 * @param identityInfos the id entity
-	 * @param language the language
-	 * @param idName the id name
-	 * @return the entity info map
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
-			String language, String idName) throws IdAuthenticationBusinessException {
-		List<String> propertyNames = getIdentityAttributesForMatchType(matchType, idName);
-		Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
-		Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
-		Map<String, String> mergedMap = mergeNonNullValues(identityValuesMapWithLang, identityValuesMapWithoutLang);
-		Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
-		return matchType.getEntityInfoMapper().apply(mergedMap, props);
-	}
-
-	/**
-	 * Merge non null values.
-	 *
-	 * @param map1 the identity values map
-	 * @param map2 the identity values map without lang
-	 * @return 
-	 */
-	private Map<String, String> mergeNonNullValues(Map<String, String> map1, Map<String, String> map2) {
-		Predicate<? super Entry<String, String>> nonNullPredicate = entry -> entry.getValue() != null && !entry.getValue().trim().isEmpty();
-		Map<String, String> mergeMap = map1.entrySet()
-				.stream()
-				.filter(nonNullPredicate)
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (m1,m2) -> m1,  () -> new LinkedHashMap<>()));
-		map2.entrySet()
-				.stream()
-				.filter(nonNullPredicate)
-				.forEach(entry -> mergeMap.merge(entry.getKey(), entry.getValue(), (str1, str2) -> str1));
-		return mergeMap;
-	}
-	
-	/**
-	 * This method returns the list of  data capture languages.
-	 * These are used to send the notifications in data capture languages.
-	 *
-	 * @param matchType the match type
-	 * @param identityInfos the identity infos
-	 * @return the data captured languages
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	public List<String> getDataCapturedLanguages(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos)
-			throws IdAuthenticationBusinessException {
-		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(identityInfos,
-				idInfoFetcher);
-		return mappedIdEntity.get(propertyNames.get(0)).getValue().stream().map(IdentityInfoDTO::getLanguage)
-				.collect(Collectors.toList());
 	}
 	
 	/**
@@ -503,7 +295,7 @@ public class IdInfoHelper {
 		if (matchType.hasRequestEntityInfo()) {
 			entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
 		} else if (matchType.hasIdEntityInfo()) {
-			entityInfo = getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
+			entityInfo = entityInfoMapHelper.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
@@ -545,26 +337,6 @@ public class IdInfoHelper {
 		}
 		return entityInfo;
 	}
-
-	/**
-	 * Concat values.
-	 *
-	 * @param values the values
-	 * @return the string
-	 */
-	private String concatValues(String sep, String... values) {
-		StringBuilder demoBuilder = new StringBuilder();
-		for (int i = 0; i < values.length; i++) {
-			String demo = values[i];
-			if (null != demo && demo.length() > 0) {
-				demoBuilder.append(demo);
-				if (i < values.length - 1) {
-					demoBuilder.append(sep);
-				}
-			}
-		}
-		return demoBuilder.toString();
-	}
 	
 	/**
 	 * Gets the dynamic entity info for ID Name.
@@ -576,11 +348,11 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getDynamicEntityInfoAsStringWithKey(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
-			Map<String, String> idEntityInfoMap = getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
-			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
+			Map<String, String> idEntityInfoMap = entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
+			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(computeKeyHelper.computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
 					.stream()
 					.map(Entry::getValue)
-					.collect(Collectors.joining(getSeparator(idName))));
+					.collect(Collectors.joining(seperatorHelper.getSeparator(idName))));
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getEntityForMatchType",
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
@@ -606,7 +378,7 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getDynamicEntityInfo(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
-			return getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
+			return entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
 					.stream()
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		} catch (IdAuthenticationBusinessException e) {
@@ -794,40 +566,7 @@ public class IdInfoHelper {
 		return List.of(type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.LEFT.value(),
 				type.value() + BIO_TYPE_SEPARATOR + SingleAnySubtypeType.RIGHT.value());
 	}
-	
-	/**
-	 * Gets the property names for match type.
-	 *
-	 * @param matchType the match type
-	 * @param idName the id name
-	 * @return the property names for match type
-	 */
-	public List<String> getIdentityAttributesForMatchType(MatchType matchType, String idName) {
-		String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
-		List<String> propertyNames;
-		if (!matchType.isDynamic()) {
-			if(matchType.getIdMapping().getIdname().equals(propertyName)) {
-				try {
-					propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
-				} catch (IdAuthenticationBusinessException e) {
-					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-							IdAuthCommonConstants.VALIDATE, "Ignoring : IdMapping config is Invalid for Type -" + matchType);
-					propertyNames = List.of();
-				}
-			} else {
-				propertyNames = List.of();
-			}
 
-		} else {
-			if (idMappingConfig.getDynamicAttributes().containsKey(propertyName)) {
-				propertyNames = idMappingConfig.getDynamicAttributes().get(propertyName);
-			} else {
-				propertyNames = List.of(idName);
-			}
-		}
-		return propertyNames;
-	}
-	
 	public List<String> getIdentityAttributesForIdName(String idName)
 			throws IdAuthenticationBusinessException {
 		boolean isDynamic = idMappingConfig.getDynamicAttributes().keySet().contains(idName);
@@ -848,7 +587,7 @@ public class IdInfoHelper {
 		List<String> propNames = new ArrayList<>();
 		for (DemoMatchType demoMatchType : demoMatchTypes) {
 			if(isDynamic == demoMatchType.isDynamic()) {
-				List<String> propertyNamesForMatchType = this.getIdentityAttributesForMatchType(demoMatchType, idName);
+				List<String> propertyNamesForMatchType = identityAttributesForMatchTypeHelper.getIdentityAttributesForMatchType(demoMatchType, idName);
 				if(!propertyNamesForMatchType.isEmpty()) {
 					propNames.addAll(propertyNamesForMatchType);
 				}

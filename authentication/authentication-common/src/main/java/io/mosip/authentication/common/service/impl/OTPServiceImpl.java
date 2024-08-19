@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import io.mosip.authentication.common.service.helper.DataCapturedLanguagesHelper;
+import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -119,6 +121,12 @@ public class OTPServiceImpl implements OTPService {
 	
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
+
+	@Autowired
+	private EntityInfoHelper entityInfoHelper;
+
+	@Autowired
+	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
 
 	/**
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
@@ -312,7 +320,7 @@ public class OTPServiceImpl implements OTPService {
 
 	private String getName(String language, Map<String, List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
-		return idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
+		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
 
 	}	
 
@@ -373,7 +381,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
-		return idInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 	}
 
 	/**
@@ -384,7 +392,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private String getPhoneNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
-		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
 	/**
@@ -403,7 +411,7 @@ public class OTPServiceImpl implements OTPService {
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
-			List<String> dataCaptureLanguages = idInfoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			List<String> dataCaptureLanguages = dataCapturedLanguagesHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
 			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}

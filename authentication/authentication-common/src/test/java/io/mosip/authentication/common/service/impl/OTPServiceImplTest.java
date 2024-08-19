@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -144,6 +144,9 @@ public class OTPServiceImplTest {
     @Mock
 	private AuthLockRepository authLockRepository;
 
+    @InjectMocks
+    private EntityInfoHelper entityInfoHelper;
+
 
     @Before
     public void before() {
@@ -211,7 +214,7 @@ public class OTPServiceImplTest {
         idInfo1.put("phone", emptyList);
         idInfo1.put("email", emptyList);
         System.out.println("idInfo1="+idInfo1);
-        Mockito.doReturn("abc@test.com").when(idInfoHelper).getEntityInfoAsString(DemoMatchType.EMAIL, idInfo1);
+        entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo1);
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
 

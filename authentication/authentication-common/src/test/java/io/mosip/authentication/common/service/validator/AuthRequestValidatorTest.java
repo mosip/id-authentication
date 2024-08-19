@@ -17,10 +17,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -114,6 +114,9 @@ public class AuthRequestValidatorTest {
 
 	@Mock
 	private HotlistService hotlistService;
+	
+    @Mock
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
 	@Before
 	public void before() {
@@ -187,7 +190,7 @@ public class AuthRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(List.of("eng", "fra", "ara"));
 		authRequestValidator.validate(authRequestDTO, errors);
 		System.err.println(errors.getAllErrors());
@@ -233,7 +236,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -279,7 +282,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -316,7 +319,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIndividualIdType(IdType.VID.getType());
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequest(reqDTO);
@@ -504,7 +507,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -573,7 +576,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -1099,7 +1102,7 @@ public class AuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(true);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
