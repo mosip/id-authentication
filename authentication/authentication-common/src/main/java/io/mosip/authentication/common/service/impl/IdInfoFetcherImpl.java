@@ -26,11 +26,9 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -465,21 +463,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			}
 		}
 		return Optional.ofNullable(threshold);
-	}
-
-	/**
-	 * Gets the type for id name.
-	 *
-	 * @param idName the id name
-	 * @param idMappings the id mappings
-	 * @return the type for id name
-	 */
-	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
-		return Stream.of(idMappings).filter(idmap -> {
-			String thisId = idName.replaceAll("\\d", "");
-			String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
-			return thisId.equalsIgnoreCase(thatId);
-		}).map(IdMapping::getType).findFirst();
 	}
 
 	/**
