@@ -66,6 +66,16 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>1.2.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-childauthfilter-impl</artifactId>
+			<version>1.2.1-java21-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-integration</artifactId>
 		</dependency>
@@ -125,6 +135,11 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-pdfgenerator-itext</artifactId>
+			<version>1.2.1-java21-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

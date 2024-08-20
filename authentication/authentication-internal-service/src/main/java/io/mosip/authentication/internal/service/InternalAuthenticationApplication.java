@@ -144,7 +144,7 @@ import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 		PasswordAuthServiceImpl.class, PasswordComparator.class })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.authentication.common.service.config", "io.mosip.kernel.pdfgenerator.itext.impl.*" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
 		"io.mosip.kernel.keymanagerservice.repository.*" })
