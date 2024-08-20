@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.helper;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
