@@ -29,7 +29,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_With_Valid_VID_Smoke_Pos:
@@ -62,7 +62,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_With_Invalid_individualId_neg:
@@ -101,7 +101,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_With_Blank_individualId_neg:
@@ -140,7 +140,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_With_Missing_individualId_neg:
@@ -179,7 +179,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_Invalid_transactionId_neg:
@@ -218,7 +218,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_Blank_transactionId_neg:
@@ -257,7 +257,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_Invalid_individualIdType_neg:
@@ -296,7 +296,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_Blank_individualIdType_neg:
@@ -335,7 +335,7 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
   auth_OTP_Internal_Auth_Missing_individualIdType_neg:
@@ -374,6 +374,6 @@ OTPInternalAuth:
         "transactionID": "$TRANSACTIONID$",
         "maskedMobile": "XXXXXX8538",
         "sendOtpResTemplate":"ida/OtpInternalAuth/sendOtpRes",
-        "maskedEmail": "XXkXXiXXb@technoforte.co.in"
+        "maskedEmail": "XXkXXiXXb@mailinator.co.in"
     }
 }'
