@@ -647,7 +647,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -686,7 +686,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -725,7 +725,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -764,7 +764,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -803,7 +803,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -842,7 +842,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -881,7 +881,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -920,7 +920,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -959,7 +959,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -998,7 +998,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1037,7 +1037,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1076,7 +1076,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1115,7 +1115,7 @@ EkycBio:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/EkycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
