@@ -9,9 +9,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoUnit;
 
+@Component
 public class RequireOtpNotFrozenHelper {
 
     /** The logger. */
