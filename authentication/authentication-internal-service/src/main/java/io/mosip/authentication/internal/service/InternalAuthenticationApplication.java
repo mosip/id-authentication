@@ -152,7 +152,7 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = {"io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config" }
+		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" }
 //		, excludeFilters = {
 //		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 //				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
