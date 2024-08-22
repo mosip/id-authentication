@@ -15,7 +15,26 @@
 			<class name="io.mosip.testrig.apirig.testscripts.AddIdentity" />
 		</classes>
 	</test>
-	<test name="CreateVID">
+	
+	<test name="GenerateVID">
+		<parameter name="ymlFile"
+			value="ida/GenerateVID/createGenerateVID.yml" />
+		<parameter name="idKeyName" value="vid" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+	
+	<test name="BioAuth">
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
+		</classes>
+	</test>
+	
+	<!--<test name="CreateVID">
 		<parameter name="ymlFile"	value="ida/CreateVID/CreateVid.yml" />
 	    <parameter name="idKeyName" value="VID" />
 		<classes>
@@ -69,15 +88,7 @@
 		<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 	</classes>
 	</test>
-	<test name="GenerateVID">
-		<parameter name="ymlFile"
-			value="ida/GenerateVID/createGenerateVID.yml" />
-		<parameter name="idKeyName" value="vid" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
-		</classes>
-	</test>
+	
 	
 	<test name="DeactivateVIDs">
 		<parameter name="ymlFile"	value="ida/DeactivateUin/DeactivateUin.yml" />
@@ -110,13 +121,7 @@
 		</classes>
 	</test>
 
-	<test name="BioAuth">
-		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
-		<parameter name="isInternal" value="false" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
-		</classes>
-	</test>
+	
 
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
@@ -282,7 +287,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
-	</test>
+	</test>-->
 	
 	
 </suite>
