@@ -1,6 +1,7 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth with blocked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -39,6 +40,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_Locked_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth with locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -77,6 +79,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_blocked_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth with blocked VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -115,6 +118,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -153,6 +157,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric RingFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -191,6 +196,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric LeftIndexFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -229,6 +235,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_IRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric Iris auth with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -267,6 +274,7 @@ BioAuth:
 }'
   auth_EkycBio_Face_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      description: Ekyc bio auth with face with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -305,6 +313,7 @@ BioAuth:
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      description: Ekyc bio auth with RingFinger with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -343,6 +352,7 @@ BioAuth:
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      description: Ekyc bio auth with LeftMiddleFinger with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -382,6 +392,7 @@ BioAuth:
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      description: Ekyc bio auth with RIGHTIRIS with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth

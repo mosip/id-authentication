@@ -1,6 +1,7 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -39,6 +40,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RingFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -77,6 +79,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftMiddleFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -115,6 +118,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftIndexFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -153,6 +157,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftLittleFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -191,6 +196,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightIndexFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -229,6 +235,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightRingFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -267,6 +274,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightMiddleFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -305,6 +313,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightLittleFinger using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -343,6 +352,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftThumb using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -381,6 +391,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightThumb using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -419,6 +430,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightIris using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -457,6 +469,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftIris using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -495,6 +508,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with Face using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -533,6 +547,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_RevokedVID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with Face using revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -577,6 +592,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RingFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -615,6 +631,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftMiddleFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -653,6 +670,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftIndexFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -691,6 +709,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftLittleFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -729,6 +748,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightIndexFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -767,6 +787,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightRingFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -805,6 +826,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightMiddleFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -843,6 +865,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightLittleFinger using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -881,6 +904,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftThumb_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftThumb using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -919,6 +943,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightThumb using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -957,6 +982,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with RightIris using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -995,6 +1021,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with LeftIris using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1033,6 +1060,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_inValid_transactionID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1077,6 +1105,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_blank_transactionID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+	  description: Bio auth with blank transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1121,6 +1150,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_inValid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid individualIdType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1165,6 +1195,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with blank individualIdType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1209,6 +1240,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Missing_Optional_Field_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with missing individualIdType UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1247,6 +1279,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioSubType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1291,6 +1324,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with blank bioSubType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1335,6 +1369,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Blank_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with blank bioType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1379,6 +1414,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Missing_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with missing bioType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1423,6 +1459,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Invalid_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1467,6 +1504,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with valid bioType and invalid digitalId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1515,6 +1553,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_invalid_biovalue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1559,6 +1598,7 @@ BioAuth:
 }'
   auth_BioAuth_Face_With_FingerBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1603,6 +1643,7 @@ BioAuth:
 }'
   auth_BioAuth_Iris_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1647,6 +1688,7 @@ BioAuth:
 }'
   auth_BioAuth_Finger_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1691,6 +1733,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_instead_of_Finger_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1735,6 +1778,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_IR_instead_of_IRIS_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1779,6 +1823,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_instead_of_Finger_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1823,6 +1868,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_IR_instead_of_IRIS_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1867,6 +1913,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1911,6 +1958,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with invalid bioType and invalid bioValue using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1955,6 +2003,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Unlock_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio face auth with unlocked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1993,6 +2042,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Lock_Permanent_:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio face auth with permanent locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2037,6 +2087,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_time_difference_datetime_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric_time_difference_datetime
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2081,6 +2132,7 @@ BioAuth:
 }'
   auth_BioAuth_with_dummy_partnerkey_Pos:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Bio auth with dummy partnerkey
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2130,6 +2182,7 @@ BioAuth:
 
   auth_BioAuth_Biometric_Face_Unlock_With_AllValid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with unlocked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2168,6 +2221,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Lock_Permanent_Valid_Smoke:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Bio auth with permanent locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth

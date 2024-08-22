@@ -1,6 +1,7 @@
 EkycDemo:
   auth_EkycDemo_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using dob with UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -25,6 +26,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_edited_updated_policy_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with dob using UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -49,6 +51,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_draft_uin_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with dob using drafted UIN
       role: resident
       kycFields: ["name"]
       restMethod: post
@@ -73,6 +76,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with dob using VID
       role: resident
       kycFields: ["name"]
       restMethod: post
@@ -98,6 +102,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with past time stamp using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -122,6 +127,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with dob,future timestamp and with UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -146,6 +152,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using dob,empty timestamp and with UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -170,6 +177,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using dob,past time stamp and with VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -194,6 +202,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using dob,future timestamp and with VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -218,6 +227,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using dob,empty timestamp and with VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -242,6 +252,7 @@ EkycDemo:
 
   auth_EkycDemo_Auth_With_InValid_uin_DOB:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using invalid dob with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -270,6 +281,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_DOB_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using invalid dob with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -298,6 +310,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_email_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using email and with valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -322,6 +335,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Email_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using email with VID
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -346,6 +360,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_uin_email:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using invalid email and with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -374,6 +389,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_email_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using invalid email with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -402,6 +418,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_revoke_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -430,6 +447,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_gender_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using gender with UIN
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -458,6 +476,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_gender_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using gender with VID
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -486,6 +505,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_gender_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth using invalid gender with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -518,6 +538,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_uin_gender:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid gender with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -550,6 +571,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid name with UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -578,6 +600,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Infant_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with infant UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -606,6 +629,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with name and with VID
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -634,6 +658,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_uin_name:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid name value and with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -666,6 +691,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_name_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid name with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -698,6 +724,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name1_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid name and UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -726,6 +753,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name2_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid name and valid UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -754,6 +782,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name3_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid name and title with valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -782,6 +811,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name4_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid name and title with valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -810,6 +840,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name5_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with name and title with valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -838,6 +869,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name6_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with name and title with valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -867,6 +899,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_name7_Valid_titleFromAdmin_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with name and title with valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -896,6 +929,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_partner_uin_Smoke:
       endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Ekyc demo auth with invalid partner with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -931,6 +965,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_age_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with age and valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -956,6 +991,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_age_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with age and VID
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -980,6 +1016,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_age_uin_InValid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid age value with UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1008,6 +1045,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Invalid_age_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Skyc demo auth with invalid age value with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1036,6 +1074,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_phone_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with phone and valid UIN
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -1060,6 +1099,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_phone_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid phone with VID
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -1084,6 +1124,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_phone_uin_InValid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid phone with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1112,6 +1153,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Invalid_phone_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with invalid phone and valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1140,6 +1182,7 @@ EkycDemo:
 }'
   auth_EkycDemo_DOB_Invalid_transactionId_Pos_vid_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with DOB,invalid transactionId and valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1163,6 +1206,7 @@ EkycDemo:
 }'
   auth_EkycDemo_DOB_blank_transactionId_vid_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with dob,blank transactionId and with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1186,6 +1230,7 @@ EkycDemo:
 }'
   auth_EkycDemo_without_individual_type_ID_Pos_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth without individualId type and with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1209,6 +1254,7 @@ EkycDemo:
 }'
   auth_EkycDemo_missing_individual_ID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with missing individualId and with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1237,6 +1283,7 @@ EkycDemo:
 }'
   auth_EkycDemo_blank_individual_ID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with blank individualId and valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1265,6 +1312,7 @@ EkycDemo:
 }'
   auth_EkycDemo_DOB_Unlock_Valid_Smoke_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with locked UIN,unlocked demo auth and with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1293,6 +1341,7 @@ EkycDemo:
 }'
   auth_EkycDemo_DOB_Lock_Permanent_Valid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with permanently locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1321,6 +1370,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_Deactivated_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with deactivated UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -1345,6 +1395,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_Without_kyc_attribute_in_policy_Smoke:
       endPoint: /idauthentication/v1/kyc/$UpdatedPartnerKeyURL$
+      description: Ekyc demo auth without kyc attribute
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
