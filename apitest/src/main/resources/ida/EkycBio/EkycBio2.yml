@@ -646,7 +646,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -685,7 +685,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -724,7 +724,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -763,7 +763,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -802,7 +802,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -841,7 +841,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -880,7 +880,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -919,7 +919,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -958,7 +958,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -997,7 +997,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1036,7 +1036,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1075,7 +1075,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1114,7 +1114,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/ekycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1153,7 +1153,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1197,7 +1197,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1240,7 +1240,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1284,7 +1284,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1414,7 +1414,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1458,7 +1458,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1502,7 +1502,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1546,7 +1546,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1590,7 +1590,7 @@ EkycBio:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
