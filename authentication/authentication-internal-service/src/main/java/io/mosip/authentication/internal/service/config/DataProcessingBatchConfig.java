@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -116,6 +117,7 @@ public class DataProcessingBatchConfig {
 	protected ThreadPoolTaskScheduler taskScheduler;
 	
 	@Autowired
+	@Lazy
 	private JobLauncher jobLauncher;
 	
 	@Autowired
