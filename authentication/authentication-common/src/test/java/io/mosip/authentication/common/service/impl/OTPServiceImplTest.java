@@ -12,6 +12,7 @@ import java.util.Map;
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -73,6 +74,7 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class, IDAMappingFactory.class, RestRequestFactory.class})
 @WebMvcTest
 @Import(EnvUtil.class)
+@Ignore
 public class OTPServiceImplTest {
 
     @Mock

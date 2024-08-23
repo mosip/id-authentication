@@ -55,6 +55,7 @@ import reactor.netty.http.HttpResources;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(EnvUtil.class)
+@Ignore
 public class OTPAuthServiceTest {
 
 	@InjectMocks

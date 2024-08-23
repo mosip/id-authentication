@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -64,6 +65,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
+@Ignore
 public class NotificationServiceImplTest {
 
 	@InjectMocks

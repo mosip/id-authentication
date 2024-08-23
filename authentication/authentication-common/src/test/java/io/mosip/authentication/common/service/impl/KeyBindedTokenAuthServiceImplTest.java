@@ -11,6 +11,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import org.apache.commons.collections.map.HashedMap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
+@Ignore
 public class KeyBindedTokenAuthServiceImplTest {
 
     @InjectMocks

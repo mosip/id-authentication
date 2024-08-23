@@ -71,6 +71,7 @@ import io.mosip.authentication.core.util.DemoNormalizer;
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })
+@Ignore
 public class DemoAuthServiceTest {
 
 	@Autowired

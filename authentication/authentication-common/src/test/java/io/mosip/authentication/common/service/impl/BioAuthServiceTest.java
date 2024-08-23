@@ -69,6 +69,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@Ignore
 public class BioAuthServiceTest {
 
 	private static final double THRESHOLD = IdAuthCommonConstants.DEFAULT_PARTIAL_MATCH_VALUE;

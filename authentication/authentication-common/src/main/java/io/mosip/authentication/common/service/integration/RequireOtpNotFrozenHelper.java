@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.integration;
 import io.mosip.authentication.common.service.entity.OtpTransaction;
 import io.mosip.authentication.common.service.repository.OtpTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -27,8 +28,21 @@ public class RequireOtpNotFrozenHelper {
     @Value("${mosip.ida.otp.frozen.duration.minutes:30}")
     private int otpFrozenTimeMinutes;
 
-    @Autowired
-    private CreateOTPFrozenExceptionHelper createOTPFrozenExceptionHelper;
+    /** The number of validation attempts allowed. */
+    @Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
+    private int numberOfValidationAttemptsAllowed;
+
+    /**
+     * Creates the OTP frozen exception.
+     *
+     * @return the id authentication business exception
+     */
+    public IdAuthenticationBusinessException createOTPFrozenException() {
+        return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
+                String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
+                        otpFrozenTimeMinutes + " seconds", numberOfValidationAttemptsAllowed));
+    }
+
 
     /**
      * Require otp not frozen.
@@ -39,7 +53,7 @@ public class RequireOtpNotFrozenHelper {
     public void requireOtpNotFrozen(OtpTransaction otpEntity, boolean saveEntity) throws IdAuthenticationBusinessException {
         if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
             if(!isAfterFrozenDuration(otpEntity)) {
-                throw createOTPFrozenExceptionHelper.createOTPFrozenException();
+                throw createOTPFrozenException();
             }
             logger.info("OTP Frozen wait time is over. Allowing further.");
             otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);

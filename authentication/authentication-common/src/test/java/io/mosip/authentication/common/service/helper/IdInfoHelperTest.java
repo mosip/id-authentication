@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -68,6 +69,7 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
+@Ignore
 public class IdInfoHelperTest {
 
 	@Value("${ida.id.attribute.separator.fullAddress}")

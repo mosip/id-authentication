@@ -28,15 +28,27 @@ public class ValidateOtpHelper {
     @Autowired
     private RequireOtpNotFrozenHelper requireOtpNotFrozen;
 
-    @Autowired
-    CreateOTPFrozenExceptionHelper createOTPFrozenException;
-
     /** The number of validation attempts allowed. */
     @Value("${mosip.ida.otp.validation.attempt.count.threshold:5}")
     private int numberOfValidationAttemptsAllowed;
 
     /** The logger. */
     private static Logger logger = IdaLogger.getLogger(ValidateOtpHelper.class);
+
+    /** The otp frozen time minutes. */
+    @Value("${mosip.ida.otp.frozen.duration.minutes:30}")
+    private int otpFrozenTimeMinutes;
+
+    /**
+     * Creates the OTP frozen exception.
+     *
+     * @return the id authentication business exception
+     */
+    public IdAuthenticationBusinessException createOTPFrozenException() {
+        return new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(),
+                String.format(IdAuthenticationErrorConstants.OTP_FROZEN.getErrorMessage(),
+                        otpFrozenTimeMinutes + " seconds", numberOfValidationAttemptsAllowed));
+    }
 
     /**
      * Validate method for OTP Validation.
@@ -85,7 +97,7 @@ public class ValidateOtpHelper {
                 otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
                 otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
                 otpRepo.save(otpEntity);
-                throw createOTPFrozenException.createOTPFrozenException();
+                throw createOTPFrozenException();
             }
             otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
             otpRepo.save(otpEntity);
