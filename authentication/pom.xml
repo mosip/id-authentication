@@ -108,7 +108,7 @@
 		<kernel-biometrics-api.version>1.2.1-java21-SNAPSHOT</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.2.1-java21-SNAPSHOT</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>1.2.1-java21-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.0.1-B1</id-repository-core.version>
+		<id-repository-core.version>1.2.1-java21-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>1.2.1-java21-SNAPSHOT</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>1.2.1-java21-SNAPSHOT</kernel-idauthenticationfilter-api.version>
