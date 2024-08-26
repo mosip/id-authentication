@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.helper.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,9 +41,6 @@ import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
@@ -104,7 +101,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
 @TestPropertySource("classpath:application.properties")
-@Ignore
+
 public class AuthFacadeImplTest {
 
 
@@ -206,6 +203,9 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private EntityInfoHelper entityInfoHelper;
+
+	@Mock
+	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
 
 	/**
 	 * Before.
