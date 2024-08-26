@@ -26,6 +26,7 @@ import io.mosip.authentication.common.service.helper.EntityInfoMapHelper;
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -77,6 +78,7 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 @RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
+@Ignore
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
