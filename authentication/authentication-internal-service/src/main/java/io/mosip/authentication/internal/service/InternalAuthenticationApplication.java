@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.cache.support.AbstractCacheManager;
+import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -117,7 +119,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-		(exclude = {HibernateJpaAutoConfiguration.class})
+		(exclude = {HibernateJpaAutoConfiguration.class, CacheAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
@@ -147,7 +149,7 @@ import org.springframework.web.client.RestTemplate;
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class, PublisherClientImpl.class,
-		RestTemplateHelper.class, RestTemplate.class
+		RestTemplateHelper.class, RestTemplate.class, TransactionAwareCacheManagerProxy.class
 })
 
 @ComponentScan(basePackages = {"io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
