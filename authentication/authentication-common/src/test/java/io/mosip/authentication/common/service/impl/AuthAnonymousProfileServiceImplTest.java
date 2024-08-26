@@ -90,7 +90,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		 errorCodes = new ArrayList<>();
 			
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "preferredLangAttribName", "preferredLanguage");
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "locationProfileAttribName","locationHierarchyForProfiling");
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "dateOfBirthPattern", "yyyy/MM/dd");
