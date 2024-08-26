@@ -31,7 +31,7 @@ import io.mosip.authentication.core.indauth.dto.VciExchangeRequestDTO;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { WebApplicationContext.class })
 @Import(EnvUtil.class)
 @TestPropertySource(locations="classpath:application.properties")
 public class VciExchangeRequestValidatorTest {

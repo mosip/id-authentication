@@ -135,6 +135,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUTH_ANONYMOUS_PROFILE_TOPIC = "ida-topic-auth-anonymous-profile";
 	public static final String AUTH_FRAUD_ANALYSIS_TOPIC = "ida-topic-fraud-analysis";
 	public static final String AUTHENTICATION_ERROR_EVENTING_TOPIC = "ida-topic-authentication-error-eventing";
+	public static final String REMOVE_ID_STATUS_TOPIC = "ida-topic-remove-id-status";
 
 	public static final String IDA_MAX_CREDENTIAL_PULL_WINDOW_DAYS = "ida-max-credential-pull-window-days";
 	public static final String IDA_MAX_WEBSUB_MSG_PULL_WINDOW_DAYS = "ida-max-websub-messages-pull-window-days";

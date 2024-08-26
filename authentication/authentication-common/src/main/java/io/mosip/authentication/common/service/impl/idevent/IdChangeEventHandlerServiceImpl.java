@@ -13,6 +13,7 @@ import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
+import io.mosip.authentication.common.service.websub.impl.RemoveIdStatusEventPublisher;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -75,6 +76,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	
 	@Autowired
 	private CredentialStoreService credStorService;
+
+	@Autowired
+	private RemoveIdStatusEventPublisher removeIdStatusEventPublisher;
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService#handleIdEvent(java.util.List)
@@ -183,9 +187,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
-		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
-		if(identityEntityOpt.isPresent()) {
-			identityCacheRepo.delete(identityEntityOpt.get());
+		if (idHash != null && !idHash.isEmpty() && identityCacheRepo.existsById(idHash)) {
+			identityCacheRepo.deleteById(idHash);
+			removeIdStatusEventPublisher.publishRemoveIdStatusEvent(idHash);
 		}
 	}
 	
