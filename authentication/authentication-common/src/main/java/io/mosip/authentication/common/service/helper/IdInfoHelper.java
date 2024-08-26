@@ -32,7 +32,6 @@ import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
@@ -43,12 +42,9 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -66,10 +62,6 @@ public class IdInfoHelper {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
-	/** The id info fetcher. */
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
 	
@@ -84,9 +76,6 @@ public class IdInfoHelper {
 	/** The env. */
 	@Autowired
 	private EnvUtil env;
-
-	@Autowired
-	private EntityInfoHelper entityInfoHelper;
 
 	@Autowired
 	private EntityInfoMapHelper entityInfoMapHelper;

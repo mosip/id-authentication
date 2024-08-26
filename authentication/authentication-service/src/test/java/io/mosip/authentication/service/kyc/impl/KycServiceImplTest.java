@@ -21,10 +21,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import io.mosip.authentication.common.service.helper.EntityInfoMapHelper;
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -76,7 +77,6 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 @RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
-@Ignore
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
@@ -118,6 +118,12 @@ public class KycServiceImplTest {
 	@Mock
 	private IdAuthSecurityManager securityManager;
 
+	@Mock
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
+
+	@Mock
+	private EntityInfoHelper entityInfoHelper;
+
 	@Value("${sample.demo.entity}")
 	String value;
 
@@ -141,7 +147,6 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
 		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper2, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
