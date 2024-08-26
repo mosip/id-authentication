@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import io.mosip.authentication.common.service.helper.DataCapturedLanguagesHelper;
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -65,7 +66,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
-@Ignore
 public class NotificationServiceImplTest {
 
 	@InjectMocks
@@ -91,6 +91,9 @@ public class NotificationServiceImplTest {
 
 	@Mock
 	private IdInfoHelper demoHelper;
+
+	@Mock
+	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
 
 	@Mock
 	private NotificationManager notificationManager;
