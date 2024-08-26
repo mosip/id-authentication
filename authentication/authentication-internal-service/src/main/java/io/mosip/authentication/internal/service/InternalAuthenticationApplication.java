@@ -1,16 +1,12 @@
 package io.mosip.authentication.internal.service;
 
-import io.mosip.kernel.auth.defaultadapter.helper.TokenValidationHelper;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
@@ -155,10 +151,10 @@ import org.springframework.web.client.RestTemplate;
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" ,
 		"io.mosip.kernel.auth.defaultadapter.helper"}
-		, excludeFilters = {
+//		, excludeFilters = {
 //		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 //				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { TokenValidationHelper.class})}
+//		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { TokenValidationHelper.class})}
 )
 //@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
 //		"io.mosip.kernel.keymanagerservice.repository" })
