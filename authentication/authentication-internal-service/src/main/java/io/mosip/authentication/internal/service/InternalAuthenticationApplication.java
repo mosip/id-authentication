@@ -6,6 +6,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
@@ -114,7 +115,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-//		(exclude = {CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+		(exclude = {CacheAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
