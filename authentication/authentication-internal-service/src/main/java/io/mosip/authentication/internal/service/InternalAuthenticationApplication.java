@@ -7,6 +7,8 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -116,9 +118,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-//		(exclude = {BatchAutoConfiguration.class
-////				CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class
-//		})
+		(exclude = {CacheAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
@@ -153,7 +153,8 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = {"io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" , "io.mosip.kernel.auth.defaultadapter.helper"}
+		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" ,
+		"io.mosip.kernel.auth.defaultadapter.helper"}
 		, excludeFilters = {
 //		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 //				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }),
