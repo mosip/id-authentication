@@ -86,7 +86,7 @@ ENV demosdk_local_dir_name=${demosdk_local_dir}
 
 # install packages and create user
 RUN apt-get -y update \
-&& apt-get install -y unzip sudo\
+&& apt-get install -y unzip sudo adduser \
 && groupadd -g ${container_user_gid} ${container_user_group} \
 && useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
 && adduser ${container_user} sudo \
@@ -121,9 +121,7 @@ RUN chmod a-w /home/${container_user}/configure_start.sh
 ADD ./target/*.jar /target/
 
 RUN find /target -name '*.jar' -executable -type f "-print0" | xargs "-0" cp -t / \
-
     && rm -rf /target \
-
     && mv /*.jar ${work_dir}/authentication-internal-service.jar
 
 
