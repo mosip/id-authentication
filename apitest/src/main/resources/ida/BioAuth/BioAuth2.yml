@@ -783,8 +783,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -821,8 +821,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -859,8 +859,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -897,8 +897,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -935,8 +935,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -973,8 +973,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1011,8 +1011,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1049,8 +1049,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1087,8 +1087,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1125,8 +1125,8 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1606,7 +1606,7 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1650,7 +1650,7 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1728,7 +1728,7 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1772,7 +1772,7 @@ BioAuth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",

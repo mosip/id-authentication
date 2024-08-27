@@ -3,7 +3,7 @@ EkycOtp:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycOtp/ekycOtp
+      inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/ekycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
@@ -177,7 +177,7 @@ EkycOtp:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycOtp/ekycOtp
+      inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/ekycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
