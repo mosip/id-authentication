@@ -31,7 +31,7 @@ ARG hsm_client_zip_path
 ARG is_glowroot
 
 # can be passed during Docker build as build time environment for artifactory URL
-#ARG artifactory_url
+ARG artifactory_url
 
 # environment variable to pass active profile such as DEV, QA etc at docker runtime
 ENV active_profile_env=${active_profile}
