@@ -120,7 +120,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-		(exclude = {CacheAutoConfiguration.class})
+//		(exclude = {CacheAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
@@ -157,10 +157,10 @@ import org.springframework.web.client.RestTemplate;
 		"io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" ,
 		"io.mosip.kernel.auth.defaultadapter.helper"}
-		, excludeFilters = {
-		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
-				"org.springframework.boot.autoconfigure.orm.jpa.*"
-		})}
+//		, excludeFilters = {
+//		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+//				"org.springframework.boot.autoconfigure.orm.jpa.*"
+//		})}
 //		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { TokenValidationHelper.class})}
 )
 //@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
