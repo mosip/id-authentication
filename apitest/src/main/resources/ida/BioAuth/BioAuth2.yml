@@ -804,8 +804,8 @@ BioAuth:
       description: Bio auth with LeftIndexFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -843,8 +843,8 @@ BioAuth:
       description: Bio auth with LeftLittleFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -882,8 +882,8 @@ BioAuth:
       description: Bio auth with RightIndexFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -921,8 +921,8 @@ BioAuth:
       description: Bio auth with RightRingFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -960,8 +960,8 @@ BioAuth:
       description: Bio auth with RightMiddleFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -999,8 +999,8 @@ BioAuth:
       description: Bio auth with RightLittleFinger using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1038,8 +1038,8 @@ BioAuth:
       description: Bio auth with LeftThumb using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1077,8 +1077,8 @@ BioAuth:
       description: Bio auth with RightThumb using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1116,8 +1116,8 @@ BioAuth:
       description: Bio auth with RightIris using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1155,8 +1155,8 @@ BioAuth:
       description: Bio auth with LeftIris using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
-      outputTemplate: ida/BioAuth/bioAuthResult
+      inputTemplate: ida/BioAuth/BioAuth
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1647,7 +1647,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1692,7 +1692,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1772,7 +1772,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1817,7 +1817,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/bioAuth
+      inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",

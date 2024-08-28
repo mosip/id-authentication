@@ -663,8 +663,8 @@ EkycBio:
       description: Ekyc bio auth with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -703,8 +703,8 @@ EkycBio:
       description: Ekyc bio auth using ring finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -743,8 +743,8 @@ EkycBio:
       description: Ekyc bio auth using left middle finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -783,8 +783,8 @@ EkycBio:
       description: Ekyc bio auth using left index finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -823,8 +823,8 @@ EkycBio:
       description: Ekyc bio auth using left little finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -863,8 +863,8 @@ EkycBio:
       description: Ekyc bio auth using right index finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -903,8 +903,8 @@ EkycBio:
       description: Ekyc bio auth using right ring finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -943,8 +943,8 @@ EkycBio:
       description: Ekyc bio auth using right middle finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -983,8 +983,8 @@ EkycBio:
       description: Ekyc bio auth using right little finger with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1023,8 +1023,8 @@ EkycBio:
       description: Ekyc bio auth using left thumb with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1063,8 +1063,8 @@ EkycBio:
       description: Ekyc bio auth using right thumb with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1103,8 +1103,8 @@ EkycBio:
       description: Ekyc bio auth using right iris with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1143,8 +1143,8 @@ EkycBio:
       description: Ekyc bio auth using left iris with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
-      outputTemplate: ida/EkycBio/ekycBioResult
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -1183,7 +1183,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with invalid trsansactionId and valdi UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1228,7 +1228,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with invalid transactionId and valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1272,7 +1272,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank transactionId and with valid UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1317,7 +1317,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank transactionId and valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1450,7 +1450,7 @@ EkycBio:
       description: Ekyc bio auth using invalid bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1495,7 +1495,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank bio sub type and with valid UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1540,7 +1540,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1585,7 +1585,7 @@ EkycBio:
       description: Ekyc bio auth with blank bio type with valid UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -1630,7 +1630,7 @@ EkycBio:
       description: Ekyc bio auth with blank bio type and with valid perpetual VID
       role: resident
       restMethod: post
-      inputTemplate: ida/EkycBio/ekycBio
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",

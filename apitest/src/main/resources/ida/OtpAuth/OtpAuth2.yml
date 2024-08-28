@@ -5,7 +5,7 @@ OtpAuth:
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
-      inputTemplate: ida/OtpAuth/otpAuth
+      inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/otpAuthResult
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
@@ -402,7 +402,7 @@ OtpAuth:
       description: Otp auth with invalid individualId using UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/OtpAuth/otpAuth
+      inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
@@ -444,7 +444,7 @@ OtpAuth:
       description: Otp auth with invalid individualId using UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/OtpAuth/otpAuth
+      inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
@@ -486,7 +486,7 @@ OtpAuth:
       description: Otp auth with blank individualId using uin
       role: resident
       restMethod: post
-      inputTemplate: ida/OtpAuth/otpAuth
+      inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
@@ -526,7 +526,7 @@ OtpAuth:
       description: Otp auth with blank individualId using VID
       role: resident
       restMethod: post
-      inputTemplate: ida/OtpAuth/otpAuth
+      inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
