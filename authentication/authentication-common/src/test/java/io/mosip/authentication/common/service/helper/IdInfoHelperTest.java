@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.authentication.common.service.util.ComputeKeyUtil;
 import io.mosip.authentication.core.spi.indauth.match.*;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -111,7 +112,7 @@ public class IdInfoHelperTest {
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelperMock;
 
 	@Mock
-	private ComputeKeyHelper computeKeyHelper;
+	private ComputeKeyUtil computeKeyHelper;
 
 	@Mock
 	private SeparatorHelper seperatorHelper;

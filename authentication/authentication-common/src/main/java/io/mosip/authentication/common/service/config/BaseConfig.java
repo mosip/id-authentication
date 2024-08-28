@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.config;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.RequireOtpNotFrozenHelper;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
+import io.mosip.authentication.common.service.util.ComputeKeyUtil;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionExtendedClient;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
@@ -19,8 +20,8 @@ import org.springframework.context.annotation.Configuration;
 public class BaseConfig {
 
     @Bean
-    public ComputeKeyHelper computeKeyHelper() {
-        return new ComputeKeyHelper();
+    public ComputeKeyUtil computeKeyHelper() {
+        return new ComputeKeyUtil();
     }
 
     @Bean
