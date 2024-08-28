@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.helper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.authentication.core.spi.indauth.match.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,13 +53,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
-import io.mosip.authentication.core.spi.indauth.match.MatchInput;
-import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import io.mosip.authentication.core.spi.indauth.match.MatchType;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.kernel.biometrics.constant.BiometricType;
@@ -96,7 +89,7 @@ public class IdInfoHelperTest {
 	@InjectMocks
 	private EntityInfoMapHelper entityInfoMapHelper;
 
-	@Mock
+	@InjectMocks
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
 	@Mock
@@ -104,16 +97,44 @@ public class IdInfoHelperTest {
 
 	@Mock
 	private MatchTypeHelper matchTypeHelper;
+
+	@Mock
 	private MatchIdentityDataHelper matchIdentityDataHelper;
 
+	@Mock
+	private IdInfoFetcher idInfoFetcher;
+
+	@Mock
+	private EntityInfoMapHelper entityInfoMapHelperMock;
+
+	@Mock
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelperMock;
+
+	@Mock
+	private ComputeKeyHelper computeKeyHelper;
+
+	@Mock
+	private SeparatorHelper seperatorHelper;
+
 	@Before
-	public void before() {
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
+	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(entityInfoMapHelperMock, "idMappingConfig", idMappingConfig);
 		//	ReflectionTestUtils.setField(idInfoHelper, "ida-default-identity-filter-attributes", "phone,fullName,dateOfBirth,email,preferredLang");
 		ReflectionTestUtils.setField(idInfoHelper, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "objectMapper", objectMapper);
 		MockitoAnnotations.initMocks(this);
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "test@test.com");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
+
+		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
+				"residenceStatus", List.of(new IdentityInfoDTO("eng", "Citizen"))
+		);
 	}
 
 	@Test
@@ -149,7 +170,7 @@ public class IdInfoHelperTest {
 		bioIdentity.put("documents.individualBiometrics", identityList);
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FINGER_Left IndexFinger_2", new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
+		ReflectionTestUtils.invokeMethod(entityInfoMapHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
 	}
 
 	@Test
@@ -158,12 +179,12 @@ public class IdInfoHelperTest {
 		String key = "FINGER_Left IndexFinger_2";
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put(key, new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
+		ReflectionTestUtils.invokeMethod(entityInfoMapHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
 
 		List<IdentityInfoDTO> identityList1 = null;
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map1 = new HashMap<>();
 		map1.put(key, new SimpleEntry<>("leftIndex", identityList1));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map1, BioMatchType.FGRMIN_LEFT_INDEX);
+		ReflectionTestUtils.invokeMethod(entityInfoMapHelper, "getIdentityValueFromMap", key, "ara", map1, BioMatchType.FGRMIN_LEFT_INDEX);
 
 	}
 
@@ -174,7 +195,7 @@ public class IdInfoHelperTest {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		map.put("FINGER_Left IndexFinger_2", new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, language, map, BioMatchType.FGRMIN_LEFT_INDEX);
+		ReflectionTestUtils.invokeMethod(entityInfoMapHelper, "getIdentityValueFromMap", key, language, map, BioMatchType.FGRMIN_LEFT_INDEX);
 	}
 
 	@Test
@@ -440,120 +461,10 @@ public class IdInfoHelperTest {
 		assertEquals(100, matchOutput.get(0).getMatchValue());
 	}
 
-
-
-	@Test
-	public void getEntityInfoTest1() throws Throwable {
-		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("test@test.com");
-		identityInfoList.add(identityInfoDTO);
-		demoEntity.put("phoneNumber", identityInfoList);
-
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthType demoAuthType = DemoAuthType.DYNAMIC;
-		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE.getIdMapping().getIdname(), BioMatchType.FACE,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
-		EntityValueFetcher entityValueFetcher = null;
-		MatchType matchType = BioMatchType.FACE;
-		MatchingStrategy strategy = null;
-		Map<String, String> entityInfo = new HashMap<>();
-		entityInfo.put("1", "a");
-		entityInfo.put("2", "b");
-		entityInfo.put("3", "c");
-		EntityInfoMapHelper idInfoHelperSpy = Mockito.spy(entityInfoMapHelper);
-		Mockito.doReturn(entityInfo).when(idInfoHelperSpy).getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(), matchType.getIdMapping().getIdname());
-
-//		System.out.println("request= "+matchType.hasRequestEntityInfo() + " id= " + matchType.hasIdEntityInfo());
-		ReflectionTestUtils.invokeMethod(idInfoHelperSpy, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-				matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
-	}
-
 	@Test
 	public void TestmatchType() {
 		MatchInput matchInput = new MatchInput(DemoAuthType.ADDRESS, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE, "EXACT", 60, null, null);
 		ReflectionTestUtils.invokeMethod(idInfoHelper, "matchType", null, null, null, matchInput, null, null);
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestgetEntityInfo() throws Throwable {
-		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("test@test.com");
-		identityInfoList.add(identityInfoDTO);
-		demoEntity.put("phoneNumber", identityInfoList);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthType demoAuthType = DemoAuthType.DYNAMIC;
-		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
-		EntityValueFetcher entityValueFetcher = null;
-		MatchType matchType = DemoMatchType.PHONE;
-		MatchingStrategy strategy = null;
-		try {
-			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestBiogetEntityInfo() throws Throwable {
-		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("test@test.com");
-		identityInfoList.add(identityInfoDTO);
-		demoEntity.put("phoneNumber", identityInfoList);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthType demoAuthType = DemoAuthType.DYNAMIC;
-		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE.getIdMapping().getIdname(), BioMatchType.FACE,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
-		EntityValueFetcher entityValueFetcher = null;
-
-		MatchType matchType = BioMatchType.FACE;
-		MatchingStrategy strategy = null;
-
-		Map<String, String> entityInfo = new HashMap<>();
-		EntityInfoMapHelper idInfoHelperSpy = Mockito.spy(entityInfoMapHelper);
-		Mockito.doReturn(entityInfo).when(idInfoHelperSpy).getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(), matchType.getIdMapping().getIdname());
-
-		try {
-			ReflectionTestUtils.invokeMethod(idInfoHelperSpy, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
-	}
-
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestgetEntityInfowithBiowithLanguage() throws Throwable {
-		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("test@test.com");
-		identityInfoList.add(identityInfoDTO);
-		demoEntity.put("phoneNumber", identityInfoList);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthType demoAuthType = DemoAuthType.PERSONAL_IDENTITY;
-		Map<String, Object> matchProperties = null;
-		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE.getIdMapping().getIdname(), DemoMatchType.PHONE,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, "fra");
-		EntityValueFetcher entityValueFetcher = null;
-		MatchType matchType = DemoMatchType.PHONE;
-		MatchingStrategy strategy = null;
-		try {
-			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
-					matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
 	}
 
 	@Test
@@ -630,6 +541,9 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void getPropertyNamesForMatchTypeTest() {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("fullName"));
 		List<String> list = new ArrayList<String>();
 		list.add("fullName");
 		assertEquals(list, identityAttributesForMatchTypeHelper.getIdentityAttributesForMatchType(DemoMatchType.NAME, "name"));
@@ -637,6 +551,9 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void getPropertyNamesForMatchTypeTest1() {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("fullName"));
 		List<String> list = new ArrayList<String>();
 		list.add("fullName");
 		assertEquals(list, identityAttributesForMatchTypeHelper.getIdentityAttributesForMatchType(DemoMatchType.DYNAMIC, "fullName"));
@@ -649,13 +566,19 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void getPropertyNamesForMatchTypeTest3() {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("preferredLanguage"));
 		List<String> list = new ArrayList<String>();
-		list.add("preferredLang");
+		list.add("preferredLanguage");
 		assertEquals(list, identityAttributesForMatchTypeHelper.getIdentityAttributesForMatchType(DemoMatchType.DYNAMIC, "preferredLanguage"));
 	}
 
 	@Test
 	public void getIdentityAttributesForMatchTypeTest() throws IdAuthenticationBusinessException {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("fullName"));
 		List<String> list = new ArrayList<String>();
 		list.add("fullName");
 
@@ -1038,6 +961,12 @@ public class IdInfoHelperTest {
 	
 	@Test
 	public void testGetNonMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "New Attribute");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"newAttribute", List.of(new IdentityInfoDTO("eng", "New Attribute"))
 				);
@@ -1049,7 +978,13 @@ public class IdInfoHelperTest {
 	public void testGetMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"introducerRID", List.of(new IdentityInfoDTO(null, "11223344"))
-				);
+		);
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "11223344");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
+				"introducerRID")).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "introducerRID");
 		assertEquals("11223344", entityInfoAsString);
 	}
@@ -1058,7 +993,13 @@ public class IdInfoHelperTest {
 	public void testGetNonMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"newAttribute1", List.of(new IdentityInfoDTO(null, "New Attribute1"))
-				);
+		);
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "New Attribute1");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
+				"newAttribute1")).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey("newAttribute1", "residenceStatus_eng", null)).thenReturn("key");
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "newAttribute1");
 		assertEquals("New Attribute1", entityInfoAsString);
 	}
@@ -1068,6 +1009,11 @@ public class IdInfoHelperTest {
 	
 	@Test
 	public void testGetMapOfFullAddress() throws IdAuthenticationBusinessException {
+		IDAMappingConfig config = Mockito.mock(IDAMappingConfig.class);
+		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", config);
+		Mockito.when(config.getName()).thenReturn(List.of("firstName", "lastName"));
+		Mockito.when(identityAttributesForMatchTypeHelperMock.getIdentityAttributesForMatchType(DemoMatchType.ADDR, null))
+				.thenReturn(List.of("province"));
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"addressLine1", List.of(new IdentityInfoDTO("eng", "Address Line1")),
 				"addressLine2", List.of(new IdentityInfoDTO("eng", "Address Line2")),
@@ -1145,6 +1091,10 @@ public class IdInfoHelperTest {
 	
 	@Test
 	public void testGetMapOfMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "Citizen");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"residenceStatus", List.of(new IdentityInfoDTO("eng", "Citizen"))
 				);
@@ -1154,6 +1104,8 @@ public class IdInfoHelperTest {
 	
 	@Test
 	public void testGetMapOfNonMappedDynamicAttribWithLang() throws IdAuthenticationBusinessException {
+		Mockito.when(identityAttributesForMatchTypeHelperMock.getIdentityAttributesForMatchType(Mockito.any(), Mockito.anyString()))
+				.thenReturn(List.of("newAttribute"));
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"newAttribute", List.of(new IdentityInfoDTO("eng", "New Attribute"))
 				);
@@ -1165,7 +1117,14 @@ public class IdInfoHelperTest {
 	public void testGetStringOfMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"introducerRID", List.of(new IdentityInfoDTO(null, "11223344"))
-				);
+		);
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "11223344");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
+				"introducerRID")).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
+
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "introducerRID");
 		assertEquals("11223344", entityInfoAsString);
 	}
@@ -1174,7 +1133,14 @@ public class IdInfoHelperTest {
 	public void testGetMapOfMappedDynamicAttribWithoutLang() throws IdAuthenticationBusinessException {
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"introducerRID", List.of(new IdentityInfoDTO(null, "11223344"))
-				);
+		);
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("introducerRID", "11223344");
+		Mockito.when(entityInfoMapHelperMock.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
+				"introducerRID")).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
+
 		Map<String, String> entityInfo =  idInfoHelper.getDynamicEntityInfo(idInfo, null, "introducerRID");
 		assertEquals(Map.of("introducerRID", "11223344"), entityInfo);
 	}
