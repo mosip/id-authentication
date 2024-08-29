@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 
+/**
+ @author Kamesh Shekhar Prasad
+ */
+
 @Component
 public class LanguageUtil {
 

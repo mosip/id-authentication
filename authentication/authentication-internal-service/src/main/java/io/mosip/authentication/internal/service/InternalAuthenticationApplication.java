@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
@@ -105,6 +106,7 @@ import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -115,7 +117,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-//		(exclude = {CacheAutoConfiguration.class})
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		KeyManager.class, AuthContextClazzRefProvider.class,
 		RestRequestFactory.class, IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class,
@@ -147,21 +148,12 @@ import org.springframework.web.client.RestTemplate;
 		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class, PublisherClientImpl.class,
 		RestTemplateHelper.class, RestTemplate.class, SimpleCacheManager.class
 })
-
-@ComponentScan(basePackages = {"io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
+@ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config", "io.mosip.authentication.common.service.integration.*" ,
-		"io.mosip.kernel.auth.defaultadapter.helper"}
-//		, excludeFilters = {
-//		@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
-//				"org.springframework.boot.autoconfigure.orm.jpa.*"
-//		})}
-//		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = { TokenValidationHelper.class})}
-)
-//@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository",
-//		"io.mosip.kernel.keymanagerservice.repository" })
-//@EntityScan(basePackages = { "io.mosip.authentication.common.service.entity",
-//		"io.mosip.kernel.keymanagerservice.entity" })
+		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
+@EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
+		"io.mosip.kernel.keymanagerservice.repository.*" })
 public class InternalAuthenticationApplication {
 
 	/**

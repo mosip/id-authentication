@@ -22,7 +22,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * validating AuthType locked/unlocked status for an individual in the
  * authentication request.
  *
- * @author Loganathan Sekar
+ * @author Kamesh Shekhar Prasad
  */
 public class ChildAuthFilterImpl implements IMosipAuthFilter {
 
