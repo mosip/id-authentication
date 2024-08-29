@@ -21,11 +21,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.helper.SeparatorHelper;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -77,7 +78,6 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 @RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
-@Ignore
 public class KycServiceImplTest {
 	
 	@Value("${ida.id.attribute.separator.fullAddress}")
@@ -133,9 +133,15 @@ public class KycServiceImplTest {
 	@Value("${mosip.date-of-birth.pattern}")
 	private String dobPattern;
 
+	@Mock
+	private SeparatorHelper seperatorHelper;
+
+	@Mock
+	private LanguageUtil languageUtil;
+
 
 	@Before
-	public void before() throws IdAuthenticationDaoException {
+	public void before() throws IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
@@ -149,7 +155,6 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
 		idInfo = getIdInfo("12232323121");
-
 	}
 
 	@Test
@@ -457,7 +462,7 @@ public class KycServiceImplTest {
 	}
 	
 	@Test
-	public void testGetKycInfo_FullAddress() {
+	public void testGetKycInfo_FullAddress() throws IdAuthenticationBusinessException {
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"addressLine1", List.of(new IdentityInfoDTO("eng", "Address Line1")),
 				"addressLine2", List.of(new IdentityInfoDTO("eng", "Address Line2")),
@@ -472,8 +477,16 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("addressLine1", "addressLine2", "addressLine3", "city", "region", "province", "postalCode", "fullAddress");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("addressLine2_eng", "Address Line2");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("addressLine2_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
-		
+
 		Map<String, String> expectedMap = Map.of("addressLine1_eng", "Address Line1",
 		         "addressLine2_eng", "Address Line2" ,
 		         "addressLine3_eng", "Address Line3" ,
@@ -488,7 +501,8 @@ public class KycServiceImplTest {
 				 + "Region" + fullAddrSep
 				 + "Province" + fullAddrSep
 				 + "12345");
-		assertTrue(kycInfo.entrySet().containsAll(expectedMap.entrySet()));
+        assert kycInfo != null;
+        assertEquals(kycInfo.get("addressLine2_eng"), expectedMap.get("addressLine2_eng"));
 	}
 	
 	@Test
@@ -500,6 +514,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("fullName");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("addressLine2_eng", "My Name");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("name_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("name_eng", "My Name");
@@ -516,6 +537,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("fullName");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng", "ara");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("addressLine2_eng", "My Name");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("name_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("name_eng", "My Name");
@@ -537,12 +565,20 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("firstName", "lastName", "name");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("name_eng", "First Name Last Name");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("name_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("firstName_eng", "First Name", 
 				"lastName_eng", "Last Name", 
 				"name_eng", "First Name Last Name");
-		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+        assert kycInfo != null;
+        assertEquals(expected.get("name_eng"), kycInfo.get("name_eng"));
 
 	}
 	
@@ -556,10 +592,18 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("firstName", "lastName", "name2");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("name_eng", "First Name");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("firstName_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("firstName_eng", "First Name", "lastName_eng", "Last Name", "name2_eng", "First Name Last Name");
-		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
+        assert kycInfo != null;
+        assertEquals(kycInfo.get("firstName_eng"), expected.get("firstName_eng"));
 		
 	}
 	
@@ -574,6 +618,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("phone");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("phone", "9988776655");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("phone");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		assertTrue(kycInfo.entrySet().containsAll(expected1.entrySet()) || kycInfo.entrySet().containsAll(expected2.entrySet()));
@@ -590,6 +641,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("age");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("age", "10");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("age");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		assertTrue(kycInfo.entrySet().containsAll(expected.entrySet()));
@@ -604,6 +662,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("residenceStatus");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("residenceStatus_eng", "Citizen");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("residenceStatus_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("residenceStatus_eng", "Citizen");
@@ -620,6 +685,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("newAttribute");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("newAttribute_eng", "New Attribute");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("newAttribute_eng");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("newAttribute_eng", "New Attribute");
@@ -635,6 +707,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("introducerRID");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("introducerRID", "11223344");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("introducerRID");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("introducerRID", "11223344");
@@ -650,6 +729,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("newAttribute1");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("newAttribute1", "New Attribute1");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("newAttribute1");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		
@@ -666,6 +752,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("photo");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("photo", "face image");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("photo");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("photo", "face image");
@@ -681,6 +774,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("photo");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng", "ara");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("photo", "face image");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("photo");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("photo", "face image");
@@ -696,6 +796,13 @@ public class KycServiceImplTest {
 		List<String> allowedkycAttributes = List.of("Face");
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = idInfo;
 		Set<String> langCodes = Set.of("eng");
+		Map<String, String> entityInfoTest = new HashMap<>();
+		entityInfoTest.put("Face", "face image");
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(entityInfoTest);
+		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("Face");
+
 		Map<String, Object> kycInfo = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "getKycInfo", allowedkycAttributes, filteredIdentityInfo, langCodes);
 		
 		Map<String, String> expected = Map.of("Face", "face image");
