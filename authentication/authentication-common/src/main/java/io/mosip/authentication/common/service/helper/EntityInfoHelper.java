@@ -58,6 +58,17 @@ public class EntityInfoHelper {
         return entityInfo.values().iterator().next();
     }
 
+
+/**
+        * Retrieves entity information as a string map with a computed key.
+ *
+         * @param matchType The type of match to perform
+ * @param langCode The language code for localization
+ * @param idEntity A map of identity information
+ * @param key An optional key to use; if null, the actual key will be used
+ * @return A map containing entity information as a string value
+ * @throws IdAuthenticationBusinessException If authentication fails
+ */
     public Map<String, String> getEntityInfoAsStringWithKey(MatchType matchType, String langCode,
                                                             Map<String, List<IdentityInfoDTO>> idEntity, String key) throws IdAuthenticationBusinessException {
         Map<String, String> entityInfoMap = entityInfoMapHelper.getIdEntityInfoMap(matchType, idEntity, langCode);
