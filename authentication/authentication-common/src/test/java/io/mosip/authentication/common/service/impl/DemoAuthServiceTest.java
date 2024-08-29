@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,8 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.mosip.authentication.common.service.helper.MatchTypeHelper;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -71,7 +74,6 @@ import io.mosip.authentication.core.util.DemoNormalizer;
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
 		IDAMappingFactory.class })
-@Ignore
 public class DemoAuthServiceTest {
 
 	@Autowired
@@ -80,7 +82,7 @@ public class DemoAuthServiceTest {
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 
-	@InjectMocks
+	@Mock
 	private IdInfoHelper idInfoHelper;
 
 	@InjectMocks
@@ -104,6 +106,9 @@ public class DemoAuthServiceTest {
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
 
+	@Mock
+	private MatchTypeHelper matchTypeHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
@@ -112,7 +117,6 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -385,7 +389,7 @@ public class DemoAuthServiceTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		DemoAuthServiceImpl demoAuthService = Mockito.mock(DemoAuthServiceImpl.class);
-		Mockito.when(demoAuthService.authenticate(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any(),
+		when(demoAuthService.authenticate(Mockito.any(AuthRequestDTO.class), Mockito.anyString(), Mockito.any(),
 				Mockito.anyString())).thenThrow(new IdAuthenticationBusinessException());
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
@@ -496,8 +500,8 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		Mockito.when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
-		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoIdentity, "123456");
+		when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
+		demoAuthServiceImpl.authenticate(authRequestDTO, uin, null, "123456");
 	}
 
 	@Test
@@ -523,9 +527,16 @@ public class DemoAuthServiceTest {
 		demoEntity.put("fullName", nameList);
 		Set<String> valueSet = new HashSet<>();
 		valueSet.add("fra");
-		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+		when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 				.thenReturn("Dinesh");
-		Mockito.when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
+		when(demoMatcherUtil.doExactMatch(Mockito.anyString(), Mockito.anyString())).thenReturn(100);
+		List<MatchOutput> matchOutputList = new ArrayList<>();
+		MatchOutput matchOutput = new MatchOutput(100, true, "P", BioMatchType.FGRIMG_LEFT_INDEX
+				, "eng", "Left IndexFinger");
+		matchOutputList.add(matchOutput);
+		when(idInfoHelper.matchIdentityData(Mockito.any(), Mockito.anyMap(), Mockito.anyCollection(), Mockito.anyString())).thenReturn(
+				matchOutputList
+		);
 		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());
