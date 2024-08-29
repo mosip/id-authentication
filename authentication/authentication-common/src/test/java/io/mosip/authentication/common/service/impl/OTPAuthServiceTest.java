@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -55,7 +56,6 @@ import reactor.netty.http.HttpResources;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(EnvUtil.class)
-@Ignore
 public class OTPAuthServiceTest {
 
 	@InjectMocks
@@ -85,12 +85,13 @@ public class OTPAuthServiceTest {
 	@Mock
 	private ValidateOtpHelper validateOtpHelper;
 
+	@Mock
+	private MatchIdentityDataHelper matchIdentityDataHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 	}
 
