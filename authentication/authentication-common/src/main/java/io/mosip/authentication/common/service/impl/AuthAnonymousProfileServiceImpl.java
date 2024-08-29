@@ -24,7 +24,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
-import io.mosip.authentication.common.service.helper.EntityInfoMapHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -94,9 +93,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	@Autowired
 	private EntityInfoHelper entityInfoHelper;
 
-	@Autowired
-	private EntityInfoMapHelper entityInfoMapHelper;
-
 
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
@@ -144,7 +140,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 				setGender(ananymousProfile, idInfo, langCode);
 				
 				try {
-					Map<String, String> locationInfo = entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
+					Map<String, String> locationInfo = entityInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
 					ananymousProfile.setLocation(new ArrayList<>(locationInfo.values()));
 				} catch (IdAuthenticationBusinessException e) {
 					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttribName, ExceptionUtils.getStackTrace(e));

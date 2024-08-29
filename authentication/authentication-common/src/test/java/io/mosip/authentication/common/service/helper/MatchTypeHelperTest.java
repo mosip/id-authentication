@@ -28,7 +28,7 @@ public class MatchTypeHelperTest {
     private MatchTypeHelper matchTypeHelper;
 
     @Mock
-    private EntityInfoMapHelper entityInfoMapHelper;
+    private EntityInfoHelper entityInfoHelper;
 
     @Test
     public void getEntityInfoTest1() throws Throwable {
@@ -51,7 +51,7 @@ public class MatchTypeHelperTest {
         entityInfo.put("1", "a");
         entityInfo.put("2", "b");
         entityInfo.put("3", "c");
-        Mockito.when(entityInfoMapHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
+        Mockito.when(entityInfoHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
                 matchType.getIdMapping().getIdname())).thenReturn(entityInfo);
 
         ReflectionTestUtils.invokeMethod(matchTypeHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
@@ -101,7 +101,7 @@ public class MatchTypeHelperTest {
         MatchingStrategy strategy = null;
 
         Map<String, String> entityInfo = new HashMap<>();
-        Mockito.when(entityInfoMapHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
+        Mockito.when(entityInfoHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
                 matchType.getIdMapping().getIdname())).thenReturn(entityInfo);
 
         try {

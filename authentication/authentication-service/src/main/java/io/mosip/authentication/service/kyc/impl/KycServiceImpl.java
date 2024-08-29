@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
-import io.mosip.authentication.common.service.helper.EntityInfoMapHelper;
 import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,9 +128,6 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private EntityInfoHelper entityInfoHelper;
 
-	@Autowired
-	private EntityInfoMapHelper entityInfoMapHelper;
-
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -155,7 +151,7 @@ public class KycServiceImpl implements KycService {
 		if (Objects.nonNull(identityInfo) && Objects.nonNull(allowedkycAttributes) && !allowedkycAttributes.isEmpty()) {
 			Optional<String> faceAttribute = IdInfoHelper.getKycAttributeHasPhoto(allowedkycAttributes);
 			if(faceAttribute.isPresent()) {
-				Map<String, String> faceEntityInfoMap = entityInfoMapHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
+				Map<String, String> faceEntityInfoMap = entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 						null);
 				String faceCbeff = Objects.nonNull(faceEntityInfoMap)
 						? faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())
@@ -510,7 +506,7 @@ public class KycServiceImpl implements KycService {
 					"Face Bio not found in DB. So not adding to response claims.");
 				return;
 			}
-			Map<String, String> faceEntityInfoMap = entityInfoMapHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			Map<String, String> faceEntityInfoMap = entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				try {
 					String face = convertJP2ToJpeg(getFaceBDB(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())));

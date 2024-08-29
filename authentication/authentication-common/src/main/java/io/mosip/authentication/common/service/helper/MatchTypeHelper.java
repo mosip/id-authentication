@@ -22,11 +22,11 @@ public class MatchTypeHelper {
     @Autowired
     private IdInfoFetcher idInfoFetcher;
 
-    @Autowired
-    private EntityInfoMapHelper entityInfoMapHelper;
-
     /** The mosip logger. */
     private static Logger mosipLogger = IdaLogger.getLogger(MatchTypeHelper.class);
+
+    @Autowired
+    private EntityInfoHelper entityInfoHelper;
 
     /**
      * Match type.
@@ -133,7 +133,7 @@ public class MatchTypeHelper {
         if (matchType.hasRequestEntityInfo()) {
             entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
         } else if (matchType.hasIdEntityInfo()) {
-            entityInfo = entityInfoMapHelper.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
+            entityInfo = entityInfoHelper.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
         } else {
             entityInfo = Collections.emptyMap();
         }

@@ -79,9 +79,6 @@ public class IdInfoHelper {
 	private EnvUtil env;
 
 	@Autowired
-	private EntityInfoMapHelper entityInfoMapHelper;
-
-	@Autowired
 	private LanguageUtil computeKeyHelper;
 
 	@Autowired
@@ -92,6 +89,9 @@ public class IdInfoHelper {
 
 	@Autowired
 	private MatchTypeHelper matchTypeHelper;
+
+	@Autowired
+	private EntityInfoHelper entityInfoHelper;
 
 
 	/**
@@ -140,7 +140,7 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getDynamicEntityInfoAsStringWithKey(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
-			Map<String, String> idEntityInfoMap = entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
+			Map<String, String> idEntityInfoMap = entityInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
 			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(computeKeyHelper.computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
 					.stream()
 					.map(Entry::getValue)
@@ -170,7 +170,7 @@ public class IdInfoHelper {
 	 */
 	public Map<String, String> getDynamicEntityInfo(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
-			return entityInfoMapHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
+			return entityInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName).entrySet()
 					.stream()
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		} catch (IdAuthenticationBusinessException e) {

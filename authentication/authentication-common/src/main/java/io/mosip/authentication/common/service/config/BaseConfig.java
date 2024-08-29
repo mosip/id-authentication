@@ -30,11 +30,6 @@ public class BaseConfig {
     }
 
     @Bean
-    public EntityInfoMapHelper entityInfoMapHelper() {
-        return new EntityInfoMapHelper();
-    }
-
-    @Bean
     public IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper() {
         return new IdentityAttributesForMatchTypeHelper();
     }
