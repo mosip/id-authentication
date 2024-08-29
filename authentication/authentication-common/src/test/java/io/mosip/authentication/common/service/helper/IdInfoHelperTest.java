@@ -104,9 +104,6 @@ public class IdInfoHelperTest {
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelperMock;
 
 	@Mock
-	private LanguageUtil computeKeyHelper;
-
-	@Mock
 	private SeparatorHelper seperatorHelper;
 
 	@Mock
@@ -126,7 +123,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
 
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"residenceStatus", List.of(new IdentityInfoDTO("eng", "Citizen"))
@@ -962,7 +959,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
+		Mockito.when(languageUtil.computeKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("key");
 		Map<String, List<IdentityInfoDTO>> idInfo = Map.of(
 				"newAttribute", List.of(new IdentityInfoDTO("eng", "New Attribute"))
 				);
@@ -980,7 +977,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
 				"introducerRID")).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
+		Mockito.when(languageUtil.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "introducerRID");
 		assertEquals("11223344", entityInfoAsString);
 	}
@@ -995,7 +992,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
 				"newAttribute1")).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey("newAttribute1", "residenceStatus_eng", null)).thenReturn("key");
+		Mockito.when(languageUtil.computeKey("newAttribute1", "residenceStatus_eng", null)).thenReturn("key");
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "newAttribute1");
 		assertEquals("New Attribute1", entityInfoAsString);
 	}
@@ -1119,7 +1116,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
 				"introducerRID")).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
+		Mockito.when(languageUtil.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
 
 		String entityInfoAsString = idInfoHelper.getDynamicEntityInfoAsString(idInfo, null, "introducerRID");
 		assertEquals("11223344", entityInfoAsString);
@@ -1135,7 +1132,7 @@ public class IdInfoHelperTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, null,
 				"introducerRID")).thenReturn(entityInfoTest);
 		Mockito.when(seperatorHelper.getSeparator(Mockito.anyString())).thenReturn(",");
-		Mockito.when(computeKeyHelper.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
+		Mockito.when(languageUtil.computeKey("introducerRID", "residenceStatus_eng", null)).thenReturn("key");
 
 		Map<String, String> entityInfo =  idInfoHelper.getDynamicEntityInfo(idInfo, null, "introducerRID");
 		assertEquals(Map.of("introducerRID", "11223344"), entityInfo);

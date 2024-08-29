@@ -13,11 +13,9 @@ import java.util.Set;
 
 import io.mosip.authentication.common.service.helper.TypeForIdNameHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -63,7 +61,7 @@ public class IdInfoFetcherImplTest {
 	@Autowired
 	private EnvUtil environment;
 
-	@Mock
+	@InjectMocks
 	private TypeForIdNameHelper typeForIdNameHelper;
 
 	@Before
@@ -141,7 +139,6 @@ public class IdInfoFetcherImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testGetTypeForIdName() {
 		IdMapping[] idMapping = new IdMapping[] {IdaIdMapping.FACE,IdaIdMapping.FINGERPRINT };
 		Optional<String> obj = typeForIdNameHelper.getTypeForIdName("Face", idMapping);
