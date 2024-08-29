@@ -1,32 +1,20 @@
-name: SonarCloud
-on:
-  push:
-    branches:
-      - release-1.2.0
-  pull_request:
-    types: [opened, synchronize, reopened]
+name: Run SonarQube with Maven
+
+on: push
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        java-version: [11]
-
     steps:
-    - name: Set up JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v3
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
       with:
-        java-version: ${{ matrix.java-version }}
-
-    - name: Build with Maven
-      run: mvn clean install
+        java-version: '11'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven cloud
+      run:  mvn -B verify sonar:sonar -Dsonar.projectKey=javareachabilityy -Dsonar.organization=javareachabilityy -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONARCLOUD_TOKEN
       env:
-        JAVA_HOME: ${{ matrix.java-version }}
-
-    - name: Run SonarCloud analysis
-      if: matrix.java-version == 17
-      run: mvn sonar:sonar
-      env:
-        JAVA_HOME: 17
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+        SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
