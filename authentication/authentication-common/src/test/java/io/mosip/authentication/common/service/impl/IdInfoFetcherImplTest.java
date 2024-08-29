@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -44,7 +45,6 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @RunWith(SpringRunner.class)
 @Import(EnvUtil.class)
 @WebMvcTest
-@Ignore
 public class IdInfoFetcherImplTest {
 
 	
@@ -63,7 +63,7 @@ public class IdInfoFetcherImplTest {
 	@Autowired
 	private EnvUtil environment;
 
-	@Autowired
+	@Mock
 	private TypeForIdNameHelper typeForIdNameHelper;
 
 	@Before
@@ -141,6 +141,7 @@ public class IdInfoFetcherImplTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testGetTypeForIdName() {
 		IdMapping[] idMapping = new IdMapping[] {IdaIdMapping.FACE,IdaIdMapping.FINGERPRINT };
 		Optional<String> obj = typeForIdNameHelper.getTypeForIdName("Face", idMapping);
