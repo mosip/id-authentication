@@ -10,7 +10,8 @@
     <properties>
         <sonar.organization>mosiptester</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectKey>mosiptester</sonar.projectKey>
     </properties>
-
+         
     <!-- Other configurations, dependencies, build settings, etc. -->
 </project>
