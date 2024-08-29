@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service.config;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.*;
-import static io.mosip.authentication.internal.service.constant.BatchJobConstant.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +45,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.BackOffPolicy;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -307,40 +305,6 @@ public class DataProcessingBatchConfig {
 		reader.setPageSize(chunkSize);
 		return reader;
 	}
-
-//	/**
-//	 * Entity manager factory.
-//	 *
-//	 * @return the local container entity manager factory bean
-//	 */
-//	@Bean
-//	@Primary
-//	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-//		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-//		em.setDataSource(dataSource());
-//		em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-//		em.setPackagesToScan(PACKAGE_TO_SCAN.getValue());
-//		em.setJpaPropertyMap(additionalProperties());
-//		return em;
-//	}
-
-//	/**
-//	 * Data source.
-//	 *
-//	 * @return the data source
-//	 */
-//	@Bean
-//	@Primary
-//	public DataSource dataSource() {
-//		String alias = env.getProperty(DATASOURCE_ALIAS.getValue());
-//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//		dataSource.setUrl(env.getProperty(String.format(DATASOURCE_URL.getValue(), alias)));
-//		dataSource.setUsername(env.getProperty(String.format(DATASOURCE_USERNAME.getValue(), alias)));
-//		dataSource.setPassword(env.getProperty(String.format(DATASOURCE_PASSWORD.getValue(), alias)));
-//		dataSource.setSchema(env.getProperty(DB_SCHEMA_NAME.getValue()));
-//		dataSource.setDriverClassName(env.getProperty(String.format(DATASOURCE_DRIVERCLASSNAME.getValue(), alias)));
-//		return dataSource;
-//	}
 
 	/**
 	 * Jpa transaction manager.
