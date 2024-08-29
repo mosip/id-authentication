@@ -182,7 +182,6 @@ public class OTPServiceImplTest {
      */
     @SuppressWarnings("rawtypes")
     @Test
-    @Ignore
     public void TestgenerateOtp() throws IdAuthenticationBusinessException, RestServiceException {
         OtpRequestDTO otpRequestDto = getOtpRequestDTO();
         Map<String, Object> idResDTO = new HashMap<>();
@@ -221,8 +220,7 @@ public class OTPServiceImplTest {
         idInfo1.put("uin", mailList1);
         idInfo1.put("phone", emptyList);
         idInfo1.put("email", emptyList);
-        System.out.println("idInfo1="+idInfo1);
-        entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo1);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
 
