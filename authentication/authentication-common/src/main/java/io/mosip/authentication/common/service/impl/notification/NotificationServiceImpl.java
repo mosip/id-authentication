@@ -16,8 +16,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.helper.DataCapturedLanguagesHelper;
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -84,7 +84,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private EntityInfoHelper entityInfoHelper;
 
 	@Autowired
-	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
+	private LanguageUtil languageUtil;
 
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
@@ -370,7 +370,7 @@ public class NotificationServiceImpl implements NotificationService {
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
-			List<String> dataCaptureLanguages = dataCapturedLanguagesHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			List<String> dataCaptureLanguages = languageUtil.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
 			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.mosip.authentication.common.service.helper.*;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -112,6 +113,9 @@ public class AuthFacadeImplTest {
 	@Mock
 	private AuthFacadeImpl authFacadeMock;
 
+	@Mock
+	private LanguageUtil languageUtil;
+
 	/** The env. */
 	@Autowired
 	private EnvUtil env;
@@ -203,9 +207,6 @@ public class AuthFacadeImplTest {
 
 	@Mock
 	private EntityInfoHelper entityInfoHelper;
-
-	@Mock
-	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
 
 	/**
 	 * Before.

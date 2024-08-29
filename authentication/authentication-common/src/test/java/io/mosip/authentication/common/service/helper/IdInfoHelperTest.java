@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import io.mosip.authentication.common.service.util.ComputeKeyUtil;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.authentication.core.spi.indauth.match.*;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -94,9 +94,6 @@ public class IdInfoHelperTest {
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
 	@Mock
-	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
-
-	@Mock
 	private MatchTypeHelper matchTypeHelper;
 
 	@Mock
@@ -112,10 +109,13 @@ public class IdInfoHelperTest {
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelperMock;
 
 	@Mock
-	private ComputeKeyUtil computeKeyHelper;
+	private LanguageUtil computeKeyHelper;
 
 	@Mock
 	private SeparatorHelper seperatorHelper;
+
+	@Mock
+	private LanguageUtil languageUtil;
 
 	@Before
 	public void before() throws IdAuthenticationBusinessException {
@@ -841,7 +841,7 @@ public class IdInfoHelperTest {
 		idInfo.put("dateOfBirth", dobList);
 		List<String> expectedDobList = new ArrayList<String>();
 		expectedDobList.add("Eng");
-		assertEquals(expectedDobList, dataCapturedLanguagesHelper.getDataCapturedLanguages(DemoMatchType.DOB, idInfo));
+		assertEquals(expectedDobList, languageUtil.getDataCapturedLanguages(DemoMatchType.DOB, idInfo));
 	}
 
 	@Test

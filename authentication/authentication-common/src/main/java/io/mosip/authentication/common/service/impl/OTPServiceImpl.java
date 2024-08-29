@@ -11,9 +11,9 @@ import java.util.Optional;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
-import io.mosip.authentication.common.service.helper.DataCapturedLanguagesHelper;
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -126,7 +126,7 @@ public class OTPServiceImpl implements OTPService {
 	private EntityInfoHelper entityInfoHelper;
 
 	@Autowired
-	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
+	private LanguageUtil languageUtil;
 
 	/**
 	 * Generate OTP, store the OTP request details for success/failure. And send OTP
@@ -411,7 +411,7 @@ public class OTPServiceImpl implements OTPService {
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
-			List<String> dataCaptureLanguages = dataCapturedLanguagesHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			List<String> dataCaptureLanguages = languageUtil.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
 			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}

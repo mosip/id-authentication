@@ -17,10 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import io.mosip.authentication.common.service.helper.DataCapturedLanguagesHelper;
 import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -93,7 +92,7 @@ public class NotificationServiceImplTest {
 	private IdInfoHelper demoHelper;
 
 	@Mock
-	private DataCapturedLanguagesHelper dataCapturedLanguagesHelper;
+	private LanguageUtil languageUtil;
 
 	@Mock
 	private NotificationManager notificationManager;

@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.util.ComputeKeyUtil;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -82,7 +82,7 @@ public class IdInfoHelper {
 	private EntityInfoMapHelper entityInfoMapHelper;
 
 	@Autowired
-	private ComputeKeyUtil computeKeyHelper;
+	private LanguageUtil computeKeyHelper;
 
 	@Autowired
 	private SeparatorHelper seperatorHelper;

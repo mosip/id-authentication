@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
-import io.mosip.authentication.common.service.util.ComputeKeyUtil;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -20,7 +20,7 @@ public class EntityInfoHelper {
     private EntityInfoMapHelper entityInfoMapHelper;
 
     @Autowired
-    private ComputeKeyUtil computeKeyHelper;
+    private LanguageUtil computeKeyHelper;
 
     /**
      * Gets the entity info as string.
