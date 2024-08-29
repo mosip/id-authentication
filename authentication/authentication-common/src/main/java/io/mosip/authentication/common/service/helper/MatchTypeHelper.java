@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -26,7 +27,7 @@ public class MatchTypeHelper {
     private static Logger mosipLogger = IdaLogger.getLogger(MatchTypeHelper.class);
 
     @Autowired
-    private EntityInfoHelper entityInfoHelper;
+    private EntityInfoUtil entityInfoUtil;
 
     /**
      * Match type.
@@ -133,7 +134,7 @@ public class MatchTypeHelper {
         if (matchType.hasRequestEntityInfo()) {
             entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
         } else if (matchType.hasIdEntityInfo()) {
-            entityInfo = entityInfoHelper.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
+            entityInfo = entityInfoUtil.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
         } else {
             entityInfo = Collections.emptyMap();
         }

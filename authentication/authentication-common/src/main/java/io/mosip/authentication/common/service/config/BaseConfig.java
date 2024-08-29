@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.config;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.RequireOtpNotFrozenHelper;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.core.websub.spi.SubscriptionExtendedClient;
@@ -25,8 +26,8 @@ public class BaseConfig {
     }
 
     @Bean
-    public EntityInfoHelper entityInfoHelper() {
-        return new EntityInfoHelper();
+    public EntityInfoUtil entityInfoHelper() {
+        return new EntityInfoUtil();
     }
 
     @Bean

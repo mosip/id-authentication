@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
@@ -123,7 +123,7 @@ public class KycServiceImplTest {
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
 	@Mock
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	@Value("${sample.demo.entity}")
 	String value;
@@ -158,7 +158,7 @@ public class KycServiceImplTest {
 			deleteBootStrapFile();
 			prepareMap(idInfo);
 			List<String> allowedKycList = limitedList();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo);
@@ -176,7 +176,7 @@ public class KycServiceImplTest {
 			List<String> allowedKycList = limitedList();
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
@@ -211,7 +211,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo1);
@@ -228,7 +228,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, langCodes, null);
@@ -242,7 +242,7 @@ public class KycServiceImplTest {
 	public void validUIN1() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -256,7 +256,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutFace() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -279,7 +279,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutFace2() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("fra");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -293,7 +293,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutAttributes() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo);
@@ -307,7 +307,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutAttributes2() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, null, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -769,7 +769,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -803,7 +803,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -831,7 +831,7 @@ public class KycServiceImplTest {
 		String dummyTokenData = "dummyJWTTokenData";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(dummyTokenData); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		Mockito.when(securityManager.jwtEncrypt(Mockito.anyString(), Mockito.anyString())).thenReturn(resKycToken);
 		
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
@@ -892,7 +892,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -915,7 +915,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -938,7 +938,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(entityInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);

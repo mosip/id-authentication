@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -91,7 +91,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private ObjectMapper mapper;
 
 	@Autowired
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 
 	@Override
@@ -140,7 +140,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 				setGender(ananymousProfile, idInfo, langCode);
 				
 				try {
-					Map<String, String> locationInfo = entityInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
+					Map<String, String> locationInfo = entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
 					ananymousProfile.setLocation(new ArrayList<>(locationInfo.values()));
 				} catch (IdAuthenticationBusinessException e) {
 					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttribName, ExceptionUtils.getStackTrace(e));
@@ -249,7 +249,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private Optional<String> getEntityInfoString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idInfo, String langCode) {
 		if(langCode == null) {
 			try {
-				String entityInfoAsString = entityInfoHelper.getEntityInfoAsString(matchType, idInfo);
+				String entityInfoAsString = entityInfoUtil.getEntityInfoAsString(matchType, idInfo);
 				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
 					return Optional.of(entityInfoAsString);
 				}
@@ -258,7 +258,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			}
 		} else {
 			try {
-				String entityInfoAsString = entityInfoHelper.getEntityInfoAsString(matchType, langCode, idInfo);
+				String entityInfoAsString = entityInfoUtil.getEntityInfoAsString(matchType, langCode, idInfo);
 				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
 					return Optional.of(entityInfoAsString);
 				}

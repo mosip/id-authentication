@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.common.service.entity.AuthtypeLock;
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +123,7 @@ public class OTPServiceImpl implements OTPService {
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 
 	@Autowired
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	@Autowired
 	private LanguageUtil languageUtil;
@@ -320,7 +320,7 @@ public class OTPServiceImpl implements OTPService {
 
 	private String getName(String language, Map<String, List<IdentityInfoDTO>> idInfo)
 			throws IdAuthenticationBusinessException {
-		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
+		return entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
 
 	}	
 
@@ -381,7 +381,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private String getEmail(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
-		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+		return entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 	}
 
 	/**
@@ -392,7 +392,7 @@ public class OTPServiceImpl implements OTPService {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private String getPhoneNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
-		return entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		return entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
 	/**

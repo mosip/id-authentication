@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.mosip.authentication.common.service.helper.*;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -206,7 +206,7 @@ public class AuthFacadeImplTest {
 	private AuthFiltersValidator authFiltersValidator;
 
 	@Mock
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	/**
 	 * Before.
@@ -322,9 +322,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -421,9 +421,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -521,9 +521,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -627,9 +627,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -733,9 +733,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -838,9 +838,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -944,9 +944,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 		
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456", true))
@@ -1045,9 +1045,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -1145,9 +1145,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -1245,9 +1245,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(Mockito.any(), Mockito.anyString(), Mockito.anyMap(), Mockito.anyString(), Mockito.anyBoolean()))
@@ -1478,9 +1478,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 //		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 //				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
@@ -1561,9 +1561,9 @@ public class AuthFacadeImplTest {
 				ZonedDateTime.now().format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
 
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);

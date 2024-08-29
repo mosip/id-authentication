@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -81,7 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private LanguageComparator languageComparator;
 
 	@Autowired
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	@Autowired
 	private LanguageUtil languageUtil;
@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
 		List<String> templateLanguages = getTemplateLanguages(idInfo);
 		
 		for (String lang : templateLanguages) {
-			values.put(NAME + "_" + lang, entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
+			values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
 		}
 		Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
 		values.put(DATE, dateAndTime.getT1());
@@ -125,8 +125,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String phoneNumber = null;
 		String email = null;
-		phoneNumber = entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-		email = entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+		phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
 			notificationType = EnvUtil.getNotificationType();

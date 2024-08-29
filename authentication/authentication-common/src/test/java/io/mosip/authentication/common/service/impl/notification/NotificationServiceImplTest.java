@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +102,7 @@ public class NotificationServiceImplTest {
 	List<String> templateLanguages = new ArrayList<String>();
 
 	@Mock
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	@Before
 	public void before() {
@@ -146,9 +146,9 @@ public class NotificationServiceImplTest {
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn("test");
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -193,9 +193,9 @@ public class NotificationServiceImplTest {
 		idInfo.put("phone", list);
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
 		// Mockito.when(IdInfoFetcher.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -242,7 +242,7 @@ public class NotificationServiceImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(entityInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, idInfo)).thenReturn("mosip");
 
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IdAuthenticationBusinessException idAuthenticationBusinessException = new IdAuthenticationBusinessException(

@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.helper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -28,7 +29,7 @@ public class MatchTypeHelperTest {
     private MatchTypeHelper matchTypeHelper;
 
     @Mock
-    private EntityInfoHelper entityInfoHelper;
+    private EntityInfoUtil entityInfoUtil;
 
     @Test
     public void getEntityInfoTest1() throws Throwable {
@@ -51,7 +52,7 @@ public class MatchTypeHelperTest {
         entityInfo.put("1", "a");
         entityInfo.put("2", "b");
         entityInfo.put("3", "c");
-        Mockito.when(entityInfoHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
+        Mockito.when(entityInfoUtil.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
                 matchType.getIdMapping().getIdname())).thenReturn(entityInfo);
 
         ReflectionTestUtils.invokeMethod(matchTypeHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
@@ -101,7 +102,7 @@ public class MatchTypeHelperTest {
         MatchingStrategy strategy = null;
 
         Map<String, String> entityInfo = new HashMap<>();
-        Mockito.when(entityInfoHelper.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
+        Mockito.when(entityInfoUtil.getIdEntityInfoMap(matchType, demoEntity, matchInput.getLanguage(),
                 matchType.getIdMapping().getIdname())).thenReturn(entityInfo);
 
         try {

@@ -1,7 +1,8 @@
-package io.mosip.authentication.common.service.helper;
+package io.mosip.authentication.common.service.util;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.util.LanguageUtil;
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
+import io.mosip.authentication.common.service.helper.SeparatorHelper;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 
 @Component
-public class EntityInfoHelper {
+public class EntityInfoUtil {
 
     @Autowired
     private SeparatorHelper separatorHelper;

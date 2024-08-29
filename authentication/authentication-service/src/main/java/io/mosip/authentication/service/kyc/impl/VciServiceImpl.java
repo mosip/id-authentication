@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import io.mosip.authentication.common.service.helper.EntityInfoHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import jakarta.annotation.PostConstruct;
 
 import org.json.simple.JSONObject;
@@ -141,7 +141,7 @@ public class VciServiceImpl implements VciService {
 	private CbeffUtil cbeffUtil;
 
 	@Autowired
-	private EntityInfoHelper entityInfoHelper;
+	private EntityInfoUtil entityInfoUtil;
 
 	@PostConstruct
 	private void init() throws IdAuthenticationBusinessException {
@@ -384,7 +384,7 @@ public class VciServiceImpl implements VciService {
 			}
 			
 			if (attrib.equalsIgnoreCase(BiometricType.FACE.value())) {
-				Map<String, String> faceEntityInfoMap = entityInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+				Map<String, String> faceEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 				if (Objects.nonNull(faceEntityInfoMap)) {
 					try {
 						String face = convertJP2ToJpeg(getFaceBDB(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())));
