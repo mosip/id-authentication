@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [11, 17]
+        java-version: [11]
 
     steps:
     - name: Set up JDK ${{ matrix.java-version }}
