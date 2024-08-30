@@ -78,7 +78,7 @@ ENV hsm_local_dir_name=${hsm_local_dir}
 
 #ARG biosdk_local_dir=biosdk-client
 
-#ARG demosdk_local_dir=demosdk
+ARG demosdk_local_dir=demosdk
 
 ENV biosdk_local_dir_name=${biosdk_local_dir}
 
