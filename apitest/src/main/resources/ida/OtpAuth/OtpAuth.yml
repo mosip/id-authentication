@@ -1,6 +1,7 @@
 OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with valid UIN
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

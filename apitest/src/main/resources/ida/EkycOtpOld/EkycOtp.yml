@@ -1,6 +1,7 @@
 EkycOtp:
   auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -34,6 +35,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualIdType_smoke:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with missing individualId Type
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -67,6 +69,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -100,6 +103,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_revoke_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -138,6 +142,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid individualId with UIN as individualId type
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -176,6 +181,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid individualId with VID as individualId type
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -214,6 +220,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank individualId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -252,6 +259,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank individualId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -290,6 +298,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with missing individualId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -328,6 +337,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with missing individualId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -366,6 +376,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -404,6 +415,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -442,6 +454,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -480,6 +493,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -518,6 +532,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid individualId type using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -556,6 +571,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with invalid individualId type using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -594,6 +610,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank individualId type using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -632,6 +649,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with blank individualId type using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -670,6 +688,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with different transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -708,6 +727,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_uin_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc otp auth with different transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -746,6 +766,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_invalid_partner:
       endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Ekyc otp auth with invalid partner
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp

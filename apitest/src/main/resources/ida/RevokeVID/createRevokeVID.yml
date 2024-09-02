@@ -1,6 +1,7 @@
 RevokeVID:
    auth_RevokeVID_all_valid_smoke:
       endPoint: /resident/v1/vid/$ID:GenerateVID_to_revoke_Perpetual_sid_vid$
+      description: revoke given VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: patch

@@ -1,6 +1,7 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_Valid_Smoke_Pos_Test:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Biometric face auth using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth

@@ -1,6 +1,7 @@
 OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -34,6 +35,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -67,6 +69,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_revoke_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with revoke VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -107,6 +110,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid individualId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -147,6 +151,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid individualId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -187,6 +192,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank individualId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -226,6 +232,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank individualId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -265,6 +272,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with missing individualId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -304,6 +312,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with missing individualId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -343,6 +352,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -382,6 +392,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_transactionId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -421,6 +432,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -460,6 +472,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_transactionId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -499,6 +512,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_different_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with different transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -538,6 +552,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid individualIdType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -577,6 +592,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with invalid individualIdType using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -616,6 +632,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank individualIdType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -655,6 +672,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blank individualIdType using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -694,6 +712,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_Optional_Field_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with missing optional field individualIdType using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -727,6 +746,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with missing optional field individualIdType using VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -760,6 +780,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_partner:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Otp auth with invalid partner
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth

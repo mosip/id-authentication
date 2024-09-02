@@ -1,6 +1,7 @@
 HotlistAPI:
    auth_BlockPartnerId_All_Valid_Smoke_block_partner_id_sid:
       endPoint: /v1/hotlist/block
+      description: block partner id without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -16,6 +17,7 @@ HotlistAPI:
     }'
    auth_BlockPartnerId_All_Valid_Smoke_block_api_key_sid:
       endPoint: /v1/hotlist/block
+      description: block api key without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -31,6 +33,7 @@ HotlistAPI:
     }'
    auth_BlockPartnerId_All_Valid_Smoke_block_MISP_LIC_key_sid:
       endPoint: /v1/hotlist/block
+      description: block misp lic Key without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI

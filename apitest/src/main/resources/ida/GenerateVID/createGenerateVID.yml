@@ -1,6 +1,7 @@
 GenerateVID:
    auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
+      description: generate Perpetual VID for Authentication
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -35,6 +36,7 @@ GenerateVID:
 }'
    auth_GenerateVID_to_revoke_Perpetual_sid:
       endPoint: /resident/v1/vid
+      description: generate Perpetual VID to Revoke
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -69,6 +71,7 @@ GenerateVID:
 }'
    auth_GenerateVID_to_test_hotlist_Perpetual_sid:
       endPoint: /resident/v1/vid
+      description: generate Perpetual VID to test Hotlist api
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -103,6 +106,7 @@ GenerateVID:
 }'
    auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
       endPoint: /resident/v1/vid
+      description: generate Temporary VID for Authentication
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -137,6 +141,7 @@ GenerateVID:
 }'
    auth_GenerateVID_All_Valid_Smoke_deactivate_Perpetual_sid:
       endPoint: /resident/v1/vid
+      description: generate Perpetual VID to Deactivate
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

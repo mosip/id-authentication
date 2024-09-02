@@ -1,6 +1,7 @@
 AuthInternalLock:
   auth_AuthInternal_Lock_UIN_Unlock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType for given UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -18,6 +19,7 @@ AuthInternalLock:
 }'
   auth_AuthInternal_Lock_UIN_child_UIN_which_locked_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType for child UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -35,6 +37,7 @@ AuthInternalLock:
 }'
   auth_AuthInternal_lock_with_explicitly_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType for given UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -53,6 +56,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: unLock Demo authType for given UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -71,6 +75,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType Permanently for UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -89,6 +94,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Demo authType Permanently for UIN 
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -107,6 +113,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType for UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -125,6 +132,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: unlock Demo authType for seconds for UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -143,6 +151,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Bio-authType Iris-authSubType Permanently for UIN 
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -161,6 +170,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      description: lock Demo authType Permanently for UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock

@@ -1,6 +1,7 @@
 DemoAuth:
   auth_DemoAuth_DOB_Valid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -24,6 +25,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Valid_Smoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -47,6 +49,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_InValid_Dateofbirth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid date of birth format with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -76,6 +79,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_InValid_Dateofbirth_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid date of birth format with perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -105,6 +109,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Email_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid email and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -128,6 +133,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Email_Valid_Smoke_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid email and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -151,6 +157,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Email_InValid_Email:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid email and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -180,6 +187,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Email_InValid_Email_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid email and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -209,6 +217,7 @@ DemoAuth:
 }'
   auth_DemoAuth_gender_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid gender and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -236,6 +245,7 @@ DemoAuth:
 }'
   auth_DemoAuth_gender_Valid_Smoke_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using gender and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -263,6 +273,7 @@ DemoAuth:
 }'
   auth_DemoAuth_InValid_gender_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid gender value and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -296,6 +307,7 @@ DemoAuth:
 }'
   auth_DemoAuth_InValid_gender:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid gender value and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -329,6 +341,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Name_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -356,6 +369,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name1_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -383,6 +397,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name2_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valdi UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -410,6 +425,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name3_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -437,6 +453,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name4_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -464,6 +481,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name5_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name with title and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -491,6 +509,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name6_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name with title and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -518,6 +537,7 @@ DemoAuth:
 }'
   auth_DemoAuth_same_Name7_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name with title and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -545,6 +565,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Name_Valid_Smoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid name and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -572,6 +593,7 @@ DemoAuth:
 }'
   auth_DemoAuth_InValid_name:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid name and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -605,6 +627,7 @@ DemoAuth:
 }'
   auth_DemoAuth_InValid_Name_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid name and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -638,6 +661,7 @@ DemoAuth:
 }'
   auth_DemoAuth_age_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid age and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -661,6 +685,7 @@ DemoAuth:
 }'
   auth_DemoAuth_age_Valid_Smoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid age and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -684,6 +709,7 @@ DemoAuth:
 }'
   auth_DemoAuth_invalid_age_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid age and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -713,6 +739,7 @@ DemoAuth:
 }'
   auth_DemoAuth_age_InValid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid age and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -742,6 +769,7 @@ DemoAuth:
 }'
   auth_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid phone number and valid perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -765,6 +793,7 @@ DemoAuth:
 }'
   auth_DemoAuth_PhoneNumber_InValid_PhoneNumber:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid phone number and valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -794,6 +823,7 @@ DemoAuth:
 }'
   auth_DemoAuth_PhoneNumber_InValid_PhoneNumber_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using invalid phone number and valdi perpetual VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -823,6 +853,7 @@ DemoAuth:
 }'
   auth_DemoAuth_PhoneNumber__with_Valid_TVID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid phone number and valid temporary VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -846,6 +877,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_InValid_individualId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and invalid individualId
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -875,6 +907,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Missing_individualId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid DOB and without individualId field
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -904,6 +937,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Blank_individualId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and blank individualId
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -933,6 +967,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Invalid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and invalid individualId type
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -962,6 +997,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valdi dob and blank individualId type
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -991,6 +1027,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Missing_ Optional_Field_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and missing individualId type field
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1014,6 +1051,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Invalid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and invalid transactionId
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1043,6 +1081,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Blank_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and blank transactionId with UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1072,6 +1111,7 @@ DemoAuth:
 }'
   auth_DemoAuth_without_individual_type_ID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and blank individualId type
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1101,6 +1141,7 @@ DemoAuth:
 }'
   auth_DemoAuth_with_missing_individual_type_ID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob, blank transactionId and without individualIdType
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1130,6 +1171,7 @@ DemoAuth:
 }'
   auth_DemoAuth_DOB_Unlock_Valid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and unlocked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1154,6 +1196,7 @@ DemoAuth:
 
   auth_DemoAuth_DOB_Lock_Permanent_Valid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and with permanently locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1183,6 +1226,7 @@ DemoAuth:
 }'
   auth_DemoAuth_revoke_vid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob with revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1212,6 +1256,7 @@ DemoAuth:
 }'
   auth_DemoAuth_dummy_partnerkey_Pos:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Demo auth using dummy partner key
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1246,6 +1291,7 @@ DemoAuth:
 
   auth_DemoAuth_DOB_Unlock_AllValid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth with unlocked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth
@@ -1270,6 +1316,7 @@ DemoAuth:
 
   auth_DemoAuth_DOB_Lock_Permanent_AllValid_Smoke_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth with permanently locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/demoAuth

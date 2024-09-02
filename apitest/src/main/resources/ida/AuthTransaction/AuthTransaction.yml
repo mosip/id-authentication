@@ -1,6 +1,7 @@
 AuthTransaction:
    auth_AuthTransaction_allValid_smoke_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -14,6 +15,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_Invalid_Gender_smoke_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with invalid gender using valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -27,6 +29,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_valid_Gender_smoke_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid gender using valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -40,6 +43,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction using valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -53,6 +57,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_WITH_deactivated_VID2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with deactivated VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -70,6 +75,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_VID3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -83,6 +89,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -96,6 +103,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -109,6 +117,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN4:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -122,6 +131,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN5:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get

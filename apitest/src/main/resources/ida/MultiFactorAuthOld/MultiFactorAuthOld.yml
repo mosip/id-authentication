@@ -1,6 +1,7 @@
 MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo ,otp and bio face using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -55,6 +56,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_InValid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo ,otp and bio face with invalid transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -115,6 +117,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_Missing_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo ,otp and bio face with missing transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -175,6 +178,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_Valid_vid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo ,otp and bio face with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -229,6 +233,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_revoked_vid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo ,otp and bio face with revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -289,6 +294,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_InValid_vid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio face with invalid transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -349,6 +355,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_Face_With_blank_vid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio face with blank transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -409,6 +416,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio ring finger using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -463,6 +471,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_missing_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio ring finger with missing transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -523,6 +532,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_invalid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio ring finger with invalid transactionId using UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -583,6 +593,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_vid_InValid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio ring finger with invalid transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -643,6 +654,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_vid_blank_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio ring finger with blank transactionId using VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -703,6 +715,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RingFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -757,6 +770,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftMiddleFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -811,6 +825,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_InValid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftMiddleFinger with invalid transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -871,6 +886,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_blank_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftMiddleFinger with blank transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -931,6 +947,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftMiddleFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -985,6 +1002,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIndexFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1039,6 +1057,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIndexFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1093,6 +1112,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftLittleFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1147,6 +1167,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftLittleFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1201,6 +1222,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightIndexFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1255,6 +1277,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightIndexFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1309,6 +1332,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightRingFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1363,6 +1387,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightRingFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1417,6 +1442,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightMiddleFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1471,6 +1497,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightMiddleFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1525,6 +1552,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightLittleFinger with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1579,6 +1607,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightLittleFinger with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1633,6 +1662,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftThumb with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1687,6 +1717,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftThumb with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1741,6 +1772,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightThumb with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1795,6 +1827,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightThumb with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1849,6 +1882,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightIris with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1903,6 +1937,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio RightIris with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -1957,6 +1992,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2011,6 +2047,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_InValid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid_individualIdType valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2071,6 +2108,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_individualIdType with valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2131,6 +2169,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+	  description: Multifactor auth with demo,otp and bio LeftIris with valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2185,6 +2224,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_InValid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with InValid_transactionId using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2245,6 +2285,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_InValid_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with InValid_transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2305,6 +2346,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with blank_transactionId using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2365,6 +2407,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_blank_transactionId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_transactionId using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2425,6 +2468,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_individualIdType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2485,6 +2529,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_individualIdType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2545,6 +2590,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_invalid_individualIdType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2605,6 +2651,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_invalid_individualIdType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2665,6 +2712,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_invalid_invalid_bioSubType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2725,6 +2773,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_invalid_invalid_bioSubType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2785,6 +2834,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_bioSubType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2845,6 +2895,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris With_blank_bioSubType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2905,6 +2956,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with missing_bioSubType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -2965,6 +3017,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_missing_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with missing_bioSubType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3025,6 +3078,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_BLANK_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with blank_bioType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3085,6 +3139,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_BLANK_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with blank_bioType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3145,6 +3200,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with missing_bioType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3205,6 +3261,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_missing_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with missing_bioType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3265,6 +3322,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid_bioType using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3325,6 +3383,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid_bioType using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3385,6 +3444,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with valid_bioType_and_invalid_digitalId_type using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3449,6 +3509,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with valid_bioType_and_invalid_digitalId_type using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3513,6 +3574,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_INvalid_bioValue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid_bioValue using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3573,6 +3635,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_INvalid_bioValue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid_bioValue using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3633,6 +3696,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Face_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3693,6 +3757,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Face_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3753,6 +3818,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Finger_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3813,6 +3879,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Finger_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3873,6 +3940,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_Bio-Type_value_as_IR_instead_of_Iris:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3933,6 +4001,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_Bio-Type_value_as_IR_instead_of_Iris:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio LeftIris with invalid bioType and bioValue using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -3993,6 +4062,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_With_VID_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio with invalid bioType and bioValue using valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -4053,6 +4123,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_With_UIN_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Multifactor auth with demo,otp and bio with invalid bioType and bioValue using valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth
@@ -4113,6 +4184,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_with_invalid_partner:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Multifactor auth with demo,otp and bio with invalid partner valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth

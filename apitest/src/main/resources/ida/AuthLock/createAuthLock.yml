@@ -1,6 +1,7 @@
 AuthLock:
    auth_AuthLock_Valid_UIN_All:
       endPoint: /resident/v1/req/auth-lock
+      description: lock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -33,6 +34,7 @@ AuthLock:
 }'
    auth_AuthLock_Valid_UIN_locked_All:
       endPoint: /resident/v1/req/auth-lock
+      description: lock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -65,6 +67,7 @@ AuthLock:
 }'
    auth_AuthLock_Valid_UIN_for_bio_auth:
       endPoint: /resident/v1/req/auth-lock
+      description: lock bio-Finger authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
