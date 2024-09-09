@@ -46,7 +46,7 @@
 
 *IDA_Test_Script.jmx
 	
-	*Auth Token Generation (Setup): This thread conatins Auth manager authentication API which will generate auth token value for Registration client. 
+	*Auth Token Generation (Setup): This thread contains Auth manager authentication API which will generate auth token value for Registration client. The token expires after 24 hours.
 	
 	* Create Identities in MOSIP Identity System (Setup) : This thread contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "addIdentitySetup" is used as a variable. 
 	
