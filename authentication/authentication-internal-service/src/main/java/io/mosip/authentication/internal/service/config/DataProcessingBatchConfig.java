@@ -121,9 +121,6 @@ public class DataProcessingBatchConfig {
 	private PhysicalNamingStrategyResolver physicalNamingStrategyResolver;
 	
 	@Autowired
-	private io.mosip.authentication.common.service.util.EnvUtil env;
-	
-	@Autowired
 	private CredentialStoreJobExecutionListener listener;
 
 	private TaskletStep validateWebSubInitialization(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
