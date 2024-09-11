@@ -78,4 +78,16 @@ public interface KycService {
 	 */
 	String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
 				List<String> consentedAttributes, List<String> locales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException;
+
+
+	/**
+	 * Method to build kyc auth version 2 verified claims meta data. 
+	 *
+	 * @param verifiedClaimsData				Verified Claims data of the identity
+	 * @param oidcClientId						OIDC Client Id.
+	 * @return String
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId) throws IdAuthenticationBusinessException;
 }

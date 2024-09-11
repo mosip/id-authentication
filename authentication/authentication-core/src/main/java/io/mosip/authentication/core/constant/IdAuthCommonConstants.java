@@ -469,6 +469,13 @@ public final class IdAuthCommonConstants {
 
 	public static final String MISP_LIC_DATA = "misp_lic_data";
 
+	public static final String VERIFIED_CLAIMS_ATTRIBS = "verifiedAttributes";
+
+	public static final String NULL_CONST = "=null";
+
+	public static final String COMMA_STRING = ",";
+
+
 	private IdAuthCommonConstants() {
 	}
 }
