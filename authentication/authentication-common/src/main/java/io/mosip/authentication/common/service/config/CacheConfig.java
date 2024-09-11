@@ -15,7 +15,7 @@ public class CacheConfig {
 
     @Bean
     public ConcurrentMapCacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("uin_hash_salt","zkdataencryptedkeystorecache","masterdata/templates");
+        return new ConcurrentMapCacheManager();
     }
 }
 
