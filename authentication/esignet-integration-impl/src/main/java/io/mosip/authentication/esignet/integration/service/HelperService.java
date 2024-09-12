@@ -8,8 +8,6 @@ package io.mosip.authentication.esignet.integration.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 import io.mosip.authentication.esignet.integration.dto.IdaKycAuthRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpRequest;
 import io.mosip.authentication.esignet.integration.dto.IdaSendOtpResponse;
@@ -36,7 +34,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -57,7 +54,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Slf4j
@@ -127,7 +123,7 @@ public class HelperService {
                 .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
                 .forEach( auth -> { buildAuthRequest(auth, authRequest); });
 
-        KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
+        KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength, secureRandom);
         final SecretKey symmetricKey = keyGenerator.generateKey();
         String request = objectMapper.writeValueAsString(authRequest);
         String hexEncodedHash = HMACUtils2.digestAsPlainText(request.getBytes(StandardCharsets.UTF_8));
