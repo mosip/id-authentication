@@ -30,6 +30,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ParseException;
@@ -99,7 +100,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return AuthRequestDTO.class.equals(clazz) || KycAuthRequestDTO.class.equals(clazz);
+		return AuthRequestDTO.class.equals(clazz) || KycAuthRequestDTO.class.equals(clazz) 
+				|| KycAuthRequestDTOV2.class.equals(clazz);
 	}
 
 	/**

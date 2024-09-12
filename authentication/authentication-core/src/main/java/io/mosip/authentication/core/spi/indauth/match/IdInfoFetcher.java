@@ -3,10 +3,12 @@ package io.mosip.authentication.core.spi.indauth.match;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.PASSWORD;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SEMI_COLON;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COLON;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -199,7 +204,7 @@ public interface IdInfoFetcher {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) {
+	public static Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO, ObjectMapper objectMapper) {
 		return idResponseDTO.entrySet().stream().flatMap(entry -> {
 			if (entry.getValue() instanceof Map) {
 				return ((Map<String, Object>) entry.getValue()).entrySet().stream();
@@ -244,12 +249,27 @@ public interface IdInfoFetcher {
 										 .map(mapEntry -> mapEntry.getKey().trim() + String.valueOf(COLON) + mapEntry.getValue().trim())
 										 .collect(Collectors.joining(SEMI_COLON));
 				IdentityInfoDTO idInfo = new IdentityInfoDTO();
-				idInfo.setValue(String.valueOf(passwordData));
+				idInfo.setValue(passwordData);
+				return Stream.of(idInfo).collect(Collectors.toList());
+			} else if (entry.getKey().equals(VERIFIED_CLAIMS_ATTRIBS) && val instanceof Map) {
+				Map<String, String> map = (Map<String, String>) val;
+				IdentityInfoDTO idInfo = new IdentityInfoDTO();
+				try {
+					idInfo.setValue(Objects.nonNull(objectMapper)? 
+									objectMapper.writeValueAsString(map) :
+									String.valueOf(map));
+				} catch (JsonProcessingException e) {
+					// Ignore this exception.
+					idInfo.setValue(String.valueOf(map));
+				}
 				return Stream.of(idInfo).collect(Collectors.toList());
 			}
-
 			return Collections.emptyList();
 		}));
+	}
+
+	public static Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO) {
+		return getIdInfo(idResponseDTO, null);
 	}
 
 	/**

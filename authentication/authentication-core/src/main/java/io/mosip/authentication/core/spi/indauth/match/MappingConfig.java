@@ -249,4 +249,11 @@ public interface MappingConfig {
 	 * @return the password
 	 */
 	public List<String> getPassword();
+
+	/**
+	 * List of value to hold Verified Claims Attributes.
+	 *
+	 * @return the Verified Claims Attributes
+	 */
+	public List<String> getVerifiedAttributes();
 }

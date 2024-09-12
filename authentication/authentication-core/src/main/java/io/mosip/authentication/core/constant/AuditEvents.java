@@ -51,6 +51,8 @@ public enum AuditEvents {
 	
 	PASSWORD_BASED_AUTH_REQUEST("IDA_018", "System", "Password Based Auth Request"),
 
+	KYC_REQUEST_RESPONSE_V2("IDA_019", "System", "Kyc Auth V2 Request"),
+
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1
 	

@@ -1,12 +1,18 @@
 package io.mosip.authentication.service.kyc.impl;
+
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COMMA_STRING;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EMPTY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.NULL_CONST;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.ValueRange;
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,21 +24,29 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.codec.DecoderException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.JsonArray;
 
 import io.mosip.authentication.common.service.entity.KycTokenData;
+import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
+import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
@@ -53,7 +67,6 @@ import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -100,6 +113,9 @@ public class KycServiceImpl implements KycService {
 	@Value("${ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
 
+	@Value("${ida.oidc4ida.ignore.standard.claims.list}")
+	private String[] ignoreClaims;
+
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -124,6 +140,10 @@ public class KycServiceImpl implements KycService {
 	
 	@Autowired
 	private CbeffUtil cbeffUtil;
+
+	@Autowired
+	private OIDCClientDataRepository oidcClientDataRepo; 
+
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -132,13 +152,6 @@ public class KycServiceImpl implements KycService {
 	 * @param identityInfo the identity info
 	 * @return the kyc response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.service.KycService#retrieveKycInfo(
-	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
 	@Override
 	public EKycResponseDTO retrieveKycInfo(List<String> allowedkycAttributes, Set<String> langCodes,
@@ -785,5 +798,58 @@ public class KycServiceImpl implements KycService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 		return CryptoUtil.encodeBase64(birDataFromXMLType.get(0).getBdb());
+	}
+
+	public String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId) 
+			throws IdAuthenticationBusinessException {
+		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
+		if(oidcClientData.isEmpty()) {
+			return EMPTY;
+		}
+		List<String> oidcClientAllowedVerifiedClaims = Stream.of(oidcClientData.get().getUserClaims())
+													.filter(t -> !Arrays.asList(ignoreClaims).contains(t))
+													.collect(Collectors.toList());
+		
+		if (verifiedClaimsData.equals(EMPTY)) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"buildVerifiedClaimsMetadata", "No Verified Claims data found for the id.");
+			return oidcClientAllowedVerifiedClaims.stream()
+											  .map(md -> md.concat(NULL_CONST))
+			                                  .collect(Collectors.joining(COMMA_STRING));
+		}
+		
+		JSONObject verifiedClaimJson = new JSONObject(verifiedClaimsData);
+		Set<String> verifiedClaimKeys = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+																verifiedClaimJson.keys(), 0), 
+																false).collect(Collectors.toSet());
+																
+		Map<String, String> idAttribsMap = oidcClientAllowedVerifiedClaims.stream().flatMap(claim -> {
+						try {
+							return idInfoHelper.getIdentityAttributesForIdName(claim)
+							                   .stream()
+											   .map(attrib -> new AbstractMap.SimpleEntry<>(attrib, claim));
+						} catch (IdAuthenticationBusinessException exp) {
+							mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+								"buildVerifiedClaimsMetadata", "Error Fatching the attibutes. " + exp.getMessage(), exp);
+						}
+						return Stream.empty();
+					}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		
+		String verifiedClaimsStr = null;
+		Map<String, Object> verifiedClaimsMap = idAttribsMap.entrySet().stream().filter(e -> verifiedClaimKeys.contains(e.getKey()))
+							 		.map(entry -> new Object[] {(Object)entry.getValue(), 
+												((JSONArray)verifiedClaimJson.get(entry.getKey())).toList()})
+							 		.collect(Collectors.toMap(strArr -> strArr[0].toString(), strArr -> strArr[1]));
+
+		oidcClientAllowedVerifiedClaims.stream().filter(claim -> !verifiedClaimsMap.keySet().contains(claim))
+												.forEach(claim -> verifiedClaimsMap.put(claim, "null"));
+		
+		try {
+			verifiedClaimsStr = mapper.writeValueAsString(verifiedClaimsMap);	
+		} catch (JsonProcessingException exp) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildVerifiedClaimsMetadata",
+					"Error converting map to string. " + exp.getMessage(), exp);
+		}
+		return verifiedClaimsStr;
 	}
 }
