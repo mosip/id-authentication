@@ -59,9 +59,6 @@ Refer to the [configuration guide](docs/configuration.md).
     $ ./delete.sh
    ```
 
-To deploy Auth on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deployment/sandbox-deployment).
-To deploy Auth-apitestrig within the cluster refer to [Auth-apitestrig Deployment](https://github.com/mosip/id-authentication/tree/develop/apitest/deploy/auth-apitestrig/README.md) 
-
 ## Test
 Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
 
