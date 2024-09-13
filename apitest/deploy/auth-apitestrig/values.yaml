@@ -1,3 +1,7 @@
 modules:
   auth:
     enabled: true
+    image:
+      repository: mosipqa/apitest-auth
+      tag: develop
+      pullPolicy: Always
