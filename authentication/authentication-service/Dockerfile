@@ -81,9 +81,13 @@ ENV loader_path_env=${loader_path}
 
 ENV current_module_env=authentication-service
 
-ADD configure_start.sh configure_start.sh
+ADD configure_start.sh /home/${container_user}/configure_start.sh
 
 ADD ./lib/* "${loader_path_env}"/
+
+RUN chmod +x /home/${container_user}/configure_start.sh
+
+RUN chmod a-w /home/${container_user}/configure_start.sh
 
 ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
