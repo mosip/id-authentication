@@ -55,7 +55,7 @@ Refer to the [configuration guide](docs/configuration.md).
    ```
 ### Delete
   ```
-    $ cd ./apitest/deploy/auth-apitetsrig
+    $ cd ./apitest/deploy/auth-apitestrig
     $ ./delete.sh
    ```
 
