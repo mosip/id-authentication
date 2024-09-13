@@ -1,6 +1,7 @@
 package io.mosip.authentication.service;
 
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
+import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -96,6 +97,9 @@ import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.websub.api.client.PublisherClientImpl;
+import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 
 
 /**
@@ -104,7 +108,7 @@ import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
  * @author Dinesh Karuppiah
  * @author Nagarjuna
  */
-@SpringBootApplication(exclude = { HibernateDaoConfig.class, SecurityAutoConfiguration.class })
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		AuthContextClazzRefProvider.class, CbeffImpl.class, 
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
@@ -127,7 +131,9 @@ import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
 		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class,
 		HSMHealthCheck.class, TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class, 
-		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, SubscriberClientImpl.class })
+		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
+		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
+		PDFGeneratorImpl.class, PublisherClientImpl.class, RestTemplateHelper.class, ECKeyPairGenRequestValidator.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config", "${mosip.auth.adapter.impl.basepackage}"
 , "io.mosip.kernel.websub.api.client"}, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
