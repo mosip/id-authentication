@@ -123,7 +123,7 @@ public class HelperService {
                 .filter( auth -> auth != null &&  auth.getAuthFactorType() != null)
                 .forEach( auth -> { buildAuthRequest(auth, authRequest); });
 
-        KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength, secureRandom);
+        KeyGenerator keyGenerator = KeyGeneratorUtils.getKeyGenerator(symmetricAlgorithm, symmetricKeyLength);
         final SecretKey symmetricKey = keyGenerator.generateKey();
         String request = objectMapper.writeValueAsString(authRequest);
         String hexEncodedHash = HMACUtils2.digestAsPlainText(request.getBytes(StandardCharsets.UTF_8));

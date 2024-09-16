@@ -1,6 +1,5 @@
 package io.mosip.authentication.internal.service;
 
-import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
@@ -148,7 +147,7 @@ import org.springframework.web.client.RestTemplate;
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class, PublisherClientImpl.class,
-		RestTemplateHelper.class, RestTemplate.class, ECKeyPairGenRequestValidator.class
+		RestTemplateHelper.class, RestTemplate.class
 })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
 		"io.mosip.kernel.core.logger.config",
