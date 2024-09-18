@@ -42,6 +42,14 @@
 
 **Note - Before creating certificates we need to assign default role as AUTH_PARTNER in the keycloak for the environment we are using so that all new users with the same partner id which we will create will automatically have the desired role which it needs**
 
+### Procedure to install and execute auth-demo-service in the local machine
+
+* The following link provides installation of auth-demo-service 
+	* https://github.com/mosip/mosip-functional-tests/blob/master/README.md
+	
+* Navigate to the path where auth-demo-service has been installed and run following query for cellbox1 env.
+	*java -jar -Dmosip.base.url=https://api-internal.cellbox1.mosip.net -Dserver.port=8082 -Dauth-token-generator.rest.clientId=mosip-resident-client -Dauth-token-generator.rest.secretKey=abc@123 -Dauth-token-generator.rest.appId=resident authentication-demo-service-1.2.1-develop-SNAPSHOT.jar
+
 ### Execution points for eSignet Authentication API's
 
 *IDA_Test_Script.jmx
@@ -50,7 +58,7 @@
 	
 	* Create Identities in MOSIP Identity System (Setup) : This thread contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "addIdentitySetup" is used as a variable. 
 	
-	* Third Party Certificates (Setup) : This threadgroup generates certificates to support the IDA execution.
+	* Third Party Certificates (Setup) : This threadgroup contains series of certificate upload to support the IDA execution.
 	  			
 	* S01 Authentication with OTP (Execution) :
 		* S01 T01 Create Auth OTP Request Body : This thread creates OTP request.
