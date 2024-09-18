@@ -1,5 +1,3 @@
-\echo 'Rollback Queries not required for transition from $CURRENT_VERSION to $UPGRADE_VERSION'
-
 -- ------------------------------------------------------------------------------------------
 -- Revoke script for Migrating Spring batch version to 5.0 as part of Java 21 Migration.
 -- ------------------------------------------------------------------------------------------
