@@ -201,6 +201,7 @@ public class WebSubHelper {
 	 */
 	public SubscriptionChangeResponse subscribe(SubscriptionChangeRequest subscriptionRequest) {
 		subscriptionRequest.setHubURL(hubURL);
+		System.out.println("Subscription request- "+ subscriptionRequest.toString());
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
 	
