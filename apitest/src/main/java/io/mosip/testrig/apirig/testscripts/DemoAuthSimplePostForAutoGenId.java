@@ -36,6 +36,7 @@ import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
+import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
@@ -93,6 +94,7 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 	public void test(TestCaseDTO testCaseDTO)
 			throws AuthenticationTestException, AdminTestException, NoSuchAlgorithmException {
 		testCaseName = testCaseDTO.getTestCaseName();
+		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
 		String[] kycFields = testCaseDTO.getKycFields();
 		if (HealthChecker.signalTerminateExecution) {
 			throw new SkipException(
