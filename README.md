@@ -47,18 +47,6 @@ Refer to the [configuration guide](docs/configuration.md).
     $ ./restart.sh
    ```
 
-## To deploy Auth apitestrig within k8s cluster:
-### Install
-  ```
-    $ cd ./apitest/deploy/auth-apitestrig
-    $ ./install.sh
-   ```
-### Delete
-  ```
-    $ cd ./apitest/deploy/auth-apitetsrig
-    $ ./delete.sh
-   ```
-
 ## Test
 Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
 
