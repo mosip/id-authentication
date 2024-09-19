@@ -3,9 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -135,36 +133,6 @@ public class CredentialIssueanceCallbackController {
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleDeactivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
-	}
-
-	@GetMapping(path = "/callback/idchange/activate_id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary = "Event Notification Callback API - Verification", description = "Handles subscription verification from the WebSub hub", tags = { "credential-issueance-callback-controller" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Verification successful",
-					content = @Content(schema = @Schema(hidden = true))),
-			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(hidden = true)))
-	})
-	public ResponseEntity<String> verifySubscription(
-			@PathVariable("partnerId") String partnerId,
-			@RequestParam("hub.mode") String mode,
-			@RequestParam("hub.topic") String topic,
-			@RequestParam("hub.challenge") String challenge,
-			@RequestParam(value = "hub.lease_seconds", required = false) String leaseSeconds) {
-
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "verifySubscription", this.getClass().getCanonicalName(),
-				"inside subscription verification for partnerId: " + partnerId);
-		System.out.println("inside verify subscription");
-		// Check if the mode is "subscribe" or "unsubscribe"
-		if ("subscribe".equalsIgnoreCase(mode)) {
-			// Respond with the hub.challenge to confirm the subscription
-			return ResponseEntity.ok(challenge);
-		} else if ("unsubscribe".equalsIgnoreCase(mode)) {
-			// Handle unsubscription if necessary
-			return ResponseEntity.ok(challenge);
-		} else {
-			// If the mode is not recognized, return a bad request response
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid mode");
-		}
 	}
 
 
