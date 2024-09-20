@@ -137,6 +137,7 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 		inputJson = inputJson.replace("$UIN$", uin);
 		inputJson = inputJson.replace("$RID$", genRid);
 		String phoneNumber = "";
+		String email = testCaseName + "@mosip.net";
 		if (inputJson.contains("$PHONENUMBERFORIDENTITY$")) {
 			if (!phoneSchemaRegex.isEmpty())
 				try {
@@ -145,6 +146,8 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 					logger.error(e.getMessage());
 				}
 			inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFORIDENTITY$", phoneNumber);
+			inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
+
 		}
 
 		response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
