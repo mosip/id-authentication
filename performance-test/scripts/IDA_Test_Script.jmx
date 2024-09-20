@@ -1461,8 +1461,8 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
     &quot;appId&quot;: &quot;partner&quot;,&#xd;
     &quot;password&quot;: &quot;${pmsPassword}&quot;,&#xd;
     &quot;userName&quot;: &quot;${pmsUser}&quot;,&#xd;
-    &quot;clientId&quot;: &quot;${clientIdPms}&quot;,&#xd;
-    &quot;clientSecret&quot;: &quot;${secretKeyPms}&quot;&#xd;
+    &quot;clientId&quot;: &quot;${pmsClientId}&quot;,&#xd;
+    &quot;clientSecret&quot;: &quot;${pmsSecretKey}&quot;&#xd;
   },&#xd;
   &quot;requesttime&quot;: &quot;${__time(yyyy-MM-dd&apos;T&apos;HH:mm:ss.sss&apos;Z&apos;,)}&quot;,&#xd;
   &quot;version&quot;: &quot;string&quot;&#xd;
@@ -2266,7 +2266,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="-1867203356">Upload Success</stringProp>
+                <stringProp name="685365575">&quot;errors&quot;:[]</stringProp>
               </collectionProp>
               <stringProp name="Assertion.custom_message"></stringProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -2866,8 +2866,8 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
     &quot;appId&quot;: &quot;partner&quot;,&#xd;
     &quot;password&quot;: &quot;${keycloakPartnerUserPassword}&quot;,&#xd;
     &quot;userName&quot;: &quot;${rpPartnerId}&quot;,&#xd;
-    &quot;clientId&quot;: &quot;${clientIdPms}&quot;,&#xd;
-    &quot;clientSecret&quot;: &quot;${secretKeyPms}&quot;&#xd;
+    &quot;clientId&quot;: &quot;${pmsClientId}&quot;,&#xd;
+    &quot;clientSecret&quot;: &quot;${pmsSecretKey}&quot;&#xd;
   },&#xd;
   &quot;requesttime&quot;: &quot;${__time(yyyy-MM-dd&apos;T&apos;HH:mm:ss.sss&apos;Z&apos;,)}&quot;,&#xd;
   &quot;version&quot;: &quot;string&quot;&#xd;
@@ -3379,7 +3379,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="-1867203356">Upload Success</stringProp>
+                <stringProp name="685365575">&quot;errors&quot;:[]</stringProp>
               </collectionProp>
               <stringProp name="Assertion.custom_message"></stringProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -3992,7 +3992,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="-1867203356">Upload Success</stringProp>
+                <stringProp name="685365575">&quot;errors&quot;:[]</stringProp>
               </collectionProp>
               <stringProp name="Assertion.custom_message"></stringProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -4643,7 +4643,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="-1867203356">Upload Success</stringProp>
+                <stringProp name="685365575">&quot;errors&quot;:[]</stringProp>
               </collectionProp>
               <stringProp name="Assertion.custom_message"></stringProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
