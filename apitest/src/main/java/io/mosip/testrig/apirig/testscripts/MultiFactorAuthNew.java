@@ -2,21 +2,17 @@ package io.mosip.testrig.apirig.testscripts;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -27,7 +23,6 @@ import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
-import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -46,11 +41,8 @@ public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
 	protected String testCaseName = "";
 	public Response response = null;
 	
-	@Autowired
-	private EncryptionDecrptionUtil encryptDecryptUtil;
-	
-	@Autowired
-	private BioDataUtility bioDataUtil;
+	private EncryptionDecrptionUtil encryptDecryptUtil = new EncryptionDecrptionUtil();
+	private BioDataUtility bioDataUtil = new BioDataUtility();
 
 	@BeforeClass
 	public static void setLogLevel() {
