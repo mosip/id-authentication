@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -43,11 +42,8 @@ public class BioAuth extends AdminTestUtil implements ITest {
 	public Response newResponse = null;
 	public boolean isInternal = false;
 	
-	@Autowired
-	private EncryptionDecrptionUtil encryptDecryptUtil;
-	
-	@Autowired
-	private BioDataUtility bioDataUtil;
+	private EncryptionDecrptionUtil encryptDecryptUtil = new EncryptionDecrptionUtil();
+	private BioDataUtility bioDataUtil = new BioDataUtility();
 
 	@BeforeClass
 	public static void setLogLevel() {
