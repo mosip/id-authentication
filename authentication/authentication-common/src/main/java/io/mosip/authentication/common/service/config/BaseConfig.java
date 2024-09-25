@@ -5,19 +5,17 @@ import io.mosip.authentication.common.service.integration.RequireOtpNotFrozenHel
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
-import io.mosip.kernel.core.websub.spi.SubscriptionClient;
-import io.mosip.kernel.core.websub.spi.SubscriptionExtendedClient;
-import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
-import io.mosip.kernel.websub.api.model.*;
-import org.springframework.beans.factory.annotation.Qualifier;
+import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
 @author Kamesh Shekhar Prasad
  */
 
 @Configuration
+@Import(WebSubClientConfig.class)
 public class BaseConfig {
 
     @Bean
@@ -53,17 +51,6 @@ public class BaseConfig {
     @Bean
     public SeparatorHelper separatorHelper() {
         return new SeparatorHelper();
-    }
-
-    @Bean
-    public SubscriptionExtendedClient<FailedContentResponse, FailedContentRequest> extendedClient() {
-        return new SubscriberClientImpl();
-    }
-
-    @Bean
-    @Qualifier("subscriptionExtendedClient")
-    public SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscriptionClient() {
-        return new SubscriberClientImpl();
     }
 
     @Bean

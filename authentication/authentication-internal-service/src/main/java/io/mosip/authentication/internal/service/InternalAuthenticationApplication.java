@@ -1,7 +1,9 @@
 package io.mosip.authentication.internal.service;
 
+import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
+import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -53,10 +55,6 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
-import io.mosip.authentication.common.service.util.BioMatcherUtil;
-import io.mosip.authentication.common.service.util.EnvUtil;
-import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
-import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
@@ -147,11 +145,13 @@ import org.springframework.web.client.RestTemplate;
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class, PublisherClientImpl.class,
-		RestTemplateHelper.class, RestTemplate.class
+		RestTemplateHelper.class, RestTemplate.class, SubscriberClientImpl.class, LanguageUtil.class
 })
-@ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*", "${mosip.auth.adapter.impl.basepackage}",
+@ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*",
 		"io.mosip.kernel.core.logger.config",
-		"io.mosip.authentication.common.service.config" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.authentication.common.service.config", "io.mosip.kernel.websub.api.config.*", "${mosip.auth.adapter.impl.basepackage}",
+	"io.mosip.authentication.common.service.helper","io.mosip.authentication.common.service.util", "io.mosip.kernel.core.websub.spi.*",},
+		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 		"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
 		"io.mosip.kernel.keymanagerservice.repository.*" })

@@ -80,7 +80,7 @@ public class IdInfoHelper {
 	private EnvUtil env;
 
 	@Autowired
-	private LanguageUtil computeKeyHelper;
+	private LanguageUtil languageUtil;
 
 	@Autowired
 	private SeparatorHelper seperatorHelper;
@@ -142,7 +142,7 @@ public class IdInfoHelper {
 	public Map<String, String> getDynamicEntityInfoAsStringWithKey(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, String langCode, String idName) {
 		try {
 			Map<String, String> idEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, filteredIdentityInfo, langCode, idName);
-			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(computeKeyHelper.computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
+			return idEntityInfoMap.isEmpty() ? Map.of() : Map.of(languageUtil.computeKey(idName, idEntityInfoMap.keySet().iterator().next(), langCode), idEntityInfoMap.entrySet()
 					.stream()
 					.map(Entry::getValue)
 					.collect(Collectors.joining(seperatorHelper.getSeparator(idName))));
