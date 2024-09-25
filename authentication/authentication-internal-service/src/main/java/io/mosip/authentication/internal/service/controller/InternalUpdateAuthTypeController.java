@@ -2,11 +2,8 @@ package io.mosip.authentication.internal.service.controller;
 
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_AUTHTYPE_CALLBACK_SECRET;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +24,7 @@ import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeSt
 import io.mosip.idrepository.core.dto.AuthTypeStatusEventDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.websub.model.EventModel;
-import io.mosip.kernel.core.websub.spi.SubscriptionClient;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeRequest;
-import io.mosip.kernel.websub.api.model.SubscriptionChangeResponse;
-import io.mosip.kernel.websub.api.model.UnsubscriptionRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,10 +52,6 @@ public class InternalUpdateAuthTypeController {
 	
 	@Autowired
 	private ObjectMapper mapper;
-	
-//	@Autowired
-//	@Qualifier("subscriptionExtendedClient")
-//	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
 
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
 	@Operation(summary = "updateAuthtypeStatus", description = "updateAuthtypeStatus", tags = { "internal-update-auth-type-controller" })
