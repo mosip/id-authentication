@@ -60,9 +60,9 @@ public class InternalUpdateAuthTypeController {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Autowired
-	@Qualifier("subscriptionExtendedClient")
-	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
+//	@Autowired
+//	@Qualifier("subscriptionExtendedClient")
+//	SubscriptionClient<SubscriptionChangeRequest, UnsubscriptionRequest, SubscriptionChangeResponse> subscribe;
 
 	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
 	@Operation(summary = "updateAuthtypeStatus", description = "updateAuthtypeStatus", tags = { "internal-update-auth-type-controller" })
