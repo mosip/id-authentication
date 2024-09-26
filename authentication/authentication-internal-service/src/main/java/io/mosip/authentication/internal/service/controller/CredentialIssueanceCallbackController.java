@@ -68,7 +68,7 @@ public class CredentialIssueanceCallbackController {
 	 * @return the response entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostMapping(path = "/callback/idchange/credential_issued/{partnerId}/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/callback/idchange/credential_issued/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Event Notification Callback API", description = "Event Notification Callback API", tags = { "credential-issueance-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -78,7 +78,7 @@ public class CredentialIssueanceCallbackController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
-	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "${ida-websub-idchange-credential-issued-callback-relative-url}"+"/" ,topic = "${ida-topic-credential-issued}")
+	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "${ida-websub-idchange-credential-issued-callback-relative-url}" ,topic = "${ida-topic-credential-issued}")
 	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId,
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
