@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.config;
+package io.mosip.authentication.common.service.config;
 
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import(WebSubClientConfig.class)
-public class IdaServiceWebSubConfig {
+public class BaseConfig {
 
 }
