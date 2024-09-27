@@ -10,6 +10,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @author Kamesh Shekhar Prasad
+ */
+
 @Component
 public class TrailingSlashRedirectFilter implements Filter {
     @Override
