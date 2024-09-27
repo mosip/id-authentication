@@ -36,8 +36,6 @@ public class PolicyData {
 	@Column(name = "policy_id")
 	private String policyId;
 
-	@Lob
-	//@Type(value = "org.hibernate.type.BinaryType")
 	@Basic(fetch = FetchType.LAZY)
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)

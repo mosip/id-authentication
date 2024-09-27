@@ -34,9 +34,7 @@ public class PartnerData {
 	@NotNull
 	@Column(name = "partner_name")
 	private String partnerName;
-	
-	@Lob
-	//@Type(value = "org.hibernate.type.BinaryType")
+
 	@Basic(fetch = FetchType.LAZY)
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
