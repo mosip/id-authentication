@@ -164,6 +164,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Override
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
+		System.out.println("inside processCredentialStoreEvent");
 		String statusCode = credentialEventStore.getStatusCode();
 		if (statusCode.equals(CredentialStoreStatus.FAILED.name())) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
