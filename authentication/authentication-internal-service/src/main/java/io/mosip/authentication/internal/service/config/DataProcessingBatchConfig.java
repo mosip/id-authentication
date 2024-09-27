@@ -106,23 +106,25 @@ public class DataProcessingBatchConfig {
 	@Scope("singleton")
 	public Job credentialStoreJob(CredentialStoreJobExecutionListener listener, JobRepository jobRepository,
 								  PlatformTransactionManager platformTransactionManager) {
-		Job job = new JobBuilder("credentialStoreJob", jobRepository)
+        return new JobBuilder("credentialStoreJob", jobRepository)
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
 				.flow(credentialStoreStep(jobRepository, platformTransactionManager))
 				.end()
 				.build();
+	}
 
-		try {
-			if (!job.getName().contains("credentialStoreJob")) {
-				jobRegistry.register(new ReferenceJobFactory(job));
-			} else {
-				logger.info("Job 'credentialStoreJob' is already registered.");
-			}
-		} catch (DuplicateJobException e) {
-			logger.warn("error in registering job: {}", e.getMessage());
-		}
-		return job;
+	@Bean
+	@Qualifier("retriggerMissingCredentials")
+	@Scope("singleton")
+	public Job retriggerMissingCredentialJob(CredentialStoreJobExecutionListener listener, JobRepository jobRepository,
+								  PlatformTransactionManager platformTransactionManager) {
+		return new JobBuilder("retriggerMissingCredentials", jobRepository)
+				.incrementer(new RunIdIncrementer())
+				.listener(listener)
+				.flow(credentialStoreStep(jobRepository, platformTransactionManager))
+				.end()
+				.build();
 	}
 
 	/**
