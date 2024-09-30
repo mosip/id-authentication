@@ -60,7 +60,6 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Service
-@Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
 
