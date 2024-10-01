@@ -254,65 +254,128 @@ public class KycAuthController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public KycAuthResponseDTO processKycAuth(@Validated @RequestBody KycAuthRequestDTO authRequestDTO,
-			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
-			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
+											 @ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
+											 @PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		if(request instanceof ObjectWithMetadata) {
+
+		// Log method entry and request details
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+				"Method entry. Received request for KYC authentication. PartnerID: " + partnerId + ", OIDCClientID: " + oidcClientId);
+
+		if (request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWrapperWithMetadata = (ObjectWithMetadata) request;
+
+			// Log metadata from the request wrapper
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+					"Request metadata: " + requestWrapperWithMetadata.getMetadata().toString());
 
 			boolean isAuth = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
+
+			// Log partner details
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+					"Partner details: " + (partner.isPresent() ? partner.get().toString() : "Partner not found"));
+
+			// Build authentication transaction and log the builder details
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(authRequestDTO, !isAuth, partner);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+					"AuthTransactionBuilder created: " + authTxnBuilder.toString());
+
 			try {
+				// Log individual ID and type
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
-						authRequestDTO.setIndividualIdType(idType);
+				authRequestDTO.setIndividualIdType(idType);
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"Individual ID: " + authRequestDTO.getIndividualId() + ", ID Type: " + idType);
+
+				// Validate ID and log validation status
 				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
-				if(AuthTypeUtil.isBio(authRequestDTO)) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"ID validation completed. Errors: " + errors.hasErrors());
+
+				// Validate biometric details if applicable
+				if (AuthTypeUtil.isBio(authRequestDTO)) {
+					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+							"Request contains biometric data. Validating device details.");
 					kycReqValidator.validateDeviceDetails(authRequestDTO, errors);
 				}
+
+				// Log and validate data
 				DataValidationUtil.validate(errors);
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"Data validation completed.");
+
 				boolean externalAuthRequest = true;
-				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, externalAuthRequest, partnerId, 
-								oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
+
+				// Log authentication request
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"Authenticating individual. ExternalAuthRequest: " + externalAuthRequest);
+
+				// Perform authentication and log response
+				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, externalAuthRequest,
+						partnerId, oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"Authentication response received: " + (authResponseDTO != null ? authResponseDTO.toString() : "null"));
+
 				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+
+				// Check metadata and process KYC authentication
 				Map<String, Object> metadata = requestWrapperWithMetadata.getMetadata();
-				if (authResponseDTO != null && 
-						metadata != null && 
-								metadata.get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
-										metadata.get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
+				if (authResponseDTO != null && metadata != null && metadata.get(IdAuthCommonConstants.IDENTITY_DATA) != null
+						&& metadata.get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
+
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+							"Processing KYC authentication with metadata.");
 					kycAuthResponseDTO = kycFacade.processKycAuth(authRequestDTO, authResponseDTO, partnerId, oidcClientId, metadata);
 				}
+
+				// Log method exit and return KYC response
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+						"KYC authentication completed. Returning response.");
 				return kycAuthResponseDTO;
+
 			} catch (IDDataValidationException e) {
+				// Log validation exception and audit
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				
+						"Data validation error: " + e.getErrorText());
 				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
+
+				// Handle validation exception
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWrapperWithMetadata);
+
 			} catch (IdAuthenticationBusinessException e) {
+				// Log business exception and audit
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-				
+						"Business exception: " + e.getErrorText());
+				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
+
+				// Handle eventing if enabled and log the error code
 				if (isEventingEnabled) {
 					if (IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode().equals(e.getErrorCode())) {
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+								"Eventing triggered for authentication error.");
 						authenticationErrorEventingPublisher.notify(authRequestDTO, request.getHeader("signature"),
 								partner, e, authRequestDTO.getMetadata());
 					}
 				}
-				auditHelper.auditExceptionForAuthRequestedModules(AuditEvents.KYC_REQUEST_RESPONSE, authRequestDTO, e);
+
 				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWrapperWithMetadata, e);
 				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, authRequestDTO.getTransactionID());
 				throw authTransactionHelper.createUnableToProcessException(authTxnBuilder, e, requestWrapperWithMetadata);
+
 			}
 		} else {
-			mosipLogger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
+			// Log technical error when request is not an instance of ObjectWithMetadata
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
+					"Technical error: HttpServletRequest is not instanceof ObjectWithMetadata.");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
+
 
 	/**
 	 * Controller Method for Kyc-exchange.
