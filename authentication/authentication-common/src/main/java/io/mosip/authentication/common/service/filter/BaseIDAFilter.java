@@ -122,67 +122,126 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IOException, ServletException {
 
 		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+
+		// Log the request URL
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+				"Request URL: " + reqUrl);
+
+		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request URL bypassed: " + reqUrl);
 			chain.doFilter(request, response);
 			return;
 		}
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				"Request URL: " + reqUrl);
-		
+
+		// Log the request time
 		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				IdAuthCommonConstants.REQUEST + " at : " + requestTime);
+				IdAuthCommonConstants.REQUEST + " started at: " + requestTime);
 
+		// Wrap the request and response to reset streams and log information
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response) {
 
 			@Override
 			public void flushBuffer() throws IOException {
-				// Avoiding flush and commit while data validation exception handling to set
-				// response header(response-signature) later in the filter.
-				// Positive response does not invoke this
-				// super.flushBuffer();
+				// Log flush buffer actions
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"flushBuffer called on responseWrapper");
+				// Avoiding flush and commit while data validation exception handling
 			}
 		};
-		
+
 		Map<String, Object> requestBody = null;
 		try {
+			// Log raw request body
 			requestBody = getRequestBody(requestWrapper.getInputStream());
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Parsed request body: " + (requestBody != null ? requestBody.toString() : "null"));
+
+			// Handle case when request body is null
 			if (requestBody == null) {
 				addIdAndVersionToRequestMetadata(requestWrapper);
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"Request metadata added. Proceeding with empty body.");
+
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = responseWrapper.toString();
+
+				// Log response after processing
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"Response processed: " + responseAsString);
+
 				consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 				response.getWriter().write(responseAsString);
 				return;
 			}
-			
+
+			// Log ID and version metadata addition
 			addIdAndVersionToRequestMetadata(requestWrapper);
-			addTransactionIdToRequestMetadata(requestWrapper,requestBody);
-			
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request metadata with ID and version added.");
+
+			// Log transaction ID addition
+			addTransactionIdToRequestMetadata(requestWrapper, requestBody);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Transaction ID added to request metadata.");
+
+			// Log resetting the input stream before consuming request
 			requestWrapper.resetInputStream();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request input stream reset.");
+
+			// Log request consumption process
 			consumeRequest(requestWrapper, requestBody);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request consumed and validated.");
+
+			// Log resetting the input stream after request consumption
 			requestWrapper.resetInputStream();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request input stream reset after consumption.");
+
+			// Continue with filter chain
 			chain.doFilter(requestWrapper, responseWrapper);
+
+			// Log response after the chain execution
 			String responseAsString = responseWrapper.toString();
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Response after filter chain: " + responseAsString);
+
+			// Log consumption of the response
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 			response.getWriter().write(responseAsString);
-		} catch (IdAuthenticationAppException  e) {
+		} catch (IdAuthenticationAppException e) {
+			// Log the exception stack trace
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			if(requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
+					"Exception occurred: " + ExceptionUtils.getStackTrace(e));
+
+			// Log digital signature failure analysis
+			if (requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
 				String errorMessage = e.getErrorText();
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"Digital signature failure. Error message: " + errorMessage);
 				fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestBody, errorMessage);
 			}
+
+			// Log stream reset and sending error response
 			requestWrapper.resetInputStream();
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request input stream reset after exception.");
+
 			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e, requestBody);
 		} finally {
+			// Log the response size after processing
 			logDataSize(responseWrapper.toString(), IdAuthCommonConstants.RESPONSE);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Response size logged.");
 		}
-		
-
 	}
+
 
 	private void addIdAndVersionToRequestMetadata(ResettableStreamHttpServletRequest requestWrapper) {
 		requestWrapper.putMetadata(VERSION,
@@ -339,15 +398,46 @@ public abstract class BaseIDAFilter implements Filter {
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
+			// Log the request URI and method for tracking
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Processing request: URI=" + requestWrapper.getRequestURI() + ", Method=" + requestWrapper.getMethod());
+
+			// Convert request input stream to byte array and log the size of the data
 			byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
-			logDataSize(new String(requestAsByte), IdAuthCommonConstants.REQUEST);
+			String requestBodyString = new String(requestAsByte);
+
+			// Log the actual request body (if sensitive data, handle appropriately)
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request Body: " + requestBodyString);
+
+			// Log the size of the request data
+			logDataSize(requestBodyString, IdAuthCommonConstants.REQUEST);
+
+			// Reset the request input stream after reading
 			requestWrapper.resetInputStream();
+
+			// Log that the stream has been reset
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request input stream reset successfully");
+
+			// Log the requestBody map before validation
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request Body Map before validation: " + requestBody.toString());
+
+			// Validate the request and log
 			validateRequest(requestWrapper, requestBody);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request validated successfully");
+
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, ExceptionUtils.getStackTrace(e));
+			// Log the stack trace in case of an exception
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"IOException occurred: " + ExceptionUtils.getStackTrace(e));
+
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+
 
 	/**
 	 * validateRequest method is used to validate the version and the ID passed for
@@ -361,14 +451,34 @@ public abstract class BaseIDAFilter implements Filter {
 	protected void validateRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 
-		String id = fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID);
-		requestWrapper.resetInputStream();
-		if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
-			validateId(requestBody, id);
-			validateVersion(requestBody);
-		}
+		// Log the incoming request and request body
+		mosipLogger.info("Request Wrapper: " + requestWrapper);
+		mosipLogger.info("Request Body: " + requestBody);
 
+		// Fetch and log the ID from the request
+		String id = fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID);
+		mosipLogger.info("ID fetched from request: " + id);
+
+		// Resetting the input stream
+		requestWrapper.resetInputStream();
+		mosipLogger.info("Input stream reset on the requestWrapper");
+
+		// Log if requestBody is not null and not empty
+		if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
+			mosipLogger.info("Request body is not null and not empty. Proceeding with validation.");
+
+			// Validate the ID and log the process
+			mosipLogger.info("Validating ID.");
+			validateId(requestBody, id);
+
+			// Validate the version and log the process
+			mosipLogger.info("Validating Version.");
+			validateVersion(requestBody);
+		} else {
+			mosipLogger.info("Request body is null or empty. Skipping validation.");
+		}
 	}
+
 
 	/**
 	 * fetchId used to fetch and determine the id of request
@@ -407,17 +517,33 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
+		// Log the incoming request body and id
+		mosipLogger.info("Request Body: " + requestBody);
+		mosipLogger.info("ID passed to validateId method: " + id);
+
 		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID)
 				? (String) requestBody.get(IdAuthCommonConstants.ID)
 				: null;
+
+		// Log the id retrieved from the request body
+		mosipLogger.info("ID from request body: " + idFromRequest);
+
 		String property = env.getProperty(id);
+
+		// Log the property value retrieved from the environment
+		mosipLogger.info("Property value for ID: " + property);
+
 		if (StringUtils.isEmpty(idFromRequest)) {
+			mosipLogger.info("ID from request is empty. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, false);
 		}
+
 		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, true);
 		}
 	}
+
 
 	/**
 	 * exceptionHandling used to handle the exception when validation of version and
