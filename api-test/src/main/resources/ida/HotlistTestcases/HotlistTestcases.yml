@@ -1,0 +1,94 @@
+DemoAuth:
+  auth_DemoAuth_blocked_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: perform Demo auth with blocked UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/error
+      input: '{
+        "id": "mosip.identity.auth",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_unblockUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-008",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_DemoAuth_Locked_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: perform Demo auth with locked UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/error
+      input: '{
+        "id": "mosip.identity.auth",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-008",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_DemoAuth_blocked_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: perform Demo auth with blocked VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/error
+      input: '{
+        "id": "mosip.identity.auth",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-008",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'

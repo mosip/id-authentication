@@ -1,0 +1,26 @@
+DemoAuth:
+  auth_DemoAuth_DOB_Valid_Smoke_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Demo auth using valid dob and valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/demoAuth
+      outputTemplate: ida/DemoAuth/demoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "3974189657",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1999/01/01",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'
+  

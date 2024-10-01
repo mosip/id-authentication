@@ -1,0 +1,36 @@
+EkycOtp:
+  auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc otp auth with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycOtp/ekycOtp
+      outputTemplate: ida/EkycOtp/ekycOtpResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "3974189657",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "3974189657",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$ekycPartnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/EkycOtp/EkycotpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/EkycOtp/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  

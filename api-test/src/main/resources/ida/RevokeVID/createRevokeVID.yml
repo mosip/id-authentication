@@ -1,0 +1,35 @@
+RevokeVID:
+   auth_RevokeVID_all_valid_smoke:
+      endPoint: /resident/v1/vid/$ID:GenerateVID_to_revoke_Perpetual_sid_vid$
+      description: revoke given VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/RevokeVID/createRevokeVID
+      outputTemplate: ida/RevokeVID/createRevokeVIDResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
+        "individualIdType": "VID",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.vidstatus",
+        "version": "v1",
+        "vidStatus": "REVOKED",
+        "otp": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
+        "maskedEmail": "$IGNORE$"
+    }
+}'

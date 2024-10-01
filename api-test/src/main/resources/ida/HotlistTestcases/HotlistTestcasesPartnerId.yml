@@ -1,0 +1,61 @@
+DemoAuth:
+  auth_DemoAuth_blocked_partnerid_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: perform Demo auth with blocked partner id
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_DemoAuth_blocked_partnerid__VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: perform Demo auth with VID with blocked partner id
+      role: resident
+      restMethod: post
+      inputTemplate: ida/HotlistTestcases/hotlistTestcases
+      outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/HotlistTestcases/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'

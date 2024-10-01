@@ -1,0 +1,25 @@
+EkycDemo:
+  auth_EkycDemo_Auth_With_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      description: Ekyc demo auth with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/ekycDemo
+      outputTemplate: ida/EkycDemo/ekycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "3974189657",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1999/01/01",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
