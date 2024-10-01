@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.config;
+package io.mosip.authentication.internal.service.config;
 
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import org.springframework.context.annotation.Configuration;
