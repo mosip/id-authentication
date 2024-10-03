@@ -26,7 +26,7 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -41,7 +41,7 @@ public class UpdateDraft extends AdminTestUtil implements ITest {
 
 	@BeforeClass
 	public static void setLogLevel() {
-		if (ConfigManager.IsDebugEnabled())
+		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
@@ -92,45 +92,8 @@ public class UpdateDraft extends AdminTestUtil implements ITest {
 				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
 			}
 		}
-
 		String jsonInput = testCaseDTO.getInput();
-
-		if (BaseTestCase.languageList.size() == 2) {
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"FR\" }", "");
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"Female\" }", "");
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"Mrs Lisa.GN\" }", "");
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"Line1\" }", "");
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"Line2\" }", "");
-			jsonInput = jsonInput.replace(", { \"language\": \"$3RDLANG$\", \"value\": \"Line3\" }", "");
-		} else if (BaseTestCase.languageList.size() == 1) {
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"FR\" }, { \"language\": \"$3RDLANG$\", \"value\": \"FR\" }",
-					"");
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"Female\" }, { \"language\": \"$3RDLANG$\", \"value\": \"Female\" }",
-					"");
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"Mrs Lisa.GN\" }, { \"language\": \"$3RDLANG$\", \"value\": \"Mrs Lisa.GN\" }",
-					"");
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"Line1\" }, { \"language\": \"$3RDLANG$\", \"value\": \"Line1\" }",
-					"");
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"Line2\" }, { \"language\": \"$3RDLANG$\", \"value\": \"Line2\" }",
-					"");
-			jsonInput = jsonInput.replace(
-					", { \"language\": \"$2NDLANG$\", \"value\": \"Line3\" }, { \"language\": \"$3RDLANG$\", \"value\": \"Line3\" }",
-					"");
-		}
-
 		String inputJson = getJsonFromTemplate(jsonInput, testCaseDTO.getInputTemplate(), false);
-
-		if (inputJson.contains("$1STLANG$"))
-			inputJson = inputJson.replace("$1STLANG$", BaseTestCase.languageList.get(0));
-		if (inputJson.contains("$2NDLANG$"))
-			inputJson = inputJson.replace("$2NDLANG$", BaseTestCase.languageList.get(1));
-		if (inputJson.contains("$3RDLANG$"))
-			inputJson = inputJson.replace("$3RDLANG$", BaseTestCase.languageList.get(2));
 
 		response = patchWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 				testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);

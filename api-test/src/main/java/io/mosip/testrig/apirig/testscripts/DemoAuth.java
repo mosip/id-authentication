@@ -28,7 +28,7 @@ import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -46,7 +46,7 @@ public class DemoAuth extends AdminTestUtil implements ITest {
 
 	@BeforeClass
 	public static void setLogLevel() {
-		if (ConfigManager.IsDebugEnabled())
+		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);

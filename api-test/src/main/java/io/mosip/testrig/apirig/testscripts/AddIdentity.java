@@ -36,6 +36,7 @@ import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
@@ -125,8 +126,8 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 			String picture = properties.getProperty("picturevalue");
 			list.add(picture);
 			attrmap.put("picture", list);
-			KeycloakUserManager.createVidUsers(propsKernel.getProperty("new_Resident_User"),
-					propsKernel.getProperty("new_Resident_Password"), propsKernel.getProperty("new_Resident_Role"),
+			KeycloakUserManager.createVidUsers(IdAuthConfigManager.getproperty("new_Resident_User"),
+					IdAuthConfigManager.getproperty("new_Resident_Password"), IdAuthConfigManager.getproperty("new_Resident_Role"),
 					attrmap);
 		}
 
@@ -137,7 +138,7 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 		inputJson = inputJson.replace("$UIN$", uin);
 		inputJson = inputJson.replace("$RID$", genRid);
 		String phoneNumber = "";
-		String email = testCaseName + "@mosip.net";
+		String email = testCaseName +"@mosip.net";
 		if (inputJson.contains("$PHONENUMBERFORIDENTITY$")) {
 			if (!phoneSchemaRegex.isEmpty())
 				try {
@@ -147,7 +148,7 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 				}
 			inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFORIDENTITY$", phoneNumber);
 			inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
-
+			
 		}
 
 		response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,

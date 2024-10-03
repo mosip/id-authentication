@@ -26,7 +26,7 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -41,7 +41,7 @@ public class PostWithBodyWithOtpGenerate extends AdminTestUtil implements ITest 
 
 	@BeforeClass
 	public static void setLogLevel() {
-		if (ConfigManager.IsDebugEnabled())
+		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
@@ -93,7 +93,6 @@ public class PostWithBodyWithOtpGenerate extends AdminTestUtil implements ITest 
 
 		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
-		String tempUrl = ConfigManager.getEsignetBaseUrl();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 		String otpRequest = null;
 		String sendOtpReqTemplate = null;

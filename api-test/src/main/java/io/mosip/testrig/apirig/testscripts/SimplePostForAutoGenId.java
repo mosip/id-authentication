@@ -28,7 +28,7 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -44,7 +44,7 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 
 	@BeforeClass
 	public static void setLogLevel() {
-		if (ConfigManager.IsDebugEnabled())
+		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
@@ -98,7 +98,7 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 		}
 
 		if (BaseTestCase.isTargetEnvLTS()) {
-			if (!ConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)) {
+			if (!IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)) {
 				if (((BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet"))
 						&& (testCaseName.startsWith("auth_GenerateVID_")
 								|| testCaseName.startsWith("ESignetIdR_Generate")))) {

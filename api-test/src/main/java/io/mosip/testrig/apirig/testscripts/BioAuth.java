@@ -26,7 +26,7 @@ import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.BioDataUtility;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
 import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -47,7 +47,7 @@ public class BioAuth extends AdminTestUtil implements ITest {
 
 	@BeforeClass
 	public static void setLogLevel() {
-		if (ConfigManager.IsDebugEnabled())
+		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
@@ -159,205 +159,9 @@ public class BioAuth extends AdminTestUtil implements ITest {
 			throw new AdminTestException("Failed at output validation");
 
 		
-		/*
-		 * if (testCaseName.toLowerCase().contains("kyc")) { String error = null; if
-		 * (response.getBody().asString().contains("errors")) error =
-		 * JsonPrecondtion.getJsonValueFromJson(response.getBody().asString(),
-		 * "errors"); if (error.equalsIgnoreCase("null"))
-		 * encryptDecryptUtil.validateThumbPrintAndIdentity(response,
-		 * testCaseDTO.getEndPoint()); }
-		 */
-		 
 
-		/*
-		 * if
-		 * (!encryptDecryptUtil.verifyResponseUsingDigitalSignature(response.asString(),
-		 * response.getHeader(props.getProperty("signatureheaderKey")))) throw new
-		 * AdminTestException("Failed at Signature validation");
-		 */
 
 	}
-
-
-
-//	/**
-//	 * Test method for OTP Generation execution
-//	 * 
-//	 * @param objTestParameters
-//	 * @param testScenario
-//	 * @param testcaseName
-//	 * @throws AuthenticationTestException
-//	 * @throws AdminTestException
-//	 */
-//	@Test(dataProvider = "testcaselist")
-//	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
-//		testCaseName = testCaseDTO.getTestCaseName();
-//		String[] kycFields = testCaseDTO.getKycFields();
-//
-//		if (HealthChecker.signalTerminateExecution) {
-//			throw new SkipException(
-//					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
-//		}
-//
-//		testCaseName = isTestCaseValidForExecution(testCaseDTO);
-//
-//		if (testCaseDTO.getTestCaseName().contains("uin") || testCaseDTO.getTestCaseName().contains("UIN")) {
-//			if (!BaseTestCase.getSupportedIdTypesValueFromActuator().contains("UIN")
-//					&& !BaseTestCase.getSupportedIdTypesValueFromActuator().contains("uin")) {
-//				throw new SkipException(GlobalConstants.UIN_FEATURE_NOT_SUPPORTED);
-//			}
-//		}
-//
-//		if (testCaseDTO.getTestCaseName().contains("VID") || testCaseDTO.getTestCaseName().contains("Vid")) {
-//			if (!BaseTestCase.getSupportedIdTypesValueFromActuator().contains("VID")
-//					&& !BaseTestCase.getSupportedIdTypesValueFromActuator().contains("vid")) {
-//				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
-//			}
-//		}
-//
-//		if (testCaseDTO.getEndPoint().contains("$PartnerKeyURL$")) {
-//			testCaseDTO.setEndPoint(
-//					testCaseDTO.getEndPoint().replace("$PartnerKeyURL$", PartnerRegistration.partnerKeyUrl));
-//		}
-//
-//		if (testCaseDTO.getEndPoint().contains("$KycPartnerKeyURL$")) {
-//			testCaseDTO.setEndPoint(
-//					testCaseDTO.getEndPoint().replace("$KycPartnerKeyURL$", PartnerRegistration.ekycPartnerKeyUrl));
-//		}
-//
-//		if (testCaseDTO.getEndPoint().contains("$UpdatedPartnerKeyURL$")) {
-//			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
-//					PartnerRegistration.updatedpartnerKeyUrl));
-//		}
-//
-//		if (testCaseDTO.getEndPoint().contains("$PartnerName$")) {
-//			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$PartnerName$", PartnerRegistration.partnerId));
-//		}
-//
-//		if (testCaseDTO.getEndPoint().contains("$KycPartnerName$")) {
-//			testCaseDTO.setEndPoint(
-//					testCaseDTO.getEndPoint().replace("$KycPartnerName$", PartnerRegistration.ekycPartnerId));
-//		}
-//		String request = testCaseDTO.getInput();
-//		request = buildIdentityRequest(request);
-//
-//		String inputJSON = getJsonFromTemplate(request, testCaseDTO.getInputTemplate());
-//		String resolvedUri = null;
-//		String individualId = null;
-//		resolvedUri = uriKeyWordHandelerUri(testCaseDTO.getEndPoint(), testCaseName);
-//
-//		individualId = AdminTestUtil.getValueFromUrl(resolvedUri, "id");
-//
-//		String url = ConfigManager.getAuthDemoServiceUrl();
-//
-//		response = postWithBodyAndCookie(url + testCaseDTO.getEndPoint(), inputJSON, COOKIENAME, testCaseDTO.getRole(),
-//				testCaseDTO.getTestCaseName());
-//
-//		String ActualOPJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
-//
-//		if (testCaseDTO.getTestCaseName().contains("uin") || testCaseDTO.getTestCaseName().contains("UIN")) {
-//			if (BaseTestCase.getSupportedIdTypesValueFromActuator().contains("UIN")
-//					|| BaseTestCase.getSupportedIdTypesValueFromActuator().contains("uin")) {
-//				ActualOPJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
-//			} else {
-//				if (testCaseDTO.getTestCaseName().contains("auth_EkycBio")) {
-//					ActualOPJson = AdminTestUtil.getRequestJson("config/errorUINKyc.json").toString();
-//				} else {
-//					ActualOPJson = AdminTestUtil.getRequestJson("config/errorUIN.json").toString();
-//				}
-//
-//			}
-//		} else {
-//			if (testCaseDTO.getTestCaseName().contains("VID") || testCaseDTO.getTestCaseName().contains("Vid")) {
-//				if (BaseTestCase.getSupportedIdTypesValueFromActuator().contains("VID")
-//						|| BaseTestCase.getSupportedIdTypesValueFromActuator().contains("vid")) {
-//					ActualOPJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
-//				} else {
-//					if (testCaseDTO.getTestCaseName().contains("auth_EkycBio")) {
-//						ActualOPJson = AdminTestUtil.getRequestJson("config/errorUINKyc.json").toString();
-//					} else {
-//						ActualOPJson = AdminTestUtil.getRequestJson("config/errorUIN.json").toString();
-//					}
-//
-//				}
-//			}
-//		}
-//
-//		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil
-//				.doJsonOutputValidation(response.asString(), ActualOPJson, testCaseDTO, response.getStatusCode());
-//		Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
-//
-//		if (!OutputValidationUtil.publishOutputResult(ouputValid))
-//			throw new AdminTestException("Failed at output validation");
-//
-//		if (testCaseName.toLowerCase().contains("kyc")) {
-//			JSONObject resJsonObject = new JSONObject(response.asString());
-//			String res = "";
-//			try {
-//				// res = resJsonObject.get("response").toString();
-//				resJsonObject = new JSONObject(response.getBody().asString()).getJSONObject("authResponse")
-//						.getJSONObject("body").getJSONObject("response");
-//
-//				res = AdminTestUtil.ekycDataDecryption(url, resJsonObject, PartnerRegistration.ekycPartnerId, true);
-//
-//				JSONObject jsonObjectkycRes = new JSONObject(res);
-//				JSONObject jsonObjectFromKycData = new JSONObject();
-//				JSONObject jsonObjectFromIdentityData = new JSONObject();
-//				// List<String> myList =new ArrayList<>();
-//
-//				ArrayList<String> names = new ArrayList<>();
-//				ArrayList<String> names2 = new ArrayList<>();
-//
-//				for (int i = 0; i < kycFields.length; i++) {
-//					for (String key : jsonObjectkycRes.keySet()) {
-//						if (key.contains(kycFields[i])) {
-//							names.add(key);// dob gender_eng
-//							names2.add(kycFields[i]);// dob gender
-//							jsonObjectFromKycData.append(key, jsonObjectkycRes.getString(key));
-//							break;
-//						}
-//					}
-//
-//				}
-//
-//				newResponse = RestClient.getRequestWithCookie(
-//						ApplnURI + props.getProperty("retrieveIdByUin") + individualId, MediaType.APPLICATION_JSON,
-//						MediaType.APPLICATION_JSON, COOKIENAME, kernelAuthLib.getTokenByRole("idrepo"),
-//						IDTOKENCOOKIENAME, null);
-//
-//				GlobalMethods.reportResponse(newResponse.getHeaders().asList().toString(), url, newResponse);
-//
-//				JSONObject responseBody = new JSONObject(newResponse.getBody().asString()).getJSONObject("response")
-//						.getJSONObject("identity");
-//
-//				for (int j = 0; j < names2.size(); j++) {
-//
-//					String mappingField = getValueFromAuthActuator("json-property", names2.get(j));
-//					mappingField = mappingField.replaceAll("\\[\"|\"\\]", "");
-//					JSONArray valueOfJsonArray = responseBody.optJSONArray(mappingField);
-//					if (valueOfJsonArray != null) {
-//						jsonObjectFromIdentityData.append(names.get(j), valueOfJsonArray.getJSONObject(0).get("value"));
-//
-//						valueOfJsonArray = null;
-//					} else {
-//						jsonObjectFromIdentityData.append(names.get(j), responseBody.getString(mappingField));
-//					}
-//
-//				}
-//
-//				ouputValid = OutputValidationUtil.doJsonOutputValidation(jsonObjectFromIdentityData.toString(),
-//						jsonObjectFromKycData.toString(), testCaseDTO, response.getStatusCode());
-//				Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
-//
-//				if (!OutputValidationUtil.publishOutputResult(ouputValid))
-//					throw new AdminTestException("Failed at output validation");
-//
-//			} catch (JSONException e) {
-//				logger.error(e.getMessage());
-//			}
-//
-//		}
-//	}
 
 	/**
 	 * The method ser current test name to result
