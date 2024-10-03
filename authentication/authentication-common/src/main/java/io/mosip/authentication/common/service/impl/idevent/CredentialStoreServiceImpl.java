@@ -164,7 +164,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Override
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException {
-		System.out.println("inside processCredentialStoreEvent");
 		String statusCode = credentialEventStore.getStatusCode();
 		if (statusCode.equals(CredentialStoreStatus.FAILED.name())) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
@@ -293,7 +292,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	@Override
 	public void storeEventModel(EventModel eventModel) {
-		System.out.println("inside storeEventModel");
 		CredentialEventStore credentialEvent = new CredentialEventStore();
 		credentialEvent.setCrBy(IDA);
 		credentialEvent.setCrDTimes(DateUtils.getUTCCurrentDateTime());
@@ -306,7 +304,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		credentialEvent.setRetryCount(0);
 		try {
 			credentialEvent.setEventObject(objectMapper.writeValueAsString(eventModel));
-			System.out.println("credential event- "+ credentialEvent);
 			credentialEventRepo.save(credentialEvent);
 		} catch (JsonProcessingException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "storeEventModel",

@@ -159,7 +159,7 @@ public class CredentialIssueanceCallbackController {
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleActivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
-		System.out.println("inside post mapping handleActivateeventId");
+		logger.info("inside post mapping handleActivateeventId");
 		return handleEvent(eventModel, e);
 	}
 

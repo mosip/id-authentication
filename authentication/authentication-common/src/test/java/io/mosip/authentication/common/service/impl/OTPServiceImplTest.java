@@ -649,7 +649,6 @@ public class OTPServiceImplTest {
                 .thenReturn(valueMap);
         Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
         Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
-        System.out.println("oid= "+otpRequestDTO.getIndividualId());
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
         try {
             otpServiceImpl.generateOtp(otpRequestDTO, "1234567890", new TestObjectWithMetadata());

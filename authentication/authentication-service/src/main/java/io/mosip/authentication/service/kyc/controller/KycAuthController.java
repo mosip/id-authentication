@@ -257,7 +257,7 @@ public class KycAuthController {
 											 @ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 											 @PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		System.out.println("I am inside processKycAuth");
+		mosipLogger.info("I am inside processKycAuth");
 		// Log method entry and request details
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 				"Method entry. Received request for KYC authentication. PartnerID: " + partnerId + ", OIDCClientID: " + oidcClientId);
