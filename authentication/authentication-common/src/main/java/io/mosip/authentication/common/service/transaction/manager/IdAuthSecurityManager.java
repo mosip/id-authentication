@@ -391,6 +391,7 @@ public class IdAuthSecurityManager {
 		jwtSignatureVerifyRequestDto.setJwtSignatureData(signature);
 		jwtSignatureVerifyRequestDto.setValidateTrust(isTrustValidationRequired);
 		jwtSignatureVerifyRequestDto.setDomain(domain);
+		mosipLogger.info("jwtSignatureVerifyRequestDto"+ jwtSignatureVerifyRequestDto);
 		JWTSignatureVerifyResponseDto jwtResponse = signatureService.jwtVerify(jwtSignatureVerifyRequestDto);
 		mosipLogger.info(getUser(), ID_AUTH_TRANSACTION_MANAGER, "verifySignature",
 				"SIGNATURE VALID : " + jwtResponse.isSignatureValid() + " - TRUST VALID : "

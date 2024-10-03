@@ -453,13 +453,12 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IdAuthenticationAppException {
 
 		// Log the incoming request and request body
-		mosipLogger.info("Request Wrapper: " + requestWrapper.toString());
+		mosipLogger.info("Request Wrapper: " + requestWrapper.getRequest().toString());
 		mosipLogger.info("Request Body: " + requestBody);
 
 		// Fetch and log the ID from the request
 		String id = fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID);
 		mosipLogger.info("ID fetched from request: " + id);
-//		id = ida.api.id.kycauth
 
 		// Resetting the input stream
 		requestWrapper.resetInputStream();
@@ -540,7 +539,7 @@ public abstract class BaseIDAFilter implements Filter {
 			handleException(IdAuthCommonConstants.ID, false);
 		}
 
-		if (!Objects.nonNull(property) ) {
+		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
 			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, true);
 		}
