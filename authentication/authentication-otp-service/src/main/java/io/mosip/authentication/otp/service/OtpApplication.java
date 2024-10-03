@@ -1,5 +1,6 @@
 package io.mosip.authentication.otp.service;
 
+import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
@@ -120,7 +121,7 @@ import org.springframework.web.client.RestTemplate;
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class
 		, PDFGeneratorImpl.class, PublisherClientImpl.class, RestTemplateHelper.class,
-		SubscriberClientImpl.class, RestTemplate.class})
+		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
