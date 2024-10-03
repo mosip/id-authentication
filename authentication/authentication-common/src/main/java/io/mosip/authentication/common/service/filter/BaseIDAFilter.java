@@ -631,6 +631,7 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 
+
 	/**
 	 * getRequestBody used to get the request body from the raw input stream
 	 *
