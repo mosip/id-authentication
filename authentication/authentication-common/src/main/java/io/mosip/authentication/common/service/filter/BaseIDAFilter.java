@@ -537,11 +537,11 @@ public abstract class BaseIDAFilter implements Filter {
 			mosipLogger.info("ID from request is empty. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, false);
 		}
-
-		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
-			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
-			handleException(IdAuthCommonConstants.ID, true);
-		}
+// commented to test whether failure in this block of migrated java21 code MOSIP-35176
+//		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+//			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
+//			handleException(IdAuthCommonConstants.ID, true);
+//		}
 	}
 
 
