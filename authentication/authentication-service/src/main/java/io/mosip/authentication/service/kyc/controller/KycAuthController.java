@@ -257,45 +257,23 @@ public class KycAuthController {
 											 @ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 											 @PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-		mosipLogger.info("I am inside processKycAuth");
-		// Log method entry and request details
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-				"Method entry. Received request for KYC authentication. PartnerID: " + partnerId + ", OIDCClientID: " + oidcClientId);
 
 		if (request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWrapperWithMetadata = (ObjectWithMetadata) request;
 
-			// Log metadata from the request wrapper
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-					"Request metadata: " + requestWrapperWithMetadata.getMetadata().toString());
-
 			boolean isAuth = true;
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, authRequestDTO.getMetadata());
 
-			// Log partner details
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-					"Partner details: " + (partner.isPresent() ? partner.get().toString() : "Partner not found"));
-
-			// Build authentication transaction and log the builder details
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(authRequestDTO, !isAuth, partner);
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-					"AuthTransactionBuilder created: " + authTxnBuilder.toString());
 
 			try {
-				// Log individual ID and type
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 				authRequestDTO.setIndividualIdType(idType);
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						"Individual ID: " + authRequestDTO.getIndividualId() + ", ID Type: " + idType);
 
-				// Validate ID and log validation status
 				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						"ID validation completed. Errors: " + errors.hasErrors());
 
-				// Validate biometric details if applicable
 				if (AuthTypeUtil.isBio(authRequestDTO)) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
 							"Request contains biometric data. Validating device details.");
@@ -309,15 +287,8 @@ public class KycAuthController {
 
 				boolean externalAuthRequest = true;
 
-				// Log authentication request
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						"Authenticating individual. ExternalAuthRequest: " + externalAuthRequest);
-
-				// Perform authentication and log response
 				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(authRequestDTO, externalAuthRequest,
 						partnerId, oidcClientId, requestWrapperWithMetadata, IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT);
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
-						"Authentication response received: " + (authResponseDTO != null ? authResponseDTO.toString() : "null"));
 
 				KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 
