@@ -73,6 +73,7 @@ public class MosipTestRunner {
 			} else {
 				ExtractResource.copyCommonResources();
 			}
+			AdminTestUtil.init();
 			IdAuthConfigManager.init();
 			
 			BaseTestCase.suiteSetup(getRunType());
