@@ -190,7 +190,12 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		String idHash = (String) additionalData.get(ID_HASH);
 		mosipLogger.info(">>>>>handleRemoveId event received, idHash value: {}",idHash);
 		if (idHash != null && !idHash.isEmpty() && identityCacheRepo.existsById(idHash)) {
-			identityCacheRepo.deleteById(idHash);
+			try {
+				identityCacheRepo.deleteById(idHash);
+			}catch (Exception e){
+				mosipLogger.error(">>>>>handleRemoveId delete Error :{}",e.getMessage());
+				mosipLogger.debug(">>>>>handleRemoveId delete Error :{}",e);
+			}
 			mosipLogger.info(">>>>> deleted idHash value: {}",idHash);
 			removeIdStatusEventPublisher.publishRemoveIdStatusEvent(idHash);
 		}
