@@ -127,7 +127,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
 @EnableJpaRepositories(basePackages = { "io.mosip.authentication.common.service.repository.*",
 		"io.mosip.kernel.keymanagerservice.repository.*" })
-public class IdAuthenticationApplication {
+public class  IdAuthenticationApplication {
 
 	/**
 	 * The main method.
