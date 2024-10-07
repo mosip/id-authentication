@@ -91,9 +91,9 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build-maven-apitest-auth:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master
+    uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
       BUILD_ARTIFACT: apitest-auth
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
@@ -105,9 +105,9 @@ jobs:
   publish_to_nexus_apitest_auth:
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
     needs: build-maven-apitest-auth
-    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master
+    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
@@ -122,15 +122,15 @@ jobs:
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: apitest-auth
-      SERVICE_LOCATION: apitest
+      SERVICE_LOCATION: api-test
       BUILD_ARTIFACT: apitest-auth-local
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          ref: ${{ github.ref }}
-          java-version: 11
+          distribution: 'temurin'
+          java-version: 21
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
       - name: Setup the settings file for ossrh server
@@ -167,13 +167,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - SERVICE_LOCATION: 'apitest'
+          - SERVICE_LOCATION: 'api-test'
             SERVICE_NAME: 'apitest-auth'
             BUILD_ARTIFACT: 'apitest-auth-local'
             ONLY_DOCKER: true
       fail-fast: false
     name: ${{ matrix.SERVICE_NAME }}
-    uses: mosip/kattu/.github/workflows/docker-build.yml@master
+    uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
     with:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
@@ -188,9 +188,9 @@ jobs:
   sonar_analysis_apitest_auth:
     needs: build-maven-apitest-auth
     if: "${{  github.event_name != 'pull_request' }}"
-    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master
+    uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       ORG_KEY: ${{ secrets.ORG_KEY }}
