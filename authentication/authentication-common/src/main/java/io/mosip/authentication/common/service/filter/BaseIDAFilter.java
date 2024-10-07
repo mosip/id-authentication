@@ -123,6 +123,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
 		mosipLogger.info("reqUrl"+reqUrl);
+		mosipLogger.info("signature in filter chain-"+ ((HttpServletRequest) request).getHeader("signature"));
 
 		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
