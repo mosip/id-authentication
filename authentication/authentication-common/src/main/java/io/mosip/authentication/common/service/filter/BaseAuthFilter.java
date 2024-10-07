@@ -71,6 +71,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		super.consumeRequest(requestWrapper, requestBody);
+
 		authenticateRequest(requestWrapper);
 
 		decipherAndValidateRequest(requestWrapper, requestBody);

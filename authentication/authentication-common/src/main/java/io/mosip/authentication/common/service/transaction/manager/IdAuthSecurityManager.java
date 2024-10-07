@@ -382,6 +382,7 @@ public class IdAuthSecurityManager {
 	 */
 	public boolean verifySignature(String signature, String domain, String requestData,
 			Boolean isTrustValidationRequired) {
+		mosipLogger.info("signature- "+signature);
 		JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
 		jwtSignatureVerifyRequestDto.setApplicationId(signApplicationid);
 		jwtSignatureVerifyRequestDto.setReferenceId(signRefid);

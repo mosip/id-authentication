@@ -151,8 +151,8 @@ public class OTPController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
-			System.out.println("inside ida otp service");
-			System.out.println("signature- "+request.getHeader("signature"));
+			logger.info("inside ida otp service");
+			logger.info("signature- "+request.getHeader("signature"));
 			try {
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
