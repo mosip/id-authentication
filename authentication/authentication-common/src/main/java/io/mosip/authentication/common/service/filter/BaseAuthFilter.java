@@ -71,7 +71,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		super.consumeRequest(requestWrapper, requestBody);
-
+		mosipLogger.info("signature in consume request"+requestWrapper.getHeader("Signature"));
+		mosipLogger.info("Signature request"+requestWrapper.getRequest().toString());
+		mosipLogger.info("Signature request url-"+requestWrapper.getRequestURL().toString());
 		authenticateRequest(requestWrapper);
 
 		decipherAndValidateRequest(requestWrapper, requestBody);

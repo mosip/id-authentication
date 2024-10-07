@@ -122,6 +122,7 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IOException, ServletException {
 
 		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+		mosipLogger.info("reqUrl"+reqUrl);
 
 		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
