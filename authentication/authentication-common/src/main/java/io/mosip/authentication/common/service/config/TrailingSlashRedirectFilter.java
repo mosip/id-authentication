@@ -1,7 +1,13 @@
 package io.mosip.authentication.common.service.config;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+
+import io.mosip.authentication.common.service.filter.BaseAuthFilter;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -16,10 +22,17 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class TrailingSlashRedirectFilter implements Filter {
+
+    /** The mosip logger. */
+    private static Logger mosipLogger = IdaLogger.getLogger(TrailingSlashRedirectFilter.class);
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String reqStr = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
+        mosipLogger.info("inside Trailingslashredirectfilter");
+        mosipLogger.info("request-"+reqStr);
         String path = httpRequest.getRequestURI();
 
         if (path.endsWith("/")) {

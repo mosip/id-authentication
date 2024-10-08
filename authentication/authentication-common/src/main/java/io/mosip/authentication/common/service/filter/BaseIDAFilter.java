@@ -121,10 +121,11 @@ public abstract class BaseIDAFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
-		mosipLogger.info("reqUrl"+reqUrl);
+		HttpServletRequest request1 = ((HttpServletRequest) request);
+		mosipLogger.info("requestbody-"+request1.getInputStream());
+		mosipLogger.info("reqUrl"+request1);
 		mosipLogger.info("signature in filter chain-"+ ((HttpServletRequest) request).getHeader("signature"));
-
+		String reqUrl = request1.getRequestURI();
 		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
 			chain.doFilter(request, response);
@@ -576,6 +577,8 @@ public abstract class BaseIDAFilter implements Filter {
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
 			String reqStr = IOUtils.toString(requestBody, Charset.defaultCharset());
+			mosipLogger.info("inside base ida filter");
+			mosipLogger.info("reqStr-"+reqStr);
 			// requestBody empty for service like VID
 			return reqStr.isEmpty() ? null : mapper.readValue(reqStr, new TypeReference<Map<String, Object>>() {
 			});
