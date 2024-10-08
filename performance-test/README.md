@@ -4,10 +4,14 @@
     01. Auth Token Generation (Setup)
     02. Create Identities in MOSIP Identity System (Setup)
     03. Third Party Certificates (Setup)
-	04. S01 Authentication with OTP (Execution)
-	05. S02 Authentication with Biometrics (Execution)
-	06. S03 Authentication with Demo (Execution)
-	07. S04 EKYC with Biometrics (Execution)
+	04. S01 Authentication with OTP (Preparation)
+	05. S02 Authentication with Biometrics (Preparation)
+	06. S03 Authentication with Demo (Preparation)
+	07. S01 Authentication with OTP (Execution)
+	08. S02 Authentication with Biometrics (Execution)
+	09. S03 Authentication with Demo (Execution)
+	10. S04 EKYC with Biometrics (Execution)
+
 
 * Open source Tools used,
     1. [Apache JMeter](https://jmeter.apache.org/)
@@ -59,23 +63,22 @@
 	* Create Identities in MOSIP Identity System (Setup) : This thread contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "addIdentitySetup" is used as a variable. 
 	
 	* Third Party Certificates (Setup) : This threadgroup contains series of certificate upload to support the IDA execution.
+	
+	* S01 Authentication with OTP (Preparation): This thread creates testdata like signature and request body for the Auth Send OTP and Authentication with OTP request which expires after 24 hours.
+	
+	* S02 Authentication with Biometrics (Preparation): This thread creates testdata like signature and request body for the Authentication with Biometric request which expires after 24 hours.
+	
+	* S03 Authentication with Demo (Preparation): This thread creates testdata like signature and request body for the Authentication with Demo request which expires after 24 hours.
 	  			
 	* S01 Authentication with OTP (Execution) :
-		* S01 T01 Create Auth OTP Request Body : This thread creates OTP request.
-		* S01 T02 Auth Send OTP : This thread sends OTP request.
-		* S01 T03 Create Auth Request UIN : This thread accepts OTP number.
-		* S01 T04 Authentication with OTP : This thread performs OTP authentication.
+		* S01 T01 Auth Send OTP : This thread sends OTP request.
+		* S01 T02 Authentication with OTP : This thread performs OTP authentication.
 		
 	* S02 Authentication with Biometrics (Execution):
-		* S02 T01 Get Record From IDRepo : This thread fetches record from the IDrepo.
-		* S02 T02 Download CBEFFfile : This thread downloads cbeff file.
-		* S02 T03 Create Auth Request UIN : This thread generates auth request with UIN number.
-		* S02 T04 Authentication with Biometrics: This thread performs biometric authentication
+		* S02 T01 Authentication with Biometrics: This thread performs biometric authentication
 	
 	* S03 Authentication with Demo (Execution):
-		* S03 T01 Get Record From ID Repo : This thread fetches record from the IDrepo.
-		* S03 T02 Create Auth with Demo Request UIN : This thread creates authentication demo request with UIN number.
-		* S03 T03 Authentication with Demo : This thread verifies the authentication.
+		* S03 T01 Authentication with Demo : This thread verifies the authentication.
 
 	* S04 EKYC with Biometrics (Execution):
 		* S04 T01 Get Record From IDRepo : This thread fetches record from the IDrepo.
