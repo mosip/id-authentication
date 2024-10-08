@@ -19,9 +19,6 @@ public class TrailingSlashRedirectFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
-        System.out.println("reqUrl"+reqUrl);
-        System.out.println("signature in filter chain-"+ ((HttpServletRequest) request).getHeader("signature"));
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI();
 
