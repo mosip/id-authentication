@@ -44,6 +44,9 @@
     <version>2.2</version>
 </dependency>
 
+* id-authentication-default.properties: Update the value for the properties according to the execution setup. 	
+		*authrequest.received-time-allowed.seconds=86400
+
 **Note - Before creating certificates we need to assign default role as AUTH_PARTNER in the keycloak for the environment we are using so that all new users with the same partner id which we will create will automatically have the desired role which it needs**
 
 ### Procedure to install and execute auth-demo-service in the local machine
