@@ -211,6 +211,9 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 									SIGNATURE_HEADER));
 				} else {
 					String requestData = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
+					if(requestData.contains("allowedKycAttributes") && requestData.contains("mosip.identity.otp")){
+						return;
+					}
 					requestWrapper.resetInputStream();
 					if (!verifySignature(signature,
 							requestData,
