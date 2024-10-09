@@ -178,7 +178,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 			requestWrapper.resetInputStream();
 
-			chain.doFilter(requestWrapper, responseWrapper);
+			//chain.doFilter(requestWrapper, responseWrapper);
 
 			String responseAsString = responseWrapper.toString();
 

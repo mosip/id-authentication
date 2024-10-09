@@ -3,7 +3,6 @@ package io.mosip.authentication.common.service.config;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import io.mosip.authentication.common.service.filter.BaseAuthFilter;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import jakarta.servlet.http.HttpServletRequestWrapper;
