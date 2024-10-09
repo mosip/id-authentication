@@ -101,7 +101,10 @@
 	https://mosip.atlassian.net/wiki/spaces/PT/pages/1227751491/Steps+to+set+up+the+local+system#PluginManager
 		
 ### Designing the workload model for performance test execution
+
 * Calculation of number of users depending on Transactions per second (TPS) provided by client
+
+* The script and the below calculation is preconfigured as per 100 tps, if you are testing for other tps, the below values neds to be adjusted.
 
 * Applying little's law
 	* Users = TPS * (SLA of transaction + think time + pacing)
@@ -109,12 +112,13 @@
 	
 * For the realistic approach we can keep (Think time + Pacing) = 1 second for API testing
 	* Calculating number of users for 10 TPS
-		* Users= 10 X (SLA of transaction + 1)
-		       = 10 X (1 + 1)
-			   = 20
+		* Users= 100 X (SLA of transaction + 1)
+		       = 100 X (1 + 1)
+			   = 200
 			   
 ### Usage of Constant Throughput timer to control Hits/sec from JMeter
-* In order to control hits/ minute in JMeter, it is better to use Timer called Constant Throughput Timer.
+
+* In order to control hits/ minute in JMeter, it is better to use Timer called Constant Throughput Timer.  This is calculated explicitly for each thread group based on the scenario's weightage
 
 * If we are performing load test with 10TPS as hits / sec in one thread group. Then we need to provide value hits / minute as in Constant Throughput Timer
 	* Value = 10 X 60
