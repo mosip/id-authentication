@@ -186,7 +186,13 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		validateSignature(requestWrapper.getHeader("signature"), requestWrapper);
+		//Check if the signature validation has already been done
+		if (requestWrapper.getAttribute("signatureValidated") != null) {
+			mosipLogger.info("Skipping signature validation, already validated.");
+			requestWrapper.removeAttribute("signatureValidated");
+		} else {
+			validateSignature(requestWrapper.getHeader("signature"), requestWrapper);
+		}
 		String consentToken = requestWrapper.getHeader("Authorization");
 		if (StringUtils.isEmpty(consentToken)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
@@ -211,9 +217,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 									SIGNATURE_HEADER));
 				} else {
 					String requestData = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
-					if(requestData.contains("allowedKycAttributes") && requestData.contains("mosip.identity.otp")){
-						return;
-					}
+
 					requestWrapper.resetInputStream();
 					if (!verifySignature(signature,
 							requestData,
