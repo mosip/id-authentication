@@ -474,7 +474,7 @@ public abstract class BaseIDAFilter implements Filter {
 			handleException(IdAuthCommonConstants.ID, false);
 		}
 
-		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+		if (!Objects.nonNull(property)) {
 			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, true);
 		}
