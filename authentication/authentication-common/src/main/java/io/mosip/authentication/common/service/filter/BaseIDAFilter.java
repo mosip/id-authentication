@@ -179,12 +179,13 @@ public abstract class BaseIDAFilter implements Filter {
 			consumeRequest(requestWrapper, requestBody);
 
 			requestWrapper.resetInputStream();
-
+			mosipLogger.info("requestWrapper before chain.dofilter -"+ requestBody);
 			chain.doFilter(requestWrapper, responseWrapper);
-
+			mosipLogger.info("requestWrapper after chain.dofilter-"+ requestBody);
 			String responseAsString = responseWrapper.toString();
 
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
+			mosipLogger.info("requestWrapper after consume response-"+ requestBody);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException e) {
 			// Log the exception stack trace
