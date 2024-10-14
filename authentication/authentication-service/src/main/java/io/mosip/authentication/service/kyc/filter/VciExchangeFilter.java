@@ -21,7 +21,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * 
  * @author Mahammed Taheer
  */
-
+@Component
 public class VciExchangeFilter extends IdAuthFilter {
 
 	private static Logger mosipLogger = IdaLogger.getLogger(VciExchangeFilter.class);
