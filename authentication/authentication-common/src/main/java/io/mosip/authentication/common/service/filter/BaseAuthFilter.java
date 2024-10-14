@@ -35,7 +35,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Manoj SP
  * @author Sanjay Murali
  */
-@Component
+
 public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	private static final String SIGNATURE_HEADER = "signature header";
