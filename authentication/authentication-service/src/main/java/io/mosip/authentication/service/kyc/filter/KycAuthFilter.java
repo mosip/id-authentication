@@ -25,7 +25,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * 
  * @author Mahammed Taheer
  */
-@Component
+
 public class KycAuthFilter extends IdAuthFilter {
 
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthFilter.class);
