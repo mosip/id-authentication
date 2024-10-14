@@ -466,15 +466,16 @@ public abstract class BaseIDAFilter implements Filter {
 		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID)
 				? (String) requestBody.get(IdAuthCommonConstants.ID)
 				: null;
-
+		mosipLogger.info("id to be taken from env-"+id);
 		String property = env.getProperty(id);
-
+		mosipLogger.info("property-"+property);
+		mosipLogger.info("id from request"+ idFromRequest);
 		if (StringUtils.isEmpty(idFromRequest)) {
 			mosipLogger.info("ID from request is empty. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, false);
 		}
 
-		if (!Objects.nonNull(property)) {
+		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
 			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, true);
 		}
