@@ -282,29 +282,12 @@
 	<profiles>
 		<profile>
 			<id>openapi-doc-generate-profile</id>
-			<dependencies>
-				<dependency>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-auth-adapter</artifactId>
-					<version>${kernel-auth-adapter.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.biosdk</groupId>
-					<artifactId>biosdk-client</artifactId>
-					<version>${biosdk-client.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.demosdk</groupId>
-					<artifactId>demosdk-client</artifactId>
-					<version>${demosdk.version}</version>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring.boot.version}</version>
+						<version>${spring-boot-maven-plugin.version}</version>
 						<configuration>
 							<executable>true</executable>
 							<layout>ZIP</layout>
