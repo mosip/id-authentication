@@ -235,17 +235,17 @@
 		<dependency>
 			<groupId>io.mosip.demosdk</groupId>
 			<artifactId>demosdk</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>${demosdk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.biosdk</groupId>
 			<artifactId>biosdk-client</artifactId>
-			<version>1.2.1-java21-SNAPSHOT</version>
+			<version>${biosdk-client.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-auth-adapter</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>${kernel-auth-adapter.version}</version>
 		</dependency>
 	</dependencies>
 	
@@ -254,7 +254,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.2.3</version>
+				<version>${spring-boot-maven-plugin.version}</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>
@@ -277,24 +277,6 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.openrewrite.maven</groupId>
-				<artifactId>rewrite-maven-plugin</artifactId>
-				<version>5.40.2</version>
-				<configuration>
-					<exportDatatables>true</exportDatatables>
-					<activeRecipes>
-						<recipe>org.openrewrite.java.spring.batch.SpringBatch4To5Migration</recipe>
-					</activeRecipes>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.openrewrite.recipe</groupId>
-						<artifactId>rewrite-spring</artifactId>
-						<version>5.19.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -304,22 +286,17 @@
 				<dependency>
 					<groupId>io.mosip.kernel</groupId>
 					<artifactId>kernel-auth-adapter</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.authentication</groupId>
-					<artifactId>authentication-childauthfilter-impl</artifactId>
-					<version>1.2.0</version>
+					<version>${kernel-auth-adapter.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>io.mosip.biosdk</groupId>
 					<artifactId>biosdk-client</artifactId>
-					<version>1.2.0</version>
+					<version>${biosdk-client.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>io.mosip.demosdk</groupId>
 					<artifactId>demosdk-client</artifactId>
-					<version>1.2.0</version>
+					<version>${demosdk.version}</version>
 				</dependency>
 			</dependencies>
 			<build>
