@@ -186,13 +186,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
-		//Check if the signature validation has already been done
-		if (requestWrapper.getAttribute("signatureValidated") != null) {
-			mosipLogger.info("Skipping signature validation, already validated.");
-			requestWrapper.removeAttribute("signatureValidated");
-		} else {
-			validateSignature(requestWrapper.getHeader("signature"), requestWrapper);
-		}
+		validateSignature(requestWrapper.getHeader("signature"), requestWrapper);
 		String consentToken = requestWrapper.getHeader("Authorization");
 		if (StringUtils.isEmpty(consentToken)) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
