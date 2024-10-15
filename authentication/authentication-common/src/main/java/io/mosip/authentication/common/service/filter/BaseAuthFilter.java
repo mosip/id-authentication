@@ -91,19 +91,14 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 			requestWrapper.resetInputStream();
 
-			// Decipher the request and log the deciphered request
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
 
-			// Process the deciphered request and log the processed request
 			decipherRequest = processDecipheredReqeuest(decipherRequest);
 
-			// Validate the deciphered request and log the validation action
 			validateDecipheredRequest(requestWrapper, decipherRequest);
 
-			// Convert the deciphered request to a string and log it
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
 
-			// Replace the data in the requestWrapper and log the replacement action
 			requestWrapper.replaceData(requestAsString.getBytes());
 
 		} catch (IOException e) {

@@ -386,7 +386,6 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		mosipLogger.info("intial request body in validateDecipheredRequest"+ requestBody.toString());
 		String headerCertificateThumbprint = getCertificateThumbprintFromSignatureData(requestWrapper.getHeader("signature"));
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		
@@ -400,15 +399,11 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 			// First, validate MISP Policy.
 			checkMispPolicyAllowed(partnerServiceResponse);
 			// Second, validate the auth policy attributes.
-			mosipLogger.info("before checkAllowedAuthTypeBasedOnPolicy-"+ requestBody);
 			checkAllowedAuthTypeBasedOnPolicy(partnerServiceResponse, requestBody);
-			mosipLogger.info("after checkAllowedAuthTypeBasedOnPolicy-"+ requestBody);
 			// Later, Validate OIDC Client allowed AMR values.
 			checkAllowedAMRBasedOnClientConfig(requestBody, partnerServiceResponse);
-			mosipLogger.info("after checkAllowedAMRBasedOnClientConfig-"+ requestBody);
 			addMetadata(requestBody, partnerId, partnerApiKey, partnerServiceResponse,
 					partnerServiceResponse.getCertificateData());
-			mosipLogger.info("after addmetadata-"+ requestBody);
 		}
 	}
 

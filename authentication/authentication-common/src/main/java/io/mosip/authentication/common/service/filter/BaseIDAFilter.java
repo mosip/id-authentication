@@ -121,9 +121,7 @@ public abstract class BaseIDAFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		HttpServletRequest request1 = ((HttpServletRequest) request);
-
-		String reqUrl = request1.getRequestURI();
+		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
 		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
 			chain.doFilter(request, response);
@@ -135,7 +133,6 @@ public abstract class BaseIDAFilter implements Filter {
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				IdAuthCommonConstants.REQUEST + " started at: " + requestTime);
 
-		// Wrap the request and response to reset streams and log information
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response) {
@@ -462,10 +459,7 @@ public abstract class BaseIDAFilter implements Filter {
 		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID)
 				? (String) requestBody.get(IdAuthCommonConstants.ID)
 				: null;
-		mosipLogger.info("id to be taken from env-"+id);
 		String property = env.getProperty(id);
-		mosipLogger.info("property-"+property);
-		mosipLogger.info("id from request"+ idFromRequest);
 		if (StringUtils.isEmpty(idFromRequest)) {
 			mosipLogger.info("ID from request is empty. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, false);
@@ -574,8 +568,6 @@ public abstract class BaseIDAFilter implements Filter {
 	protected Map<String, Object> getRequestBody(InputStream requestBody) throws IdAuthenticationAppException {
 		try {
 			String reqStr = IOUtils.toString(requestBody, Charset.defaultCharset());
-			mosipLogger.info("inside base ida filter");
-			mosipLogger.info("reqStr-"+reqStr);
 			// requestBody empty for service like VID
 			return reqStr.isEmpty() ? null : mapper.readValue(reqStr, new TypeReference<Map<String, Object>>() {
 			});
