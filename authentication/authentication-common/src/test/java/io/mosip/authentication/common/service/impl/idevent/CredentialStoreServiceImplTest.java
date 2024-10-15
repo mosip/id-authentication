@@ -365,7 +365,6 @@ public class CredentialStoreServiceImplTest {
         Map<String, Object> credentialData = new HashMap<>();
         Map<String, String> map = objectMapper.readValue(getCredentialServiceJsonStr(), Map.class);
         credentialData.put("credentialSubject", map);
-        System.out.println(credentialData);
         IdentityEntity identityEntity = new IdentityEntity();
         Mockito.when(identityCacheRepo.findById(idHash)).thenReturn(Optional.of(identityEntity));
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "createIdentityEntity", idHash, token, transactionLimit, expiryTime, credentialData);

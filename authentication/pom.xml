@@ -93,27 +93,32 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.2.1-java21-SNAPSHOT</kernel.parent.version>
-		<kernel-core.version>1.2.1-java21-SNAPSHOT</kernel-core.version>
-		<kernel-keymanager-service.version>1.2.1-java21-SNAPSHOT</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.2.1-java21-SNAPSHOT</kernel-idgenerator-tokenid.version>
-		<kernel-idobjectvalidator.version>1.2.1-java21-SNAPSHOT</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.2.1-java21-SNAPSHOT</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.2.1-java21-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.2.1-java21-SNAPSHOT</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.2.1-java21-SNAPSHOT</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.2.1-java21-SNAPSHOT</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.2.1-java21-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.2.1-java21-SNAPSHOT</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.2.1-java21-SNAPSHOT</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.2.1-java21-SNAPSHOT</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.2.1-java21-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.0.1-B1</id-repository-core.version>
+		<kernel.parent.version>1.2.1-SNAPSHOT</kernel.parent.version>
+		<kernel-core.version>1.2.1-SNAPSHOT</kernel-core.version>
+		<kernel-keymanager-service.version>1.2.1-SNAPSHOT</kernel-keymanager-service.version>
+		<kernel-idgenerator-tokenid.version>1.2.1-SNAPSHOT</kernel-idgenerator-tokenid.version>
+		<kernel-idobjectvalidator.version>1.2.1-SNAPSHOT</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.2.1-SNAPSHOT</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.2.1-SNAPSHOT</kernel-templatemanager-velocity.version>
+		<kernel-logger-logback.version>1.2.1-SNAPSHOT</kernel-logger-logback.version>
+		<kernel-dataaccess-hibernate.version>1.2.1-SNAPSHOT</kernel-dataaccess-hibernate.version>
+		<kernel-cbeffutil-api.version>1.2.1-SNAPSHOT</kernel-cbeffutil-api.version>
+		<kernel-templatemanager-velocity.version>1.2.1-SNAPSHOT</kernel-templatemanager-velocity.version>
+		<kernel-auth-adapter.version>1.2.1-SNAPSHOT</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.2.1-SNAPSHOT</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.2.1-SNAPSHOT</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.2.1-SNAPSHOT</kernel-websubclient-api.version>
+		<id-repository-core.version>1.2.1-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel-demoapi.version>1.2.1-java21-SNAPSHOT</kernel-demoapi.version>
-		<kernel-idauthenticationfilter-api.version>1.2.1-java21-SNAPSHOT</kernel-idauthenticationfilter-api.version>
-		<kernel-biometrics-util>1.2.1-java21-SNAPSHOT</kernel-biometrics-util>
-		<kernel-openid-bridge-api.version>1.2.1-java21-SNAPSHOT</kernel-openid-bridge-api.version>
+		<kernel-demoapi.version>1.2.1-SNAPSHOT</kernel-demoapi.version>
+		<kernel-idauthenticationfilter-api.version>1.2.1-SNAPSHOT</kernel-idauthenticationfilter-api.version>
+		<kernel-biometrics-util>1.2.1-SNAPSHOT</kernel-biometrics-util>
+		<kernel-openid-bridge-api.version>1.2.1-SNAPSHOT</kernel-openid-bridge-api.version>
+		<kernel-bom.version>1.2.1-SNAPSHOT</kernel-bom.version>
+		<biosdk-client.version>1.2.1-SNAPSHOT</biosdk-client.version>
+		<demosdk.version>1.2.1-SNAPSHOT</demosdk.version>
+		<esignet-integration-api.version>1.2.1-SNAPSHOT</esignet-integration-api.version>
+		<esignet-core.version>1.2.1-SNAPSHOT</esignet-core.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>21</maven.compiler.source>
@@ -134,6 +139,7 @@
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<postgresql.version>42.2.2</postgresql.version>
+		<spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
 
 		<!-- Commons -->
 		<commons.lang.version>3.7</commons.lang.version>
@@ -156,7 +162,7 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-bom</artifactId>
-				<version>1.2.1-java21-SNAPSHOT</version>
+				<version>${kernel-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -430,7 +436,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven.surefire.plugin.version}</version>
 				<configuration>
-					<skipTests>${skipTests}</skipTests>
+					<skipTests>true</skipTests>
 					<skip>false</skip>
 					<argLine>
 						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit

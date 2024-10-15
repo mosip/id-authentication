@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -131,6 +133,9 @@ public class OTPServiceImplTest {
     private IdaUinHashSaltRepo uinHashSaltRepo;
 
     @Mock
+    private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
+
+    @Mock
     private IdAuthSecurityManager idAuthSecurityManager;
 
     @Mock
@@ -144,9 +149,15 @@ public class OTPServiceImplTest {
     @Mock
 	private AuthLockRepository authLockRepository;
 
+    @InjectMocks
+    private EntityInfoUtil entityInfoUtil;
+
+    @Mock
+    private EntityInfoUtil entityInfoUtilMock;
+
 
     @Before
-    public void before() {
+    public void before() throws IdAuthenticationBusinessException {
         ReflectionTestUtils.setField(otpServiceImpl, "env", env);
         ReflectionTestUtils.setField(otpServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
         ReflectionTestUtils.setField(otpServiceImpl, "securityManager", idAuthSecurityManager);
@@ -155,7 +166,6 @@ public class OTPServiceImplTest {
         ReflectionTestUtils.setField(otpServiceImpl, "idInfoFetcher", idInfoFetcherImpl);
         ReflectionTestUtils.setField(idInfoHelper, "env", env);
         ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-        ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
         ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
         ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
         ReflectionTestUtils.setField(otpServiceImpl, "partnerService", partnerService);
@@ -210,8 +220,7 @@ public class OTPServiceImplTest {
         idInfo1.put("uin", mailList1);
         idInfo1.put("phone", emptyList);
         idInfo1.put("email", emptyList);
-        System.out.println("idInfo1="+idInfo1);
-        Mockito.doReturn("abc@test.com").when(idInfoHelper).getEntityInfoAsString(DemoMatchType.EMAIL, idInfo1);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
 
@@ -287,6 +296,7 @@ public class OTPServiceImplTest {
         Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
     
@@ -362,6 +372,7 @@ public class OTPServiceImplTest {
         Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
     
@@ -483,6 +494,7 @@ public class OTPServiceImplTest {
         Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
     
@@ -558,6 +570,7 @@ public class OTPServiceImplTest {
         Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
+        Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
         otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
     }
     
@@ -636,7 +649,6 @@ public class OTPServiceImplTest {
                 .thenReturn(valueMap);
         Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
         Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
-        System.out.println("oid= "+otpRequestDTO.getIndividualId());
         Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
         try {
             otpServiceImpl.generateOtp(otpRequestDTO, "1234567890", new TestObjectWithMetadata());

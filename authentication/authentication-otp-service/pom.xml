@@ -175,6 +175,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel-auth-adapter.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -182,7 +187,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.2.3</version>
+				<version>${spring-boot-maven-plugin.version}</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>
@@ -202,34 +207,12 @@
 	<profiles>
 		<profile>
 			<id>openapi-doc-generate-profile</id>
-			<dependencies>
-				<dependency>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-auth-adapter</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.authentication</groupId>
-					<artifactId>authentication-childauthfilter-impl</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.biosdk</groupId>
-					<artifactId>biosdk-client</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.demosdk</groupId>
-					<artifactId>demosdk-client</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring.boot.version}</version>
+						<version>${spring-boot-maven-plugin.version}</version>
 						<configuration>
 							<executable>true</executable>
 							<layout>ZIP</layout>

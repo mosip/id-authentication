@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -59,7 +60,6 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Service
-@Lazy
 public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileService {
 	
 
@@ -88,7 +88,10 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	
 	@Autowired
 	private ObjectMapper mapper;
-	
+
+	@Autowired
+	private EntityInfoUtil entityInfoUtil;
+
 
 	@Override
 	public void storeAnonymousProfile(Map<String, Object> requestBody, Map<String, Object> requestMetadata,
@@ -136,7 +139,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 				setGender(ananymousProfile, idInfo, langCode);
 				
 				try {
-					Map<String, String> locationInfo = idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
+					Map<String, String> locationInfo = entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfo, langCode, locationProfileAttribName);
 					ananymousProfile.setLocation(new ArrayList<>(locationInfo.values()));
 				} catch (IdAuthenticationBusinessException e) {
 					logger.error("Error fetching %s for anonymous profile: %s", locationProfileAttribName, ExceptionUtils.getStackTrace(e));
@@ -245,7 +248,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	private Optional<String> getEntityInfoString(MatchType matchType, Map<String, List<IdentityInfoDTO>> idInfo, String langCode) {
 		if(langCode == null) {
 			try {
-				String entityInfoAsString = idInfoHelper.getEntityInfoAsString(matchType, idInfo);
+				String entityInfoAsString = entityInfoUtil.getEntityInfoAsString(matchType, idInfo);
 				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
 					return Optional.of(entityInfoAsString);
 				}
@@ -254,7 +257,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			}
 		} else {
 			try {
-				String entityInfoAsString = idInfoHelper.getEntityInfoAsString(matchType, langCode, idInfo);
+				String entityInfoAsString = entityInfoUtil.getEntityInfoAsString(matchType, langCode, idInfo);
 				if(entityInfoAsString !=null && !entityInfoAsString.isEmpty()) {
 					return Optional.of(entityInfoAsString);
 				}

@@ -199,7 +199,6 @@ public class AuthTypeLockFilterImplTest {
 		status.setLocked(true);
 		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
 		authtypeStatusList.add(status);
-		System.out.println("1= "+authtypeStatusList);
 		IdAuthenticationBusinessException exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
 				String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
 						MatchType.Category.SPIN.getType()));

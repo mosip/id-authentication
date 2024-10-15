@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.authentication.common.service.helper.TypeForIdNameHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -60,7 +60,10 @@ public class IdInfoFetcherImplTest {
 	/** The environment. */
 	@Autowired
 	private EnvUtil environment;
-	
+
+	@InjectMocks
+	private TypeForIdNameHelper typeForIdNameHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "demoNormalizer", demoNormalizer);
@@ -138,7 +141,7 @@ public class IdInfoFetcherImplTest {
 	@Test
 	public void testGetTypeForIdName() {
 		IdMapping[] idMapping = new IdMapping[] {IdaIdMapping.FACE,IdaIdMapping.FINGERPRINT };
-		Optional<String> obj = idInfoFetcherImpl.getTypeForIdName("Face", idMapping);
+		Optional<String> obj = typeForIdNameHelper.getTypeForIdName("Face", idMapping);
 		assertFalse(obj.isEmpty());
 	}
 	

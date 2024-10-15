@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre
 
 ARG SOURCE
 ARG COMMIT_HASH
@@ -12,10 +12,10 @@ LABEL build_time=${BUILD_TIME}
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
 
-# can be passed during Docker build as build time environment for spring profiles active 
+# can be passed during Docker build as build time environment for spring profiles active
 ARG active_profile
 
-# can be passed during Docker build as build time environment for config server URL 
+# can be passed during Docker build as build time environment for config server URL
 ARG spring_config_url
 
 #ARG bio_sdk_folder=mock/0.9
@@ -76,14 +76,21 @@ ARG hsm_local_dir=hsm-client
 
 ENV hsm_local_dir_name=${hsm_local_dir}
 
-ARG biosdk_local_dir=biosdk-client
+#ARG biosdk_local_dir=biosdk-client
 
-ARG demosdk_local_dir=demosdk
+#ARG demosdk_local_dir=demosdk
 
 ENV biosdk_local_dir_name=${biosdk_local_dir}
 
 ENV demosdk_local_dir_name=${demosdk_local_dir}
 
+# install packages and create user
+RUN apt-get -y update \
+&& apt-get install -y unzip sudo adduser \
+&& groupadd -g ${container_user_gid} ${container_user_group} \
+&& useradd -u ${container_user_uid} -g ${container_user_group} -s /bin/sh -m ${container_user} \
+&& adduser ${container_user} sudo \
+&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers
 
 # set working directory for the user
 WORKDIR /home/${container_user}
@@ -98,44 +105,45 @@ ENV loader_path_env=${loader_path}
 
 ENV current_module_env=authentication-internal-service
 
-ADD configure_start.sh configure_start.sh
+ADD configure_start.sh /home/${container_user}/configure_start.sh
 
 ADD ./lib/* "${loader_path_env}"/
 
-ADD target/${current_module_env}-*.jar ${current_module_env}.jar
+RUN chmod +x /home/${container_user}/configure_start.sh
 
-EXPOSE 8093
+#ADD target/${current_module_env}-*.jar ${current_module_env}.jar
 
-EXPOSE 9010
 
-# install packages and create user
-RUN apk -q update \
-&& apk add -q unzip sudo curl bash wget \
-&& addgroup -g ${container_user_gid} ${container_user_group} \
-&& adduser -s /bin/sh -u ${container_user_uid} -G ${container_user_group} -h /home/${container_user} --disabled-password ${container_user} \
-&& addgroup sudo \
-&& adduser ${container_user} sudo \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${hsm_local_dir}/install.sh" >> /etc/sudoers \
-&& echo "%sudo ALL=(ALL) NOPASSWD:/home/${container_user}/${biosdk_local_dir}/install.sh" >> /etc/sudoers \
-&& chown -R ${container_user}:${container_user} /home/${container_user} \
-&& chmod +x configure_start.sh
+RUN chmod a-w /home/${container_user}/configure_start.sh
+
+
+
+ADD ./target/*.jar /target/
+
+RUN find /target -name '*.jar' -executable -type f "-print0" | xargs "-0" cp -t / \
+    && rm -rf /target \
+    && mv /*.jar ${work_dir}/authentication-internal-service.jar
+
+
+# change permissions of file inside working dir
+RUN chown -R ${container_user}:${container_user} /home/${container_user}
+
 # select container user for all tasks
 USER ${container_user_uid}:${container_user_gid}
+
+EXPOSE 8093
+EXPOSE 9010
 
 ENTRYPOINT [ "./configure_start.sh" ]
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
-    wget -q "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/authentication/authentication-ref-impl/authentication-childauthfilter-impl.jar -O "${loader_path_env}"/authentication-childauthfilter-impl.jar ; \
     wget -q "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
     sed -i "s/<service_name>/${current_module_env}/g" glowroot/glowroot.properties ; \
-    wget -q "${iam_adapter_url_env}" -O "${loader_path_env}"/kernel-auth-adapter.jar; \
-    java -jar -Djava.security.debug=sunpkcs11 -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}" -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dloader.path="${loader_path_env}" -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -XX:HeapDumpPath=/home/  ./authentication-internal-service.jar ; \
     else \
-    wget -q "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/authentication/authentication-ref-impl/authentication-childauthfilter-impl.jar -O "${loader_path_env}"/authentication-childauthfilter-impl.jar ; \
-    wget -q "${iam_adapter_url_env}" -O "${loader_path_env}"/kernel-auth-adapter.jar; \
-    java -jar -Djava.security.debug=sunpkcs11 -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" -Dloader.path="${loader_path_env}" -Dfile.encoding="UTF-8" ${current_module_env}.jar ; \
+    java -jar -Dloader.path="${loader_path_env}" -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" ./authentication-internal-service.jar ; \
     fi
 
 #Sample docker run command:

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import io.mosip.authentication.common.service.helper.TypeForIdNameHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,10 @@ public class BioMatcherUtilTest {
 
 	Map<String, String> valueMap = new HashMap<>();
 	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+
+	@Mock
+	private TypeForIdNameHelper typeForIdNameHelper;
+
 	@Before
 	public void before() {		
 		ReflectionTestUtils.setField(bioMatcherUtil, "bdbProcessedLevel", "Raw");
@@ -60,7 +65,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueFinger() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 
@@ -78,7 +83,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueIris() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.IRIS.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.IRIS.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -95,7 +100,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueFace() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		mockBioProvider();
@@ -111,7 +116,7 @@ public class BioMatcherUtilTest {
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void TestmatchValueInvalidType() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of("ABC"));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of("ABC"));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -124,7 +129,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueWithBioErrorQltyChkFailed() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -140,7 +145,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueWithBioErrorBioMatchFailed() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -156,7 +161,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueWithBioErrorUnknown() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -172,7 +177,7 @@ public class BioMatcherUtilTest {
 	@Test
 	public void TestmatchValueWithBioErrorDefault() throws IdAuthenticationBusinessException, BiometricException {
 		valueMap.put(value, value);
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FACE.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -190,7 +195,7 @@ public class BioMatcherUtilTest {
 		valueMap.put("Finger", value);
 		Map<String, String> invalidMap = new HashMap<>();
 		invalidMap.put("Finger", "invalid");
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -210,7 +215,7 @@ public class BioMatcherUtilTest {
 		valueMap.put(value, value);
 		Map<String, String> invalidMap = new HashMap<>();
 		invalidMap.put("invalid", "invalid");
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -222,7 +227,7 @@ public class BioMatcherUtilTest {
 
 	@Test
 	public void TestMatchValuereturnsZerowhenreqInfoisINvalid() throws IdAuthenticationBusinessException, BiometricException {
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 
@@ -234,7 +239,7 @@ public class BioMatcherUtilTest {
 
 	@Test
 	public void TesInvalidtMatchValuereturnsZero() throws IdAuthenticationBusinessException, BiometricException {
-		Mockito.when(idInfoFetcher.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put(IdMapping.class.getSimpleName(), new IdMapping[0]);
 		
@@ -266,8 +271,8 @@ public class BioMatcherUtilTest {
 		IdMapping[] idMappings = new IdMapping[0];
 		properties.put(IdMapping.class.getSimpleName(), idMappings);
 		
-		Mockito.when(idInfoFetcher.getTypeForIdName("Face", idMappings)).thenReturn(Optional.of(BiometricType.FACE.value()));
-		Mockito.when(idInfoFetcher.getTypeForIdName("Finger", idMappings)).thenReturn(Optional.of(BiometricType.FINGER.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName("Face", idMappings)).thenReturn(Optional.of(BiometricType.FACE.value()));
+		Mockito.when(typeForIdNameHelper.getTypeForIdName("Finger", idMappings)).thenReturn(Optional.of(BiometricType.FINGER.value()));
 		
 		mockBioProvider();
 		

@@ -56,6 +56,10 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
 			<exclusions>
@@ -69,6 +73,20 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-integration</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webflux -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>6.1.11</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+
+
 		<!-- Kernel Hibernate Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -79,22 +97,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
-		<!--<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${maven.swagger.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${maven.swagger.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
@@ -206,6 +208,10 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-openid-bridge-api</artifactId>
 			<version>${kernel-openid-bridge-api.version}</version>
@@ -226,6 +232,21 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.demosdk</groupId>
+			<artifactId>demosdk</artifactId>
+			<version>${demosdk.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.biosdk</groupId>
+			<artifactId>biosdk-client</artifactId>
+			<version>${biosdk-client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel-auth-adapter.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -233,7 +254,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.2.3</version>
+				<version>${spring-boot-maven-plugin.version}</version>
 				<configuration>
 					<executable>true</executable>
 					<layout>ZIP</layout>
@@ -261,34 +282,12 @@
 	<profiles>
 		<profile>
 			<id>openapi-doc-generate-profile</id>
-			<dependencies>
-				<dependency>
-					<groupId>io.mosip.kernel</groupId>
-					<artifactId>kernel-auth-adapter</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.authentication</groupId>
-					<artifactId>authentication-childauthfilter-impl</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.biosdk</groupId>
-					<artifactId>biosdk-client</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-				<dependency>
-					<groupId>io.mosip.demosdk</groupId>
-					<artifactId>demosdk-client</artifactId>
-					<version>1.2.0</version>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring.boot.version}</version>
+						<version>${spring-boot-maven-plugin.version}</version>
 						<configuration>
 							<executable>true</executable>
 							<layout>ZIP</layout>

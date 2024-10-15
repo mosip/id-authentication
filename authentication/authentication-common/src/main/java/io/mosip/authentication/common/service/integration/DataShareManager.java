@@ -23,6 +23,7 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.core.util.RestUtil;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class DataShareManager {
@@ -39,6 +40,9 @@ public class DataShareManager {
 	
 	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
+	RestTemplate restTemplate;
 	
 	@Value("${" + DATA_SHARE_GET_DECRYPT_REF_ID + "}")
 	private String dataShareGetDecryptRefId;
@@ -50,7 +54,7 @@ public class DataShareManager {
 	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequired) throws  RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
-		String responseStr = restHelper.requestSync(request);
+		String responseStr = restTemplate.getForObject(dataShareUrl, String.class);
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
 		
 		if (errorOpt.isEmpty()) {

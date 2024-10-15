@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -53,10 +54,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
-	/** The IdInfoHelper. */
-	@Autowired
-	private IdInfoHelper idInfoHelper;
-
 	/** The MatchInputBuilder. */
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
@@ -64,9 +61,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The IdaMappingconfig. */
 	@Autowired
 	private IDAMappingConfig idaMappingConfig;
-	
+
 	@Autowired
-	private EnvUtil env;
+	private MatchIdentityDataHelper matchIdentityDataHelper;
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -155,7 +152,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 */
 	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
 			String uin, String partnerId) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey, partnerId);
+		return matchIdentityDataHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey, partnerId);
 	}
 
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
