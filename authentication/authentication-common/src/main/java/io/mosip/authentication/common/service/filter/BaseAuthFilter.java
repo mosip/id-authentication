@@ -70,9 +70,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		super.consumeRequest(requestWrapper, requestBody);
-		mosipLogger.info("signature in consume request"+requestWrapper.getHeader("Signature"));
-		mosipLogger.info("Signature request"+requestWrapper.getRequest().toString());
-		mosipLogger.info("Signature request url-"+requestWrapper.getRequestURL().toString());
 		authenticateRequest(requestWrapper);
 
 		decipherAndValidateRequest(requestWrapper, requestBody);
@@ -91,32 +88,23 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper,
 											  Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			// Log the initial request body
-			mosipLogger.info("Initial request body: " + mapper.writeValueAsString(requestBody));
 
-			// Reset the input stream and log the action
 			requestWrapper.resetInputStream();
-			mosipLogger.info("Input stream reset for requestWrapper.");
 
 			// Decipher the request and log the deciphered request
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
-			mosipLogger.info("Deciphered request: " + mapper.writeValueAsString(decipherRequest));
 
 			// Process the deciphered request and log the processed request
 			decipherRequest = processDecipheredReqeuest(decipherRequest);
-			mosipLogger.info("Processed deciphered request: " + mapper.writeValueAsString(decipherRequest));
 
 			// Validate the deciphered request and log the validation action
 			validateDecipheredRequest(requestWrapper, decipherRequest);
-			mosipLogger.info("Deciphered request validated successfully.");
 
 			// Convert the deciphered request to a string and log it
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
-			mosipLogger.info("Deciphered request as string: " + requestAsString);
 
 			// Replace the data in the requestWrapper and log the replacement action
 			requestWrapper.replaceData(requestAsString.getBytes());
-			mosipLogger.info("Data replaced in requestWrapper with deciphered request.");
 
 		} catch (IOException e) {
 			// Log the exception with a stack trace

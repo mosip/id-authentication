@@ -122,11 +122,7 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest request1 = ((HttpServletRequest) request);
-		mosipLogger.info("requestbody-"+request1.getRequestURI());
-		mosipLogger.info("inside do filter reqUrl"+request1);
-		mosipLogger.info("signature in filter chain-"+ ((HttpServletRequest) request).getHeader("signature"));
-		mosipLogger.info("filter class name"+chain.toString());
-		System.out.println("Filter class invoked: " + this.getClass().getName());
+
 		String reqUrl = request1.getRequestURI();
 		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
@@ -179,13 +175,10 @@ public abstract class BaseIDAFilter implements Filter {
 			consumeRequest(requestWrapper, requestBody);
 
 			requestWrapper.resetInputStream();
-			mosipLogger.info("requestWrapper before chain.dofilter -"+ requestBody);
 			chain.doFilter(requestWrapper, responseWrapper);
-			mosipLogger.info("requestWrapper after chain.dofilter-"+ requestBody);
 			String responseAsString = responseWrapper.toString();
 
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
-			mosipLogger.info("requestWrapper after consume response-"+ requestBody);
 			response.getWriter().write(responseAsString);
 		} catch (IdAuthenticationAppException e) {
 			// Log the exception stack trace
