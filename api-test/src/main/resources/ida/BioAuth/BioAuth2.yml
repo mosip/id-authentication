@@ -2296,7 +2296,7 @@ BioAuth:
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
-        "requestTime": "$TIMESTAMP$",
+        "requestTime": "1263G$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
@@ -2352,7 +2352,7 @@ BioAuth:
           "bioType": "FACE",
           "bioValue": "$FACE$",
           "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-          "dateTime": "$DATETIME$",
+          "dateTime": "123ME$",
           "deviceProviderID": "1873299273",
           "deviceServiceID": "",
           "deviceServiceVersion": "SB.WIN.001",
@@ -2494,11 +2494,12 @@ BioAuth:
           "deviceProviderId": "SYNCBYTE.LTC165",
           "deviceSubType": "Full face",
           "make": "Logitech",
+          "env": "dgdgh@73",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2543,7 +2544,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2583,11 +2584,12 @@ BioAuth:
           "deviceProviderId": "SYNCBYTE.LTC165",
           "deviceSubType": "Full face",
           "make": "Logitech",
+		  "env": "",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2627,11 +2629,12 @@ BioAuth:
           "deviceProviderId": "SYNCBYTE.LTC165",
           "deviceSubType": "Full face",
           "make": "Logitech",
+		  "env": " ",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2675,7 +2678,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'

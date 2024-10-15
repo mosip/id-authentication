@@ -190,7 +190,7 @@ OtpAuth:
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -223,7 +223,7 @@ OtpAuth:
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -256,7 +256,7 @@ OtpAuth:
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -289,7 +289,7 @@ OtpAuth:
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -308,7 +308,7 @@ OtpAuth:
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-        "requestTime": "",
+        "requestTime": " ",
         "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
@@ -322,7 +322,7 @@ OtpAuth:
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -355,7 +355,7 @@ OtpAuth:
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt2.json"
     }
     }'
       output: '{
@@ -937,6 +937,39 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
+  auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: invalid scenario
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
   auth_OTP_Auth_With_InValid_OTP:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       description: Otp auth with invalid OTP
@@ -946,11 +979,23 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-         "otp": "12S34@@!#",
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
     }'
       output: '{
   "authStatus": "false",
@@ -967,28 +1012,7 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-         "otp": "128276454",
-        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
-    }'
-      output: '{
-  "authStatus": "false",
- "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
-    }
-}'
-  auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: invalid scenario
-      role: resident
-      checkErrorsOnlyInResponse: true
-      restMethod: post
-      inputTemplate: ida/OtpAuth/OtpAuth
-      outputTemplate: ida/OtpAuth/OtpAuthResult
-      input: '{
-        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
