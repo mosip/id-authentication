@@ -49,10 +49,10 @@ import io.mosip.kernel.core.util.DateUtils;
 public class OTPManager {
 
     /** The Constant QUERIED_STATUS_CODES. */
-    public static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
+    private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
 
     /** The Constant OTP_EXPIRED. */
-    static final String OTP_EXPIRED = "OTP_EXPIRED";
+    private static final String OTP_EXPIRED = "OTP_EXPIRED";
 
     /** The Constant USER_BLOCKED. */
     private static final String USER_BLOCKED = "USER_BLOCKED";

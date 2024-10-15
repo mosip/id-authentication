@@ -13,6 +13,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +44,13 @@ public class ValidateOtpHelper {
     @Value("${mosip.ida.otp.frozen.duration.minutes:30}")
     private int otpFrozenTimeMinutes;
 
+    /** The Constant OTP_EXPIRED. */
+    private static final String OTP_EXPIRED = "OTP_EXPIRED";
+
+    /** The Constant QUERIED_STATUS_CODES. */
+    private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
+
+
     /**
      * Creates the OTP frozen exception.
      *
@@ -66,7 +74,7 @@ public class ValidateOtpHelper {
      */
     public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
         String refIdHash = securityManager.hash(individualId);
-        Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, OTPManager.QUERIED_STATUS_CODES);
+        Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
 
         if (otpEntityOpt.isEmpty()) {
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
@@ -90,7 +98,7 @@ public class ValidateOtpHelper {
             otpRepo.save(otpEntity);
             if (!otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                        IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTPManager.OTP_EXPIRED);
+                        IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
                 throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
             }
             return true;

@@ -200,7 +200,6 @@ public class WebSubHelper {
 	 * @return the subscription change response
 	 */
 	public SubscriptionChangeResponse subscribe(SubscriptionChangeRequest subscriptionRequest) {
-		logger.info("Subscription request- "+ subscriptionRequest.toString());
 		subscriptionRequest.setHubURL(hubURL);
 		return subscriptionClient.subscribe(subscriptionRequest);
 	}
