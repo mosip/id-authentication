@@ -1,6 +1,7 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_Partner_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_77
       description: Biometric face auth with blocked partner
       role: resident
       restMethod: post
@@ -40,6 +41,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_BLocked_partner_vid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_78
       description: Biometric face auth with blocked partner
       role: resident
       restMethod: post
@@ -79,6 +81,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_79
       description: Biometric RingFinger auth with blocked partner
       role: resident
       restMethod: post
@@ -118,6 +121,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_80
       description: Biometric LeftIndexFinger auth with blocked partner
       role: resident
       restMethod: post
@@ -157,6 +161,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_IRIS_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_81
       description: Biometric IRIS auth with blocked partner
       role: resident
       restMethod: post
@@ -196,6 +201,7 @@ BioAuth:
 }'
   auth_EkycBio_Face_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_82
       description: Ekyc face auth with blocked partner
       role: resident
       restMethod: post
@@ -235,6 +241,7 @@ BioAuth:
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_74
       description: Ekyc RingFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
@@ -274,6 +281,7 @@ BioAuth:
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_75
       description: Ekyc LeftMiddleFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
@@ -313,6 +321,7 @@ BioAuth:
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_76
       description: Ekyc RIGHTIRIS auth with blocked deviceProviderId
       role: resident
       restMethod: post

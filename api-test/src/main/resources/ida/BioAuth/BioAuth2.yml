@@ -1,6 +1,7 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_01
       description: Biometric face auth with valid UIN
       role: resident
       restMethod: post
@@ -36,10 +37,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_updated_edited_policy_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_02
       description: Biometric face auth with updated edited policy using UIN
       role: resident
       restMethod: post
@@ -75,10 +77,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Infant_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_03
       description: Biometric face auth with infant UIN
       role: resident
       restMethod: post
@@ -119,10 +122,11 @@ BioAuth:
           "errorCode": "IDA-MLC-011"
         }
       ],
-  	"authStatus": "false"
+  "authStatus": "false"
 }'
   auth_BioAuth_Biometric_Face_With_Infant_locked_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_04
       description: Biometric face auth with infant locked UIN
       role: resident
       restMethod: post
@@ -163,10 +167,11 @@ BioAuth:
           "errorCode": "IDA-MLC-011"
         }
       ],
-  	"authStatus": "false"
+  "authStatus": "false"
 }'
   auth_BioAuth_Biometric_RingFinger_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_05
       description: Biometric RingFinger auth With valid UIN
       role: resident
       restMethod: post
@@ -202,10 +207,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_06
       description: Biometric LeftMiddleFinger auth with valid UIN
       role: resident
       restMethod: post
@@ -241,10 +247,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_07
       description: Biometric LeftIndexFinger auth with valid UIN
       role: resident
       restMethod: post
@@ -280,10 +287,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_08
       description: Biometric auth with LeftLittleFinger using valid UIN
       role: resident
       restMethod: post
@@ -319,10 +327,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_09
       description: Biometric auth with RightIndexFinger using valid UIN
       role: resident
       restMethod: post
@@ -358,10 +367,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_10
       description: Biometric auth with RightRingFinger using valid UIN
       role: resident
       restMethod: post
@@ -397,10 +407,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_11
       description: Biometric auth with RightMiddleFinger using valid UIN
       role: resident
       restMethod: post
@@ -436,10 +447,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_12
       description: Bio auth with RightLittleFinger using valid UIN
       role: resident
       restMethod: post
@@ -475,10 +487,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftThumb_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_13
       description: Bio auth with LeftThumb using valid UIN
       role: resident
       restMethod: post
@@ -514,10 +527,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightThumb_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_14
       description: Bio auth with RightThumb using valid UIN
       role: resident
       restMethod: post
@@ -553,10 +567,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIris_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_15
       description: Bio auth with RightIris using valid UIN
       role: resident
       restMethod: post
@@ -592,10 +607,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIris_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_16
       description: Bio auth with LeftIris using valid UIN
       role: resident
       restMethod: post
@@ -632,10 +648,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_17
       description: Bio auth with Face using valid VID
       role: resident
       restMethod: post
@@ -672,10 +689,11 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Revoked_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_18
       description: Bio auth wwith Face with revoked VID
       role: resident
       restMethod: post
@@ -721,6 +739,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_19
       description: Bio auth with RingFinger using valid VID
       role: resident
       restMethod: post
@@ -761,6 +780,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_20
       description: Bio auth with LeftMiddleFinger using valid VID
       role: resident
       restMethod: post
@@ -801,6 +821,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_21
       description: Bio auth with LeftIndexFinger using valid VID
       role: resident
       restMethod: post
@@ -840,6 +861,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_22
       description: Bio auth with LeftLittleFinger using valid VID
       role: resident
       restMethod: post
@@ -879,6 +901,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_23
       description: Bio auth with RightIndexFinger using valid VID
       role: resident
       restMethod: post
@@ -918,6 +941,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_24
       description: Bio auth with RightRingFinger using valid VID
       role: resident
       restMethod: post
@@ -957,6 +981,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_25
       description: Bio auth with RightMiddleFinger using valid VID
       role: resident
       restMethod: post
@@ -996,6 +1021,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_26
       description: Bio auth with RightLittleFinger using valid VID
       role: resident
       restMethod: post
@@ -1035,6 +1061,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftThumb_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_27
       description: Bio auth with LeftThumb using valid VID
       role: resident
       restMethod: post
@@ -1074,6 +1101,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_28
       description: Bio auth with RightThumb using valid VID
       role: resident
       restMethod: post
@@ -1113,6 +1141,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_29
       description: Bio auth with RightIris using valid VID
       role: resident
       restMethod: post
@@ -1152,6 +1181,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_30
       description: Bio auth with LeftIris using valid VID
       role: resident
       restMethod: post
@@ -1191,6 +1221,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_invalid_uin_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_31
       description: Bio auth with invalid bioSubType using valid UIN
       role: resident
       restMethod: post
@@ -1236,6 +1267,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_blank_uin_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_32
       description: Bio auth with blank bioSubType using valid UIN
       role: resident
       restMethod: post
@@ -1281,6 +1313,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Blank_uin_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_33
       description: Bio auth with blank bioType using valid UIN
       role: resident
       restMethod: post
@@ -1326,6 +1359,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_valid_uin_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_34
       description: Bio auth with valid bioType and invalid_digitalId_type using valid VID
       role: resident
       restMethod: post
@@ -1374,6 +1408,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_invalid_uin_biovalue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_35
       description: Bio auth with invalid biovalue using valid UIN
       role: resident
       restMethod: post
@@ -1419,6 +1454,7 @@ BioAuth:
 }'
   auth_BioAuth_Face_With_FingerBio_uin_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_36
       description: Bio face auth with finger bio value using valid UIN
       role: resident
       restMethod: post
@@ -1464,6 +1500,7 @@ BioAuth:
 }'
   auth_BioAuth_Iris_With_FaceBio_uin_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_37
       description: Bio auth with Iris and face as bio value using valid UIN
       role: resident
       restMethod: post
@@ -1509,6 +1546,7 @@ BioAuth:
 }'
   auth_BioAuth_Finger_With_FaceBio_uin_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_38
       description: Bio auth with finger and face as bio value using valid UIN
       role: resident
       restMethod: post
@@ -1554,6 +1592,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_uin_instead_of_Face_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_39
       description: Bio auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
       restMethod: post
@@ -1599,6 +1638,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_uin_as_IR_instead_of_IRIS_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_40
       description: Bio auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
       restMethod: post
@@ -1644,6 +1684,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_instead_of_Finger_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_41
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
@@ -1689,6 +1730,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_IR_instead_of_IRIS_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_42
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
@@ -1734,6 +1776,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_43
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
@@ -1769,6 +1812,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_44
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
@@ -1814,6 +1858,7 @@ BioAuth:
 }'
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_45
       description: Bio auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
       restMethod: post
@@ -1859,6 +1904,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Unlock_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_46
       description: Bio auth with unlocked face with valid UIN
       role: resident
       restMethod: post
@@ -1899,7 +1945,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Lock_uin_Permanent_:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Bio face auth using permanetly locked UIN
+      uniqueIdentifier: TC_IDA_BioAuth_47
+      description: Bio auth using permanetly locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
@@ -1944,6 +1991,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_time_difference_datetime_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_48
       description: Bio auth with time difference between datetime and request time for UIN
       role: resident
       restMethod: post
@@ -1985,10 +2033,11 @@ BioAuth:
           "errorCode": "IDA-MLC-001"
         }
       ],
-  	"authStatus": "false"
+  "authStatus": "false"
 }'
   auth_BioAuth_with_dummy_partnerkey_uin_Pos:
       endPoint: /idauthentication/v1/auth/$a2673y3g3grURL$
+      uniqueIdentifier: TC_IDA_BioAuth_49
       description: Bio auth with dummy partnerkey using UIN
       role: resident
       restMethod: post
@@ -2037,6 +2086,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Unlock_With_AllValid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_50
       description: Bio auth with face unlocked UIN
       role: resident
       restMethod: post
@@ -2077,6 +2127,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Lock_Permanent_uin_Valid_Smoke:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_51
       description: Bio auth with permanently locked UIN
       role: resident
       restMethod: post
@@ -2122,7 +2173,8 @@ BioAuth:
 }'
   auth_BioAuth_With_Deactivated_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Bio auth wuth deactivated UIN
+      uniqueIdentifier: TC_IDA_BioAuth_52
+      description: Bio auth with deactivated UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
@@ -2167,6 +2219,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_Draft_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_53
       description: Bio auth with drafted UIN
       role: resident
       restMethod: post
@@ -2207,7 +2260,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Invalid scenario
+      uniqueIdentifier: TC_IDA_BioAuth_66
+      description: Bio auth with locked face
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
@@ -2290,6 +2344,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_InValid_timestamp:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_54
       description: Bio face auth invalid timestamp
       role: resident
       restMethod: post
@@ -2334,7 +2389,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_InValid_DATETIME:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Bio face auth with invalid date time
+      uniqueIdentifier: TC_IDA_BioAuth_55
+      description: Bio face auth without date time
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
@@ -2378,6 +2434,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_With_empty_DateTime:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_56
       description: Bio auth with empty date time
       role: resident
       restMethod: post
@@ -2423,6 +2480,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Without_DateTime:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_57
       description: Bio auth without date time
       role: resident
       restMethod: post
@@ -2468,6 +2526,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_Invalid_ENV:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_58
       description: Bio auth without ENV
       role: resident
       restMethod: post
@@ -2512,6 +2571,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_missing_ENV:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_59
       description: Bio auth without ENV
       role: resident
       restMethod: post
@@ -2557,6 +2617,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_Empty_ENV:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_60
       description: Bio auth without ENV
       role: resident
       restMethod: post
@@ -2601,6 +2662,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_Empty_space_ENV:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_61
       description: Bio auth without ENV
       role: resident
       restMethod: post
@@ -2645,6 +2707,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Without_ENV:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_62
       description: Bio auth without ENV
       role: resident
       restMethod: post
@@ -2689,6 +2752,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_space_in_domain:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_63
       description: Bio auth with space in domain
       role: resident
       restMethod: post
@@ -2735,6 +2799,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Without_Empty_domain:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_64
       description: Bio auth without domain
       role: resident
       restMethod: post
@@ -2781,6 +2846,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Without_domain:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_65
       description: Bio auth with empty domain
       role: resident
       restMethod: post
