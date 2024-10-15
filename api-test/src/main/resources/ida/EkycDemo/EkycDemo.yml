@@ -1,6 +1,7 @@
 EkycDemo:
   auth_EkycDemo_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_01
       description: Ekyc demo auth with valid UIN
       role: resident
       restMethod: post

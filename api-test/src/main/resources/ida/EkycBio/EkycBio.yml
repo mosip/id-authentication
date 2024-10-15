@@ -1,6 +1,7 @@
 EkycBio:
     auth_EkycBio_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycBio_01
       description: Ekyc bio face auth using valid UIN
       role: resident
       restMethod: post
