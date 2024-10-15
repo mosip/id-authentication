@@ -1,4 +1,4 @@
-package io.mosip.authentication.common.service.config;
+package io.mosip.authentication.internal.service.config;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
