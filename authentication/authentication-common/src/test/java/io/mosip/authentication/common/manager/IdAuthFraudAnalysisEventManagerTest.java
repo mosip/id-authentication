@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.manager;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.lenient;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,11 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,8 +33,7 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class IdAuthFraudAnalysisEventManagerTest {
@@ -51,7 +53,7 @@ public class IdAuthFraudAnalysisEventManagerTest {
     @Mock
     private IdAuthFraudAnalysisEventPublisher publisher;
 
-    @Autowired
+    @Mock
     private ObjectMapper mapper;
     
     @Before
@@ -74,13 +76,13 @@ public class IdAuthFraudAnalysisEventManagerTest {
         List<AutnTxn> requests = new ArrayList<>();
         requests.add(autnTxn);
         LocalDateTime t= LocalDateTime.of(2021, 11, 2, 12,24, 37, 3);
-        Mockito.when(eventData.getRequestTime()).thenReturn(t);
+        lenient().when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
-        Mockito.when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
-        Mockito.when(eventData.getPartnerId()).thenReturn("PartnerId");
-        Mockito.when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(eventData.getPartnerId()).thenReturn("PartnerId");
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 

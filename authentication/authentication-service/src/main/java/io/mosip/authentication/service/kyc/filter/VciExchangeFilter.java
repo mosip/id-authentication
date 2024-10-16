@@ -3,8 +3,6 @@ package io.mosip.authentication.service.kyc.filter;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -21,7 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * 
  * @author Mahammed Taheer
  */
-@Component
+
 public class VciExchangeFilter extends IdAuthFilter {
 
 	private static Logger mosipLogger = IdaLogger.getLogger(VciExchangeFilter.class);

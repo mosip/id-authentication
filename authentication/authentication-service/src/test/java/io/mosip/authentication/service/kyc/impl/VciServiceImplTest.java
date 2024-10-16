@@ -6,6 +6,7 @@ import foundation.identity.jsonld.JsonLDException;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer;
 import io.mosip.authentication.common.service.entity.CredSubjectIdStore;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.repository.CredSubjectIdStoreRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -83,6 +84,9 @@ public class VciServiceImplTest {
     Map<String, List<IdentityInfoDTO>> idInfo;
 
     String credSubjectId;
+
+    @Mock
+    private EntityInfoUtil entityInfoUtil;
 
 
     @Before
@@ -259,7 +263,7 @@ public class VciServiceImplTest {
         Mockito.when(cbeffUtil.getBIRDataFromXMLType(Mockito.any(),Mockito.anyString())).thenReturn(birDataFromXMLType);
         Map<String,String> faceEntityInfoMap = new HashMap<>();
         faceEntityInfoMap.put("Face","face");
-        Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(),Mockito.anyMap(),Mockito.any())).thenReturn(faceEntityInfoMap);
+        Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(),Mockito.anyMap(),Mockito.any())).thenReturn(faceEntityInfoMap);
         try{
             vciServiceImpl.buildVerifiableCredentials(credSubjectId,"ldp_vc" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
         }catch (Exception e){}

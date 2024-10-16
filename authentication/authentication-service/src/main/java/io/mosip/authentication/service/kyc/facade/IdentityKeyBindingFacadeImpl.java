@@ -47,7 +47,7 @@ import io.mosip.authentication.core.spi.indauth.service.IdentityKeyBindingServic
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
