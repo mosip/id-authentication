@@ -1,39 +1,35 @@
 package io.mosip.authentication.internal.service.config;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
-import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.logger.spi.Logger;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import org.apache.commons.io.IOUtils;
-import org.springframework.stereotype.Component;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-
-/**
- * @author Kamesh Shekhar Prasad
- */
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TrailingSlashRedirectFilter implements Filter {
 
-    /** The mosip logger. */
-    private static Logger mosipLogger = IdaLogger.getLogger(TrailingSlashRedirectFilter.class);
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String reqStr = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
-        mosipLogger.info("inside Trailingslashredirectfilter");
-        mosipLogger.info("request-"+reqStr);
         String path = httpRequest.getRequestURI();
 
+        // Check if request is of type ObjectWithMetadata, preserve it unchanged
+        if (request instanceof ObjectWithMetadata) {
+            // Continue with the filter chain, pass the original request unchanged
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // For other types of requests, handle the trailing slash redirection
         if (path.endsWith("/")) {
             String newPath = path.substring(0, path.length() - 1);
             HttpServletRequest newRequest = new CustomHttpServletRequestWrapper(httpRequest, newPath);
@@ -43,6 +39,7 @@ public class TrailingSlashRedirectFilter implements Filter {
         }
     }
 
+    // Custom wrapper to modify request URI without altering original request structure
     private static class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         private final String newPath;
