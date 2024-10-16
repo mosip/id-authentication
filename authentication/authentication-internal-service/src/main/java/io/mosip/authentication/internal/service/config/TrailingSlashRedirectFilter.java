@@ -1,94 +1,45 @@
 package io.mosip.authentication.internal.service.config;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
-import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.logger.spi.Logger;
-import jakarta.servlet.*;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
-
-/**
- * @author Kamesh Shekhar Prasad
- */
 
 @Component
 public class TrailingSlashRedirectFilter implements Filter {
-
-    /** The mosip logger. */
-    private static Logger mosipLogger = IdaLogger.getLogger(TrailingSlashRedirectFilter.class);
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        // Cache the request body once and use it later
-        CachedBodyHttpServletRequest wrappedRequest = new CachedBodyHttpServletRequest(httpRequest);
-        mosipLogger.info("Inside TrailingSlashRedirectFilter");
-
         String path = httpRequest.getRequestURI();
 
+        // Check if request is of type ObjectWithMetadata, preserve it unchanged
+        if (request instanceof ObjectWithMetadata) {
+            // Continue with the filter chain, pass the original request unchanged
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // For other types of requests, handle the trailing slash redirection
         if (path.endsWith("/")) {
             String newPath = path.substring(0, path.length() - 1);
-            HttpServletRequest newRequest = new CustomHttpServletRequestWrapper(wrappedRequest, newPath);
+            HttpServletRequest newRequest = new CustomHttpServletRequestWrapper(httpRequest, newPath);
             chain.doFilter(newRequest, response);
         } else {
-            chain.doFilter(wrappedRequest, response);
+            chain.doFilter(request, response);
         }
     }
 
-    // Wrapper to cache the body for multiple reads
-    private static class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
-
-        private final byte[] cachedBody;
-
-        public CachedBodyHttpServletRequest(HttpServletRequest request) throws IOException {
-            super(request);
-            // Cache the request body by reading it into a byte array
-            cachedBody = IOUtils.toByteArray(request.getInputStream());
-        }
-
-        @Override
-        public ServletInputStream getInputStream() throws IOException {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(cachedBody);
-            return new ServletInputStream() {
-                @Override
-                public int read() throws IOException {
-                    return byteArrayInputStream.read();
-                }
-
-                @Override
-                public boolean isFinished() {
-                    return byteArrayInputStream.available() == 0;
-                }
-
-                @Override
-                public boolean isReady() {
-                    return true;
-                }
-
-                @Override
-                public void setReadListener(ReadListener listener) {
-                    // No-op
-                }
-            };
-        }
-
-        @Override
-        public BufferedReader getReader() throws IOException {
-            return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
-        }
-    }
-
-    // Custom HttpServletRequestWrapper to modify the request URI
+    // Custom wrapper to modify request URI without altering original request structure
     private static class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         private final String newPath;
@@ -112,3 +63,4 @@ public class TrailingSlashRedirectFilter implements Filter {
         }
     }
 }
+
