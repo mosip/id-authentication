@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,9 @@ public class OtpMatchingStrategyTest {
 	@Mock
 	private OtpTxnRepository otpRepo;
 
+	@Mock
+	private ValidateOtpHelper validateOtpHelper;
+
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 
@@ -61,7 +65,6 @@ public class OtpMatchingStrategyTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(idInfoFetcherImpl, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);

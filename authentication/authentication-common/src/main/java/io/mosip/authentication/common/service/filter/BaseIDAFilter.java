@@ -21,14 +21,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
@@ -98,7 +98,7 @@ public abstract class BaseIDAFilter implements Filter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 * @see jakarta.servlet.Filter#init(jakarta.servlet.FilterConfig)
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -114,24 +114,24 @@ public abstract class BaseIDAFilter implements Filter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest,
+	 * jakarta.servlet.ServletResponse, jakarta.servlet.FilterChain)
 	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
 		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+		// Bypass the filter for specific URLs
 		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator") || reqUrl.contains("callback")) {
 			chain.doFilter(request, response);
 			return;
 		}
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				"Request URL: " + reqUrl);
-		
+
+		// Log the request time
 		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				IdAuthCommonConstants.REQUEST + " at : " + requestTime);
+				IdAuthCommonConstants.REQUEST + " started at: " + requestTime);
 
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
@@ -139,50 +139,69 @@ public abstract class BaseIDAFilter implements Filter {
 
 			@Override
 			public void flushBuffer() throws IOException {
-				// Avoiding flush and commit while data validation exception handling to set
-				// response header(response-signature) later in the filter.
-				// Positive response does not invoke this
-				// super.flushBuffer();
+				// Log flush buffer actions
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"flushBuffer called on responseWrapper");
+				// Avoiding flush and commit while data validation exception handling
 			}
 		};
-		
+
 		Map<String, Object> requestBody = null;
 		try {
+			// Log raw request body
 			requestBody = getRequestBody(requestWrapper.getInputStream());
+
+			// Handle case when request body is null
 			if (requestBody == null) {
 				addIdAndVersionToRequestMetadata(requestWrapper);
+
 				chain.doFilter(requestWrapper, responseWrapper);
 				String responseAsString = responseWrapper.toString();
+
 				consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 				response.getWriter().write(responseAsString);
 				return;
 			}
-			
+
 			addIdAndVersionToRequestMetadata(requestWrapper);
-			addTransactionIdToRequestMetadata(requestWrapper,requestBody);
-			
+
+			addTransactionIdToRequestMetadata(requestWrapper, requestBody);
+
 			requestWrapper.resetInputStream();
+
 			consumeRequest(requestWrapper, requestBody);
+
 			requestWrapper.resetInputStream();
 			chain.doFilter(requestWrapper, responseWrapper);
 			String responseAsString = responseWrapper.toString();
+
 			consumeResponse(requestWrapper, responseWrapper, responseAsString, requestTime, requestBody);
 			response.getWriter().write(responseAsString);
-		} catch (IdAuthenticationAppException  e) {
+		} catch (IdAuthenticationAppException e) {
+			// Log the exception stack trace
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			if(requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
+					"Exception occurred: " + ExceptionUtils.getStackTrace(e));
+
+			// Log digital signature failure analysis
+			if (requestBody != null && e.getErrorCode().equals(IdAuthenticationErrorConstants.DSIGN_FALIED.getErrorCode())) {
 				String errorMessage = e.getErrorText();
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+						"Digital signature failure. Error message: " + errorMessage);
 				fraudEventManager.analyseDigitalSignatureFailure(requestWrapper.getRequestURI(), requestBody, errorMessage);
 			}
+
 			requestWrapper.resetInputStream();
+
 			sendErrorResponse(response, responseWrapper, requestWrapper, requestTime, e, requestBody);
 		} finally {
+			// Log the response size after processing
 			logDataSize(responseWrapper.toString(), IdAuthCommonConstants.RESPONSE);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Response size logged.");
 		}
-		
-
 	}
+
+
 
 	private void addIdAndVersionToRequestMetadata(ResettableStreamHttpServletRequest requestWrapper) {
 		requestWrapper.putMetadata(VERSION,
@@ -339,15 +358,34 @@ public abstract class BaseIDAFilter implements Filter {
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
 			throws IdAuthenticationAppException {
 		try {
+
 			byte[] requestAsByte = IOUtils.toByteArray(requestWrapper.getInputStream());
-			logDataSize(new String(requestAsByte), IdAuthCommonConstants.REQUEST);
+			String requestBodyString = new String(requestAsByte);
+
+			// Log the size of the request data
+			logDataSize(requestBodyString, IdAuthCommonConstants.REQUEST);
+
+			// Reset the request input stream after reading
 			requestWrapper.resetInputStream();
+
+			// Log that the stream has been reset
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request input stream reset successfully");
+
+			// Validate the request and log
 			validateRequest(requestWrapper, requestBody);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Request validated successfully");
+
 		} catch (IOException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, ExceptionUtils.getStackTrace(e));
+			// Log the stack trace in case of an exception
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"IOException occurred: " + ExceptionUtils.getStackTrace(e));
+
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
+
 
 	/**
 	 * validateRequest method is used to validate the version and the ID passed for
@@ -363,12 +401,22 @@ public abstract class BaseIDAFilter implements Filter {
 
 		String id = fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID);
 		requestWrapper.resetInputStream();
-		if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
-			validateId(requestBody, id);
-			validateVersion(requestBody);
-		}
 
+		if (Objects.nonNull(requestBody) && !requestBody.isEmpty()) {
+			mosipLogger.info("Request body is not null and not empty. Proceeding with validation.");
+
+			// Validate the ID and log the process
+			mosipLogger.info("Validating ID.");
+			validateId(requestBody, id);
+
+			// Validate the version and log the process
+			mosipLogger.info("Validating Version.");
+			validateVersion(requestBody);
+		} else {
+			mosipLogger.info("Request body is null or empty. Skipping validation.");
+		}
 	}
+
 
 	/**
 	 * fetchId used to fetch and determine the id of request
@@ -407,17 +455,22 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
+
 		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID)
 				? (String) requestBody.get(IdAuthCommonConstants.ID)
 				: null;
 		String property = env.getProperty(id);
 		if (StringUtils.isEmpty(idFromRequest)) {
+			mosipLogger.info("ID from request is empty. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, false);
 		}
+
 		if (Objects.nonNull(property) && !property.equals(idFromRequest)) {
+			mosipLogger.info("Property value does not match ID from request. Triggering exception.");
 			handleException(IdAuthCommonConstants.ID, true);
 		}
 	}
+
 
 	/**
 	 * exceptionHandling used to handle the exception when validation of version and
@@ -454,47 +507,55 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected String consumeResponse(ResettableStreamHttpServletRequest requestWrapper, CharResponseWrapper responseWrapper, String responseAsString,
-			Temporal actualRequestTime, Map<String, Object> requestBody) throws IdAuthenticationAppException {
+									 Temporal actualRequestTime, Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
 			// The metadata from requestWrapper is actually response metadata which is
-			// mutated from with the controller so that the values can be obtained here from that.
+			// mutated from within the controller so that the values can be obtained here from that.
 			// This is mainly used to pass the Auth transaction details and Identity Infos
 			// for storing auth transaction and anonymous profile.
 			Map<String, Object> responseMetadata = requestWrapper.getMetadata();
 			requestWrapper.resetInputStream();
 			String requestSignature = requestWrapper.getHeader(SIGNATURE);
 			String responseSignature = null;
-			if(isSigningRequired()) {
+
+			if (isSigningRequired()) {
 				if (Objects.isNull(responseAsString) || responseAsString.trim().length() == 0) {
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-									" Response String is null or empty for response (JWT) signing");
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), 
-								IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+							"Response String is null or empty for response (JWT) signing");
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 				}
 				responseSignature = keyManager.signResponse(responseAsString);
 				responseWrapper.setHeader(EnvUtil.getSignResponse(), responseSignature);
 			}
-			if(needStoreAuthTransaction()) {
+
+			if (needStoreAuthTransaction()) {
 				requestResponsConsumerUtil.storeAuthTransaction(responseMetadata, requestSignature, responseSignature);
 			}
-			if(needStoreAnonymousProfile()) {
+
+			if (needStoreAnonymousProfile()) {
 				if (requestBody != null) {
 					boolean status = Boolean.valueOf(String.valueOf(responseMetadata.get(IdAuthCommonConstants.STATUS)));
-					List<AuthError> errors =  responseMetadata.get(ERRORS) instanceof List ? (List<AuthError>) responseMetadata.get(ERRORS) : List.of();
+					List<AuthError> errors = responseMetadata.get(ERRORS) instanceof List ? (List<AuthError>) responseMetadata.get(ERRORS) : List.of();
 					requestResponsConsumerUtil.storeAnonymousProfile(requestBody, (Map<String, Object>) requestBody.get(METADATA),
 							responseMetadata, status, errors);
 				}
 			}
-			
+
 			Object inputRequestTime = requestBody == null ? null : requestBody.get(IdAuthCommonConstants.REQ_TIME);
-			String inputReqTimeStr = inputRequestTime instanceof String? (String) inputRequestTime : null;
+			String inputReqTimeStr = inputRequestTime instanceof String ? (String) inputRequestTime : null;
 			logTime(inputReqTimeStr, IdAuthCommonConstants.RESPONSE, actualRequestTime);
+
 			return responseAsString;
-		} catch (IdAuthenticationAppException e ) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
+
+		} catch (IdAuthenticationAppException e) {
+			// Log the exception as info instead of error
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			return responseAsString;
 		}
 	}
+
+
 
 	/**
 	 * getRequestBody used to get the request body from the raw input stream
@@ -563,7 +624,7 @@ public abstract class BaseIDAFilter implements Filter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.Filter#destroy()
+	 * @see jakarta.servlet.Filter#destroy()
 	 */
 	@Override
 	public void destroy() {

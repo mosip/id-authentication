@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -25,7 +23,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * 
  * @author Mahammed Taheer
  */
-@Component
 public class KycAuthFilter extends IdAuthFilter {
 
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthFilter.class);

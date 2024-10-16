@@ -13,12 +13,12 @@
 \ir ddl/ida-ca_cert_store.sql
 \ir ddl/ida-credential_event_store.sql
 \ir ddl/ida-hotlist_cache.sql
-\ir ddl/ida-batch_job_execution.sql
-\ir ddl/ida-batch_job_execution_context.sql
-\ir ddl/ida-batch_job_execution_params.sql
 \ir ddl/ida-batch_job_instance.sql
+\ir ddl/ida-batch_job_execution.sql
+\ir ddl/ida-batch_job_execution_params.sql
 \ir ddl/ida-batch_step_execution.sql
 \ir ddl/ida-batch_step_execution_context.sql
+\ir ddl/ida-batch_job_execution_context.sql
 \ir ddl/ida-fk.sql
 \ir ddl/ida-api_key_data.sql
 \ir ddl/ida-partner_data.sql
