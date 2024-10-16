@@ -34,7 +34,6 @@ import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-@Component
 public class BioAuth extends AdminTestUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(BioAuth.class);
 	protected String testCaseName = "";
