@@ -93,7 +93,7 @@ jobs:
   build-maven-apitest-auth:
     uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
       BUILD_ARTIFACT: apitest-auth
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
@@ -107,7 +107,7 @@ jobs:
     needs: build-maven-apitest-auth
     uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
@@ -122,7 +122,7 @@ jobs:
     env:
       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: apitest-auth
-      SERVICE_LOCATION: apitest
+      SERVICE_LOCATION: api-test
       BUILD_ARTIFACT: apitest-auth-local
     steps:
       - uses: actions/checkout@v3
@@ -130,7 +130,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: 21
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
       - name: Setup the settings file for ossrh server
@@ -146,7 +146,7 @@ jobs:
       - name: Ready the springboot artifacts
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
         run: |
-          ## FIND JARS & COPY ONLY EXECUTABLE JARs STORED UNDER TARGET DIRECTORY
+          ## FIND JARS & COPY ONLY EXECUTABLE JARs STORED UNDER TARGET DIRECTORY 
           find ${{ env.SERVICE_LOCATION }} -path '*/target/*' -exec zip ${{ env.BUILD_ARTIFACT }}.zip {} +
       - name: Upload the springboot jars
         if: ${{ !contains(github.ref, 'master') || !contains(github.ref, 'main') }}
@@ -167,7 +167,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - SERVICE_LOCATION: 'apitest'
+          - SERVICE_LOCATION: 'api-test'
             SERVICE_NAME: 'apitest-auth'
             BUILD_ARTIFACT: 'apitest-auth-local'
             ONLY_DOCKER: true
@@ -190,7 +190,7 @@ jobs:
     if: "${{  github.event_name != 'pull_request' }}"
     uses: mosip/kattu/.github/workflows/maven-sonar-analysis.yml@master-java21
     with:
-      SERVICE_LOCATION: ./apitest
+      SERVICE_LOCATION: ./api-test
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       ORG_KEY: ${{ secrets.ORG_KEY }}
