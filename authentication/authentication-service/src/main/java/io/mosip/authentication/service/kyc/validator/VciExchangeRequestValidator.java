@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -26,7 +27,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
-import net.minidev.json.JSONObject;
 
 /**
  * The Class For VciExchangeRequestValidator extending the
@@ -190,7 +190,7 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 	}
 
 	private void validatePublicKeyAttributes(JSONObject jsonObject, Errors errors, String publicKeyAttribute, String paramName) {
-		String value = jsonObject.getAsString(publicKeyAttribute);
+		String value = jsonObject.getString(publicKeyAttribute);
 		if (value == null || StringUtils.isEmpty(value.trim())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, MISSING_INPUT_PARAMETER + publicKeyAttribute);
 			errors.rejectValue(paramName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),

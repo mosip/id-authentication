@@ -158,17 +158,8 @@ public interface IdInfoFetcher {
 	 * @return the match function
 	 */
 	public TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> getMatchFunction(AuthType authType);
-	
-	
-	/**
-	 * Gets the type for id name.
-	 *
-	 * @param idName the id name
-	 * @param idMappings the id mappings
-	 * @return the type for id name
-	 */
-	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings);
-	
+
+
 	/**
 	 * Gets the mapping config.
 	 *

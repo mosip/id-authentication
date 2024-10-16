@@ -8,6 +8,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.websub.model.EventModel;
+import org.springframework.batch.item.Chunk;
 
 /**
  * The Interface CredentialStoreService.
@@ -20,7 +21,7 @@ public interface CredentialStoreService {
 	 *
 	 * @param idEntities the id entities
 	 */
-	public void storeIdentityEntity(List<? extends IdentityEntity> idEntities);
+	public void storeIdentityEntity(Chunk<? extends IdentityEntity> idEntities);
 
 	/**
 	 * Store event model.
@@ -47,6 +48,6 @@ public interface CredentialStoreService {
 	 *
 	 * @param dto the dto
 	 */
-	public void processMissingCredentialRequestId(List<? extends CredentialRequestIdsDto> dto);
+	public void processMissingCredentialRequestId(Chunk<? extends CredentialRequestIdsDto> dto);
 
 }

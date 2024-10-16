@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
 
 import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
@@ -85,7 +85,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
  * @author Loganathan Sekar
  * @author Nagarjuna K
  */
-@Component
+
 public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthFilter.class);
@@ -386,7 +386,6 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected void validateDecipheredRequest(ResettableStreamHttpServletRequest requestWrapper,
 			Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		
 		String headerCertificateThumbprint = getCertificateThumbprintFromSignatureData(requestWrapper.getHeader("signature"));
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		

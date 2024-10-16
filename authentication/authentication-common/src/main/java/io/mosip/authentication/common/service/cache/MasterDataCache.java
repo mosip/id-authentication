@@ -71,7 +71,7 @@ public class MasterDataCache {
 	 * @return the master data template
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable(cacheNames = MASTERDATA_TEMPLATES, key = "#template")
+	@Cacheable(cacheNames = MASTERDATA_TEMPLATES)
 	public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
 		try {
 			RestRequestDTO request = restFactory
