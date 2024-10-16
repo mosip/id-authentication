@@ -2288,15 +2288,15 @@ BioAuth:
       output: '{
   "authStatus": "false"
 }'
-  auth_BioAuth_Biometric_Face_With_InValid_timestamp:
+  auth_BioAuth_Biometric_Face_With_Valid_timestamp:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       description: Bio face auth invalid timestamp
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
-      outputTemplate: ida/BioAuth/error
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
-        "requestTime": "1263G$",
+        "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
@@ -2325,12 +2325,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
-        "authStatus": false
+        "authStatus": true
 }'
   auth_BioAuth_Biometric_Face_With_InValid_DATETIME:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
