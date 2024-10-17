@@ -2191,7 +2191,7 @@ EkycBio:
           "serialNo": "78467175",
           "type": "Iris",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2232,7 +2232,7 @@ EkycBio:
           "serialNo": "78467175",
           "type": "Iris",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2273,7 +2273,7 @@ EkycBio:
           "serialNo": "78467175",
           "type": "Iris",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -2314,7 +2314,7 @@ EkycBio:
           "serialNo": "78467175",
           "type": "Iris",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt2",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'

@@ -807,7 +807,7 @@ EkycOtp:
         "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
-        "transactionId": "$TRANSACTIONID$",
+        "transactionId": "",
         "individualIdType": "UIN",
         "bio": false,
         "demo": false,
