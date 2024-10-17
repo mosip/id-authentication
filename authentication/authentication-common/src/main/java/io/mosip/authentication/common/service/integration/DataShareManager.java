@@ -58,8 +58,10 @@ public class DataShareManager {
 		if(restTemplate!=null){
 			responseStr = restTemplate.getForObject(dataShareUrl, String.class);
 		}
-		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
-		
+		Optional<Entry<String, Object>> errorOpt = Optional.empty();
+		if(responseStr!=null){
+			errorOpt = RestUtil.getError(responseStr, mapper);
+		}
 		if (errorOpt.isEmpty() && responseStr!=null) {
 			R result;
 			if (decryptionRequired) {
