@@ -2,12 +2,13 @@ package io.mosip.authentication.common.service.exception;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.lenient;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -18,6 +19,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,8 +56,7 @@ import io.mosip.authentication.core.util.DataValidationUtil;
  * @author Manoj SP
  *
  */
-
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @AutoConfigureMockMvc
@@ -80,10 +81,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleAllException() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleAllExceptions = handler
 				.handleAllExceptions(new RuntimeException("Runtime Exception"), null);
 		BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleAllExceptions.getBody();
@@ -96,10 +97,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleExceptionInternal() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/kyc");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/kyc");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
 				HttpStatus.EXPECTATION_FAILED, null);
@@ -113,10 +114,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleIdAppException() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/i");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/i");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
 				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
 		BaseAuthResponseDTO response = (BaseAuthResponseDTO) handleIdAppException.getBody();
@@ -129,10 +130,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleIdAppExceptionwithInternal() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/internal");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/authTransactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
 				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
 		AutnTxnResponseDto response = (AutnTxnResponseDto) handleIdAppException.getBody();
@@ -145,10 +146,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleIdAppExceptionwithOtp() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/otp");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/otp");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/otp");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
 				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
 		OtpResponseDTO response = (OtpResponseDTO) handleIdAppException.getBody();
@@ -161,10 +162,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleIdAppExceptionWithCause() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		IdAuthenticationAppException ex = new IdAuthenticationAppException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
@@ -189,10 +190,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleExceptionInternalWithObject() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 				null);
@@ -202,10 +203,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataException() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -230,10 +231,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataExceptionInternalAuthTxn() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/internal");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -258,10 +259,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataExceptionInternalOtp() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/internal");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/otp/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		OtpResponseDTO expectedResponse = new OtpResponseDTO();
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -283,10 +284,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataExceptionInternalAuthType() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/internal");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/authtypes");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthtypeResponseDto expectedResponse = new AuthtypeResponseDto();
 		expectedResponse.setErrors(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -308,10 +309,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataExceptionWithArgs() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -336,10 +337,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleDataExceptionWithArgsAndActionArgs() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -365,10 +366,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testAsyncRequestTimeoutException() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -388,10 +389,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testNoSuchMessageException() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -416,10 +417,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testhandleAllExceptionsUnknownError() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -445,10 +446,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testCreateAuthError() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/auth/zyx");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/auth/zyx");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		AuthResponseDTO expectedResponse = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.FALSE);
@@ -466,10 +467,10 @@ public class IDAuthExceptionHandlerTest {
 
 	@Test
 	public void testHandleAllException2() {
-		Mockito.when(servletRequest.getContextPath()).thenReturn("/otp");
+		lenient().when(servletRequest.getContextPath()).thenReturn("/otp");
 		StringBuffer value = new StringBuffer();
 		value.append("http://localhost:8093/idauthentication/v1/internal/otp/");
-		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
+		lenient().when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleAllExceptions = handler
 				.handleAllExceptions(new RuntimeException("Runtime Exception"), null);
 		OtpResponseDTO response = (OtpResponseDTO) handleAllExceptions.getBody();

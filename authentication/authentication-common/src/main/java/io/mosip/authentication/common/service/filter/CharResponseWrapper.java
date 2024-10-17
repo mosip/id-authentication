@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * The response wrapper used in Auth filter to capture the response body in the
@@ -50,7 +50,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.ServletResponseWrapper#getWriter()
+	 * @see jakarta.servlet.ServletResponseWrapper#getWriter()
 	 */
 	public PrintWriter getWriter() {
 		return new PrintWriter(new OutputStreamWriter(output));
@@ -59,7 +59,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+	 * @see jakarta.servlet.ServletResponseWrapper#getOutputStream()
 	 */
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {

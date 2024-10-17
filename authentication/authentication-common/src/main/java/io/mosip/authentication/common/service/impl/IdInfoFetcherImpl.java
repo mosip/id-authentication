@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -25,11 +26,9 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -52,8 +51,6 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BDBInfo;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * Helper class to fetch identity values from request.
@@ -63,10 +60,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-	
-	/**  The OTPManager. */
-	@Autowired
-	private OTPManager otpManager;
 
 	/** The Cbeff Util. */
 	@Autowired
@@ -101,7 +94,10 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	@Autowired(required = false)
 	private PasswordComparator passwordComparator;
-	
+
+	@Autowired
+	private ValidateOtpHelper validateOtpHelper;
+
 	/**
 	 * Gets the demo normalizer.
 	 *
@@ -249,7 +245,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
-		return otpManager::validateOtp;
+		return validateOtpHelper::validateOtp;
 	}
 
 	/**
@@ -467,21 +463,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			}
 		}
 		return Optional.ofNullable(threshold);
-	}
-
-	/**
-	 * Gets the type for id name.
-	 *
-	 * @param idName the id name
-	 * @param idMappings the id mappings
-	 * @return the type for id name
-	 */
-	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
-		return Stream.of(idMappings).filter(idmap -> {
-			String thisId = idName.replaceAll("\\d", "");
-			String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
-			return thisId.equalsIgnoreCase(thatId);
-		}).map(IdMapping::getType).findFirst();
 	}
 
 	/**

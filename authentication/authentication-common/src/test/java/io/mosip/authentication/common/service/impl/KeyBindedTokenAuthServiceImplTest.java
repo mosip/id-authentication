@@ -4,6 +4,7 @@ package io.mosip.authentication.common.service.impl;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -27,6 +28,9 @@ public class KeyBindedTokenAuthServiceImplTest {
 
     @InjectMocks
     IdInfoHelper idInfoHelper;
+
+    @Mock
+    private MatchIdentityDataHelper matchIdentityDataHelper;
 
     /** The id info helper. */
     @Mock
