@@ -16,11 +16,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
@@ -65,10 +66,6 @@ public class NotificationServiceImpl implements NotificationService {
 	/** The Constant DATE. */
 	private static final String DATE = "date";
 
-	/** The demo auth service. */
-	@Autowired
-	private IdInfoHelper infoHelper;
-
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
@@ -82,7 +79,13 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	@Qualifier("NotificationLangComparator")
 	private LanguageComparator languageComparator;
-	
+
+	@Autowired
+	private EntityInfoUtil entityInfoUtil;
+
+	@Autowired
+	private LanguageUtil languageUtil;
+
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
@@ -90,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
 		List<String> templateLanguages = getTemplateLanguages(idInfo);
 		
 		for (String lang : templateLanguages) {
-			values.put(NAME + "_" + lang, infoHelper.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
+			values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
 		}
 		Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
 		values.put(DATE, dateAndTime.getT1());
@@ -122,8 +125,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String phoneNumber = null;
 		String email = null;
-		phoneNumber = infoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+		phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
 			notificationType = EnvUtil.getNotificationType();
@@ -367,7 +370,7 @@ public class NotificationServiceImpl implements NotificationService {
 				? idInfoFetcher.getTemplatesDefaultLanguageCodes()
 				: userPreferredLangs;
 		if (defaultTemplateLanguges.isEmpty()) {
-			List<String> dataCaptureLanguages = infoHelper.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
+			List<String> dataCaptureLanguages = languageUtil.getDataCapturedLanguages(DemoMatchType.NAME, idInfo);
 			Collections.sort(dataCaptureLanguages, languageComparator);
 			return dataCaptureLanguages;
 		}

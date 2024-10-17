@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -71,7 +72,10 @@ public class AuthAnonymousProfileServiceImplTest {
 	Map<String, Object> responseMetadata = null;
 	Map<String,List<IdentityInfoDTO>> idInfoMap = null;
 	List<AuthError> errorCodes = null;
-	
+
+	@Mock
+	private EntityInfoUtil entityInfoUtil;
+
 	@Before
 	public void before() {
 		 requestBody = new HashMap<>();
@@ -82,7 +86,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		 errorCodes = new ArrayList<>();
 			
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "mapper", mapper);
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "preferredLangAttribName", "preferredLanguage");
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "locationProfileAttribName","locationHierarchyForProfiling");
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "dateOfBirthPattern", "yyyy/MM/dd");
@@ -108,7 +111,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.DOB, idInfoMap)).thenReturn("1993/04/11");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",
 			requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
@@ -157,7 +160,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
+		Mockito.when(entityInfoUtil.getEntityInfoAsString(DemoMatchType.GENDER, "eng", idInfoMap)).thenReturn("Female");
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals("Female", anonymousProfile.getGender());
 	}
@@ -186,7 +189,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		authResponse.put("authToken", "1234567890");
 		responseBody.put("response", authResponse);
 		
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(DemoMatchType.DYNAMIC, idInfoMap, "eng", "locationHierarchyForProfiling")).thenReturn(locationMap);
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}

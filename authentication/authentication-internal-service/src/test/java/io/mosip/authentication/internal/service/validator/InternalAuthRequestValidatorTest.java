@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -85,6 +86,9 @@ public class InternalAuthRequestValidatorTest {
 
 	@Mock
 	private MasterDataManager masterDataManager;
+
+	@Mock
+	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
 	@Before
 	public void before() {
@@ -231,7 +235,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -274,7 +278,7 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -423,7 +427,7 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
@@ -465,7 +469,7 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -522,7 +526,7 @@ public class InternalAuthRequestValidatorTest {
 		Mockito.when(idinfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		List<String> value = new ArrayList<>();
 		value.add("dateOfBirth");
-		Mockito.when(idinfoHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
+		Mockito.when(identityAttributesForMatchTypeHelper.getIdMappingValue(Mockito.any(), Mockito.any())).thenReturn(value);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		internalAuthRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());

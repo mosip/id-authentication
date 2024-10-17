@@ -21,7 +21,7 @@ import io.mosip.kernel.core.util.StringUtils;
  *
  * @author Manoj SP
  */
-@Component
+
 public class DefaultInternalFilter extends InternalAuthFilter {
 	
 	/* (non-Javadoc)
