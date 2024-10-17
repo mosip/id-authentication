@@ -55,8 +55,11 @@ public class DataShareManager {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 		String responseStr = restTemplate.getForObject(dataShareUrl, String.class);
+		if (responseStr == null) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		}
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
-		
+
 		if (errorOpt.isEmpty()) {
 			R result;
 			if (decryptionRequired) {
