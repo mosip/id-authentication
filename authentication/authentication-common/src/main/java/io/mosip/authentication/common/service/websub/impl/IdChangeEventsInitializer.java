@@ -89,7 +89,6 @@ public class IdChangeEventsInitializer extends BaseWebSubEventsInitializer {
 				webSubHelper.subscribe(subscriptionRequest);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents", "", "Subscribed to topic: " + topic);
 			} catch (Exception e) {
-				e.printStackTrace();
 				logger.info(IdAuthCommonConstants.SESSION_ID, "subscribeForCredentialIssueanceEvents",  e.getClass().toString(), "Error subscribing topic: "+ topic +"\n" + e.getMessage());
 				throw e;
 			}
