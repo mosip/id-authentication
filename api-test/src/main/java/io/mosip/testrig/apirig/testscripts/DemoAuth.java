@@ -135,13 +135,19 @@ public class DemoAuth extends AdminTestUtil implements ITest {
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of bio auth request ******************");
 		Reporter.log("<b><u>Modification of demo auth request</u></b>");
-		authRequest = modifyRequest(authRequest, demoAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
+		
 		JSONObject authRequestTemp = new JSONObject(authRequest);
+		String originalRequestTime = authRequestTemp.getString("requestTime");
+		authRequest = modifyRequest(authRequest, demoAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
+		
+		
+		authRequestTemp = new JSONObject(authRequest);
+		authRequestTemp.put("requestTime", originalRequestTime);
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
-		testCaseDTO.setInput(authRequest);
+		
 				
 		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
 		
