@@ -189,7 +189,6 @@ public class MosipTestRunner {
 			TestNG runner = new TestNG();
 			List<String> suitefiles = new ArrayList<>();
 
-			BaseTestCase.setReportName("auth");
 			if (file.getName().toLowerCase().contains("auth")) {
 				if (file.getName().toLowerCase().contains("prerequisite")) {
 					BaseTestCase.setReportName("auth-prerequisite");
