@@ -162,13 +162,13 @@ public class OTPManager {
             RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
             reqWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
             reqWrapper.setRequest(otpGenerateRequestDto);
-            logger.info("inside generate otp");
+            System.out.println("inside generate otp");
 
             RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
                     reqWrapper, ResponseWrapper.class);
-            logger.info("restRequest"+ restRequest.toString());
+            System.out.println("restRequest"+ restRequest.toString());
             ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
-            logger.info("response"+response.toString());
+            System.out.println("response"+response.toString());
             if ( response!=null && response.getResponse()!=null && response.getResponse().get("status")!=null && response.getResponse().get("status").equals(USER_BLOCKED)) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
