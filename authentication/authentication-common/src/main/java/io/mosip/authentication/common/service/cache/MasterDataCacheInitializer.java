@@ -29,14 +29,13 @@ public class MasterDataCacheInitializer implements ApplicationListener<Applicati
 	// Invoking this in post construct does not work due to time-out issue happening
 	// with webclient while invoking from post constuct.
 	public void loadMasterData() throws IdAuthenticationBusinessException {
-		//https://mosip.atlassian.net/browse/MOSIP-35847 after closing this bug will uncomment and test fully
-//		masterDataCache.getMasterDataTitles();
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailContentTemplate());
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailSubjectTemplate());
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpSubjectTemplate());
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpContentTemplate());
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthSmsTemplate());
-//		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpSmsTemplate());
+		masterDataCache.getMasterDataTitles();
+		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailContentTemplate());
+		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailSubjectTemplate());
+		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpSubjectTemplate());
+		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpContentTemplate());
+		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthSmsTemplate());
+		masterDataCache.getMasterDataTemplate(EnvUtil.getOtpSmsTemplate());
 	}
 	
 
