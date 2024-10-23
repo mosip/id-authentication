@@ -1,10 +1,12 @@
 package io.mosip.authentication.internal.service.config;
 
+import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -21,6 +23,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 @Configuration
 @EnableCaching
 @EnableAsync
+@Import(WebSubClientConfig.class)
 public class InternalAuthConfig extends IdAuthConfig {
 
 	@Autowired
