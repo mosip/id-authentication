@@ -8,6 +8,7 @@ fi
 
 NS=ida
 CHART_VERSION=0.0.1-develop
+COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
 kubectl create ns $NS
@@ -18,7 +19,6 @@ function installing_apitestrig() {
   helm repo update
 
   echo Copy Configmaps
-  COPY_UTIL=../copy_cm_func.sh
   $COPY_UTIL configmap global default $NS
   $COPY_UTIL configmap keycloak-host keycloak $NS
   $COPY_UTIL configmap artifactory-share artifactory $NS
