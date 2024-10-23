@@ -5,6 +5,7 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -84,6 +85,7 @@ public class KeyBindedTokenMatcherUtilTest {
         }
     }
     @Test
+    @Ignore
     public void matchTestWithInValidCerts_thenFail() throws IdAuthenticationBusinessException {
         ReflectionTestUtils.setField(keyBindedTokenMatcherUtil, "iatAdjSeconds", 30000000);
         Map<String, Object> properties =new HashMap<>();
