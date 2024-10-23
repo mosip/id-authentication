@@ -3,9 +3,9 @@ package io.mosip.authentication.otp.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -151,7 +151,8 @@ public class OTPController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, otpRequestDto.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(otpRequestDto, !isPartnerReq, partner);
-			
+			logger.info("inside ida otp service");
+			logger.info("signature- "+request.getHeader("signature"));
 			try {
 				String idType = Objects.nonNull(otpRequestDto.getIndividualIdType()) ? otpRequestDto.getIndividualIdType()
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();

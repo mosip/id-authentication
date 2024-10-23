@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
+import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -44,7 +46,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.util.HMACUtils2;
-import reactor.ipc.netty.http.HttpResources;
+import reactor.netty.http.HttpResources;
 
 /**
  * 
@@ -80,12 +82,16 @@ public class OTPAuthServiceTest {
 	@Mock
 	private IdAuthSecurityManager securityManager;
 
+	@Mock
+	private ValidateOtpHelper validateOtpHelper;
+
+	@Mock
+	private MatchIdentityDataHelper matchIdentityDataHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(otpauthserviceimpl, "env", env);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 	}
 
@@ -139,7 +145,7 @@ public class OTPAuthServiceTest {
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
-		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		Mockito.when(validateOtpHelper.validateOtp(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(true);
 		AuthStatusInfo authStatusInfo = otpauthserviceimpl.authenticate(authreqdto, "123456", Collections.emptyMap(),
 				"PARTNER1");
 		assertNotNull(authStatusInfo);

@@ -10,10 +10,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.testng.TestNG;
@@ -23,13 +25,13 @@ import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
+import io.mosip.testrig.apirig.report.EmailableReport;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
-import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
-import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
@@ -51,6 +53,7 @@ public class MosipTestRunner {
 
 	public static String jarUrl = MosipTestRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	public static List<String> languageList = new ArrayList<>();
+	public static boolean skipAll = false;
 
 	/**
 	 * C Main method to start mosip test execution
@@ -73,9 +76,9 @@ public class MosipTestRunner {
 			} else {
 				ExtractResource.copyCommonResources();
 			}
+			AdminTestUtil.init();
 			IdAuthConfigManager.init();
-			
-			BaseTestCase.suiteSetup(getRunType());
+			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			setLogLevels();
 
@@ -125,6 +128,36 @@ public class MosipTestRunner {
 		System.exit(0);
 
 	}
+	
+	public static void suiteSetup(String runType) {
+		if (IdAuthConfigManager.IsDebugEnabled())
+			LOGGER.setLevel(Level.ALL);
+		else
+			LOGGER.info("Test Framework for Mosip api Initialized");
+		BaseTestCase.initialize();
+		LOGGER.info("Done with BeforeSuite and test case setup! su TEST EXECUTION!\n\n");
+
+		if (!runType.equalsIgnoreCase("JAR")) {
+			AuthTestsUtil.removeOldMosipTempTestResource();
+		}
+		BaseTestCase.currentModule = "auth";
+		BaseTestCase.certsForModule = "IDA";
+		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
+				ConfigManager.getKMDbSchema(),
+				getGlobalResourcePath() + "/" + "config/keyManagerDataDeleteQueriesForEsignet.txt");
+		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
+				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
+				getGlobalResourcePath() + "/" + "config/idaDeleteQueriesForEsignet.txt");
+
+		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
+				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueriesForEsignet.txt");
+		AuthTestsUtil.initiateAuthTest();
+		BaseTestCase.otpListener = new OTPListener();
+		BaseTestCase.otpListener.run();
+	}
+	
+	
 
 	private static void setLogLevels() {
 		AdminTestUtil.setLogLevel();
@@ -143,9 +176,6 @@ public class MosipTestRunner {
 	 */
 	public static void startTestRunner() {
 		File homeDir = null;
-		TestNG runner = new TestNG();
-		List<String> suitefiles = new ArrayList<>();
-		List<String> modulesToRun = BaseTestCase.listOfModules;
 		String os = System.getProperty("os.name");
 		LOGGER.info(os);
 		if (getRunType().contains("IDE") || os.toLowerCase().contains("windows")) {
@@ -156,39 +186,46 @@ public class MosipTestRunner {
 			homeDir = new File(dir.getParent() + "/mosip/testNgXmlFiles");
 			LOGGER.info("ELSE :" + homeDir);
 		}
-		for (File file : homeDir.listFiles()) {
-			for (String fileName : modulesToRun) {
-				if (file.getName().toLowerCase().contains(fileName)) {
+		// List and sort the files
+		File[] files = homeDir.listFiles();
+		if (files != null) {
+			Arrays.sort(files, (f1, f2) -> {
+				// Customize the comparison based on file names
+				if (f1.getName().contains("prerequisite")) {
+					return -1; // f1 should come before f2
+				} else if (f2.getName().contains("prerequisite")) {
+					return 1; // f2 should come after f1
+				}
+				return f1.getName().compareTo(f2.getName()); // default alphabetical order
+			});
+
+			for (File file : files) {
+				TestNG runner = new TestNG();
+				List<String> suitefiles = new ArrayList<>();
+
+				if (file.getName().toLowerCase().contains("auth")) {
+					if (file.getName().toLowerCase().contains("prerequisite")) {
+						BaseTestCase.setReportName("auth-prerequisite");
+					} else {
+						// Check if prerequisite suite failed or skipped
+						if (EmailableReport.getFailedCount() > 0 || EmailableReport.getSkippedCount() > 0) {
+							// skipAll = true;
+						}
+
+						BaseTestCase.setReportName("auth");
+					}
 					suitefiles.add(file.getAbsolutePath());
-				} else if (fileName.equals("all") && file.getName().toLowerCase().contains("testng")) {
-					suitefiles.add(file.getAbsolutePath());
+					runner.setTestSuites(suitefiles);
+					System.getProperties().setProperty("testng.output.dir", "testng-report");
+					runner.setOutputDirectory("testng-report");
+					runner.run();
 				}
 			}
+		} else {
+			LOGGER.error("No files found in directory: " + homeDir);
 		}
-		runner.setTestSuites(suitefiles);
-		System.getProperties().setProperty("testng.outpur.dir", "testng-report");
-		runner.setOutputDirectory("testng-report");
-		runner.run();
-	}
 
-	/**
-	 * The method to return class loader resource path
-	 * 
-	 * @return String
-	 * @throws IOException
-	 */
-	/*
-	 * public static String getGlobalResourcePath() { if
-	 * (getRunType().equalsIgnoreCase("JAR")) { return new
-	 * File(jarUrl).getParentFile().getAbsolutePath() +
-	 * "/MosipTestResource/MosipTemporaryTestResource"; } else if
-	 * (getRunType().equalsIgnoreCase("IDE")) { String path = new
-	 * File(MosipTestRunner.class.getClassLoader().getResource("").getPath()).
-	 * getAbsolutePath() + "/MosipTestResource/MosipTemporaryTestResource"; if
-	 * (path.contains(GlobalConstants.TESTCLASSES)) path =
-	 * path.replace(GlobalConstants.TESTCLASSES, "classes"); return path; } return
-	 * "Global Resource File Path Not Found"; }
-	 */
+	}
 
 	public static String getGlobalResourcePath() {
 		if (cachedPath != null) {
@@ -215,15 +252,6 @@ public class MosipTestRunner {
 
 	public static String getResourcePath() {
 		return getGlobalResourcePath();
-//		if (getRunType().equalsIgnoreCase("JAR")) {
-//			return new File(jarUrl).getParentFile().getAbsolutePath();
-//		} else if (getRunType().equalsIgnoreCase("IDE")) {
-//			String path = new File(MosipTestRunner.class.getClassLoader().getResource("").getPath()).getAbsolutePath();
-//			if (path.contains(GlobalConstants.TESTCLASSES))
-//				path = path.replace(GlobalConstants.TESTCLASSES, "classes");
-//			return path;
-//		}
-//		return "Global Resource File Path Not Found";
 	}
 
 	public static String generatePulicKey() {

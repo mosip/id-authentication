@@ -7,11 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -83,7 +79,7 @@ public class CredentialIssueanceCallbackController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "${ida-websub-idchange-credential-issued-callback-relative-url}" ,topic = "${ida-topic-credential-issued}")
-	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId, 
+	public ResponseWrapper<?> handleCredentialIssuedEvent(@PathVariable("partnerId") String partnerId,
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleCredentialIssuedEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
@@ -138,7 +134,8 @@ public class CredentialIssueanceCallbackController {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleDeactivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
 		return handleEvent(eventModel, e);
 	}
-	
+
+
 	/**
 	 * Handle events end point.
 	 *
@@ -160,7 +157,9 @@ public class CredentialIssueanceCallbackController {
 	@PreAuthenticateContentAndVerifyIntent(secret = "${"+ IDA_WEBSUB_CRED_ISSUE_CALLBACK_SECRET +"}",callback = "${ida-websub-idchange-activate-id-callback-relative-url}",topic = "${ida-topic-activate-id}")
 	public ResponseWrapper<?> handleActivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
+
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleActivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.info("inside post mapping handleActivateeventId");
 		return handleEvent(eventModel, e);
 	}
 

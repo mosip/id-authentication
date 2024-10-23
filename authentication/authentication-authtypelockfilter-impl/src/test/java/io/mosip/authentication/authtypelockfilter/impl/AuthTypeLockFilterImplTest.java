@@ -10,15 +10,16 @@ import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterExcept
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -31,7 +32,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(SpringRunner.class)
+import static org.mockito.Mockito.lenient;
+
+@RunWith(MockitoJUnitRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class AuthTypeLockFilterImplTest {
@@ -132,7 +135,7 @@ public class AuthTypeLockFilterImplTest {
 		status1.setAuthSubType("phone");
 		status1.setLocked(true);
 		authtypeStatusList.add(status1);
-		Mockito.when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
+		lenient().when(authTypeStatusService.fetchAuthtypeStatus(Mockito.anyString())).thenReturn(authtypeStatusList);
 		try {
 			ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,
 					authtypeStatusList);
@@ -196,7 +199,6 @@ public class AuthTypeLockFilterImplTest {
 		status.setLocked(true);
 		List<AuthtypeStatus> authtypeStatusList = new ArrayList<>();
 		authtypeStatusList.add(status);
-		System.out.println("1= "+authtypeStatusList);
 		IdAuthenticationBusinessException exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
 				String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
 						MatchType.Category.SPIN.getType()));

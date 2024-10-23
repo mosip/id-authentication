@@ -1,5 +1,5 @@
-[![Maven Package upon a push](https://github.com/mosip/id-authentication/actions/workflows/push_trigger.yml/badge.svg?branch=release-1.2.0.1)](https://github.com/mosip/id-authentication/actions/workflows/push_trigger.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&id=mosip_id-authentication&branch=release-1.2.0.1&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication&branch=release-1.2.0.1)
+[![Maven Package upon a push](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml/badge.svg?branch=develop-java21)](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&id=mosip_id-authentication&branch=develop-java21&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication&branch=develop-java21)
 
 # ID-Authentication 
 
@@ -10,7 +10,7 @@ This repository contains source code and design documents for MOSIP ID Authentic
 Refer to [SQL scripts](db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 1.11. 
+The project requires JDK 1.21. 
 1. Build and install:
     ```
     $ cd kernel
