@@ -1,8 +1,7 @@
-package io.mosip.resident.interceptor;
+package io.mosip.authentication.common.service.config;
 
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.resident.config.LoggerConfiguration;
-import io.mosip.resident.constant.ResidentConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -18,10 +17,10 @@ import java.util.stream.Stream;
  * @author Kamesh Shekhar Prasad
  */
 @Component
-@ConditionalOnProperty(value = ResidentConstants.RESIDENT_REST_TEMPLATE_LOGGING_INTERCEPTOR_FILTER_ENABLED, havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(value = "true", havingValue = "true", matchIfMissing = false)
 public class RestTemplateLoggingInterceptor implements ClientHttpRequestInterceptor {
 
-    private final Logger logger = LoggerConfiguration.logConfig(RestTemplateLoggingInterceptor.class);
+    private static Logger logger = IdaLogger.getLogger(RestTemplateLoggingInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(

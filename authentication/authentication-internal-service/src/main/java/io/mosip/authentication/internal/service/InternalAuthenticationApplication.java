@@ -136,7 +136,7 @@ import org.springframework.web.client.RestTemplate;
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class,
-		RestTemplateHelper.class, RestTemplate.class, LanguageUtil.class, TypeForIdNameHelper.class
+		RestTemplateHelper.class, LanguageUtil.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
 		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class
