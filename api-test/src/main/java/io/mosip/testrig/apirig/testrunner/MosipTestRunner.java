@@ -191,10 +191,10 @@ public class MosipTestRunner {
 		if (files != null) {
 			Arrays.sort(files, (f1, f2) -> {
 				// Customize the comparison based on file names
-				if (f1.getName().contains("prerequisite")) {
+				if (f1.getName().toLowerCase().contains("prerequisite")) {
 					return -1; // f1 should come before f2
-				} else if (f2.getName().contains("prerequisite")) {
-					return 1; // f2 should come after f1
+				} else if (f2.getName().toLowerCase().contains("prerequisite")) {
+					return 1; // f2 comes before f1
 				}
 				return f1.getName().compareTo(f2.getName()); // default alphabetical order
 			});
