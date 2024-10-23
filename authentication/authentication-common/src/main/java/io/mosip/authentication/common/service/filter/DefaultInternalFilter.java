@@ -8,8 +8,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -21,7 +19,7 @@ import io.mosip.kernel.core.util.StringUtils;
  *
  * @author Manoj SP
  */
-@Component
+
 public class DefaultInternalFilter extends InternalAuthFilter {
 	
 	/* (non-Javadoc)

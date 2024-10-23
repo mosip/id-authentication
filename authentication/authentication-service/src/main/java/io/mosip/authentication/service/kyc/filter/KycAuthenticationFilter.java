@@ -3,8 +3,6 @@ package io.mosip.authentication.service.kyc.filter;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -17,7 +15,7 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
  * 
  * @author Sanjay Murali
  */
-@Component
+
 public class KycAuthenticationFilter extends IdAuthFilter {
 
 	/** The Constant KYC. */

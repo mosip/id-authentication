@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -35,7 +34,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Manoj SP
  * @author Sanjay Murali
  */
-@Component
+
 public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	private static final String SIGNATURE_HEADER = "signature header";
