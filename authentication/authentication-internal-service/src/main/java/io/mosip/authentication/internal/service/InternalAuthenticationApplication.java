@@ -8,6 +8,7 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
+import io.mosip.kernel.websub.api.config.publisher.WebSubPublisherClientConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -138,7 +139,7 @@ import org.springframework.web.client.RestTemplate;
 		RestTemplateHelper.class, RestTemplate.class, LanguageUtil.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
-		, ECKeyPairGenRequestValidator.class
+		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class
 })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*",
 		"io.mosip.kernel.core.logger.config",
