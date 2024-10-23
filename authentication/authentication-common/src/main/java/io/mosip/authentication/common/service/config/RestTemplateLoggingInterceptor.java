@@ -25,7 +25,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
     @Override
     public ClientHttpResponse intercept(
             HttpRequest req, byte[] reqBody, ClientHttpRequestExecution ex) throws IOException {
-
+        System.out.println("inside intercept");
         Thread currentThread = Thread.currentThread();
         StackTraceElement[] stackTrace = currentThread.getStackTrace();
         String stackTraceString = Stream.of(stackTrace).map(String::valueOf).collect(Collectors.joining("\n"));
@@ -35,6 +35,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
         long currentTimeAfterExecution = System.currentTimeMillis();
         long timeDiff = currentTimeAfterExecution - currentTimeBeforeExecution;
         logger.debug("#rest-template-log#"+ ","+ req.getMethod() + ","+ req.getURI() + ","+timeDiff+"ms,"+stackTraceString);
+        System.out.println("#rest-template-log#"+ ","+ req.getMethod() + ","+ req.getURI() + ","+timeDiff+"ms,"+stackTraceString);
         return response;
     }
 }
