@@ -128,7 +128,7 @@
 		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-		<maven.jacoco.version>0.8.11</maven.jacoco.version>
+		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
@@ -349,7 +349,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${maven.jacoco.version}</version>
+				<version>${jacoco.maven.plugin.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>**/constant/**</exclude>

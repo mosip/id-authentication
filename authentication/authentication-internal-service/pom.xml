@@ -15,7 +15,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-		<maven.jacoco.version>0.8.11</maven.jacoco.version>
+		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
