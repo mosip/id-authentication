@@ -161,7 +161,7 @@ public class AuthController {
 				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 				}
-				DataValidationUtil.validate(errors);
+				//DataValidationUtil.validate(errors);
 				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
 						partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT, requestWithMetadata);
 				// Note: Auditing of success or failure status of each authentication (but not
