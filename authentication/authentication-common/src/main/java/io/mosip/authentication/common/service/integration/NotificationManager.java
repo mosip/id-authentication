@@ -82,11 +82,13 @@ public class NotificationManager {
 			mailRequestDto.add("mailTo", emailId);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
 					mailRequestDto, String.class);
-			restHelper.requestAsync(restRequestDTO);
+			restHelper.requestSync(restRequestDTO);
 		} catch (IDDataValidationException e) {
 			// FIXME change error code
 			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		}
-	}
+		} catch (RestServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
