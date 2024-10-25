@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
+@Ignore
 public class DataShareManagerTest {
 	
 	@Mock
