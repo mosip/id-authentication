@@ -125,10 +125,10 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
-		<maven.jacoco.version>0.8.11</maven.jacoco.version>
 		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
+		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
@@ -149,7 +149,9 @@
 
 		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
-
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/verticle/**,**/spi/**,"**/proxy/**","**/entities/**","**/filter/**","**/util/**","**/verifier/**"</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<objenesis.version>3.1</objenesis.version>
@@ -347,7 +349,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${maven.jacoco.version}</version>
+				<version>${jacoco.maven.plugin.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>**/constant/**</exclude>
@@ -363,12 +365,30 @@
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+					<skip>false</skip>
+					<argLine>
+						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+					</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
 					<execution>
 						<id>report</id>
-						<phase>prepare-package</phase>
 						<goals>
-							<goal>report</goal>
+							<goal>report-aggregate</goal>
 						</goals>
+						<phase>verify</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -431,18 +451,7 @@
 					<!-- <format>json</format> -->
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven.surefire.plugin.version}</version>
-				<configuration>
-					<skipTests>true</skipTests>
-					<skip>false</skip>
-					<argLine>
-						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
-					</argLine>
-				</configuration>
-			</plugin>
+
 		</plugins>
 	</build>
 		
