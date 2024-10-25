@@ -303,11 +303,6 @@
             <version>${biosdk-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-auth-adapter</artifactId>
-            <version>${kernel-auth-adapter.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.mosip.demosdk</groupId>
             <artifactId>demosdk</artifactId>
             <version>${demosdk.version}</version>

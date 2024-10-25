@@ -1,5 +1,6 @@
 package io.mosip.authentication.otp.service;
 
+import io.mosip.authentication.common.service.config.*;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
@@ -16,11 +17,6 @@ import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.cache.MasterDataCache;
 import io.mosip.authentication.common.service.cache.MasterDataCacheInitializer;
-import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.config.KafkaProducerConfig;
-import io.mosip.authentication.common.service.config.LangComparatorConfig;
-import io.mosip.authentication.common.service.config.OpenApiProperties;
-import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
@@ -119,9 +115,8 @@ import org.springframework.web.client.RestTemplate;
 		IdAuthWebSubInitializer.class, AuthAnonymousEventPublisher.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class, 
 		HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class,
-		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class
-		, PDFGeneratorImpl.class, PublisherClientImpl.class, RestTemplateHelper.class,
-		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class})
+		PDFGeneratorImpl.class, PublisherClientImpl.class, RestTemplateHelper.class,
+		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class, TrailingSlashRedirectFilter.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
