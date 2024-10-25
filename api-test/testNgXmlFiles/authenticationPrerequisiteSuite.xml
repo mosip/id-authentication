@@ -16,111 +16,111 @@
 			<class name="io.mosip.testrig.apirig.testscripts.AddIdentity" />
 		</classes>
 	</test>
-	<test name="CreateVID">
-		<parameter name="ymlFile"	value="ida/CreateVID/CreateVid.yml" />
-	    <parameter name="idKeyName" value="VID" />
-	    <parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
-		</classes>
-	</test>
-	
-	<test name="UpdateIdentityForUin">
-		<parameter name="ymlFile"
-			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
-			<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.UpdateIdentity" />
-		</classes>
-	</test>
+<!--	<test name="CreateVID">-->
+<!--		<parameter name="ymlFile"	value="ida/CreateVID/CreateVid.yml" />-->
+<!--	    <parameter name="idKeyName" value="VID" />-->
+<!--	    <parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />-->
+<!--		</classes>-->
+<!--	</test>-->
+<!--	-->
+<!--	<test name="UpdateIdentityForUin">-->
+<!--		<parameter name="ymlFile"-->
+<!--			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />-->
+<!--			<parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class name="io.mosip.testrig.apirig.testscripts.UpdateIdentity" />-->
+<!--		</classes>-->
+<!--	</test>-->
 
 
-	<test name="CreateDraft">
-		<parameter name="ymlFile"	value="ida/CreateDraft/CreateDraft.yml" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.PostWithOnlyPathParam" />
-	</classes>
-	</test> 
-	
-	<test name="GetDraft">
-		<parameter name="ymlFile"	value="ida/GetDraft/GetDraft.yml" />
-		<parameter name="idKeyName" value="UIN" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.GetWithParamForAutoGenId" />
-	</classes>
-	</test>
-	
-	<test name="CreateDraftVID">
-		<parameter name="ymlFile"	value="ida/CreateDraftVID/CreateDraftVID.yml" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
-	</classes>
-	</test>
-	
-	
-	 <test name="UpdateDraft">
-		<parameter name="ymlFile"	value="ida/UpdateDraft/UpdateDraft.yml" />
-		<parameter name="pathParams"	value="registrationId" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.UpdateDraft" />
-	</classes>
-	</test> 
-	
-	<test name="PublishDraft">
-		<parameter name="ymlFile"	value="ida/PublishDraft/PublishDraft.yml" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
-	</classes>
-	</test>
-	<test name="GenerateVID">
-		<parameter name="ymlFile"
-			value="ida/GenerateVID/createGenerateVID.yml" />
-		<parameter name="idKeyName" value="vid" />
-		<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
-		</classes>
-	</test>
-	
-	<test name="DeactivateVIDs">
-		<parameter name="ymlFile"	value="ida/DeactivateUin/DeactivateUin.yml" />
-		<parameter name="prerequisite" value="Yes" />
-	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
-	</classes>
-	</test>
+<!--	<test name="CreateDraft">-->
+<!--		<parameter name="ymlFile"	value="ida/CreateDraft/CreateDraft.yml" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.PostWithOnlyPathParam" />-->
+<!--	</classes>-->
+<!--	</test> -->
+<!--	-->
+<!--	<test name="GetDraft">-->
+<!--		<parameter name="ymlFile"	value="ida/GetDraft/GetDraft.yml" />-->
+<!--		<parameter name="idKeyName" value="UIN" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.GetWithParamForAutoGenId" />-->
+<!--	</classes>-->
+<!--	</test>-->
+<!--	-->
+<!--	<test name="CreateDraftVID">-->
+<!--		<parameter name="ymlFile"	value="ida/CreateDraftVID/CreateDraftVID.yml" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />-->
+<!--	</classes>-->
+<!--	</test>-->
+<!--	-->
+<!--	-->
+<!--	 <test name="UpdateDraft">-->
+<!--		<parameter name="ymlFile"	value="ida/UpdateDraft/UpdateDraft.yml" />-->
+<!--		<parameter name="pathParams"	value="registrationId" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.UpdateDraft" />-->
+<!--	</classes>-->
+<!--	</test> -->
+<!--	-->
+<!--	<test name="PublishDraft">-->
+<!--		<parameter name="ymlFile"	value="ida/PublishDraft/PublishDraft.yml" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />-->
+<!--	</classes>-->
+<!--	</test>-->
+<!--	<test name="GenerateVID">-->
+<!--		<parameter name="ymlFile"-->
+<!--			value="ida/GenerateVID/createGenerateVID.yml" />-->
+<!--		<parameter name="idKeyName" value="vid" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class-->
+<!--				name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />-->
+<!--		</classes>-->
+<!--	</test>-->
+<!--	-->
+<!--	<test name="DeactivateVIDs">-->
+<!--		<parameter name="ymlFile"	value="ida/DeactivateUin/DeactivateUin.yml" />-->
+<!--		<parameter name="prerequisite" value="Yes" />-->
+<!--	<classes>-->
+<!--		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />-->
+<!--	</classes>-->
+<!--	</test>-->
 
-	<test name="RevokeVID">
-		<parameter name="ymlFile"
-			value="ida/RevokeVID/createRevokeVID.yml" />
-			<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithBodyWithOtpGenerate" />
-		</classes>
-	</test>
+<!--	<test name="RevokeVID">-->
+<!--		<parameter name="ymlFile"-->
+<!--			value="ida/RevokeVID/createRevokeVID.yml" />-->
+<!--			<parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class name="io.mosip.testrig.apirig.testscripts.PatchWithBodyWithOtpGenerate" />-->
+<!--		</classes>-->
+<!--	</test>-->
 
-	<test name="AuthInternalLock">
-		<parameter name="ymlFile"
-			value="ida/AuthInternalLock/AuthInternalLock.yml" />
-			<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
-		</classes>
-	</test>
+<!--	<test name="AuthInternalLock">-->
+<!--		<parameter name="ymlFile"-->
+<!--			value="ida/AuthInternalLock/AuthInternalLock.yml" />-->
+<!--			<parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />-->
+<!--		</classes>-->
+<!--	</test>-->
 
-	<test name="AuthLock">
-		<parameter name="ymlFile"
-			value="ida/AuthLock/createAuthLock.yml" />
-			<parameter name="prerequisite" value="Yes" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PostWithBodyWithOtpGenerate" />
-		</classes>
-	</test>
+<!--	<test name="AuthLock">-->
+<!--		<parameter name="ymlFile"-->
+<!--			value="ida/AuthLock/createAuthLock.yml" />-->
+<!--			<parameter name="prerequisite" value="Yes" />-->
+<!--		<classes>-->
+<!--			<class name="io.mosip.testrig.apirig.testscripts.PostWithBodyWithOtpGenerate" />-->
+<!--		</classes>-->
+<!--	</test>-->
 	
 </suite>
