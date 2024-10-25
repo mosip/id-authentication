@@ -302,11 +302,11 @@
             <artifactId>biosdk-client</artifactId>
             <version>${biosdk-client.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-auth-adapter</artifactId>
-            <version>${kernel-auth-adapter.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.mosip.kernel</groupId>-->
+<!--            <artifactId>kernel-auth-adapter</artifactId>-->
+<!--            <version>${kernel-auth-adapter.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
