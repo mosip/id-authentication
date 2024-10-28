@@ -57,12 +57,10 @@ public class NotificationManager {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
 					RestRequestFactory.createRequest(smsRequestDto), String.class);
 			restHelper.requestSync(restRequestDTO);
-		} catch (IDDataValidationException e) {
+		} catch (IDDataValidationException | RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		} catch (RestServiceException e) {
-            throw new RuntimeException(e);
-        }
+		}
     }
 
 	/**
@@ -85,12 +83,10 @@ public class NotificationManager {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
 					mailRequestDto, String.class);
 			restHelper.requestSync(restRequestDTO);
-		} catch (IDDataValidationException e) {
+		} catch (IDDataValidationException | RestServiceException e) {
 			// FIXME change error code
 			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		} catch (RestServiceException e) {
-            throw new RuntimeException(e);
-        }
+		}
     }
 }
