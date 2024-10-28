@@ -1,6 +1,4 @@
-package io.mosip.authentication.internal.service.config;
-
-import java.io.IOException;
+package io.mosip.authentication.common.service.config;
 
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import jakarta.servlet.Filter;
@@ -11,6 +9,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class TrailingSlashRedirectFilter implements Filter {
