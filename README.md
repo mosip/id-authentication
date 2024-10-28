@@ -10,7 +10,7 @@ This repository contains source code and design documents for MOSIP ID Authentic
 Refer to [SQL scripts](db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 1.11. 
+The project requires JDK 1.21. 
 1. Build and install:
     ```
     $ cd kernel
@@ -25,8 +25,27 @@ The project requires JDK 1.11.
 ## Configuration
 Refer to the [configuration guide](docs/configuration.md).
 
-## Deploy
-To deploy PMS on Kubernetes cluster using Dockers refer to [Sandbox Deployment](https://docs.mosip.io/1.2.0/deployment/sandbox-deployment).
+## Deployment in K8 cluster with other MOSIP services:
+### Pre-requisites
+* Set KUBECONFIG variable to point to existing K8 cluster kubeconfig file:
+    ```
+    export KUBECONFIG=~/.kube/<k8s-cluster.config>
+    ```
+### Install
+  ```
+    $ cd deploy
+    $ ./install.sh
+   ```
+### Delete
+  ```
+    $ cd deploy
+    $ ./delete.sh
+   ```
+### Restart
+  ```
+    $ cd deploy
+    $ ./restart.sh
+   ```
 
 ## Test
 Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
