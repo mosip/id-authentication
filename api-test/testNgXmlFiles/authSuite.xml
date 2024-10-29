@@ -8,7 +8,7 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
 	</listeners>
 
-	<!--<test name="BioAuth">
+	<test name="BioAuth">
 		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
@@ -51,7 +51,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 
 
 	<test name="UpdateIdentity">
@@ -75,7 +75,7 @@
 
 
 
-<!--
+
 	<test name="LockUINVIDTestcasesDEMOAuth">
 		<parameter name="ymlFile"
 			value="ida/HotlistTestcases/HotlistTestcases.yml" />
@@ -91,7 +91,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
-	</test>-->
+	</test>
 	
 	
 	
@@ -123,7 +123,7 @@
 		</classes>
 	</test>
 	
-	<!--<test name="DemoAuth">
+	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
@@ -188,7 +188,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
-	</test>-->
+	</test>
 	
 	
 </suite>
