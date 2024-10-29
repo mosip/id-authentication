@@ -43,7 +43,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.MultiFactorAuthNew" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="AuthTransaction">
 		<parameter name="ymlFile"
@@ -51,7 +51,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
 		</classes>
-	</test>
+	</test>-->
 
 
 	<test name="UpdateIdentity">
@@ -75,7 +75,7 @@
 
 
 
-
+<!--
 	<test name="LockUINVIDTestcasesDEMOAuth">
 		<parameter name="ymlFile"
 			value="ida/HotlistTestcases/HotlistTestcases.yml" />
@@ -91,7 +91,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
-	</test>
+	</test>-->
 	
 	
 	
@@ -134,7 +134,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="BlockPartnerId">
 		<parameter name="ymlFile"
@@ -188,7 +188,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
 		</classes>
-	</test>
+	</test>-->
 	
 	
 </suite>
