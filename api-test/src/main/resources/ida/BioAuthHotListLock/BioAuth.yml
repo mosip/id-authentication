@@ -273,7 +273,7 @@ BioAuth:
     "authStatus": "false"
 }'
   auth_EkycBio_Face_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       description: Ekyc bio auth with face with blocked deviceProviderId
       role: resident
       restMethod: post
@@ -312,7 +312,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       description: Ekyc bio auth with RingFinger with blocked deviceProviderId
       role: resident
       restMethod: post
@@ -351,7 +351,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       description: Ekyc bio auth with LeftMiddleFinger with blocked deviceProviderId
       role: resident
       restMethod: post
@@ -391,7 +391,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       description: Ekyc bio auth with RIGHTIRIS with blocked deviceProviderId
       role: resident
       restMethod: post
