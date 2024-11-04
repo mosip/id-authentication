@@ -29,3 +29,10 @@ ALTER TABLE BATCH_JOB_EXECUTION ADD COLUMN JOB_CONFIGURATION_LOCATION VARCHAR(25
 -- Reverse the creation of indexes
 DROP INDEX IF EXISTS idx_job_name;
 DROP INDEX IF EXISTS idx_job_key;
+
+TRUNCATE TABLE batch_job_execution;
+TRUNCATE TABLE batch_job_execution_context;
+TRUNCATE TABLE batch_job_execution_params;
+TRUNCATE TABLE batch_job_instance;
+TRUNCATE TABLE batch_step_execution;
+TRUNCATE TABLE batch_step_execution_context;
