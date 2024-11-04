@@ -41,7 +41,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos@mosip.net",
