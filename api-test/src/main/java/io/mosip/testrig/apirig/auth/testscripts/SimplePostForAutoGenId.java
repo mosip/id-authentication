@@ -1,6 +1,7 @@
-package io.mosip.testrig.apirig.testscripts;
+package io.mosip.testrig.apirig.auth.testscripts;
 
 import java.lang.reflect.Field;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
+import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -28,15 +31,14 @@ import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
-import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
-import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class SimplePost extends AdminTestUtil implements ITest {
-	private static final Logger logger = Logger.getLogger(SimplePost.class);
+public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
+	private static final Logger logger = Logger.getLogger(SimplePostForAutoGenId.class);
 	protected String testCaseName = "";
+	public String idKeyName = null;
 	public Response response = null;
 	public boolean auditLogCheck = false;
 
@@ -64,6 +66,7 @@ public class SimplePost extends AdminTestUtil implements ITest {
 	@DataProvider(name = "testcaselist")
 	public Object[] getTestCaseList(ITestContext context) {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
+		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		logger.info("Started executing yml: " + ymlFile);
 		return getYmlTestData(ymlFile);
 	}
@@ -76,19 +79,17 @@ public class SimplePost extends AdminTestUtil implements ITest {
 	 * @param testcaseName
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
+	 * @throws NoSuchAlgorithmException
 	 */
 	@Test(dataProvider = "testcaselist")
-	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
+	public void test(TestCaseDTO testCaseDTO)
+			throws AuthenticationTestException, AdminTestException, NoSuchAlgorithmException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
-		auditLogCheck = testCaseDTO.isAuditLogCheck();
-		String[] templateFields = testCaseDTO.getTemplateFields();
 		if (HealthChecker.signalTerminateExecution) {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
-
 		if (testCaseDTO.getTestCaseName().contains("VID") || testCaseDTO.getTestCaseName().contains("Vid")) {
 			if (!BaseTestCase.getSupportedIdTypesValueFromActuator().contains("VID")
 					&& !BaseTestCase.getSupportedIdTypesValueFromActuator().contains("vid")) {
@@ -96,87 +97,68 @@ public class SimplePost extends AdminTestUtil implements ITest {
 			}
 		}
 
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		if (BaseTestCase.isTargetEnvLTS()) {
+			if (!IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)) {
+				if (((BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet"))
+						&& (testCaseName.startsWith("auth_GenerateVID_")
+								|| testCaseName.startsWith("ESignetIdR_Generate")))) {
+					throw new SkipException(GlobalConstants.VID_GENERATED_USING_RESIDENT_API_SO_FEATURE_NOT_SUPPORTED_OR_NEEDED_MESSAGE);
+//					qa115 - f
+//					cam   - t f
+//					dev	  - t 
+				}
+			}
+		}
+
 		
-		if (testCaseName.contains("CreateIdSchema")) {
-			inputJson = modifyIdSchemaInputJson(inputJson);
+		testCaseName = isTestCaseValidForExecution(testCaseDTO);
+		String[] templateFields = testCaseDTO.getTemplateFields();
+		String inputJson = "";
+		
+		if (!(BaseTestCase.certsForModule.equals("DSL") && (testCaseName.startsWith("Esignet_CreateOIDCClient")))) {
+			inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		} else {
+			inputJson = testCaseDTO.getInput();
 		}
 
-		if (inputJson.contains("&quot;")) {
-			inputJson = inputJson.replace("&quot;", "\"");
-		}
-
-		if (inputJson.contains("$PHONENUMBERFROMREGEXFORSIGNUP$")) {
-			String phoneNumber = getPhoneNumber();
-			if (phoneNumber != null && !phoneNumber.isEmpty()) {
-				inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFROMREGEXFORSIGNUP$", phoneNumber);
-				writeAutoGeneratedId(testCaseDTO.getTestCaseName(), "PHONE", phoneNumber);
-			}
-		}
-
-		if (inputJson.contains("$FULLNAMETOREGISTERUSER$")) {
-			String jsonString = generateFullNameToRegisterUser(inputJson, testCaseDTO.getTestCaseName());
-			if (!jsonString.isBlank())
-				inputJson = jsonString;
-		}
-
-		if (inputJson.contains("$PASSWORDTOREGISTERUSER$")) {
-//			String password = getPasswordPattern();
-			String password = PASSWORD_FOR_ADDIDENTITY_AND_REGISTRATION;
-			if (password != null && !password.isEmpty()) {
-				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTOREGISTERUSER$", password);
-//				writeAutoGeneratedId(testCaseDTO.getTestCaseName(), "PASSWORD", password);
-			}
-		}
-
-		if (inputJson.contains("$PASSWORDTORESET$")) {
-			String passwordToReset = PASSWORD_TO_RESET;
-			if (passwordToReset != null && !passwordToReset.isEmpty()) {
-				inputJson = replaceKeywordWithValue(inputJson, "$PASSWORDTORESET$", passwordToReset);
-			}
-		}
+		String outputJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
 			ArrayList<JSONObject> outputtestcase = AdminTestUtil.getOutputTestCase(testCaseDTO);
 			for (int i = 0; i < languageList.size(); i++) {
-				response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
+				response = postWithBodyAndCookieForAutoGeneratedId(ApplnURI + testCaseDTO.getEndPoint(),
 						getJsonFromTemplate(inputtestCases.get(i).toString(), testCaseDTO.getInputTemplate()),
-						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
+						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), idKeyName);
 
 				Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doJsonOutputValidation(
 						response.asString(),
 						getJsonFromTemplate(outputtestcase.get(i).toString(), testCaseDTO.getOutputTemplate()),
 						testCaseDTO, response.getStatusCode());
+				if (testCaseDTO.getTestCaseName().toLowerCase().contains("dynamic")) {
+					JSONObject json = new JSONObject(response.asString());
+					idField = json.getJSONObject("response").get("id").toString();
+				}
 				Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 
 				if (!OutputValidationUtil.publishOutputResult(ouputValid))
 					throw new AdminTestException("Failed at output validation");
 			}
+		} else {
+			response = postWithBodyAndCookieForAutoGeneratedId(ApplnURI + testCaseDTO.getEndPoint(), inputJson,
+					auditLogCheck, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), idKeyName);
 		}
 
-		else {
-				response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
-						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
-			}
 			Map<String, List<OutputValidationDto>> ouputValid = null;
 			
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),
 						getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()), testCaseDTO,
 						response.getStatusCode());
 			
-
 			Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
-
-			if (!OutputValidationUtil.publishOutputResult(ouputValid)) {
-				if (response.asString().contains("IDA-OTA-001"))
-					throw new AdminTestException(
-							"Exceeded number of OTP requests in a given time, Increase otp.request.flooding.max-count");
-				else
-					throw new AdminTestException("Failed at otp output validation");
-			}
+			if (!OutputValidationUtil.publishOutputResult(ouputValid))
+				throw new AdminTestException("Failed at output validation");
 		}
-
 	
 
 	/**
