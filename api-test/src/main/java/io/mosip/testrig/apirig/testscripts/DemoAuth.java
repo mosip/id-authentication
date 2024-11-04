@@ -136,13 +136,21 @@ public class DemoAuth extends AdminTestUtil implements ITest {
 		logger.info("************* Modification of demo auth request ******************");
 		Reporter.log("<b><u>Modification of demo auth request</u></b>");
 		
+		authRequest = JsonPrecondtion.parseAndReturnJsonContent(authRequest, generateCurrentUTCTimeStamp(), "timestamp");
 		JSONObject authRequestTemp = new JSONObject(authRequest);
-		String originalRequestTime = authRequestTemp.getString("requestTime");
+		
+		String originalRequestTime="";
+		if (authRequestTemp.has("requestTime") && !authRequestTemp.isNull("requestTime")) {
+			 originalRequestTime = authRequestTemp.getString("requestTime");
+		}
+		
 		authRequest = modifyRequest(authRequest, demoAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
 		
 		
 		authRequestTemp = new JSONObject(authRequest);
-		authRequestTemp.put("requestTime", originalRequestTime);
+		if (originalRequestTime != null) {
+		    authRequestTemp.put("requestTime", originalRequestTime);
+		}
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
 		authRequest = authRequestTemp.toString();
