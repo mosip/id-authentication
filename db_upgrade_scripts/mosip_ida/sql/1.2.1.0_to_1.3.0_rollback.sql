@@ -2,6 +2,13 @@
 -- Rollback script for Migrating Spring batch version back from 5.0 as part of Java 21 Migration.
 -- ------------------------------------------------------------------------------------------
 
+TRUNCATE TABLE batch_job_execution CASCADE;
+TRUNCATE TABLE batch_job_execution_context CASCADE;
+TRUNCATE TABLE batch_job_execution_params CASCADE;
+TRUNCATE TABLE batch_job_instance CASCADE;
+TRUNCATE TABLE batch_step_execution CASCADE;
+TRUNCATE TABLE batch_step_execution_context CASCADE;
+
 -- Revert ALTER on BATCH_STEP_EXECUTION
 ALTER TABLE BATCH_STEP_EXECUTION DROP COLUMN CREATE_TIME;  -- Remove the column added
 ALTER TABLE BATCH_STEP_EXECUTION ALTER COLUMN START_TIME SET NOT NULL;  -- Revert to NOT NULL
@@ -33,9 +40,3 @@ DROP SEQUENCE IF EXISTS BATCH_STEP_EXECUTION_SEQ;
 DROP SEQUENCE IF EXISTS BATCH_JOB_EXECUTION_SEQ;
 DROP SEQUENCE IF EXISTS BATCH_JOB_SEQ;
 
-TRUNCATE TABLE batch_job_execution;
-TRUNCATE TABLE batch_job_execution_context;
-TRUNCATE TABLE batch_job_execution_params;
-TRUNCATE TABLE batch_job_instance;
-TRUNCATE TABLE batch_step_execution;
-TRUNCATE TABLE batch_step_execution_context;
