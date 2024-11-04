@@ -278,7 +278,7 @@ BioAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -317,7 +317,7 @@ BioAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -356,7 +356,7 @@ BioAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -396,7 +396,7 @@ BioAuth:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",

@@ -2251,11 +2251,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RightIris_With_MANDATORY_iris_in_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: invalid scenario
+      description: with mandatory iris in policy and do auth
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
-      outputTemplate: ida/BioAuth/error
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -2286,7 +2286,7 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "false"
+  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Valid_timestamp:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$

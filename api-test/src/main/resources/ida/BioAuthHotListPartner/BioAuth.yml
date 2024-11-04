@@ -199,8 +199,8 @@ BioAuth:
       description: Ekyc face auth with blocked partner
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -238,8 +238,8 @@ BioAuth:
       description: Ekyc RingFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -277,8 +277,8 @@ BioAuth:
       description: Ekyc LeftMiddleFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -316,8 +316,8 @@ BioAuth:
       description: Ekyc RIGHTIRIS auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
