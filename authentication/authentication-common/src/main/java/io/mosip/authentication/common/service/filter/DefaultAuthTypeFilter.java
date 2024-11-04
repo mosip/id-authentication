@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Dinesh Karuppiah.T
  */
-@Component
+
 public class DefaultAuthTypeFilter extends DefaultInternalFilter {
 
 	

@@ -19,9 +19,16 @@ import java.io.StringReader;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.util.Base64URL;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
 @RunWith(SpringRunner.class)
 public class KeyBindedTokenMatcherUtilTest {
@@ -84,7 +91,7 @@ public class KeyBindedTokenMatcherUtilTest {
         }
     }
     @Test
-    public void matchTestWithInValidCerts_thenFail() throws IdAuthenticationBusinessException {
+    public void matchTestWithInValidCerts_thenFail() throws Exception {
         ReflectionTestUtils.setField(keyBindedTokenMatcherUtil, "iatAdjSeconds", 30000000);
         Map<String, Object> properties =new HashMap<>();
         Map<String, String> bindingCertificates =new HashMap<>();
@@ -92,13 +99,39 @@ public class KeyBindedTokenMatcherUtilTest {
         input.put("individualId","individualId");
         input.put("type","type");
         input.put("format","jwt");
-        input.put("token","eyJ0eXAiOiJKV1QiLCJ4NXQjUzI1NiI6IjBFSmtKMDYyWnZNZ0dKSk9BRVNYWFo1Tl9hamRDOG04Y0hPTXVKVVRGWUEiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2OTg5ODgyMTcsIm5iZiI6MTY5ODk4ODIxNywiZXhwIjoxNjk4OTg4ODIyLCJqdGkiOiJYZkpRaGVfU3RuNTNmaWc3YVV3V3MiLCJhdWQiOiJpZGEtYmluZGluZyIsInN1YiI6IjQxNTg2MTI2MDkiLCJpc3MiOiJwb3N0bWFuLWluamkifQ.bSqcJZlq5PyAExwPoww41OF-vBIyaADZ8OsXzA_7gtowNl0kChVAB11eIPEcjuFvYeQiSpQgNZsS2-w84ZBdiqh72kkJQLjN7ItMKNf-cekNRmG6XFf1os1vom7CwrguataoYvboiiXYw0WUfsZTmnhcOKC8XN3qAsB2YAyYEnBJBeKy5aCNAfJiOULTMrqAqcu-A1MA_wtAkaCJggiNxf1-5bJWjZYyQOkis0nHmbgWjzzThdd6TzMkLnUyNxzO2n1E9A19OJ2ZH0ZN1d46c8QBMsYmGX-Kz8B8GBDnDlwC4M5g4hmxuXCN6sBcVjAONl92LxI1htSZ6muv3xL1YQ");
-
+        input.put("token", generateTestJwtToken());
         try {
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
             Assert.assertEquals("IDA-KBT-001",e.getErrorCode());
         }
+    }
+
+    private String generateTestJwtToken() throws JOSEException {
+        // Secret key for signing - in production, this should be stored securely
+        String secretKey = "your-256-bit-secret-key-for-testing-purposes-only";
+        // Create HMAC signer
+        JWSSigner signer = new MACSigner(secretKey.getBytes());
+        // Create header with thumbprint
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
+                .x509CertSHA256Thumbprint(Base64URL.encode(Base64.getDecoder().decode("dGVzdF90aHVtYnByaW50"))) // "test_thumbprint" in base64
+                .build();
+        // Prepare JWT with claims
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject("test-user")
+                .issuer("test-issuer")
+                .claim("name", "Test User")
+                .claim("email", "test@example.com")
+                .claim("roles", "ROLE_USER")
+                .issueTime(new Date())
+                .expirationTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24 hours
+                .build();
+        // Create signed JWT with custom header
+        SignedJWT signedJWT = new SignedJWT(header, claimsSet);
+        // Sign the JWT
+        signedJWT.sign(signer);
+        // Serialize to compact form
+        return signedJWT.serialize();
     }
 
     @Test

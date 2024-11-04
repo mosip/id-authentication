@@ -85,7 +85,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
  * @author Loganathan Sekar
  * @author Nagarjuna K
  */
-@Component
+
 public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthFilter.class);
