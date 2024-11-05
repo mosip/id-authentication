@@ -1,7 +1,7 @@
-package io.mosip.testrig.apirig.testscripts;
-
+package io.mosip.testrig.apirig.auth.testscripts;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,27 +20,28 @@ import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
+import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
+import io.mosip.testrig.apirig.utils.BioDataUtility;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
-import io.mosip.testrig.apirig.utils.FileUtil;
-import io.mosip.testrig.apirig.utils.IdAuthConfigManager;
-import io.mosip.testrig.apirig.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class OtpAuthNew extends AdminTestUtil implements ITest {
-	private static final Logger logger = Logger.getLogger(OtpAuthNew.class);
+public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
+	private static final Logger logger = Logger.getLogger(MultiFactorAuthNew.class);
 	protected String testCaseName = "";
 	public Response response = null;
-	public boolean isInternal = false;
 	
 	private EncryptionDecrptionUtil encryptDecryptUtil = new EncryptionDecrptionUtil();
+	private BioDataUtility bioDataUtil = new BioDataUtility();
 
 	@BeforeClass
 	public static void setLogLevel() {
@@ -66,15 +67,15 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 	@DataProvider(name = "testcaselist")
 	public Object[] getTestCaseList(ITestContext context) {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
-		isInternal = Boolean.parseBoolean(context.getCurrentXmlTest().getLocalParameters().get("isInternal"));
 		logger.info("Started executing yml: " + ymlFile);
 		return getYmlTestData(ymlFile);
 	}
 	
 	@Test(dataProvider = "testcaselist")
-	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {		
-		testCaseName = testCaseDTO.getTestCaseName(); 
+	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
+		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
+		//String ekycPartnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
 		
 		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
 		String ekycPartnerKeyURL = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.ekycPartnerId + "/" + PartnerRegistration.kycApiKey;
@@ -90,12 +91,17 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ekycPartnerKeyURL$", ekycPartnerKeyURL));
 			PartnerRegistration.appendEkycOrRp = "ekyc-";
 		}
-		
 		if (testCaseDTO.getEndPoint().contains("$UpdatedPartnerKeyURL$")) {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
 					PartnerRegistration.updatedpartnerKeyUrl));
 		}
+		
+		
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
+//		if(testCaseDTO.getEndPoint().contains("$partnerKeyURL$"))
+//		{
+//			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", ekycPartnerKeyUrl));
+//		}
 		String otpChannel="";
 		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null, otpIdentyEnryptRequestPath = null;
 		if(req.has("otpChannel")) {
@@ -112,24 +118,22 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 		
 		
 		otpReqJson.remove("sendOtpEndPoint");
-		otpIdentyEnryptRequestPath = otpReqJson.getString("otpIdentyEnryptRequestPath");
-		otpReqJson.remove("otpIdentyEnryptRequestPath");
 		
+//		if(sendOtpEndPoint.contains("$partnerKeyURL$"))
+//		{
+//			sendOtpEndPoint = sendOtpEndPoint.replace("$partnerKeyURL$", ekycPartnerKeyURL);
+//		}
 		if(sendOtpEndPoint.contains("$partnerKeyURL$"))
 		{
-			sendOtpEndPoint= sendOtpEndPoint.replace("$partnerKeyURL$", partnerKeyUrl);
+			sendOtpEndPoint = sendOtpEndPoint.replace("$partnerKeyURL$", partnerKeyUrl);
 		}
 		if(sendOtpEndPoint.contains("$ekycPartnerKeyURL$"))
 		{
-			sendOtpEndPoint= sendOtpEndPoint.replace("$ekycPartnerKeyURL$", ekycPartnerKeyURL);
+			sendOtpEndPoint = sendOtpEndPoint.replace("$partnerKeyURL$", ekycPartnerKeyURL);
 		}
-		
-		Response otpResponse = null;
-		if(isInternal)
-			otpResponse = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + sendOtpEndPoint, getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME, "resident", testCaseDTO.getTestCaseName());
-		else
-			otpResponse = postRequestWithAuthHeaderAndSignature(ApplnURI + sendOtpEndPoint, getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), testCaseDTO.getTestCaseName());
-		
+		Response otpResponse = postRequestWithAuthHeaderAndSignature(ApplnURI + sendOtpEndPoint,
+				getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), testCaseDTO.getTestCaseName());
+
 		JSONObject res = new JSONObject(testCaseDTO.getOutput());
 		String sendOtpResp = null, sendOtpResTemplate = null;
 		if(res.has("sendOtpResp")) {
@@ -139,38 +143,64 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 		JSONObject sendOtpRespJson = new JSONObject(sendOtpResp);
 		sendOtpResTemplate = sendOtpRespJson.getString("sendOtpResTemplate");
 		sendOtpRespJson.remove("sendOtpResTemplate");
-		Map<String, List<OutputValidationDto>> ouputValidOtp = OutputValidationUtil
-				.doJsonOutputValidation(otpResponse.asString(), getJsonFromTemplate(sendOtpRespJson.toString(), sendOtpResTemplate));
-		//Need to uncomment line 126 to 129
-		//Reporter.log(ReportUtil.getOutputValidationReport(ouputValidOtp));
-		
+		Map<String, List<OutputValidationDto>> ouputValidOtp = OutputValidationUtil.doJsonOutputValidation(
+				otpResponse.asString(), getJsonFromTemplate(sendOtpRespJson.toString(), sendOtpResTemplate),
+				testCaseDTO, otpResponse.getStatusCode());
+		Reporter.log(ReportUtil.getOutputValidationReport(ouputValidOtp));
+		OutputValidationUtil.publishOutputResult(ouputValidOtp);
 		//if (!OutputValidationUtil.publishOutputResult(ouputValidOtp))
 			//throw new AdminTestException("Failed at Send OTP output validation");
 		
 		//String id = getAutoGeneratedFieldValue(otpRequest, testCaseName);
 		
-		String otpIdentyEnryptRequest = FileUtil.readInput(getResourcePath()+otpIdentyEnryptRequestPath);
-		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
-		otpIdentyEnryptRequest = updateTimestampOtp(otpIdentyEnryptRequest, otpChannel, testCaseName);
+		String identityRequest = null, identityRequestTemplate = null, identityRequestEncUrl = null;
+		if(req.has("identityRequest")) {
+			identityRequest = req.get("identityRequest").toString();
+			req.remove("identityRequest");
+		}
+		identityRequest = buildIdentityRequest(identityRequest);
 		
-		Map<String, String> bioAuthTempMap = (isInternal)
-				? encryptDecryptUtil.getInternalEncryptSessionKeyValue(otpIdentyEnryptRequest)
-				: encryptDecryptUtil.getEncryptSessionKeyValue(otpIdentyEnryptRequest);
-		// Get the authRequest from the template
+		if(identityRequest.contains("$DATETIME$"))
+			identityRequest = identityRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
+		JSONObject identityReqJson = new JSONObject(identityRequest);
+		identityRequestTemplate = identityReqJson.getString("identityRequestTemplate");
+		identityReqJson.remove("identityRequestTemplate");
+		identityRequestEncUrl = identityReqJson.getString("identityRequestEncUrl");
+		identityReqJson.remove("identityRequestEncUrl");
+		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
+		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
+		String identyEnryptRequest = updateTimestampOtp(identityRequest, otpChannel, testCaseName);
+		//String identyEnryptRequest = updateTimestampOtp(identityRequest);
+		String encryptedIdentityReq=null;
+		try {
+			encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identyEnryptRequest, getResourcePath()+props.getProperty("bioValueEncryptionTemplate"), testCaseName, false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		if (Arrays.asList(testCaseDTO.getTestCaseName().split("_")).contains("MultiFactorAuth")) {
+			String demographicsMapper = "(demographics)";
+			JSONObject jsonObject = new JSONObject(identityReqJson.toString());
+			JSONObject jsonBioHbs = new JSONObject(encryptedIdentityReq);
+			if (jsonObject.has("key") && jsonObject.has("value")) {
+				JSONObject jsonHbs = new JSONObject(jsonBioHbs.toString()); // TO DO
+				encryptedIdentityReq = JsonPrecondtion.parseAndReturnJsonContent(encryptedIdentityReq.toString(),
+						jsonObject.get("value").toString(), demographicsMapper + jsonObject.get("key").toString());
+			}
+
+		}
+		Map<String, String> bioAuthTempMap = encryptDecryptUtil.getEncryptSessionKeyValue(encryptedIdentityReq);
 		String authRequest = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of OTP auth request ******************");
 		Reporter.log("<b><u>Modification of otp auth request</u></b>");
-
+		authRequest = modifyRequest(authRequest, bioAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
 		JSONObject authRequestTemp = new JSONObject(authRequest);
-		String originalRequestTime = authRequestTemp.getString("requestTime");
-		authRequest = modifyRequest(authRequest, bioAuthTempMap, getResourcePath() + props.getProperty("idaMappingPath"));
-		authRequestTemp = new JSONObject(authRequest);
-		authRequestTemp.put("requestTime", originalRequestTime);
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
-
 				
 		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
 		
@@ -185,6 +215,7 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 		
 
 	}
+
 
 	/**
 	 * The method ser current test name to result
