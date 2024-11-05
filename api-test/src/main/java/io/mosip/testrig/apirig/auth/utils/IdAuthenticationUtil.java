@@ -1,10 +1,13 @@
-package io.mosip.testrig.apirig.utils;
+package io.mosip.testrig.apirig.auth.utils;
 
 import org.apache.log4j.Logger;
 import org.testng.SkipException;
 
+import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
-import io.mosip.testrig.apirig.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
 
