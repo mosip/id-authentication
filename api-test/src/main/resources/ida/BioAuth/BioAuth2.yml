@@ -2207,11 +2207,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Invalid scenario
+      description: Valid scenario
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
-      outputTemplate: ida/BioAuth/error
+      outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -2241,14 +2241,9 @@ BioAuth:
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
-      output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
-        "authStatus": false
-}'
+    output: '{
+        "authStatus": "true"
+    }'
   auth_BioAuth_Biometric_RightIris_With_MANDATORY_iris_in_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       description: with mandatory iris in policy and do auth
