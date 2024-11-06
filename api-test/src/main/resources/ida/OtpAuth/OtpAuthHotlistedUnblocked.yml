@@ -27,7 +27,7 @@ OtpAuth:
     }
     }'
       output: '{
-  "authStatus": "false",
+  "authStatus": "true",
  "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
@@ -62,7 +62,7 @@ OtpAuth:
     }
     }'
       output: '{
-  "authStatus": "false",
+  "authStatus": "true",
  "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
