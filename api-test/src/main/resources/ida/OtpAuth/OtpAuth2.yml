@@ -6,7 +6,7 @@ OtpAuth:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/OtpAuth/OtpAuth
-      outputTemplate: ida/OtpAuth/otpAuthResult
+      outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",

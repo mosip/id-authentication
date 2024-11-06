@@ -5,7 +5,7 @@ EkycOtp:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
-      outputTemplate: ida/EkycOtp/ekycOtpResult
+      outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -184,7 +184,7 @@ EkycOtp:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
-      outputTemplate: ida/EkycOtp/ekycOtpResult
+      outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
