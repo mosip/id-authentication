@@ -944,41 +944,76 @@ OtpAuth:
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
-      outputTemplate: ida/OtpAuth/OtpAuthResult
+      outputTemplate: ida/OtpAuth/error
       input: '{
-         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-         "otp": "12S34@@!#",
-        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
+        "otpChannel": "26363633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
     }'
       output: '{
-  "authStatus": "false",
- "sendOtpResp":{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ],
+        "authStatus": false,
+  "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OTP_Auth_With_WRONG_OTP:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with wrong OTP
+      description: Otp auth with invalid OTP
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
-      outputTemplate: ida/OtpAuth/OtpAuthResult
+      outputTemplate: ida/OtpAuth/error
       input: '{
-         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-         "otp": "128276454",
-        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
+        "otpChannel": "263@#$63633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
     }'
       output: '{
-  "authStatus": "false",
- "sendOtpResp":{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ],
+        "authStatus": false,
+  "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
+
   auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       description: invalid scenario

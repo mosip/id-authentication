@@ -3888,7 +3888,7 @@ MultiFactorAuth:
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
-      outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
+      outputTemplate: ida/MultiFactorAuth/error
       input: '{
     "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -3930,7 +3930,7 @@ MultiFactorAuth:
     }
     }'
       output: '{
-    "authStatus": true,
+    "authStatus": false,
   "sendOtpResp":{
     "errors": [
     {
