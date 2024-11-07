@@ -151,7 +151,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
-        "otpChannel": "$ID:GetDraft_all_valid_smoke_sid_EMAIL$",
+        "otpChannel": "mosipuser123@mailinator.com",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -440,7 +440,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
-        "otpChannel": "$ID:GenerateVID_to_revoke_Perpetual_sid_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",

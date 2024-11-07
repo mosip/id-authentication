@@ -16,7 +16,7 @@
 		</classes>
 	</test>
 
-	<!--<test name="EkycBio">
+	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
@@ -188,7 +188,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
-	</test>-->
+	</test>
 	
 	
 </suite>

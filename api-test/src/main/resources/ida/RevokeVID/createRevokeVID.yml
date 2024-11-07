@@ -9,7 +9,7 @@ RevokeVID:
       outputTemplate: ida/RevokeVID/createRevokeVIDResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
         "individualIdType": "VID",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.vidstatus",

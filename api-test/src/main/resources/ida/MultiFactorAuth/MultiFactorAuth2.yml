@@ -170,7 +170,7 @@ MultiFactorAuth:
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
-        "otpChannel": "$ID:GetDraft_all_valid_smoke_sid_EMAIL$",
+        "otpChannel": "mosipuser123@mailinator.com",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "1234567890",
