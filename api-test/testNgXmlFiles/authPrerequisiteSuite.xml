@@ -13,7 +13,7 @@
 			value="ida/AddIdentity/AddIdentity.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.AddIdentity" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.AddIdentity" />
 		</classes>
 	</test>
 	<test name="CreateVID">
@@ -21,7 +21,7 @@
 	    <parameter name="idKeyName" value="VID" />
 	    <parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	
@@ -30,7 +30,7 @@
 			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.UpdateIdentity" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
@@ -39,7 +39,7 @@
 		<parameter name="ymlFile"	value="ida/CreateDraft/CreateDraft.yml" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.PostWithOnlyPathParam" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
 	</classes>
 	</test> 
 	
@@ -48,7 +48,7 @@
 		<parameter name="idKeyName" value="UIN" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.GetWithParamForAutoGenId" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
 	</classes>
 	</test>
 	
@@ -56,7 +56,7 @@
 		<parameter name="ymlFile"	value="ida/CreateDraftVID/CreateDraftVID.yml" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 	</classes>
 	</test>
 	
@@ -66,7 +66,7 @@
 		<parameter name="pathParams"	value="registrationId" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.UpdateDraft" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateDraft" />
 	</classes>
 	</test> 
 	
@@ -74,7 +74,7 @@
 		<parameter name="ymlFile"	value="ida/PublishDraft/PublishDraft.yml" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
 	</classes>
 	</test>
 	<test name="GenerateVID">
@@ -84,7 +84,7 @@
 		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.testscripts.PostWithAutogenIdWithOtpGenerate" />
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
 		</classes>
 	</test>
 	
@@ -92,7 +92,7 @@
 		<parameter name="ymlFile"	value="ida/DeactivateUin/DeactivateUin.yml" />
 		<parameter name="prerequisite" value="Yes" />
 	<classes>
-		<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+		<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 	</classes>
 	</test>
 
@@ -101,7 +101,7 @@
 			value="ida/RevokeVID/createRevokeVID.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PatchWithBodyWithOtpGenerate" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.PatchWithBodyWithOtpGenerate" />
 		</classes>
 	</test>
 
@@ -110,7 +110,7 @@
 			value="ida/AuthInternalLock/AuthInternalLock.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePost" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
 		</classes>
 	</test>
 
@@ -119,7 +119,7 @@
 			value="ida/AuthLock/createAuthLock.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PostWithBodyWithOtpGenerate" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
 		</classes>
 	</test>
 	
