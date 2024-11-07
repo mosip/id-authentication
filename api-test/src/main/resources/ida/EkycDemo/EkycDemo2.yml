@@ -829,7 +829,7 @@ EkycDemo:
     "name": [
     {
       "language": "$PRIMARYLANG$",
-      "value": "Lisa.GN"
+      "value": "Mr-TitleFromServer Lisa.GN"
     }
   ],
     "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
@@ -1391,7 +1391,7 @@ EkycDemo:
     }
     }'
       output: '{
-  "kycStatus": "true"
+  "kycStatus": false
 }'
   auth_EkycDemo_Auth_Without_kyc_attribute_in_policy_Smoke:
       endPoint: /idauthentication/v1/kyc/$UpdatedPartnerKeyURL$
