@@ -828,7 +828,7 @@ EkycDemo:
         "identityRequest":{
     "name": [
     {
-      "language": "$PRIMARYLANG$",
+      "language": "eng",
       "value": "Mr-TitleFromServer Lisa.GN"
     }
   ],

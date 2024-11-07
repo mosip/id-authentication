@@ -203,7 +203,7 @@ MultiFactorAuth:
           "serialNo": "78467171",
           "type": "Face",
           "key": "dob",
-          "value": "1970/07/08",
+          "value": "1992/04/15",
     "transactionId": "1234567890",
     "identityRequestTemplate": "ida/MultiFactorAuth/MultifactorIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
