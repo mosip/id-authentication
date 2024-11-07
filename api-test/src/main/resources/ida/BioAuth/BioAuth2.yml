@@ -36,7 +36,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_updated_edited_policy_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -75,7 +75,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Infant_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -119,7 +119,7 @@ BioAuth:
           "errorCode": "IDA-MLC-011"
         }
       ],
-  	"authStatus": "false"
+    "authStatus": "false"
 }'
   auth_BioAuth_Biometric_Face_With_Infant_locked_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -163,7 +163,7 @@ BioAuth:
           "errorCode": "IDA-MLC-011"
         }
       ],
-  	"authStatus": "false"
+    "authStatus": "false"
 }'
   auth_BioAuth_Biometric_RingFinger_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -202,7 +202,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -241,7 +241,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -280,7 +280,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -319,7 +319,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -358,7 +358,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -397,7 +397,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -436,7 +436,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -475,7 +475,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftThumb_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -514,7 +514,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightThumb_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -553,7 +553,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIris_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -592,7 +592,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIris_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -632,7 +632,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -672,7 +672,7 @@ BioAuth:
     }
     }'
       output: '{
-  	"authStatus": "true"
+    "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Revoked_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -1985,7 +1985,7 @@ BioAuth:
           "errorCode": "IDA-MLC-001"
         }
       ],
-  	"authStatus": "false"
+    "authStatus": "false"
 }'
   auth_BioAuth_with_dummy_partnerkey_uin_Pos:
       endPoint: /idauthentication/v1/auth/$a2673y3g3grURL$
@@ -2574,7 +2574,7 @@ BioAuth:
           "deviceProviderId": "SYNCBYTE.LTC165",
           "deviceSubType": "Full face",
           "make": "Logitech",
-		  "env": "",
+      "env": "",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Face",
@@ -2619,7 +2619,7 @@ BioAuth:
           "deviceProviderId": "SYNCBYTE.LTC165",
           "deviceSubType": "Full face",
           "make": "Logitech",
-		  "env": " ",
+      "env": " ",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Face",
