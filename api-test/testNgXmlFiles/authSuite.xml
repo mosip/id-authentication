@@ -12,7 +12,7 @@
 		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
 
@@ -20,28 +20,28 @@
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
 	<test name="OtpAuth">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
 	<test name="EkycOtp">
 		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
 	<test name="MultiFactorAuth">
 		<parameter name="ymlFile"
 			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.MultiFactorAuthNew" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
 		</classes>
 	</test>
 
@@ -49,7 +49,7 @@
 		<parameter name="ymlFile"
 			value="ida/AuthTransaction/AuthTransaction.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.GetWithParam" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
 		</classes>
 	</test>
 
@@ -59,7 +59,7 @@
 			value="ida/UpdateIdentity/UpdateIdentity.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.UpdateIdentity" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
@@ -68,7 +68,7 @@
 			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
@@ -80,7 +80,7 @@
 		<parameter name="ymlFile"
 			value="ida/HotlistTestcases/HotlistTestcases.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
 
@@ -89,7 +89,7 @@
 			value="ida/HotlistTestcases/HotlistTestcasesKyc.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
 	
@@ -100,7 +100,7 @@
 			value="ida/BioAuthHotListLock/BioAuth.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
 
@@ -110,7 +110,7 @@
 			value="ida/AuthUnLock/createAuthUnLock.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.PostWithBodyWithOtpGenerate" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
 		</classes>
 	</test>
 
@@ -119,20 +119,20 @@
 			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPI.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	
 	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
 	<test name="EkycDemo">
 		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
 
@@ -141,7 +141,7 @@
 			value="ida/BlockHotlistAPI/BlockPartnerId.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
@@ -151,14 +151,14 @@
 			value="ida/HotlistTestcases/HotlistTestcasesPartnerId.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.DemoAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
 	<test name="BioAuthHotListPartner">
 		<parameter name="ymlFile"
 			value="ida/BioAuthHotListPartner/BioAuth.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.BioAuth" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
 	
@@ -168,7 +168,7 @@
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />
 		<parameter name="isInternal" value="false" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
 
@@ -177,7 +177,7 @@
 			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPIForPartnerId.yml" />
 			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.SimplePostForAutoGenId" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 	
@@ -186,7 +186,7 @@
 		<parameter name="isInternal" value="false" />
 		<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.testscripts.OtpAuthNew" />
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
 	
