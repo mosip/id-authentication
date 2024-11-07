@@ -129,7 +129,7 @@ public class DemoAuth extends AdminTestUtil implements ITest {
 				identityRequest = jsonObject.toString();
 			}
 		}
-		
+		 identityRequest = inputJsonKeyWordHandeler(identityRequest, testCaseName);
 		identityRequest = JsonPrecondtion.parseAndReturnJsonContent(identityRequest, generateCurrentUTCTimeStamp(), "timestamp");
 		Map<String, String> demoAuthTempMap = encryptDecryptUtil.getEncryptSessionKeyValue(identityRequest);
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
