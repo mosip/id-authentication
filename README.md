@@ -10,7 +10,7 @@ This repository contains source code and design documents for MOSIP ID Authentic
 Refer to [SQL scripts](db_scripts).
 
 ## Build & run (for developers)
-The project requires JDK 1.21.
+The project requires JDK 21.0.3
 and mvn version - 3.9.6
 
 ### Remove the version-specific suffix (PostgreSQL95Dialect) from the Hibernate dialect configuration
