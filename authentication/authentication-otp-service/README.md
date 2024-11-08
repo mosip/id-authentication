@@ -27,6 +27,12 @@ POST /idauthentication/v1/otp/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-K
 * WebSub: for getting events for Credential data/ IDentity data/ Partner data/ Master data updates.
 * HSM: for retrieving encryption/decryption keys.
 
+## Overview
+This repository contains source code and design documents for MOSIP ID Authentication OTP service which is the server-side module to manage [ID Authentication](https://docs.mosip.io/1.2.0/modules/id-authentication-services). The modules exposes API endpoints.
+
+## Databases
+Refer to [SQL scripts](db_scripts).
+
 ## Build & run (for developers)
 The project requires JDK 21.0.3
 and mvn version - 3.9.6
@@ -68,3 +74,35 @@ This is to maintain compatibility with existing ANT-style path patterns.
 [Configuration-id-authentication-internal](https://github.com/mosip/mosip-config/blob/develop/id-authentication-internal-default.properties) and
 [Configuration-id-authentication-otp](https://github.com/mosip/mosip-config/blob/develop/id-authentication-otp-default.properties) and
 [Configuration-Application](https://github.com/mosip/mosip-config/blob/develop/application-default.properties) defined here.
+
+
+## Deployment in K8 cluster with other MOSIP services:
+### Pre-requisites
+* Set KUBECONFIG variable to point to existing K8 cluster kubeconfig file:
+    ```
+    export KUBECONFIG=~/.kube/<k8s-cluster.config>
+    ```
+### Install
+  ```
+    $ cd deploy
+    $ ./install.sh
+   ```
+### Delete
+  ```
+    $ cd deploy
+    $ ./delete.sh
+   ```
+### Restart
+  ```
+    $ cd deploy
+    $ ./restart.sh
+   ```
+
+## Test
+Automated functional tests available in [api-test folder](api-test).
+
+## APIs
+API documentation is available [here](https://mosip.github.io/documentation/).
+
+## License
+This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).

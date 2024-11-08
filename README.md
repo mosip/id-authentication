@@ -75,7 +75,7 @@ This is to maintain compatibility with existing ANT-style path patterns.
    ```
 
 ## Test
-Automated functional tests available in [Functional Tests repo](https://github.com/mosip/mosip-functional-tests).
+Automated functional tests available in [api-test folder](api-test).
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/).
