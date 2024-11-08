@@ -46,7 +46,7 @@ POST /idauthentication/v1/kyc/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-K
 This repository contains source code and design documents for MOSIP ID Authentication service which is the server-side module to manage [ID Authentication](https://docs.mosip.io/1.2.0/modules/id-authentication-services). The modules exposes API endpoints.
 
 ## Databases
-Refer to [SQL scripts](db_scripts).
+Refer to [SQL scripts](../../db_scripts).
 
 ## Build & run (for developers)
 The project requires JDK 21.0.3
@@ -114,7 +114,7 @@ This is to maintain compatibility with existing ANT-style path patterns.
    ```
 
 ## Test
-Automated functional tests available in [api-test folder](api-test).
+Automated functional tests available in [api-test folder](../../api-test).
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/).

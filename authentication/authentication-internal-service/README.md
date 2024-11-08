@@ -44,7 +44,7 @@ GET /idauthentication/v1/internal/authTransactions/individualId/{ID}
 This repository contains source code and design documents for MOSIP ID Authentication internal service which is the server-side module to manage [ID Authentication](https://docs.mosip.io/1.2.0/modules/id-authentication-services). The modules exposes API endpoints.
 
 ## Databases
-Refer to [SQL scripts](db_scripts).
+Refer to [SQL scripts](../../db_scripts).
 
 ## Build & run (for developers)
 The project requires JDK 21.0.3
@@ -111,7 +111,7 @@ This is to maintain compatibility with existing ANT-style path patterns.
    ```
 
 ## Test
-Automated functional tests available in [Functional Tests repo](https://github.com/mosip/id-authentication/tree/develop/api-test).
+Automated functional tests available in [Functional Tests](../../api-test).
 
 ## APIs
 API documentation is available [here](https://mosip.github.io/documentation/).
