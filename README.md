@@ -30,7 +30,7 @@ This is to maintain compatibility with existing ANT-style path patterns.
     $ cd authentication
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
-1. Build Docker for a service:
+2. Build Docker for a service:
     ```
     $ cd <service folder>
     $ docker build -f Dockerfile
