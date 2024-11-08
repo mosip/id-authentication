@@ -175,18 +175,10 @@ public class VciExchangeRequestValidator extends AuthRequestValidator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			String identityJwk = new String(CryptoUtil.decodeBase64(didArray[2]));
-			try {
-				JSONObject jsonObject = OBJECT_MAPPER.readValue(identityJwk, JSONObject.class);
-				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_MODULUS_KEY, paramName);
-				validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_EXPONENT_KEY, paramName);
-			} catch (IOException ioe) {
-				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"Error formating Identity JWK", ioe);
-				errors.rejectValue(paramName, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { paramName },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());	
-			}
-		}
+            JSONObject jsonObject = new JSONObject(identityJwk);
+            validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_MODULUS_KEY, paramName);
+            validatePublicKeyAttributes(jsonObject, errors, PUBLIC_KEY_EXPONENT_KEY, paramName);
+        }
 	}
 
 	private void validatePublicKeyAttributes(JSONObject jsonObject, Errors errors, String publicKeyAttribute, String paramName) {
