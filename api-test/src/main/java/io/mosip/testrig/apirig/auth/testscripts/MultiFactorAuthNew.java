@@ -204,6 +204,16 @@ public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
 				
 		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
 		
+		if(testCaseName.contains("_expiredOTP")) {
+			try {
+				Thread.sleep(180000);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		response = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + testCaseDTO.getEndPoint(), authRequest, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 		
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil

@@ -10,7 +10,7 @@ RevokeVID:
       input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
-        "individualIdType": "VID",
+        "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.vidstatus",
         "version": "v1",
@@ -20,7 +20,7 @@ RevokeVID:
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
-    "individualIdType": "VID",
+    "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }

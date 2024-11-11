@@ -1,9 +1,15 @@
 {
-  "authResponse": {
-    "body": {
-      "response": {
-        "kycStatus": {{kycStatus}}
-      }
+  "transactionID": "$IGNORE$",
+  "version": "$IGNORE$",
+  "id": "$IGNORE$",
+  "errors": [
+    {{#each errors}}
+    {
+      "errorCode": "{{errorCode}}",
+      "errorMessage": "$IGNORE$"
     }
-  }
+     {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+  "responseTime": "$IGNORE$"
 }
