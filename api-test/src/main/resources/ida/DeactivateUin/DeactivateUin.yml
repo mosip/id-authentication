@@ -7,7 +7,7 @@ DeactivateUINs:
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{
-    "UIN": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+    "UIN": "$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$",
     "requesttime": "$TIMESTAMP$",
     "id": "mosip.vid.deactivate",
     "version": "v1"
