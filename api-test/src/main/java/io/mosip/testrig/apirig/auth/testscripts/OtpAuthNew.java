@@ -156,18 +156,21 @@ public class OtpAuthNew extends AdminTestUtil implements ITest {
 		Map<String, String> bioAuthTempMap = (isInternal)
 				? encryptDecryptUtil.getInternalEncryptSessionKeyValue(otpIdentyEnryptRequest)
 				: encryptDecryptUtil.getEncryptSessionKeyValue(otpIdentyEnryptRequest);
+		// Get the authRequest from the template
 		String authRequest = getJsonFromTemplate(req.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of OTP auth request ******************");
 		Reporter.log("<b><u>Modification of otp auth request</u></b>");
-//		System.out.println("authRequest = " + authRequest);
-		authRequest = modifyRequest(authRequest, bioAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
-//		System.out.println("modifyRequest = " + authRequest);
-		testCaseDTO.setInput(authRequest);
+
 		JSONObject authRequestTemp = new JSONObject(authRequest);
+		String originalRequestTime = authRequestTemp.getString("requestTime");
+		authRequest = modifyRequest(authRequest, bioAuthTempMap, getResourcePath() + props.getProperty("idaMappingPath"));
+		authRequestTemp = new JSONObject(authRequest);
+		authRequestTemp.put("requestTime", originalRequestTime);
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
+
 				
 		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
 		
