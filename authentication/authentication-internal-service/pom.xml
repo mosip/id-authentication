@@ -244,11 +244,6 @@
 			<artifactId>biosdk-client</artifactId>
 			<version>${biosdk-client.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>1.2.1-java21-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	
 	<build>
