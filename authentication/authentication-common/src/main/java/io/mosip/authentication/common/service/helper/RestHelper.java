@@ -92,7 +92,7 @@ public class RestHelper {
 
     private WebClient webClient;
 
-    @Value("${webclient.buffer.max-in-memory-size:262144}") // Default to 256 KB if not set
+    @Value("${webclient.buffer.max-in-memory-size:10485760}")
     private int maxInMemorySize;
 
     public RestHelper(WebClient webClient) {
