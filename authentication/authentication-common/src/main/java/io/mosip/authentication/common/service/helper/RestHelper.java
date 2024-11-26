@@ -92,6 +92,9 @@ public class RestHelper {
 
     private WebClient webClient;
 
+    @Value("${webclient.buffer.max-in-memory-size:262144}") // Default to 256 KB if not set
+    private int maxInMemorySize;
+
     public RestHelper(WebClient webClient) {
         this.webClient = webClient;
     }
@@ -110,9 +113,6 @@ public class RestHelper {
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(bufferSize))
                 .build();
     }
-
-    @Value("${webclient.buffer.max-in-memory-size:262144}") // Default to 256 KB if not set
-    private int maxInMemorySize;
 
 
     /**
