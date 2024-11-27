@@ -56,8 +56,8 @@ public class NotificationManager {
 			RestRequestDTO restRequestDTO = null;
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
 					RestRequestFactory.createRequest(smsRequestDto), String.class);
-			restHelper.requestSync(restRequestDTO);
-		} catch (IDDataValidationException | RestServiceException e) {
+			restHelper.requestAsync(restRequestDTO);
+		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
