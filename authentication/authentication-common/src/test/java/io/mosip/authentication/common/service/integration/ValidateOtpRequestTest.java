@@ -34,7 +34,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.PinDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 
 /**
  * 
