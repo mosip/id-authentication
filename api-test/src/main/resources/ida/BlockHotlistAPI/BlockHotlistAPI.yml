@@ -69,7 +69,7 @@ HotlistAPI:
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
-      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      outputTemplate: ida/BlockHotlistAPI/error
       input: '{
     "id": "$ID:GenerateVID_to_test_hotlist_Perpetual_sid_vid$",
     "idType": "UIN",
@@ -77,8 +77,12 @@ HotlistAPI:
     "expiryTimestamp": "sjsjsj4@33"
   }'
       output: '{
-        "status": "BLOCKED"
-    }'
+    "errors": [
+      {
+        "errorCode": "ADM-HTL-002"
+      }
+    ]
+  }'
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
       endPoint: /v1/hotlist/block
       description: block UIN with expiry time
@@ -90,7 +94,7 @@ HotlistAPI:
     "id": "$ID:AddIdentity_Positive_unblockUIN_valid_smoke_UIN$",
     "idType": "UIN",
     "requestTime": "$TIMESTAMP$",
-    "expiryTimestamp": "120"
+    "expiryTimestamp": ""
   }'
       output: '{
         "status": "BLOCKED"
@@ -122,7 +126,7 @@ HotlistAPI:
     "id": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "idType": "VID",
     "requestTime": "$TIMESTAMP$",
-    "expiryTimestamp": "120"
+    "expiryTimestamp": ""
   }'
       output: '{
         "status": "BLOCKED"

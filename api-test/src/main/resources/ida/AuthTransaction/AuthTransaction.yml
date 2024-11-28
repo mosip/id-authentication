@@ -64,7 +64,7 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionError
       input: '{
-      "individualId":"$ID:GenerateVID_All_Valid_Smoke_deactivate_Perpetual_sid_vid$"
+      "individualId":"$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$"
 }'
       output: '{
    "errors": [
@@ -82,7 +82,7 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$"
+      "individualId":"$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$"
 }'
       output: '{
         "referenceIdType": "VID"

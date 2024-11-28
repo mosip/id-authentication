@@ -118,7 +118,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -143,7 +143,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -168,7 +168,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -193,7 +193,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -218,7 +218,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -243,7 +243,7 @@ EkycDemo:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -828,8 +828,8 @@ EkycDemo:
         "identityRequest":{
     "name": [
     {
-      "language": "$PRIMARYLANG$",
-      "value": "Lisa.GN"
+      "language": "eng",
+      "value": "Mr-TitleFromServer Lisa.GN"
     }
   ],
     "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
@@ -1391,7 +1391,7 @@ EkycDemo:
     }
     }'
       output: '{
-  "kycStatus": "true"
+  "kycStatus": false
 }'
   auth_EkycDemo_Auth_Without_kyc_attribute_in_policy_Smoke:
       endPoint: /idauthentication/v1/kyc/$UpdatedPartnerKeyURL$
