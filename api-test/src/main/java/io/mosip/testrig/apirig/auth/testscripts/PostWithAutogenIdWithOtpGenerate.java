@@ -119,8 +119,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 //				dev	  - t f
 			}
 		}
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
-
 		String inputJson = testCaseDTO.getInput().toString();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
