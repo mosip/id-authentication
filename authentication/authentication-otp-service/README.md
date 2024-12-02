@@ -51,10 +51,10 @@ This is to maintain compatibility with existing ANT-style path patterns.
 
 1. Build and install:
     ```
-    $ cd authentication
+    $ cd authentication/authentication-otp-service
     $ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
     ```
-1. Build Docker for a service:
+2. Build Docker for a service:
     ```
     $ cd <service folder>
     $ docker build -f Dockerfile
@@ -69,11 +69,11 @@ This is to maintain compatibility with existing ANT-style path patterns.
    ```
 
 ## Configuration
-[Configuration-id-authentication](https://github.com/mosip/mosip-config/blob/develop/id-authentication-default.properties)and
-[Configuration-id-authentication-external](https://github.com/mosip/mosip-config/blob/develop/id-authentication-external-default.properties) and
-[Configuration-id-authentication-internal](https://github.com/mosip/mosip-config/blob/develop/id-authentication-internal-default.properties) and
-[Configuration-id-authentication-otp](https://github.com/mosip/mosip-config/blob/develop/id-authentication-otp-default.properties) and
-[Configuration-Application](https://github.com/mosip/mosip-config/blob/develop/application-default.properties) defined here.
+[Configuration-id-authentication](https://github.com/mosip/mosip-config/blob/master/id-authentication-default.properties)and
+[Configuration-id-authentication-external](https://github.com/mosip/mosip-config/blob/master/id-authentication-external-default.properties) and
+[Configuration-id-authentication-internal](https://github.com/mosip/mosip-config/blob/master/id-authentication-internal-default.properties) and
+[Configuration-id-authentication-otp](https://github.com/mosip/mosip-config/blob/master/id-authentication-otp-default.properties) and
+[Configuration-Application](https://github.com/mosip/mosip-config/blob/master/application-default.properties) defined here.
 
 
 ## Deployment in K8 cluster with other MOSIP services:
@@ -105,4 +105,4 @@ Automated functional tests available in [api-test folder](../../api-test).
 API documentation is available [here](https://mosip.github.io/documentation/).
 
 ## License
-This project is licensed under the terms of [Mozilla Public License 2.0](LICENSE).
+This project is licensed under the terms of [Mozilla Public License 2.0](../../LICENSE).
