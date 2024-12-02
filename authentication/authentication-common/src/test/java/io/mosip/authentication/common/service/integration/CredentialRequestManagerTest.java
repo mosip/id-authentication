@@ -9,7 +9,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import org.junit.Before;
 import org.junit.Test;

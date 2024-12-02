@@ -1,39 +1,71 @@
 OtpAuth:
   auth_OTP_Auth_With_blocked_partnerid_Pos:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$&partnerUrlSuffix=$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with blocked_partnerid
       role: resident
-      checkErrorsOnlyInResponse: true
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-         "otp": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
+        "otpChannel": "auth_AddIdentity_For_Otp_Auth_smoke_Pos@mosip.net",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "2092179504",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "2092179504",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
     }'
       output: '{
   "authStatus": "false",
  "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
     }
 }'
   auth_OTP_Auth_With_blocked_misp_Pos:
-      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$&partnerUrlSuffix=$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      description: Otp auth with valid using UIN
       role: resident
-      checkErrorsOnlyInResponse: true
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-         "otp": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-      "timestamp": "$TIMESTAMP$"
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
     }'
       output: '{
   "authStatus": "false",
  "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
     }
 }'

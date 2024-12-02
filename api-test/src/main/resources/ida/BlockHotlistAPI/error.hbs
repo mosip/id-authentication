@@ -1,13 +1,10 @@
 {
     "errors": [
       {{#each errors}}
-        {
+          {
             "errorCode": "{{errorCode}}"
-        }
+          }
           {{#unless @last}},{{/unless}}
       	{{/each}}
-  ],
-    "response": {
-        "authStatus": {{authStatus}}
-    }
+  ]
 }
