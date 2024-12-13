@@ -471,7 +471,7 @@ public final class IdAuthCommonConstants {
 
 	public static final String VERIFIED_CLAIMS_ATTRIBS = "verifiedAttributes";
 
-	public static final String NULL_CONST = "=null";
+	public static final String NULL_CONST = "null";
 
 	public static final String COMMA_STRING = ",";
 
