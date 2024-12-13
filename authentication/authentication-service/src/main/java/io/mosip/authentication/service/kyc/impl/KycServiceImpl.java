@@ -813,11 +813,14 @@ public class KycServiceImpl implements KycService {
 		if (verifiedClaimsData.equals(EMPTY)) {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMetadata", "No Verified Claims data found for the id.");
-			return oidcClientAllowedVerifiedClaims.stream()
-											  .map(md -> md.concat(NULL_CONST))
-			                                  .collect(Collectors.joining(COMMA_STRING));
+			Map<String, Object> verifiedClaimsMap = new HashMap<>(); 
+			oidcClientAllowedVerifiedClaims.stream()
+			  							   .forEach(claim -> verifiedClaimsMap.put(claim, NULL_CONST));
+			return convertMapToJsonString(verifiedClaimsMap);
 		}
 		
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"buildVerifiedClaimsMetadata", "Verified Claims data found for the id.");
 		JSONObject verifiedClaimJson = new JSONObject(verifiedClaimsData);
 		Set<String> verifiedClaimKeys = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
 																verifiedClaimJson.keys(), 0), 
@@ -835,15 +838,21 @@ public class KycServiceImpl implements KycService {
 						return Stream.empty();
 					}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		
-		String verifiedClaimsStr = null;
+		
 		Map<String, Object> verifiedClaimsMap = idAttribsMap.entrySet().stream().filter(e -> verifiedClaimKeys.contains(e.getKey()))
 							 		.map(entry -> new Object[] {(Object)entry.getValue(), 
 												((JSONArray)verifiedClaimJson.get(entry.getKey())).toList()})
 							 		.collect(Collectors.toMap(strArr -> strArr[0].toString(), strArr -> strArr[1]));
 
 		oidcClientAllowedVerifiedClaims.stream().filter(claim -> !verifiedClaimsMap.keySet().contains(claim))
-												.forEach(claim -> verifiedClaimsMap.put(claim, "null"));
+												.forEach(claim -> verifiedClaimsMap.put(claim, NULL_CONST));
 		
+		return convertMapToJsonString(verifiedClaimsMap);
+		
+	}
+
+	private String convertMapToJsonString(Map<String, Object> verifiedClaimsMap) {
+		String verifiedClaimsStr = null;
 		try {
 			verifiedClaimsStr = mapper.writeValueAsString(verifiedClaimsMap);	
 		} catch (JsonProcessingException exp) {
