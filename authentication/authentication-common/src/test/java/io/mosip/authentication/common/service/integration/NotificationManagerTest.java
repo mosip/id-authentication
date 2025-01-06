@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
@@ -115,5 +116,14 @@ public class NotificationManagerTest {
 		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		notificationManager.sendEmailNotification("abc@test.com", "test", "test");
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testInValidSendNotificationPhone() throws IdAuthenticationBusinessException, RestServiceException {
+		Set<NotificationType> notificationtype = new HashSet<>();
+		notificationtype.add(NotificationType.SMS);
+        Mockito.when(restHelper.requestSync(Mockito.any()))
+				.thenThrow(new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR));
+		notificationManager.sendSmsNotification("1234567890", "test");
 	}
 }

@@ -149,14 +149,14 @@ public class MosipTestRunner {
 		BaseTestCase.certsForModule = "IDA";
 		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
 				ConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerDataDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
 		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
 				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
 
 		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
 				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataDeleteQueriesForEsignet.txt");
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 		AuthTestsUtil.initiateAuthTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();

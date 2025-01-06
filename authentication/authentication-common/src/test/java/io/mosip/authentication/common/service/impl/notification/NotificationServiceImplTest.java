@@ -57,7 +57,7 @@ import io.mosip.authentication.core.indauth.dto.SenderType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 

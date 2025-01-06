@@ -68,7 +68,7 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 
 /**
  * @author Dinesh Karuppiah.T
