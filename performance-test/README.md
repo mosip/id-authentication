@@ -61,17 +61,17 @@
 
 *IDA_Test_Script.jmx
 	
-	*Auth Token Generation (Setup): This thread contains Auth manager authentication API which will generate auth token value for Registration client. The token expires after 24 hours.
+	*Auth Token Generation (Setup): This threadgroup contains Auth manager authentication API which will generate auth token value for Registration client. The token expires after 24 hours.
 	
-	* Create Identities in MOSIP Identity System (Setup) : This thread contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "addIdentitySetup" is used as a variable. 
+	* Create Identities in MOSIP Identity System (Setup) : This threadgroup contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "freshIdentityCreationCount" is used as a variable. 
 	
 	* Third Party Certificates (Setup) : This threadgroup contains series of certificate upload to support the IDA execution.
 	
-	* S01 Authentication with OTP (Preparation): This thread creates testdata like signature and request body for the Auth Send OTP and Authentication with OTP request which expires after 24 hours.
+	* S01 Authentication with OTP (Preparation): This threadgroup creates testdata like signature and request body for the Auth Send OTP and Authentication with OTP request which expires after 24 hours.
 	
-	* S02 Authentication with Biometrics (Preparation): This thread creates testdata like signature and request body for the Authentication with Biometric request which expires after 24 hours.
+	* S02 Authentication with Biometrics (Preparation): This threadgroup creates testdata like signature and request body for the Authentication with Biometric request which expires after 24 hours.
 	
-	* S03 Authentication with Demo (Preparation): This thread creates testdata like signature and request body for the Authentication with Demo request which expires after 24 hours.
+	* S03 Authentication with Demographics (Preparation): This threadgroup creates testdata like signature and request body for the Authentication with Demographics request which expires after 24 hours.
 	  			
 	* S01 Authentication with OTP (Execution) :
 		* S01 T01 Auth Send OTP : This thread sends OTP request.
@@ -80,14 +80,11 @@
 	* S02 Authentication with Biometrics (Execution):
 		* S02 T01 Authentication with Biometrics: This thread performs biometric authentication
 	
-	* S03 Authentication with Demo (Execution):
-		* S03 T01 Authentication with Demo : This thread verifies the authentication.
+	* S03 Authentication with Demographics (Execution):
+		* S03 T01 Authentication with Demographics : This thread performs the authentication with Demographics.
 
 	* S04 EKYC with Biometrics (Execution):
-		* S04 T01 Get Record From IDRepo : This thread fetches record from the IDrepo.
-		* S04 T02 Download CBEFFfile : This thread downloads cbeff file.
-		* S04 T03 Create Auth Request UIN : This thread generates auth request with UIN number.
-		* S04 T04 EKYC with Biometrics: This threads performs EKYC with biometric data.
+		* S04 T01 EKYC with Biometrics: This thread performs EKYC with biometric data.
  	
 ### Downloading Plugin manager jar file for the purpose installing other JMeter specific plugins
 
