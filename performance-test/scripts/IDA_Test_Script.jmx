@@ -4943,7 +4943,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
       <hashTree>
         <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Transaction ID Counter (Authentication with OTP)" enabled="true">
           <stringProp name="CounterConfig.start">1000000000</stringProp>
-          <stringProp name="CounterConfig.end">9999999999</stringProp>
+          <stringProp name="CounterConfig.end">2000000000</stringProp>
           <stringProp name="CounterConfig.incr">1</stringProp>
           <stringProp name="CounterConfig.name">tranIdAuthOtp</stringProp>
           <stringProp name="CounterConfig.format"></stringProp>
@@ -5245,8 +5245,8 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
       </ThreadGroup>
       <hashTree>
         <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Transaction ID Counter (Authentication with Biometrics)" enabled="true">
-          <stringProp name="CounterConfig.start">1200000000</stringProp>
-          <stringProp name="CounterConfig.end">9999999999</stringProp>
+          <stringProp name="CounterConfig.start">3000000000</stringProp>
+          <stringProp name="CounterConfig.end">4000000000</stringProp>
           <stringProp name="CounterConfig.incr">1</stringProp>
           <stringProp name="CounterConfig.name">tranIdAwb</stringProp>
           <stringProp name="CounterConfig.format"></stringProp>
@@ -5519,8 +5519,8 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
       </ThreadGroup>
       <hashTree>
         <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Transaction ID Counter (Authentication with OTP)" enabled="true">
-          <stringProp name="CounterConfig.start">1000000000</stringProp>
-          <stringProp name="CounterConfig.end">9999999999</stringProp>
+          <stringProp name="CounterConfig.start">5000000000</stringProp>
+          <stringProp name="CounterConfig.end">6000000000</stringProp>
           <stringProp name="CounterConfig.incr">1</stringProp>
           <stringProp name="CounterConfig.name">tranIdDemo</stringProp>
           <stringProp name="CounterConfig.format"></stringProp>
