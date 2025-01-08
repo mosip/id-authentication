@@ -1,6 +1,7 @@
 OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
+      uniqueIdentifier: TC_IDA_OTPInternalAuth_01
       description: Otp internal auth with valid UIN
       role: resident
       restMethod: post
@@ -35,6 +36,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_02
       description: Otp internal auth with valid using VID
       role: resident
       restMethod: post
@@ -69,6 +71,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_With_Invalid_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
+      uniqueIdentifier: TC_IDA_OTPInternalAuth_03
       description: Otp internal auth with invalid individualId using UIN
       role: resident
       restMethod: post
@@ -109,6 +112,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_04
       description: Otp internal auth with blank individualId using UIN
       role: resident
       restMethod: post
@@ -149,6 +153,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_05
       description: Otp internal auth with missing individualId using UIN
       role: resident
       restMethod: post
@@ -189,6 +194,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_06
       description: Otp internal auth with invalid transactionId using UIN
       role: resident
       restMethod: post
@@ -229,6 +235,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_07
       description: Otp internal auth with blank transactionId using UIN
       role: resident
       restMethod: post
@@ -269,6 +276,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_08
       description: Otp internal auth with invalid individualIdType using UIN
       role: resident
       restMethod: post
@@ -309,6 +317,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_09
       description: Otp internal auth with blank individualIdType using UIN
       role: resident
       restMethod: post
@@ -349,6 +358,7 @@ OTPInternalAuth:
 }'
   auth_OTP_Internal_Auth_Missing_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
+	  uniqueIdentifier: TC_IDA_OTPInternalAuth_10
       description: Otp internal auth with missing individualIdType using UIN
       role: resident
       restMethod: post
