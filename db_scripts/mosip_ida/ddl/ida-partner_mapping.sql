@@ -24,7 +24,7 @@ CREATE TABLE ida.partner_mapping (
 	is_deleted bool DEFAULT false,
 	del_dtimes timestamp,
 	CONSTRAINT partner_mapping_pk PRIMARY KEY (partner_id,policy_id,api_key_id),
-	CONSTRAINT partner_mapping_uk UNIQUE (api_key_id)
+	CONSTRAINT idx_partner_mapping_apikey UNIQUE (api_key_id)
 
 );
 -- ddl-end --
