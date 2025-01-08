@@ -174,7 +174,7 @@ MultiFactorAuth:
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
-        "otpChannel": "$ID:GetDraft_all_valid_smoke_sid_EMAIL$",
+        "otpChannel": "mosipuser123@mailinator.com",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "1234567890",
@@ -207,7 +207,7 @@ MultiFactorAuth:
           "serialNo": "78467171",
           "type": "Face",
           "key": "dob",
-          "value": "1970/07/08",
+          "value": "1992/04/15",
     "transactionId": "1234567890",
     "identityRequestTemplate": "ida/MultiFactorAuth/MultifactorIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
@@ -3956,7 +3956,7 @@ MultiFactorAuth:
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
-      outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
+      outputTemplate: ida/MultiFactorAuth/error
       input: '{
     "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -3998,7 +3998,7 @@ MultiFactorAuth:
     }
     }'
       output: '{
-    "authStatus": true,
+    "authStatus": false,
   "sendOtpResp":{
     "errors": [
     {

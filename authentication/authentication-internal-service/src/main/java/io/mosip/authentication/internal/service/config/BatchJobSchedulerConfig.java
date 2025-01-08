@@ -25,29 +25,29 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Configuration
 @DependsOn("dataProcessingBatchConfig")
 public class BatchJobSchedulerConfig {
-	
+
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BatchJobSchedulerConfig.class);
-	
+
 	/** The Constant CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING. */
 	private static final String CREDENTIAL_STORE_DEFAULT_DELAY_MILLISECS_STRING = "1000";
-	
+
 	/** The credential store job. */
 	@Autowired
 	@Qualifier("credentialStoreJob")
 	private Job credentialStoreJob;
-	
+
 	@Autowired
 	@Qualifier("retriggerMissingCredentials")
 	private Job retriggerMissingCredentials;
-	
+
 	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
-	
+
 	@Value("${" + IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED + ":false}")
 	private boolean enableMissingCredentialRetrigger;
-	
+
 	/**
 	 * Schedule credential store job.
 	 */
@@ -61,7 +61,7 @@ public class BatchJobSchedulerConfig {
 			logger.error("unable to launch job for credential store batch: {}", e.getMessage(), e);
 		}
 	}
-	
+
 	@Scheduled(initialDelayString = "#{${" + SUBSCRIPTIONS_DELAY_ON_STARTUP + ":60000} + ${"
 			+ DELAY_TO_PULL_MISSING_CREDENTIAL_AFTER_TOPIC_SUBACTIPTION + ":60000}}", fixedDelay = Long.MAX_VALUE)
 	public void retriggerMissingCredentialsJob() {

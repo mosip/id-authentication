@@ -200,13 +200,13 @@ BioAuth:
     "authStatus": "false"
 }'
   auth_EkycBio_Face_With_blocked_partner:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_82
       description: Ekyc face auth with blocked partner
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -240,13 +240,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_74
       description: Ekyc RingFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -280,13 +280,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_75
       description: Ekyc LeftMiddleFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -320,13 +320,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_76
       description: Ekyc RIGHTIRIS auth with blocked deviceProviderId
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthHotListPartner/BioAuth
-      outputTemplate: ida/BioAuthHotListPartner/errorKyc
+      inputTemplate: ida/BioAuthHotListPartner/EkycBio
+      outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",

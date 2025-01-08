@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 
 @RestController
 public class TestController {

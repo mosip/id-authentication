@@ -6,12 +6,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -35,7 +34,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * @author Manoj SP
  * @author Sanjay Murali
  */
-@Component
+
 public abstract class BaseAuthFilter extends BaseIDAFilter {
 
 	private static final String SIGNATURE_HEADER = "signature header";
@@ -87,19 +86,28 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	 * @throws IdAuthenticationBusinessException
 	 */
 	protected void decipherAndValidateRequest(ResettableStreamHttpServletRequest requestWrapper,
-			Map<String, Object> requestBody) throws IdAuthenticationAppException {
+											  Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
+
 			requestWrapper.resetInputStream();
+
 			Map<String, Object> decipherRequest = decipherRequest(requestBody);
+
 			decipherRequest = processDecipheredReqeuest(decipherRequest);
+
 			validateDecipheredRequest(requestWrapper, decipherRequest);
+
 			String requestAsString = mapper.writeValueAsString(decipherRequest);
+
 			requestWrapper.replaceData(requestAsString.getBytes());
+
 		} catch (IOException e) {
+			// Log the exception with a stack trace
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, ExceptionUtils.getStackTrace(e));
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
+
 
 	protected Map<String, Object> processDecipheredReqeuest(Map<String, Object> decipheredRequest) {
 		return decipheredRequest;
@@ -185,6 +193,7 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 									SIGNATURE_HEADER));
 				} else {
 					String requestData = IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset());
+
 					requestWrapper.resetInputStream();
 					if (!verifySignature(signature,
 							requestData,

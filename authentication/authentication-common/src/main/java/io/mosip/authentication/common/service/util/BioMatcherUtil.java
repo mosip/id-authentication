@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.helper.TypeForIdNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,6 @@ import io.mosip.kernel.biosdk.provider.factory.BioAPIFactory;
 import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -59,10 +59,6 @@ public class BioMatcherUtil {
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BioMatcherUtil.class);
 	
-	/** The id info fetcher. */
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
-	
 	/** The bio api factory. */
 	@Autowired
 	private BioAPIFactory bioApiFactory;
@@ -72,6 +68,9 @@ public class BioMatcherUtil {
 	
 	@Autowired
 	private CbeffUtil cbeffUtil;
+
+	@Autowired
+	private TypeForIdNameHelper typeForIdNameHelper;
 
 	/**
 	 * Match function.
@@ -252,7 +251,7 @@ public class BioMatcherUtil {
 	 */
 	private BioInfo getType(String idName, IdMapping[] idMappings) throws IdAuthenticationBusinessException {
 		//Note: Finger minutiea type not handled based on the requirement
-		String typeForIdName = idInfoFetcher.getTypeForIdName(idName, idMappings).orElse("");
+		String typeForIdName = typeForIdNameHelper.getTypeForIdName(idName, idMappings).orElse("");
 		long type = 0L;
 		BiometricType singleType = null;
 		if(typeForIdName.equalsIgnoreCase(BiometricType.FINGER.value())) {

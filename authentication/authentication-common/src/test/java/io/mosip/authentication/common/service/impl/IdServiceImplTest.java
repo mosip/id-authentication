@@ -139,7 +139,6 @@ public class IdServiceImplTest {
 		byte[] demographicData = {};
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
-		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
@@ -183,7 +182,6 @@ public class IdServiceImplTest {
 		byte[] demographicData = {};
 		Object[] data = new Object[] { 1, demographicData, "2018-12-30T19:34:50.63", 1, 1 };
 
-		System.out.println("time=" + LocalDateTime.parse(String.valueOf(data[2])));
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}

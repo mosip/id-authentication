@@ -32,7 +32,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -72,7 +72,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -112,7 +112,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -152,7 +152,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -189,10 +189,10 @@ BioAuth:
           "deviceSubType": "Slap",
           "make": "Logitech",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467175",
+          "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -229,10 +229,10 @@ BioAuth:
           "deviceSubType": "Slap",
           "make": "Logitech",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467175",
+          "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -269,10 +269,10 @@ BioAuth:
           "deviceSubType": "Slap",
           "make": "Logitech",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467175",
+          "serialNo": "78467171",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -280,13 +280,13 @@ BioAuth:
     "authStatus": "false"
 }'
   auth_EkycBio_Face_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_73
       description: Ekyc bio auth with face with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -312,7 +312,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -320,13 +320,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_74
       description: Ekyc bio auth with RingFinger with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -352,7 +352,7 @@ BioAuth:
           "serialNo": "78467175",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -360,13 +360,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_75
       description: Ekyc bio auth with LeftMiddleFinger with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -393,7 +393,7 @@ BioAuth:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -401,13 +401,13 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/auth/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_76
       description: Ekyc bio auth with RIGHTIRIS with blocked deviceProviderId
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
-      outputTemplate: ida/BioAuthHotListLock/errorKyc
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -433,7 +433,7 @@ BioAuth:
           "serialNo": "78467175",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'

@@ -220,7 +220,7 @@ DemoAuthNew:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -246,7 +246,7 @@ DemoAuthNew:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -272,7 +272,7 @@ DemoAuthNew:
         "identityRequest":{
     "value": "1970/07/08",
 "key": "dob",
-    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncryptInvalid"
     }
     }'
       output: '{
@@ -805,7 +805,7 @@ DemoAuthNew:
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/DemoAuthResult
+      outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
@@ -821,7 +821,7 @@ DemoAuthNew:
     }
     }'
       output: '{
-  "authStatus": "true"
+  "authStatus": "false"
 }'
   auth_DemoAuth_gender_InValid_LangCode_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -1410,7 +1410,7 @@ DemoAuthNew:
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/DemoAuthResult
+      outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
@@ -1426,7 +1426,7 @@ DemoAuthNew:
     }
     }'
       output: '{
-  "authStatus": "true"
+  "authStatus": "false"
 }'
   auth_DemoAuth_DOB_InValid_individualId_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$

@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import io.mosip.authentication.common.service.helper.MatchTypeHelper;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,7 +42,6 @@ import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -53,17 +54,14 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BDBInfo;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.entities.RegistryIDType;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -79,7 +77,7 @@ public class BioAuthServiceTest {
 	@Mock
 	private BioMatcherUtil bioMatcherUtil;
 
-	@InjectMocks
+	@Mock
 	private IdInfoHelper idInfoHelper;
 
 	@InjectMocks
@@ -106,19 +104,26 @@ public class BioAuthServiceTest {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
+	@Mock
+	private MatchTypeHelper matchTypeHelper;
+
 	@Before
-	public void before() throws IDDataValidationException, RestServiceException {
+	public void before() throws IdAuthenticationBusinessException, RestServiceException {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
-		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(bioAuthServiceImpl, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "bioMatcherUtil", bioMatcherUtil);
-		ReflectionTestUtils.setField(bioMatcherUtil, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
-		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
 		when(restHelper.requestSync(Mockito.any())).thenReturn(null);
+		List<MatchOutput> matchOutputList = new ArrayList<>();
+		MatchOutput matchOutput = new MatchOutput(100, true, "P", BioMatchType.FGRIMG_LEFT_INDEX
+				, "eng", "Left IndexFinger");
+		matchOutputList.add(matchOutput);
+		when(idInfoHelper.matchIdentityData(Mockito.any(), Mockito.anyMap(), Mockito.anyCollection(), Mockito.anyString())).thenReturn(
+				matchOutputList
+		);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -638,6 +643,12 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
+		List<MatchOutput> matchOutputList = new ArrayList<>();
+		MatchOutput matchOutput = new MatchOutput(100, false, "P", BioMatchType.FGRIMG_LEFT_INDEX
+				, "eng", "Left IndexFinger");
+		matchOutputList.add(matchOutput);
+		when(idInfoHelper.matchIdentityData(Mockito.any(), Mockito.anyMap(), Mockito.anyCollection(), Mockito.anyString())).thenReturn(
+				matchOutputList);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertFalse(validateBioDetails.isStatus());
 	}

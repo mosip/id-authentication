@@ -17,7 +17,7 @@ import io.mosip.authentication.core.partner.dto.AuthPolicy;
  * 
  * @author Sanjay Murali
  */
-@Component
+
 public class KycAuthenticationFilter extends IdAuthFilter {
 
 	/** The Constant KYC. */

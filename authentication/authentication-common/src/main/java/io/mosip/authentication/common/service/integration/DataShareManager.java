@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.idrepository.core.util.RestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,28 +23,30 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
-import io.mosip.idrepository.core.util.RestUtil;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class DataShareManager {
-	
+
 	@Autowired
 	@Qualifier("withSelfTokenWebclient")
 	private RestHelper restHelper;
-	
+
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-	
+
 	@Autowired
 	private IdAuthSecurityManager securityManager;
-	
+
 	@Autowired
 	private ObjectMapper mapper;
-	
+
+	@Autowired
+	WebClient webClient;
+
 	@Value("${" + DATA_SHARE_GET_DECRYPT_REF_ID + "}")
 	private String dataShareGetDecryptRefId;
-	
+
 	@Value("${" + IDA_DATASHARE_THUMBPRINT_VALIDATION_REQUIRED + ":true}")
 	private boolean thumbprintValidationRequired;
 
@@ -50,9 +54,13 @@ public class DataShareManager {
 	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequired) throws  RestServiceException, IdAuthenticationBusinessException {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
+
 		String responseStr = restHelper.requestSync(request);
+		if (responseStr == null) {
+			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+		}
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
-		
+
 		if (errorOpt.isEmpty()) {
 			R result;
 			if (decryptionRequired) {
@@ -72,9 +80,9 @@ public class DataShareManager {
 					result = readToObject(clazz, dataBytes);
 				}
 			}
-			
+
 			return result;
-			
+
 		} else {
 			//Unchecked exception is thrown so that retry will not be performed on this.
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage() + " : " + errorOpt.get().toString());
@@ -88,5 +96,5 @@ public class DataShareManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-	
+
 }

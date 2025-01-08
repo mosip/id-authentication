@@ -29,6 +29,7 @@ public class MasterDataCacheInitializer implements ApplicationListener<Applicati
 	// Invoking this in post construct does not work due to time-out issue happening
 	// with webclient while invoking from post constuct.
 	public void loadMasterData() throws IdAuthenticationBusinessException {
+
 		masterDataCache.getMasterDataTitles();
 		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailContentTemplate());
 		masterDataCache.getMasterDataTemplate(EnvUtil.getAuthEmailSubjectTemplate());

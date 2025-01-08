@@ -17,7 +17,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -71,7 +71,7 @@ public class MasterDataCache {
 	 * @return the master data template
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable(cacheNames = MASTERDATA_TEMPLATES, key = "#template")
+	@Cacheable(cacheNames = MASTERDATA_TEMPLATES)
 	public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
 		try {
 			RestRequestDTO request = restFactory
