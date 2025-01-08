@@ -90,8 +90,6 @@ public class PostWithBodyWithOtpGenerate extends AdminTestUtil implements ITest 
 				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
 			}
 		}
-
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 		String otpRequest = null;
