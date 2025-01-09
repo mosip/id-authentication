@@ -65,7 +65,7 @@
 	
 	* Create Identities in MOSIP Identity System (Setup) : This threadgroup contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "freshIdentityCreationCount" is used as a variable. 
 	
-	* Third Party Certificates (Setup) : This threadgroup contains series of certificate upload to support the IDA execution.
+	* Third Party Certificates (Setup) : This threadgroup contains series of certificates upload to support the IDA execution.
 	
 	* S01 Authentication with OTP (Preparation): This threadgroup creates testdata like signature and request body for the Auth Send OTP and Authentication with OTP request which expires after 24 hours.
 	
