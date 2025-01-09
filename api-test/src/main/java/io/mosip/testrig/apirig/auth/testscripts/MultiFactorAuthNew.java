@@ -24,6 +24,7 @@ import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -171,6 +172,16 @@ public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
 		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
 		String identyEnryptRequest = updateTimestampOtp(identityRequest, otpChannel, testCaseName);
 		//String identyEnryptRequest = updateTimestampOtp(identityRequest);
+		logger.info(identyEnryptRequest);
+		if (identyEnryptRequest.contains("baseurl")) {
+			String domainUrl =  BaseTestCase.ApplnURI;
+			identyEnryptRequest = identyEnryptRequest.replace("baseurl", domainUrl);
+		}
+		if (identyEnryptRequest.contains("$DOMAINURI$")) {
+			String domainUrl =  BaseTestCase.ApplnURI;
+			identyEnryptRequest = identyEnryptRequest.replace("$DOMAINURI$", domainUrl);
+		}
+		logger.info(identyEnryptRequest);
 		String encryptedIdentityReq=null;
 		try {
 			encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identyEnryptRequest, getResourcePath()+props.getProperty("bioValueEncryptionTemplate"), testCaseName, false);
