@@ -37,3 +37,4 @@ ALTER TABLE BATCH_JOB_EXECUTION ADD COLUMN JOB_CONFIGURATION_LOCATION VARCHAR(25
 -- Drop the indices if they were created
 DROP INDEX IF EXISTS idx_job_name;
 DROP INDEX IF EXISTS idx_job_key;
+DROP INDEX IF EXISTS idx_partner_mapping_apikey;
