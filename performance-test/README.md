@@ -74,17 +74,17 @@
 	* S03 Authentication with Demographics (Preparation): This threadgroup creates testdata like signature and request body for the Authentication with Demographics request which expires after 24 hours.
 	  			
 	* S01 Authentication with OTP (Execution) :
-		* S01 T01 Auth Send OTP : This thread sends OTP request.
-		* S01 T02 Authentication with OTP : This thread performs OTP authentication.
+		* S01 T01 Auth Send OTP : This API endpoint sends OTP request.
+		* S01 T02 Authentication with OTP : This API endpoint performs OTP authentication.
 		
 	* S02 Authentication with Biometrics (Execution):
-		* S02 T01 Authentication with Biometrics: This thread performs biometric authentication
+		* S02 T01 Authentication with Biometrics: This API endpoint performs biometric authentication
 	
 	* S03 Authentication with Demographics (Execution):
-		* S03 T01 Authentication with Demographics : This thread performs the authentication with Demographics.
+		* S03 T01 Authentication with Demographics : This API endpoint performs the authentication with Demographics.
 
 	* S04 EKYC with Biometrics (Execution):
-		* S04 T01 EKYC with Biometrics: This thread performs EKYC with biometric data.
+		* S04 T01 EKYC with Biometrics: This API endpoint performs EKYC with biometric data.
  	
 ### Downloading Plugin manager jar file for the purpose installing other JMeter specific plugins
 
@@ -101,7 +101,7 @@
 
 * Calculation of number of users depending on Transactions per second (TPS) provided by client
 
-* The script and the below calculation is preconfigured as per 100 tps, if you are testing for other tps, the below values neds to be adjusted.
+* The script and the below calculation is preconfigured as per 100 tps, if you are testing for other tps, the below values needs to be adjusted.
 
 * Applying little's law
 	* Users = TPS * (SLA of transaction + think time + pacing)
