@@ -9,8 +9,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.IdentityBindingCertificateStore;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -65,16 +68,31 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
     @Autowired
 	private IDAMappingConfig idMappingConfig;
     
-
+    @Autowired
+	private IdentityCacheRepository identityRepo;
     
     @Override
-    public boolean isPublicKeyBinded(String idVid, Map<String, Object> publicKeyJWK)
+    public boolean isPublicKeyBinded(String idVid, Map<String, Object> publicKeyJWK, String idvIdType)
             throws IdAuthenticationBusinessException {
         String idVidHash = securityManager.hash(idVid);
         PublicKey publicKey = createPublicKeyObject(publicKeyJWK);
         String publicKeyHash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(publicKey.getEncoded()); 
-        int noOfCerts = bindingCertificateRepo.countPublicKeysByIdHash(idVidHash, publicKeyHash);
-        return noOfCerts > 0;
+        
+        List<Object[]> resultList = bindingCertificateRepo.findIdentityBindingDataByPublicKeys(publicKeyHash);
+        // Public key is not binded to any UIN/VID
+        if (Objects.isNull(resultList) || resultList.isEmpty()) {
+            return false;
+        }
+        String tokenId = getTokenId(idVidHash, idvIdType);
+
+        // Public key is already binded, but checking binded key to same UIN/VID.
+        // if key binded to same UIN/VID, let's consider as not binded so that it will bind again.  
+        // if key binded to same tokenId of different UIN/VID, let's consider as not binded so that it will bind again.
+        return resultList.stream().map(item -> new AbstractMap.SimpleEntry<>(
+                                String.valueOf(item[0]), 
+                                String.valueOf(item[1])
+                            )).filter(e -> e.getKey().equals(tokenId) || e.getValue().equals(idVidHash))
+                              .findAny().isEmpty();
         
     }
 
@@ -158,6 +176,8 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
         StringBuilder strBuilder = new StringBuilder();
         for (String idName: idNames) {
             List<IdentityInfoDTO> idInfoList = identityInfo.get(idName);
+            if (Objects.isNull(idInfoList) || idInfoList.isEmpty())
+                continue;
             for (IdentityInfoDTO identityInfoData : idInfoList) {
                 if (identityInfoData.getLanguage().equalsIgnoreCase(defaultLangCode)) {
                     if (strBuilder.length() > 0) 
@@ -185,5 +205,21 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
                          partnerName, certificateData, certThumbprint, notAfterDate);
         logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "updateCertDataForSameTokenId",
                          String.format("Total Updated Count for Token Id: %s, count: %s.", tokenId, updateCount));
+    }
+
+    private String getTokenId(String idVidHash, String idvIdType) throws IdAuthenticationBusinessException{
+        // Duplicate data fetch, to check id exists
+        // check already available in IdServiceImpl
+        List<Object[]> identityData = identityRepo.findDemoDataById(idVidHash);
+        
+        if (Objects.isNull(identityData) || identityData.isEmpty()) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+						"Id not found in DB");
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
+                    idvIdType));
+        }
+        return String.valueOf(identityData.get(0)[4]);
     }
 }
