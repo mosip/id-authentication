@@ -38,4 +38,7 @@ public interface IdentityBindingCertificateRepository extends BaseRepository<Ide
 													@Param("certData") String certificateData,
 													@Param("certThumbprint") String certThumbprint,
 													@Param("notAfterDate") LocalDateTime notAfterDate);
+	
+	@Query("SELECT i.token, i.idVidHash FROM IdentityBindingCertificateStore i where i.publicKeyHash = :publicKeyHash")
+	List<Object[]> findIdentityBindingDataByPublicKeys(@Param("publicKeyHash") String publicKeyHash);
 }
