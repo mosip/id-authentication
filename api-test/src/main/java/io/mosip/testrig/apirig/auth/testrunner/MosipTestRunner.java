@@ -191,34 +191,13 @@ public class MosipTestRunner {
 			homeDir = new File(dir.getParent() + "/mosip/testNgXmlFiles");
 			LOGGER.info("ELSE :" + homeDir);
 		}
-		// List and sort the files
 		File[] files = homeDir.listFiles();
 		if (files != null) {
-			Arrays.sort(files, (f1, f2) -> {
-				// Customize the comparison based on file names
-				if (f1.getName().toLowerCase().contains("prerequisite")) {
-					return -1; // f1 should come before f2
-				} else if (f2.getName().toLowerCase().contains("prerequisite")) {
-					return 1; // f2 comes before f1
-				}
-				return f1.getName().compareTo(f2.getName()); // default alphabetical order
-			});
-
 			for (File file : files) {
 				TestNG runner = new TestNG();
 				List<String> suitefiles = new ArrayList<>();
-
-				if (file.getName().toLowerCase().contains("auth")) {
-					if (file.getName().toLowerCase().contains("prerequisite")) {
-						BaseTestCase.setReportName("auth-prerequisite");
-					} else {
-						// Check if prerequisite suite failed or skipped
-						if (EmailableReport.getFailedCount() > 0 || EmailableReport.getSkippedCount() > 0) {
-							// skipAll = true;
-						}
-
-						BaseTestCase.setReportName("auth");
-					}
+				if (file.getName().toLowerCase().contains("mastertestsuite")) {
+					BaseTestCase.setReportName(GlobalConstants.AUTH);
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);
 					System.getProperties().setProperty("testng.outpur.dir", "testng-report");
@@ -229,7 +208,6 @@ public class MosipTestRunner {
 		} else {
 			LOGGER.error("No files found in directory: " + homeDir);
 		}
-
 	}
 
 	public static String getGlobalResourcePath() {
