@@ -9,7 +9,7 @@
 -- 
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
-
+-- Jan-2025             Balaji              added a unique constraint on apikey
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_mapping | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_mapping CASCADE;
@@ -23,7 +23,8 @@ CREATE TABLE ida.partner_mapping (
 	upd_dtimes timestamp,
 	is_deleted bool DEFAULT false,
 	del_dtimes timestamp,
-	CONSTRAINT partner_mapping_pk PRIMARY KEY (partner_id,policy_id,api_key_id)
+	CONSTRAINT partner_mapping_pk PRIMARY KEY (partner_id,policy_id,api_key_id),
+	CONSTRAINT idx_partner_mapping_apikey UNIQUE (api_key_id)
 
 );
 -- ddl-end --
