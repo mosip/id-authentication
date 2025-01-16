@@ -1,6 +1,7 @@
 CreateDraft:
   auth_CreateDraft_Smoke_Pos:
       endPoint: /idrepository/v1/identity/draft/create/{registrationId}
+      uniqueIdentifier: TC_IDA_CreateDraft_01
       description: create Draft with regitrationId
       role: idrepo
       checkErrorsOnlyInResponse: true

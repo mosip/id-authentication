@@ -1,6 +1,7 @@
 AuthTransaction:
    auth_AuthTransaction_allValid_smoke_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -15,6 +16,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_Invalid_Gender_smoke_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_02
       description: AuthTransaction with invalid gender using valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -29,6 +31,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_valid_Gender_smoke_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_03
       description: AuthTransaction with valid gender using valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -43,6 +46,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_04
       description: AuthTransaction using valid VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -57,6 +61,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_WITH_deactivated_VID2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_05
       description: AuthTransaction with deactivated VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -75,7 +80,8 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_VID3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
-      description: AuthTransaction with valid VID
+      uniqueIdentifier: TC_IDA_AuthTransaction_06
+      description: AuthTransaction with valid perpetual VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -89,7 +95,8 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
-      description: AuthTransaction with valid UIN
+      uniqueIdentifier: TC_IDA_AuthTransaction_07
+      description: AuthTransaction with valid infant UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -103,6 +110,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -117,6 +125,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN4:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -131,6 +140,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_smoke_UIN5:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
       role: resident
       checkErrorsOnlyInResponse: true

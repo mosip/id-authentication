@@ -1,6 +1,7 @@
 DemoAuth:
   auth_DemoAuth_blocked_partnerid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedPartnerId_01
       description: perform Demo auth with blocked partner id
       role: resident
       restMethod: post
@@ -31,6 +32,7 @@ DemoAuth:
 }'
   auth_DemoAuth_blocked_partnerid__VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedPartnerId_02
       description: perform Demo auth with VID with blocked partner id
       role: resident
       restMethod: post

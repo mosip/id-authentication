@@ -1,6 +1,7 @@
 AuthLock:
    auth_AuthLock_Valid_UIN_All:
       endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_01
       description: lock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -34,6 +35,7 @@ AuthLock:
 }'
    auth_AuthLock_Valid_UIN_locked_All:
       endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_01
       description: lock demo and bio-Face authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -67,6 +69,7 @@ AuthLock:
 }'
    auth_AuthLock_Valid_UIN_for_bio_auth:
       endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_02
       description: lock bio-Finger authType for UIN
       role: resident
       checkErrorsOnlyInResponse: true

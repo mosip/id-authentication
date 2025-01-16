@@ -1,6 +1,7 @@
 UpdateIdentity:
   Auth_UpdateIdentity_updatePhone_withValidParameters_smoke_Pos_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
       description: update DOB and Activate UIN 
       role: idrepo
       checkErrorsOnlyInResponse: true
@@ -35,6 +36,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_updateAddress_Positive_EKYC_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_02
       description: update DOB and Activate UIN for Ekyc
       role: idrepo
       restMethod: patch
@@ -54,6 +56,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_updateName_Positive_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
@@ -73,6 +76,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_updateDOB_ValidParam_smoke_Pos_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
@@ -92,6 +96,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_DEACTIVATED_and_auth_smoke_Pos_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_03
       description: update DOB and Deactivate UIN
       role: idrepo
       restMethod: patch
@@ -111,6 +116,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_DEACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_03
       description: update DOB and Deactivate UIN
       role: idrepo
       restMethod: patch
@@ -130,6 +136,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_ACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
