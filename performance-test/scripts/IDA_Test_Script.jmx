@@ -196,22 +196,10 @@
         <stringProp name="shareMode">shareMode.all</stringProp>
       </CSVDataSet>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Relying Party Partner Id From File" enabled="true">
-        <stringProp name="filename">${runTimeFilePath}/rp_partner_id.txt</stringProp>
-        <stringProp name="fileEncoding"></stringProp>
-        <stringProp name="variableNames">rpPartnerId</stringProp>
-        <boolProp name="ignoreFirstLine">false</boolProp>
-        <stringProp name="delimiter">,</stringProp>
-        <boolProp name="quotedData">false</boolProp>
-        <boolProp name="recycle">true</boolProp>
-        <boolProp name="stopThread">false</boolProp>
-        <stringProp name="shareMode">shareMode.all</stringProp>
-      </CSVDataSet>
-      <hashTree/>
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Relying Party API Key From File" enabled="true">
         <stringProp name="filename">${runTimeFilePath}/rp_api_key.txt</stringProp>
         <stringProp name="fileEncoding"></stringProp>
-        <stringProp name="variableNames">rpApiKey</stringProp>
+        <stringProp name="variableNames">rpPartnerId,rpApiKey</stringProp>
         <boolProp name="ignoreFirstLine">false</boolProp>
         <stringProp name="delimiter">,</stringProp>
         <boolProp name="quotedData">false</boolProp>
@@ -1910,13 +1898,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Partner ID to File" enabled="true">
-              <stringProp name="filename"></stringProp>
-              <stringProp name="parameters"></stringProp>
-              <boolProp name="resetInterpreter">false</boolProp>
-              <stringProp name="script">${__StringToFile(${runTimeFilePath}/rp_partner_id.txt,${rpPartnerId}\n,false,)}</stringProp>
-            </BeanShellPostProcessor>
-            <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
                 <stringProp name="685365575">&quot;errors&quot;:[]</stringProp>
@@ -2938,7 +2919,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <boolProp name="resetInterpreter">false</boolProp>
-              <stringProp name="script">${__StringToFile(${runTimeFilePath}/rp_api_key.txt,${rpApiKey}\n,false,)}</stringProp>
+              <stringProp name="script">${__StringToFile(${runTimeFilePath}/rp_api_key.txt,${rpPartnerId}\,${rpApiKey}\n,false,)}</stringProp>
             </BeanShellPostProcessor>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
