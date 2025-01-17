@@ -200,7 +200,7 @@ BioAuth:
     "authStatus": "false"
 }'
   auth_EkycBio_Face_With_blocked_partner:
-      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_82
       description: Ekyc face auth with blocked partner
       role: resident
@@ -240,7 +240,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_74
       description: Ekyc RingFinger auth with blocked deviceProviderId
       role: resident
@@ -280,7 +280,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_75
       description: Ekyc LeftMiddleFinger auth with blocked deviceProviderId
       role: resident
@@ -320,7 +320,7 @@ BioAuth:
         "kycStatus": "false"
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
-      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_76
       description: Ekyc RIGHTIRIS auth with blocked deviceProviderId
       role: resident

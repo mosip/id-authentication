@@ -1840,7 +1840,7 @@ DemoAuthNew:
   "authStatus": "true"
 }'
   auth_DemoAuth_DOB_Valid_Smoke_with_invalid_certs:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      endPoint: /idauthentication/v1/auth/dhdhdh464744
       uniqueIdentifier: TC_IDA_DemoAuth_65
       description: Demo auth using valid dob and invalid certs
       role: resident

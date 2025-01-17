@@ -6,7 +6,7 @@ EkycOtp:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
-      outputTemplate: ida/EkycOtp/ekycOtpResult
+      outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -156,7 +156,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
-        "otpChannel": "$ID:GetDraft_all_valid_smoke_sid_EMAIL$",
+        "otpChannel": "mosipuser123@mailinator.com",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -190,7 +190,7 @@ EkycOtp:
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
-      outputTemplate: ida/EkycOtp/ekycOtpResult
+      outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -453,7 +453,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
-        "otpChannel": "$ID:GenerateVID_to_revoke_Perpetual_sid_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -475,7 +475,7 @@ EkycOtp:
   "kycStatus": "false",
    "errors": [
     {
-      "errorCode": "IDA-MLC-018",
+      "errorCode": "IDA-MLC-001",
       "errorMessage": "VID not available in database"
     }
   ],
@@ -829,7 +829,7 @@ EkycOtp:
         "otpChannel": "$ID:AddIdentity_Positive_EKYC_smoke_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
-        "transactionId": "$TRANSACTIONID$",
+        "transactionId": "",
         "individualIdType": "UIN",
         "bio": false,
         "demo": false,
