@@ -1831,12 +1831,12 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Registering The Partner" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Registering The Relying Partner" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Partner Self Registration - Auth partner Endpoint" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Partner Self Registration - Auth Partner Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -1919,7 +1919,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Certificates RP Endpoint" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Certificates Relying Partner Endpoint" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -2275,7 +2275,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Map Partner Id and Policy Endpoint" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Map Partner Id And Policy Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -2949,7 +2949,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Partner Self Registration - Misp partner Endpoint" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Partner Self Registration - Misp Partner Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
@@ -4513,7 +4513,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody and signature File" enabled="true">
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody And Signature File" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -4651,7 +4651,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody and signature File" enabled="true">
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody And Signature File" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -4762,11 +4762,11 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody and signature File" enabled="true">
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody And Signature File" enabled="true">
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
-            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authentication_authdemo.txt,${signatureAuthDemo} ${reqBodyAuthDemo}\n,true,)}</stringProp>
+            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authentication_demographics.txt,${signatureAuthDemo} ${reqBodyAuthDemo}\n,true,)}</stringProp>
           </BeanShellPostProcessor>
           <hashTree/>
         </hashTree>
@@ -4937,7 +4937,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
       </ThreadGroup>
       <hashTree>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Create Auth OTP RequestFrom File" enabled="true">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Create Auth OTP Request From File" enabled="true">
           <stringProp name="filename">${runTimeFilePath}/authentication_otp.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">signature,sendOtpBody,signatureAuth,reqBodyAuth</stringProp>
@@ -5019,7 +5019,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S01 T02 Authentication With OTP" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="S01 T02 Authentication with OTP" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">false</boolProp>
         </TransactionController>
@@ -5113,7 +5113,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
       </ThreadGroup>
       <hashTree>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Request Body  And Signature of Biometric Authentication  From File" enabled="true">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Request Body And Signature of Biometric Authentication From File" enabled="true">
           <stringProp name="filename">${runTimeFilePath}/authentication_biometrics.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">signatureBio,reqBodyBio</stringProp>
@@ -5219,8 +5219,8 @@ vars.put(&quot;encodedString&quot;,encodedString);
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
       </ThreadGroup>
       <hashTree>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Signature and Request body AuthDemo From File" enabled="true">
-          <stringProp name="filename">${runTimeFilePath}/authentication_authdemo.txt</stringProp>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Signature and Request Body Demographics From File" enabled="true">
+          <stringProp name="filename">${runTimeFilePath}/authentication_demographics.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">signatureAuthDemo,reqBodyAuthDemo</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>

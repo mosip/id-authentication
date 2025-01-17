@@ -22,6 +22,7 @@
 * Validate the scripts for one user.
 * Execute a dry run for 10 min.
 * Execute performance run with various loads in order to achieve targeted NFR's.
+* Threadgroups are configured to 100 user load run.
 
 ### Setup points for Execution
 
