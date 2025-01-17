@@ -1,16 +1,15 @@
 
 ### Contains
 * This folder contains performance Test script of below API endpoint categories.
-    01. Auth Token Generation (Setup)
-    02. Create Identities in MOSIP Identity System (Setup)
-    03. Third Party Certificates (Setup)
-	04. S01 Authentication with OTP (Preparation)
-	05. S02 Authentication with Biometrics (Preparation)
-	06. S03 Authentication with Demo (Preparation)
-	07. S01 Authentication with OTP (Execution)
-	08. S02 Authentication with Biometrics (Execution)
-	09. S03 Authentication with Demo (Execution)
-	10. S04 EKYC with Biometrics (Execution)
+    01. Create Identities in MOSIP Identity System (Setup)
+    02. Third Party Certificates (Setup)
+	03. S01 Authentication with OTP (Preparation)
+	04. S02 Authentication with Biometrics (Preparation)
+	05. S03 Authentication with Demo (Preparation)
+	06. S01 Authentication with OTP (Execution)
+	07. S02 Authentication with Biometrics (Execution)
+	08. S03 Authentication with Demo (Execution)
+	09. S04 EKYC with Biometrics (Execution)
 
 
 * Open source Tools used,
@@ -60,13 +59,19 @@
 ### Execution points for eSignet Authentication API's
 
 *IDA_Test_Script.jmx
-	
-	*Auth Token Generation (Setup): This threadgroup contains Auth manager authentication API which will generate auth token value for Registration client. The token expires after 24 hours.
+		
 	
 	* Create Identities in MOSIP Identity System (Setup) : This threadgroup contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "freshIdentityCreationCount" is used as a variable. 
 	
 	* Third Party Certificates (Setup) : This threadgroup contains series of certificates upload to support the IDA execution.
-	
+			* Setup Ida Certificates : This transaction controller generates IDA certificates.
+			* Creating Policy And Policy Group : This transaction controller creates and publish policy and policy group.
+			* Registering The Partner : This transaction controller generates partner id for the relying partner.
+			* Keycloak User And Api Key Generation : This transaction controller generates keycloak user and API key for relying partner.
+			* Create Misp Partner And Misp License Key :  This transaction controller generates partner ID and license key for MISP partner.
+			* Setup Device Partner : This transaction controller generates certificate for device partner.
+			* Setup FTM Partner : This transaction controller generates certificate for FTM partner.
+				
 	* S01 Authentication with OTP (Preparation): This threadgroup creates testdata like signature and request body for the Auth Send OTP and Authentication with OTP request which expires after 24 hours.
 	
 	* S02 Authentication with Biometrics (Preparation): This threadgroup creates testdata like signature and request body for the Authentication with Biometric request which expires after 24 hours.

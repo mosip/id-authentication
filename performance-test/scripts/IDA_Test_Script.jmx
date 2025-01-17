@@ -172,18 +172,6 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Auth Token From File" enabled="true">
-        <stringProp name="filename">${runTimeFilePath}/authorization_token_ida.txt</stringProp>
-        <stringProp name="fileEncoding"></stringProp>
-        <stringProp name="variableNames">authToken</stringProp>
-        <boolProp name="ignoreFirstLine">false</boolProp>
-        <stringProp name="delimiter">,</stringProp>
-        <boolProp name="quotedData">false</boolProp>
-        <boolProp name="recycle">true</boolProp>
-        <boolProp name="stopThread">false</boolProp>
-        <stringProp name="shareMode">shareMode.all</stringProp>
-      </CSVDataSet>
-      <hashTree/>
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load MISP Licensekey From File" enabled="true">
         <stringProp name="filename">${runTimeFilePath}/misp_license_key.txt</stringProp>
         <stringProp name="fileEncoding"></stringProp>
@@ -244,117 +232,6 @@
         <stringProp name="shareMode">shareMode.all</stringProp>
       </CSVDataSet>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Token Generation (Setup)" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-      </ThreadGroup>
-      <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Generate IDA Auth Token Endpoint" enabled="true">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;id&quot;: &quot;string&quot;,&#xd;
-  &quot;metadata&quot;: {},&#xd;
-  &quot;request&quot;: {&#xd;
-    &quot;clientId&quot;: &quot;${idaClientId}&quot;,&#xd;
-    &quot;secretKey&quot;: &quot;${idaSecretKey}&quot;,&#xd;
-    &quot;appId&quot;: &quot;${idaAppId}&quot;&#xd;
-  },&#xd;
-  &quot;requesttime&quot;: &quot;${utcTime}Z&quot;,&#xd;
-  &quot;version&quot;: &quot;1.0&quot;&#xd;
-}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">${serverIPInternal}</stringProp>
-          <stringProp name="HTTPSampler.port">${serverPortNo}</stringProp>
-          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">v1/authmanager/authenticate/clientidsecretkey</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Generate UTC Time" enabled="true">
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.TimeZone;//Set the format for the date-time
-SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss.sss&quot;);
-dateFormat.setTimeZone(TimeZone.getTimeZone(&quot;UTC&quot;));// Get the current time in UTC
-Calendar cal = Calendar.getInstance();
-String utcTime = dateFormat.format(cal.getTime());
-vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
-          </BeanShellPreProcessor>
-          <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="-1843418944">&quot;message&quot;:&quot;Clientid and Token combination had been validated successfully&quot;</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.custom_message"></stringProp>
-            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">16</intProp>
-          </ResponseAssertion>
-          <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion - Response Code" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="49586">200</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.custom_message"></stringProp>
-            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">2</intProp>
-          </ResponseAssertion>
-          <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Auth Token" enabled="true">
-            <stringProp name="RegexExtractor.useHeaders">true</stringProp>
-            <stringProp name="RegexExtractor.refname">authToken</stringProp>
-            <stringProp name="RegexExtractor.regex">set-cookie: Authorization=([\w.-]+);</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default">authToken_not_found</stringProp>
-            <stringProp name="RegexExtractor.match_number">1</stringProp>
-          </RegexExtractor>
-          <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Auth Token To File" enabled="true">
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authorization_token_ida.txt,${authToken}\n,false,)}</stringProp>
-          </BeanShellPostProcessor>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create Identities in MOSIP Identity System (Setup)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -954,13 +831,18 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Authentication Endpoint" enabled="true">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Ida Certificates" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Authentication Endpoint" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
   &quot;id&quot;: &quot;string&quot;,&#xd;
   &quot;metadata&quot;: {},&#xd;
   &quot;request&quot;: {&#xd;
@@ -971,69 +853,64 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
   &quot;requesttime&quot;: &quot;${__time(YYYY-MM-dd&apos;T&apos;HH:mm:ss.SSS,)}Z&quot;,&#xd;
   &quot;version&quot;: &quot;1.0&quot;&#xd;
 }</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">${serverIPInternal}</stringProp>
-          <stringProp name="HTTPSampler.port">${serverPortNo}</stringProp>
-          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">v1/authmanager/authenticate/clientidsecretkey</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="-1843418944">&quot;message&quot;:&quot;Clientid and Token combination had been validated successfully&quot;</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.custom_message"></stringProp>
-            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">16</intProp>
-          </ResponseAssertion>
-          <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion - Response Code" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="49586">200</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.custom_message"></stringProp>
-            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">2</intProp>
-          </ResponseAssertion>
-          <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Auth Token" enabled="true">
-            <stringProp name="RegexExtractor.useHeaders">true</stringProp>
-            <stringProp name="RegexExtractor.refname">authToken</stringProp>
-            <stringProp name="RegexExtractor.regex">set-cookie: Authorization=([\w.-]+);</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default">authToken_not_found</stringProp>
-            <stringProp name="RegexExtractor.match_number">1</stringProp>
-          </RegexExtractor>
-          <hashTree/>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Ida Certificates In Utility" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${serverIPInternal}</stringProp>
+            <stringProp name="HTTPSampler.port">${serverPortNo}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">v1/authmanager/authenticate/clientidsecretkey</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-1843418944">&quot;message&quot;:&quot;Clientid and Token combination had been validated successfully&quot;</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">16</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion - Response Code" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="49586">200</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+              <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Auth Token" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">true</stringProp>
+              <stringProp name="RegexExtractor.refname">authToken</stringProp>
+              <stringProp name="RegexExtractor.regex">set-cookie: Authorization=([\w.-]+);</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">authToken_not_found</stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+          </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Ida-fir Cert Endpoint" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
@@ -1179,7 +1056,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
                   <stringProp name="Header.name">Content-Type</stringProp>
                   <stringProp name="Header.value">application/json</stringProp>
                 </elementProp>
-                <elementProp name="" elementType="Header">
+                <elementProp name="Cookie" elementType="Header">
                   <stringProp name="Header.name">Cookie</stringProp>
                   <stringProp name="Header.value">Authorization=${authToken}</stringProp>
                 </elementProp>
@@ -1299,7 +1176,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
                   <stringProp name="Header.name">Content-Type</stringProp>
                   <stringProp name="Header.value">application/json</stringProp>
                 </elementProp>
-                <elementProp name="" elementType="Header">
+                <elementProp name="Cookie" elementType="Header">
                   <stringProp name="Header.name">Cookie</stringProp>
                   <stringProp name="Header.value">Authorization=${authToken}</stringProp>
                 </elementProp>
@@ -1419,7 +1296,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
                   <stringProp name="Header.name">Content-Type</stringProp>
                   <stringProp name="Header.value">application/json</stringProp>
                 </elementProp>
-                <elementProp name="" elementType="Header">
+                <elementProp name="Cookie" elementType="Header">
                   <stringProp name="Header.name">Cookie</stringProp>
                   <stringProp name="Header.value">Authorization=${authToken}</stringProp>
                 </elementProp>
@@ -1519,7 +1396,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="PMS Authentication" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Creating Policy And Policy Group" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -1677,12 +1554,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Create And Publish Partner Policy" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Policy Group Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -1972,7 +1843,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Relying Party Partner" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Registering The Partner" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -2423,12 +2294,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Relying Party Partner- Misp" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Map Partner Id and Policy Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -2575,6 +2440,12 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Keycloak User And Api Key Generation" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Generate Keycloak Admin User Token Endpoint" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments">
@@ -3092,7 +2963,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Misp Partner" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Create Misp Partner And Misp License Key" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -3474,12 +3345,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Misp License Key" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Generate Misp License Endpoint" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -4589,13 +4454,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store Reqbody and signature File" enabled="true">
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authentication_send_otp.txt,${signature} ${sendOtpBody}\n,true,)}</stringProp>
-          </BeanShellPostProcessor>
-          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Auth Request UIN Endpoint" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -4678,7 +4536,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <boolProp name="resetInterpreter">false</boolProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
-            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authentication_otp.txt,${signatureAuth} ${reqBodyAuth}\n,true,)}</stringProp>
+            <stringProp name="script">${__StringToFile(${runTimeFilePath}/authentication_otp.txt,${signature} ${sendOtpBody} ${signatureAuth} ${reqBodyAuth}\n,true,)}</stringProp>
           </BeanShellPostProcessor>
           <hashTree/>
         </hashTree>
@@ -4881,10 +4739,6 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Cookie" elementType="Header">
-                <stringProp name="Header.name">Cookie</stringProp>
-                <stringProp name="Header.value">Authorization=${authToken}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -5105,19 +4959,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Create Auth OTP RequestFrom File" enabled="true">
           <stringProp name="filename">${runTimeFilePath}/authentication_otp.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="variableNames">signatureAuth,reqBodyAuth</stringProp>
-          <boolProp name="ignoreFirstLine">true</boolProp>
-          <stringProp name="delimiter"> </stringProp>
-          <boolProp name="quotedData">false</boolProp>
-          <boolProp name="recycle">true</boolProp>
-          <boolProp name="stopThread">false</boolProp>
-          <stringProp name="shareMode">shareMode.all</stringProp>
-        </CSVDataSet>
-        <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Add Identity Request Details From File" enabled="true">
-          <stringProp name="filename">${runTimeFilePath}/authentication_send_otp.txt</stringProp>
-          <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="variableNames">signature,sendOtpBody</stringProp>
+          <stringProp name="variableNames">signature,sendOtpBody,signatureAuth,reqBodyAuth</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>
           <stringProp name="delimiter"> </stringProp>
           <boolProp name="quotedData">false</boolProp>
@@ -5169,7 +5011,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
                 </elementProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">${authToken}</stringProp>
+                  <stringProp name="Header.value">${__UUID}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -5239,7 +5081,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">${authToken}</stringProp>
+                  <stringProp name="Header.value">${__UUID}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -5345,7 +5187,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">${authToken}</stringProp>
+                  <stringProp name="Header.value">${__UUID}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -5451,7 +5293,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">${authToken}</stringProp>
+                  <stringProp name="Header.value">${__UUID}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -5557,7 +5399,7 @@ vars.put(&quot;encodedString&quot;,encodedString);
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">${authToken}</stringProp>
+                  <stringProp name="Header.value">${__UUID}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
