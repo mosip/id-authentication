@@ -65,10 +65,10 @@
 	* Create Identities in MOSIP Identity System (Setup) : This threadgroup contains the authorization api's for regproc and idrepo from which the auth token will be generated. There is set of 4 api's generate RID, generate UIN, add identity and add VID. From here we will get the VID which can be further used as individual id. These 4 api's are present in the loop controller where we can define the number of samples for creating identities in which "freshIdentityCreationCount" is used as a variable. 
 	
 	* Third Party Certificates (Setup) : This threadgroup contains series of certificates upload to support the IDA execution.
-			* Setup Ida Certificates : This transaction controller generates IDA certificates.
-			* Creating Policy And Policy Group : This transaction controller creates and publish policy and policy group.
-			* Registering The Partner : This transaction controller generates partner id for the relying partner.
-			* Keycloak User And Api Key Generation : This transaction controller generates keycloak user and API key for relying partner.
+			* Setup Ida Certificates to Utility: This transaction controller generates IDA certificates.
+			* Creating Policy And Policy Group : This transaction controller creates and publish policy and policy group. The policy ID is the random number provided by user. The ID is not fetched from environment database.
+			* Registering The Relying Partner : This transaction controller generates partner id for the relying partner.
+			* Relying Party Keycloak User And Api Key Generation : This transaction controller generates keycloak user and API key for relying partner.
 			* Create Misp Partner And Misp License Key :  This transaction controller generates partner ID and license key for MISP partner.
 			* Setup Device Partner : This transaction controller generates certificate for device partner.
 			* Setup FTM Partner : This transaction controller generates certificate for FTM partner.

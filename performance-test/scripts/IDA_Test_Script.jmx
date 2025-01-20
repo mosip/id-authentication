@@ -63,21 +63,6 @@
             <stringProp name="Argument.value">regproc</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="idaClientId" elementType="Argument">
-            <stringProp name="Argument.name">idaClientId</stringProp>
-            <stringProp name="Argument.value">mosip-ida-client</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="idaSecretKey" elementType="Argument">
-            <stringProp name="Argument.name">idaSecretKey</stringProp>
-            <stringProp name="Argument.value">abc@123</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="idaAppId" elementType="Argument">
-            <stringProp name="Argument.name">idaAppId</stringProp>
-            <stringProp name="Argument.value">ida</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="pmsAppId" elementType="Argument">
             <stringProp name="Argument.name">pmsAppId</stringProp>
             <stringProp name="Argument.value">partner</stringProp>
@@ -819,7 +804,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Ida Certificates" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Setup Ida Certificates To Utility" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -2422,7 +2407,7 @@ vars.put(&quot;utcTime&quot;, utcTime);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Keycloak User And Api Key Generation" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Relying Party Keycloak User And Api Key Generation" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
