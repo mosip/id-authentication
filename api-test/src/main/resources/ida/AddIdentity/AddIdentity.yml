@@ -1,6 +1,7 @@
 AddIdentity:
    auth_AddIdentity_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_01
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -30,6 +31,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_02
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -59,6 +61,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_new_uin_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_03
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -88,6 +91,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_Infant_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_04
       description: create Infant UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -117,6 +121,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_05
       description: create Infant UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -146,6 +151,7 @@ AddIdentity:
 }'
    auth_AddIdentity_ValidParam_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_06
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -175,6 +181,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Otp_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_07
       description: create UIN for OTP Authentication
       role: idrepo
       restMethod: post
@@ -204,6 +211,7 @@ AddIdentity:
 }'
    auth_AddIdentity_UIN_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_08
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -233,6 +241,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_EKYC_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_09
       description: create UIN for Ekyc Authentication
       role: idrepo
       restMethod: post
@@ -262,6 +271,7 @@ AddIdentity:
 }'
    auth_AddIdentity_InternalOTP_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_10
       description: create UIN for Internal OTP Authentication
       role: idrepo
       restMethod: post
@@ -291,6 +301,7 @@ AddIdentity:
 }'
    auth_AddIdentity_EKYCOTP_PRE_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_11
       description: create UIN for Ekyc OTP Authentication
       role: idrepo
       restMethod: post
@@ -320,6 +331,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_TRE_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_12
       description: create UIN for Authentication
       role: idrepo
       restMethod: post
@@ -349,6 +361,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_13
       description: create UIN for Authentication
       role: idrepo
       restMethod: post
@@ -378,6 +391,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_14
       description: create UIN and use for Lock, Unlock and Bio Authentication
       role: idrepo
       restMethod: post
@@ -407,6 +421,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_15
       description: create UIN and use for Lock,Unlock and Demo Authentication
       role: idrepo
       restMethod: post
@@ -442,6 +457,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_16
       description: create UIN and use for Locking and Bio Authentication
       role: idrepo
       restMethod: post
@@ -477,6 +493,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_17
       description: create UIN and use for Locking and Demo Authentication
       role: idrepo
       restMethod: post
@@ -512,6 +529,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_unblockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_18
       description: create UIN and use for Unblocking
       role: idrepo
       restMethod: post
@@ -547,6 +565,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_LockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_19
       description: create UIN and use for Locking
       role: idrepo
       restMethod: post
@@ -582,6 +601,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_20
       description: create UIN and use for Biometric Lock
       role: idrepo
       restMethod: post
@@ -616,6 +636,7 @@ AddIdentity:
 }'
    auth_AddIdentity_EkycDemo_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_21
       description: create UIN and use for Ekyc Demo Authentication
       role: idrepo
       restMethod: post
@@ -650,6 +671,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_EKYCUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_22
       description: create UIN and use for Ekyc Authentication
       role: idrepo
       restMethod: post
@@ -685,6 +707,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Deactivate_and_auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_23
       description: create UIN and use for Deactivation and Authentication
       role: idrepo
       restMethod: post
@@ -719,6 +742,7 @@ AddIdentity:
 }'
    auth_AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_24
       description: create UIN to use for VID creation and to Revoke
       role: idrepo
       restMethod: post
@@ -753,6 +777,7 @@ AddIdentity:
 }'
    auth_AddIdentity_for_hotlist_id_service_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_25
       description: create UIN for Hotlist
       role: idrepo
       restMethod: post
@@ -788,6 +813,7 @@ AddIdentity:
 
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_26
       description: create UIN for Locking ,Unlocking and Bio Authentication
       role: idrepo
       restMethod: post
@@ -822,6 +848,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_27
       description: create UIN for Unlocking and Demo Authentication
       role: idrepo
       restMethod: post
@@ -856,6 +883,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_28
       description: create UIN for Locking and Bio Authentication
       role: idrepo
       restMethod: post
@@ -891,6 +919,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_29
       description: create UIN and use for Locking and Demo Authentication
       role: idrepo
       restMethod: post
@@ -927,6 +956,7 @@ AddIdentity:
 
    auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_30
       description: create UIN for Authentication
       role: idrepo
       restMethod: post
@@ -961,6 +991,7 @@ AddIdentity:
 }'
    auth_AddIdentity_Positive_demoauth_name_smoke:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_31
       description: create UIN and use for Demo Authentication
       role: idrepo
       regenerateHbs: true      
@@ -997,6 +1028,7 @@ AddIdentity:
 }'
    auth_AddIdentity_deactivate_UIN_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_32
       description: create UIN and use for Deactivation
       role: idrepo
       regenerateHbs: true      
@@ -1027,6 +1059,7 @@ AddIdentity:
 }'
    auth_AddIdentity_hotlist_UIN_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_33
       description: create UIN and use for Hotlisting the UIN
       role: idrepo
       regenerateHbs: true      
@@ -1115,6 +1148,7 @@ AddIdentity:
 #}'
    auth_AddIdentity_lock_unlock_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_34
       description: create UIN and use for Locking and Unlocking
       role: idrepo
       regenerateHbs: true      
