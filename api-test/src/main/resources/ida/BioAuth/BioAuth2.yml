@@ -211,7 +211,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Valid scenario
+      uniqueIdentifier: TC_IDA_BioAuth_66
+      description: Bio auth with locked face
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/BioAuth
@@ -2296,51 +2297,6 @@ BioAuth:
     }'
       output: '{
     "authStatus": "true"
-}'
-  auth_BioAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_66
-      description: Bio auth with locked face
-      role: resident
-      restMethod: post
-      inputTemplate: ida/BioAuth/BioAuth
-      outputTemplate: ida/BioAuth/error
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": true,
-        "demo": false,
-        "otp": false,
-        "identityRequest":{
-          "bioSubType": "UNKNOWN",
-          "bioType": "FACE",
-          "bioValue": "$FACE$",
-          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-          "dateTime": "$DATETIME$",
-          "deviceProviderID": "1873299273",
-          "deviceServiceID": "",
-          "deviceServiceVersion": "SB.WIN.001",
-          "deviceProvider": "SYNCBYTE",
-          "deviceProviderId": "SYNCBYTE.LTC165",
-          "deviceSubType": "Full face",
-          "make": "Logitech",
-          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467171",
-          "type": "Face",
-    "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
-    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
-    }
-    }'
-      output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
-        "authStatus": false
 }'
   auth_BioAuth_Biometric_RightIris_With_MANDATORY_iris_in_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
