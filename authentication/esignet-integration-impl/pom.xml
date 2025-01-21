@@ -74,4 +74,41 @@
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<skipTests>false</skipTests>
+					<skip>false</skip>
+					<argLine>
+						${argLine} --add-opens
+						java.xml/jdk.xml.internal=ALL-UNNAMED
+						--illegal-access=permit
+					</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
