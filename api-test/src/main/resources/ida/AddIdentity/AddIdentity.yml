@@ -1177,3 +1177,123 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
+   auth_AddIdentity_with_zero_age_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_35
+      description: create UIN for authentication with zero age
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/10",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_with_negative_age_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_36
+      description: create UIN for authentication with negative age
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+ "dateOfBirth": "2010/12/10",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_with_age_more_than_calculated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_37
+      description: create UIN for authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2010/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_with_age_below_calculated_value_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_38
+      description: create UIN for authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'

@@ -1920,3 +1920,103 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
+  auth_DemoAuth_with_zero_age_value_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_68
+      description: Demo auth with zero age
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_with_zero_age_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "0",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_with_negative_age_value_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_69
+      description: Demo auth with negative age
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_with_negative_age_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "-10",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_with_age_greater_than_calculated_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_70
+      description: Demo auth with age greater than the calculated value
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_with_age_more_than_calculated_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "80",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_with_age_below_calculated_value_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_71
+      description: Demo auth with age below the calculated value
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_with_age_below_calculated_value_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "10",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
