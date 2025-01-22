@@ -7,6 +7,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EMPTY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.TokenValidationHelper;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
@@ -62,6 +64,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRespDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -400,11 +403,11 @@ public class KycFacadeImpl implements KycFacade {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
 					"Processing Kyc Exchange request.");
 			
-			String vciAuthToken = kycExchangeRequestDTO.getKycToken();
+			String kycAuthToken = kycExchangeRequestDTO.getKycToken();
 			String idVid = kycExchangeRequestDTO.getIndividualId();
 			String idvidHash = securityManager.hash(idVid);
 
-			KycTokenData kycTokenData = tokenValidationHelper.findAndValidateIssuedToken(vciAuthToken, oidcClientId, 
+			KycTokenData kycTokenData = tokenValidationHelper.findAndValidateIssuedToken(kycAuthToken, oidcClientId, 
 						kycExchangeRequestDTO.getTransactionID(), idvidHash);
 
 			String idvIdType = kycExchangeRequestDTO.getIndividualIdType();
@@ -447,7 +450,6 @@ public class KycFacadeImpl implements KycFacade {
 			if (locales.size() == 0) {
 				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 			}
-
 
 			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, 
 														kycExchangeRequestDTO);
@@ -524,17 +526,125 @@ public class KycFacadeImpl implements KycFacade {
 			kycAuthResponseDTOV2 = (KycAuthResponseDTOV2) kycAuthResponse.getKey();
 			status = kycAuthResponse.getValue();
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTOV2, metadata, true);
-			auditHelper.audit(AuditModules.KYC_AUTH, AuditEvents.KYC_REQUEST_RESPONSE,
+			auditHelper.audit(AuditModules.KYC_AUTH_V2, AuditEvents.KYC_REQUEST_RESPONSE_V2,
 					kycAuthRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
 					"kycAuthentication status : " + status);
 			return kycAuthResponseDTOV2;
 		} catch (IdAuthenticationBusinessException e) {
 			status = false;
 			saveToTxnTable(kycAuthRequestDTO, status, partnerId, token, authResponseDTO, kycAuthResponseDTOV2, metadata, true);
-			auditHelper.audit(AuditModules.KYC_AUTH, AuditEvents.KYC_REQUEST_RESPONSE,
+			auditHelper.audit(AuditModules.KYC_AUTH_V2, AuditEvents.KYC_REQUEST_RESPONSE_V2,
 								kycAuthRequestDTO.getTransactionID(), IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()), e);
 			throw e;
 		} 
+	}
+
+	@Override
+	public KycExchangeResponseDTO processKycExchangeV2(KycExchangeRequestDTOV2 kycExchangeRequestDTOV2,
+			String partnerId, String oidcClientId, Map<String, Object> metadata, ObjectWithMetadata requestWithMetadata)
+			throws IdAuthenticationBusinessException {
+		try {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
+					"Processing Kyc Exchange V2 request.");
+			
+			String kycAuthToken = kycExchangeRequestDTOV2.getKycToken();
+			String idVid = kycExchangeRequestDTOV2.getIndividualId();
+			String idvidHash = securityManager.hash(idVid);
+
+			KycTokenData kycTokenData = tokenValidationHelper.findAndValidateIssuedToken(kycAuthToken, oidcClientId, 
+				kycExchangeRequestDTOV2.getTransactionID(), idvidHash);
+			
+			String idvIdType = kycExchangeRequestDTOV2.getIndividualIdType();
+			Optional<PartnerPolicyResponseDTO> policyForPartner = partnerService.getPolicyForPartner(partnerId,	oidcClientId, metadata);
+			Optional<PolicyDTO> policyDtoOpt = policyForPartner.map(PartnerPolicyResponseDTO::getPolicy);
+
+			if (!policyDtoOpt.isPresent()) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
+						"Partner Policy not found: " + partnerId + ", client id: " + oidcClientId);
+				throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorCode(),
+							IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorMessage());
+			}
+			
+			List<String> unVerifiedConsentClaims = kycExchangeRequestDTOV2.getUnVerifiedConsentedClaims()
+																	.keySet().stream().collect(Collectors.toList());
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
+												"UnVerifiedConsentClaims List:" + unVerifiedConsentClaims);
+			List<String> verifiedConsentClaims = exchangeDataAttributesUtil.getVerifiedClaimsList(
+														kycExchangeRequestDTOV2.getVerifiedClaims());
+
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
+												"VerifiedConsentClaims List:" + verifiedConsentClaims);
+			boolean duplicateExists = verifiedConsentClaims.stream().anyMatch(claim -> unVerifiedConsentClaims
+								.stream().anyMatch(claim2 -> claim2.equalsIgnoreCase(claim)));
+			if (duplicateExists){
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
+						"Duplicate claims found in both verified & unverified claims.");
+				throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.DUPLICATE_CLAIMS_FOUND.getErrorCode(),
+							IdAuthenticationErrorConstants.DUPLICATE_CLAIMS_FOUND.getErrorMessage());
+			}					
+
+			List<String> consentAttributes = new ArrayList<>(unVerifiedConsentClaims);
+			consentAttributes.addAll(verifiedConsentClaims);				
+
+			List<String> allowedConsentAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
+
+			PolicyDTO policyDto = policyDtoOpt.get();
+			
+			List<String> policyAllowedKycAttribs = Optional.ofNullable(policyDto.getAllowedKycAttributes()).stream()
+									.flatMap(Collection::stream).map(KYCAttributes::getAttributeName).collect(Collectors.toList());
+
+			Set<String> filterAttributes = new HashSet<>();
+			exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(allowedConsentAttributes, filterAttributes, policyAllowedKycAttribs);
+			Set<String> policyAllowedAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAllowedKycAttribs);
+
+			boolean isBioRequired = false;
+			if (filterAttributes.contains(CbeffDocType.FACE.getType().value().toLowerCase()) || 
+						filterAttributes.contains(IdAuthCommonConstants.PHOTO.toLowerCase())) {
+				policyAllowedAttributes.add(CbeffDocType.FACE.getType().value().toLowerCase());
+				isBioRequired = true;
+			}
+
+			policyAllowedAttributes.add(IdaIdMapping.VERIFIEDATTRIBUTES.getIdname());
+			Map<String, Object> idResDTO = idService.processIdType(idvIdType, idVid, isBioRequired,
+								IdAuthCommonConstants.KYC_EXCHANGE_CONSUME_VID_DEFAULT, policyAllowedAttributes);
+			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO, mapper);
+
+			List<String> locales = kycExchangeRequestDTOV2.getLocales();
+			if (locales.size() == 0) {
+				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
+			}
+			
+			String token = idService.getToken(idResDTO);
+			String psuToken = kycTokenData.getPsuToken();
+
+			String respJson = kycService.buildExchangeVerifiedClaimsData(idvidHash, idInfo, unVerifiedConsentClaims, 
+						verifiedConsentClaims, locales, idVid, kycExchangeRequestDTOV2);
+			// update kyc token status 
+			//KycTokenData kycTokenData = kycTokenDataOpt.get();
+			kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());
+			kycTokenDataRepo.saveAndFlush(kycTokenData);
+			KycExchangeResponseDTO kycExchangeResponseDTO = new KycExchangeResponseDTO();
+			kycExchangeResponseDTO.setId(kycExchangeRequestDTOV2.getId());
+			kycExchangeResponseDTO.setTransactionID(kycExchangeRequestDTOV2.getTransactionID());
+			kycExchangeResponseDTO.setVersion(kycExchangeRequestDTOV2.getVersion());
+			kycExchangeResponseDTO.setResponseTime(exchangeDataAttributesUtil.getKycExchangeResponseTime(kycExchangeRequestDTOV2));
+
+			EncryptedKycRespDTO encryptedKycRespDTO = new EncryptedKycRespDTO();
+			encryptedKycRespDTO.setEncryptedKyc(respJson);
+			kycExchangeResponseDTO.setResponse(encryptedKycRespDTO);
+			/* saveToTxnTable(kycExchangeRequestDTOV2, false, true, partnerId, token, kycExchangeResponseDTO, requestWithMetadata);
+			auditHelper.audit(AuditModules.KYC_EXCHANGE, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE,
+					kycExchangeRequestDTO.getTransactionID(),	IdType.getIDTypeOrDefault(kycExchangeRequestDTO.getIndividualIdType()),
+					IdAuthCommonConstants.KYC_EXCHANGE_SUCCESS); */
+			return kycExchangeResponseDTO;
+		} catch(IdAuthenticationBusinessException e) {
+			auditHelper.audit(AuditModules.KYC_EXCHANGE_V2, AuditEvents.KYC_EXCHANGE_REQUEST_RESPONSE_V2,
+				kycExchangeRequestDTOV2.getTransactionID(), 
+				IdType.getIDTypeOrDefault(kycExchangeRequestDTOV2.getIndividualIdType()), e);
+			throw e;
+		}
 	}
 	
 }

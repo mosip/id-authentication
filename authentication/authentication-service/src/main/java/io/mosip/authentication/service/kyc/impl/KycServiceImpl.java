@@ -1,9 +1,15 @@
 package io.mosip.authentication.service.kyc.impl;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.COMMA_STRING;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.CLAIMS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EMPTY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.NULL_CONST;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRUST_FRAMEWORK;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFICATION;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFICATION_VALUE;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFICATION_VALUES;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -21,10 +27,10 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.codec.DecoderException;
@@ -35,9 +41,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.gson.JsonArray;
 
 import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.entity.OIDCClientData;
@@ -57,6 +62,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
@@ -860,5 +866,211 @@ public class KycServiceImpl implements KycService {
 					"Error converting map to string. " + exp.getMessage(), exp);
 		}
 		return verifiedClaimsStr;
+	}
+
+	@Override
+	public String buildExchangeVerifiedClaimsData(String subject, Map<String, List<IdentityInfoDTO>> idInfo,
+			List<String> unverifiedConsentClaims, List<String> verifiedConsentClaims, 
+			List<String> consentedLocales, String idVid,
+			KycExchangeRequestDTOV2 kycExchangeRequestDTOV2) throws IdAuthenticationBusinessException {
+			
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+			"buildKycExchangeResponseV2",
+			"Building claims response for PSU token: " + subject);
+		
+		Set<String> uniqueConsentedLocales = new HashSet<String>(consentedLocales);
+		Map<String, String> mappedConsentedLocales = localesMapping(uniqueConsentedLocales);
+
+		Map<String, Object> respMap = new HashMap<>();
+		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
+				
+		unverifiedConsentClaims.stream().filter(attrib -> !attrib.equals(IdAuthCommonConstants.SUBJECT))
+		.forEach(attrib -> {
+			if (attrib.equals(consentedIndividualAttributeName)) {
+				respMap.put(attrib, idVid);
+			} else {
+				try {
+					List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
+					if (mappedConsentedLocales.size() > 0) {
+						addEntityForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
+					}
+				} catch (IdAuthenticationBusinessException ex) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+							"buildKycExchangeResponseV2",
+							"Error Processing Unverified claims: " + attrib, ex);
+					respMap.put(attrib, null);
+				}
+			}
+		});
+		
+		if (respMap.containsValue(null)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
+		
+		List<Map<String, Object>> verifiedClaimsRespLst = new ArrayList<>();
+		int counter = 1;
+		for (Map<String, Object> reqVerifiedClaim: kycExchangeRequestDTOV2.getVerifiedClaims()) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+										"buildKycExchangeResponseV2",
+											"Processing Verified claim object Seq: " + (counter++));
+			Map<String, Object> verifiedClaimsRespMap = null;
+			if (Objects.nonNull(reqVerifiedClaim.get(VERIFICATION)) && 
+							reqVerifiedClaim.get(VERIFICATION) instanceof Map) {
+				Map<String, Object> reqVerificationMap = (Map<String, Object>) reqVerifiedClaim.get(VERIFICATION);
+				// Scenario 1: trust framework object(key) is not available, not adding the requested claims
+				if (!reqVerificationMap.containsKey(TRUST_FRAMEWORK) || 
+							!reqVerifiedClaim.containsKey(CLAIMS)) {
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+									"Scenario 1: Trust_Framework or Claims Object is not available.");
+					continue;
+				}
+				Object reqTrustFramework = reqVerificationMap.get(TRUST_FRAMEWORK);
+				Object reqClaims = reqVerifiedClaim.get(CLAIMS);
+				// Scenario 2: trust framework object(key) is available and value is null. 
+				// adding the requested claims with any trust framework.
+				if (Objects.isNull(reqTrustFramework) || ((reqTrustFramework instanceof String) && 
+							((String)reqTrustFramework).equalsIgnoreCase(NULL_CONST))) {
+					Map<String, Object> reqClaimsMap = (Map<String, Object>) reqClaims;
+					Map<String, Object> respClaimsMap = new HashMap<>();
+					List<String> respTrustFrameworkLst = new ArrayList<>();
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+									"Scenario 2: Trust_Framework is Null.");
+					reqClaimsMap.keySet().stream().forEach(claim -> {
+						try {
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Processing claim in Scenario 2. Claim: " + claim);
+							List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(claim);
+							if (mappedConsentedLocales.size() > 0) {
+								addEntityForLangCodes(mappedConsentedLocales, idInfo, respClaimsMap, claim, idSchemaAttributes);
+							}
+							addTrustFrameworkDetails(idSchemaAttributes, idInfo.get(VERIFIED_CLAIMS_ATTRIBS), respTrustFrameworkLst, claim);
+						} catch (IdAuthenticationBusinessException ex) {
+							mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+									"buildKycExchangeResponseV2",
+									"Error Processing Unverified claims: " + claim, ex);
+							respClaimsMap.put(claim, null);
+						}
+					});
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Verified claims found in Scenario 2. Count: "+ respClaimsMap.size());
+					if (!respClaimsMap.isEmpty()) {
+						Map<String, String> trustFrameworkMap = new HashMap<>();
+						if (respTrustFrameworkLst.size() > 0) {
+							trustFrameworkMap.put(TRUST_FRAMEWORK, respTrustFrameworkLst.get(0));
+						}
+						verifiedClaimsRespMap = new HashMap<>();
+						verifiedClaimsRespMap.put(CLAIMS, respClaimsMap);
+						verifiedClaimsRespMap.put(VERIFICATION, trustFrameworkMap);
+					}
+				}
+				// Scenario 3: trust framework object(key) is available and value is not null. 
+				// adding the requested claims with any trust framework.
+				if (Objects.nonNull(reqTrustFramework) && (reqTrustFramework instanceof Map)) {
+					Map<String, Object> reqClaimsMap = (Map<String, Object>) reqClaims;
+					Map<String, Object> reqTrustFrameworkMap = (Map<String, Object>) reqTrustFramework;
+					List<String> reqValues = getRequestTrustFrameworks(reqTrustFrameworkMap);
+					Map<String, Object> respClaimsMap = new HashMap<>();
+					List<String> respTrustFrameworkLst = new ArrayList<>();
+					Map<String, String> trustFrameworkMap = new HashMap<>();
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+									"Scenario 3: Trust_Framework is Not Null.");
+					reqClaimsMap.keySet().stream().forEach(claim -> {
+						try {
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Processing claim in Scenario 3. Claim: " + claim);
+							List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(claim);
+							addTrustFrameworkDetails(idSchemaAttributes, idInfo.get(VERIFIED_CLAIMS_ATTRIBS), respTrustFrameworkLst, claim);
+							for (String value : reqValues) {
+								if (respTrustFrameworkLst.contains(value)) {
+									addEntityForLangCodes(mappedConsentedLocales, idInfo, respClaimsMap, claim, idSchemaAttributes);
+									trustFrameworkMap.put(TRUST_FRAMEWORK, value);
+									break;
+								}
+							}
+						} catch (IdAuthenticationBusinessException ex) {
+							mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+									"buildKycExchangeResponseV2",
+									"Error Processing Unverified claims: " + claim, ex);
+							respClaimsMap.put(claim, null);
+						}
+					});
+					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Verified claims found in Scenario 3. Count: "+ respClaimsMap.size());
+					if (!respClaimsMap.isEmpty()) {
+						verifiedClaimsRespMap = new HashMap<>();
+						verifiedClaimsRespMap.put(CLAIMS, respClaimsMap);
+						verifiedClaimsRespMap.put(VERIFICATION, trustFrameworkMap);
+					}
+				}
+			}
+			if (Objects.nonNull(verifiedClaimsRespMap))
+				verifiedClaimsRespLst.add(verifiedClaimsRespMap);
+		}
+		if (verifiedClaimsRespLst.size() > 0)
+			respMap.put(VERIFIED_CLAIMS, verifiedClaimsRespLst);
+		try {
+			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
+			// TODO : the response needs to be encrypted?,  
+			/* String respType = kycExchangeRequestDTOV2.getRespType();
+			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
+				String partnerCertData = (String) kycExchangeRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
+				return securityManager.jwtEncrypt(signedData, partnerCertData);
+			} */
+			return signedData;
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private void addTrustFrameworkDetails(List<String> idSchemaAttributes, List<IdentityInfoDTO> idInfo, 
+			List<String> respTrustFrameworkLst, String claim) {
+
+		try {
+			Map<String, List<Map<String, Object>>> verifiedAttributesMap = 
+							mapper.readValue(idInfo.get(0).getValue(), new TypeReference<>() {});
+
+			/* for(String idAttr : idSchemaAttributes){
+				List<Map<String, Object>> values = (List<Map<String, Object>>) verifiedAttributesMap.get(idAttr);
+				if (Objects.nonNull(values)) {
+					for (Map<String, Object> value : values) {
+						respTrustFrameworkLst.add(String.valueOf(value.get(TRUST_FRAMEWORK)));
+					}
+					break;
+				}
+			} */
+			idSchemaAttributes.stream()
+							  .map(verifiedAttributesMap::get) 
+							  .filter(Objects::nonNull)        
+							  .flatMap(List::stream)           
+							  .map(value -> String.valueOf(value.get(TRUST_FRAMEWORK)))
+							  .forEach(respTrustFrameworkLst::add);
+
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"addTrustFrameworkDetails",
+						"Added Claim in trust framework list: " + respTrustFrameworkLst);
+		} catch (JsonProcessingException ex) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+						"addTrustFrameworkDetails",
+						"Error adding claims to trust framework list: " + claim, ex);
+		} 
+	}
+
+	private List<String> getRequestTrustFrameworks(Map<String, Object> reqTrustFrameworkMap) {
+		List<String> values = new ArrayList<String>();
+		if (reqTrustFrameworkMap.containsKey(VERIFICATION_VALUE)) {
+			String value = (String) reqTrustFrameworkMap.get(VERIFICATION_VALUE);
+			values.add(value);
+			return values;
+		}
+		List<String> valueLst = (List<String>) reqTrustFrameworkMap.get(VERIFICATION_VALUES);
+		values.addAll(valueLst);
+		return values;
 	}
 }
