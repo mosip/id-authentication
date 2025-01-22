@@ -475,6 +475,17 @@ public final class IdAuthCommonConstants {
 
 	public static final String COMMA_STRING = ",";
 
+	public static final String CLAIMS = "claims";
+
+	public static final String VERIFICATION = "verification";
+
+	public static final String TRUST_FRAMEWORK = "trust_framework";
+
+	public static final String VERIFICATION_VALUE = "value";
+
+	public static final String VERIFICATION_VALUES = "values";
+
+	public static final String VERIFIED_CLAIMS = "verified_claims";
 
 	private IdAuthCommonConstants() {
 	}

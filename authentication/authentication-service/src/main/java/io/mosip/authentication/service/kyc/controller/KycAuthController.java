@@ -476,4 +476,71 @@ public class KycAuthController {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		}
 	}
+
+	/**
+	 * Controller Method for Kyc-exchange for version 2.
+	 *
+	 * @param kycExchangeRequestDTO the kyc exchange request DTO V2
+	 * @param errors            the errors
+	 * @return KycExchangeResponseDTO the kyc exchange response DTO V2
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 * @throws IdAuthenticationAppException      the id authentication app exception
+	 * @throws IdAuthenticationDaoException      the id authentication dao exception
+	 */
+	@PostMapping(path = "/kyc-exchange/v2/delegated/{IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Operation(summary = "Kyc Exchange Request", description = "Kyc Exchange Request", tags = { "kyc-auth-controller" })
+	@SecurityRequirement(name = "Authorization")
+	@Parameter(in = ParameterIn.HEADER, name = "signature")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
+			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
+	public KycExchangeResponseDTO processKycExchangeV2(@Validated @RequestBody KycExchangeRequestDTOV2 kycExchangeRequestDTOV2,
+			@ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
+			@PathVariable("OIDC-Client-Id") String oidcClientId, HttpServletRequest request)
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		if(request instanceof ObjectWithMetadata) {
+			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
+			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, kycExchangeRequestDTOV2.getMetadata());
+			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
+					.createAndSetAuthTxnBuilderMetadataToRequest(kycExchangeRequestDTOV2, false, partner);
+ 			try {
+				
+				String idType = Objects.nonNull(kycExchangeRequestDTOV2.getIndividualIdType()) ? kycExchangeRequestDTOV2.getIndividualIdType()
+						: idTypeUtil.getIdType(kycExchangeRequestDTOV2.getIndividualId()).getType();
+						kycExchangeRequestDTOV2.setIndividualIdType(idType);
+				kycExchangeValidator.validateIdvId(kycExchangeRequestDTOV2.getIndividualId(), idType, errors);
+				DataValidationUtil.validate(errors);
+				
+				Map<String, Object> metadata = kycExchangeRequestDTOV2.getMetadata();
+				KycExchangeResponseDTO kycExchangeResponseDTO = kycFacade.processKycExchangeV2(kycExchangeRequestDTOV2, 
+												partnerId, oidcClientId, metadata, requestWithMetadata);
+				
+				return kycExchangeResponseDTO;
+			} catch (IDDataValidationException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
+						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				if(kycExchangeRequestDTOV2.getTransactionID() == null) 
+					kycExchangeRequestDTOV2.setTransactionID(IdAuthCommonConstants.NO_TRANSACTION_ID);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycExchangeRequestDTOV2.getTransactionID());
+				throw authTransactionHelper.createDataValidationException(authTxnBuilder, e, requestWithMetadata);
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchange",
+						e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+				authTransactionHelper.setAuthTransactionEntityMetadata(e, authTxnBuilder, requestWithMetadata);
+				authTransactionHelper.setAuthTransactionEntityMetadata(requestWithMetadata, authTxnBuilder);
+				IdaRequestResponsConsumerUtil.setIdVersionToObjectWithMetadata(requestWithMetadata, e);
+				e.putMetadata(IdAuthCommonConstants.TRANSACTION_ID, kycExchangeRequestDTOV2.getTransactionID());
+				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
+			}  
+		} else {
+			mosipLogger.error("Technical error. HttpServletRequest is not instanceof ObjectWithMetada.");
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
+	}
 }

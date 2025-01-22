@@ -53,6 +53,8 @@ public enum AuditEvents {
 
 	KYC_REQUEST_RESPONSE_V2("IDA_019", "System", "Kyc Auth V2 Request"),
 
+	KYC_EXCHANGE_REQUEST_RESPONSE_V2("IDA_020", "System", "Kyc Exchange V2 Request"),
+
 	/**  Static_Pin_Storage_Request_Response. */
 	STATIC_PIN_STORAGE_REQUEST_RESPONSE("IDA-EVT-OLD-006","BUSINESS", ""),//not applicable for release v1
 	
