@@ -203,6 +203,7 @@ public enum IdAuthenticationErrorConstants {
 	KYC_TOKEN_INVALID_TRANSACTION_ID("IDA-KYE-005", "KYC Auth and KYC Exchange transaction ids are different."),
 	PARTNER_POLICY_NOT_FOUND("IDA-KYE-006", "Partner Policy not found."),
 	KYC_TOKEN_INVALID_UIN_VID("IDA-KYE-007", "KYC Token does not belong to the input UIN/VID."),
+	DUPLICATE_CLAIMS_FOUND("IDA-KYE-008", "Duplicate claims found in request."),
 	
 	ID_KEY_BINDING_NOT_ALLOWED("IDA-IKB-001", "Key Binding not allowed for the Id."),
 	CREATE_PUBLIC_KEY_OBJECT_ERROR("IDA-IKB-002", "Error creating Public Key object."),
