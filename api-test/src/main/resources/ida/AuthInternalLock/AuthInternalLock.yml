@@ -1,6 +1,7 @@
 AuthInternalLock:
   auth_AuthInternal_Lock_UIN_Unlock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_01
       description: lock Bio-authType Iris-authSubType for given UIN
       role: idrepo
       restMethod: post
@@ -15,10 +16,11 @@ AuthInternalLock:
     "unlockForSeconds": 500
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
   auth_AuthInternal_Lock_UIN_child_UIN_which_locked_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_02
       description: lock Bio-authType Iris-authSubType for child UIN
       role: idrepo
       restMethod: post
@@ -33,10 +35,11 @@ AuthInternalLock:
     "unlockForSeconds": 0
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
   auth_AuthInternal_lock_with_explicitly_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_01
       description: lock Bio-authType Iris-authSubType for given UIN
       role: idrepo
       restMethod: post
@@ -51,11 +54,12 @@ AuthInternalLock:
     "unlockForSeconds": 5000
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Lock_UIN_Unlock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_03
       description: unLock Demo authType for given UIN
       role: idrepo
       restMethod: post
@@ -70,11 +74,12 @@ AuthInternalLock:
     "unlockForSeconds": 500
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_04
       description: lock Bio-authType Iris-authSubType Permanently for UIN
       role: idrepo
       restMethod: post
@@ -89,11 +94,12 @@ AuthInternalLock:
     "unlockForSeconds": 0
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_05
       description: lock Demo authType Permanently for UIN 
       role: idrepo
       restMethod: post
@@ -108,11 +114,12 @@ AuthInternalLock:
     "unlockForSeconds": 0
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_04
       description: lock Bio-authType Iris-authSubType for UIN
       role: idrepo
       restMethod: post
@@ -127,11 +134,12 @@ AuthInternalLock:
     "unlockForSeconds": 5
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_06
       description: unlock Demo authType for seconds for UIN
       role: idrepo
       restMethod: post
@@ -146,11 +154,12 @@ AuthInternalLock:
     "unlockForSeconds": 5
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_04
       description: lock Bio-authType Iris-authSubType Permanently for UIN 
       role: idrepo
       restMethod: post
@@ -165,11 +174,12 @@ AuthInternalLock:
     "unlockForSeconds": 0
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_05
       description: lock Demo authType Permanently for UIN
       role: idrepo
       restMethod: post
@@ -184,5 +194,5 @@ AuthInternalLock:
     "unlockForSeconds": 0
 }'
       output: '{
-	"status": "Success"
+  "status": "Success"
 }'

@@ -1,7 +1,8 @@
 PublishDraft:
   auth_PublishDraft_all_valid_smoke:
       endPoint: /idrepository/v1/identity/draft/publish/{registrationId}
-      description: publish Draft from registrationID
+      uniqueIdentifier: TC_IDA_PublishDraft_01
+      description: publish Draft using registrationID
       role: idrepo
       restMethod: get
       inputTemplate: ida/PublishDraft/publishDraft

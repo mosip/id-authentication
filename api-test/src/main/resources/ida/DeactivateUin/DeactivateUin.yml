@@ -1,6 +1,7 @@
 DeactivateUINs:
   auth_DeactivateUINs_Smoke_Pos:
       endPoint: /idrepository/v1/vid/deactivate
+      uniqueIdentifier: TC_IDA_DeactivateVIDs_01
       description: deactivate all VID which is generated from UIN
       role: resident
       restMethod: post

@@ -1,6 +1,7 @@
 EkycDemo:
   auth_EkycDemo_Auth_With_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_blockedUIN_01
       description: perform Ekyc Demo auth with blocked UIN
       role: resident
       restMethod: post
@@ -31,7 +32,8 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_blocked_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: perform Ekyc Demo auth with blocked UIN
+      uniqueIdentifier: TC_IDA_EkycDemo_blockedVID_02
+      description: perform Ekyc Demo auth with blocked VID
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases

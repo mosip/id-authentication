@@ -1,6 +1,7 @@
 CreateVID:
   auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
       endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_01
       description: generate Perpetual VID for authentication
       role: idrepo
       restMethod: post
@@ -19,6 +20,7 @@ CreateVID:
 
   auth_GenerateVID_to_revoke_Perpetual_sid:
       endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_01
       description: generate Perpetual VID to revoke
       role: idrepo
       restMethod: post
@@ -37,6 +39,7 @@ CreateVID:
 
   auth_GenerateVID_to_test_hotlist_Perpetual_sid:
       endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_03
       description: generate Perpetual VID to test Hotlist api
       role: idrepo
       restMethod: post
@@ -55,6 +58,7 @@ CreateVID:
 
   auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
       endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_02
       description: generate Temporary VID for authentication
       role: idrepo
       restMethod: post

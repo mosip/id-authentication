@@ -1,6 +1,7 @@
 UpdateDraft:
   auth_UpdateDraft_Smoke_Pos:
       endPoint: /idrepository/v1/identity/draft/update/{registrationId}
+      uniqueIdentifier: TC_IDA_UpdateDraft_01
       description: update draft from registrationid
       role: idrepo
       restMethod: patch

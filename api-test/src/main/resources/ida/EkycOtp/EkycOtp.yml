@@ -1,6 +1,7 @@
 EkycOtp:
   auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_01
       description: Ekyc otp auth with valid UIN
       role: resident
       restMethod: post
