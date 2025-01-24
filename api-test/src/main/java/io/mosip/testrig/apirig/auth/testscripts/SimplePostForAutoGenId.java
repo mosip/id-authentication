@@ -109,9 +109,6 @@ public class SimplePostForAutoGenId extends AdminTestUtil implements ITest {
 				}
 			}
 		}
-
-		
-		testCaseName = isTestCaseValidForExecution(testCaseDTO);
 		String[] templateFields = testCaseDTO.getTemplateFields();
 		String inputJson = "";
 		

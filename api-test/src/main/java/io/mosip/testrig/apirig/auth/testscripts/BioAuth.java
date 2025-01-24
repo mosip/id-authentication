@@ -23,6 +23,7 @@ import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
@@ -113,7 +114,16 @@ public class BioAuth extends AdminTestUtil implements ITest {
 		identityRequestEncUrl = identityReqJson.getString("identityRequestEncUrl");
 		identityReqJson.remove("identityRequestEncUrl");
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
-
+		logger.info(identityRequest);
+		if (identityRequest.contains("baseurl")) {
+			String domainUrl =  BaseTestCase.ApplnURI;
+			identityRequest = identityRequest.replace("baseurl", domainUrl);
+		}
+		if (identityRequest.contains("$DOMAINURI$")) {
+			String domainUrl =  BaseTestCase.ApplnURI;
+			identityRequest = identityRequest.replace("$DOMAINURI$", domainUrl);
+		}
+		logger.info(identityRequest);
 		String encryptedIdentityReq = null;
 		try {
 			encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identityRequest,
