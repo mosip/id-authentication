@@ -1,0 +1,16 @@
+RetrieveVIDByUIN:
+  auth_RetrieveVIDByUIN_With_Valid_Smoke_Temp:
+      endPoint: /idrepository/v1/vid/uin/{UIN}
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_RetrieveVIDByUIN_01
+      description: Retrieve VID passing temporary UIN
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/RetrieveVIDByUIN/retrieveVIDByUIN
+      outputTemplate: ida/RetrieveVIDByUIN/retrieveVIDByUINResult
+      input: '{
+      "UIN":"$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
+      }'
+      output: '{
+      "vidType": "$IGNORE$"
+}'

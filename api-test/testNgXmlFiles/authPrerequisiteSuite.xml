@@ -123,4 +123,49 @@
 		</classes>
 	</test>
 	
+		
+		<test name="ReactivateVIDs">
+		<parameter name="ymlFile"	value="ida/ReactivateVIDsForUIN/ReactivateVIDsForUIN.yml" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+	</classes>
+	</test>
+	
+	<test name="RegenerateVid">
+		<parameter name="ymlFile"	value="ida/RegenerateVid/RegenerateVid.yml" />
+		<parameter name="idKeyName" value="vid" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
+	</classes>
+	</test>
+	
+	<test name="RetrieveAuthTypeStatus">
+		<parameter name="ymlFile"	value="ida/RetrieveAuthTypeStatus/RetrieveAuthTypeStatus.yml" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+	</classes>
+	</test>
+	
+	<test name="RetrieveIdentityByUin">
+		<parameter name="ymlFile"	value="ida/RetrieveIdentityByUin/RetrieveIdentityByUin.yml" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+	</classes>
+	</test>
+	
+	<test name="RetrieveVIDByUIN">
+		<parameter name="ymlFile"	value="ida/RetrieveVIDByUIN/RetrieveVIDByUIN.yml" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+	</classes>
+	</test>
+	
+	<test name="GetUnusedUIN">
+		<parameter name="ymlFile"	value="ida/GetUnusedUIN/getUnusedUIN.yml" />
+		<parameter name="idKeyName" value="uin" />
+	<classes>
+		<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
+	</classes>
+	</test>
+	
 </suite>
