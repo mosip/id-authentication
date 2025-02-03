@@ -51,1398 +51,1398 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-#  auth_EkycDemo_Auth_With_draft_uin_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_03
-#      description: Ekyc demo auth with dob using drafted UIN
-#      role: resident
-#      kycFields: ["name"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1992/04/15",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_04
-#      description: Ekyc demo auth with dob using VID
-#      role: resident
-#      kycFields: ["name"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_05
-#      description: Ekyc demo auth with past time stamp using UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "2022-05-19T06:29:44.809Z",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_06
-#      description: Ekyc demo auth with dob,future timestamp and with UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "2052-05-19T06:29:44.809Z",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_07
-#      description: Ekyc demo auth using dob,empty timestamp and with UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_VID_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_08
-#      description: Ekyc demo auth using dob,past time stamp and with VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "2022-05-19T06:29:44.809Z",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_VID_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_09
-#      description: Ekyc demo auth using dob,future timestamp and with VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "2052-05-19T06:29:44.809Z",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_10
-#      description: Ekyc demo auth using dob,empty timestamp and with VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "false"
-#}'
-#
-#  auth_EkycDemo_Auth_With_InValid_uin_DOB:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_11
-#      description: Ekyc demo auth using invalid dob with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "04-11-1965",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-009"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_InValid_DOB_With_VID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_12
-#      description: Ekyc demo auth using invalid dob with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "04-11-1965",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-009"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_email_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_13
-#      description: Ekyc demo auth using email and with valid UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_EMAIL$",
-#"key": "emailId",
-#    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_Email_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_14
-#      description: Ekyc demo auth using email with VID
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
-#"key": "emailId",
-#    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_InValid_uin_email:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_15
-#      description: Ekyc demo auth using invalid email and with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "raksdgdg@@#$%RFFGVgb",
-#"key": "emailId",
-#    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_InValid_email_With_VID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_16
-#      description: Ekyc demo auth using invalid email with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "raksdgdg@@#$%RFFGVgb",
-#"key": "emailId",
-#    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_revoke_VID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_17
-#      description: Ekyc demo auth with revoked VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
-#"key": "emailId",
-#    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-018"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_gender_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_18
-#      description: Ekyc demo auth using gender with UIN
-#      role: resident
-#      kycFields: ["email"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#     "gender": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "MLE"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_gender_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_19
-#      description: Ekyc demo auth using gender with VID
-#      role: resident
-#      kycFields: ["email"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#     "gender": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "MLE"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_InValid_gender_With_VID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_20
-#      description: Ekyc demo auth using invalid gender with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#     "gender": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Faaa@#R"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_InValid_uin_gender:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_21
-#      description: Ekyc demo auth with invalid gender with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#     "gender": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Faaa@#R"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_name_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_22
-#      description: Ekyc demo auth with valid name with UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Mrs Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_Infant_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_23
-#      description: Ekyc demo auth with infant UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "TEST_FULLNAMEeng"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_24
-#      description: Ekyc demo auth with name and with VID
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "$NAMEPRIMARYLANG$"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_InValid_uin_name:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_25
-#      description: Ekyc demo auth with invalid name value and with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Faaa@#R"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_InValid_name_With_VID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_26
-#      description: Ekyc demo auth with invalid name with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Faaa@#R"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_name1_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_27
-#      description: Ekyc demo auth with valid name and UIN
-#      role: resident
-#      kycFields: ["gender"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name2_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_28
-#      description: Ekyc demo auth with valid name and valid UIN
-#      role: resident
-#      kycFields: ["gender"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Miss-TitleFromServer Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name3_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_29
-#      description: Ekyc demo auth with valid name and title with valid UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Mr-TitleFromServer Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name4_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_30
-#      description: Ekyc demo auth with valid name and title with valid UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Mr-TitleFromServer Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name5_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_31
-#      description: Ekyc demo auth with name and title with valid UIN
-#      role: resident
-#      kycFields: ["dob"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Miss-TitleFromServer. Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name6_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_32
-#      description: Ekyc demo auth with name and title with valid UIN
-#      role: resident
-#      kycFields: ["fullName"]
-#      checkErrorsOnlyInResponse: true
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Miss-TitleFromServer. Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_name7_Valid_titleFromAdmin_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_33
-#      description: Ekyc demo auth with name and title with valid UIN
-#      role: resident
-#      kycFields: ["fullName"]
-#      checkErrorsOnlyInResponse: true
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "eng",
-#      "value": "Miss-TitleFromServer. Lisa.GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_InValid_partner_uin_Smoke:
-#      endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
-#      uniqueIdentifier: TC_IDA_EkycDemo_34
-#      description: Ekyc demo auth with invalid partner with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "name": [
-#    {
-#      "language": "$PRIMARYLANG$",
-#      "value": "Miss Lisa GN"
-#    }
-#  ],
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
-#    }
-#    }'
-#      output: '{
-#   "errors": [
-#        {
-#          "errorCode": "IDA-MLC-007"
-#        },
-#        {
-#          "errorCode": "IDA-MPA-001"
-#        }
-#      ],
-#        "kycStatus": false
-#}'
-#  auth_EkycDemo_Auth_With_age_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_35
-#      description: Ekyc demo auth with age and valid UIN
-#      role: resident
-#      kycFields: ["fullName"]
-#      checkErrorsOnlyInResponse: true
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "51",
-#"key": "age",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_age_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_36
-#      description: Ekyc demo auth with age and VID
-#      role: resident
-#      kycFields: ["email"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "41",
-#"key": "age",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_age_uin_InValid:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_37
-#      description: Ekyc demo auth with invalid age value with UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "5@@##1",
-#"key": "age",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-009"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_Invalid_age_vid:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_38
-#      description: Skyc demo auth with invalid age value with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "5@@##1",
-#"key": "age",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-009"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_phone_Valid_UIN_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_39
-#      description: Ekyc demo auth with phone and valid UIN
-#      role: resident
-#      kycFields: ["email"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
-#"key": "phoneNumber",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_phone_Valid_VID_Smoke:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_40
-#      description: Ekyc demo auth with valid phone with VID
-#      role: resident
-#      kycFields: ["email"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
-#"key": "phoneNumber",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": "true"
-#}'
-#  auth_EkycDemo_Auth_With_phone_uin_InValid:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_41
-#      description: Ekyc demo auth with invalid phone with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "5@@##1",
-#"key": "phoneNumber",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_Auth_With_Invalid_phone_vid:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_42
-#      description: Ekyc demo auth with invalid phone and valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "5@@##1",
-#"key": "phoneNumber",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-DEA-001"
-#    }
-#  ]
-#}'
-#  auth_EkycDemo_DOB_Invalid_transactionId_Pos_vid_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_43
-#      description: Ekyc demo auth with DOB,invalid transactionId and valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "jdjdjdj@@",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false
-#}'
-#  auth_EkycDemo_DOB_blank_transactionId_vid_neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_44
-#      description: Ekyc demo auth with dob,blank transactionId and with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": false
-#}'
-#  auth_EkycDemo_without_individual_type_ID_Pos_vid:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_45
-#      description: Ekyc demo auth without individualId type and with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "$REMOVE$",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "kycStatus": true
-#}'
-#  auth_EkycDemo_missing_individual_ID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_46
-#      description: Ekyc demo auth with missing individualId and with valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$REMOVE$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#   "errors": [
-#        {
-#          "errorCode": "IDA-MLC-006"
-#        }
-#      ],
-#        "kycStatus": false
-#}'
-#  auth_EkycDemo_blank_individual_ID:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_47
-#      description: Ekyc demo auth with blank individualId and valid VID
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "errors": [
-#        {
-#          "errorCode": "IDA-MLC-006"
-#        }
-#      ],
-#        "kycStatus": false
-#}'
-#  auth_EkycDemo_DOB_Unlock_Valid_Smoke_UIN_Neg:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_48
-#      description: Ekyc demo auth with locked UIN,unlocked demo auth and with valid UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#    "errors": [
-#        {
-#          "errorCode": "IDA-MLC-019"
-#        }
-#      ],
-#        "kycStatus": false
-#}'
-#  auth_EkycDemo_DOB_Lock_Permanent_Valid_Smoke_UIN_Pos:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_49
-#      description: Ekyc demo auth with permanently locked UIN
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/error
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#      "errors": [
-#        {
-#          "errorCode": "IDA-MLC-019"
-#        }
-#      ],
-#        "kycStatus": false
-#}'
-#  auth_EkycDemo_Auth_With_Deactivated_UIN:
-#      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-#      uniqueIdentifier: TC_IDA_EkycDemo_50
-#      description: Ekyc demo auth with deactivated UIN
-#      role: resident
-#      kycFields: ["gender"]
-#      restMethod: post
-#      inputTemplate: ida/EkycDemo/EkycDemo
-#      outputTemplate: ida/EkycDemo/EkycDemoResult
-#      input: '{
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": false,
-#        "demo": true,
-#        "otp": false,
-#        "identityRequest":{
-#    "value": "1970/07/08",
-#"key": "dob",
-#    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
-#    }
-#    }'
-#      output: '{
-#  "kycStatus": false
-#}'
+  auth_EkycDemo_Auth_With_draft_uin_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_03
+      description: Ekyc demo auth with dob using drafted UIN
+      role: resident
+      kycFields: ["name"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1992/04/15",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_04
+      description: Ekyc demo auth with dob using VID
+      role: resident
+      kycFields: ["name"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_05
+      description: Ekyc demo auth with past time stamp using UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_06
+      description: Ekyc demo auth with dob,future timestamp and with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "2052-05-19T06:29:44.809Z",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_07
+      description: Ekyc demo auth using dob,empty timestamp and with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_08
+      description: Ekyc demo auth using dob,past time stamp and with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_09
+      description: Ekyc demo auth using dob,future timestamp and with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "2052-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_10
+      description: Ekyc demo auth using dob,empty timestamp and with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptInvalid"
+    }
+    }'
+      output: '{
+  "kycStatus": "false"
+}'
+
+  auth_EkycDemo_Auth_With_InValid_uin_DOB:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_11
+      description: Ekyc demo auth using invalid dob with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "04-11-1965",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_InValid_DOB_With_VID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_12
+      description: Ekyc demo auth using invalid dob with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "04-11-1965",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_email_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_13
+      description: Ekyc demo auth using email and with valid UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_EMAIL$",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_Email_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_14
+      description: Ekyc demo auth using email with VID
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_InValid_uin_email:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_15
+      description: Ekyc demo auth using invalid email and with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "raksdgdg@@#$%RFFGVgb",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_InValid_email_With_VID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_16
+      description: Ekyc demo auth using invalid email with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "raksdgdg@@#$%RFFGVgb",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_revoke_VID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_17
+      description: Ekyc demo auth with revoked VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
+"key": "emailId",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_gender_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_18
+      description: Ekyc demo auth using gender with UIN
+      role: resident
+      kycFields: ["email"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+     "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_gender_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_19
+      description: Ekyc demo auth using gender with VID
+      role: resident
+      kycFields: ["email"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+     "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "MLE"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_InValid_gender_With_VID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_20
+      description: Ekyc demo auth using invalid gender with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+     "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Faaa@#R"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_InValid_uin_gender:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_21
+      description: Ekyc demo auth with invalid gender with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+     "gender": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Faaa@#R"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptGender"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_name_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_22
+      description: Ekyc demo auth with valid name with UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Mrs Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_Infant_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_23
+      description: Ekyc demo auth with infant UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "TEST_FULLNAMEeng"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_24
+      description: Ekyc demo auth with name and with VID
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "$NAMEPRIMARYLANG$"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_InValid_uin_name:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_25
+      description: Ekyc demo auth with invalid name value and with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Faaa@#R"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_InValid_name_With_VID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_26
+      description: Ekyc demo auth with invalid name with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Faaa@#R"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_name1_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_27
+      description: Ekyc demo auth with valid name and UIN
+      role: resident
+      kycFields: ["gender"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name2_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_28
+      description: Ekyc demo auth with valid name and valid UIN
+      role: resident
+      kycFields: ["gender"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name3_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_29
+      description: Ekyc demo auth with valid name and title with valid UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Mr-TitleFromServer Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name4_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_30
+      description: Ekyc demo auth with valid name and title with valid UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Mr-TitleFromServer Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name5_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_31
+      description: Ekyc demo auth with name and title with valid UIN
+      role: resident
+      kycFields: ["dob"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name6_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_32
+      description: Ekyc demo auth with name and title with valid UIN
+      role: resident
+      kycFields: ["fullName"]
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_name7_Valid_titleFromAdmin_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_33
+      description: Ekyc demo auth with name and title with valid UIN
+      role: resident
+      kycFields: ["fullName"]
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "eng",
+      "value": "Miss-TitleFromServer. Lisa.GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_InValid_partner_uin_Smoke:
+      endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      uniqueIdentifier: TC_IDA_EkycDemo_34
+      description: Ekyc demo auth with invalid partner with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "name": [
+    {
+      "language": "$PRIMARYLANG$",
+      "value": "Miss Lisa GN"
+    }
+  ],
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncryptName"
+    }
+    }'
+      output: '{
+   "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-001"
+        }
+      ],
+        "kycStatus": false
+}'
+  auth_EkycDemo_Auth_With_age_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_35
+      description: Ekyc demo auth with age and valid UIN
+      role: resident
+      kycFields: ["fullName"]
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "51",
+"key": "age",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_age_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_36
+      description: Ekyc demo auth with age and VID
+      role: resident
+      kycFields: ["email"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "41",
+"key": "age",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_age_uin_InValid:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_37
+      description: Ekyc demo auth with invalid age value with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "5@@##1",
+"key": "age",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_Invalid_age_vid:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_38
+      description: Skyc demo auth with invalid age value with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "5@@##1",
+"key": "age",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_phone_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_39
+      description: Ekyc demo auth with phone and valid UIN
+      role: resident
+      kycFields: ["email"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_phone_Valid_VID_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_40
+      description: Ekyc demo auth with valid phone with VID
+      role: resident
+      kycFields: ["email"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo_Auth_With_phone_uin_InValid:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_41
+      description: Ekyc demo auth with invalid phone with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "5@@##1",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_Auth_With_Invalid_phone_vid:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_42
+      description: Ekyc demo auth with invalid phone and valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "5@@##1",
+"key": "phoneNumber",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-DEA-001"
+    }
+  ]
+}'
+  auth_EkycDemo_DOB_Invalid_transactionId_Pos_vid_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_43
+      description: Ekyc demo auth with DOB,invalid transactionId and valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "jdjdjdj@@",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false
+}'
+  auth_EkycDemo_DOB_blank_transactionId_vid_neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_44
+      description: Ekyc demo auth with dob,blank transactionId and with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false
+}'
+  auth_EkycDemo_without_individual_type_ID_Pos_vid:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_45
+      description: Ekyc demo auth without individualId type and with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "$REMOVE$",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": true
+}'
+  auth_EkycDemo_missing_individual_ID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_46
+      description: Ekyc demo auth with missing individualId and with valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+        "kycStatus": false
+}'
+  auth_EkycDemo_blank_individual_ID:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_47
+      description: Ekyc demo auth with blank individualId and valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+        "kycStatus": false
+}'
+  auth_EkycDemo_DOB_Unlock_Valid_Smoke_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_48
+      description: Ekyc demo auth with locked UIN,unlocked demo auth and with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ],
+        "kycStatus": false
+}'
+  auth_EkycDemo_DOB_Lock_Permanent_Valid_Smoke_UIN_Pos:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_49
+      description: Ekyc demo auth with permanently locked UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ],
+        "kycStatus": false
+}'
+  auth_EkycDemo_Auth_With_Deactivated_UIN:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycDemo_50
+      description: Ekyc demo auth with deactivated UIN
+      role: resident
+      kycFields: ["gender"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": false
+}'
   auth_EkycDemo_Auth_Without_kyc_attribute_in_policy_Smoke:
       endPoint: /idauthentication/v1/kyc/$UpdatedPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_51
