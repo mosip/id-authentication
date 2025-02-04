@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.3.0-RC</version>
+		<version>1.3.0-SNAPSHOT</version>
 	</parent>
-	<version>1.3.0-RC</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<artifactId>authentication-filter-api</artifactId>
 	<name>authentication-filter-api</name>
 	<description>ID Authentication Filter API</description>
@@ -294,7 +294,7 @@
                <plugin>
                   <groupId>org.sonatype.plugins</groupId>
                   <artifactId>nexus-staging-maven-plugin</artifactId>
-                  <version>1.6.7</version>
+                  <version>1.6.14</version>
                   <extensions>true</extensions>
                   <executions>
                     <execution>
