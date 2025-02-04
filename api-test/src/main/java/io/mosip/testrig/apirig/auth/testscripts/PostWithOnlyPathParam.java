@@ -113,8 +113,10 @@ public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
 		}
 
 		else {
+			String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+			inputJson = IdAuthenticationUtil.inputStringKeyWordHandeler(inputJson, testCaseName);
 			response = postWithOnlyPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
-					getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), COOKIENAME,
+					inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 
 			Map<String, List<OutputValidationDto>> ouputValid = null;
