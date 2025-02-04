@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-demographics-api</artifactId>
-			<version>${kernel-demoapi.version}</version>
+			<version>${kernel-demographics-api.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
