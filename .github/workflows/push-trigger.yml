@@ -56,12 +56,15 @@ jobs:
           - SERVICE_LOCATION: 'authentication/authentication-otp-service'
             SERVICE_NAME: 'authentication-otp-service'
             BUILD_ARTIFACT: 'authentication'
+            SQUASH_LAYERS: '18'
           - SERVICE_LOCATION: 'authentication/authentication-internal-service'
             SERVICE_NAME: 'authentication-internal-service'
             BUILD_ARTIFACT: 'authentication'
+            SQUASH_LAYERS: '18'
           - SERVICE_LOCATION: 'authentication/authentication-service'
             SERVICE_NAME: 'authentication-service'
             BUILD_ARTIFACT: 'authentication'
+            SQUASH_LAYERS: '18'
       fail-fast: false
     name: ${{ matrix.SERVICE_NAME }}
     uses: mosip/kattu/.github/workflows/docker-build.yml@master-java21
@@ -69,6 +72,7 @@ jobs:
       SERVICE_LOCATION: ${{ matrix.SERVICE_LOCATION }}
       SERVICE_NAME: ${{ matrix.SERVICE_NAME }}
       BUILD_ARTIFACT: ${{ matrix.BUILD_ARTIFACT }}
+      SQUASH_LAYERS: ${{ matrix.SQUASH_LAYERS }}
     secrets:
       DEV_NAMESPACE_DOCKER_HUB: ${{ secrets.DEV_NAMESPACE_DOCKER_HUB }}
       ACTOR_DOCKER_HUB: ${{ secrets.ACTOR_DOCKER_HUB }}
