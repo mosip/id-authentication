@@ -189,6 +189,7 @@ public class KycAuthController {
 				kycReqValidator.validateIdvId(ekycAuthRequestDTO.getIndividualId(), idType, errors);
 				if(AuthTypeUtil.isBio(ekycAuthRequestDTO)) {
 					kycReqValidator.validateDeviceDetails(ekycAuthRequestDTO, errors);
+					kycReqValidator.validateAge(ekycAuthRequestDTO, errors);
 				}
 				DataValidationUtil.validate(errors);
 				boolean externalAuthRequest = true;

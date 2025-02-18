@@ -160,6 +160,7 @@ public class AuthController {
 				authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
 				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
+					authRequestValidator.validateAge(authrequestdto, errors);
 				}
 				DataValidationUtil.validate(errors);
 				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,

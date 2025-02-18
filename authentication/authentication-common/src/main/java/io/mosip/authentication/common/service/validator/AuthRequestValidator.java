@@ -20,6 +20,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -617,6 +618,27 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			}
 		});
 	}
+	
+	
+	
+	public void validateAge(AuthRequestDTO authRequest, Errors errors) {
+		if(authRequest.getRequest()!=null && authRequest.getRequest().getDemographics()!=null && authRequest.getRequest().getDemographics().getAge()!=null) {
+			String age = authRequest.getRequest().getDemographics().getAge();
+			if(!NumberUtils.isCreatable(age)||Integer.valueOf(age)<=0) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE,
+					"Invalid age value given in Input");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							"age"));
+			}
+		}
+		return;
+		
+	}
+	
+	
+	
 
 	/**
 	 * Biometric timestamp parser.
