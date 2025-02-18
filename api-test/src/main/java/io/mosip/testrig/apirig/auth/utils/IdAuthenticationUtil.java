@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.auth.utils;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.testng.SkipException;
@@ -15,6 +16,13 @@ import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 public class IdAuthenticationUtil extends AdminTestUtil {
 
 	private static final Logger logger = Logger.getLogger(IdAuthenticationUtil.class);
+	
+	public static void setLogLevel() {
+		if (IdAuthConfigManager.IsDebugEnabled())
+			logger.setLevel(Level.ALL);
+		else
+			logger.setLevel(Level.ERROR);
+	}
 	
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
