@@ -1,0 +1,15 @@
+RegenerateVid:
+  auth_RegenerateVid_audit_Smoke_Pos:
+      endPoint: /idrepository/v1/vid/{VID}/regenerate
+      uniqueIdentifier: TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01
+      description: Regenerate VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/RegenerateVid/regenerateVid
+      outputTemplate: ida/RegenerateVid/regenerateVidResult
+      input: '{
+      "VID":"$ID:GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid_vid$"
+      }'
+      output: '{
+}'
