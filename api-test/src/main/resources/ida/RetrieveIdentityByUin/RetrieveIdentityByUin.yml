@@ -7,10 +7,12 @@ RetrieveIdentity:
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: ida/RetrieveIdentityByUin/retrieveIdentityByUin
-      outputTemplate: ida/error
+      outputTemplate: ida/RetrieveIdentityByUin/retrieveIdentityByUinResult_eng
       input: '{
     "id": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
 }'
       output: '{
+		"UIN": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$",
+		"status": "ACTIVATED"
 
 }'
