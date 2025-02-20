@@ -158,9 +158,9 @@ public class AuthController {
 						: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
 				authrequestdto.setIndividualIdType(idType);
 				authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
+				authRequestValidator.validateAge(authrequestdto, errors);
 				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
-					authRequestValidator.validateAge(authrequestdto, errors);
 				}
 				DataValidationUtil.validate(errors);
 				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
