@@ -1,7 +1,7 @@
 GetDraft:
   auth_GetDraft_all_valid_smoke_sid:
       endPoint: /idrepository/v1/identity/draft/{registrationId}
-	  uniqueIdentifier: TC_IDA_GetDraft_01
+      uniqueIdentifier: TC_IDA_GetDraft_01
       description: get the Draft from registrationID
       role: idrepo
       restMethod: get
@@ -9,6 +9,20 @@ GetDraft:
       outputTemplate: ida/GetDraft/getDraftResult
       input: '{
       "registrationId":"$RID$"
+      }'
+      output: '{
+      "status": "DRAFT"
+}'
+  auth_GetDraft_audit_valid_smoke_sid:
+      endPoint: /idrepository/v1/identity/draft/{registrationId}
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_GetDraft_02
+      description: get the Draft from registrationID
+      role: idrepo
+      restMethod: get
+      inputTemplate: ida/GetDraft/getDraft
+      outputTemplate: ida/GetDraft/getDraftResult
+      input: '{
+      "registrationId":"$RID1$"
       }'
       output: '{
       "status": "DRAFT"

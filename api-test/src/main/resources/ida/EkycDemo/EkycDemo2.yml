@@ -1468,3 +1468,54 @@ EkycDemo:
       output: '{
   "kycStatus": "false"
 }'
+  auth_EkycDemo1_Auth_for_auditLog_Valid_UIN_Smoke:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_EkycDemo_52
+      description: Ekyc demo auth for audit log using dob with UIN
+      role: resident
+      kycFields: ["gender"]
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycDemo2_Auth_auditLog_DOB_blank_transactionId_uin_neg:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_EkycDemo_53
+      description: Ekyc demo auth for audit log with blank transactionId and with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycDemo/EkycDemo
+      outputTemplate: ida/EkycDemo/EkycDemoResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/EkycDemo/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+    "kycStatus": false
+}'

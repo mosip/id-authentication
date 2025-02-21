@@ -1297,3 +1297,333 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
+   auth_AddIdentity_ValidParameters_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_39
+      description: create UIN to check audit log scenario
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_40
+      description: create UIN to lock and perform auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_41
+      description: create UIN to lock and perform auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_42
+      description: create UIN to lock and perform auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_43
+      description: create UIN to perform ekyc auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_44
+      description: create UIN to perform ekyc auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_45
+      description: create UIN to perform ekyc auth to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_toUpdateIdentity_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_46
+      description: create UIN to perform updatation of UIN to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_toRetrieveAuthType_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_47
+      description: create UIN to perform updatation of UIN to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_48
+      description: create UIN to deactivate and reactivate to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_toRegenrateVid_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_49
+      description: create UIN to generate and regenrate VID to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+   "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+   "introducerRID": "212124324784879",
+   "introducerUIN": "212124324784879",
+   "category": "individualBiometrics",
+   "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'

@@ -16,3 +16,20 @@ DeactivateUINs:
       output: '{
     "vidStatus": "DEACTIVATED"
 }'
+  auth_DeactivateVIDs_UIN_audit_Smoke_Pos:
+      endPoint: /idrepository/v1/vid/deactivate
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_DeactivateVIDs_02
+      description: deactivate VID which is generated from UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DeactivateUin/deactivateUin
+      outputTemplate: ida/DeactivateUin/deactivateUinResult
+      input: '{
+    "UIN": "$ID:AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos_UIN$",
+    "requesttime": "$TIMESTAMP$",
+    "id": "mosip.vid.deactivate",
+    "version": "v1"
+}'  
+      output: '{
+    "vidStatus": "DEACTIVATED"
+}'
