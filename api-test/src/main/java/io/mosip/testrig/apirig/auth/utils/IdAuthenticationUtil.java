@@ -25,13 +25,6 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			logger.setLevel(Level.ERROR);
 	}
 	
-	public static void setLogLevel() {
-		if (IdAuthConfigManager.IsDebugEnabled())
-			logger.setLevel(Level.ALL);
-		else
-			logger.setLevel(Level.ERROR);
-	}
-	
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
 		
