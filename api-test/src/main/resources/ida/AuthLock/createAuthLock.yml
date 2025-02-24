@@ -101,37 +101,37 @@ AuthLock:
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
     }
 }'
-#   auth_AuthLock_Valid_UIN_without_phon_email_uin:
-#      endPoint: /resident/v1/req/auth-lock
-#      role: resident
-#      restMethod: post
-#      inputTemplate: ida/AuthLock/createAuthLock
-#      outputTemplate: ida/AuthLock/createAuthLockResult
-#      input: '{
-#        "transactionID": "$TRANSACTIONID$",
-#        "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
-#        "individualIdType": "UIN",
-#        "requesttime": "$TIMESTAMP$",
-#        "id": "mosip.resident.authlock",
-#        "version": "v1",
-#        "authType": [{auth: "bio-Finger"}],
-#        "otp": "$ID:AddIdentity_no_email_no_phone_sid_Pos_EMAIL$",
-#        "sendOtp":{
-#    "transactionID": "$TRANSACTIONID$",
-#    "requestTime": "$TIMESTAMP$",
-#    "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
-#    "individualIdType": "UIN",
-#    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
-#    "sendOtpEndPoint": "/resident/v1/req/otp"
-#    }
-#    }'
-#      output: '{
-#  "message": "Notification has been sent to the provided contact detail(s)",
-#  "sendOtpResp":{
-#        "maskedMobile": "XXXXXX8531",
-#       "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
-#    }
-#}'
+   auth_AuthLock_Valid_UIN_without_phon_email_uin:
+      endPoint: /resident/v1/req/auth-lock
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "bio-Finger"}],
+        "otp": "$ID:AddIdentity_no_email_no_phone_sid_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_no_email_no_phone_sid_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "Notification has been sent to the provided contact detail(s)",
+  "sendOtpResp":{
+        "maskedMobile": "XXXXXX8531",
+       "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
    auth_AuthLock_Valid_UIN_for_audit_bioIris_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_AuthLock_03

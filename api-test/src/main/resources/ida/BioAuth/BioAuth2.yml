@@ -2993,9 +2993,9 @@ BioAuth:
         "demo": false,
         "otp": false,
         "identityRequest":{
-          "bioSubType": "Left",
-          "bioType": "Iris",
-          "bioValue": "$LEFTIRIS$",
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
           "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
           "dateTime": "$DATETIME$",
           "deviceProviderID": "1873299273",
@@ -3008,7 +3008,7 @@ BioAuth:
           "make": "Logitech",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
-          "type": "Iris",
+          "type": "FACE",
     "transactionId": "$TRANSACTIONID$",
     "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
