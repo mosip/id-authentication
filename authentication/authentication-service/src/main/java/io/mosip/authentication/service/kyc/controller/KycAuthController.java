@@ -187,6 +187,7 @@ public class KycAuthController {
 						: idTypeUtil.getIdType(ekycAuthRequestDTO.getIndividualId()).getType();
 						ekycAuthRequestDTO.setIndividualIdType(idType);
 				kycReqValidator.validateIdvId(ekycAuthRequestDTO.getIndividualId(), idType, errors);
+				kycReqValidator.validateAge(ekycAuthRequestDTO, errors);
 				if(AuthTypeUtil.isBio(ekycAuthRequestDTO)) {
 					kycReqValidator.validateDeviceDetails(ekycAuthRequestDTO, errors);
 				}
