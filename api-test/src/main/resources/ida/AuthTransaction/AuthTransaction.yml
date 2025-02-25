@@ -69,7 +69,7 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionError
       input: '{
-      "individualId":"$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$"
+      "individualId":"$ID:GenerateVID_for deactivate_vid_testing_sid_vid$"
 }'
       output: '{
    "errors": [
@@ -152,4 +152,248 @@ AuthTransaction:
 }'
       output: '{
         "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_allValid_smoke_UIN6:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_08
+      description: AuthTransaction with valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_locked_BioIris_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_09
+      description: AuthTransaction with UIN after iris auth with locked auth type
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_locked_Face_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_10
+      description: AuthTransaction with UIN after face auth with locked auth type
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_locked_Demo_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_11
+      description: AuthTransaction with UIN after demo auth with locked auth type
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_EkyAuth1_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_12
+      description: AuthTransaction with UIN after performing ekyc auth
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_EkyAuth2_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_13
+      description: AuthTransaction with UIN after performing ekyc auth
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_addIdentity_createVid_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_14
+      description: AuthTransaction with VID after creating vid
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_addIdentity_updateIdentity_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_15
+      description: AuthTransaction with UIN post updating identity
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toUpdateIdentity_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_createVid_retrieveVidbyUIN_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_16
+      description: AuthTransaction with UIN after retrieving Vid by UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_createVid_retrieveIdentity_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_17
+      description: AuthTransaction with UIN after retrieving identity
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_createVid_retrieveAuthTypeStatus_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_18
+      description: AuthTransaction with UIN after retrieving auth type status
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toRetrieveAuthType_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_vid_deactivate_reactivate_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_19
+      description: AuthTransaction with reactivated valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_draft_demoAuth_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_20
+      description: AuthTransaction with drafted UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:GetDraft_all_valid_smoke_sid_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_draft_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_21
+      description: AuthTransaction with drafted UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:GetDraft_audit_valid_smoke_sid_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_regenerateVID_audit_smoke_VID:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_22
+      description: AuthTransaction with regenerated valid perpetual VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid_vid$"
+}'
+      output: '{
+        "referenceIdType": "VID"
+}'
+   auth_AuthTransaction_UnusedUIN_DemoAuth_audit_smoke_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_23
+      description: AuthTransaction with UIN after performing demo auth with unused UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionError
+      input: '{
+      "individualId":"$ID:GetUnusedUIN_All_Valid_Smoke_sid_uin$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018"
+    }
+  ]
 }'

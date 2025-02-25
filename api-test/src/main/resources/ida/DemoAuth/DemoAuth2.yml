@@ -1730,7 +1730,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_Draft_UIN_Neg:
+  auth_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_62
       description: Demo auth using dob with drafted UIN
@@ -2006,6 +2006,31 @@ DemoAuthNew:
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_with_age_below_calculated_value_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "10",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'
+  auth_DemoAuth_with_unusedUIN_value_audit_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_DemoAuth_72
+      description: Demo auth with unused Uin
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GetUnusedUIN_All_Valid_Smoke_sid_uin$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,

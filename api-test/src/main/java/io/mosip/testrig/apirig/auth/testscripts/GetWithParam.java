@@ -116,8 +116,10 @@ public class GetWithParam extends AdminTestUtil implements ITest {
 		}
 
 		 else {
+			 String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+				inputJson = IdAuthenticationUtil.inputStringKeyWordHandeler(inputJson, testCaseName);
 				response = getWithPathParamAndCookie(ApplnURI + testCaseDTO.getEndPoint(),
-						getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate()), auditLogCheck,
+						inputJson, auditLogCheck,
 						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 			}
 			Map<String, List<OutputValidationDto>> ouputValid = null;

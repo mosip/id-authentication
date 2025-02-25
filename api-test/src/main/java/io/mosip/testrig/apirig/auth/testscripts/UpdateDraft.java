@@ -94,7 +94,7 @@ public class UpdateDraft extends AdminTestUtil implements ITest {
 		}
 		String jsonInput = testCaseDTO.getInput();
 		String inputJson = getJsonFromTemplate(jsonInput, testCaseDTO.getInputTemplate(), false);
-
+		inputJson = IdAuthenticationUtil.inputStringKeyWordHandeler(inputJson, testCaseName);
 		response = patchWithPathParamsBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 				testCaseDTO.getRole(), testCaseDTO.getTestCaseName(), pathParams);
 
