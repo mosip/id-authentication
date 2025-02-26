@@ -43,7 +43,7 @@ import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 
-public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITest {
+public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(DemoAuthSimplePostForAutoGenId.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;

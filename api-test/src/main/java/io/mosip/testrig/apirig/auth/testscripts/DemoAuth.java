@@ -35,7 +35,7 @@ import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class DemoAuth extends AdminTestUtil implements ITest {
+public class DemoAuth extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(DemoAuth.class);
 	protected String testCaseName = "";
 	public Response response = null;

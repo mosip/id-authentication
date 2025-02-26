@@ -34,7 +34,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class PostWithOnlyPathParam extends AdminTestUtil implements ITest {
+public class PostWithOnlyPathParam extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(PostWithOnlyPathParam.class);
 	protected String testCaseName = "";
 	public Response response = null;
