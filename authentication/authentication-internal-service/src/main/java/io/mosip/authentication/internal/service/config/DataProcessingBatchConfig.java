@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import io.mosip.authentication.internal.service.batch.CredentialStoreTasklet;
 import org.apache.http.HttpStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -124,6 +125,8 @@ public class DataProcessingBatchConfig {
 	@Autowired
 	private CredentialStoreJobExecutionListener listener;
 	
+	@Autowired
+	private CredentialStoreTasklet credentialStoreTasklet;
 	/**
 	 * Credential store job.
 	 *
@@ -139,11 +142,11 @@ public class DataProcessingBatchConfig {
 				.flow(credentialStoreStep())
 				.end()
 				.build();
-		try {
+/*		try {
 			jobRegistry.register(new ReferenceJobFactory(job));
 		} catch (DuplicateJobException e) {
 			logger.warn("error in registering job: {}", e.getMessage());
-		}
+		}*/
 		return job;
 	}
 	
@@ -194,9 +197,12 @@ public class DataProcessingBatchConfig {
 	 */
 	@Bean
 	public Step credentialStoreStep() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
-		exceptions.put(IdAuthenticationBusinessException.class, false);
-		return stepBuilderFactory.get("credentialStoreStep")
+/*		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
+		exceptions.put(IdAuthenticationBusinessException.class, false);*/
+
+		return stepBuilderFactory.get("credentialStoreStep").tasklet(credentialStoreTasklet).build();
+
+/*		return stepBuilderFactory.get("credentialStoreStep")
 				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize)
 				.reader(credentialEventReader())
 				.processor(asyncCredentialStoreItemProcessor())
@@ -208,7 +214,7 @@ public class DataProcessingBatchConfig {
 				// when retry was done before the retry interval
 				.skip(RetryingBeforeRetryIntervalException.class)
 				.skipLimit(Integer.MAX_VALUE)
-				.build();
+				.build();*/
 	}
 	
 	@Bean
