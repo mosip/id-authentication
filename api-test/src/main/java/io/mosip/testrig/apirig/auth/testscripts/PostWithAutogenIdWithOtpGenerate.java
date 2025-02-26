@@ -97,28 +97,43 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
 			}
 		}
+		
+		if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
+			throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
+//			qa115 - t
+//			cam   - f
+//			dev	  - f
+		}
 
-		if (!BaseTestCase.isTargetEnvLTS()) {
-			if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
-				throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
-//				qa115 - t
-//				cam   - f
-//				dev	  - f
-			}
+//		if (!BaseTestCase.isTargetEnvLTS()) {
+//			if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
+//				throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
+////				qa115 - t
+////				cam   - f
+////				dev	  - f
+//			}
+//		}
+		
+		if (IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)
+				&& ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_")))) {
+			throw new SkipException("Generating VID using IdRepo API. Hence skipping this test case");
+//			qa115 - f
+//			cam   - t t
+//			dev	  - t f
 		}
 
 	
-		if (BaseTestCase.isTargetEnvLTS()) {
-			if (IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)
-					&& ((BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet"))
-							&& (testCaseName.startsWith("auth_GenerateVID_")
-									|| testCaseName.startsWith("ESignetRes_Generate")))) {
-				throw new SkipException("Generating VID using IdRepo API. Hence skipping this test case");
-//				qa115 - f
-//				cam   - t t
-//				dev	  - t f
-			}
-		}
+//		if (BaseTestCase.isTargetEnvLTS()) {
+//			if (IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)
+//					&& ((BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet"))
+//							&& (testCaseName.startsWith("auth_GenerateVID_")
+//									|| testCaseName.startsWith("ESignetRes_Generate")))) {
+//				throw new SkipException("Generating VID using IdRepo API. Hence skipping this test case");
+////				qa115 - f
+////				cam   - t t
+////				dev	  - t f
+//			}
+//		}
 		String inputJson = testCaseDTO.getInput().toString();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
@@ -237,9 +252,9 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
 					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
 				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				if (!BaseTestCase.isTargetEnvLTS())
-					delayTime = Long.parseLong(properties.getProperty("uinGenDelayTime"))
-							* Long.parseLong(properties.getProperty("uinGenMaxLoopCount"));
+//				if (!BaseTestCase.isTargetEnvLTS())
+//					delayTime = Long.parseLong(properties.getProperty("uinGenDelayTime"))
+//							* Long.parseLong(properties.getProperty("uinGenMaxLoopCount"));
 				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
 				Thread.sleep(delayTime);
 			}

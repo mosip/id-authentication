@@ -108,11 +108,11 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		}
 
 		if (identityRequest.contains("$NAMEPRIMARYLANG$")) {
-			String name = "";
-			if (BaseTestCase.isTargetEnvLTS())
-				name = propsMap.getProperty("fullName");
-			else
-				name = propsMap.getProperty("firstName");
+			String name = propsMap.getProperty("fullName");
+//			if (BaseTestCase.isTargetEnvLTS())
+//				name = propsMap.getProperty("fullName");
+//			else
+//				name = propsMap.getProperty("firstName");
 			identityRequest = identityRequest.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 		

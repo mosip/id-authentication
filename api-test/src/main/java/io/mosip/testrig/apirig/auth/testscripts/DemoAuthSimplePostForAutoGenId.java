@@ -147,11 +147,11 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 		}
 
 		if (input.contains("$NAMEPRIMARYLANG$")) {
-			String name = "";
-			if (BaseTestCase.isTargetEnvLTS())
-				name = propsMap.getProperty("fullName");
-			else
-				name = propsMap.getProperty("firstName");
+			String name = propsMap.getProperty("fullName");
+//			if (BaseTestCase.isTargetEnvLTS())
+//				name = propsMap.getProperty("fullName");
+//			else
+//				name = propsMap.getProperty("firstName");
 			input = input.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 
