@@ -1,22 +1,94 @@
 createSendOTP:
-   Resident_SendOTP_All_Valid_Smoke:
-      endPoint: /idauthentication/v1/otp/v4jO2rTUkDglaG7rCkWDnqIT3WpZaGEW9j3FMXwTA5xXKVaDpx/6001/34536061
-      description: Send otp to the otp channel for valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: resident/SendOTP/createSendOTP
-      outputTemplate: resident/SendOTP/createSendOTPResult
-      input: '{
-    "transactionID": "1234567190",
-    "individualId": "8172138568",
-    "requestTime": "$TIMESTAMP$",
-    "individualIdType": "UIN",
-    "otpChannel": [
-        "EMAIL",
-        "PHONE"
-    ]
-  }'
-      output: '{
-        "maskedMobile": "$IGNORE$",
-        "maskedEmail": "XXkXXlXXhXXuXXr@mailinator.co.in"
+#  auth_SendOTP_All_Valid_Smoke:
+#    endPoint: /idauthentication/v1/otp/v4jO2rTUkDglaG7rCkWDnqIT3WpZaGEW9j3FMXwTA5xXKVaDpx/6001/34536061
+#    description: Send otp to the otp channel for valid UIN
+#    role: resident
+#    restMethod: post
+#    inputTemplate: resident/SendOTP/createSendOTP
+#    outputTemplate: resident/SendOTP/createSendOTPResult
+#    input: '{
+#      "transactionID": "1234567190",
+#      "individualId": "8172138568",
+#      "requestTime": "$TIMESTAMP$",
+#      "individualIdType": "UIN",
+#      "otpChannel": [
+#          "EMAIL",
+#          "PHONE"
+#      ]
+#    }'
+#    output: '{
+#      "maskedMobile": "$IGNORE$",
+#      "maskedEmail": "XXkXXlXXhXXuXXr@mailinator.co.in"
+#}'
+  auth_SendOTP_RevokedVID_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to revoked VID
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "VID",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
     }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018",
+          "errorMessage": "VID not available in database"
+        }
+      ]
+}'
+  auth_SendOTP_with_valid_uin_smoke_Pos:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to valid UIN
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthsendOtpRes
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{		   
+}'
+  auth_SendOTP_to_DeactivatedUIN_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to deactivated UIN
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDR-IDC-007",
+          "errorMessage": "No Record(s) found"
+        }
+      ]
+}'

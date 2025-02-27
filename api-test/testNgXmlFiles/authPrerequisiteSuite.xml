@@ -183,4 +183,13 @@
 		</classes>
 	</test>
 
+	<test name="SendOTP">
+		<parameter name="ymlFile"
+			value="ida/SendOTP/createSendOTP.yml" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
+
 </suite>

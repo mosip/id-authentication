@@ -1045,8 +1045,8 @@ OtpAuth:
 
   auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_OtpAuth_28
-      description: invalid scenario
+      uniqueIdentifier: TC_IDA_OtpAuth_29
+      description: Perform otp auth when iris is set as true in policy
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
