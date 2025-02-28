@@ -69,7 +69,7 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionError
       input: '{
-      "individualId":"$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$"
+      "individualId":"$ID:GenerateVID_for deactivate_vid_testing_sid_vid$"
 }'
       output: '{
    "errors": [

@@ -190,17 +190,17 @@ GenerateVID:
       outputTemplate: ida/GenerateVID/createGenerateVIDResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_genrateVid_toDeactivate_smoke_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.vid",
         "version": "v1",
         "vidType": "Perpetual",
-        "otp": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_genrateVid_toDeactivate_smoke_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_genrateVid_toDeactivate_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
