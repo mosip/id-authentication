@@ -98,12 +98,12 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 			}
 		}
 		
-		if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
-			throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
-//			qa115 - t
-//			cam   - f
-//			dev	  - f
-		}
+//		if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
+//			throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
+////			qa115 - t
+////			cam   - f
+////			dev	  - f
+//		}
 
 //		if (!BaseTestCase.isTargetEnvLTS()) {
 //			if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
