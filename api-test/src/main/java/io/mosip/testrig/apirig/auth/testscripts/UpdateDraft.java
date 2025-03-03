@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class UpdateDraft extends AdminTestUtil implements ITest {
+public class UpdateDraft extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(UpdateDraft.class);
 	protected String testCaseName = "";
 	String pathParams = null;

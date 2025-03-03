@@ -34,7 +34,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class GetWithParamForAutoGenId extends AdminTestUtil implements ITest {
+public class GetWithParamForAutoGenId extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(GetWithParamForAutoGenId.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
