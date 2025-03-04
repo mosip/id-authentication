@@ -35,7 +35,7 @@ import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class DemoAuth extends AdminTestUtil implements ITest {
+public class DemoAuth extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(DemoAuth.class);
 	protected String testCaseName = "";
 	public Response response = null;
@@ -108,11 +108,11 @@ public class DemoAuth extends AdminTestUtil implements ITest {
 		}
 
 		if (identityRequest.contains("$NAMEPRIMARYLANG$")) {
-			String name = "";
-			if (BaseTestCase.isTargetEnvLTS())
-				name = propsMap.getProperty("fullName");
-			else
-				name = propsMap.getProperty("firstName");
+			String name = propsMap.getProperty("fullName");
+//			if (BaseTestCase.isTargetEnvLTS())
+//				name = propsMap.getProperty("fullName");
+//			else
+//				name = propsMap.getProperty("firstName");
 			identityRequest = identityRequest.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 		

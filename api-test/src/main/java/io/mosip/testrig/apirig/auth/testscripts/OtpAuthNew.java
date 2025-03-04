@@ -34,7 +34,7 @@ import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class OtpAuthNew extends AdminTestUtil implements ITest {
+public class OtpAuthNew extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(OtpAuthNew.class);
 	protected String testCaseName = "";
 	public Response response = null;

@@ -36,7 +36,7 @@ import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class MultiFactorAuthNew extends AdminTestUtil implements ITest {
+public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(MultiFactorAuthNew.class);
 	protected String testCaseName = "";
 	public Response response = null;
