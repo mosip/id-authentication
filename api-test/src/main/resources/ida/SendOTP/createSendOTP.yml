@@ -74,3 +74,127 @@ createSendOTP:
         }
       ]
 }'
+  auth_SendOTP_toVID_ofDeactivatedUIN_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to VID of deactivated UIN
+    uniqueIdentifier: TC_IDA_SendOTP_04
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:GenerateVID_tosendOTP_Smoke_sid_vid$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "VID",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018",
+          "errorMessage": "VID not available in database"
+        }
+      ]
+}'
+  auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to locked email with valid UIN
+    uniqueIdentifier: TC_IDA_SendOTP_05
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
+  auth_SendOTP_to_onlyLockedphone_valid_uin_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to locked phone with valid UIN
+    uniqueIdentifier: TC_IDA_SendOTP_06
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
+  auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to locked phone and email with valid UIN
+    uniqueIdentifier: TC_IDA_SendOTP_07
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
+  auth_SendOTP_toReactivatedUIN_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to reactivated UIN
+    uniqueIdentifier: TC_IDA_SendOTP_08
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthsendOtpRes
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+}'

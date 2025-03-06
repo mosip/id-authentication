@@ -1077,3 +1077,71 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
+  auth_OTP_Auth_With_locked_email_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_30
+      description: Otp auth with locked email using valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_locked_phone_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_31
+      description: Otp auth with locked phone using valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'

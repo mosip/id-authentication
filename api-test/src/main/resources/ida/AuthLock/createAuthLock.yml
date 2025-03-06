@@ -268,3 +268,105 @@ AuthLock:
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
     }
 }'
+   auth_AuthLock_Valid_UIN_for_otp-email_otp_auth:
+      endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_07
+      description: lock otp-email for UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "otp-email"}],
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
+   auth_AuthLock_Valid_UIN_for_otp-phone_otp_auth:
+      endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_08
+      description: lock otp-phone for UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{auth: "otp-phone"}],
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'
+   auth_AuthLock_Valid_UIN_for_otp-phone_And_otp-email_otp_auth:
+      endPoint: /resident/v1/req/auth-lock
+      uniqueIdentifier: TC_IDA_AuthLock_09
+      description: lock otp-phone and otp-email for UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/AuthLock/createAuthLock
+      outputTemplate: ida/AuthLock/createAuthLockResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.authlock",
+        "version": "v1",
+        "authType": [{"auth": "otp-phone"}, {"auth": "otp-email"}],
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
+    }
+}'

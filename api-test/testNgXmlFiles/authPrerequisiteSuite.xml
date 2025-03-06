@@ -26,9 +26,30 @@
 		</classes>
 	</test>
 
+	<test name="GenerateVidForSendOtpAndDeactivateUIN">
+		<parameter name="ymlFile"
+			value="ida/GenerateVID/createGenerateVID2.yml" />
+		<parameter name="idKeyName" value="vid" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
+		</classes>
+	</test>
+
 	<test name="UpdateIdentityForUin">
 		<parameter name="ymlFile"
 			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+		</classes>
+	</test>
+
+	<test name="UpdateIdentityToActivate">
+		<parameter name="ymlFile"
+			value="ida/UpdateIdentityForUin/ActivateDeactivatedUIN.yml" />
 		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
