@@ -109,61 +109,6 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-#  auth_MultiFactorAuth_Biometric_Face_With_deactivate_UIN_Smoke_Pos:
-#      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-#      uniqueIdentifier: TC_IDA_MultiFactorAuth_03
-#      description: Multifactor auth with demo,otp and bio using deactivated UIN
-#      role: resident
-#      checkErrorsOnlyInResponse: true
-#      restMethod: post
-#      inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
-#      outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
-#      input: '{
-#        "otpChannel": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_EMAIL$",
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "UIN",
-#        "bio": true,
-#        "demo": true,
-#        "otp": true,
-#        "sendOtp":{
-#    "transactionID": "1234567890",
-#    "requestTime": "$TIMESTAMP$",
-#    "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
-#    "individualIdType": "UIN",
-#    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
-#    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-#    },
-#        "identityRequest":{
-#          "bioSubType": "UNKNOWN",
-#          "bioType": "FACE",
-#          "bioValue": "$FACE$",
-#          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-#          "dateTime": "$DATETIME$",
-#          "deviceProviderID": "1873299273",
-#          "deviceServiceID": "",
-#          "deviceServiceVersion": "SB.WIN.001",
-#          "deviceProvider": "SYNCBYTE",
-#          "deviceProviderId": "SYNCBYTE.LTC165",
-#          "deviceSubType": "Full face",
-#          "make": "Logitech",
-#          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-#          "serialNo": "78467171",
-#          "type": "Face",
-#          "key": "dob",
-#          "value": "1970/07/08",
-#    "transactionId": "1234567890",
-#    "identityRequestTemplate": "ida/MultiFactorAuth/MultifactorIdentityEncrypt",
-#    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
-#    }
-#    }'
-#      output: '{
-#  "authStatus": "true",
-#  "sendOtpResp":{
-#        "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
-#    }
-#}'
   auth_MultiFactorAuth_Biometric_Face_With_draft_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_04
@@ -384,67 +329,6 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-#  auth_MultiFactorAuth_Biometric_Face_With_revoked_vid:
-#      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-#      uniqueIdentifier: TC_IDA_MultiFactorAuth_08
-#      description: Multifactor auth with demo,otp and bio with revoked VID
-#      role: resident
-#      checkErrorsOnlyInResponse: true
-#      restMethod: post
-#      inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
-#      outputTemplate: ida/MultiFactorAuth/error
-#      input: '{
-#        "otpChannel": "$ID:GenerateVID_to_revoke_Perpetual_sid_EMAIL$",
-#        "requestTime": "$TIMESTAMP$",
-#        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
-#        "transactionId": "1234567890",
-#        "individualIdType": "VID",
-#        "bio": true,
-#        "demo": true,
-#        "otp": true,
-#        "sendOtp":{
-#    "transactionID": "1234567890",
-#    "requestTime": "$TIMESTAMP$",
-#    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
-#    "individualIdType": "VID",
-#    "sendOtpReqTemplate": "ida/MultiFactorAuth/sendOtp",
-#    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-#    },
-#        "identityRequest":{
-#          "bioSubType": "UNKNOWN",
-#          "bioType": "FACE",
-#          "bioValue": "$FACE$",
-#          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-#          "dateTime": "$DATETIME$",
-#          "deviceProviderID": "1873299273",
-#          "deviceServiceID": "",
-#          "deviceServiceVersion": "SB.WIN.001",
-#          "deviceProvider": "SYNCBYTE",
-#          "deviceProviderId": "SYNCBYTE.LTC165",
-#          "deviceSubType": "Full face",
-#          "make": "Logitech",
-#          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-#          "serialNo": "78467171",
-#          "type": "Face",
-#          "key": "dob",
-#          "value": "1970/07/08",
-#    "transactionId": "1234567890",
-#    "identityRequestTemplate": "ida/MultiFactorAuth/MultifactorIdentityEncrypt",
-#    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
-#    }
-#    }'
-#      output: '{
-#    "authStatus": false,
-#   "errors": [
-#    {
-#      "errorCode": "IDA-MLC-018",
-#      "errorMessage": "VID not available in database"
-#    }
-#  ],
-#  "sendOtpResp":{
-#        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
-#    }
-#}'
   auth_MultiFactorAuth_Biometric_Face_With_InValid_vid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_09
