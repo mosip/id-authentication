@@ -43,7 +43,7 @@ import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 
-public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITest {
+public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(DemoAuthSimplePostForAutoGenId.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
@@ -147,11 +147,11 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 		}
 
 		if (input.contains("$NAMEPRIMARYLANG$")) {
-			String name = "";
-			if (BaseTestCase.isTargetEnvLTS())
-				name = propsMap.getProperty("fullName");
-			else
-				name = propsMap.getProperty("firstName");
+			String name = propsMap.getProperty("fullName");
+//			if (BaseTestCase.isTargetEnvLTS())
+//				name = propsMap.getProperty("fullName");
+//			else
+//				name = propsMap.getProperty("firstName");
 			input = input.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 
