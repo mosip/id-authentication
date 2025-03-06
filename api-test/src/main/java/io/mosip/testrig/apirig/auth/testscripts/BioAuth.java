@@ -76,11 +76,6 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
-//		String ekycPartnerId = getPartnerIdFromPartnerURL(ekycPartnerKeyUrl);
-//		String mispLicKey ="";
-//		String kycApiKey = KeyCloakUserAndAPIKeyGeneration.createKCUserAndGetAPIKeyForKyc();
-//		mispLicKey = MispPartnerAndLicenseKeyGeneration.getAndUploadCertificatesAndGenerateMispLicKey();
-		
 	
 		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
 		
@@ -130,14 +125,12 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 					getResourcePath() + props.getProperty("bioValueEncryptionTemplate"), testCaseName, isInternal);
 			System.out.println("encryptedIdentityReq = " + encryptedIdentityReq);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		Map<String, String> bioAuthTempMap = (isInternal)
 				? encryptDecryptUtil.getInternalEncryptSessionKeyValue(encryptedIdentityReq)
 				: encryptDecryptUtil.getEncryptSessionKeyValue(encryptedIdentityReq);
-		// storeValue(bioAuthTempMap);
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
@@ -152,7 +145,6 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		authRequestTemp.put("env", "Staging");
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
-		// storeValue(authRequest,"authRequest");
 
 		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");
 
