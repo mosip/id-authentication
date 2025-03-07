@@ -107,17 +107,6 @@ public class SimplePostForAutoGenId extends IdAuthenticationUtil implements ITes
 			}
 		}
 
-//		if (BaseTestCase.isTargetEnvLTS()) {
-//			if (!IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)) {
-//				if (((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_")))) {
-//					throw new SkipException(
-//							GlobalConstants.VID_GENERATED_USING_RESIDENT_API_SO_FEATURE_NOT_SUPPORTED_OR_NEEDED_MESSAGE);
-////					qa115 - f
-////					cam   - t f
-////					dev	  - t 
-//				}
-//			}
-//		}
 		String[] templateFields = testCaseDTO.getTemplateFields();
 		String inputJson = "";
 		

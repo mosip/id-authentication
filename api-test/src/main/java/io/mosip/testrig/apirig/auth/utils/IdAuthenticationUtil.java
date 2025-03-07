@@ -17,7 +17,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 	private static final Logger logger = Logger.getLogger(IdAuthenticationUtil.class);
 	public static String genRid1 = "27847" + generateRandomNumberString(10);
-	
+
 	public static void setLogLevel() {
 		if (IdAuthConfigManager.IsDebugEnabled())
 			logger.setLevel(Level.ALL);

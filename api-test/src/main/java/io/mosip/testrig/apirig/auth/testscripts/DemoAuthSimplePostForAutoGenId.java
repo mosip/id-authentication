@@ -148,10 +148,6 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 
 		if (input.contains("$NAMEPRIMARYLANG$")) {
 			String name = propsMap.getProperty("fullName");
-//			if (BaseTestCase.isTargetEnvLTS())
-//				name = propsMap.getProperty("fullName");
-//			else
-//				name = propsMap.getProperty("firstName");
 			input = input.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 
@@ -198,13 +194,6 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 					throw new AdminTestException("Failed at output validation");
 			}
 		} else {
-			if (testCaseName.contains("partnerDemoDown")) {
-
-				//url = IdAuthConfigManager.getAuthDemoServiceUrl() + "local";
-			} else {
-				//url = IdAuthConfigManager.getAuthDemoServiceUrl();
-			}
-
 			response = postWithBodyAndCookie(url + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 			String ActualOPJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
@@ -248,7 +237,6 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 			JSONObject resJsonObject = new JSONObject(response.asString());
 			String res = "";
 			try {
-				// res = resJsonObject.get("response").toString();
 				resJsonObject = new JSONObject(response.getBody().asString()).getJSONObject("authResponse")
 						.getJSONObject("body").getJSONObject("response");
 
@@ -258,7 +246,6 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 				JSONObject jsonObjectkycRes = new JSONObject(res);
 				JSONObject jsonObjectFromKycData = new JSONObject();
 				JSONObject jsonObjectFromIdentityData = new JSONObject();
-				// List<String> myList =new ArrayList<>();
 
 				ArrayList<String> names = new ArrayList<>();
 				ArrayList<String> names2 = new ArrayList<>();
