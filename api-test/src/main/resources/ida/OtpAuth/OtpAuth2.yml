@@ -387,7 +387,7 @@ OtpAuth:
       input: '{
         "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": false,
@@ -396,7 +396,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+    "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
