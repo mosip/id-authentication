@@ -25,7 +25,7 @@
 		</classes>
 	</test>
 
-	<test name="GenerateVidForSendOtpAndDeactivateUIN">
+	<test name="GenerateVidForSendOtpAndDeactUIN">
 		<parameter name="ymlFile"
 			value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
 		<parameter name="idKeyName" value="vid" />
