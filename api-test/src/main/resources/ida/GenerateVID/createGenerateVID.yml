@@ -361,7 +361,7 @@ GenerateVID:
 }'
    auth_GenerateVID_toBlock_sendOTP_Smoke_sid:
       endPoint: /resident/v1/vid
-      uniqueIdentifier: TC_IDA_GenerateVID_07
+      uniqueIdentifier: TC_IDA_GenerateVID_08
       description: generate Vid to block and to send otp
       role: resident
       checkErrorsOnlyInResponse: true
