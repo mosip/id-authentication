@@ -190,3 +190,37 @@ HotlistAPI:
       output: '{
         "status": "BLOCKED"
     }'
+   auth_BlockHotlistAPI_blockUIN_toSendOtp_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_10
+      description: block UIN to send otp
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_ValidParameters_toBlock_toSendOtp_smoke_Pos_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_blockVID_toSendOtp_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_11
+      description: block VID to send otp
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:GenerateVID_toBlock_sendOTP_Smoke_sid_vid$",
+    "idType": "VID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'

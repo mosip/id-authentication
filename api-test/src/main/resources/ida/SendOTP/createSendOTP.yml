@@ -198,3 +198,55 @@ createSendOTP:
     }'
     output: '{
 }'
+  auth_SendOTP_to_blocked_uin_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to blocked UIN
+    uniqueIdentifier: TC_IDA_SendOTP_09
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:AddIdentity_ValidParameters_toBlock_toSendOtp_smoke_Pos_UIN$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "UIN",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
+  auth_SendOTP_toBlockedVID_Neg:
+    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
+    description: Send otp to blocked VID
+    uniqueIdentifier: TC_IDA_SendOTP_10
+    role: resident
+    checkErrorsOnlyInResponse: true
+    restMethod: post
+    inputTemplate: ida/SendOTP/IDAuthsendOtp
+    outputTemplate: ida/SendOTP/IDAuthSendotperror
+    input: '{
+      "transactionID": "1234567190",
+      "individualId": "$ID:GenerateVID_toBlock_sendOTP_Smoke_sid_vid$",
+      "requestTime": "$TIMESTAMP$",
+      "individualIdType": "VID",
+      "otpChannel": [
+          "EMAIL",
+          "PHONE"
+      ]
+    }'
+    output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
