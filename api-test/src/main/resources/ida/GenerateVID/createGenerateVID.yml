@@ -71,7 +71,7 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_GenerateVID_to_revoke_Perpetual_sid:
+   auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_01
       description: generate Perpetual VID to Revoke

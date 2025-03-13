@@ -1614,7 +1614,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,

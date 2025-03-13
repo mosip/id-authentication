@@ -5,7 +5,7 @@
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 	<listeners>
-		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport"/>
+		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
 	<test name="BioAuth">
@@ -23,6 +23,7 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
+
 	<test name="OtpAuth">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
 		<parameter name="isInternal" value="false" />
@@ -30,6 +31,7 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
+
 	<test name="EkycOtp">
 		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
 		<parameter name="isInternal" value="false" />
@@ -37,11 +39,13 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
+
 	<test name="MultiFactorAuth">
 		<parameter name="ymlFile"
 			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
 		</classes>
 	</test>
 
@@ -53,28 +57,23 @@
 		</classes>
 	</test>
 
-
 	<test name="UpdateIdentity">
 		<parameter name="ymlFile"
 			value="ida/UpdateIdentity/UpdateIdentity.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
 	<test name="BlockHotlist">
 		<parameter name="ymlFile"
 			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-
-
-
-
 
 	<test name="LockUINVIDTestcasesDEMOAuth">
 		<parameter name="ymlFile"
@@ -92,9 +91,7 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
-	
-	
-	
+
 	<test name="LockUINVIDTestcasesAUTHEKYCBIO">
 		<parameter name="ymlFile"
 			value="ida/BioAuthHotListLock/BioAuth.yml" />
@@ -104,31 +101,31 @@
 		</classes>
 	</test>
 
-
 	<test name="AuthUnLock">
 		<parameter name="ymlFile"
 			value="ida/AuthUnLock/createAuthUnLock.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
 		</classes>
 	</test>
 
 	<test name="UnBlockHotlist">
 		<parameter name="ymlFile"
 			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPI.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-	
+
 	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
+
 	<test name="EkycDemo">
 		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
 		<classes>
@@ -139,21 +136,20 @@
 	<test name="BlockPartnerId">
 		<parameter name="ymlFile"
 			value="ida/BlockHotlistAPI/BlockPartnerId.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-
 
 	<test name="HotlistTestcasesPartnerId">
 		<parameter name="ymlFile"
 			value="ida/HotlistTestcases/HotlistTestcasesPartnerId.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
+
 	<test name="BioAuthHotListPartner">
 		<parameter name="ymlFile"
 			value="ida/BioAuthHotListPartner/BioAuth.yml" />
@@ -161,8 +157,6 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
-	
-	
 
 	<test name="HotlistTestcasesOtpAuth">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />
@@ -175,20 +169,28 @@
 	<test name="UnBlockPartnerId">
 		<parameter name="ymlFile"
 			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPIForPartnerId.yml" />
-			<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-	
+
 	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
-		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
+		<parameter name="ymlFile"
+			value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
 		<parameter name="isInternal" value="false" />
-		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
-	
-	
+
+	<test name="SendOTP">
+		<parameter name="ymlFile"
+			value="ida/SendOTP/createSendOTP.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
+
+
 </suite>
