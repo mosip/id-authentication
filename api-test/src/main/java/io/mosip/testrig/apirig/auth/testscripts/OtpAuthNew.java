@@ -141,7 +141,6 @@ public class OtpAuthNew extends IdAuthenticationUtil implements ITest {
 		sendOtpRespJson.remove("sendOtpResTemplate");
 		Map<String, List<OutputValidationDto>> ouputValidOtp = OutputValidationUtil
 				.doJsonOutputValidation(otpResponse.asString(), getJsonFromTemplate(sendOtpRespJson.toString(), sendOtpResTemplate));
-		//Need to uncomment line 126 to 129
 		//Reporter.log(ReportUtil.getOutputValidationReport(ouputValidOtp));
 		
 		//if (!OutputValidationUtil.publishOutputResult(ouputValidOtp))
