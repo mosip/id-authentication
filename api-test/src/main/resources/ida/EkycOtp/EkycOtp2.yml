@@ -475,7 +475,7 @@ EkycOtp:
   "kycStatus": "false",
    "errors": [
     {
-      "errorCode": "IDA-MLC-001",
+      "errorCode": "IDA-MLC-018",
       "errorMessage": "VID not available in database"
     }
   ],
