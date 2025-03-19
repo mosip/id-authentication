@@ -38,3 +38,8 @@ ALTER TABLE BATCH_JOB_EXECUTION ADD COLUMN JOB_CONFIGURATION_LOCATION VARCHAR(25
 DROP INDEX IF EXISTS idx_job_name;
 DROP INDEX IF EXISTS idx_job_key;
 DROP INDEX IF EXISTS idx_partner_mapping_apikey;
+
+---------------------------------------------------------------------------------------------------
+-- ca_cert_store db roll back script
+---------------------------------------------------------------------------------------------------
+ALTER TABLE IF EXISTS ida.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;

@@ -18,3 +18,8 @@ CREATE INDEX IF NOT EXISTS idx_job_name ON BATCH_JOB_INSTANCE(JOB_NAME);
 CREATE INDEX IF NOT EXISTS idx_job_key ON BATCH_JOB_INSTANCE(JOB_KEY);
 
 CREATE UNIQUE INDEX idx_partner_mapping_apikey ON partner_mapping;
+
+--------------------------------------------------------------------------------------------------
+-- ca_cert_store Upgrade Script
+--------------------------------------------------------------------------------------------------
+ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
