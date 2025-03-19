@@ -995,7 +995,7 @@ OtpAuth:
       output: '{
       "errors": [
         {
-          "errorCode": "IDA-MLC-001"
+          "errorCode": "IDA-OTA-004"
         }
       ],
         "authStatus": false,
@@ -1034,7 +1034,7 @@ OtpAuth:
       output: '{
       "errors": [
         {
-          "errorCode": "IDA-MLC-001"
+          "errorCode": "IDA-OTA-004"
         }
       ],
         "authStatus": false,
