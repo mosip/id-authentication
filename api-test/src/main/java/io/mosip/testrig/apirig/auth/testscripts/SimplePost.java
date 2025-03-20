@@ -31,6 +31,7 @@ import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
@@ -95,6 +96,15 @@ public class SimplePost extends IdAuthenticationUtil implements ITest {
 			}
 		}
 
+		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
+		
+		if(testCaseDTO.getEndPoint().contains("$partnerKeyURL$"))
+			
+		{
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", partnerKeyUrl));
+			PartnerRegistration.appendEkycOrRp = "rp-";
+		}
+		
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
 		
 		if (testCaseName.contains("CreateIdSchema")) {
@@ -125,9 +135,14 @@ public class SimplePost extends IdAuthenticationUtil implements ITest {
 		}
 
 		else {
+			if (testCaseName.startsWith("auth_SendOTP_")) {
+				response = postRequestWithAuthHeaderAndSignature(ApplnURI + testCaseDTO.getEndPoint(), inputJson, testCaseDTO.getTestCaseName());
+
+			} else {
 				response = postWithBodyAndCookie(ApplnURI + testCaseDTO.getEndPoint(), inputJson, auditLogCheck,
 						COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 			}
+		}
 			Map<String, List<OutputValidationDto>> ouputValid = null;
 			
 				ouputValid = OutputValidationUtil.doJsonOutputValidation(response.asString(),

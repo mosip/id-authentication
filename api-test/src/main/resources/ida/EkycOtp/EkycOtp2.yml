@@ -455,7 +455,7 @@ EkycOtp:
       input: '{
         "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": false,
@@ -464,7 +464,7 @@ EkycOtp:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+    "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$ekycPartnerKeyURL$",
@@ -475,7 +475,7 @@ EkycOtp:
   "kycStatus": "false",
    "errors": [
     {
-      "errorCode": "IDA-MLC-001",
+      "errorCode": "IDA-MLC-018",
       "errorMessage": "VID not available in database"
     }
   ],
