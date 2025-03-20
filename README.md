@@ -58,6 +58,27 @@ This is to maintain compatibility with existing ANT-style path patterns.
     ```
     export KUBECONFIG=~/.kube/<k8s-cluster.config>
     ```
+	
+	Below are the dependent services required for IDA:
+   | Chart | Chart version |
+   |---|---|
+   |[Keycloak](https://github.com/mosip/keycloak/tree/release-1.3.x/deploy) | 7.1.18 |
+   |[Keycloak-init](https://github.com/mosip/keycloak/tree/release-1.3.x/deploy) | 1.3.0-beta.1 |
+   |[Postgres](https://github.com/mosip/postgres-init/tree/release-1.3.x/deploy) | 13.1.5 |
+   |[Postgres Init](https://github.com/mosip/postgres-init/tree/release-1.3.x/deploy) | 1.3.0-beta.1 |
+   |[Minio](https://github.com/mosip/mosip-infra/blob/v1.2.0.2/deployment/v3/external/object-store) | 10.1.6 |
+   |[Kafka](https://github.com/mosip/mosip-infra/tree/v1.2.0.2/deployment/v3/external/kafka) | 0.4.2 |
+   |[Config-server](https://github.com/mosip/commons/tree/v1.3.0-beta.2/deploy/config-server) | 1.3.0-beta.2 |
+   |[Websub](https://github.com/mosip/websub/tree/v1.3.0-beta.1/deploy) | 1.3.0-beta.1 |
+   |[Artifactory server](https://github.com/mosip/artifactory-ref-impl/tree/v1.3.0-beta.2/deploy) | 1.3.0-beta.2 |
+   |[Keymanager service](https://github.com/mosip/keymanager/tree/v1.3.0-beta.2/deploy/keymanager) | 1.3.0-beta.2 |
+   |[Kernel](https://github.com/mosip/commons/tree/v1.3.0-beta.2/deploy/kernel) | 1.3.0-beta.2 |
+   |[Biosdk service](https://github.com/mosip/biosdk-services/tree/v1.3.0-beta.1/deploy) | 1.3.0-beta.1 |
+   |[Idrepository](https://github.com/mosip/id-repository/tree/v1.3.0-beta.1/deploy) | 12.0.1-B2 |
+   |[PMS](https://github.com/mosip/partner-management-services/tree/v1.2.2.0/deploy) | 1.2.2.0 |
+   |[Datashare](https://github.com/mosip/durian/tree/v1.3.0-beta.1/deploy) | 1.3.0-beta.1 |
+   
+   
 ### Install
   ```
     $ cd deploy
