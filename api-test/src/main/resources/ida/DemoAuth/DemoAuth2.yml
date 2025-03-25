@@ -2045,3 +2045,28 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
+  auth_DemoAuth_with_wrongPartnerKeyUrl_Neg:
+      endPoint: /idauthentication/v1/auth/Z0kPjifb7xsv8oEsv0B5YDZqChr7TuBtToVbgARGkO8Jy6U0/auth_pid17424601504/959765
+      uniqueIdentifier: TC_IDA_DemoAuth_73
+      description: Demo auth wrong partnerkeyurl
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_fordemo_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "10",
+"key": "age",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false"
+}'

@@ -1,0 +1,15 @@
+BlockHotlistStatus:
+  auth_BlockHotlistStatus_ofUIN_valid_sid:
+      endPoint: /v1/hotlist/status/UIN/{id}
+      uniqueIdentifier: TC_IDA_BlockHotlistStatus_01
+      description: get the status of hotlist UIN
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/BlockHotlistStatus/blockHotlistStatus
+      outputTemplate: ida/BlockHotlistStatus/blockHotlistStatusResult
+      input: '{
+    "id": "$ID:AddIdentity_toBlockUIN_forSeconds_Pos_UIN$"
+      }'
+      output: '{
+}'

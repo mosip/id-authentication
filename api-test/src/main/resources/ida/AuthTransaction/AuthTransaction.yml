@@ -397,3 +397,37 @@ AuthTransaction:
     }
   ]
 }'
+   auth_AuthTransaction_withCreatedUIN_audit_UIN:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_24
+      description: AuthTransaction with created UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionResult
+      input: '{
+      "individualId":"$ID:AddIdentity_ValidParameters_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+        "referenceIdType": "UIN"
+}'
+   auth_AuthTransaction_withrevokedVID_audit_VID:
+      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
+      uniqueIdentifier: TC_IDA_AuthTransaction_25
+      description: AuthTransaction with revoked VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/AuthTransaction/authTransaction
+      outputTemplate: ida/AuthTransaction/authTransactionError
+      input: '{
+      "individualId":"$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$"
+}'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018"
+    }
+  ]
+}'
