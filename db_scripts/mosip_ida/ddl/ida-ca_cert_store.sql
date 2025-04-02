@@ -32,6 +32,7 @@ CREATE TABLE ida.ca_cert_store(
 	upd_dtimes timestamp,
 	is_deleted boolean DEFAULT FALSE,
 	del_dtimes timestamp,
+	ca_cert_type character varying(25),
 	CONSTRAINT pk_cacs_id PRIMARY KEY (cert_id),
 	CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
 
@@ -72,4 +73,6 @@ COMMENT ON COLUMN ida.ca_cert_store.upd_dtimes IS 'Updated DateTimestamp : Date 
 COMMENT ON COLUMN ida.ca_cert_store.is_deleted IS 'IS_Deleted : Flag to mark whether the record is Soft deleted.';
 -- ddl-end --
 COMMENT ON COLUMN ida.ca_cert_store.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
+-- ddl-end --
+COMMENT ON COLUMN ida.ca_cert_store.ca_cert_type IS 'CA_Certificate Type: Specifies the type of CA_Certificate e.g., Root, Intermediate';
 -- ddl-end --
