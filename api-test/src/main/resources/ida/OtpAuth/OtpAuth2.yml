@@ -1072,7 +1072,7 @@ OtpAuth:
     }
     }'
       output: '{
-  "authStatus": "false",
+  "authStatus": "true",
  "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }

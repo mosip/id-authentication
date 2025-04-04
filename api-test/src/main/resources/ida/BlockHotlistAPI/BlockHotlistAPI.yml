@@ -224,3 +224,20 @@ HotlistAPI:
       output: '{
         "status": "BLOCKED"
     }'
+   auth_BlockHotlistAPI_ForSeconds_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_12
+      description: block UIN for few seconds
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_toBlockUIN_forSeconds_Pos_UIN$",
+    "idType": "UIN",
+    "requesttime": "$TIMESTAMP$",
+    "expiryTimestamp": "$EXPIRYTIMESTAMP$"
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'

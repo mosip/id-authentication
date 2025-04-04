@@ -2114,7 +2114,7 @@ EkycBio:
     }
     }'
       output: '{
-        "kycStatus": "false"
+        "kycStatus": "true"
 }'
   auth_EkycBio_LeftIris_With_InValid_timestamp:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$

@@ -192,5 +192,13 @@
 		</classes>
 	</test>
 
+	<test name="BlockHotlistStatus">
+		<parameter name="ymlFile"
+			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
+
 
 </suite>

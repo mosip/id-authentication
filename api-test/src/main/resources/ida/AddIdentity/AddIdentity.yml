@@ -13,7 +13,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -21,10 +21,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -51,10 +51,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -73,7 +73,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -81,10 +81,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -103,7 +103,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2023/09/28",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -111,10 +111,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -133,7 +133,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2023/09/28",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -141,10 +141,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -163,7 +163,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
@@ -171,10 +171,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -193,7 +193,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_For_Otp_Auth_smoke_Pos@mosip.net",
@@ -201,10 +201,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -223,7 +223,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353", 
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_UIN_smoke@mosip.net",
@@ -231,10 +231,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -253,7 +253,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",  
+  "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_EKYC_smoke@mosip.net",
@@ -261,10 +261,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -283,7 +283,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_InternalOTP_smoke@mosip.net",
@@ -291,10 +291,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -313,7 +313,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_EKYCOTP_PRE_smoke@mosip.net",
@@ -321,10 +321,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -351,10 +351,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -373,7 +373,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",  
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_valid_smoke@mosip.net",
@@ -381,10 +381,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -403,7 +403,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos@mosip.net",
@@ -411,10 +411,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -433,24 +433,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-  
-  
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-    
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -469,24 +463,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-   
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08", 
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -504,25 +492,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353",  
+  "UIN": "$UIN$",   
+  "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879", 
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -541,24 +523,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-  
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-   
+  "UIN": "$UIN$", 
+  "dateOfBirth": "1970/07/08", 
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_unblockUIN_valid_smoke@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
- 
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -576,25 +552,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-  
-  "dateOfBirth": "1970/07/08",
-   
+  "biometricReferenceId": "23452353", 
+  "UIN": "$UIN$", 
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_LockUIN_valid_smoke@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1",  
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -612,24 +582,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-   
+  "biometricReferenceId": "23452353", 
+  "UIN": "$UIN$",    
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1",  
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879", 
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -648,23 +613,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-   
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
   "email": "auth_AddIdentity_EkycDemo_Auth_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -683,24 +643,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-    
+  "UIN": "$UIN$", 
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_EKYCUIN_valid_smoke@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -718,24 +672,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353",  
+  "UIN": "$UIN$",   
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_Deactivate_and_auth_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1",  
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -753,24 +702,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353", 
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879", 
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -788,24 +732,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
-  
-   "UIN": "$UIN$",
-  
-  "dateOfBirth": "1970/07/08",
-   
+  "biometricReferenceId": "23452353",  
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
   "email": "auth_AddIdentity_for_hotlist_id_service_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-   
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1",   
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879", 
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -824,24 +763,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353",  
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -860,23 +794,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
- 
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-    
+  "UIN": "$UIN$",    
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
-    
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1",    
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -894,25 +823,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353", 
+  "UIN": "$UIN$",  
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_permanent_BioAuth_withValidParams_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
- 
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",   
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -931,24 +854,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "UIN": "$UIN$", 
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -968,23 +885,18 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
- 
-   "UIN": "$UIN$",
-    
-  "dateOfBirth": "1970/07/08",
-   
+  "UIN": "$UIN$",   
+  "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
   "email": "auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-  
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
- 
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879", 
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1003,25 +915,19 @@ AddIdentity:
   "id": "mosip.id.create",
   "registrationId": "$RID$",
   "addressCopy": "Y",
-  "biometricReferenceId": "23452353",
- 
-  
-   "UIN": "$UIN$",
-   
-  "dateOfBirth": "1970/07/08",
-    
+  "biometricReferenceId": "23452353",  
+  "UIN": "$UIN$",   
+  "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
-  "version": "v1",
- 
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-  
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "version": "v1", 
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",  
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1041,7 +947,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_deactivate_UIN_smoke_sid_Pos@mosip.net",
@@ -1049,10 +955,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1072,7 +978,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
@@ -1080,10 +986,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1161,7 +1067,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
@@ -1169,10 +1075,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1191,7 +1097,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/10",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1199,10 +1105,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1221,7 +1127,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
  "dateOfBirth": "2010/12/10",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1229,10 +1135,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1251,7 +1157,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2010/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1259,10 +1165,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1281,7 +1187,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1289,10 +1195,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1311,7 +1217,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1319,10 +1225,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1341,7 +1247,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1349,10 +1255,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1371,7 +1277,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1379,10 +1285,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1401,7 +1307,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1409,10 +1315,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1431,7 +1337,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1439,10 +1345,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1461,7 +1367,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1469,10 +1375,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1491,7 +1397,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1499,10 +1405,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1521,7 +1427,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1529,10 +1435,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1551,7 +1457,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1559,10 +1465,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1581,7 +1487,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1589,10 +1495,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1611,7 +1517,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1619,10 +1525,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1641,7 +1547,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1649,10 +1555,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1671,7 +1577,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1679,10 +1585,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1701,7 +1607,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1709,10 +1615,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1731,7 +1637,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1739,10 +1645,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1761,7 +1667,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1769,10 +1675,10 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
@@ -1791,7 +1697,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1799,9 +1705,9 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -1821,7 +1727,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1829,9 +1735,9 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
    "requesttime": "$TIMESTAMP$"
 }'
       output: '{
@@ -1851,7 +1757,7 @@ AddIdentity:
   "registrationId": "$RID$",
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
-   "UIN": "$UIN$",
+  "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
@@ -1859,10 +1765,130 @@ AddIdentity:
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
-   "introducerRID": "212124324784879",
-   "introducerUIN": "212124324784879",
-   "category": "individualBiometrics",
-   "requesttime": "$TIMESTAMP$"
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_toBlockUIN_forSeconds_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_58
+      description: create UIN to block for seconds and then unblock
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_59
+      description: create UIN and check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_60
+      description: create UIN to createVId and revoke Vid to check audit log
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_ValidParameters_fordemo_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_61
+      description: create UIN for demo auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/01/14",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
 }'
       output: '{
   "status":"ACTIVATED"
