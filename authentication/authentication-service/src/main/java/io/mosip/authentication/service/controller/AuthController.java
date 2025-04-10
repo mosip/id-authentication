@@ -162,6 +162,11 @@ public class AuthController {
 				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
 				}
+				if (errors.hasErrors()) {
+					errors.getAllErrors().forEach(err -> {
+						mosipLogger.error("Validation error: " + err.getDefaultMessage()+"request"+authrequestdto);
+					});
+				}
 				DataValidationUtil.validate(errors);
 				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,
 						partnerApiKey, IdAuthCommonConstants.CONSUME_VID_DEFAULT, requestWithMetadata);
