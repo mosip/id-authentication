@@ -485,6 +485,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String VERIFICATION_VALUES = "values";
 
+	public static final String VERIFIED_ATTRIB_TIME = "time";
+
 	public static final String VERIFIED_CLAIMS = "verified_claims";
 
 	private IdAuthCommonConstants() {

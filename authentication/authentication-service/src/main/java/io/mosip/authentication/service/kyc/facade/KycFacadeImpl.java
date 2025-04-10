@@ -78,6 +78,7 @@ import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.spi.indauth.service.VerifiedClaimsService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -145,6 +146,9 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private ExchangeDataAttributesUtil exchangeDataAttributesUtil;
+
+	@Autowired
+	private VerifiedClaimsService verifiedClaimsService;
 
 	/*
 	 * (non-Javadoc)
@@ -385,7 +389,7 @@ public class KycFacadeImpl implements KycFacade {
 					response.setKycStatus(authResponse.isAuthStatus());
 					response.setAuthToken(authResponse.getAuthToken());
 					String verifiedClaimsMetadata = !CollectionUtils.isEmpty(idInfoList) ? idInfoList.get(0).getValue() : EMPTY;
-					response.setVerifiedClaimsMetadata(kycService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId));
+					response.setVerifiedClaimsMetadata(verifiedClaimsService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId));
 					((KycAuthResponseDTOV2)baseAuthResponseDTO).setResponse(response);
 				}
 			}
@@ -619,7 +623,7 @@ public class KycFacadeImpl implements KycFacade {
 			String token = idService.getToken(idResDTO);
 			String psuToken = kycTokenData.getPsuToken();
 
-			String respJson = kycService.buildExchangeVerifiedClaimsData(idvidHash, idInfo, unVerifiedConsentClaims, 
+			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(idvidHash, idInfo, unVerifiedConsentClaims, 
 						verifiedConsentClaims, locales, idVid, kycExchangeRequestDTOV2);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
