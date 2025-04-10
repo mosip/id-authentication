@@ -213,7 +213,7 @@ public interface IdInfoFetcher {
 			}
 		}).collect(Collectors.toMap(t -> t.getKey(), entry -> {
 			Object val = entry.getValue();
-			if (val instanceof List) {
+			if (!entry.getKey().equals(VERIFIED_CLAIMS_ATTRIBS) && val instanceof List) {
 				List<? extends Object> arrayList = (List) val;
 				if (!arrayList.isEmpty()) {
 					Object object = arrayList.get(0);
@@ -251,16 +251,16 @@ public interface IdInfoFetcher {
 				IdentityInfoDTO idInfo = new IdentityInfoDTO();
 				idInfo.setValue(passwordData);
 				return Stream.of(idInfo).collect(Collectors.toList());
-			} else if (entry.getKey().equals(VERIFIED_CLAIMS_ATTRIBS) && val instanceof Map) {
-				Map<String, String> map = (Map<String, String>) val;
+			} else if (entry.getKey().equals(VERIFIED_CLAIMS_ATTRIBS) && val instanceof List) {
+				List<? extends Object> arrayList = (List) val;
 				IdentityInfoDTO idInfo = new IdentityInfoDTO();
 				try {
 					idInfo.setValue(Objects.nonNull(objectMapper)? 
-									objectMapper.writeValueAsString(map) :
-									String.valueOf(map));
+									objectMapper.writeValueAsString(arrayList) :
+									String.valueOf(arrayList));
 				} catch (JsonProcessingException e) {
 					// Ignore this exception.
-					idInfo.setValue(String.valueOf(map));
+					idInfo.setValue(String.valueOf(arrayList));
 				}
 				return Stream.of(idInfo).collect(Collectors.toList());
 			}
