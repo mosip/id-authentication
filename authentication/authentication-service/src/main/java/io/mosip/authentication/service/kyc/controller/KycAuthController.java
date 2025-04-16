@@ -181,17 +181,21 @@ public class KycAuthController {
 			Optional<PartnerDTO> partner = partnerService.getPartner(partnerId, ekycAuthRequestDTO.getMetadata());
 			AuthTransactionBuilder authTxnBuilder = authTransactionHelper
 					.createAndSetAuthTxnBuilderMetadataToRequest(ekycAuthRequestDTO, !isAuth, partner);
-			
+			System.out.println("--------------KYC API--------------------");
 			try {
 				String idType = Objects.nonNull(ekycAuthRequestDTO.getIndividualIdType()) ? ekycAuthRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(ekycAuthRequestDTO.getIndividualId()).getType();
 						ekycAuthRequestDTO.setIndividualIdType(idType);
 				kycReqValidator.validateIdvId(ekycAuthRequestDTO.getIndividualId(), idType, errors);
 				kycReqValidator.validateAge(ekycAuthRequestDTO, errors);
+				System.out.println("-----------------------KYC ERROR--------------"+errors);
 				if(AuthTypeUtil.isBio(ekycAuthRequestDTO)) {
+					System.out.println("------------in if condition ------------");
 					kycReqValidator.validateDeviceDetails(ekycAuthRequestDTO, errors);
 				}
+				System.out.println("----------------after If condition--------------");
 				DataValidationUtil.validate(errors);
+				System.out.println("----------AFTER VALIDATE METHOD--------------------");
 				boolean externalAuthRequest = true;
 				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, externalAuthRequest, 
 														partnerId, partnerApiKey, requestWrapperWithMetadata);
