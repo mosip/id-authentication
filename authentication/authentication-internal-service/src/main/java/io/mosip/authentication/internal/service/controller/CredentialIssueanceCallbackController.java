@@ -132,6 +132,7 @@ public class CredentialIssueanceCallbackController {
 	public ResponseWrapper<?> handleDeactivateIdEvent(@PathVariable("partnerId") String partnerId, 
 			@Validated @RequestBody EventModel eventModel, @ApiIgnore Errors e) throws IdAuthenticationBusinessException {
 		logger.debug(IdAuthCommonConstants.SESSION_ID, "handleDeactivateIdEvent",  this.getClass().getCanonicalName(), "inside credentialIssueanceCallback for partnerId: " + partnerId);
+		logger.info("-------EVENT----------"+eventModel.getEvent()+"---------eventModel---------"+eventModel);
 		return handleEvent(eventModel, e);
 	}
 
