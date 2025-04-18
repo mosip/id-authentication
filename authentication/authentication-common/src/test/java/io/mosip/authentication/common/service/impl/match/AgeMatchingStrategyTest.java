@@ -85,7 +85,7 @@ public class AgeMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AgeMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(100);
+		Mockito.when(demoMatcherUtil.doEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(100);
 		
 		int value = matchFunction.match(25, 25, matchProperties);
 		assertEquals(100, value);
