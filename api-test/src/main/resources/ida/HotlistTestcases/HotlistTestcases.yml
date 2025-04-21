@@ -1,6 +1,7 @@
 DemoAuth:
   auth_DemoAuth_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_01
       description: perform Demo auth with blocked UIN
       role: resident
       restMethod: post
@@ -32,6 +33,7 @@ DemoAuth:
 }'
   auth_DemoAuth_Locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_01
       description: perform Demo auth with locked UIN
       role: resident
       restMethod: post
@@ -63,6 +65,7 @@ DemoAuth:
 }'
   auth_DemoAuth_blocked_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedVID_02
       description: perform Demo auth with blocked VID
       role: resident
       restMethod: post

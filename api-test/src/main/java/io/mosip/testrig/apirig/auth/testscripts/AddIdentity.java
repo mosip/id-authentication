@@ -45,7 +45,7 @@ import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 
-public class AddIdentity extends AdminTestUtil implements ITest {
+public class AddIdentity extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(AddIdentity.class);
 	protected String testCaseName = "";
 	public Response response = null;
@@ -195,7 +195,7 @@ public class AddIdentity extends AdminTestUtil implements ITest {
 		try {
 			if (BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet")) {
 				logger.info("waiting for " + properties.getProperty("Delaytime")
-						+ " mili secs after UIN Generation In IDREPO"); //
+						+ " mili secs after UIN Generation In IDREPO");
 				Thread.sleep(Long.parseLong(properties.getProperty("Delaytime")));
 			}
 		} catch (Exception e) {

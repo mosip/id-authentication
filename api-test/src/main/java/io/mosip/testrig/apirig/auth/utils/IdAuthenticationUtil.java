@@ -1,5 +1,6 @@
 package io.mosip.testrig.apirig.auth.utils;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.testng.SkipException;
@@ -15,6 +16,14 @@ import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 public class IdAuthenticationUtil extends AdminTestUtil {
 
 	private static final Logger logger = Logger.getLogger(IdAuthenticationUtil.class);
+	public static String genRid1 = "27847" + generateRandomNumberString(10);
+
+	public static void setLogLevel() {
+		if (IdAuthConfigManager.IsDebugEnabled())
+			logger.setLevel(Level.ALL);
+		else
+			logger.setLevel(Level.ERROR);
+	}
 	
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
@@ -62,6 +71,33 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 
 		return testCaseName;
+	}
+	
+	public static String inputStringKeyWordHandeler(String jsonString, String testCaseName) {
+		
+		
+		if (jsonString.contains(GlobalConstants.TIMESTAMP)) {
+			jsonString = replaceKeywordValue(jsonString, GlobalConstants.TIMESTAMP, generateCurrentUTCTimeStamp());
+		}
+		
+		if (jsonString.contains("$RID1$")) {
+			jsonString = replaceKeywordValue(jsonString, "$RID1$", genRid1);
+		}
+		
+		return jsonString;
+	}
+	
+	public static String replaceKeywordValue(String jsonString, String keyword, String value) {
+		if (value != null && !value.isEmpty())
+			return jsonString.replace(keyword, value);
+		else {
+			if (keyword.contains("$ID:"))
+				throw new SkipException("Marking testcase as skipped as required field is empty " + keyword
+						+ " please check the results of testcase: " + getTestCaseIDFromKeyword(keyword));
+			else
+				throw new SkipException("Marking testcase as skipped as required field is empty " + keyword);
+
+		}
 	}
 	
 }

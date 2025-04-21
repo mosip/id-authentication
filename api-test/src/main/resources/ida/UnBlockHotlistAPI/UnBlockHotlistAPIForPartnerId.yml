@@ -1,7 +1,8 @@
 HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_sid:
       endPoint: /v1/hotlist/unblock
-      description: unblock partnerid
+      uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_08
+      description: unblock partnerid without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -17,7 +18,8 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_Unblock_API_KEY_sid:
       endPoint: /v1/hotlist/unblock
-      description: unblock apikey
+      uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_09
+      description: unblock apikey without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -33,7 +35,8 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_Unblock_MISP_KEY_sid:
       endPoint: /v1/hotlist/unblock
-      description: unblock apikey
+      uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_09
+      description: unblock apikey without expiry time
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI

@@ -1,6 +1,7 @@
 EkycOtp:
   auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_01
       description: Ekyc otp auth with valid UIN
       role: resident
       restMethod: post
@@ -36,6 +37,7 @@ EkycOtp:
 }'
   auth_EkycOtp_Auth_With_Valid__with_edited_updated_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_02
       description: Ekyc otp auth with valid updated UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -72,6 +74,7 @@ EkycOtp:
 }'
   auth_EkycOtp_Auth_With_Infant_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_03
       description: Ekyc otp auth with infant UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -108,6 +111,7 @@ EkycOtp:
 }'
   auth_EkycOtp_Auth_With_deactivate_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_04
       description: Ekyc otp auth with deactivated UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -144,6 +148,7 @@ EkycOtp:
 }'
   auth_EkycOtp_Auth_With_draft_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_05
       description: Ekyc otp auth with drafted UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -180,6 +185,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_06
       description: Ekyc otp auth with valid VID
       role: resident
       restMethod: post
@@ -215,6 +221,7 @@ EkycOtp:
 }'
   auth_EkycOtp_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_07
       description: Ekyc otp auth with past timestamp using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -251,6 +258,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_08
       description: Ekyc otp auth with past timestamp using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -288,6 +296,7 @@ EkycOtp:
 
   auth_EkycOtp_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_09
       description: Ekyc otp auth with future timestamp using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -324,6 +333,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_10
       description: Ekyc otp auth with future timestamp using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -361,6 +371,7 @@ EkycOtp:
 
   auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_11
       description: Ekyc otp auth with empty timestamp using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -397,6 +408,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_12
       description: Ekyc otp auth with empty timestamp using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -433,6 +445,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_revoke_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_13
       description: Ekyc otp auth with revoked VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -442,7 +455,7 @@ EkycOtp:
       input: '{
         "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": false,
@@ -451,7 +464,7 @@ EkycOtp:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+    "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/EkycOtp/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$ekycPartnerKeyURL$",
@@ -462,7 +475,7 @@ EkycOtp:
   "kycStatus": "false",
    "errors": [
     {
-      "errorCode": "IDA-MLC-001",
+      "errorCode": "IDA-MLC-018",
       "errorMessage": "VID not available in database"
     }
   ],
@@ -475,6 +488,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_14
       description: Ekyc otp auth with invalid UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -517,6 +531,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_15
       description: Ekyc otp auth with invalid VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -559,6 +574,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_16
       description: Ekyc otp auth with blank individualId with individualId type as UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -600,6 +616,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_17
       description: Ekyc otp auth with blank individualId with individualId type as VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -641,6 +658,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_18
       description: Ekyc otp auth with missing individualId with UIN as individualId type
       role: resident
       checkErrorsOnlyInResponse: true
@@ -683,6 +701,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_19
       description: Ekyc otp auth with missing individualId with VID as individualId type
       role: resident
       checkErrorsOnlyInResponse: true
@@ -725,6 +744,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_20
       description: Ekyc otp auth with invalid transactionId using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -761,6 +781,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_21
       description: Ekyc otp auth with invalid transactionId using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -797,6 +818,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_22
       description: Ekyc otp auth with blank transactionId using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -833,6 +855,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_23
       description: Ekyc otp auth with blank transactionId using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -869,6 +892,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualIdType_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_24
       description: Ekyc otp auth with invalid individualId Type using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -905,6 +929,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualIdType_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_25
       description: Ekyc otp auth with blank individualId Type using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -941,6 +966,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_26
       description: Ekyc otp auth with different transactionId using VID
       role: resident
       checkErrorsOnlyInResponse: true
@@ -977,6 +1003,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_uin_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycOtp_27
       description: Ekyc otp auth with different transactionId using UIN
       role: resident
       checkErrorsOnlyInResponse: true
@@ -1013,6 +1040,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_invalid_uin_partner:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKe
+      uniqueIdentifier: TC_IDA_EkycOtp_28
       description: Ekyc otp auth with invalid partner using UIN
       role: resident
       checkErrorsOnlyInResponse: true

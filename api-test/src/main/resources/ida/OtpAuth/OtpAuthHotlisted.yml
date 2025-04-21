@@ -1,6 +1,7 @@
 OtpAuth:
   auth_OTP_Auth_With_blocked_partnerid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_blockedPartnerId_01
       description: Otp auth with blocked_partnerid
       role: resident
       restMethod: post
@@ -36,7 +37,8 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_blocked_misp_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with valid using UIN
+      uniqueIdentifier: TC_IDA_OtpAuth_blockedMisp_02
+      description: Otp auth with blocked misp
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

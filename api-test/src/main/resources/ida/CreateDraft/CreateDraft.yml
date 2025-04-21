@@ -1,6 +1,7 @@
 CreateDraft:
   auth_CreateDraft_Smoke_Pos:
       endPoint: /idrepository/v1/identity/draft/create/{registrationId}
+      uniqueIdentifier: TC_IDA_CreateDraft_01
       description: create Draft with regitrationId
       role: idrepo
       checkErrorsOnlyInResponse: true
@@ -9,6 +10,21 @@ CreateDraft:
       outputTemplate: ida/CreateDraft/createDraftResult
       input: '{
       "registrationId":"$RID$"
+      }'
+      output: '{
+    "status": "DRAFTED"
+}'
+  auth_CreateDraft_audit_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/draft/create/{registrationId}
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_CreateDraft_02
+      description: create Draft with regitrationId
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/CreateDraft/createDraft
+      outputTemplate: ida/CreateDraft/createDraftResult
+      input: '{
+      "registrationId":"$RID1$"
       }'
       output: '{
     "status": "DRAFTED"

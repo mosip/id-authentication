@@ -1,0 +1,18 @@
+ReactivateVIDs:
+  auth_ReactivateVIDs_audit_Smoke_Pos:
+      endPoint: /idrepository/v1/vid/reactivate
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01
+      description: Reactivate VID for UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/ReactivateVIDsForUIN/reactivateVIDsForUIN
+      outputTemplate: ida/ReactivateVIDsForUIN/reactivateVIDsForUINResult
+      input: '{
+    "UIN": "$ID:AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos_UIN$",
+    "requesttime": "$TIMESTAMP$",
+    "id": "mosip.vid.reactivate",
+    "version": "v1"
+}'  
+      output: '{
+    "vidStatus": "ACTIVE"
+}'

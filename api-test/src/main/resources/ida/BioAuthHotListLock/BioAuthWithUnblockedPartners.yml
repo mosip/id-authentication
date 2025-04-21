@@ -1,6 +1,8 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_Unblocked_Partners_Smoke_Pos:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_01
+      description: Perform bio face auth with unblocked partner
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -29,6 +31,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With__Unblocked_Partners:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_02
+      description: Perform bio ring finger auth with unblocked partner
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -57,6 +61,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr__Unblocked_Partners:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_03
+      description: Perform bio LeftIndexFinger auth with unblocked partner
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -85,6 +91,8 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_IRIS_With__Unblocked_Partners:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_04
+      description: Perform bio right iris auth with unblocked partner
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -113,6 +121,8 @@ BioAuth:
 }'
   auth_EkycBio_LeftMiddleFingerr__Unblocked_Partners:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&isKyc=true&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_05
+      description: Perform bio LeftMiddleFingerr auth with unblocked partner
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
@@ -141,6 +151,9 @@ BioAuth:
 }'
   auth_EkycBio_RIGHTIRIS_With__Unblocked_Partners:
       endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&isKyc=true&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_04
+      description: Perform bio right iris auth with unblocked partner
+      role: resident
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthHotListLock/BioAuth
