@@ -70,7 +70,7 @@ public class DemoMatcherUtil {
 		}
 	}
 	public int doEqualToMatch(int reqInfo, int entityInfo) {
-		if (reqInfo <= entityInfo) {
+		if (reqInfo == entityInfo) {
 			return EXACT_MATCH_VALUE;
 		} else {
 			return 0;
