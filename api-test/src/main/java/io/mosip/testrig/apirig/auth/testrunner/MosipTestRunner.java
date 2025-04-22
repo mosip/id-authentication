@@ -24,6 +24,7 @@ import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
+import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.report.EmailableReport;
@@ -37,7 +38,9 @@ import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
@@ -67,12 +70,8 @@ public class MosipTestRunner {
 	public static void main(String[] arg) {
 
 		try {
-
-			Map<String, String> envMap = System.getenv();
-			LOGGER.info("** ------------- Get ALL ENV varibales --------------------------------------------- **");
-			for (String envName : envMap.keySet()) {
-				LOGGER.info(String.format("ENV %s = %s%n", envName, envMap.get(envName)));
-			}
+			LOGGER.info("** ------------- API Test Rig Run Started --------------------------------------------- **");
+			
 			BaseTestCase.setRunContext(getRunType(), jarUrl);
 			ExtractResource.removeOldMosipTestTestResource();
 			if (getRunType().equalsIgnoreCase("JAR")) {
@@ -84,15 +83,14 @@ public class MosipTestRunner {
 			IdAuthConfigManager.init();
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
+			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
-			// For now we are not doing health check for qa-115.
-			if (BaseTestCase.isTargetEnvLTS()) {
-				HealthChecker healthcheck = new HealthChecker();
-				healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
-				Thread trigger = new Thread(healthcheck);
-				trigger.start();
-			}
+			HealthChecker healthcheck = new HealthChecker();
+			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+			Thread trigger = new Thread(healthcheck);
+			trigger.start();
+			
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
@@ -124,11 +122,13 @@ public class MosipTestRunner {
 		} catch (Exception e) {
 			LOGGER.error("Exception " + e.getMessage());
 		}
+		
+		KeycloakUserManager.removeUser();
+		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
-
-		if (BaseTestCase.isTargetEnvLTS())
-			HealthChecker.bTerminate = true;
+		
+		HealthChecker.bTerminate = true;
 
 		System.exit(0);
 
@@ -172,6 +172,12 @@ public class MosipTestRunner {
 		MispPartnerAndLicenseKeyGeneration.setLogLevel();
 		JWKKeyUtil.setLogLevel();
 		CertsUtil.setLogLevel();
+		KernelAuthentication.setLogLevel();
+		BaseTestCase.setLogLevel();
+		IdAuthenticationUtil.setLogLevel();
+		KeycloakUserManager.setLogLevel();
+		DBManager.setLogLevel();
+		BiometricDataProvider.setLogLevel();
 	}
 
 	/**

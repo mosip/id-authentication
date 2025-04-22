@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class PatchWithBodyWithOtpGenerate extends AdminTestUtil implements ITest {
+public class PatchWithBodyWithOtpGenerate extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(PatchWithBodyWithOtpGenerate.class);
 	protected String testCaseName = "";
 

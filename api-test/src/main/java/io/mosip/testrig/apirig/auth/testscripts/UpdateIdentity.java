@@ -38,7 +38,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class UpdateIdentity extends AdminTestUtil implements ITest {
+public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(UpdateIdentity.class);
 	protected String testCaseName = "";
 	private static String identity;

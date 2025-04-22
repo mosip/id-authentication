@@ -1,6 +1,7 @@
 MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_MultiFactorAuth_01
       description: Multifactor auth with Demographic,otp and biometric
       role: resident
       restMethod: post

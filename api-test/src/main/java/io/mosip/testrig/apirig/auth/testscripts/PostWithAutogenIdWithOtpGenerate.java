@@ -34,7 +34,7 @@ import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.restassured.response.Response;
 
-public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements ITest {
+public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(PostWithAutogenIdWithOtpGenerate.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
@@ -97,28 +97,15 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 				throw new SkipException(GlobalConstants.VID_FEATURE_NOT_SUPPORTED);
 			}
 		}
-
-		if (!BaseTestCase.isTargetEnvLTS()) {
-			if ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_"))) {
-				throw new SkipException("Generating VID using IdRepo API on Pre LTS. Hence skipping this test case");
-//				qa115 - t
-//				cam   - f
-//				dev	  - f
-			}
+		
+		if (IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)
+				&& ((BaseTestCase.currentModule.equals("auth")) && (testCaseName.startsWith("auth_GenerateVID_")))) {
+			throw new SkipException("Generating VID using IdRepo API. Hence skipping this test case");
+//			qa115 - f
+//			cam   - t t
+//			dev	  - t f
 		}
 
-	
-		if (BaseTestCase.isTargetEnvLTS()) {
-			if (IdAuthConfigManager.isInServiceNotDeployedList(GlobalConstants.RESIDENT)
-					&& ((BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet"))
-							&& (testCaseName.startsWith("auth_GenerateVID_")
-									|| testCaseName.startsWith("ESignetRes_Generate")))) {
-				throw new SkipException("Generating VID using IdRepo API. Hence skipping this test case");
-//				qa115 - f
-//				cam   - t t
-//				dev	  - t f
-			}
-		}
 		String inputJson = testCaseDTO.getInput().toString();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
@@ -151,8 +138,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 						+ " as UIN not available in database");
 				try {
 					Thread.sleep(Long.parseLong(properties.getProperty("uinGenDelayTime")));
-//					SlackChannelIntegration.sendMessageToSlack("UIN not available in database in :" + ApplnURI + "Env") ;
-
 				} catch (NumberFormatException | InterruptedException e) {
 					logger.error(e.getMessage());
 					Thread.currentThread().interrupt();
@@ -182,7 +167,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 
 			if (!OutputValidationUtil.publishOutputResult(ouputValidOtp)) {
 				if (otpResponse.asString().contains("IDA-OTA-001")) {
-//					SlackChannelIntegration.sendMessageToSlack("Exceeded number of OTP requests in a given time, :" + ApplnURI + "Env") ;
 					throw new AdminTestException(
 							"Exceeded number of OTP requests in a given time, Increase otp.request.flooding.max-count");
 				}
@@ -237,9 +221,6 @@ public class PostWithAutogenIdWithOtpGenerate extends AdminTestUtil implements I
 			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
 					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
 				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				if (!BaseTestCase.isTargetEnvLTS())
-					delayTime = Long.parseLong(properties.getProperty("uinGenDelayTime"))
-							* Long.parseLong(properties.getProperty("uinGenMaxLoopCount"));
 				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
 				Thread.sleep(delayTime);
 			}

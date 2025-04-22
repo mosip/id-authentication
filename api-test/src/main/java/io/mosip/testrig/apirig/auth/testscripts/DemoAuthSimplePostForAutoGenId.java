@@ -43,7 +43,7 @@ import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.restassured.response.Response;
 
-public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITest {
+public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil implements ITest {
 	private static final Logger logger = Logger.getLogger(DemoAuthSimplePostForAutoGenId.class);
 	protected String testCaseName = "";
 	public String idKeyName = null;
@@ -147,11 +147,7 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 		}
 
 		if (input.contains("$NAMEPRIMARYLANG$")) {
-			String name = "";
-			if (BaseTestCase.isTargetEnvLTS())
-				name = propsMap.getProperty("fullName");
-			else
-				name = propsMap.getProperty("firstName");
+			String name = propsMap.getProperty("fullName");
 			input = input.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
 		}
 
@@ -198,13 +194,6 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 					throw new AdminTestException("Failed at output validation");
 			}
 		} else {
-			if (testCaseName.contains("partnerDemoDown")) {
-
-				//url = IdAuthConfigManager.getAuthDemoServiceUrl() + "local";
-			} else {
-				//url = IdAuthConfigManager.getAuthDemoServiceUrl();
-			}
-
 			response = postWithBodyAndCookie(url + testCaseDTO.getEndPoint(), inputJson, COOKIENAME,
 					testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 			String ActualOPJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
@@ -248,7 +237,6 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 			JSONObject resJsonObject = new JSONObject(response.asString());
 			String res = "";
 			try {
-				// res = resJsonObject.get("response").toString();
 				resJsonObject = new JSONObject(response.getBody().asString()).getJSONObject("authResponse")
 						.getJSONObject("body").getJSONObject("response");
 
@@ -258,7 +246,6 @@ public class DemoAuthSimplePostForAutoGenId extends AdminTestUtil implements ITe
 				JSONObject jsonObjectkycRes = new JSONObject(res);
 				JSONObject jsonObjectFromKycData = new JSONObject();
 				JSONObject jsonObjectFromIdentityData = new JSONObject();
-				// List<String> myList =new ArrayList<>();
 
 				ArrayList<String> names = new ArrayList<>();
 				ArrayList<String> names2 = new ArrayList<>();
