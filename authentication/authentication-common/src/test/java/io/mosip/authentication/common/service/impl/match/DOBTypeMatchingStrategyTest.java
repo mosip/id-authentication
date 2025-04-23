@@ -104,7 +104,7 @@ public class DOBTypeMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 
 		MatchFunction matchFunction = DOBTypeMatchingStrategy.EXACT.getMatchFunction();
-		Mockito.when(demoMatcherUtil.doLessThanEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(0);
+		Mockito.when(demoMatcherUtil.doEqualToMatch(Mockito.anyInt(), Mockito.anyInt())).thenReturn(0);
 		int value = matchFunction.match(332, "V", matchProperties);
 		assertEquals(0, value);
 
