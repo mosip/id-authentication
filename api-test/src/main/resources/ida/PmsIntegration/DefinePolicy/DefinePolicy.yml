@@ -1,0 +1,46 @@
+definePolicy:
+   auth_DefinePolicy_All_Valid_Smoke_sid:
+      endPoint: /v1/policymanager/policies
+      uniqueIdentifier: Dependent_Idrepo_definePolicy_01
+      description: Define policy with all valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/DefinePolicy/definePolicy
+      outputTemplate: ida/PmsIntegration/DefinePolicy/definePolicyResult
+      input: '{
+	"desc": "$POLICYDESC$",
+	"name": "$POLICYNAME$",
+	"policyGroupName": "$ID:DefinePolicyGroup_All_Valid_Smoke_sid_name$",
+	"policyType": "Auth",
+	"version": "1.0",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: ' {
+    "policyGroupName": "$IGNORE$",
+    "name": "$IGNORE$",
+    "desc": "$IGNORE$",
+    "is_Active": false
+}'
+
+   auth_DefinePolicy_Misp_Valid_Smoke_sid:
+      endPoint: /v1/policymanager/policies
+      uniqueIdentifier: Dependent_Idrepo_definePolicy_02
+      description: Define policy with all valid details Misp
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/DefinePolicy/definePolicyMisp
+      outputTemplate: ida/PmsIntegration/DefinePolicy/definePolicyResult
+      input: '{
+	"desc": "$MISPPOLICYDESC$",
+	"name": "$MISPPOLICYNAME$",
+	"policyGroupName": "$ID:DefinePolicyGroup_Misp_Valid_Smoke_sid_name$",
+	"policyType": "MISP",
+	"version": "1.0",
+	"requesttime": "$TIMESTAMP$"
+}'
+      output: ' {
+    "policyGroupName": "$IGNORE$",
+    "name": "$IGNORE$",
+    "desc": "$IGNORE$",
+    "is_Active": false
+}'

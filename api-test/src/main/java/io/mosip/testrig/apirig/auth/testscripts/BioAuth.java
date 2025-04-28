@@ -95,6 +95,12 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
 					PartnerRegistration.updatedpartnerKeyUrl));
 		}
+		
+		if (testCaseDTO.getEndPoint().contains("$ID:")) {
+			String endpoint = uriKeyWordHandelerUri(testCaseDTO.getEndPoint(),testCaseName);
+			testCaseDTO.setEndPoint(endpoint);
+		}
+		
 		JSONObject request = new JSONObject(testCaseDTO.getInput());
 		String identityRequest = null, identityRequestTemplate = null, identityRequestEncUrl = null;
 		if (request.has("identityRequest")) {

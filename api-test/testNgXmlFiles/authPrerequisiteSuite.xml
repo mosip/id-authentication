@@ -16,177 +16,306 @@
 		</classes>
 	</test>
 
-	<test name="CreateVID">
-		<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
-		<parameter name="idKeyName" value="VID" />
+	<test name="CreatePolicyGroup">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/DefinePolicyGroup/DefinePolicyGroup.yml" />
+		<parameter name="idKeyName" value="id,name" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
-	<test name="GenerateVidForSendOtpAndDeactivateUIN">
+	<test name="DefinePolicy">
 		<parameter name="ymlFile"
-			value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
-		<parameter name="idKeyName" value="vid" />
+			value="ida/PmsIntegration/DefinePolicy/DefinePolicy.yml" />
+		<parameter name="idKeyName" value="id,name" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
-	<test name="UpdateIdentityForUin">
+	<test name="PublishPolicy">
 		<parameter name="ymlFile"
-			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
-		</classes>
-	</test>
-
-	<test name="UpdateIdentityToActivate">
-		<parameter name="ymlFile"
-			value="ida/UpdateIdentityForUin/ActivateDeactivatedUIN.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
-		</classes>
-	</test>
-
-	<test name="CreateDraft">
-		<parameter name="ymlFile" value="ida/CreateDraft/CreateDraft.yml" />
+			value="ida/PmsIntegration/PublishPolicy/PublishPolicy.yml" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
 		</classes>
 	</test>
 
-	<test name="GetDraft">
-		<parameter name="ymlFile" value="ida/GetDraft/GetDraft.yml" />
-		<parameter name="idKeyName" value="UIN" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
-		</classes>
-	</test>
-
-	<test name="CreateDraftVID">
-		<parameter name="ymlFile" value="ida/CreateDraftVID/CreateDraftVID.yml" />
+	<test name="CreatePartner">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/CreatePartner/CreatePartner.yml" />
+		<parameter name="idKeyName" value="partnerId" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
-	<test name="UpdateDraft">
-		<parameter name="ymlFile" value="ida/UpdateDraft/UpdateDraft.yml" />
-		<parameter name="pathParams" value="registrationId" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateDraft" />
-		</classes>
-	</test>
-
-	<test name="PublishDraft">
-		<parameter name="ymlFile" value="ida/PublishDraft/PublishDraft.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="GenerateVID">
+	<test name="UploadCACertificate">
 		<parameter name="ymlFile"
-			value="ida/GenerateVID/createGenerateVID.yml" />
-		<parameter name="idKeyName" value="vid" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
-		</classes>
-	</test>
-
-	<test name="DeactivateVIDs">
-		<parameter name="ymlFile" value="ida/DeactivateUin/DeactivateUin.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
-		</classes>
-	</test>
-
-	<test name="RevokeVID">
-		<parameter name="ymlFile"
-			value="ida/RevokeVID/createRevokeVID.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PatchWithBodyWithOtpGenerate" />
-		</classes>
-	</test>
-
-	<test name="AuthInternalLock">
-		<parameter name="ymlFile"
-			value="ida/AuthInternalLock/AuthInternalLock.yml" />
+			value="ida/PmsIntegration/UploadCertificate/UploadCertificate.yml" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
 		</classes>
 	</test>
 
-	<test name="AuthLock">
+	<test name="UploadPartnerCertificate">
 		<parameter name="ymlFile"
-			value="ida/AuthLock/createAuthLock.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
-		</classes>
-	</test>
-
-	<test name="ReactivateVIDs">
-		<parameter name="ymlFile"
-			value="ida/ReactivateVIDsForUIN/ReactivateVIDsForUIN.yml" />
+			value="ida/PmsIntegration/UploadCert/UploadCert.yml" />
+		<parameter name="idKeyName" value="signedCertificateData" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
-	<test name="RegenerateVid">
-		<parameter name="ymlFile" value="ida/RegenerateVid/RegenerateVid.yml" />
-		<parameter name="idKeyName" value="vid" />
+	<test name="updatePartnerCertificate">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/UpdatePartnerCertificate/UpdatePartnerCertificate.yml" />
+		<parameter name="queryParams"
+			value="partnerType,partnerName,keyFileNameByPartnerName,moduleName" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyAndQueryParamsForAutoGenId" />
 		</classes>
 	</test>
 
-	<test name="RetrieveAuthTypeStatus">
+	<test name="RequestAPIKeyForAuthPartner">
 		<parameter name="ymlFile"
-			value="ida/RetrieveAuthTypeStatus/RetrieveAuthTypeStatus.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="RetrieveIdentityByUin">
-		<parameter name="ymlFile"
-			value="ida/RetrieveIdentityByUin/RetrieveIdentityByUin.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="RetrieveVIDByUIN">
-		<parameter name="ymlFile"
-			value="ida/RetrieveVIDByUIN/RetrieveVIDByUIN.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="GetUnusedUIN">
-		<parameter name="ymlFile" value="ida/GetUnusedUIN/getUnusedUIN.yml" />
-		<parameter name="idKeyName" value="uin" />
+			value="ida/PmsIntegration/RequestAPIKey/RequestAPIKey.yml" />
+		<parameter name="idKeyName" value="mappingkey" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
 			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
+
+	<test name="ApproveAPIKey">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/ApproveAPIKey/ApproveAPIKey.yml" />
+		<parameter name="pathParams" value="mappingkey" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PutWithPathParamsAndBody" />
+		</classes>
+	</test>
+	<test name="UpdatePolicy">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/UpdatePolicy/UpdatePolicy.yml" />
+		<parameter name="pathParams" value="policyId" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PutWithPathParamsAndBody" />
+		</classes>
+	</test>
+
+	<test name="GenerateMispLK">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/GenerateMispLK/GenerateMispLK.yml" />
+		<parameter name="idKeyName" value="licenseKey" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="GenerateApiKey">
+		<parameter name="ymlFile"
+			value="ida/PmsIntegration/GenerateApiKey/GenerateApiKey.yml" />
+		<parameter name="idKeyName" value="apiKey" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
+		<test name="CreateVID">
+			<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
+			<parameter name="idKeyName" value="VID" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			</classes>
+		</test>
+
+		<test name="GenerateVidForSendOtpAndDeactivateUIN">
+			<parameter name="ymlFile"
+				value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
+			<parameter name="idKeyName" value="vid" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
+			</classes>
+		</test>
+
+		<test name="UpdateIdentityForUin">
+			<parameter name="ymlFile"
+				value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+			</classes>
+		</test>
+
+		<test name="UpdateIdentityToActivate">
+			<parameter name="ymlFile"
+				value="ida/UpdateIdentityForUin/ActivateDeactivatedUIN.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+			</classes>
+		</test>
+
+		<test name="CreateDraft">
+			<parameter name="ymlFile" value="ida/CreateDraft/CreateDraft.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
+			</classes>
+		</test>
+
+		<test name="GetDraft">
+			<parameter name="ymlFile" value="ida/GetDraft/GetDraft.yml" />
+			<parameter name="idKeyName" value="UIN" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
+			</classes>
+		</test>
+
+		<test name="CreateDraftVID">
+			<parameter name="ymlFile" value="ida/CreateDraftVID/CreateDraftVID.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			</classes>
+		</test>
+
+		<test name="UpdateDraft">
+			<parameter name="ymlFile" value="ida/UpdateDraft/UpdateDraft.yml" />
+			<parameter name="pathParams" value="registrationId" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.UpdateDraft" />
+			</classes>
+		</test>
+
+		<test name="PublishDraft">
+			<parameter name="ymlFile" value="ida/PublishDraft/PublishDraft.yml" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+			</classes>
+		</test>
+
+		<test name="GenerateVID">
+			<parameter name="ymlFile"
+				value="ida/GenerateVID/createGenerateVID.yml" />
+			<parameter name="idKeyName" value="vid" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
+			</classes>
+		</test>
+
+		<test name="DeactivateVIDs">
+			<parameter name="ymlFile" value="ida/DeactivateUin/DeactivateUin.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			</classes>
+		</test>
+
+		<test name="RevokeVID">
+			<parameter name="ymlFile"
+				value="ida/RevokeVID/createRevokeVID.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PatchWithBodyWithOtpGenerate" />
+			</classes>
+		</test>
+
+		<test name="AuthInternalLock">
+			<parameter name="ymlFile"
+				value="ida/AuthInternalLock/AuthInternalLock.yml" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+			</classes>
+		</test>
+
+		<test name="AuthLock">
+			<parameter name="ymlFile"
+				value="ida/AuthLock/createAuthLock.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
+			</classes>
+		</test>
+
+		<test name="ReactivateVIDs">
+			<parameter name="ymlFile"
+				value="ida/ReactivateVIDsForUIN/ReactivateVIDsForUIN.yml" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			</classes>
+		</test>
+
+		<test name="RegenerateVid">
+			<parameter name="ymlFile" value="ida/RegenerateVid/RegenerateVid.yml" />
+			<parameter name="idKeyName" value="vid" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.PostWithOnlyPathParam" />
+			</classes>
+		</test>
+
+		<test name="RetrieveAuthTypeStatus">
+			<parameter name="ymlFile"
+				value="ida/RetrieveAuthTypeStatus/RetrieveAuthTypeStatus.yml" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+			</classes>
+		</test>
+
+		<test name="RetrieveIdentityByUin">
+			<parameter name="ymlFile"
+				value="ida/RetrieveIdentityByUin/RetrieveIdentityByUin.yml" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+			</classes>
+		</test>
+
+		<test name="RetrieveVIDByUIN">
+			<parameter name="ymlFile"
+				value="ida/RetrieveVIDByUIN/RetrieveVIDByUIN.yml" />
+			<classes>
+				<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+			</classes>
+		</test>
+
+		<test name="GetUnusedUIN">
+			<parameter name="ymlFile" value="ida/GetUnusedUIN/getUnusedUIN.yml" />
+			<parameter name="idKeyName" value="uin" />
+			<classes>
+				<class
+					name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
+			</classes>
+		</test>
 
 
 </suite>

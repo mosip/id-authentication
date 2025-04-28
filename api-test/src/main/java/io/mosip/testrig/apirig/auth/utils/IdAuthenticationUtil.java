@@ -11,6 +11,7 @@ import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
@@ -82,6 +83,10 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		
 		if (jsonString.contains("$RID1$")) {
 			jsonString = replaceKeywordValue(jsonString, "$RID1$", genRid1);
+		}
+		
+		if (testCaseName.contains("auth_GenerateApiKey_")) {
+			KeycloakUserManager.createKeyCloakUsers(genPartnerName, genPartnerEmail, "AUTH_PARTNER");
 		}
 		
 		return jsonString;

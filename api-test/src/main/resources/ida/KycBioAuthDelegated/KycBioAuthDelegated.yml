@@ -1,0 +1,42 @@
+KycBioAuthDelegated:
+  auth_KycBioAuthDelegated_Face_With_Valid_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$ID:GenerateMispLK_All_Valid_Smoke_sid_licenseKey$​/$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$​/$ID:GenerateApiKey_Valid_Smoke_sid_apiKey$
+      uniqueIdentifier: TC_IDA_KycBioAuthDelegated_01
+      description: Perform delegated bio auth with face
+      role: resident
+      restMethod: post
+      inputTemplate: ida/KycBioAuthDelegated/DelegatedBioAuth
+      outputTemplate: ida/KycBioAuthDelegated/DelegatedBioAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "env": "Staging",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/KycBioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'

@@ -200,5 +200,13 @@
 		</classes>
 	</test>
 
+	<test name="KycBioAuthDelegated">
+		<parameter name="ymlFile" value="ida/KycBioAuthDelegated/KycBioAuthDelegated.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
 
 </suite>
