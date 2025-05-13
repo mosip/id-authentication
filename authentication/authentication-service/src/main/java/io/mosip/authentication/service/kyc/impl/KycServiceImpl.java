@@ -124,9 +124,6 @@ public class KycServiceImpl implements KycService {
 	private KycTokenDataRepository kycTokenDataRepo;
 
 	@Autowired
-	private OIDCClientDataRepository oidcClientDataRepo; 
-
-	@Autowired
 	private KycExchangeResponseDataHelper kycExchangeResponseDataHelper;
 	/**
 	 * Retrieve kyc info.

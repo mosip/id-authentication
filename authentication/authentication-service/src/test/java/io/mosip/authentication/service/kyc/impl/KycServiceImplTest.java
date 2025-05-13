@@ -61,6 +61,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 
 /**
@@ -139,7 +140,7 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
-		ReflectionTestUtils.setField(kycServiceImpl2, "cbeffUtil", new CbeffImpl());
+		ReflectionTestUtils.setField(kycServiceImpl2, "kycExchangeResponseDataHelper", new KycExchangeResponseDataHelper());
 
 		idInfo = getIdInfo("12232323121");
 
