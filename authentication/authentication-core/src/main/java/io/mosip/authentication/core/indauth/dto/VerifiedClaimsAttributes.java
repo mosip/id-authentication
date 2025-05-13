@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerifiedAttributes {
+public class VerifiedClaimsAttributes {
 
 	/** Variable to hold trustFramework */
 	private String trustFramework;
