@@ -487,6 +487,12 @@ public final class IdAuthCommonConstants {
 
 	public static final String VERIFIED_CLAIMS = "verified_claims";
 
+	public static final String VERIFICATION_PROCESS = "verification_process";
+
+	public static final String MAX_AGE = "max_age";
+
+	public static final String MATCHED_TRUST_FRAMEWORKS = "matched_trust_frameworks";
+
 	private IdAuthCommonConstants() {
 	}
 }
