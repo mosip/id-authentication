@@ -219,8 +219,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
 				entity.setToken(String.valueOf(data[4]));
 			}
-//HERE CHECKING UIN/VID IS DEACTIVATE OR BLOCKED BASED ON EXPIRY TIMESTAMP IF EXPIRY TIMESTAMP IS IN PAST MEANS
-			//expired/deactivated/revoked/blocked AND THROW EXCEPTION
+
 			if (Objects.nonNull(entity.getExpiryTimestamp())
 					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
