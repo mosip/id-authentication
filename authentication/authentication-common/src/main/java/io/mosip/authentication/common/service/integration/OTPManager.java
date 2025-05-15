@@ -240,22 +240,37 @@ public class OTPManager {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
-		String otpHash;
-		otpHash = IdAuthSecurityManager.digestAsPlainText(
+
+
+	public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
+		String otpHash = IdAuthSecurityManager.digestAsPlainText(
 				(otpKey + environment.getProperty(IdAuthConfigKeyConstants.KEY_SPLITTER) + pinValue).getBytes());
-		Optional<OtpTransaction> otpTxnOpt = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-		if (otpTxnOpt.isPresent()) {
-			OtpTransaction otpTxn = otpTxnOpt.get();
-			//OtpTransaction otpTxn = otpRepo.findByOtpHashAndStatusCode(otpHash, IdAuthCommonConstants.ACTIVE_STATUS);
-			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-			otpRepo.save(otpTxn);
-			if (otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-				return true;
-			} else {
+
+		// Hash the individualId to use as the reference ID
+		String refIdHash = securityManager.hash(individualId);
+
+		// Fetch the latest OTP transaction based on hashed ref ID
+		Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndCrDtimesNotNullOrderByCrDtimesDesc(
+				refIdHash, IdAuthCommonConstants.ACTIVE_STATUS);
+
+		if (otpEntityOpt.isPresent()) {
+			OtpTransaction otpTxn = otpEntityOpt.get();
+
+			// Check if OTP is expired first
+			if (!otpTxn.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+			}
+
+			// Now validate the OTP hash
+			if (otpTxn.getOtpHash().equals(otpHash)) {
+				otpTxn.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			otpTxn.setStatusCode(IdAuthCommonConstants.USED_STATUS);
+			otpRepo.save(otpTxn);
+				return true;
+			} else {
+				return false;
 			}
 		} else {
 			return false;
