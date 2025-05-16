@@ -295,7 +295,7 @@ public class OTPManagerTest {
 		responseMap.put("response", valuemap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, valuemap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test
@@ -310,7 +310,7 @@ public class OTPManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response1);
-		boolean expactedOTP = otpManager.validateOtp("Test123", "123456");
+		boolean expactedOTP = otpManager.validateOtp("Test123", "123456","814879061528");
 		assertTrue(expactedOTP);
 	}
 
@@ -325,7 +325,7 @@ public class OTPManagerTest {
 		valueMap.put("status", "failure");
 		valueMap.put("message", "Validation_Unsuccessful");
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(valueMap);
-		boolean expactedOTP = otpManager.validateOtp("Test123", "123456");
+		boolean expactedOTP = otpManager.validateOtp("Test123", "123456","814879061528");
 		assertFalse(expactedOTP);
 	}
 
@@ -345,7 +345,7 @@ public class OTPManagerTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, response));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -365,7 +365,7 @@ public class OTPManagerTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, response));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -385,7 +385,7 @@ public class OTPManagerTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, responseMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -404,7 +404,7 @@ public class OTPManagerTest {
 		RestServiceException restServiceException = new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, responseMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -423,14 +423,14 @@ public class OTPManagerTest {
 		RestServiceException restServiceException = new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, responseMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestDataValidationException() throws IdAuthenticationBusinessException {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenThrow(new IDDataValidationException());
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -498,7 +498,7 @@ public class OTPManagerTest {
 
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, valueMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -532,7 +532,7 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
-			otpManager.validateOtp("Test123", "123456");
+			otpManager.validateOtp("Test123", "123456","814879061528");
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), ex.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorMessage(), ex.getErrorText());
@@ -552,7 +552,7 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
-			otpManager.validateOtp("Test123", "123456");
+			otpManager.validateOtp("Test123", "123456","814879061528");
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), ex.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(), ex.getErrorText());
@@ -573,7 +573,7 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
-			otpManager.validateOtp("Test123", "123456");
+			otpManager.validateOtp("Test123", "123456","814879061528");
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), ex.getErrorCode());
 			assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage(), ex.getErrorText());
@@ -593,7 +593,7 @@ public class OTPManagerTest {
 		responseMap.put("response", valueMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -618,7 +618,7 @@ public class OTPManagerTest {
 		responseMap.put("response", valueMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, responseMap.toString(), (Object) responseMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -633,7 +633,7 @@ public class OTPManagerTest {
 		responseMap.put("response", valueMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -647,7 +647,7 @@ public class OTPManagerTest {
 		responseMap.put("response", valueMap);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 
 	}
 
@@ -702,7 +702,7 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE,
 						new ObjectMapper().writeValueAsString(valueMap), valueMap));
-		otpManager.validateOtp("Test123", "123456");
+		otpManager.validateOtp("Test123", "123456","814879061528");
 
 	}
 
