@@ -33,8 +33,15 @@ public class VerificationProcessSpec implements VerifiedClaimsSpec<String, Map<S
 
     private Object trustFramework;
 
-    public VerificationProcessSpec(String reqVerificationProcess, Object trustFramework) {
-        this.reqVerificationProcess = reqVerificationProcess;
+    public VerificationProcessSpec(Object reqVerificationProcess, Object trustFramework) {
+        if (reqVerificationProcess == null) {
+            this.reqVerificationProcess = null;
+        }
+        else {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> reqVerificationProcessMap = (Map<String, Object>) reqVerificationProcess;
+            this.reqVerificationProcess = getRequestVerificationProcess(reqVerificationProcessMap).get(0);
+        }
         this.trustFramework = trustFramework;
     }
 
@@ -57,8 +64,8 @@ public class VerificationProcessSpec implements VerifiedClaimsSpec<String, Map<S
             LocalDateTime matchedTime = (LocalDateTime) respVerificationMap.get(VERIFIED_ATTRIB_TIME);
 
             VerifiedClaimsAttributes matchedVerifiedClaimsAttributes = dbVerifiedClaimsAttribsList.stream()
-                                                                                       .filter(v -> v.getTrustFramework().equals(matchedTrustFramework) &&
-                                                                                                    v.getTime().equals(matchedTime))
+                                                                                       .filter(v -> v.getTrustFramework().equals(matchedTrustFramework) && 
+                                                                                                    (matchedTime == null || v.getTime().equals(matchedTime)))
                                                                                        .findFirst()
                                                                                        .orElse(null);
             if (matchedVerifiedClaimsAttributes != null && matchedVerifiedClaimsAttributes.getVerificationProcess() != null) {
@@ -110,22 +117,39 @@ public class VerificationProcessSpec implements VerifiedClaimsSpec<String, Map<S
         }
 
         List<Entry<String, LocalDateTime>> matchedTrustFrameworks = (List<Entry<String, LocalDateTime>>) respVerificationMap.get(MATCHED_TRUST_FRAMEWORKS);
-        
-        VerifiedClaimsAttributes matchedVerificationProcess = matchedVerificationProcessList.stream()
-            .filter(verificationProcess -> matchedTrustFrameworks.stream()
-                .anyMatch(trustFramework -> 
-                    verificationProcess.getTrustFramework().equals(trustFramework.getKey()) &&
-                    verificationProcess.getTime().equals(trustFramework.getValue())
-                ))
-            .findFirst()
-            .orElse(null);
-        
-        if (matchedVerificationProcess == null) {
-            return null;
+        if (matchedTrustFrameworks != null) {
+            VerifiedClaimsAttributes matchedVerificationProcess = matchedVerificationProcessList.stream()
+                .filter(verificationProcess -> matchedTrustFrameworks.stream()
+                    .anyMatch(trustFramework -> 
+                        verificationProcess.getTrustFramework().equals(trustFramework.getKey()) &&
+                        verificationProcess.getTime().equals(trustFramework.getValue())
+                    ))
+                .findFirst()
+                .orElse(null);
+            
+            if (matchedVerificationProcess == null) {
+                return null;
+            }
+            respVerificationMap.put(TRUST_FRAMEWORK, matchedVerificationProcess.getTrustFramework());
+            respVerificationMap.put(VERIFIED_ATTRIB_TIME, matchedVerificationProcess.getTime());
+            return matchedVerificationProcess.getVerificationProcess();
         }
-        respVerificationMap.put(TRUST_FRAMEWORK, matchedVerificationProcess.getTrustFramework());
-        respVerificationMap.put(VERIFIED_ATTRIB_TIME, matchedVerificationProcess.getTime());
-        return matchedVerificationProcess.getVerificationProcess();
+        // matching with the trust framework chosen in the trust framework spec
+        String matchedTrustFramework = (String) respVerificationMap.get(TRUST_FRAMEWORK);
+        VerifiedClaimsAttributes matchedVerificationProcess = matchedVerificationProcessList.stream()
+                                                                                        .filter(v -> v.getTrustFramework().equals(matchedTrustFramework))
+                                                                                        .findFirst()
+                                                                                        .orElse(null);
+        if (matchedVerificationProcess != null) {
+            respVerificationMap.put(TRUST_FRAMEWORK, matchedVerificationProcess.getTrustFramework());
+            return matchedVerificationProcess.getVerificationProcess();
+        }
+        // 'matchedVerificationProcessList' already contains list of verification process matched with required trust framework
+        // So, returning the first verification process from the list
+        VerifiedClaimsAttributes firstVerificationProcess = matchedVerificationProcessList.get(0);
+        respVerificationMap.put(TRUST_FRAMEWORK, firstVerificationProcess.getTrustFramework());
+        return firstVerificationProcess.getVerificationProcess();
+
          /*  // Scenario 1: If the verification process is not found in the database, return null
         if (matchedVerificationProcessList.isEmpty()) {
             return null;
@@ -150,4 +174,11 @@ public class VerificationProcessSpec implements VerifiedClaimsSpec<String, Map<S
         return matchedVerificationProcess.getVerificationProcess(); */
     }
     
+    @SuppressWarnings("unchecked")
+	private List<String> getRequestVerificationProcess(Map<String, Object> verificationProcessMap) {
+		if (verificationProcessMap.containsKey(VERIFICATION_VALUE)) {
+			return Collections.singletonList((String) verificationProcessMap.get(VERIFICATION_VALUE));
+		}
+		return new ArrayList<>((List<String>) verificationProcessMap.get(VERIFICATION_VALUES));
+	}
 }

@@ -93,7 +93,7 @@ public class ExchangeDataAttributesUtil {
 	@SuppressWarnings("unchecked")
 	public List<String> getVerifiedClaimsList(List<Map<String, Object>> reqVerifiedClaims) {
 		
-		return reqVerifiedClaims.stream()
+		return reqVerifiedClaims == null ? List.of() : reqVerifiedClaims.stream()
 								.map(elem -> elem.get(IdAuthCommonConstants.CLAIMS))        
 								.filter(claim -> claim instanceof Map)           
 								.flatMap(claim -> ((Map<String, ?>) claim).keySet().stream()) 
