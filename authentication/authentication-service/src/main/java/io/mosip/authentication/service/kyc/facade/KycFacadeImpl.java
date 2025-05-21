@@ -575,7 +575,7 @@ public class KycFacadeImpl implements KycFacade {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
 												"UnVerifiedConsentClaims List:" + unVerifiedConsentClaims);
 			List<String> verifiedConsentClaims = exchangeDataAttributesUtil.getVerifiedClaimsList(
-														kycExchangeRequestDTOV2.getVerifiedClaims());
+														kycExchangeRequestDTOV2.getVerifiedConsentedClaims());
 
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
 												"VerifiedConsentClaims List:" + verifiedConsentClaims);
