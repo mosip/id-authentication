@@ -172,10 +172,10 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"buildVerifiedClaimsMap", "OIDC Client Allowed Verified Claims: " + oidcClientAllowedVerifiedClaims);
 		try {
-			verifiedClaimArray.forEach(claim -> {
+			for (Object claim : verifiedClaimArray) {
 				JSONObject verifiedClaim = (JSONObject) claim;
 				JSONArray claimsArr = verifiedClaim.getJSONArray(CLAIMS);
-				claimsArr.forEach(attributeName -> {
+				for (Object attributeName : claimsArr) {
 					if (attributeName instanceof String) {
 						String attributeNameStr = (String) attributeName;
 						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
@@ -197,9 +197,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 								verifiedClaimsMap.put(claimName, metadataLst);
 							}
 						}
-					} 
-				});
-			});
+					}
+				}
+			}
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMap", "Error processing verified claims: " + e.getMessage(), e);
