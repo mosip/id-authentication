@@ -171,35 +171,39 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 				"buildVerifiedClaimsMap", "ID Attribs Map: " + idAttribsMap);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"buildVerifiedClaimsMap", "OIDC Client Allowed Verified Claims: " + oidcClientAllowedVerifiedClaims);
-
-		verifiedClaimArray.forEach(claim -> {
-			JSONObject verifiedClaim = (JSONObject) claim;
-			JSONArray claimsArr = verifiedClaim.getJSONArray(CLAIMS);
-			claimsArr.forEach(attributeName -> {
-				if (attributeName instanceof String) {
-					String attributeNameStr = (String) attributeName;
-					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-							"buildVerifiedClaimsMap", "Attribute Name: " + attributeNameStr);
-					if (idAttribsMap.containsKey(attributeNameStr)) {
-						String claimName = idAttribsMap.get(attributeNameStr);
+		try {
+			verifiedClaimArray.forEach(claim -> {
+				JSONObject verifiedClaim = (JSONObject) claim;
+				JSONArray claimsArr = verifiedClaim.getJSONArray(CLAIMS);
+				claimsArr.forEach(attributeName -> {
+					if (attributeName instanceof String) {
+						String attributeNameStr = (String) attributeName;
 						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-								"buildVerifiedClaimsMap", "Claim Name: " + claimName);
-						List<Object> metadataLst = (List<Object>) verifiedClaimsMap.get(claimName);
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-								"buildVerifiedClaimsMap", "Metadata List: " + metadataLst);
-						Map<String, Object> metadata = ((JSONObject)verifiedClaim.get(METADATA)).toMap();	
-						if (Objects.isNull(metadataLst)){
-							metadataLst = new ArrayList<>();
-							metadataLst.add(metadata);
-							verifiedClaimsMap.put(claimName, metadataLst);
-						} else {
-							metadataLst.add(metadata);
-							verifiedClaimsMap.put(claimName, metadataLst);
+								"buildVerifiedClaimsMap", "Attribute Name: " + attributeNameStr);
+						if (idAttribsMap.containsKey(attributeNameStr)) {
+							String claimName = idAttribsMap.get(attributeNameStr);
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+									"buildVerifiedClaimsMap", "Claim Name: " + claimName);
+							List<Object> metadataLst = (List<Object>) verifiedClaimsMap.get(claimName);
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+									"buildVerifiedClaimsMap", "Metadata List: " + metadataLst);
+							Map<String, Object> metadata = ((JSONObject)verifiedClaim.get(METADATA)).toMap();	
+							if (Objects.isNull(metadataLst)){
+								metadataLst = new ArrayList<>();
+								metadataLst.add(metadata);
+								verifiedClaimsMap.put(claimName, metadataLst);
+							} else {
+								metadataLst.add(metadata);
+								verifiedClaimsMap.put(claimName, metadataLst);
+							}
 						}
-					}
-				} 
+					} 
+				});
 			});
-		});
+		} catch (Exception e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"buildVerifiedClaimsMap", "Error processing verified claims: " + e.getMessage(), e);
+		}
 		return verifiedClaimsMap;
 	}
 
