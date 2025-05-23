@@ -1,2 +1,3 @@
 ##### JIRA number;testcase 
+#for example 
 #MOSIP-12456------Mimoto_AddIdentity_Binding_smoke_Pos

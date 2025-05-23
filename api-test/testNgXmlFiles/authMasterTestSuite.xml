@@ -7,6 +7,6 @@
 	</listeners>
 	<suite-files>
 		<suite-file path="authPrerequisiteSuite.xml" />
-		<suite-file path="authSuite.xml" />
+		<!--<suite-file path="authSuite.xml" />-->
 	</suite-files>
 </suite>

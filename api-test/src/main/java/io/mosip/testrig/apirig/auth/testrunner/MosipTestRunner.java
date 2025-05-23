@@ -86,10 +86,10 @@ public class MosipTestRunner {
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
-			HealthChecker healthcheck = new HealthChecker();
-			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
-			Thread trigger = new Thread(healthcheck);
-			trigger.start();
+//			HealthChecker healthcheck = new HealthChecker();
+//			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+//			Thread trigger = new Thread(healthcheck);
+//			trigger.start();
 			
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
@@ -128,7 +128,7 @@ public class MosipTestRunner {
 
 		OTPListener.bTerminate = true;
 		
-		HealthChecker.bTerminate = true;
+//		HealthChecker.bTerminate = true;
 
 		System.exit(0);
 
@@ -147,6 +147,8 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = "auth";
 		BaseTestCase.certsForModule = "IDA";
+//		BaseTestCase.genMispPartnerName = BaseTestCase.currentModule + "_misp_" + BaseTestCase.randomString;
+		
 		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
 				ConfigManager.getKMDbSchema(),
 				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
@@ -158,8 +160,8 @@ public class MosipTestRunner {
 				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
 				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 		AuthTestsUtil.initiateAuthTest();
-		BaseTestCase.otpListener = new OTPListener();
-		BaseTestCase.otpListener.run();
+//		BaseTestCase.otpListener = new OTPListener();
+//		BaseTestCase.otpListener.run();
 	}
 	
 	

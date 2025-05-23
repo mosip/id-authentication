@@ -1,0 +1,17 @@
+GenerateMispLK:
+   auth_GenerateMispLK_All_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/misps
+      uniqueIdentifier: Dependent_Idrepo_GenerateMispLK_01
+      description: Generate MispLk all valid details
+      role: partner
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/GenerateMispLK/GenerateMispLK
+      outputTemplate: ida/PmsIntegration/GenerateMispLK/GenerateMispLKResult
+      input: '{
+    "providerId": "$ID:PartnerSelfRegistration_Misp_Valid_Smoke_sid_partnerId$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+      
+}'
