@@ -16,13 +16,6 @@ import io.mosip.kernel.core.websub.model.EventModel;
 public interface CredentialStoreService {
 
 	/**
-	 * Store identity entity.
-	 *
-	 * @param idEntities the id entities
-	 */
-	public void storeIdentityEntity(List<? extends IdentityEntity> idEntities);
-
-	/**
 	 * Store event model.
 	 *
 	 * @param eventModel the event model
