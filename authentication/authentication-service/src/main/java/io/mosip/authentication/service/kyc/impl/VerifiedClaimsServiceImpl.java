@@ -257,6 +257,17 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		// Eg: "firstName" -> [VerifiedClaimsAttributes]
 		Map<String, List<VerifiedClaimsAttributes>> verifiedClaimsDBAttributesMap = getVerifiedClaimsAttributesMap(idInfo);
 
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Verified Claims DB Attributes Map: " + 
+												verifiedClaimsDBAttributesMap);
+
+
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Verified Consented Claims Request: " + 
+												kycExchangeRequestDTOV2.getVerifiedConsentedClaims());
+
 		int counter = 1;
 		for (Map<String, Object> reqVerifiedClaim: Optional.ofNullable(kycExchangeRequestDTOV2.getVerifiedConsentedClaims())
 														   .orElse(Collections.emptyList())) {
@@ -266,6 +277,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 											"Processing Verified claim object Seq: " + (counter++));
 			
 			Map<String, Object> reqVerificationMap = (Map<String, Object>) reqVerifiedClaim.get(VERIFICATION);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+										"buildKycExchangeResponseV2",
+											"reqVerificationMap: " + reqVerificationMap);
 			if (Objects.nonNull(reqVerificationMap)) {
 				// Scenario 1: trust framework object(key) is not available, not adding the requested claims
 				if (!reqVerificationMap.containsKey(TRUST_FRAMEWORK) || 
@@ -277,7 +291,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 				}
 
 				Map<String, Object> reqClaimsMap = (Map<String, Object>) reqVerifiedClaim.get(CLAIMS);
-				
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"buildKycExchangeResponseV2",
+												"Processing claim in Scenario 2. reqClaimsMap: " + reqClaimsMap);
 				reqClaimsMap.keySet().stream().forEach(claim -> {
 					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 											"buildKycExchangeResponseV2",
@@ -371,7 +387,12 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 							// Get all available languages from idInfo for the given attribute
 							// Filter mappedConsentedLocales to only include languages available in idInfo
 							Map<String, String> filteredLocales = filterMappedConsentedLocales(mappedConsentedLocales, idSchemaAttribute, idInfo);
-							
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"addUnverifiedConsentedClaims",
+												"Verified Claims idSchemaAttribute: " + idSchemaAttribute);
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"addUnverifiedConsentedClaims",
+											   "Verified Claims attrib: " + attrib);
 							if (filteredLocales.size() > 0) {
 								kycExchangeResponseDataHelper.addEntityDataForLangCodes(filteredLocales, idInfo, respMap, attrib, idSchemaAttribute);
 							}
