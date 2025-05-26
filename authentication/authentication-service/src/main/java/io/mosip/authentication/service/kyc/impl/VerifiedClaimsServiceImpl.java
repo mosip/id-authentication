@@ -12,6 +12,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFI
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_ATTRIB_TIME;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ADDRESS_FORMATTED;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -28,18 +29,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.OIDCClientData;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
 import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -50,7 +49,6 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.VerifiedClaimsAttributes;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.service.VerifiedClaimsService;
 import io.mosip.authentication.core.spi.indauth.specs.VerifiedClaimsSpec;
 import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
@@ -58,7 +56,6 @@ import io.mosip.authentication.service.kyc.specs.MaxAgeTimeSpec;
 import io.mosip.authentication.service.kyc.specs.TrustFrameworkSpec;
 import io.mosip.authentication.service.kyc.specs.VerificationProcessSpec;
 import io.mosip.authentication.service.kyc.util.LocaleMappingUtil;
-import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -151,8 +148,15 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 					"buildVerifiedClaimsMetadata", "Verified Claims data found for the id.");
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMetadata", "Verified Claims metadata in DB: " + verifiedClaimsData);
-		JSONArray verifiedClaimArray = new JSONArray(verifiedClaimsData);
-		Map<String, Object> verifiedClaimsMap = buildVerifiedClaimsMap(verifiedClaimArray, oidcClientAllowedVerifiedClaims);
+		List<Map<String, Object>> verifiedClaimsList = null;
+		try {
+			verifiedClaimsList = mapper.readValue(verifiedClaimsData, 
+									new TypeReference<List<Map<String, Object>>>() {});
+		} catch (JsonProcessingException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"buildVerifiedClaimsMetadata", "Error parsing verified claims data: " + e.getMessage(), e);
+		}
+		Map<String, Object> verifiedClaimsMap = buildVerifiedClaimsMap(verifiedClaimsList, oidcClientAllowedVerifiedClaims);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"buildVerifiedClaimsMetadata", "Verified Claims Map: " + verifiedClaimsMap);
 
@@ -164,42 +168,33 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> buildVerifiedClaimsMap(JSONArray verifiedClaimArray, List<String> oidcClientAllowedVerifiedClaims) {
+	private Map<String, Object> buildVerifiedClaimsMap(List<Map<String, Object>> verifiedClaimsList, 
+					List<String> oidcClientAllowedVerifiedClaims) {
+
 		Map<String, Object> verifiedClaimsMap = new HashMap<>();
+
+		if (verifiedClaimsList == null) {
+			return verifiedClaimsMap;
+		}
+		
 		Map<String, String> idAttribsMap = getIdAttribsMap(oidcClientAllowedVerifiedClaims);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"buildVerifiedClaimsMap", "ID Attribs Map: " + idAttribsMap);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"buildVerifiedClaimsMap", "OIDC Client Allowed Verified Claims: " + oidcClientAllowedVerifiedClaims);
 		try {
-			for (Object claim : verifiedClaimArray) {
-				JSONObject verifiedClaim = (JSONObject) claim;
-				JSONArray claimsArr = verifiedClaim.getJSONArray(CLAIMS);
-				for (Object attributeName : claimsArr) {
-					if (attributeName instanceof String) {
-						String attributeNameStr = (String) attributeName;
-						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-								"buildVerifiedClaimsMap", "Attribute Name: " + attributeNameStr);
-						if (idAttribsMap.containsKey(attributeNameStr)) {
-							String claimName = idAttribsMap.get(attributeNameStr);
-							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-									"buildVerifiedClaimsMap", "Claim Name: " + claimName);
-							List<Object> metadataLst = (List<Object>) verifiedClaimsMap.get(claimName);
-							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-									"buildVerifiedClaimsMap", "Metadata List: " + metadataLst);
-							Map<String, Object> metadata = ((JSONObject)verifiedClaim.get(METADATA)).toMap();	
-							if (Objects.isNull(metadataLst)){
-								metadataLst = new ArrayList<>();
-								metadataLst.add(metadata);
-								verifiedClaimsMap.put(claimName, metadataLst);
-							} else {
-								metadataLst.add(metadata);
-								verifiedClaimsMap.put(claimName, metadataLst);
-							}
-						}
-					}
-				}
-			}
+			verifiedClaimsList.stream()
+				.forEach(verifiedClaim -> {
+					List<String> claims = (List<String>) verifiedClaim.get(CLAIMS);
+					claims.stream()
+						.filter(attributeName -> idAttribsMap.containsKey(attributeName))
+						.forEach(attributeName -> {
+							String claimName = idAttribsMap.get(attributeName);
+							List<Object> metadataLst = (List<Object>) verifiedClaimsMap.computeIfAbsent(claimName, k -> new ArrayList<>());
+							Map<String, Object> metadata = (Map<String, Object>) verifiedClaim.get(METADATA);
+							metadataLst.add(metadata);
+						});
+				});
 		} catch (Exception e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMap", "Error processing verified claims: " + e.getMessage(), e);
@@ -290,7 +285,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 					try {
 						// "identityDataMap" contains identity data for the claim		
 						// Eg: "name" -> "John Smith Jr", "name#en" -> "John Smith Jr", "name#fr" -> "Jean Smithe Jr"
-						Map<String, String> identityDataMap = getIdentityDataForClaim(claim, idInfo, uniqueConsentedLocales);
+						Map<String, ?> identityDataMap = getIdentityDataForClaim(claim, idInfo, uniqueConsentedLocales);
 						List<VerifiedClaimsSpec<?,?>> verificationRequestSpecs = getVerificationRequestSpecs(reqVerificationMap);
 						List<VerifiedClaimsAttributes> verifiedClaimsAttributes = getVerifiedClaimsAttributes(claim, verifiedClaimsDBAttributesMap);		
 						Map<String, Object> respVerificationMap = new HashMap<>();
@@ -408,6 +403,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, List<VerifiedClaimsAttributes>> getVerifiedClaimsAttributesMap(Map<String, List<IdentityInfoDTO>> idInfo) {
 		Map<String, List<VerifiedClaimsAttributes>> verifiedClaimsAttributesMap = new HashMap<>();
 		List<IdentityInfoDTO> verifiedClaimsIdentInfoList = idInfo.get(VERIFIED_CLAIMS_ATTRIBS);
@@ -416,25 +412,30 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		if (verifiedClaimsIdentInfoList == null)
 			return verifiedClaimsAttributesMap;
 
-		JSONArray verifiedClaimsArray = new JSONArray(verifiedClaimsIdentInfoList.get(0).getValue());
+		List<Map<String, Object>> verifiedClaimsList = null;
+		try {
+			verifiedClaimsList = mapper.readValue(verifiedClaimsIdentInfoList.get(0).getValue(), 
+									new TypeReference<List<Map<String, Object>>>() {});
+		} catch (JsonProcessingException e) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+					"getVerifiedClaimsAttributesMap", "Error parsing verified claims data: " + e.getMessage(), e);
+		}
 
-		verifiedClaimsArray.forEach(verifiedClaim -> {
-			JSONObject verifiedClaimObj = (JSONObject) verifiedClaim;
-			JSONArray claimsArr = verifiedClaimObj.getJSONArray(CLAIMS);
-			claimsArr.forEach(attributeName -> {
-				if (attributeName instanceof String) {
-					String attributeNameStr = (String) attributeName;
-					List<VerifiedClaimsAttributes> verifiedAttribsList = verifiedClaimsAttributesMap.get(attributeNameStr);
-					Map<String, Object> metadata = ((JSONObject)verifiedClaimObj.get(METADATA)).toMap();
+		if (verifiedClaimsList == null)
+			return verifiedClaimsAttributesMap;
 
-					VerifiedClaimsAttributes verifiedAttribs = buildVerifiedAttributes(metadata);
-					if (verifiedAttribs != null) {
-						if (Objects.isNull(verifiedAttribsList)) {
-							verifiedAttribsList = new ArrayList<>();
-						}
-						verifiedAttribsList.add(verifiedAttribs);
-						verifiedClaimsAttributesMap.put(attributeNameStr, verifiedAttribsList);
+		verifiedClaimsList.forEach(verifiedClaim -> {
+			List<String> claims  =  (List<String>) verifiedClaim.get(CLAIMS);
+			claims.forEach(attributeName -> {
+				List<VerifiedClaimsAttributes> verifiedAttribsList = verifiedClaimsAttributesMap.get(attributeName);
+				Map<String, Object> metadata = (Map<String, Object>)verifiedClaim.get(METADATA);
+				VerifiedClaimsAttributes verifiedAttribs = buildVerifiedAttributes(metadata);
+				if (verifiedAttribs != null) {
+					if (Objects.isNull(verifiedAttribsList)) {
+						verifiedAttribsList = new ArrayList<>();
 					}
+					verifiedAttribsList.add(verifiedAttribs);
+					verifiedClaimsAttributesMap.put(attributeName, verifiedAttribsList);
 				} 
 			});
 		});
@@ -523,12 +524,14 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	}
 
 
-	private Map<String, String> getIdentityDataForClaim(String claim, Map<String, List<IdentityInfoDTO>> idInfo, 
+	private Map<String, ?> getIdentityDataForClaim(String claim, Map<String, List<IdentityInfoDTO>> idInfo, 
 					Set<String> uniqueConsentedLocales) throws IdAuthenticationBusinessException {
 
 		List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(claim);
-		
-		Map<String, String> identityDataMap = new HashMap<>();
+
+		if (claim.equalsIgnoreCase(consentedAddressAttributeName)) {
+			return processLanguageSpecificAttributes(idSchemaAttributes, idInfo, uniqueConsentedLocales, claim);
+		}
 		
 		// First handle attributes with null language
 		String attribDataNoLang = idSchemaAttributes.stream()
@@ -541,19 +544,20 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 				.orElse(""))
 			.filter(value -> !value.isEmpty())
 			.collect(Collectors.joining(" "));
-			
+		
 		if (!attribDataNoLang.isEmpty()) {
+			Map<String, String> identityDataMap = new HashMap<>();	
 			identityDataMap.put(claim, attribDataNoLang);
 			return identityDataMap;
 		}
-		
+
 		return processLanguageSpecificAttributes(idSchemaAttributes, idInfo, uniqueConsentedLocales, claim);
 	}
 
-	private Map<String, String> processLanguageSpecificAttributes(List<String> idSchemaAttributes, Map<String, List<IdentityInfoDTO>> idInfo, 
+	private Map<String, ?> processLanguageSpecificAttributes(List<String> idSchemaAttributes, Map<String, List<IdentityInfoDTO>> idInfo, 
 			Set<String> uniqueConsentedLocales, String claim) {
 
-		Map<String, String> identityDataMap = new HashMap<>();
+		Map<String, Object> identityDataMap = new HashMap<>();
 		// Get available languages from identity data and filter based on consented locales
         Set<String> availableLanguages = idSchemaAttributes.stream()
             .map(idInfo::get)
@@ -569,7 +573,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
                 .map(idAttr -> idInfo.get(idAttr))
                 .filter(Objects::nonNull)
                 .map(idInfoList -> idInfoList.stream()
-                    .filter(info -> language.equals(info.getLanguage()))
+                    .filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
                     .map(IdentityInfoDTO::getValue)
                     .findFirst()
                     .orElse(""))
@@ -579,12 +583,14 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
             if (!attribData.isEmpty()) {
                 // Add default name if not already added
                 if (!identityDataMap.containsKey(claim)) {
-                    identityDataMap.put(claim, attribData);
+                    identityDataMap.put(claim, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
+									Collections.singletonMap(ADDRESS_FORMATTED, attribData) : attribData);
                 }
                 
                 // Add language specific name
                 String shortLangCode = language.substring(0, 2).toLowerCase();
-                identityDataMap.put(claim + "#" + shortLangCode, attribData);
+                identityDataMap.put(claim + "#" + shortLangCode, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
+					Collections.singletonMap(ADDRESS_FORMATTED  + "#" + shortLangCode, attribData) : attribData);
             }
         });
 
@@ -592,7 +598,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	}
 
 	private void addVerifiedClaimsToResponse(List<Map<String, Object>> verifiedClaimsRespLst, Map<String, Object> respVerificationMap, 
-					String claim, Map<String, String> identityDataMap, Map<String, String> mappedConsentedShortLocales) {
+					String claim, Map<String, ?> identityDataMap, Map<String, String> mappedConsentedShortLocales) {
 
 		// just making sure that the matched trust frameworks are not added to the response
 		respVerificationMap.remove(MATCHED_TRUST_FRAMEWORKS);
@@ -641,7 +647,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	
 	@SuppressWarnings("unchecked")
 	private boolean checkAndAddVerifiedClaimsResp(List<Map<String, Object>> verifiedClaimsRespLst, Map<String, Object> respVerificationMap, 
-					String claim, Map<String, String> identityDataMap) {
+					String claim, Map<String, ?> identityDataMap) {
 		final List<Boolean> addedClaims = new ArrayList<>();	
 		verifiedClaimsRespLst.stream()
 			.filter(verifiedClaimsResp -> {
