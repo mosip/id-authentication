@@ -72,29 +72,14 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(VerifiedClaimsServiceImpl.class);	
 
-	@Value("${ida.idp.consented.picture.attribute.name:picture}")
-	private String consentedFaceAttributeName;
-
 	@Value("${ida.idp.consented.address.attribute.name:address}")
 	private String consentedAddressAttributeName;
-
-	@Value("${ida.idp.consented.name.attribute.name:name}")
-	private String consentedNameAttributeName;
 
 	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
 	private String consentedIndividualAttributeName;
 
-	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
-	private String consentedPictureAttributePrefix;
-
 	@Value("${mosip.ida.idp.consented.address.subset.attributes:}")
 	private String[] addressSubsetAttributes;
-
-	@Value("${ida.idp.consented.address.value.separator: }")
-	private String addressValueSeparator;
-	
-	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
-	private boolean sendFaceAsCbeffXml;
 
 	@Value("${ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
@@ -257,17 +242,6 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		// Eg: "firstName" -> [VerifiedClaimsAttributes]
 		Map<String, List<VerifiedClaimsAttributes>> verifiedClaimsDBAttributesMap = getVerifiedClaimsAttributesMap(idInfo);
 
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-											"buildKycExchangeResponseV2",
-												"Verified Claims DB Attributes Map: " + 
-												verifiedClaimsDBAttributesMap);
-
-
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-											"buildKycExchangeResponseV2",
-												"Verified Consented Claims Request: " + 
-												kycExchangeRequestDTOV2.getVerifiedConsentedClaims());
-
 		int counter = 1;
 		for (Map<String, Object> reqVerifiedClaim: Optional.ofNullable(kycExchangeRequestDTOV2.getVerifiedConsentedClaims())
 														   .orElse(Collections.emptyList())) {
@@ -277,9 +251,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 											"Processing Verified claim object Seq: " + (counter++));
 			
 			Map<String, Object> reqVerificationMap = (Map<String, Object>) reqVerifiedClaim.get(VERIFICATION);
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-										"buildKycExchangeResponseV2",
-											"reqVerificationMap: " + reqVerificationMap);
+	
 			if (Objects.nonNull(reqVerificationMap)) {
 				// Scenario 1: trust framework object(key) is not available, not adding the requested claims
 				if (!reqVerificationMap.containsKey(TRUST_FRAMEWORK) || 
@@ -291,9 +263,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 				}
 
 				Map<String, Object> reqClaimsMap = (Map<String, Object>) reqVerifiedClaim.get(CLAIMS);
-				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-											"buildKycExchangeResponseV2",
-												"Processing claim in Scenario 2. reqClaimsMap: " + reqClaimsMap);
+				
 				reqClaimsMap.keySet().stream().forEach(claim -> {
 					mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 											"buildKycExchangeResponseV2",
@@ -383,18 +353,19 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 						respMap.put(attrib, idVid);		
 					} else {
 						try {
+							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"addUnverifiedConsentedClaims",
+												"UnVerified Claims Attribute: " + attrib);
 							List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
 							// Get all available languages from idInfo for the given attribute
 							// Filter mappedConsentedLocales to only include languages available in idInfo
 							Map<String, String> filteredLocales = filterMappedConsentedLocales(mappedConsentedLocales, idSchemaAttribute, idInfo);
-							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-											"addUnverifiedConsentedClaims",
-												"Verified Claims idSchemaAttribute: " + idSchemaAttribute);
-							mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-											"addUnverifiedConsentedClaims",
-											   "Verified Claims attrib: " + attrib);
 							if (filteredLocales.size() > 0) {
 								kycExchangeResponseDataHelper.addEntityDataForLangCodes(filteredLocales, idInfo, respMap, attrib, idSchemaAttribute);
+							} else {
+								// if no languages are available, adding the attribute to the response with identity value
+								// Eg: phone number, email, etc.
+								kycExchangeResponseDataHelper.addEntityDataForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
 							}
 						} catch (IdAuthenticationBusinessException ex) {
 							mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
@@ -576,7 +547,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	}
 
 	private Map<String, ?> processLanguageSpecificAttributes(List<String> idSchemaAttributes, Map<String, List<IdentityInfoDTO>> idInfo, 
-			Set<String> uniqueConsentedLocales, String claim) {
+			Set<String> uniqueConsentedLocales, String claim) throws IdAuthenticationBusinessException {
 
 		Map<String, Object> identityDataMap = new HashMap<>();
 		// Get available languages from identity data and filter based on consented locales
@@ -587,35 +558,97 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
             .map(IdentityInfoDTO::getLanguage)
             .filter(lang -> lang != null && uniqueConsentedLocales.contains(lang))
             .collect(Collectors.toSet());
-
+				
         // Then process language specific attributes
-        availableLanguages.forEach(language -> {
-            String attribData = idSchemaAttributes.stream()
-                .map(idAttr -> idInfo.get(idAttr))
-                .filter(Objects::nonNull)
-                .map(idInfoList -> idInfoList.stream()
-                    .filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
-                    .map(IdentityInfoDTO::getValue)
-                    .findFirst()
-                    .orElse(""))
-                .filter(value -> !value.isEmpty())
-                .collect(Collectors.joining(" "));
+		if (!claim.equalsIgnoreCase(consentedAddressAttributeName) || 
+			(claim.equalsIgnoreCase(consentedAddressAttributeName) && addressSubsetAttributes.length == 0)) {
+			availableLanguages.forEach(language -> {
+				String attribData = idSchemaAttributes.stream()
+					.map(idAttr -> idInfo.get(idAttr))
+					.filter(Objects::nonNull)
+					.map(idInfoList -> idInfoList.stream()
+						.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
+						.map(IdentityInfoDTO::getValue)
+						.findFirst()
+						.orElse(""))
+					.filter(value -> !value.isEmpty())
+					.collect(Collectors.joining(" "));
 
-            if (!attribData.isEmpty()) {
-                // Add default name if not already added
-                if (!identityDataMap.containsKey(claim)) {
-                    identityDataMap.put(claim, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
-									Collections.singletonMap(ADDRESS_FORMATTED, attribData) : attribData);
-                }
-                
-                // Add language specific name
-                String shortLangCode = language.substring(0, 2).toLowerCase();
-                identityDataMap.put(claim + "#" + shortLangCode, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
-					Collections.singletonMap(ADDRESS_FORMATTED  + "#" + shortLangCode, attribData) : attribData);
-            }
-        });
+				if (!attribData.isEmpty()) {
+					// Add default name if not already added
+					if (!identityDataMap.containsKey(claim)) {
+						identityDataMap.put(claim, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
+										Collections.singletonMap(ADDRESS_FORMATTED, attribData) : attribData);
+					}
+					
+					// Add language specific name
+					String shortLangCode = language.substring(0, 2).toLowerCase();
+					identityDataMap.put(claim + "#" + shortLangCode, claim.equalsIgnoreCase(consentedAddressAttributeName) ? 
+						Collections.singletonMap(ADDRESS_FORMATTED  + "#" + shortLangCode, attribData) : attribData);
+				}
+			});
+			return identityDataMap;
+		}
+		return processAddressSubsetAttribute(claim, availableLanguages, idInfo);
+	}
 
-        return identityDataMap;
+	private Map<String, ?> processAddressSubsetAttribute(String claim, Set<String> availableLanguages, 
+					Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
+					
+		if (addressSubsetAttributes.length == 0) {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"processAddressSubsetAttribute",
+												"Something went wrong. This condition should not get executed. Claim:" + claim);
+			return null;
+		}
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+											"processAddressSubsetAttribute",
+												"Processing Address Subset Attribute. Claim:" + claim);
+		Map<String, Map<String, String>> addressDataMap = new HashMap<>();
+		Map<String, Map<String, String>> languageSpecificMaps = new HashMap<>();
+		Map<String, String> defaultAddressMap = new HashMap<>();
+
+		for (String addressSubsetAttribute : addressSubsetAttributes) {
+			List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(addressSubsetAttribute);
+
+			availableLanguages.forEach(language -> {
+				String addressSubsetAttribData = idSchemaAttributes.stream()
+					.map(idAttr -> idInfo.get(idAttr))
+					.filter(Objects::nonNull)
+					.map(idInfoList -> idInfoList.stream()
+						.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
+						.map(IdentityInfoDTO::getValue)
+						.findFirst()
+						.orElse(""))
+					.filter(value -> !value.isEmpty())
+					.collect(Collectors.joining(" "));
+	
+				if (!addressSubsetAttribData.isEmpty()) {
+					String shortLangCode = language.substring(0, 2).toLowerCase();
+					
+					// Add to language specific maps if it has a language code
+					String langSpecificKey = addressSubsetAttribute + "#" + shortLangCode;
+					languageSpecificMaps.computeIfAbsent(claim + "#" + shortLangCode, k -> new HashMap<>())
+						.put(langSpecificKey, addressSubsetAttribData);
+					
+					// Add to default map if not already added
+					if (!defaultAddressMap.containsKey(addressSubsetAttribute)) {
+						defaultAddressMap.put(addressSubsetAttribute, addressSubsetAttribData);
+					}
+				}
+			});
+		}
+
+		// Add language specific maps
+		if (!languageSpecificMaps.isEmpty()) {
+			addressDataMap.putAll(languageSpecificMaps);
+		}
+
+		// Add default map if exists  
+		if (!defaultAddressMap.isEmpty()) {
+			addressDataMap.put(claim, defaultAddressMap);
+		}
+		return addressDataMap;
 	}
 
 	private void addVerifiedClaimsToResponse(List<Map<String, Object>> verifiedClaimsRespLst, Map<String, Object> respVerificationMap, 
