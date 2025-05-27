@@ -27,7 +27,7 @@ import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
+//import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.BioDataUtility;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
@@ -100,7 +100,7 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 		String otpChannel="";
-		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null, otpIdentyEnryptRequestPath = null;
+		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null; //otpIdentyEnryptRequestPath = null;
 		if(req.has("otpChannel")) {
 			 otpChannel = req.get("otpChannel").toString();
 		}
