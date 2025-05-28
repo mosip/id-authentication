@@ -84,7 +84,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	@Value("${ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
 
-	@Value("${ida.oidc4ida.ignore.standard.claims.list}")
+	@Value("${mosip.ida.oidc4ida.ignore.standard.claims.list}")
 	private String[] ignoreClaims;
 
 	/** The env. */
@@ -658,42 +658,17 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		respVerificationMap.remove(MATCHED_TRUST_FRAMEWORKS);
 		boolean isAdded = false;
 		if(verifiedClaimsRespLst.size() > 0) {
-			isAdded = checkAndAddVerifiedClaimsResp(verifiedClaimsRespLst, respVerificationMap, claim, identityDataMap);
+			isAdded = checkAndAddVerifiedClaimsResp(verifiedClaimsRespLst, respVerificationMap, claim, identityDataMap, mappedConsentedShortLocales);
 		} 
 		if (!isAdded) {
 			
 			Map<String, Object> verifiedClaimsRespMap = new HashMap<>();
 			// Add language specific claims if multiple locales exist
-			Set<String> availableLocales = identityDataMap.keySet().stream()
-				.filter(key -> key.contains("#"))
-				.map(key -> key.substring(key.indexOf("#") + 1))
-				.collect(Collectors.toSet());
-			
-			Set<String> requestedLocales = new HashSet<>(mappedConsentedShortLocales.values());
-			// Find common locales between available and requested
-			Set<String> matchedLocales = availableLocales.stream()
-													.filter(requestedLocales::contains)
-													.collect(Collectors.toSet());
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-				"buildKycExchangeResponseV2", "Matched locales: " + matchedLocales);
+			Set<String> matchedLocales = getMatchedLocales(identityDataMap, mappedConsentedShortLocales);
 
 			// If available locales are more than 1, add claims for both en and ar locales
-			if (matchedLocales.size() > 1) {
-				// Add claims for both en and ar locales
-				Map<String, Object> langSpecificClaimMap = new HashMap<>();
-				for (String shortLangCode : matchedLocales) {
-					String langSpecificClaim = claim + "#" + shortLangCode;
-					if (identityDataMap.containsKey(langSpecificClaim)) {
-						langSpecificClaimMap.put(langSpecificClaim, identityDataMap.get(langSpecificClaim));
-					}
-				}
-				verifiedClaimsRespMap.put(CLAIMS, langSpecificClaimMap);
-			}
-			else {
-				Map<String, Object> respClaimMap = new HashMap<>();
-				respClaimMap.put(claim, identityDataMap.get(claim));
-				verifiedClaimsRespMap.put(CLAIMS, respClaimMap);
-			} 
+			addClaimsToVerifiedClaimsResp(matchedLocales, claim, identityDataMap, verifiedClaimsRespMap);
+
 			verifiedClaimsRespMap.put(VERIFICATION, respVerificationMap);
 			verifiedClaimsRespLst.add(verifiedClaimsRespMap);
 		}
@@ -701,7 +676,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	
 	@SuppressWarnings("unchecked")
 	private boolean checkAndAddVerifiedClaimsResp(List<Map<String, Object>> verifiedClaimsRespLst, Map<String, Object> respVerificationMap, 
-					String claim, Map<String, ?> identityDataMap) {
+					String claim, Map<String, ?> identityDataMap, Map<String, String> mappedConsentedShortLocales) {
 		final List<Boolean> addedClaims = new ArrayList<>();	
 		verifiedClaimsRespLst.stream()
 			.filter(verifiedClaimsResp -> {
@@ -713,12 +688,68 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			.ifPresent(verifiedClaimsResp -> {
 				Map<String, Object> existingClaimsMap = (Map<String, Object>) verifiedClaimsResp.get(CLAIMS);
 				if (existingClaimsMap != null) {
-				existingClaimsMap.put(claim, identityDataMap.get(claim));
-				verifiedClaimsResp.put(CLAIMS, existingClaimsMap);
-				addedClaims.add(true);
+					Set<String> matchedLocales = getMatchedLocales(identityDataMap, mappedConsentedShortLocales);
+
+					// If available locales are more than 1, add claims for both en and ar locales
+					addClaimsToExistingClaimsMap(verifiedClaimsResp, existingClaimsMap, identityDataMap, matchedLocales, claim);
+					addedClaims.add(true); 
 				}
 			});
 		return !addedClaims.isEmpty();
 	}
 	
+	private Set<String> getMatchedLocales(Map<String, ?> identityDataMap, Map<String, String> mappedConsentedShortLocales) {
+		Set<String> availableLocales = identityDataMap.keySet().stream()
+				.filter(key -> key.contains("#"))
+				.map(key -> key.substring(key.indexOf("#") + 1))
+				.collect(Collectors.toSet());
+			
+		Set<String> requestedLocales = new HashSet<>(mappedConsentedShortLocales.values());
+		// Find common locales between available and requested
+		Set<String> matchedLocales = availableLocales.stream()
+												.filter(requestedLocales::contains)
+												.collect(Collectors.toSet());
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+			"buildKycExchangeResponseV2", "Matched locales: " + matchedLocales);
+		return matchedLocales;
+	}
+
+	private void addClaimsToVerifiedClaimsResp(Set<String> matchedLocales, String claim, Map<String, ?> identityDataMap,
+			Map<String, Object> verifiedClaimsRespMap) {
+		if (matchedLocales.size() > 1) {
+			// Add claims for both en and ar locales
+			Map<String, Object> langSpecificClaimMap = new HashMap<>();
+			for (String shortLangCode : matchedLocales) {
+				String langSpecificClaim = claim + "#" + shortLangCode;
+				if (identityDataMap.containsKey(langSpecificClaim)) {
+					langSpecificClaimMap.put(langSpecificClaim, identityDataMap.get(langSpecificClaim));
+				}
+			}
+			verifiedClaimsRespMap.put(CLAIMS, langSpecificClaimMap);
+		}
+		else {
+			Map<String, Object> respClaimMap = new HashMap<>();
+			respClaimMap.put(claim, identityDataMap.get(claim));
+			verifiedClaimsRespMap.put(CLAIMS, respClaimMap);
+		} 
+	}
+
+	private void addClaimsToExistingClaimsMap(Map<String, Object> verifiedClaimsResp, 
+				Map<String, Object> existingClaimsMap, Map<String, ?> identityDataMap, 
+				Set<String> matchedLocales, String claim) {
+		if (matchedLocales.size() > 1) {
+			// Add claims for both en and ar locales
+			for (String shortLangCode : matchedLocales) {
+				String langSpecificClaim = claim + "#" + shortLangCode;
+				if (identityDataMap.containsKey(langSpecificClaim)) {
+					existingClaimsMap.put(langSpecificClaim, identityDataMap.get(langSpecificClaim));
+				}
+			}
+			verifiedClaimsResp.put(CLAIMS, existingClaimsMap);
+		}
+		else {
+			existingClaimsMap.put(claim, identityDataMap.get(claim));
+			verifiedClaimsResp.put(CLAIMS, existingClaimsMap);
+		}
+	}
 }

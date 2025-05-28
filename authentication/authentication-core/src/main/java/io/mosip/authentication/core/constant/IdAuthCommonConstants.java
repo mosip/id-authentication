@@ -495,6 +495,10 @@ public final class IdAuthCommonConstants {
 
 	public static final String MATCHED_TRUST_FRAMEWORKS = "matched_trust_frameworks";
 
+	public static final String ISSUER = "iss";
+
+	public static final String AUDIENCE = "aud";
+
 	private IdAuthCommonConstants() {
 	}
 }

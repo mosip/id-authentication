@@ -62,15 +62,6 @@ public class KycExchangeResponseDataHelper {
 	@Value("${ida.idp.consented.address.value.separator: }")
 	private String addressValueSeparator;
 	
-	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
-	private boolean sendFaceAsCbeffXml;
-
-	@Value("${ida.idp.jwe.response.type.constant:JWE}")
-	private String jweResponseType;
-
-	@Value("${ida.oidc4ida.ignore.standard.claims.list}")
-	private String[] ignoreClaims;
-
 	/** The env. */
 	@Autowired
 	EnvUtil env;
