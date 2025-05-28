@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
 
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ISSUER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUDIENCE;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -34,7 +36,6 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.repository.KycTokenDataRepository;
-import io.mosip.authentication.common.service.repository.OIDCClientDataRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
@@ -71,36 +72,21 @@ public class KycServiceImpl implements KycService {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);	
 
-	@Value("${ida.idp.consented.picture.attribute.name:picture}")
-	private String consentedFaceAttributeName;
-
-	@Value("${ida.idp.consented.address.attribute.name:address}")
-	private String consentedAddressAttributeName;
-
-	@Value("${ida.idp.consented.name.attribute.name:name}")
-	private String consentedNameAttributeName;
-
 	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
 	private String consentedIndividualAttributeName;
 
-	@Value("${ida.idp.consented.picture.attribute.prefix:data:image/jpeg;base64,}")
-	private String consentedPictureAttributePrefix;
-
-	@Value("${mosip.ida.idp.consented.address.subset.attributes:}")
-	private String[] addressSubsetAttributes;
-
-	@Value("${ida.idp.consented.address.value.separator: }")
-	private String addressValueSeparator;
-	
-	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
+	@Value("${mosip.ida.kyc.send-face-as-cbeff-xml:false}")
 	private boolean sendFaceAsCbeffXml;
 
-	@Value("${ida.idp.jwe.response.type.constant:JWE}")
+	@Value("${mosip.ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
 
-	@Value("${ida.oidc4ida.ignore.standard.claims.list}")
-	private String[] ignoreClaims;
+	@Value("${mosip.ida.idp.add.issuer.response:true}")
+	private boolean addIssuerInResponse;
 
+	@Value("${mosip.ida.idp.issuer.uri:}")
+	private String issuerUri;
+	
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -452,7 +438,7 @@ public class KycServiceImpl implements KycService {
 				List<String> consentedAttributes, List<String> consentedLocales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
-					"Building claims response for PSU token: " + subject);
+					"Building claims response for PSU token.");
 					
 		Map<String, Object> respMap = new HashMap<>();
 		Set<String> uniqueConsentedLocales = new HashSet<String>(consentedLocales);
@@ -472,17 +458,33 @@ public class KycServiceImpl implements KycService {
 				kycExchangeResponseDataHelper.addEntityDataForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
 			}
 		}
-
+		String partnerId = (String) kycExchangeRequestDTO.getMetadata().get("partnerId");
+		addIssuerInResponse(respMap, partnerId);
 		try {
 			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
 			String respType = kycExchangeRequestDTO.getRespType();
 			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Requested Response Type is JWE for Partner Name: " + partnerId);
 				String partnerCertData = (String) kycExchangeRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
 				return securityManager.jwtEncrypt(signedData, partnerCertData);
 			}
 			return signedData;
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+		if (addIssuerInResponse) {
+			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
+				respMap.put(ISSUER, issuerUri);
+			}
+			else {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
+					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+			}
+			respMap.put(AUDIENCE, partnerId);
 		}
 	}
 }
