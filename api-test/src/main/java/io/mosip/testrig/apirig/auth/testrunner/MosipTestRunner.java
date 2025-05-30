@@ -144,6 +144,8 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = "auth";
 		BaseTestCase.certsForModule = "IDA";
+		BaseTestCase.genMispPartnerName = BaseTestCase.currentModule + "_misp_" + IdAuthenticationUtil.randomString;
+		
 		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
 				ConfigManager.getKMDbSchema(),
 				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
