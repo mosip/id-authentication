@@ -8,7 +8,6 @@ import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurity
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.internal.service.config.DataProcessingBatchConfig;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -30,11 +29,11 @@ import java.util.concurrent.ForkJoinPool;
 @Component
 public class CredentialStoreTasklet implements Tasklet {
 
-    @Value("${ida.internal.batch.thread.count:10}")
+    @Value("${ida.batch.credential.store.thread.count:10}")
     private int threadCount;
 
     /** The logger. */
-    private static Logger LOGGER = IdaLogger.getLogger(DataProcessingBatchConfig.class);
+    private static Logger LOGGER = IdaLogger.getLogger(CredentialStoreTasklet.class);
 
     ForkJoinPool forkJoinPool;
 
@@ -49,7 +48,7 @@ public class CredentialStoreTasklet implements Tasklet {
     @Autowired
     private IdentityCacheRepository identityCacheRepo;
 
-    @Value("${ida.internal.batch.page.size:100}")
+    @Value("${ida.batch.credential.store.page.size:100}")
     private int pageSize;
 
     /** The credential store service. */
@@ -73,7 +72,7 @@ public class CredentialStoreTasklet implements Tasklet {
         try {
             forkJoinPool.submit(() -> credentialEventStoreList.parallelStream().forEach(credential -> {
                 try {
-                    identityCacheRepo.save(credentialStoreService.processCredentialStoreEvent(credential));
+                    credentialStoreService.storeIdentityEntity(credentialStoreService.processCredentialStoreEvent(credential));
 
                  } catch (IdAuthenticationBusinessException e) {
                     LOGGER.error(IdRepoSecurityManager.getUser(), IDA_CREDENTIAL_ITEM_TASKLET, "batchid = " + batchId,
@@ -81,7 +80,10 @@ public class CredentialStoreTasklet implements Tasklet {
                 } catch (RetryingBeforeRetryIntervalException e) {
                     LOGGER.error(IdRepoSecurityManager.getUser(), IDA_CREDENTIAL_ITEM_TASKLET, "batchid = " + batchId,
                             "RetryingBeforeRetryIntervalException : " + ExceptionUtils.getStackTrace(e));
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
+                    LOGGER.error(IdRepoSecurityManager.getUser(), IDA_CREDENTIAL_ITEM_TASKLET, "batchid = " + batchId,
+                            "RuntimeException : " + ExceptionUtils.getStackTrace(e));
+                }  catch (Exception e) {
                     LOGGER.error(IdRepoSecurityManager.getUser(), IDA_CREDENTIAL_ITEM_TASKLET, "batchid = " + batchId,
                             "Exception : " + ExceptionUtils.getStackTrace(e));
                 }
