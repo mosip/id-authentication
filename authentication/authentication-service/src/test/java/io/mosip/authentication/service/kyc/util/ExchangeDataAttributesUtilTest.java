@@ -20,7 +20,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
@@ -106,8 +105,7 @@ public class ExchangeDataAttributesUtilTest {
 
     @Test
     public void getKycExchangeResponseTimeTest() {
-        MockEnvironment mockenv = new MockEnvironment();
-        mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         BaseRequestDTO authRequestDTO = new BaseRequestDTO(); 
         authRequestDTO.setRequestTime("2023-10-19T12:35:57.835Z");
         String resValue = exchangeDataAttributesUtil.getKycExchangeResponseTime(authRequestDTO);
