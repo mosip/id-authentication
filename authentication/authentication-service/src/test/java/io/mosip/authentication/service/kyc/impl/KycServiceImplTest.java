@@ -754,10 +754,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);	
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
@@ -788,10 +787,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 		
 		String resKycToken = "responseJWTToken";
@@ -812,12 +810,11 @@ public class KycServiceImplTest {
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
 		kycExchangeRequestDTO.setRespType("JWE");
-		Map<String, Object> metadata = Map.of("PARTNER_CERTIFICATE", "DUMMY-X509-CERTIFICATE");
+		Map<String, Object> metadata = new HashMap<>();
+		metadata.put("PARTNER_CERTIFICATE", "DUMMY-X509-CERTIFICATE");
+		metadata.put("partnerId", "DUMMY-PARTNER-ID");
 		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		ReflectionTestUtils.setField(kycServiceImpl2, "jweResponseType", "JWE");
 		
@@ -840,7 +837,8 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of();		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
-		
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
@@ -855,10 +853,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
@@ -877,10 +874,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 
 		String resKycToken = "responseJWTToken";
@@ -900,10 +896,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
@@ -923,10 +918,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
@@ -946,9 +940,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
@@ -966,10 +960,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
@@ -989,10 +982,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
