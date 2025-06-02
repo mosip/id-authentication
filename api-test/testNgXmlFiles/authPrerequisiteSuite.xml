@@ -8,13 +8,13 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
-	<!--<test name="AddIdentity">
+	<test name="AddIdentity">
 		<parameter name="ymlFile"
 			value="ida/AddIdentity/AddIdentity.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.AddIdentity" />
 		</classes>
-	</test>-->
+	</test>
 	
 	<test name="CreatePolicyGroup">
 		<parameter name="ymlFile"
@@ -145,7 +145,7 @@
 		</classes>
 	</test>
 
-	<!--<test name="CreateVID">
+	<test name="CreateVID">
 		<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
 		<parameter name="idKeyName" value="VID" />
 		<classes>
@@ -315,7 +315,7 @@
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
 		</classes>
-	</test>-->
+	</test>
 
 
 </suite>
