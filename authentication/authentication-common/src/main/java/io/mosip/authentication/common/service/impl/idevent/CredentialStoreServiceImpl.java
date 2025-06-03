@@ -426,8 +426,8 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @param idEntities the id entities
 	 */
 	@Override
-	public void storeIdentityEntity(IdentityEntity idEntities) {
-		identityCacheRepo.save(idEntities);
+	public void storeIdentityEntity(IdentityEntity identityEntity) {
+		identityCacheRepo.save(identityEntity);
 	}
 
 	/**
