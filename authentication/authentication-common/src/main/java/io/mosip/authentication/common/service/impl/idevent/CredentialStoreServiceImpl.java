@@ -423,7 +423,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/**
 	 * Store identity entity.
 	 *
-	 * @param idEntities the id entities
+	 * @param identityEntity the id entity
 	 */
 	@Override
 	public void storeIdentityEntity(IdentityEntity identityEntity) {
