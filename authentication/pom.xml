@@ -107,7 +107,7 @@
 		<kernel-biometrics-api.version>1.2.0.1</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.2.0.1</kernel-biosdk-provider.version>
 		<kernel-websubclient-api.version>${kernel.parent.version}</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.3.0-SNAPSHOT</id-repository-core.version>
+		<id-repository-core.version>1.2.0.1-B1</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
 		<kernel-demoapi.version>1.2.0.1</kernel-demoapi.version>
 		<kernel-idauthenticationfilter-api.version>1.2.2.0-SNAPSHOT</kernel-idauthenticationfilter-api.version>
