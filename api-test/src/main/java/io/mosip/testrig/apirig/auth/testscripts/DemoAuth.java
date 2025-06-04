@@ -95,7 +95,7 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 					PartnerRegistration.updatedpartnerKeyUrl));
 		}
 		JSONObject request = new JSONObject(testCaseDTO.getInput());
-		String identityRequest = null, identityRequestTemplate = null, identityRequestEncUrl = null;
+		String identityRequest = null, identityRequestTemplate = null; 
 		if(request.has("identityRequest")) {
 			identityRequest = request.get("identityRequest").toString();
 			request.remove("identityRequest");

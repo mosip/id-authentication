@@ -170,7 +170,6 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 		 * inputJson.replace("\"email\":", "\"" + emailResult + "\":");
 		 */
 
-		String outputJson = getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate());
 
 		if (testCaseDTO.getTemplateFields() != null && templateFields.length > 0) {
 			ArrayList<JSONObject> inputtestCases = AdminTestUtil.getInputTestCase(testCaseDTO);
