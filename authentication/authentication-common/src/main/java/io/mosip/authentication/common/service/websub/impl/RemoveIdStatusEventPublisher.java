@@ -70,7 +70,6 @@ public class RemoveIdStatusEventPublisher extends BaseWebSubEventsInitializer {
 
 	public void publishRemoveIdStatusEvent(String idHash) {
 		RemoveIdStatusEvent removeIdStatusEvent = createRemoveIdStatusEvent(idHash);
-		logger.info(">>>>>>> removeIdStatusEvent :{}",removeIdStatusEvent);
 		try {
 			webSubHelper.publishEvent(removeIdStatusTopic,
 					webSubHelper.createEventModel(removeIdStatusTopic, removeIdStatusEvent));

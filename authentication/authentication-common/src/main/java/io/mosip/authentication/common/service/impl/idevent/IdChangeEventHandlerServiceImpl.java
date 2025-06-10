@@ -185,19 +185,10 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	
 	private void handleRemoveId(EventModel eventModel) throws IdAuthenticationBusinessException {
 		Event event = eventModel.getEvent();
-
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
-		mosipLogger.info(">>>>>handleRemoveId event received, idHash value: {}",idHash);
 		if (idHash != null && !idHash.isEmpty() && identityCacheRepo.existsById(idHash)) {
-			try {
-				identityCacheRepo.deleteById(idHash);
-			}catch (Exception e){
-				mosipLogger.error(">>>>>handleRemoveId delete Error :{}",e.getMessage());
-				mosipLogger.debug(">>>>>handleRemoveId delete Error :{}",e);
-			}
-
-			mosipLogger.info(">>>>> deleted idHash value: {}",idHash);
+			identityCacheRepo.deleteById(idHash);
 			removeIdStatusEventPublisher.publishRemoveIdStatusEvent(idHash);
 		}
 	}
