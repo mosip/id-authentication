@@ -61,6 +61,7 @@ import io.mosip.authentication.core.indauth.dto.EncryptedKycRespDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycAuthRespDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRespDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
@@ -391,12 +392,13 @@ public class KycFacadeImpl implements KycFacade {
 					response.setKycToken(kycToken);
 					response.setKycStatus(authResponse.isAuthStatus());
 					response.setAuthToken(authResponse.getAuthToken());
-					String verifiedClaimsMetadata = !CollectionUtils.isEmpty(idInfoList) ? idInfoList.get(0).getValue() : EMPTY;
-					response.setVerifiedClaimsMetadata(verifiedClaimsService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId));
+					if (((KycAuthRequestDTOV2) kycAuthRequestDTO).getRequest().isClaimsMetadataRequired()) {
+						String verifiedClaimsMetadata = !CollectionUtils.isEmpty(idInfoList) ? idInfoList.get(0).getValue() : EMPTY;
+						response.setVerifiedClaimsMetadata(verifiedClaimsService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId));
+					}
 					((KycAuthResponseDTOV2)baseAuthResponseDTO).setResponse(response);
 				}
 			}
-
 			return new SimpleEntry<>(baseAuthResponseDTO, authResponse.isAuthStatus());
 		}
 		return new SimpleEntry<>(baseAuthResponseDTO, false);
