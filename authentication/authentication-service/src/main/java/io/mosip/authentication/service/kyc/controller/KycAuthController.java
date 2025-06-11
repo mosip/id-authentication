@@ -176,7 +176,7 @@ public class KycAuthController {
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = EKycAuthResponseDTO.class)))),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
@@ -260,7 +260,7 @@ public class KycAuthController {
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = KycAuthResponseDTO.class)))),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
@@ -344,7 +344,7 @@ public class KycAuthController {
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = KycExchangeResponseDTO.class)))),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
@@ -411,7 +411,7 @@ public class KycAuthController {
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = KycAuthResponseDTOV2.class)))),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
@@ -494,7 +494,7 @@ public class KycAuthController {
 	@Parameter(in = ParameterIn.HEADER, name = "signature")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
-					content = @Content(array = @ArraySchema(schema = @Schema(implementation = IdAuthenticationAppException.class)))),
+					content = @Content(array = @ArraySchema(schema = @Schema(implementation = KycExchangeResponseDTO.class)))),
 			@ApiResponse(responseCode = "201", description = "Created" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
