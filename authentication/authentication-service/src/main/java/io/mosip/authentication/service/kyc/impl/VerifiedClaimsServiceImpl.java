@@ -621,16 +621,28 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 				"processAddressSubsetAttribute",
 					"Processing Address Subset Attribute. idSchemaAttributes:" + idSchemaAttributes);
-				
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+				"processAddressSubsetAttribute",
+					"Processing Address Subset Attribute. availableLanguages:" + availableLanguages);	
+					
 			availableLanguages.forEach(language -> {
 				String addressSubsetAttribData = idSchemaAttributes.stream()
 					.map(idAttr -> idInfo.get(idAttr))
 					.filter(Objects::nonNull)
-					.map(idInfoList -> idInfoList.stream()
-						.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
-						.map(IdentityInfoDTO::getValue)
-						.findFirst()
-						.orElse(""))
+					.map(idInfoList -> {
+						// The issue may be that we're finding first value after filtering language
+						// Instead, we should filter the whole list first by language, then find first value
+						List<IdentityInfoDTO> filteredByLanguage = idInfoList.stream()
+							.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
+							.collect(Collectors.toList());
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+							"processAddressSubsetAttribute",
+								"Processing Address Subset Attribute. filteredByLanguage:" + filteredByLanguage.size());
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
+							"processAddressSubsetAttribute",
+								"Processing Address Subset Attribute. filteredByLanguage::Data:" + (filteredByLanguage.size() > 0 ? filteredByLanguage.get(0).getValue() : ""));
+						return filteredByLanguage.isEmpty() ? "" : filteredByLanguage.get(0).getValue();
+					})
 					.filter(value -> !value.isEmpty())
 					.collect(Collectors.joining(" "));
 
