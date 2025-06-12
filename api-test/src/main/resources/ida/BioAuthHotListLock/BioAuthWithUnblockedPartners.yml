@@ -1,0 +1,182 @@
+BioAuth:
+  auth_BioAuth_Biometric_Face_With_Unblocked_Partners_Smoke_Pos:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_01
+      description: Perform bio face auth with unblocked partner
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/BioAuthResult
+      input: '{
+          "bioSubType": "",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+          "transactionId": "$TRANSACTIONID$",
+          "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+    "authStatus": "true"
+}'
+  auth_BioAuth_Biometric_RingFinger_With__Unblocked_Partners:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_02
+      description: Perform bio ring finger auth with unblocked partner
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/BioAuthResult
+      input: '{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+        "transactionId": "$TRANSACTIONID$",
+        "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+    "authStatus": "true"
+}'
+  auth_BioAuth_Biometric_LeftIndexFingerr__Unblocked_Partners:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_03
+      description: Perform bio LeftIndexFinger auth with unblocked partner
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/BioAuthResult
+      input: '{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+        "transactionId": "$TRANSACTIONID$",
+        "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+    "authStatus": "true"
+}'
+  auth_BioAuth_Biometric_IRIS_With__Unblocked_Partners:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_04
+      description: Perform bio right iris auth with unblocked partner
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Iris",
+        "transactionId": "$TRANSACTIONID$",
+        "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+    "authStatus": "true"
+}'
+  auth_EkycBio_LeftMiddleFingerr__Unblocked_Partners:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&isKyc=true&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_05
+      description: Perform bio LeftMiddleFingerr auth with unblocked partner
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+        "transactionId": "$TRANSACTIONID$",
+        "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+        "kycStatus": "true"
+}'
+  auth_EkycBio_RIGHTIRIS_With__Unblocked_Partners:
+      endPoint: /v1/identity/authenticate?moduleName=$MODULENAME$&certsDir=$CERTSDIR$&transactionId=$TRANSACTIONID$&id=$ID:AddIdentity_ValidParam_smoke_Pos_UIN$&isKyc=true&partnerUrlSuffix=$PartnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$
+      uniqueIdentifier: TC_IDA_BioAuth_Unblock_04
+      description: Perform bio right iris auth with unblocked partner
+      role: resident
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Iris",
+        "transactionId": "$TRANSACTIONID$",
+        "timestamp": "$TIMESTAMP$"
+    }'
+      output: '{
+        "kycStatus": "true"
+}'

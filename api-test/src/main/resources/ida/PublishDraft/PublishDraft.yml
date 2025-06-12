@@ -1,0 +1,29 @@
+PublishDraft:
+  auth_PublishDraft_all_valid_smoke:
+      endPoint: /idrepository/v1/identity/draft/publish/{registrationId}
+      uniqueIdentifier: TC_IDA_PublishDraft_01
+      description: publish Draft using registrationID
+      role: idrepo
+      restMethod: get
+      inputTemplate: ida/PublishDraft/publishDraft
+      outputTemplate: ida/PublishDraft/publishDraftResult
+      input: '{
+      "registrationId":"$RID$"
+      }'
+      output: '{
+      "status": "ACTIVATED"
+}'
+  auth_PublishDraft_audit_valid_smoke:
+      endPoint: /idrepository/v1/identity/draft/publish/{registrationId}
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_PublishDraft_02
+      description: publish Draft using registrationID
+      role: idrepo
+      restMethod: get
+      inputTemplate: ida/PublishDraft/publishDraft
+      outputTemplate: ida/PublishDraft/publishDraftResult
+      input: '{
+      "registrationId":"$RID1$"
+      }'
+      output: '{
+      "status": "ACTIVATED"
+}'

@@ -1,0 +1,176 @@
+UpdateIdentity:
+  Auth_UpdateIdentity_updatePhone_withValidParameters_smoke_Pos_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      description: update DOB and Activate UIN 
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1",
+      "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/UpdateIdentity/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$&keyFileNameByPartnerName=true&partnerName=$PartnerName$"
+    }
+      }'
+      output: '{
+    "status": "ACTIVATED",
+    "sendOtpResp":{
+        "transactionID": "$IGNORE$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/UpdateIdentity/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  Auth_UpdateIdentity_updateAddress_Positive_EKYC_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_02
+      description: update DOB and Activate UIN for Ekyc
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'
+  Auth_UpdateIdentity_updateName_Positive_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      description: update DOB and Activate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_Positive_valid_smoke_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'
+  Auth_UpdateIdentity_updateDOB_ValidParam_smoke_Pos_all_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      description: update DOB and Activate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+      "email": "auth_AddIdentity_ValidParamms_smoke_Pos@mosip.net",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1980/08/10",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'
+  Auth_UpdateIdentity_DEACTIVATED_and_auth_smoke_Pos_all_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_03
+      description: update DOB and Deactivate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_Deactivate_and_auth_smoke_Pos_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "DEACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "DEACTIVATED"
+}'
+  Auth_UpdateIdentity_DEACTIVATED_Positive_TRE_all_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_03
+      description: update DOB and Deactivate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_Positive_TRE_smoke_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "DEACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "DEACTIVATED"
+}'
+  Auth_UpdateIdentity_ACTIVATED_Positive_TRE_all_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      description: update DOB and Activate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_Positive_TRE_smoke_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'
+  Auth_UpdateIdentity_ACTIVATED_auditLog_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_04
+      description: update DOB and Activate UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentity/updateIdentity
+      outputTemplate: ida/UpdateIdentity/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_ValidParameters_toUpdateIdentity_auditLog_smoke_Pos_UIN$",
+      "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'

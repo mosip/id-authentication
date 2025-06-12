@@ -1,0 +1,9 @@
+{
+  "request": {
+    "userName": "110005",
+    "password": "mosip",
+    "appId": "admin",
+    "clientId": "mosip-admin-client",
+    "clientSecret": "xyz123"
+  }
+}
