@@ -90,10 +90,23 @@ public class MaxAgeTimeSpec implements VerifiedClaimsSpec<LocalDateTime, Map<Str
             Collections.singletonList((String) trustFrameworkMap.get(VERIFICATION_VALUE)) :
             new ArrayList<>((List<String>) trustFrameworkMap.get(VERIFICATION_VALUES));
 
+        for (VerifiedClaimsAttributes verifiedClaimsAttribute : verifiedClaimsAttributes) {
+            mosipLogger.info(SESSION_ID, this.getClass().getSimpleName(), 
+                "getVerifiedClaimsMetadata", "verifiedClaimsAttribute::trustFramework: " + verifiedClaimsAttribute.getTrustFramework());
+            mosipLogger.info(SESSION_ID, this.getClass().getSimpleName(), 
+                "getVerifiedClaimsMetadata", "verifiedClaimsAttribute::time: " + verifiedClaimsAttribute.getTime());
+        }
+        mosipLogger.info(SESSION_ID, this.getClass().getSimpleName(), 
+            "getVerifiedClaimsMetadata", "trustFrameworks: " + trustFrameworks);
+
         return trustFrameworks.stream()
                 .flatMap(tf -> verifiedClaimsAttributes.stream()
                                                        .filter(attr -> tf.equals(attr.getTrustFramework()))
                                                        .map(attr -> attr))
-                .collect(Collectors.toMap(attr -> attr.getTrustFramework(), attr -> attr.getTime()));
+                .collect(Collectors.toMap(
+                    attr -> attr.getTrustFramework(), 
+                    attr -> attr.getTime(),
+                    (existing, replacement) -> existing // Keep first occurrence in case of duplicates
+                ));
     }   
 }
