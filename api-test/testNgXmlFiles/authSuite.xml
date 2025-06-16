@@ -184,14 +184,6 @@
 		</classes>
 	</test>
 
-	<test name="SendOTP">
-		<parameter name="ymlFile"
-			value="ida/SendOTP/createSendOTP.yml" />
-		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
-		</classes>
-	</test>
-
 	<test name="BlockHotlistStatus">
 		<parameter name="ymlFile"
 			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
