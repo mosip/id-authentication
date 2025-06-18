@@ -18,6 +18,5 @@ CreateOIDCClient:
         "clientAuthMethods": "private_key_jwt"
 }'
       output: '{
-        "clientId": "$IGNORE$",
         "status": "ACTIVE"
 }'

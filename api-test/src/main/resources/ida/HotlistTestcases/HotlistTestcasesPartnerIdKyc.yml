@@ -26,8 +26,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'
@@ -58,8 +57,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'
