@@ -1,0 +1,18 @@
+{
+    "transactionID": "$IGNORE$",
+    "version": "$IGNORE$",
+    "id": "$IGNORE$",
+    "errors": [
+      {{#each errors}}
+        {
+            "errorCode": "{{errorCode}}",
+            "errorMessage": "{{errorMessage}}"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+  ],
+    "responseTime": "$IGNORE$",
+    "response": {
+        "authStatus": {{authStatus}}
+    }
+}
