@@ -7,9 +7,14 @@ RegenerateVid:
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/RegenerateVid/regenerateVid
-      outputTemplate: ida/RegenerateVid/regenerateVidResult
+      outputTemplate: ida/errorRegenerate
       input: '{
       "VID":"$ID:GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid_vid$"
       }'
       output: '{
+  "errors": [
+    {
+      "errorCode": "IDR-VID-003"
+    }
+  ]
 }'

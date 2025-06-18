@@ -453,9 +453,9 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
-        "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": false,
