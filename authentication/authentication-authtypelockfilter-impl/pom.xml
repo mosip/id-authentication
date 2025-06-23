@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.1.0</version>
+		<version>1.2.2.0-SNAPSHOT</version>
 	</parent>
-	<version>1.2.1.0</version>
+	<version>1.2.2.0-SNAPSHOT</version>
 	<artifactId>authentication-authtypelockfilter-impl</artifactId>
 	<name>authentication-authtypelockfilter-impl</name>
 	<description>ID Authentication Filter Implementation for Auth Type Lock validation</description>
@@ -91,9 +91,6 @@
 		<guava.version>19.0</guava.version>
 		<jsch.version>0.1.54</jsch.version>
 		<sshd.version>1.4.0</sshd.version>
-		<itextcore.version>7.1.0</itextcore.version>
-		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
-		<itext.version>5.5.13</itext.version>
 		<freemarker.version>2.3.23</freemarker.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
