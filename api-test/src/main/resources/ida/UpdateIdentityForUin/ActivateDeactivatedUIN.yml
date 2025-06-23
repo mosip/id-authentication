@@ -1,0 +1,21 @@
+UpdateIdentityForUin:
+  Auth_UpdateIdentityForUin_ACTIVATE_theDeactiavtedUIN_valid_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentityForUin_04
+      description: Activate the Deactivated UIN
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/UpdateIdentityForUin/updateIdentity
+      outputTemplate: ida/UpdateIdentityForUin/updateIdentityResult
+      input: '{
+      "registrationId":"$RID$",
+      "UIN":"$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_UIN$",
+      "email": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_EMAIL$",
+      "status": "ACTIVATED",
+      "dateOfBirth": "1970/07/08",
+      "requesttime": "$TIMESTAMP$",
+      "version": "v1"
+      }'
+      output: '{
+    "status": "ACTIVATED"
+}'

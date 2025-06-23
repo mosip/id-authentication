@@ -1,0 +1,442 @@
+BioAuth:
+  auth_BioAuth_Biometric_Face_With_blocked_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_67
+      description: Biometric face auth with blocked UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_unblockUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_Face_With_Locked_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_47
+      description: Biometric face auth with locked UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_valid_smoke_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_Face_With_blocked_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_68
+      description: Biometric face auth with blocked VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_Face_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_69
+      description: Biometric face auth with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_RingFinger_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_70
+      description: Biometric RingFinger auth with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_LeftIndexFingerr_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_71
+      description: Biometric LeftIndexFinger auth with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_BioAuth_Biometric_IRIS_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_72
+      description: Biometric Iris auth with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Iris",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "authStatus": "false"
+}'
+  auth_EkycBio_Face_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_73
+      description: Ekyc bio auth with face with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+        "kycStatus": "false"
+}'
+  auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_74
+      description: Ekyc bio auth with RingFinger with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+        "kycStatus": "false"
+}'
+  auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_75
+      description: Ekyc bio auth with LeftMiddleFinger with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "env": "Staging",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Finger",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+        "kycStatus": "false"
+}'
+  auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_BioAuth_76
+      description: Ekyc bio auth with RIGHTIRIS with blocked deviceProviderId
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthHotListLock/BioAuth
+      outputTemplate: ida/BioAuthHotListLock/EkycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "571203",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthHotListLock/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+        "kycStatus": "false"
+}'

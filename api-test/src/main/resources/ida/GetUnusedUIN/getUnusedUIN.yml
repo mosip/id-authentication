@@ -1,0 +1,13 @@
+GetUnusedUIN:
+   auth_GetUnusedUIN_All_Valid_Smoke_sid:
+      endPoint: /v1/idgenerator/uin
+      description: Fetching the unused UIN
+      role: idRepo
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/GetUnusedUIN/getUnusedUIN
+      outputTemplate: ida/GetUnusedUIN/getUnusedUINResult
+      input: '{
+}'
+      output: '{
+}'

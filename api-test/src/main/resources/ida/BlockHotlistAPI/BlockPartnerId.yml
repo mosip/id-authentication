@@ -1,0 +1,52 @@
+HotlistAPI:
+   auth_BlockPartnerId_All_Valid_Smoke_block_partner_id_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_10
+      description: block partner id without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$BLOCKEDPARTNERID$",
+    "idType": "PARTNER_ID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockPartnerId_All_Valid_Smoke_block_api_key_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_11
+      description: block api key without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$APIKEY$",
+    "idType": "PARTNER_ID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockPartnerId_All_Valid_Smoke_block_MISP_LIC_key_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_12
+      description: block misp lic Key without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$MISPLICKEY$",
+    "idType": "PARTNER_ID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'

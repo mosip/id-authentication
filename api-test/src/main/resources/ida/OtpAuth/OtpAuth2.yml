@@ -1,0 +1,1147 @@
+OtpAuth:
+  auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_01
+      description: Otp auth with valid using UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_OTP_Auth_With_Valid_UIN_with_edited_updated_policy_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_02
+      description: Otp auth with valid using UIN with edited updated policy
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Infant_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_03
+      description: Otp auth with Infant using UIN 
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Infant_locked_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_04
+      description: Otp auth with Infant locked UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_05
+      description: Otp auth with valid using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_06
+      description: Otp auth with invalid Past Timestamp using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Past_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_07
+      description: Otp auth with invalid Past Timestamp using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "2022-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_08
+      description: Otp auth with invalid future timestamp using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "2052-05-19T06:29:44.809Z",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Future_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_09
+      description: Otp auth with invalid future timestamp using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+    "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "2052-05-19T06:29:44.809Z",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_10
+      description: Otp auth with invalid empty timestamp using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_11
+      description: Otp auth with invalid empty timestamp using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_revoke_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_12
+      description: Otp auth with revoked VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_13
+      description: Otp auth with invalid individualId using UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "@@###cndjdhe77473838",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-002",
+      "errorMessage": "Invalid UIN",
+      "actionMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_13
+      description: Otp auth with invalid individualId using UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "@@###cndjdhe77473838",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-002",
+      "errorMessage": "Invalid UIN",
+      "actionMessage": "$IGNORE$"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_OTP_Auth_With_Blank_individualId_uin_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_14
+      description: Otp auth with blank individualId using uin
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_OTP_Auth_With_Blank_individualId_VID_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_15
+      description: Otp auth with blank individualId using VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006"
+    }
+  ],
+  "sendOtpResp":{
+        "transactionID": "$TRANSACTIONID$",
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+  auth_OTP_Auth_With_Missing_individualId_uin_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_16
+      description: Otp auth with missing individualId using UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Missing_individualId_VID_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_17
+      description: OTP auth with missing individualId using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_transactionId_uin_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_18
+      description: OTP auth with invalid transactionId using uin
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "337@@@@%%^^&&**",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_transactionId_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_19
+      description: OTP auth with invalid transactionId using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$123@@@@@",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Blank_transactionId_uin_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_20
+      description: OTP auth with blank transactionId using uin
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Blank_transactionId_VID_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_21
+      description: OTP auth with blank transactionId using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_different_transactionId_uin_neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_22
+      description: OTP auth with different transactionId using uin
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "76544ddffgg@@@3444",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Optional_individualIdType_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_23
+      description: OTP auth with optional individualIdType using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Blank_individualIdType_VID_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_24
+      description: OTP auth with blank individualIdType using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+        "authStatus": false,
+  "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_25
+      description: Otp auth with missing optional field individualIdType using VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_Invalid_uin_partner:
+      endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      uniqueIdentifier: TC_IDA_OtpAuth_26
+      description: Otp auth with invalid partner
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+    "authStatus": false,
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007"
+    },
+    {
+      "errorCode": "IDA-MPA-001"
+    }
+  ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_InValid_OTP:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_27
+      description: Otp auth with invalid OTP
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "26363633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-OTA-004"
+        }
+      ],
+        "authStatus": false,
+  "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_WRONG_OTP:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_28
+      description: Otp auth with wrong OTP
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/error
+      input: '{
+        "otpChannel": "263@#$63633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "individualIdType": "VID",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-OTA-004"
+        }
+      ],
+        "authStatus": false,
+  "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+
+  auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_29
+      description: Perform otp auth when iris is set as true in policy
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_locked_email_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_30
+      description: Otp auth with locked email using valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OTP_Auth_With_locked_phone_Smoke_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_OtpAuth_31
+      description: Otp auth with locked phone using valid UIN
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/OtpAuth/OtpAuth
+      outputTemplate: ida/OtpAuth/OtpAuthResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'

@@ -1,0 +1,18 @@
+RetrieveIdentity:
+  auth_RetrieveIdentity_With_Valid_UIN_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/idvid/{id}
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_RetrieveIdentity_01
+      description: Retrieve Identity passing valid UIN
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/RetrieveIdentityByUin/retrieveIdentityByUin
+      outputTemplate: ida/RetrieveIdentityByUin/retrieveIdentityByUinResult_eng
+      input: '{
+    "id": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+		"UIN": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$",
+		"status": "ACTIVATED"
+
+}'

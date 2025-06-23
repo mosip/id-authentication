@@ -1,0 +1,94 @@
+CreateVID:
+  auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
+      endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_01
+      description: generate Perpetual VID for authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateVID/createVid
+      outputTemplate: ida/CreateVID/createVidResult
+      input: '{
+    "vidType": "Perpetual",
+    "UIN": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "version": "v1",
+    "id": "mosip.vid.create",
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "vidStatus":"ACTIVE"
+}'
+
+  auth_GenerateVID_to_revoke_Perpetual_sid:
+      endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_01
+      description: generate Perpetual VID to revoke
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateVID/createVid
+      outputTemplate: ida/CreateVID/createVidResult
+      input: '{
+    "vidType": "Perpetual",
+    "UIN": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
+    "version": "v1",
+    "id": "mosip.vid.create",
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "vidStatus":"ACTIVE"
+}'
+
+  auth_GenerateVID_to_test_hotlist_Perpetual_sid:
+      endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_03
+      description: generate Perpetual VID to test Hotlist api
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateVID/createVid
+      outputTemplate: ida/CreateVID/createVidResult
+      input: '{
+    "vidType": "Perpetual",
+    "UIN": "$ID:AddIdentity_for_hotlist_id_service_Pos_UIN$",
+    "version": "v1",
+    "id": "mosip.vid.create",
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "vidStatus":"ACTIVE"
+}'
+
+  auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
+      endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVID_02
+      description: generate Temporary VID for authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateVID/createVid
+      outputTemplate: ida/CreateVID/createVidResult
+      input: '{
+    "vidType": "Temporary",
+    "UIN": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+    "version": "v1",
+    "id": "mosip.vid.create",
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "vidStatus":"ACTIVE"
+}'
+  auth_GenerateVID_auditLog_Valid_Smoke_Temp_VID_sid:
+      endPoint: /idrepository/v1/vid
+      uniqueIdentifier: TC_IDA_CreateVid_DependentTc_AuthTransaction_03
+      description: generate Vid to check audit logs
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateVID/createVid
+      outputTemplate: ida/CreateVID/createVidResult
+      input: '{
+    "vidType": "Temporary",
+    "UIN": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$",
+    "version": "v1",
+    "id": "mosip.vid.create",
+    "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "vidStatus":"ACTIVE"
+}'
