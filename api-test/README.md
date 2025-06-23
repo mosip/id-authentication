@@ -65,7 +65,7 @@ You can access the test automation code using either of the following methods:
 ## Update the property file
 1. Navigate to the Ida.properties file located at:
     ```sh
-    ida\api-test\src\main\resources\config\Ida.properties
+    id-authentication\api-test\src\main\resources\config\Ida.properties
 2. Open the file in your preferred editor
 3. Update the client secret values and other required credentials as per your environment
 
