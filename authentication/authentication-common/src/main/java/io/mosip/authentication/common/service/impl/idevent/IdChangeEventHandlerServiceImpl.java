@@ -160,7 +160,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	 * @return the function for event type
 	 */
 	private ConsumerWithBusinessException<EventModel, Void> getFunctionForEventType(String eventTopic) {
-		
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"getFunctionForEventType", "Event topic: " + eventTopic);
 		if (eventTopic.toLowerCase().contains(IDAEventType.CREDENTIAL_ISSUED.toString().toLowerCase())) {
 			return this::handleCredentialIssued;
 		} else if (eventTopic.toLowerCase().contains(IDAEventType.REMOVE_ID.toString().toLowerCase())) {
@@ -184,6 +185,8 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	}
 	
 	private void handleRemoveId(EventModel eventModel) throws IdAuthenticationBusinessException {
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"handleRemoveId", "Remove ID event received.");
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
 		String idHash = (String) additionalData.get(ID_HASH);
@@ -194,18 +197,29 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 	}
 	
 	private void handleDeactivateId(EventModel eventModel) throws IdAuthenticationBusinessException {
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"handleDeactivateId", "Deactivate ID event received.");
 		updateIdentityMetadata(eventModel);
 	}
 
 	private void updateIdentityMetadata(EventModel eventModel) throws IdAuthenticationBusinessException {
 		Event event = eventModel.getEvent();
 		Map<String, Object> additionalData = event.getData();
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"updateIdentityMetadata", "Additional data: " + additionalData);
+
 		String idHash = (String) additionalData.get(ID_HASH);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"updateIdentityMetadata", "Additional data(idHash): " + idHash);
 		Optional<IdentityEntity> identityEntityOpt = identityCacheRepo.findById(idHash);
 		
 		Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 		String expiryTime = (String) additionalData.get(EXPIRY_TIME);
-		
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"updateIdentityMetadata", "Additional data(expiryTime): " + expiryTime);
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+				"updateIdentityMetadata", "Additional data(transactionLimit): " + transactionLimit);
+
 		if(identityEntityOpt.isPresent()) {
 			IdentityEntity identityEntity = identityEntityOpt.get();
 			identityEntity.setUpdBy(IDA);
