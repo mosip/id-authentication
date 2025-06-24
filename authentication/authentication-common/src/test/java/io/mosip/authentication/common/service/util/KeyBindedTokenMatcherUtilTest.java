@@ -97,7 +97,7 @@ public class KeyBindedTokenMatcherUtilTest {
         try {
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-KBT-001",e.getErrorCode());
+            Assert.assertEquals("IDA-KBT-002",e.getErrorCode());
         }
     }
 
