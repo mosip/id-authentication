@@ -143,7 +143,7 @@ public class CredentialStoreServiceImplTest {
         credentialEventStore.setStatusCode("STORED");
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processCredentialStoreEvent", credentialEventStore);
     }
-    
+
     @Test
     public void ProcessCredentialStoreEventTest_exception()
             throws RestServiceException, IOException, IdAuthenticationBusinessException {
@@ -192,7 +192,7 @@ public class CredentialStoreServiceImplTest {
         isRecoverableException=false;
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "updateEventProcessingStatus", credentialEventStore, isSuccess, isRecoverableException, credentialEventStore.getStatusCode());
     }
-    
+
     @Test
     public void UpdateEventProcessingStatusTest_auditError() throws IDDataValidationException{
         CredentialEventStore credentialEventStore = getCredentialEventStore();
@@ -243,7 +243,7 @@ public class CredentialStoreServiceImplTest {
 			}
 		}
     }
-    
+
     @Test
     public void doProcessCredentialStoreEventTest_parseError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
         CredentialEventStore credentialEventStore = getCredentialEventStore();
@@ -263,7 +263,7 @@ public class CredentialStoreServiceImplTest {
 			}
 		}
     }
-    
+
     @Test
     public void doProcessCredentialStoreEventTest_dataShareDownloadError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
         CredentialEventStore credentialEventStore = getCredentialEventStore();
@@ -283,7 +283,7 @@ public class CredentialStoreServiceImplTest {
 			}
 		}
     }
-    
+
     @Test
     public void doProcessCredentialStoreEventTest_dataShareDownloadError_datavalidationError() throws IOException, RestServiceException, IdAuthenticationBusinessException {
         CredentialEventStore credentialEventStore = getCredentialEventStore();
@@ -339,7 +339,7 @@ public class CredentialStoreServiceImplTest {
      */
     @Test
     public void storeIdentityEntityTest(){
-        IdentityEntity identityEntity = new IdentityEntity();Add commentMore actions
+        IdentityEntity identityEntity = new IdentityEntity();
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", identityEntity);
     }
 
@@ -375,7 +375,7 @@ public class CredentialStoreServiceImplTest {
         String requestId=null;
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "retriggerCredentialIssuance", requestId);
     }
-    
+
     @Test(expected = IdAuthRetryException.class)
     public void retriggerCredentialIssuanceTest_exception() throws IDDataValidationException, RestServiceException{
         String requestId="abc";
