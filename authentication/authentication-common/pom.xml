@@ -6,13 +6,14 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2.1-rc1</version>
 	</parent>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-rc1</version>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -261,8 +262,28 @@
 			<artifactId>spring-batch-infrastructure</artifactId>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>

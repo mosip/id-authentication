@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1-rc1</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -39,7 +39,7 @@
         <repository>
             <id>ossrh</id>
             <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://central.sonatype.com/repositories/snapshots</url>
             <layout>default</layout>
             <snapshots>
             <enabled>true</enabled>
@@ -59,15 +59,15 @@
 			<url>https://repo.danubetech.com/repository/maven-public/</url>
 		  </repository>
     </repositories>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
 
@@ -93,32 +93,32 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Kernel components -->
-		<kernel.parent.version>1.3.0-SNAPSHOT</kernel.parent.version>
-		<kernel-core.version>1.3.0-SNAPSHOT</kernel-core.version>
+		<kernel.parent.version>1.3.0-beta.1</kernel.parent.version>
+		<kernel-core.version>1.3.0-beta.1</kernel-core.version>
 		<kernel-keymanager-service.version>1.3.0-beta.1</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.3.0-SNAPSHOT</kernel-idgenerator-tokenid.version>
-		<kernel-idobjectvalidator.version>1.3.0-SNAPSHOT</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.2.1-SNAPSHOT</kernel-pinvalidator.version>
-		<kernel-templatemanager-velocity.version>1.3.0-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-logger-logback.version>1.3.0-SNAPSHOT</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.3.0-SNAPSHOT</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.3.0-SNAPSHOT</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.3.0-SNAPSHOT</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.2.1-SNAPSHOT</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.3.0-SNAPSHOT</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.3.0-SNAPSHOT</kernel-biosdk-provider.version>
-		<kernel-websubclient-api.version>1.3.0-SNAPSHOT</kernel-websubclient-api.version>
-		<id-repository-core.version>1.2.1-SNAPSHOT</id-repository-core.version>
+		<kernel-idgenerator-tokenid.version>1.3.0-beta.1</kernel-idgenerator-tokenid.version>
+		<kernel-idobjectvalidator.version>1.3.0-beta.1</kernel-idobjectvalidator.version>
+		<kernel-pinvalidator.version>1.2.1-rc1</kernel-pinvalidator.version>
+		<kernel-templatemanager-velocity.version>1.3.0-beta.1</kernel-templatemanager-velocity.version>
+		<kernel-logger-logback.version>1.3.0-beta.1</kernel-logger-logback.version>
+		<kernel-dataaccess-hibernate.version>1.3.0-beta.1</kernel-dataaccess-hibernate.version>
+		<kernel-cbeffutil-api.version>1.3.0-beta.1</kernel-cbeffutil-api.version>
+		<kernel-templatemanager-velocity.version>1.3.0-beta.1</kernel-templatemanager-velocity.version>
+		<kernel-auth-adapter.version>1.2.1-rc1</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.3.0-beta.1</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.3.0-beta.1</kernel-biosdk-provider.version>
+		<kernel-websubclient-api.version>1.3.0-beta.1</kernel-websubclient-api.version>
+		<id-repository-core.version>1.2.1-rc1</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel-demoapi.version>1.3.0-SNAPSHOT</kernel-demoapi.version>
-		<kernel-idauthenticationfilter-api.version>1.3.0-SNAPSHOT</kernel-idauthenticationfilter-api.version>
-		<kernel-biometrics-util>1.3.0-SNAPSHOT</kernel-biometrics-util>
-		<kernel-openid-bridge-api.version>1.3.0-SNAPSHOT</kernel-openid-bridge-api.version>
-		<kernel-bom.version>1.3.0-SNAPSHOT</kernel-bom.version>
-		<biosdk-client.version>1.3.0-SNAPSHOT</biosdk-client.version>
-		<demosdk.version>1.2.1-SNAPSHOT</demosdk.version>
-		<esignet-integration-api.version>1.2.1-SNAPSHOT</esignet-integration-api.version>
-		<esignet-core.version>1.2.1-SNAPSHOT</esignet-core.version>
+		<kernel-demoapi.version>1.3.0-beta.1</kernel-demoapi.version>
+		<kernel-idauthenticationfilter-api.version>1.3.0-beta.1</kernel-idauthenticationfilter-api.version>
+		<kernel-biometrics-util>1.3.0-beta.1</kernel-biometrics-util>
+		<kernel-openid-bridge-api.version>1.3.0-beta.1</kernel-openid-bridge-api.version>
+		<kernel-bom.version>1.3.0-beta.1</kernel-bom.version>
+		<biosdk-client.version>1.3.0-beta.1</biosdk-client.version>
+		<demosdk.version>1.2.1-rc1</demosdk.version>
+		<esignet-integration-api.version>1.2.1-rc1</esignet-integration-api.version>
+		<esignet-core.version>1.2.1-rc1</esignet-core.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>21</maven.compiler.source>
@@ -129,6 +129,7 @@
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
@@ -303,14 +304,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
 			<plugin>
