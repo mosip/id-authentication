@@ -142,15 +142,15 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/** The max exponential retry interval limit millis. Default value is set to 1 hour*/
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
 	private long maxExponentialRetryIntervalLimitMillis;
-
+	
 	/** The credential store status event publisher. */
 	@Autowired
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
-
+	
 	/** The credential request manager. */
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
-
+	
 	/**
 	 * Process credential store event.
 	 *
@@ -168,7 +168,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		if (statusCode.equals(CredentialStoreStatus.FAILED.name())) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
 		}
-
+		
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
 			updateEventProcessingStatus(credentialEventStore, true, false, statusCode);
@@ -196,12 +196,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	private void skipIfWaitingForRetryInterval(CredentialEventStore credentialEventStore) throws RetryingBeforeRetryIntervalException {
 		Assert.isTrue(intervalExponentialMultiplier >= 1, CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER + " property value should be greater than or equal to 1.");
-
+		
 		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialMultiplier, credentialEventStore.getRetryCount()));
 		if(backoffIntervalMillis > maxExponentialRetryIntervalLimitMillis) {
 			backoffIntervalMillis = maxExponentialRetryIntervalLimitMillis;
 		}
-
+		
 		LocalDateTime updateDtimes = credentialEventStore.getUpdDTimes();
 		if (DateUtils.getUTCCurrentDateTime().isBefore(updateDtimes.plus(backoffIntervalMillis, ChronoUnit.MILLIS))) {
 			throw new RetryingBeforeRetryIntervalException();
@@ -244,7 +244,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					} else {
 						retryCount = maxRetryCount;
 						updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name()), OptionalInt.of(retryCount));
-
+						
 						// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 						credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 						audit(requestId, CredentialStoreStatus.FAILED.name());
@@ -253,7 +253,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 				updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name()), OptionalInt.empty());
-
+				
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 				audit(requestId, CredentialStoreStatus.FAILED.name());
@@ -264,10 +264,10 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private void updateStatusAndRetryCount(CredentialEventStore credentialEventStore, Optional<String> status, OptionalInt retryCount) {
 		retryCount.ifPresent(credentialEventStore::setRetryCount);
 		status.ifPresent(credentialEventStore::setStatusCode);
-
+		
 		credentialEventStore.setUpdBy(IDA);
 		credentialEventStore.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-
+		
 	}
 
 	/**
@@ -321,12 +321,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	@Transactional
 	private IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException {
-
+		
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
 					"Processing credential store event: " + objectMapper.writeValueAsString(credentialEventStore));
-
+			
 			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);
 			Event event = eventModel.getEvent();
 
@@ -425,7 +425,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/**
 	 * Store identity entity.
 	 *
-	 * @param identityEntity  the id entity
+	  * @param identityEntity the id entity
 	 */
 	@Override
 	public void storeIdentityEntity(IdentityEntity identityEntity) {
@@ -443,7 +443,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 				.collect(Collectors.partitioningBy(entry -> entry.getKey().toLowerCase().startsWith(BiometricType.FINGER.value().toLowerCase())
 						|| entry.getKey().toLowerCase().startsWith(BiometricType.IRIS.value().toLowerCase())
 						|| entry.getKey().toLowerCase().startsWith(BiometricType.FACE.value().toLowerCase())));
-
+		
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		Map<String, Object> bioData = bioOrDemoData.get(true).stream()
@@ -469,7 +469,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			uinHashSaltRepo.save(saltEntity);
 		}
 	}
-
+	
 	/**
 	 * Process missing credential request id.
 	 *
@@ -478,7 +478,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	public void processMissingCredentialRequestId(Chunk<? extends CredentialRequestIdsDto> dtos) {
 		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
 	}
-
+	
 	/**
 	 * Process missing credential request id.
 	 *
@@ -492,8 +492,8 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			String statusCode = eventStore.getStatusCode();
 			mosipLogger.debug("Found existing credential with request-id {} and status {}..", requestId, statusCode);
 			// For STORED, FAILED_WITH_MAX_RETRIES and FAILED_NON_RECOVERABLE, the status is
-			// not yet updated for in credential request service, so notify that.
-			// STORED to be notified as STORED and FAILED_* as FAILED.
+			// not yet updated for in credential request service, so notify that. 
+			// STORED to be notified as STORED and FAILED_* as FAILED. 
 			// For NEW and FAILED, events will be processed by credential store batch job, so noting to do.
 			if(CredentialStoreStatus.STORED.name().equalsIgnoreCase(statusCode)) {
 				mosipLogger.debug("Notifying credential with request-id {} as 'STORED'", requestId);
