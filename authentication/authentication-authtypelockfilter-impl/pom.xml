@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.1.0</version>
+		<version>1.2.1.1-SNAPSHOT</version>
 	</parent>
-	<version>1.2.1.0</version>
+	<version>1.2.1.1-SNAPSHOT</version>
 	<artifactId>authentication-authtypelockfilter-impl</artifactId>
 	<name>authentication-authtypelockfilter-impl</name>
 	<description>ID Authentication Filter Implementation for Auth Type Lock validation</description>
@@ -219,7 +219,7 @@
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 	</properties>
 
-		
+
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -382,12 +382,12 @@
 		<snapshotRepository>
                         <id>ossrh</id>
                         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository> 
+		</snapshotRepository>
                  <repository>
                         <id>ossrh</id>
                         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository> 
-        </distributionManagement> 
+                </repository>
+        </distributionManagement>
         <build>
           <plugins>
             <plugin>
@@ -422,7 +422,7 @@
                         <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         <autoReleaseAfterClose>false</autoReleaseAfterClose>
                   </configuration>
-                </plugin> 
+                </plugin>
 
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -522,5 +522,5 @@
                   <organizationUrl>https://github.com/mosip/commons</organizationUrl>
                 </developer>
         </developers>
-		
+
 	</project>
