@@ -4,7 +4,6 @@ RegenerateVid:
       uniqueIdentifier: TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01
       description: Regenerate VID
       role: resident
-      checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/RegenerateVid/regenerateVid
       outputTemplate: ida/errorRegenerate

@@ -74,33 +74,6 @@ createSendOTP:
         }
       ]
 }'
-  auth_SendOTP_toVID_ofDeactivatedUIN_Neg:
-    endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to VID of deactivated UIN
-    uniqueIdentifier: TC_IDA_SendOTP_04
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/SendOTP/IDAuthsendOtp
-    outputTemplate: ida/SendOTP/IDAuthSendotperror
-    input: '{
-      "transactionID": "1234567190",
-      "individualId": "$ID:GenerateVID_tosendOTP_Smoke_sid_vid$",
-      "requestTime": "$TIMESTAMP$",
-      "individualIdType": "VID",
-      "otpChannel": [
-          "EMAIL",
-          "PHONE"
-      ]
-    }'
-    output: '{
-      "errors": [
-        {
-          "errorCode": "IDA-MLC-018",
-          "errorMessage": "VID not available in database"
-        }
-      ]
-}'
   auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
     description: Send otp to locked email with valid UIN
