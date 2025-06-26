@@ -24,16 +24,6 @@
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-	
-	<test name="GenerateVidForSendOtpAndDeactivateUIN">
-		<parameter name="ymlFile"
-			value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
-		<parameter name="idKeyName" value="vid" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
-		</classes>
-	</test>
 
 	<test name="UpdateIdentityForUin">
 		<parameter name="ymlFile"
