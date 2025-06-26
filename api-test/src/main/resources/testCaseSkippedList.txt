@@ -1,5 +1,5 @@
 ##### JIRA number;testcase 
-#MOSIP-12456------Mimoto_AddIdentity_Binding_smoke_Pos
+#MOSIP-12456------test_case_name
 MOSIP-37285------auth_BioAuth_With_Deactivated_UIN
 MOSIP-37285------auth_EkycBio_Face_With_Deactivated_uin
 MOSIP-41019------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
