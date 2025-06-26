@@ -138,7 +138,8 @@ To execute the tests using Eclipse IDE, use the following steps:
    - In the **Arguments** tab, add the necessary **VM arguments**:
      - **VM Arguments**:
        ```
-       -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression```
+       -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression
+	   ```
 
 ## 5. **Run the Configuration**
 
