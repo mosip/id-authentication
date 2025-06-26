@@ -137,9 +137,10 @@ To execute the tests using Eclipse IDE, use the following steps:
      - In the **Main** tab, select the project by browsing the location where the `api-test` folder is saved, and select the **Main class** as `io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner`.
    - In the **Arguments** tab, add the necessary **VM arguments**:
      - **VM Arguments**:
-       ```
-       -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression
-	   ```
+    
+    ```bash
+    -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression
+    ```
 
 ## 5. **Run the Configuration**
 
