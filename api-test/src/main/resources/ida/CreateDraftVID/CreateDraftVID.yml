@@ -1,0 +1,16 @@
+CreateDraftVID:
+  auth_CreateDraftVID_Smoke_Pos:
+      endPoint: /idrepository/v1/draft/vid
+      uniqueIdentifier: TC_IDA_CreateDraftVID_01
+      description: create Draft Perpetual VID using UIN
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/CreateDraftVID/createDraftVID
+      outputTemplate: ida/CreateDraftVID/createDraftVIDResult
+      input: '{
+      "vidType": "Perpetual",
+      "UIN": "$ID:GetDraft_all_valid_smoke_sid_UIN$"
+      }'
+      output: '{
+    "vidStatus": "DRAFT"
+}'

@@ -1,0 +1,13 @@
+{
+    "response": {
+        "authTransactions": [
+            {{#each authTransactions}}
+      {
+        "transactionID": "{{code}}",
+		"referenceIdType": "{{referenceIdType}}"
+      }
+      {{#unless @last}},{{/unless}}
+      	{{/each}},
+        ]
+    },
+}

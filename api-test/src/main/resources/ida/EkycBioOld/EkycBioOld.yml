@@ -1,0 +1,2241 @@
+EkycBio:
+  auth_EkycBio_Face_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using face with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RingFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using ring finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftMiddleFingerr_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left middle finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftIndexFingerr_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left index finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftLittleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left little finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightIndexFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right index finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightRingFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right ring finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightMiddleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right middle finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightLittleFinger_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right little finger with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftThumb_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left thumb with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left Thumb",
+          "bioType": "Finger",
+          "bioValue": "$LEFTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightThumb_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right thumb with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right Thumb",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightIris_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right iris with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftIris_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left iris with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_Face_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using face with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RingFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using ring finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left middle finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftIndexFingerr_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left index finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left little finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right index finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right IndexFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTINDEXFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightRingFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right ring finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right middle finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right MiddleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTMIDDLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightLittleFinger_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right middle little finger with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right LittleFinger",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTLITTLEFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftThumb_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left thumb with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left Thumb",
+          "bioType": "Finger",
+          "bioValue": "$LEFTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightThumb_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right thumb with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right Thumb",
+          "bioType": "Finger",
+          "bioValue": "$RIGHTTHUMB$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_RightIris_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using right iris with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_LeftIris_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using left iris with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_inValid_transactionID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with invalid transactionId with valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "123HGFRFDDR3245@@456",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ]
+}'
+  auth_EkycBio_inValid_transactionID_vid:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with invalid transactionId with valid perpetual VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "123HGFRFDDR3245@@456",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ]
+}'
+  auth_EkycBio_blank_transactionID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with blank transactionId with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ]
+}'
+  auth_EkycBio_blank_transactionID_vid:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using blank transactionId with perpetual valid VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ]
+}'
+  auth_EkycBio_inValid_individualIdType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid individualId Type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UHGFETN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ]
+}'
+  auth_EkycBio_inValid_individualIdType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid individualId type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "UHGFETN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ]
+}'
+  auth_EkycBio_blank_individualIdType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using blank individualId type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ]
+}'
+  auth_EkycBio_blank_individualIdType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using blank individualId type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ]
+}'
+  auth_EkycBio_with_revoked_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using revoked VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_to_revoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-018",
+      "errorMessage": "VID not available in database"
+    }
+  ]
+}'
+  auth_EkycBio_Missing_Optional_Field_individualIdType_smoke:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with missing individualId type field with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "$REMOVE$",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_Missing_Optional_Field_individualIdType_smoke_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with missing individualId type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "$REMOVE$",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_EkycBio_invalid_bioSubType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with invalid bio sub type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "L@@@$%4556eft",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$REGEXP:Invalid Input Parameter - request/biometrics/.*/data/bioSubType.*$"
+    }
+  ]
+}'
+  auth_EkycBio_invalid_bioSubType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with invalid bio sub type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "L@@@$%4556eft",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$REGEXP:Invalid Input Parameter - request/biometrics/.*/data/bioSubType.*$"
+    }
+  ]
+}'
+  auth_EkycBio_blank_bioSubType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with blank bio sub type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioSubType"
+    }
+  ]
+}'
+  auth_EkycBio_blank_bioSubType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with blank bio sub type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "",
+          "bioType": "Iris",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioSubType"
+    }
+  ]
+}'
+  auth_EkycBio_Blank_bioType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using blank bio type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioType"
+    }
+  ]
+}'
+  auth_EkycBio_Blank_bioType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using blank bio type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - request/biometrics/0/data/bioType"
+    }
+  ]
+}'
+  auth_EkycBio_Missing_bioType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with missing bio type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "$REMOVE$",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_EkycBio_Missing_bioType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth with missing bio type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "$REMOVE$",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_EkycBio_Invalid_bioType:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid bio type with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "ddff3355",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_EkycBio_Invalid_bioType_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid bio type with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/errorCommon
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "ddff3355",
+          "bioValue": "$LEFTIRIS$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$IGNORE$"
+    }
+  ]
+}'
+  auth_EkycBio_invalid_biovalue:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid bio value with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "sgshshsh",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Iris did not match"
+    }
+  ]
+}'
+  auth_EkycBio_invalid_biovalue_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using invalid bio value with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "sgshshsh",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Iris did not match"
+    }
+  ]
+}'
+  auth_EkycBio_Iris_With_FaceBio_Invalid:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using iris with face bio value with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Iris did not match"
+    }
+  ]
+}'
+  auth_EkycBio_Iris_With_FaceBio_Invalid_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using iris with face bio value with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left",
+          "bioType": "Iris",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Iris",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Iris did not match"
+    }
+  ]
+}'
+  auth_EkycBio_Finger_With_FaceBio_Invalid:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using finger with face bio value with UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Finger did not match"
+    }
+  ]
+}'
+  auth_EkycBio_Finger_With_FaceBio_Invalid_VID:
+      endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
+      description: Ekyc bio auth using finger with face bio value with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data - Finger did not match"
+    }
+  ]
+}'
+  auth_EkycBio_Finger_With_dummy_partnerkey_Pos:
+      endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
+      description: Ekyc bio auth using finger with dummy partner key with VID
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "Left RingFinger",
+          "bioType": "Finger",
+          "bioValue": "$LEFTRINGFINGER$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "SYNCBYTE.MC01A",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Slap",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467175",
+          "type": "Finger",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+   "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    },
+    {
+      "errorCode": "IDA-MPA-001",
+      "errorMessage": "Digital signature verification failed for signature header"
+    }
+  ]
+}'

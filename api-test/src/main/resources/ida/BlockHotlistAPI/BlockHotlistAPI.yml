@@ -1,0 +1,243 @@
+HotlistAPI:
+   auth_BlockHotlistAPI_All_Valid_Smoke_UIN_without_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_01
+      description: block UIN without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_Positive_unblockUIN_valid_smoke_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_UIN_forever_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_01
+      description: block UIN for forever without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_hotlist_UIN_forever_smoke_sid_Pos_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_when_id_type_uin_incorrect:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_02
+      description: block UIN when id type is incorrect without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_for_hotlist_id_service_Pos_UIN$",
+    "idType": "VID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_when_id_type_vid_incorrect:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_03
+      description: block VID when id type is incorrect without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:GenerateVID_to_test_hotlist_Perpetual_sid_vid$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_when_expiry_time_old_incorrect:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_04
+      description: block VID when expiry time and id type are incorrect
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/error
+      input: '{
+    "id": "$ID:GenerateVID_to_test_hotlist_Perpetual_sid_vid$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": "sjsjsj4@33"
+  }'
+      output: '{
+    "errors": [
+      {
+        "errorCode": "ADM-HTL-002"
+      }
+    ]
+  }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_05
+      description: block UIN with expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_Positive_unblockUIN_valid_smoke_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_VID_without_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_06
+      description: block VID without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "idType": "VID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_VID_with_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_07
+      description: block VID with expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+    "idType": "VID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_Device_with_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_08
+      description: block device without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
+    "idType": "DEVICE",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_Device_withOUT_expirytime_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_08
+      description: block device without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
+    "idType": "DEVICE",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Smoke_deviceProviderId:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_09
+      description: block device provider id without expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "571203",
+    "idType": "DEVICE",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_blockUIN_toSendOtp_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_10
+      description: block UIN to send otp
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_ValidParameters_toBlock_toSendOtp_smoke_Pos_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_blockVID_toSendOtp_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_11
+      description: block VID to send otp
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:GenerateVID_toBlock_sendOTP_Smoke_sid_vid$",
+    "idType": "VID",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_ForSeconds_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_12
+      description: block UIN for few seconds
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_toBlockUIN_forSeconds_Pos_UIN$",
+    "idType": "UIN",
+    "requesttime": "$TIMESTAMP$",
+    "expiryTimestamp": "$EXPIRYTIMESTAMP$"
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'

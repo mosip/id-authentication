@@ -1,0 +1,41 @@
+EkycBio:
+    auth_EkycBio_Face_With_Valid_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_EkycBio_01
+      description: Ekyc bio face auth using valid UIN
+      role: resident
+      restMethod: post
+      inputTemplate: ida/EkycBio/ekycBio
+      outputTemplate: ida/EkycBio/ekycBioResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "3974189657",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "1234567890",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'

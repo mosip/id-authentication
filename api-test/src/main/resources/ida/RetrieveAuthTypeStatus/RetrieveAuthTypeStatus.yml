@@ -1,0 +1,18 @@
+RetrieveAuthTypeStatus:
+  auth_RetrieveAuthTypeStatus_audit_Uin_Active_smoke:
+      endPoint: /idrepository/v1/identity/authtypes/status/{ID}
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_RetrieveAuthTypeStatus_01
+      description: Retrieve Auth type status passing valid ID
+      role: idrepo
+      checkErrorsOnlyInResponse: true
+      restMethod: get
+      inputTemplate: ida/RetrieveAuthTypeStatus/retrieveAuthTypeStatus
+      outputTemplate: ida/RetrieveAuthTypeStatus/retrieveAuthTypeStatusResult
+      input: '{
+    "ID": "$ID:AddIdentity_ValidParameters_toRetrieveAuthType_auditLog_smoke_Pos_UIN$"
+}'
+      output: '{
+"authTypes": [{
+       
+      }]
+}'
