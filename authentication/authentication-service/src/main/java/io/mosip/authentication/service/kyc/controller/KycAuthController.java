@@ -445,6 +445,7 @@ public class KycAuthController {
 						metadata != null && 
 								metadata.get(IdAuthCommonConstants.IDENTITY_DATA) != null &&
 										metadata.get(IdAuthCommonConstants.IDENTITY_INFO) != null) {
+					mosipLogger.info("processKycAuthV2 >> {}", authRequestDTO.getRequest().isClaimsMetadataRequired());
 					kycAuthResponseDtoV2 = kycFacade.processKycAuthV2(authRequestDTO, authResponseDTO, partnerId, oidcClientId, metadata);
 				}
 				return kycAuthResponseDtoV2;
