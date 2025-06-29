@@ -8,4 +8,6 @@ import lombok.EqualsAndHashCode;
 public class KycAuthRequestDTOV2 extends AuthRequestDTO {
     
     private KycRequestDTOV2 request;
+
+    private boolean claimsMetadataRequired;
 }
