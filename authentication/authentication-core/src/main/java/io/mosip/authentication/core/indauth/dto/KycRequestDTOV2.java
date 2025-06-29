@@ -13,5 +13,4 @@ public class KycRequestDTOV2 extends RequestDTO {
 
     private String password;
 
-    private boolean claimsMetadataRequired;
 }
