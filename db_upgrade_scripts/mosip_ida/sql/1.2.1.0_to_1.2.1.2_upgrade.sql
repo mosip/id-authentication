@@ -1,1 +1,0 @@
-CREATE INDEX cred_event_store_status_cr_dtimes ON ida.credential_event_store USING btree (status_code desc, retry_count, cr_dtimes) WHERE status_code in ('NEW','FAILED');
