@@ -31,7 +31,7 @@ createSendOTP:
     outputTemplate: ida/SendOTP/IDAuthSendotperror
     input: '{
       "transactionID": "1234567190",
-      "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
+      "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
       "requestTime": "$TIMESTAMP$",
       "individualIdType": "VID",
       "otpChannel": [

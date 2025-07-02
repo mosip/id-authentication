@@ -1400,7 +1400,7 @@ EkycBio:
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": true,

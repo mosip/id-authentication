@@ -741,7 +741,7 @@ BioAuth:
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
