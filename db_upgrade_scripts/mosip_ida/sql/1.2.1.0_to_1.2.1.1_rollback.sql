@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS cred_event_store_status_cr_dtimes;
