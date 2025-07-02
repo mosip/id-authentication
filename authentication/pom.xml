@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.2.1.0</version>
+	<version>1.2.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -36,15 +36,15 @@
 	</developers>
 
     <repositories>
-        <repository>
-            <id>ossrh</id>
-            <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-            <snapshots>
-            <enabled>true</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>ossrh-central</id>
+			<name>MavenCentralRepository</name>
+			<url>https://central.sonatype.com/repository/maven-snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
         <repository>
             <id>central</id>
             <name>MavenCentral</name>
