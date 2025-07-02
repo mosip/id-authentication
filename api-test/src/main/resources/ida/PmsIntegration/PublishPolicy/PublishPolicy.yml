@@ -13,17 +13,11 @@ createPublishPolicy:
 		"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-        "policyGroupName": "$IGNORE$",
-        "policyGroupDesc": "$IGNORE$",
         "policyGroupStatus": "true",
-        "policyName": "$IGNORE$",
-        "policyDesc": "$IGNORE$",
         "policyType": "Auth",
         "status": "PUBLISHED",
         "is_Active": "true",
         "authType": "bio",
-        "authSubType": "$IGNORE$",
-		"mandatory": "$IGNORE$",
         "attributeName": "$IGNORE$",
         "authTokenType": "$IGNORE$"
 }'
@@ -42,17 +36,10 @@ createPublishPolicy:
 		"requesttime": "$TIMESTAMP$"
 }'
       output: '{
-        "policyGroupName": "$IGNORE$",
-        "policyGroupDesc": "$IGNORE$",
         "policyGroupStatus": "true",
-        "policyName": "$IGNORE$",
-        "policyDesc": "$IGNORE$",
         "policyType": "MISP",
         "status": "PUBLISHED",
         "is_Active": "true",
-        "authType": "$IGNORE$",
-        "authSubType": "$IGNORE$",
-		"mandatory": "$IGNORE$",
         "attributeName": "$IGNORE$",
         "authTokenType": "$IGNORE$"
 }'

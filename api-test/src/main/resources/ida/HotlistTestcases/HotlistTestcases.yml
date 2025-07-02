@@ -26,8 +26,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-008",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-008"
     }
   ]
 }'
@@ -58,8 +57,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-008",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-008"
     }
   ]
 }'
@@ -90,8 +88,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-008",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-008"
     }
   ]
 }'

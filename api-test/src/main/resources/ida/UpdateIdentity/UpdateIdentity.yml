@@ -28,10 +28,7 @@ UpdateIdentity:
       output: '{
     "status": "ACTIVATED",
     "sendOtpResp":{
-        "transactionID": "$IGNORE$",
-        "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/UpdateIdentity/sendOtpRes",
-        "maskedEmail": "$IGNORE$"
     }
 }'
   Auth_UpdateIdentity_updateAddress_Positive_EKYC_smoke:

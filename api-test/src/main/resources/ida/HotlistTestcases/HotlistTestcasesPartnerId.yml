@@ -25,8 +25,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'
@@ -56,8 +55,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'

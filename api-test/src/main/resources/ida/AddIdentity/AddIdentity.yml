@@ -1047,8 +1047,7 @@ AddIdentity:
 #      output: '{
 #   "errors": [
 #    {
-#      "errorCode": "IDR-IDC-002",
-#      "message": "$IGNORE$"
+#      "errorCode": "IDR-IDC-002"
 #    }
 #  ]
 #}'

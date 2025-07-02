@@ -13,7 +13,6 @@ RequestAPIKeyForAuthPartner:
         "requesttime": "$TIMESTAMP$"
     }'
       output: '{
-        "mappingkey": "$IGNORE$",
         "message": "Policy mapping request submitted successfully."
 }'
 
@@ -31,6 +30,5 @@ RequestAPIKeyForAuthPartner:
         "requesttime": "$TIMESTAMP$"
     }'
       output: '{
-        "mappingkey": "$IGNORE$",
         "message": "Policy mapping request submitted successfully."
 }'

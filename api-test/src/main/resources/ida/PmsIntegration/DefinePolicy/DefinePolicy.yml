@@ -16,9 +16,6 @@ definePolicy:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: ' {
-    "policyGroupName": "$IGNORE$",
-    "name": "$IGNORE$",
-    "desc": "$IGNORE$",
     "is_Active": false
 }'
 
@@ -39,8 +36,5 @@ definePolicy:
 	"requesttime": "$TIMESTAMP$"
 }'
       output: ' {
-    "policyGroupName": "$IGNORE$",
-    "name": "$IGNORE$",
-    "desc": "$IGNORE$",
     "is_Active": false
 }'

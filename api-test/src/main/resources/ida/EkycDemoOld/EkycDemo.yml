@@ -330,8 +330,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -364,8 +363,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -454,8 +452,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -488,8 +485,7 @@ EkycDemo:
     "kycStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'

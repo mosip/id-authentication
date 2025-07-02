@@ -2452,7 +2452,6 @@ EkycBio:
           "deviceProviderID": "1873299273",
           "env": "Staging",
           "deviceServiceID": "",
-          "domainUri": "$IGNORE$",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",

@@ -27,8 +27,6 @@ AuthUnlock:
     }
     }'
       output: '{
-  "registrationId": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -63,8 +61,6 @@ AuthUnlock:
     }
     }'
       output: '{
-  "registrationId": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -96,11 +92,9 @@ AuthUnlock:
 #    }
 #    }'
 #      output: '{
-#  "registrationId": "$IGNORE$",
 #  "message": "Notification has been sent to the provided contact detail(s)",
 #  "sendOtpResp":{
 #        "maskedMobile": "XXXXXX8531",
 #        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
-#        "maskedEmail": "$IGNORE$"
 #    }
 #}'

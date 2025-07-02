@@ -27,7 +27,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -61,7 +60,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -95,7 +93,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -160,7 +157,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -194,7 +190,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -228,7 +223,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -262,7 +256,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -296,7 +289,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -330,7 +322,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -364,7 +355,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"

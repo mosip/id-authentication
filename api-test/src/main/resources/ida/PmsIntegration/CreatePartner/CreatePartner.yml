@@ -18,7 +18,6 @@ createPartnerSelfRegistration:
     "requesttime": "$TIMESTAMP$"
   }'
       output: ' {
-        "partnerId": "$IGNORE$",
         "status": "InProgress"
 }'
 
@@ -41,6 +40,5 @@ createPartnerSelfRegistration:
     "requesttime": "$TIMESTAMP$"
   }'
       output: ' {
-        "partnerId": "$IGNORE$",
         "status": "InProgress"
 }'

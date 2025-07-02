@@ -27,7 +27,6 @@ RevokeVID:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -62,7 +61,6 @@ RevokeVID:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",

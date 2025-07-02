@@ -14,7 +14,6 @@ uploadPartnerCert:
   "requesttime": "$TIMESTAMP$"
 }'
       output: ' {
-  "errors": "$IGNORE$"
 }'
 
    auth_UploadPartnerCert_Misp_Valid_Smoke_sid:
@@ -32,5 +31,4 @@ uploadPartnerCert:
   "requesttime": "$TIMESTAMP$"
 }'
       output: ' {
-  "errors": "$IGNORE$"
 }'
