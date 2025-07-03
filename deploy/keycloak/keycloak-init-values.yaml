@@ -1,0 +1,40 @@
+keycloak:
+  realms:
+    mosip: # realm
+      clients:
+      - name: mosip-testrig-client
+        saroles:
+          - ID_AUTHENTICATION
+          - GLOBAL_ADMIN
+          - PARTNER_ADMIN
+          - REGISTRATION_PROCESSOR
+          - CREATE_SHARE
+          - PMS_ADMIN
+          - PMS_USER
+          - uma_authorization
+          - offline_access
+          - PUBLISH_DEACTIVATE_ID_ALL_INDIVIDUAL
+          - SUBSCRIBE_VID_CRED_STATUS_UPDATE_GENERAL
+          - ID_REPOSITORY
+          - PUBLISH_ACTIVATE_ID_ALL_INDIVIDUAL
+          - PUBLISH_REMOVE_ID_ALL_INDIVIDUAL
+          - PUBLISH_AUTHENTICATION_TRANSACTION_STATUS_GENERAL
+          - PUBLISH_VID_CRED_STATUS_UPDATE_GENERAL
+          - PUBLISH_AUTH_TYPE_STATUS_UPDATE_ALL_INDIVIDUAL
+          - PUBLISH_IDENTITY_CREATED_GENERAL
+          - PUBLISH_IDENTITY_UPDATED_GENERAL
+          - SUBSCRIBE_REMOVE_ID_STATUS_GENERAL
+        sa_client_roles:
+          ## realm-management client id
+          - realm-management:
+              # realm-management client roles
+              - view-users
+              - view-clients
+              - view-realm
+              - manage-users
+
+## These will be passed as environments variables to keycloak-init docker. Note the expected naming convention is
+## <clientname>_<secret>.  If empty secret is passed, it shall be randomly generated
+#clientSecrets:
+#  - name: mosip_toolkit_client_secret
+#    secret: ""
