@@ -462,15 +462,11 @@ public class KycServiceImpl implements KycService {
 		addIssuerInResponse(respMap, partnerId);
 		
 		try {
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
-					"Response Map(Subject): " + mapper.writeValueAsString(respMap));
 			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
-			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
-					"Signed data(Subject): " + signedData);
 			String respType = kycExchangeRequestDTO.getRespType();
 			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
-					"Requested Response Type is JWE for Partner Name: " + partnerId);
+					"Requested Response Type is JWE. ");
 				String partnerCertData = (String) kycExchangeRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
 				return securityManager.jwtEncrypt(signedData, partnerCertData);
 			}

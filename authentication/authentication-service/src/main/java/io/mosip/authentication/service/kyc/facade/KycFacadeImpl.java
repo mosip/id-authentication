@@ -634,7 +634,7 @@ public class KycFacadeImpl implements KycFacade {
 			
 			String token = idService.getToken(idResDTO);
 
-			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(idvidHash, idInfo, unVerifiedConsentClaims, 
+			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(token, idInfo, unVerifiedConsentClaims, 
 						verifiedConsentClaims, locales, idVid, kycExchangeRequestDTOV2);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
