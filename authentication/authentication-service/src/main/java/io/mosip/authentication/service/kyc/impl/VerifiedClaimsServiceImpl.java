@@ -13,6 +13,8 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFI
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ADDRESS_FORMATTED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ISSUER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUDIENCE;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -86,6 +88,12 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 
 	@Value("${mosip.ida.oidc4ida.ignore.standard.claims.list}")
 	private String[] ignoreClaims;
+
+	@Value("${mosip.ida.idp.add.issuer.response:true}")
+	private boolean addIssuerInResponse;
+
+	@Value("${mosip.ida.idp.issuer.uri:}")
+	private String issuerUri;
 
 	/** The env. */
 	@Autowired
@@ -231,6 +239,8 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 
 		Map<String, Object> respMap = new HashMap<>();
 		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
+		String partnerId = (String) kycExchangeRequestDTOV2.getMetadata().get("partnerId");
+		addIssuerInResponse(respMap, partnerId);
 		addUnverifiedConsentedClaims(respMap, unverifiedConsentClaims, mappedConsentedShortLocales, idInfo, idVid);
 		
 		if (respMap.containsValue(null)) {
@@ -791,6 +801,19 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		else {
 			existingClaimsMap.put(claim, identityDataMap.get(claim));
 			verifiedClaimsResp.put(CLAIMS, existingClaimsMap);
+		}
+	}
+
+	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+		if (addIssuerInResponse) {
+			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
+				respMap.put(ISSUER, issuerUri);
+			}
+			else {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
+					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+			}
+			respMap.put(AUDIENCE, partnerId);
 		}
 	}
 }
