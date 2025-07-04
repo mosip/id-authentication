@@ -100,9 +100,6 @@ public class KycFacadeImpl implements KycFacade {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycFacadeImpl.class);
 
-	@Value("${ida.idp.consented.individual_id.attribute.name:individual_id}")
-	private String consentedIndividualIdAttributeName;
-
 	/** The env. */
 	@Autowired
 	private EnvUtil env;
@@ -633,8 +630,8 @@ public class KycFacadeImpl implements KycFacade {
 			}
 			
 			String token = idService.getToken(idResDTO);
-
-			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(token, idInfo, unVerifiedConsentClaims, 
+			String subject = kycTokenData.getPsuToken();
+			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(subject, idInfo, unVerifiedConsentClaims, 
 						verifiedConsentClaims, locales, idVid, kycExchangeRequestDTOV2);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
