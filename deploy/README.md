@@ -29,6 +29,7 @@
 
 * Run the Installer Script
   ```
+  cd deploy/apitest-auth
   ./install.sh
   ```
 Note:
