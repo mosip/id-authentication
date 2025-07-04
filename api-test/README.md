@@ -1,4 +1,4 @@
-# Id Authentication API Test Rig
+# ID Authentication API Test Rig
 
 ## Overview
 
