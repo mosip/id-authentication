@@ -438,7 +438,7 @@ public class KycServiceImpl implements KycService {
 				List<String> consentedAttributes, List<String> consentedLocales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
-					"Building claims response for PSU token.");
+					"Building claims response for PSU token: " + subject);
 					
 		Map<String, Object> respMap = new HashMap<>();
 		Set<String> uniqueConsentedLocales = new HashSet<String>(consentedLocales);
@@ -460,8 +460,13 @@ public class KycServiceImpl implements KycService {
 		}
 		String partnerId = (String) kycExchangeRequestDTO.getMetadata().get("partnerId");
 		addIssuerInResponse(respMap, partnerId);
+		
 		try {
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Response Map(Subject): " + mapper.writeValueAsString(respMap));
 			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Signed data(Subject): " + signedData);
 			String respType = kycExchangeRequestDTO.getRespType();
 			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
