@@ -80,8 +80,14 @@ public class NotificationManager {
 			mailRequestDto.add("mailContent", mailContent);
 			mailRequestDto.add("mailSubject", mailSubject);
 			mailRequestDto.add("mailTo", emailId);
+			System.out.println("printing mailRequestDto");
+			System.out.println("Mail Request DTO: " + mailRequestDto);
+			System.out.println("Mail Content: " + mailContent);
+			System.out.println("Mail Subject: " + mailSubject);
+			System.out.println("Mail To: " + emailId);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
 					mailRequestDto, String.class);
+			System.out.println("Rest Request DTO: " + restRequestDTO);
 			restHelper.requestSync(restRequestDTO);
 		} catch (IDDataValidationException | RestServiceException e) {
 			// FIXME change error code
