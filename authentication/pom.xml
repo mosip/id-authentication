@@ -36,41 +36,40 @@
 	</developers>
 
     <repositories>
-        <repository>
-            <id>ossrh</id>
-            <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-            <snapshots>
-            <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>MavenCentral</name>
-            <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
-            <snapshots>
-            <enabled>false</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>ossrh-central</id>
+			<name>MavenCentralRepository</name>
+			<url>https://central.sonatype.com/repository/maven-snapshots</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>MavenCentral</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>danubetech-maven-public</id>
 			<url>https://repo.danubetech.com/repository/maven-public/</url>
 		  </repository>
     </repositories>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
-
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-filter-api</module>
@@ -118,7 +117,6 @@
 		<demosdk.version>1.3.0-beta.1</demosdk.version>
 		<esignet-integration-api.version>1.4.1</esignet-integration-api.version>
 		<esignet-core.version>1.4.1</esignet-core.version>
-
 		<!-- Maven Plugins -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -128,7 +126,7 @@
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
-
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
 		<mockito.version>3.4.3</mockito.version>
@@ -139,7 +137,7 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<postgresql.version>42.2.2</postgresql.version>
 		<spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
-
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<!-- Commons -->
 		<commons.lang.version>3.7</commons.lang.version>
 		<commons.codec.version>1.11</commons.codec.version>
@@ -302,25 +300,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.14</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.14</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
 			<plugin>
