@@ -5,13 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,56 +81,72 @@ public class NotificationServiceImpl implements NotificationService {
 	private LanguageUtil languageUtil;
 
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
+									 Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		Map<String, Object> values = new HashMap<>();
 		List<String> templateLanguages = getTemplateLanguages(idInfo);
-		
+		System.out.println("Template Languages: " + templateLanguages);
+
 		for (String lang : templateLanguages) {
-			values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
+			String nameValue = entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo);
+			System.out.println("Name (" + lang + "): " + nameValue);
+			values.put(NAME + "_" + lang, nameValue);
 		}
+
 		Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
+		System.out.println("Auth Date: " + dateAndTime.getT1());
+		System.out.println("Auth Time: " + dateAndTime.getT2());
 		values.put(DATE, dateAndTime.getT1());
 		values.put(TIME, dateAndTime.getT2());
+
 		String maskedUin = "";
 		String charCount = EnvUtil.getUinMaskingCharCount();
+		System.out.println("UIN Masking Char Count: " + charCount);
 		if (charCount != null && !charCount.isEmpty()) {
 			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
 		}
+		System.out.println("Masked UIN: " + maskedUin);
 		values.put("idvid", maskedUin);
+
 		String idvidType = authRequestDTO.getIndividualIdType();
+		System.out.println("IDVID Type: " + idvidType);
 		values.put("idvidType", idvidType);
 
-		// TODO add for all auth types
 		String authTypeStr = Stream
 				.of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
-						Stream.<AuthType>of(PinAuthType.values()), Stream.<AuthType>of(PasswordAuthType.values()), 
+						Stream.<AuthType>of(PinAuthType.values()), Stream.<AuthType>of(PasswordAuthType.values()),
 						Stream.<AuthType>of(KeyBindedTokenAuthType.values()))
 				.flatMap(Function.identity())
 				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
-				.peek(System.out::println)
-				.map(authType -> authType.getDisplayName(authRequestDTO, idInfoFetcher)).distinct().collect(Collectors.joining(","));
+				.peek(authType -> System.out.println("Enabled AuthType: " + authType.getClass().getSimpleName()))
+				.map(authType -> authType.getDisplayName(authRequestDTO, idInfoFetcher))
+				.peek(displayName -> System.out.println("AuthType Display Name: " + displayName))
+				.distinct()
+				.collect(Collectors.joining(","));
+		System.out.println("Auth Types: " + authTypeStr);
 		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.getResponse().isAuthStatus()) {
-			values.put(IdAuthCommonConstants.STATUS, "Passed");
-		} else {
-			values.put(IdAuthCommonConstants.STATUS, "Failed");
-		}
 
-		String phoneNumber = null;
-		String email = null;
-		phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-		email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
-		String notificationType = null;
+		boolean authStatus = authResponseDTO.getResponse().isAuthStatus();
+		System.out.println("Auth Status: " + (authStatus ? "Passed" : "Failed"));
+		values.put(IdAuthCommonConstants.STATUS, authStatus ? "Passed" : "Failed");
+
+		String phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		String email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+		System.out.println("Phone Number: " + phoneNumber);
+		System.out.println("Email: " + email);
+
+		String notificationType;
 		if (isAuth) {
 			notificationType = EnvUtil.getNotificationType();
 		} else {
-			// For internal auth no notification is done
 			notificationType = NotificationType.NONE.getName();
 		}
+		System.out.println("Notification Type: " + notificationType);
 
+		System.out.println("Final Notification Values Map: " + values);
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
 	}
+
 
 	public void sendOTPNotification(String idvid, String idvidType, Map<String, String> valueMap,
 			List<String> templateLanguages, String otp, String notificationProperty, LocalDateTime otpGenerationTime)
@@ -209,7 +219,16 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 
 	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
-			String notificationProperty, List<String> templateLanguages) throws IdAuthenticationBusinessException {
+								 String notificationProperty, List<String> templateLanguages) throws IdAuthenticationBusinessException {
+
+		System.out.println("----- Inside sendNotification -----");
+		System.out.println("Email ID: " + emailId);
+		System.out.println("Phone Number: " + phoneNumber);
+		System.out.println("Sender: " + sender);
+		System.out.println("Notification Property: " + notificationProperty);
+		System.out.println("Template Languages: " + templateLanguages);
+		System.out.println("Values Map: " + values);
+
 		String notificationtypeconfig = notificationProperty;
 		String notificationMobileNo = phoneNumber;
 		Set<NotificationType> notificationtype = new HashSet<>();
@@ -218,27 +237,33 @@ public class NotificationServiceImpl implements NotificationService {
 				&& !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
 			if (notificationtypeconfig.contains("|")) {
 				String value[] = notificationtypeconfig.split("\\|");
+				System.out.println("Multiple Notification Types: " + Arrays.toString(value));
 				for (int i = 0; i < 2; i++) {
-					String nvalue = "";
-					nvalue = value[i];
+					String nvalue = value[i];
+					System.out.println("Processing Notification Type: " + nvalue);
 					processNotification(emailId, notificationMobileNo, notificationtype, nvalue);
 				}
 			} else {
+				System.out.println("Single Notification Type: " + notificationtypeconfig);
 				processNotification(emailId, notificationMobileNo, notificationtype, notificationtypeconfig);
 			}
-
+		} else {
+			System.out.println("Notification type is NONE or empty, skipping notification processing.");
 		}
+
+		System.out.println("Resolved Notification Types: " + notificationtype);
 
 		if (notificationtype.contains(NotificationType.SMS)) {
+			System.out.println("Invoking SMS Notification");
 			invokeSmsNotification(values, sender, notificationMobileNo, templateLanguages);
-
 		}
+
 		if (notificationtype.contains(NotificationType.EMAIL)) {
+			System.out.println("Invoking Email Notification");
 			invokeEmailNotification(values, emailId, sender, templateLanguages);
-
 		}
-
 	}
+
 
 	/**
 	 * Reads notification type from property and set the notification type
@@ -250,28 +275,46 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 
 	private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
-			String notificationtypeconfig) {
+									 String notificationtypeconfig) {
+
+		System.out.println("----- Inside processNotification -----");
+		System.out.println("Notification Config Value: " + notificationtypeconfig);
+		System.out.println("Email ID: " + emailId);
+		System.out.println("Phone Number: " + phoneNumber);
+
 		String type = notificationtypeconfig;
+
 		if (type.equalsIgnoreCase(NotificationType.SMS.getName())) {
+			System.out.println("Requested Notification Type: SMS");
 			if (isNotNullorEmpty(phoneNumber)) {
 				notificationtype.add(NotificationType.SMS);
+				System.out.println("Added Notification Type: SMS");
 			} else {
+				System.out.println("Phone number is empty, trying to fallback to EMAIL");
 				if (isNotNullorEmpty(emailId)) {
 					notificationtype.add(NotificationType.EMAIL);
+					System.out.println("Fallback Added Notification Type: EMAIL");
 				}
 			}
 		}
 
 		if (type.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
+			System.out.println("Requested Notification Type: EMAIL");
 			if (isNotNullorEmpty(emailId)) {
 				notificationtype.add(NotificationType.EMAIL);
+				System.out.println("Added Notification Type: EMAIL");
 			} else {
+				System.out.println("Email ID is empty, trying to fallback to SMS");
 				if (isNotNullorEmpty(phoneNumber)) {
 					notificationtype.add(NotificationType.SMS);
+					System.out.println("Fallback Added Notification Type: SMS");
 				}
 			}
 		}
+
+		System.out.println("Current Notification Type Set: " + notificationtype);
 	}
+
 
 	private boolean isNotNullorEmpty(String value) {
 		return value != null && !value.isEmpty() && value.trim().length() > 0;
@@ -308,18 +351,36 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo, List<String> templateLanguages)
 			throws IdAuthenticationBusinessException {
+
+		System.out.println("----- Inside invokeSmsNotification -----");
+		System.out.println("Sender: " + sender);
+		System.out.println("Mobile Number: " + notificationMobileNo);
+		System.out.println("Template Languages: " + templateLanguages);
+		System.out.println("Values Map: " + values);
+
 		String authSmsTemplate = EnvUtil.getAuthSmsTemplate();
 		String otpSmsTemplate = EnvUtil.getOtpSmsTemplate();
+		System.out.println("Auth SMS Template: " + authSmsTemplate);
+		System.out.println("OTP SMS Template: " + otpSmsTemplate);
+
 		String contentTemplate = "";
 		if (sender == SenderType.AUTH && authSmsTemplate != null) {
 			contentTemplate = authSmsTemplate;
+			System.out.println("Selected SMS Template: AUTH");
 		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
 			contentTemplate = otpSmsTemplate;
+			System.out.println("Selected SMS Template: OTP");
+		} else {
+			System.out.println("No SMS template found for sender: " + sender);
 		}
 
 		String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
+		System.out.println("Final SMS Content: " + smsTemplate);
+
 		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
+		System.out.println("SMS sent to: " + notificationMobileNo);
 	}
+
 
 	/**
 	 * Email notification.

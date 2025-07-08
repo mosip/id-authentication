@@ -49,19 +49,40 @@ public class NotificationManager {
 	 */
 	public void sendSmsNotification(String notificationMobileNo, String message)
 			throws IdAuthenticationBusinessException {
+
+		System.out.println("----- Inside sendSmsNotification -----");
+		System.out.println("Target Mobile Number: " + notificationMobileNo);
+		System.out.println("SMS Message: " + message);
+
 		try {
 			SmsRequestDto smsRequestDto = new SmsRequestDto();
 			smsRequestDto.setMessage(message);
 			smsRequestDto.setNumber(notificationMobileNo);
-			RestRequestDTO restRequestDTO = null;
-			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
-					RestRequestFactory.createRequest(smsRequestDto), String.class);
+
+			System.out.println("SmsRequestDto created: " + smsRequestDto);
+
+			RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(
+					RestServicesConstants.SMS_NOTIFICATION_SERVICE,
+					RestRequestFactory.createRequest(smsRequestDto),
+					String.class
+			);
+
+			System.out.println("Built RestRequestDTO: " + restRequestDTO);
+
 			restHelper.requestSync(restRequestDTO);
+
+			System.out.println("SMS notification request sent successfully.");
+
 		} catch (IDDataValidationException | RestServiceException e) {
+			System.out.println("Error while sending SMS:");
+			System.out.println("Error Code: " + e.getErrorCode());
+			System.out.println("Error Text: " + e.getErrorText());
+
 			logger.error(IdAuthCommonConstants.SESSION_ID, "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
-    }
+	}
+
 
 	/**
 	 * Send email notification.
