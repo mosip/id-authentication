@@ -240,7 +240,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (idInfo != null && idvid != null) {
 			System.out.println("Inside if condition before notificationService");
 			System.out.println("isExternalAuth: " + isExternalAuth);
-			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isExternalAuth);
+			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, true);
 		}
 
 		return authResponseDTO;
