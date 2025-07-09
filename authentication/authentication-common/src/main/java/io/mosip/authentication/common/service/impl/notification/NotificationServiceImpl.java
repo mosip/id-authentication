@@ -136,6 +136,10 @@ public class NotificationServiceImpl implements NotificationService {
 		System.out.println("Email: " + email);
 
 		String notificationType;
+		System.out.println("Is Auth: " + isAuth);
+		System.out.println("Auth Status: " + authResponseDTO.getResponse().isAuthStatus());
+		System.out.println("Configured Notification Type (from EnvUtil): " + EnvUtil.getNotificationType());
+
 		if (isAuth) {
 			notificationType = EnvUtil.getNotificationType();
 		} else {
