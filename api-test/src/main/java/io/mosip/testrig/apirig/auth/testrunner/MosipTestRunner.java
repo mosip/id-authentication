@@ -120,7 +120,12 @@ public class MosipTestRunner {
 			LOGGER.error("Exception " + e.getMessage());
 		}
 		
+		IdAuthenticationUtil.dbCleanUp();
 		KeycloakUserManager.removeUser();
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.partnerId);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.ekycPartnerId);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.deviceOrganizationName);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.ftmOrganizationName);
 		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
@@ -144,16 +149,7 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = "auth";
 		BaseTestCase.certsForModule = "IDA";
-		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
-				ConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
-				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
-
-		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
-				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
+		IdAuthenticationUtil.dbCleanUp();
 		AuthTestsUtil.initiateAuthTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();
