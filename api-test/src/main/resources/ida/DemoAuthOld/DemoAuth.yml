@@ -300,8 +300,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -334,8 +333,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -620,8 +618,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -654,8 +651,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-DEA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-DEA-001"
     }
   ]
 }'
@@ -1164,8 +1160,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'

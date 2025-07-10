@@ -1488,8 +1488,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1534,8 +1533,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1814,8 +1812,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1860,8 +1857,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1906,8 +1902,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1952,8 +1947,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1998,8 +1992,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -2044,8 +2037,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -2175,8 +2167,7 @@ BioAuth:
   "authStatus": "false",
   "errors": [
     {
-      "errorCode": "IDA-MLC-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-001"
     }
   ]
 }'
