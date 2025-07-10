@@ -1282,7 +1282,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "$REMOVE$",
         "bio": false,
