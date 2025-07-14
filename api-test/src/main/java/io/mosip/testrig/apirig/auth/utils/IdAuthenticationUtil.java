@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.testng.SkipException;
 
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -134,6 +135,19 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 		
 		return jsonString;
+	}
+	
+	public static void dbCleanUp() {
+		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
+				ConfigManager.getKMDbSchema(),
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
+		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
+				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
+				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 	}
 	
 	public static String replaceKeywordValue(String jsonString, String keyword, String value) {
