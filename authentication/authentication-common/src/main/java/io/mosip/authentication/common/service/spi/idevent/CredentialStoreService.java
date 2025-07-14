@@ -19,9 +19,9 @@ public interface CredentialStoreService {
 	/**
 	 * Store identity entity.
 	 *
-	 * @param idEntities the id entities
+	 * @param identityEntity  the id entity
 	 */
-	public void storeIdentityEntity(Chunk<? extends IdentityEntity> idEntities);
+	public void storeIdentityEntity(IdentityEntity identityEntity);
 
 	/**
 	 * Store event model.
@@ -42,7 +42,7 @@ public interface CredentialStoreService {
 	 */
 	public IdentityEntity processCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException, RetryingBeforeRetryIntervalException;
-	
+
 	/**
 	 * Process missing credential request id.
 	 *
