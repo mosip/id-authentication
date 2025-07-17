@@ -322,9 +322,6 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
-			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
-					"Processing credential store event: " + objectMapper.writeValueAsString(credentialEventStore));
-			
 			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);
 			Event event = eventModel.getEvent();
 
