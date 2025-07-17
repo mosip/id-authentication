@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import io.mosip.authentication.internal.service.batch.CredentialStoreTasklet;
 import org.apache.http.HttpStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -124,6 +125,8 @@ public class DataProcessingBatchConfig {
 	@Autowired
 	private CredentialStoreJobExecutionListener listener;
 	
+	@Autowired
+	private CredentialStoreTasklet credentialStoreTasklet;
 	/**
 	 * Credential store job.
 	 *
@@ -194,21 +197,7 @@ public class DataProcessingBatchConfig {
 	 */
 	@Bean
 	public Step credentialStoreStep() {
-		Map<Class<? extends Throwable>, Boolean>  exceptions = new HashMap<>();
-		exceptions.put(IdAuthenticationBusinessException.class, false);
-		return stepBuilderFactory.get("credentialStoreStep")
-				.<CredentialEventStore, Future<IdentityEntity>>chunk(chunkSize)
-				.reader(credentialEventReader())
-				.processor(asyncCredentialStoreItemProcessor())
-				.writer(asyncCredentialStoreItemWriter())
-				// Here Job level retry is not applied, because, event level retry is handled
-				// explicitly by the item processor
-				.faultTolerant()
-				// Skipping the processing of the event for this exception because it is thrown
-				// when retry was done before the retry interval
-				.skip(RetryingBeforeRetryIntervalException.class)
-				.skipLimit(Integer.MAX_VALUE)
-				.build();
+		return stepBuilderFactory.get("credentialStoreStep").tasklet(credentialStoreTasklet).build();
 	}
 	
 	@Bean
@@ -227,16 +216,7 @@ public class DataProcessingBatchConfig {
 				.backOffPolicy(backOffPolicy)
 				.build();
 	}
-	
-	/**
-	 * Item writer.
-	 *
-	 * @return the item writer
-	 */
-	private ItemWriter<IdentityEntity> credentialStoreItemWriter() {
-		return credentialStoreService::storeIdentityEntity;
-	}
-	
+
 	/**
 	 * Item writer.
 	 *
@@ -245,35 +225,14 @@ public class DataProcessingBatchConfig {
 	private ItemWriter<CredentialRequestIdsDto> missingCredentialRetriggerItemWriter() {
 		return credentialStoreService::processMissingCredentialRequestId;
 	}
-	
-	/**
-	 * Async writer.
-	 *
-	 * @return the async item writer
-	 */
-	@Bean
-    public AsyncItemWriter<IdentityEntity> asyncCredentialStoreItemWriter() {
-        AsyncItemWriter<IdentityEntity> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(credentialStoreItemWriter());
-        return asyncItemWriter;
-    }
-	
+
 	@Bean
     public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
         AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
         return asyncItemWriter;
     }
-	
-	/**
-	 * Item processor.
-	 *
-	 * @return the item processor
-	 */
-	private ItemProcessor<CredentialEventStore, IdentityEntity> credentialStoreItemProcessor() {
-		return credentialStoreService::processCredentialStoreEvent;
-	}
-	
+
 	@Bean
 	public <T> AsyncItemProcessor<T, T> asyncIdentityItemProcessor() {
 		AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>();
@@ -281,20 +240,6 @@ public class DataProcessingBatchConfig {
 		    asyncItemProcessor.setTaskExecutor(taskExecutor());
 		return asyncItemProcessor;
 	}
-	
-	/**
-	 * Async item processor.
-	 *
-	 * @return the async item processor
-	 */
-	@Bean
-	public AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncCredentialStoreItemProcessor() {
-		AsyncItemProcessor<CredentialEventStore, IdentityEntity> asyncItemProcessor = new AsyncItemProcessor<>();
-		    asyncItemProcessor.setDelegate(credentialStoreItemProcessor());
-		    asyncItemProcessor.setTaskExecutor(taskExecutor());
-		return asyncItemProcessor;
-	}
-	
 
 	/**
 	 * Task executor.
@@ -311,25 +256,4 @@ public class DataProcessingBatchConfig {
         executor.setThreadNamePrefix("MultiThreaded-");
         return executor;
     }
-
-	/**
-	 * Credential event reader.
-	 *
-	 * @return the item reader
-	 */
-	@Bean
-	public ItemReader<CredentialEventStore> credentialEventReader() {
-		RepositoryItemReader<CredentialEventStore> reader = new RepositoryItemReader<>();
-		reader.setRepository(credentialEventRepo);
-		reader.setMethodName("findNewOrFailedEvents");
-		final Map<String, Sort.Direction> sorts = new HashMap<>();
-		    sorts.put("status_code", Direction.DESC); // NEW will be first processed than FAILED
-		    sorts.put("retry_count", Direction.ASC); // then try processing Least failed entries first
-		    sorts.put("cr_dtimes", Direction.ASC); // then, try processing old entries
-		reader.setSort(sorts);
-		reader.setPageSize(chunkSize);
-		return reader;
-	}
-	
-	
 }

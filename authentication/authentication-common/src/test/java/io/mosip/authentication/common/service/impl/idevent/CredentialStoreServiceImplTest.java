@@ -338,8 +338,8 @@ public class CredentialStoreServiceImplTest {
      */
     @Test
     public void storeIdentityEntityTest(){
-        List<IdentityEntity> idEntitites = new ArrayList<IdentityEntity>();
-        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", idEntitites);
+        IdentityEntity identityEntity = new IdentityEntity();
+        ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", identityEntity);
     }
 
     @Test(expected = UndeclaredThrowableException.class)
