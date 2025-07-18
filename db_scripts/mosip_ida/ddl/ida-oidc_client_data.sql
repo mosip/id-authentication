@@ -30,3 +30,6 @@ CREATE TABLE ida.oidc_client_data (
 
 );
 -- ddl-end --
+
+CREATE INDEX idx_oidc_client_id 
+ON ida.oidc_client_data (oidc_client_id);

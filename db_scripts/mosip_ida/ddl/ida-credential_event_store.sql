@@ -36,6 +36,12 @@ CREATE TABLE ida.credential_event_store(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+
+CREATE INDEX idx_cred_evt_pending
+ON credential_event_store (retry_count, cr_dtimes)
+WHERE status_code IN ('NEW', 'FAILED');
+
+
 --index section ends------
 COMMENT ON TABLE ida.credential_event_store IS 'Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure';
 -- ddl-end --
