@@ -50,7 +50,7 @@ CREATE INDEX idx_otp_txn_ref_status_gen
   
   -- create composite index
   CREATE INDEX idx_autntxn_entityid_dtimes
-    ON ida.autn_txn (entity_id, request_dtimes);
+    ON ida.auth_transaction (requested_entity_id, request_dtimes);
     
     
 -- Drop if exists for safety
@@ -58,18 +58,18 @@ DROP INDEX IF EXISTS idx_autntxn_reqtrnid_authtype_crdtimes_desc;
 
 -- Create index to support paginated filtered query
 CREATE INDEX idx_autntxn_reqtrnid_authtype_crdtimes_desc
-ON ida.autn_txn (request_trn_id, auth_type_code, cr_dtimes DESC);
+ON ida.auth_transaction (request_trn_id, auth_type_code, cr_dtimes DESC);
 
 -- Drop first for idempotency
 DROP INDEX IF EXISTS idx_autntxn_token_crdtimes_desc;
 
 -- Create index to speed up findByToken with pagination
 CREATE INDEX idx_autntxn_token_crdtimes_desc
-ON ida.autn_txn (token, cr_dtimes DESC);
+ON ida.auth_transaction (token_id, cr_dtimes DESC);
 
 -- Safe drop first
 DROP INDEX IF EXISTS idx_autntxn_token_reqdtimes;
 
 -- Create composite index for countRequestDTime()
 CREATE INDEX idx_autntxn_token_reqdtimes
-ON ida.autn_txn (token, request_dtimes);
+ON ida.auth_transaction (token_id, request_dtimes);
