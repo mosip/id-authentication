@@ -43,3 +43,20 @@ DROP INDEX IF EXISTS idx_partner_mapping_apikey;
 -- ca_cert_store db roll back script
 ---------------------------------------------------------------------------------------------------
 ALTER TABLE IF EXISTS ida.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
+
+-- Rollback: Drop indexes for auth performance tuning
+
+-- 1. auth_transaction
+DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
+
+-- 2. credential_event_store
+DROP INDEX IF EXISTS idx_cred_evt_pending;
+
+-- 3. hotlist_cache
+DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
+
+-- 4. oidc_client_data
+DROP INDEX IF EXISTS idx_oidc_client_id;
+
+-- 5. otp_transaction
+DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;

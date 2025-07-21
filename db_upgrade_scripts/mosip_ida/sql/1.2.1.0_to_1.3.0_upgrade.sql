@@ -23,3 +23,29 @@ CREATE UNIQUE INDEX idx_partner_mapping_apikey ON partner_mapping;
 -- ca_cert_store Upgrade Script
 --------------------------------------------------------------------------------------------------
 ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
+
+-- 1. auth_transaction: for countByRefIdAndRequestDTtimesAfter
+DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
+CREATE INDEX idx_autntxn_refid_dtimes 
+  ON ida.auth_transaction (ref_id, request_dtimes);
+
+-- 2. credential_event_store: for fetching pending credential events
+DROP INDEX IF EXISTS idx_cred_evt_pending;
+CREATE INDEX idx_cred_evt_pending 
+  ON credential_event_store (retry_count, cr_dtimes)
+  WHERE status_code IN ('NEW', 'FAILED');
+
+-- 3. hotlist_cache: for findByIdHashAndIdType
+DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
+CREATE INDEX idx_hotlistcache_hash_type 
+  ON ida.hotlist_cache (id_hash, id_type);
+
+-- 4. oidc_client_data: for findByClientId
+DROP INDEX IF EXISTS idx_oidc_client_id;
+CREATE INDEX idx_oidc_client_id 
+  ON ida.oidc_client_data (oidc_client_id);
+
+-- 5. otp_transaction: for findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc
+DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
+CREATE INDEX idx_otp_txn_ref_status_gen 
+  ON ida.otp_transaction (ref_id, status_code, generated_dtimes DESC);
