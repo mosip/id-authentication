@@ -50,6 +50,13 @@ CREATE INDEX idx_autntxn_refid_dtimes
 ON ida.auth_transaction (ref_id, request_dtimes);
 CREATE INDEX idx_autntxn_entityid_dtimes 
 ON autn_txn (entity_id, request_dtimes);
+-- Create index to support paginated filtered query
+CREATE INDEX idx_autntxn_reqtrnid_authtype_crdtimes_desc
+ON ida.autn_txn (request_trn_id, auth_type_code, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_crdtimes_desc
+ON ida.autn_txn (token, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_reqdtimes
+ON ida.autn_txn (token, request_dtimes);
 
 
 --index section ends------

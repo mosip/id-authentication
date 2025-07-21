@@ -62,3 +62,13 @@ DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
    Rollback for idx_autntxn_entityid_dtimes
    ============================================================ */
 DROP INDEX IF EXISTS idx_autntxn_entityid_dtimes;
+
+-- Rollback: Drop the index
+DROP INDEX IF EXISTS idx_autntxn_reqtrnid_authtype_crdtimes_desc;
+
+-- Rollback: drop the token+cr_dtimes index
+DROP INDEX IF EXISTS idx_autntxn_token_crdtimes_desc;
+
+-- Rollback: drop the index
+DROP INDEX IF EXISTS idx_autntxn_token_reqdtimes;
+
