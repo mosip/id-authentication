@@ -7,15 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 
 /**
  * This is a repository class for entity {@link AutnTxn}.
- * 
+ *
  * @author Rakesh Roshan
  */
 @Repository
@@ -31,7 +29,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 */
 	@Query(value = "Select new AutnTxn(token, refIdType, entityId) from AutnTxn where requestTrnId=:txnId AND authTypeCode=:authtypecode ORDER BY crDTimes DESC")
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
-			@Param("authtypecode") String authtypecode);
+									 @Param("authtypecode") String authtypecode);
 
 	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, refIdType, entityName, requestSignature, responseSignature ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
 	public List<AutnTxn> findByToken(@Param("token") String token, Pageable pagaeable);
@@ -48,11 +46,10 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	@Query("Select count(1) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
 			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
-			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
+								 @Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
-	@Transactional(readOnly = true)
 	Long countByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
-	
+
 	Long countByEntityIdAndRequestDTtimesAfter(String entityId, LocalDateTime afterRequestTime);
 
 }
