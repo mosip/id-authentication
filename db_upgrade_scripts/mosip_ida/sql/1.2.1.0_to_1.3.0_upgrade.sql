@@ -40,12 +40,14 @@ DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
 CREATE INDEX idx_hotlistcache_hash_type 
   ON ida.hotlist_cache (id_hash, id_type);
 
--- 4. oidc_client_data: for findByClientId
-DROP INDEX IF EXISTS idx_oidc_client_id;
-CREATE INDEX idx_oidc_client_id 
-  ON ida.oidc_client_data (oidc_client_id);
-
--- 5. otp_transaction: for findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc
+-- 4. otp_transaction: for findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc
 DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
 CREATE INDEX idx_otp_txn_ref_status_gen 
   ON ida.otp_transaction (ref_id, status_code, generated_dtimes DESC);
+  
+  -- drop first (so script is idempotent if re‑run)
+  DROP INDEX IF EXISTS idx_autntxn_entityid_dtimes;
+  
+  -- create composite index
+  CREATE INDEX idx_autntxn_entityid_dtimes
+    ON ida.autn_txn (entity_id, request_dtimes);
