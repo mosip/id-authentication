@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -49,8 +48,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
-
-	@Transactional(readOnly = true)
+	
 	Long countByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
 	
 	Long countByEntityIdAndRequestDTtimesAfter(String entityId, LocalDateTime afterRequestTime);
