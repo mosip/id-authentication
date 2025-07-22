@@ -145,8 +145,8 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-			inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFORIDENTITY$", phoneNumber);
-			inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email);
+			inputJson = replaceKeywordWithValue(inputJson, "$PHONENUMBERFORIDENTITY$", phoneNumber, testCaseName);
+			inputJson = replaceKeywordWithValue(inputJson, "$EMAILVALUE$", email, testCaseName);
 			
 		}
 

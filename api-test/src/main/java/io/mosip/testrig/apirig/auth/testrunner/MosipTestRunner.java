@@ -34,6 +34,7 @@ import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -111,6 +112,14 @@ public class MosipTestRunner {
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
 
 			BiometricDataProvider.generateBiometricTestData("Registration");
+			
+			String testCasesToExecuteString = IdAuthConfigManager.getproperty("testCasesToExecute");
+
+			DependencyResolver.loadDependencies(
+					getGlobalResourcePath() + "/" + "config/testCaseInterDependency.json");
+			if (!testCasesToExecuteString.isBlank()) {
+				IdAuthenticationUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+			}
 
 			if (partnerKeyURL.isEmpty() || ekycPartnerKeyURL.isEmpty())
 				LOGGER.error("partnerKeyURL is null");
@@ -131,6 +140,8 @@ public class MosipTestRunner {
 		OTPListener.bTerminate = true;
 		
 		HealthChecker.bTerminate = true;
+		
+		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 
 		System.exit(0);
 
