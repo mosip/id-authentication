@@ -392,8 +392,7 @@ public class KycFacadeImpl implements KycFacade {
 					response.setAuthToken(authResponse.getAuthToken());
 					if (((KycAuthRequestDTOV2) kycAuthRequestDTO).isClaimsMetadataRequired()) {
 						String verifiedClaimsMetadata = !CollectionUtils.isEmpty(idInfoList) ? idInfoList.get(0).getValue() : EMPTY;
-						mosipLogger.info("doProcessKycAuth ClaimsMetadataRequired : {}", verifiedClaimsMetadata);
-						response.setVerifiedClaimsMetadata(verifiedClaimsService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId));
+						response.setVerifiedClaimsMetadata(verifiedClaimsService.buildVerifiedClaimsMetadata(verifiedClaimsMetadata, oidcClientId, idInfo.keySet()));
 					}
 					((KycAuthResponseDTOV2)baseAuthResponseDTO).setResponse(response);
 				}

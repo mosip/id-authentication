@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -19,11 +20,12 @@ public interface VerifiedClaimsService {
 	 *
 	 * @param verifiedClaimsData				Verified Claims data of the identity
 	 * @param oidcClientId						OIDC Client Id.
+	 * @param idInfo							List of Identity Info of the user.
 	 * @return String
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId) throws IdAuthenticationBusinessException;
+	String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId, Set<String> idInfoAttributes) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Method to build kyc exchange version 2 verified claims data. 
