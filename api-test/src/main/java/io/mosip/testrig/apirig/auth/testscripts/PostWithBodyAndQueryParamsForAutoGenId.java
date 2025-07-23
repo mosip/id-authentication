@@ -86,6 +86,8 @@ public class PostWithBodyAndQueryParamsForAutoGenId extends IdAuthenticationUtil
 		
 		inputJson = inputJsonKeyWordHandeler(inputJson, testCaseName);
 		
+		inputJson = sanitizeCertificateField(inputJson);
+		
 		JSONObject requestJson = new JSONObject(inputJson);
 		HashMap<String, String> requestBody = new HashMap<>();
 		String partnerId = null, certValueSigned =null, moduleName = null, partnerType = null;

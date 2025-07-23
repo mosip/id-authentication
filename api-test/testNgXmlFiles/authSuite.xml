@@ -15,6 +15,20 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
+	<test name="BioAuthKYCDelegated">
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuthKYCDelegated.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+	<test name="BioAuthKYCExchange">
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuthKYCExchange.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
 
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />

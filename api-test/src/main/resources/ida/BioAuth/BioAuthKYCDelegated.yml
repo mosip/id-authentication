@@ -1,12 +1,12 @@
 BioAuth:
-  auth_BioAuth_Biometric_Face_With_Valid_uin_Smoke_Pos:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+  auth_BioAuth_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuth_01
       description: Biometric face auth with valid UIN
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuth/BioAuth
-      outputTemplate: ida/BioAuth/BioAuthResult
+      inputTemplate: ida/BioAuth/BioAuthDelegated
+      outputTemplate: ida/BioAuth/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -37,5 +37,5 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
+  "kycStatus": "true"
 }'

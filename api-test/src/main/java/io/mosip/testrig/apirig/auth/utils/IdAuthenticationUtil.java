@@ -13,6 +13,7 @@ import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
@@ -102,6 +103,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.MODULENAME, BaseTestCase.certsForModule);
 		}
 		
+		if (jsonString.contains("$POLICYID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$POLICYID_FOR_DELEGATED$", policyId);
+		}
+		
+		if (jsonString.contains("$PARTNER_ID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$PARTNER_ID_FOR_DELEGATED$", PartnerRegistration.partnerId);
+		}
+		
 		if (jsonString.contains(IDAConstants.TRANSACTION_ID))
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.TRANSACTION_ID, TRANSACTION_ID);
 		
@@ -134,6 +143,37 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 		
 		return jsonString;
+	}
+	
+	public static String sanitizeCertificateField(String json) {
+	    String certField = "\"certData\": \"";
+	    int certStart = json.indexOf(certField);
+	    if (certStart == -1) return json; // certData not present
+
+	    int startQuote = certStart + certField.length();
+	    int endQuote = json.indexOf("\"", startQuote);
+
+	    // Handle multiline certificate: find true closing quote
+	    boolean escaped = false;
+	    for (int i = startQuote; i < json.length(); i++) {
+	        char c = json.charAt(i);
+	        if (c == '\\') {
+	            escaped = !escaped;
+	        } else if (c == '"' && !escaped) {
+	            endQuote = i;
+	            break;
+	        } else {
+	            escaped = false;
+	        }
+	    }
+
+	    String certValue = json.substring(startQuote, endQuote);
+
+	    // Escape newlines inside certData
+	    String escapedCertValue = certValue.replace("\n", "\\n").replace("\r", "");
+
+	    // Replace the original certData with escaped one
+	    return json.substring(0, startQuote) + escapedCertValue + json.substring(endQuote);
 	}
 	
 	public static String replaceKeywordValue(String jsonString, String keyword, String value) {
