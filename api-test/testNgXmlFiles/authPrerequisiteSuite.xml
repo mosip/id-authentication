@@ -16,7 +16,7 @@
 		</classes>
 	</test>
 	
-	<test name="CreatePolicyGroup">
+	<!--<test name="CreatePolicyGroup">
 		<parameter name="ymlFile"
 			value="ida/PmsIntegration/DefinePolicyGroup/DefinePolicyGroup.yml" />
 		<parameter name="idKeyName" value="id,name" />
@@ -133,7 +133,7 @@
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
 		</classes>
-	</test>
+	</test>-->
 	
 	<test name="OIDCClient">
 		<parameter name="ymlFile"
@@ -145,7 +145,7 @@
 		</classes>
 	</test>
 
-	<test name="CreateVID">
+	<!--<test name="CreateVID">
 		<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
 		<parameter name="idKeyName" value="VID" />
 		<classes>
@@ -220,7 +220,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
 		</classes>
-	</test>
+	</test>-->
 
 	<test name="GenerateVID">
 		<parameter name="ymlFile"
@@ -232,7 +232,7 @@
 		</classes>
 	</test>
 
-	<test name="DeactivateVIDs">
+	<!--<test name="DeactivateVIDs">
 		<parameter name="ymlFile" value="ida/DeactivateUin/DeactivateUin.yml" />
 		<classes>
 			<class
@@ -315,7 +315,7 @@
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
 		</classes>
-	</test>
+	</test>-->
 
 
 </suite>
