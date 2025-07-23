@@ -88,7 +88,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -364,7 +364,7 @@ EkycDemo:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
     }
@@ -1282,7 +1282,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "$REMOVE$",
         "bio": false,
