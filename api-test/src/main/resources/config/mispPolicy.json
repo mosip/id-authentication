@@ -3,6 +3,5 @@
       "allowAuthRequestDelegation": true,
       "allowKycRequestDelegation": true,
       "allowKeyBindingDelegation": true,
-      "allowOTPRequestDelegation": true,
       "allowVciRequestDelegation": true
 }

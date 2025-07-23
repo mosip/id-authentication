@@ -15,7 +15,7 @@ BioAuthKycExchange:
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
-        "kycToken": "$ID:BioAuth_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "kycToken": "$ID:BioAuthDelegated_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
         "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"

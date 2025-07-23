@@ -220,7 +220,7 @@
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
 		</classes>
-	</test>-->
+	</test>
 
 	<test name="GenerateVID">
 		<parameter name="ymlFile"
@@ -232,7 +232,7 @@
 		</classes>
 	</test>
 
-	<!--<test name="DeactivateVIDs">
+	<test name="DeactivateVIDs">
 		<parameter name="ymlFile" value="ida/DeactivateUin/DeactivateUin.yml" />
 		<classes>
 			<class
