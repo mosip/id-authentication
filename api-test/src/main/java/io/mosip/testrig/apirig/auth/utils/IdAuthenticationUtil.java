@@ -146,36 +146,6 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return jsonString;
 	}
 	
-	public static String sanitizeCertificateField(String json) {
-	    String certField = "\"certData\": \"";
-	    int certStart = json.indexOf(certField);
-	    if (certStart == -1) return json; // certData not present
-
-	    int startQuote = certStart + certField.length();
-	    int endQuote = json.indexOf("\"", startQuote);
-
-	    // Handle multiline certificate: find true closing quote
-	    boolean escaped = false;
-	    for (int i = startQuote; i < json.length(); i++) {
-	        char c = json.charAt(i);
-	        if (c == '\\') {
-	            escaped = !escaped;
-	        } else if (c == '"' && !escaped) {
-	            endQuote = i;
-	            break;
-	        } else {
-	            escaped = false;
-	        }
-	    }
-
-	    String certValue = json.substring(startQuote, endQuote);
-
-	    // Escape newlines inside certData
-	    String escapedCertValue = certValue.replace("\n", "\\n").replace("\r", "");
-
-	    // Replace the original certData with escaped one
-	    return json.substring(0, startQuote) + escapedCertValue + json.substring(endQuote);
-}
 	public static void dbCleanUp() {
 		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
 				ConfigManager.getKMDbSchema(),
