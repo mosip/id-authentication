@@ -1909,7 +1909,7 @@ AddIdentity:
   "addressCopy": "Y",
   "biometricReferenceId": "23452353",
   "UIN": "$UIN$",
-  "dateOfBirth": "2000/01/14",
+  "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
   "email": "auth_AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos@mosip.net",
   "phone": "7019858531",
