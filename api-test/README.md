@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Id Authentication API Test Rig** is designed for the execution of module-wise automation API tests for the Id authentication services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the Id authentication API functionalities. The key focus is to validate the Bio auth, OTP auth, kyc, Auth lock, Auth unlock and related functionalities provided by the Id authentication module.
+The **ID Authentication API Test Rig** is designed for the execution of module-wise automation API tests for the ID authentication services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the ID authentication API functionalities. The key focus is to validate the Bio auth, OTP auth, kyc, Auth lock, Auth unlock and related functionalities provided by the ID authentication module.
 
 ---
 
@@ -15,7 +15,7 @@ The **Id Authentication API Test Rig** is designed for the execution of module-w
 
 ## Coverage
 
-This test rig covers only **external API endpoints** exposed by the Id authentication module.
+This test rig covers only **external API endpoints** exposed by the ID authentication module.
 
 ---
 
@@ -102,7 +102,7 @@ To execute the tests using Jar, use the following steps:
 
 2. Run the automation test suite JAR file:
    ```
-   java -jar -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.2.1.1-jar-with-dependencies.jar
+   java -jar -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.2.1.2-jar-with-dependencies.jar
    ```
    
 # Using Eclipse IDE
@@ -181,14 +181,14 @@ This section describes the meaning of each column in the test report:
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).
 - **env.endpoint**: The environment where the application under test is deployed. Replace `<base_env>` with the correct base URL for the environment (e.g., `https://api-internal.<env_name>.mosip.net`).
 - **env.testLevel**: Set this to `smoke` to run only smoke test cases, or `smokeAndRegression` to run both smoke and regression tests.
-- **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-auth-1.2.1.1-jar-with-dependencies.jar`.
+- **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-auth-1.2.1.2-jar-with-dependencies.jar`.
 
 ### Build and Run Info
 
 To run the tests for both **Smoke** and **Regression**:
 
 1. Ensure the correct environment and test level parameters are set.
-2. Execute the tests as shown in the command above to validate Id authentication API functionalities.
+2. Execute the tests as shown in the command above to validate ID authentication API functionalities.
 
 ---
 
