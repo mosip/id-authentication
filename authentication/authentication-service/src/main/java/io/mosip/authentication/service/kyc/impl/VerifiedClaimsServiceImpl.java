@@ -95,6 +95,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	@Value("${mosip.ida.idp.issuer.uri:}")
 	private String issuerUri;
 
+	@Value("${mosip.ida.idp.no.language.attribute.list:phone}")
+	private String[] noLangAttributeList;
+
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -708,7 +711,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			Map<String, Object> verifiedClaimsRespMap = new HashMap<>();
 			// Add language specific claims if multiple locales exist
 			Set<String> matchedLocales = getMatchedLocales(identityDataMap, mappedConsentedShortLocales);
-			if (identityDataMap.size() == 0 || matchedLocales.size() == 0) {		
+			List<String> noLangAttributeList = Arrays.asList(this.noLangAttributeList);
+			// to handle the case where claim is phone number
+			if (identityDataMap.size() == 0 || (!noLangAttributeList.contains(claim) && matchedLocales.size() == 0)) {		
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"addVerifiedClaimsToResponse",
 						"Identity Data Map or Matched Locales is empty. Identity Data Map: " 
