@@ -141,6 +141,7 @@ public class MosipTestRunner {
 		
 		HealthChecker.bTerminate = true;
 		
+		// Used for generating the test case interdependency JSON file
 		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 
 		System.exit(0);
