@@ -14,7 +14,7 @@ createPartnerSelfRegistration:
     "organizationName": "$PARTNERID$",
     "partnerId": "$PARTNERID$",
     "partnerType": "Auth_Partner",
-    "policyGroup": "$ID:DefinePolicyGroup_Misp_Valid_Smoke_sid_name$",
+    "policyGroup": "$ID:DefinePolicyGroup_All_Valid_Smoke_sid_name$",
     "requesttime": "$TIMESTAMP$"
   }'
       output: ' {

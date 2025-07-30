@@ -17,6 +17,7 @@ import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
@@ -112,6 +113,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		
 		if (jsonString.contains(IDAConstants.MODULENAME)) {
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.MODULENAME, BaseTestCase.certsForModule);
+		}
+		
+		if (jsonString.contains("$POLICYID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$POLICYID_FOR_DELEGATED$", policyId);
+		}
+		
+		if (jsonString.contains("$PARTNER_ID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$PARTNER_ID_FOR_DELEGATED$", PartnerRegistration.partnerId);
 		}
 		
 		if (jsonString.contains(IDAConstants.TRANSACTION_ID))
