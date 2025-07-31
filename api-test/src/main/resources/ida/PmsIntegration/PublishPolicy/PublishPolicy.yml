@@ -8,7 +8,7 @@ createPublishPolicy:
       inputTemplate: ida/PmsIntegration/PublishPolicy/publishPolicy
       outputTemplate: ida/PmsIntegration/PublishPolicy/publishPolicyResult
       input: '{
-		"policygroupId": "$ID:DefinePolicyGroup_Misp_Valid_Smoke_sid_id$",
+		"policygroupId": "$ID:DefinePolicyGroup_All_Valid_Smoke_sid_id$",
 		"policyId": "$ID:DefinePolicy_All_Valid_Smoke_sid_id$",
 		"requesttime": "$TIMESTAMP$"
 }'

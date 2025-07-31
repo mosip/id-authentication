@@ -1,5 +1,5 @@
 uploadPartnerCert:
-   auth_UploadPartnerCert_All_Valid_Smoke:
+   auth_UploadPartnerCert_All_Valid_Smoke_sid:
       endPoint: /v1/partnermanager/partners/certificate/upload
       uniqueIdentifier: Dependent_Idrepo_uploadPartnerCert_01
       description: Upload partner certificate with all valid details

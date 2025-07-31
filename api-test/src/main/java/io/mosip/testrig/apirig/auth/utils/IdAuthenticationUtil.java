@@ -1,5 +1,8 @@
 package io.mosip.testrig.apirig.auth.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -14,6 +17,7 @@ import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
@@ -21,6 +25,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final Logger logger = Logger.getLogger(IdAuthenticationUtil.class);
 	public static String genRid1 = "27847" + generateRandomNumberString(10);
 	public static String randomString = generateRandomNumberString(6) + generateRandomNumberString(3);
+	
+	public static List<String> testCasesInRunScope = new ArrayList<>();
 
 	public static void setLogLevel() {
 		if (IdAuthConfigManager.IsDebugEnabled())
@@ -31,11 +37,17 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
+		currentTestCaseName = testCaseName;
 		
 		int indexof = testCaseName.indexOf("_");
 		String modifiedTestCaseName = testCaseName.substring(indexof + 1);
 
 		addTestCaseDetailsToMap(modifiedTestCaseName, testCaseDTO.getUniqueIdentifier());
+		
+		if (!testCasesInRunScope.isEmpty()
+				&& testCasesInRunScope.contains(testCaseDTO.getUniqueIdentifier()) == false) {
+			throw new SkipException(GlobalConstants.NOT_IN_RUN_SCOPE_MESSAGE);
+		}
 
 		if (MosipTestRunner.skipAll == true) {
 			throw new SkipException(GlobalConstants.PRE_REQUISITE_FAILED_MESSAGE);
@@ -101,6 +113,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		
 		if (jsonString.contains(IDAConstants.MODULENAME)) {
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.MODULENAME, BaseTestCase.certsForModule);
+		}
+		
+		if (jsonString.contains("$POLICYID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$POLICYID_FOR_DELEGATED$", policyId);
+		}
+		
+		if (jsonString.contains("$PARTNER_ID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$PARTNER_ID_FOR_DELEGATED$", PartnerRegistration.partnerId);
 		}
 		
 		if (jsonString.contains(IDAConstants.TRANSACTION_ID))
