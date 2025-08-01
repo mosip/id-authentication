@@ -70,6 +70,7 @@ public class DataProcessingBatchConfig {
 	@Scope("singleton")
 	public Job retriggerMissingCredentialJob(CredentialStoreJobExecutionListener listener, JobRepository jobRepository,
 								  PlatformTransactionManager platformTransactionManager) {
+		logger.info("inside data processing batch cofig ");
 		return new JobBuilder("retriggerMissingCredentials", jobRepository)
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)

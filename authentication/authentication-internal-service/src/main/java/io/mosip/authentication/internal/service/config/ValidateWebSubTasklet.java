@@ -128,6 +128,7 @@ public class ValidateWebSubTasklet implements Tasklet {
     @Qualifier("retriggerMissingCredentials")
     public Job retriggerMissingCredentials(CredentialStoreJobExecutionListener listener, JobRepository jobRepository,
                                            PlatformTransactionManager platformTransactionManager) {
+        logger.info("in validate web sub tasklet inside job retriggerMissingCredentials");
         Job job = new JobBuilder("retriggerMissingCredentials", jobRepository).incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(validateWebSubInitialization(jobRepository, platformTransactionManager)) // check if web sub subscribed to proceed
@@ -150,6 +151,7 @@ public class ValidateWebSubTasklet implements Tasklet {
 
     @Bean
     public Step retriggerMissingCredentialsStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
+        logger.info("inside validatewebsubtasklet retriggermissingCredentialstep method ");
         Map<Class<? extends Throwable>, Boolean> exceptions = new HashMap<>();
         exceptions.put(IdAuthenticationBusinessException.class, false);
         return new StepBuilder("retriggerMissingCredentialsStep", jobRepository)
