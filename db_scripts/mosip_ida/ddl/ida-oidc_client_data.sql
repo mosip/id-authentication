@@ -31,3 +31,11 @@ CREATE TABLE ida.oidc_client_data (
 );
 -- ddl-end --
 
+-- Optimize autovacuum for oidc_client_data to clean dead tuples
+ALTER TABLE oidc_client_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+

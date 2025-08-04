@@ -243,3 +243,34 @@ ALTER TABLE misp_license_data SET (
     autovacuum_analyze_scale_factor = 0.1,
     autovacuum_analyze_threshold = 50
 );
+
+-- Rollback autovacuum settings for otp_transaction to default values
+ALTER TABLE otp_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for partner_mapping to default values
+ALTER TABLE partner_mapping SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for partner_mapping to default values
+ALTER TABLE policy_data SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE uin_hash_salt SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

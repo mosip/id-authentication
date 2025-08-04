@@ -27,6 +27,14 @@ CREATE TABLE ida.partner_mapping (
 	CONSTRAINT idx_partner_mapping_apikey UNIQUE (api_key_id)
 
 );
+
+-- Optimize autovacuum for partner_mapping to clean dead tuples
+ALTER TABLE partner_mapping SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_pm_pid ON ida.partner_mapping (partner_id);

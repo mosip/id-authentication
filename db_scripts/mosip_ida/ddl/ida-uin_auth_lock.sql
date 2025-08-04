@@ -30,6 +30,13 @@ CREATE TABLE ida.uin_auth_lock(
 	CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
 
 );
+
+ALTER TABLE uin_auth_lock SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);

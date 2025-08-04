@@ -27,6 +27,14 @@ CREATE TABLE ida.partner_data (
 	CONSTRAINT partner_data_pk PRIMARY KEY (partner_id)
 
 );
+
+-- Optimize autovacuum for partner_data to clean dead tuples
+ALTER TABLE partner_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_pd_pid ON ida.partner_data (partner_id);

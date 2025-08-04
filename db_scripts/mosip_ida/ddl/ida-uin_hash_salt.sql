@@ -24,6 +24,13 @@ CREATE TABLE ida.uin_hash_salt(
 	CONSTRAINT pk_uinhs PRIMARY KEY (id)
 
 );
+
+ALTER TABLE uin_hash_salt SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_uhs_id ON ida.uin_hash_salt (id);
