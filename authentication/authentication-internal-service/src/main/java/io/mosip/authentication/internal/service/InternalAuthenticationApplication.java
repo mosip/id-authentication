@@ -4,7 +4,6 @@ import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.*;
 import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
@@ -134,7 +133,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		io.mosip.kernel.partnercertservice.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
 		EnvUtil.class, KeyBindedTokenMatcherUtil.class, HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
-		PasswordAuthServiceImpl.class, PasswordComparator.class, PDFGeneratorImpl.class,
+		PasswordAuthServiceImpl.class, PasswordComparator.class, 
 		RestTemplateHelper.class, LanguageUtil.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
