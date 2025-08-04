@@ -168,6 +168,10 @@
 			<version>${kernel-keymanager-service.version}</version>
 			<exclusions>
 				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-pdfgenerator-itext</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>
 						spring-boot-starter-security
