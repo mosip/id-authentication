@@ -80,7 +80,6 @@ import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 
 
@@ -115,7 +114,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		HSMHealthCheck.class, TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class, 
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
-		PDFGeneratorImpl.class, RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
+		 RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
 , TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class})
