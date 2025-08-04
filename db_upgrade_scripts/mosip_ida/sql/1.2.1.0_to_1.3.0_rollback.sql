@@ -72,3 +72,48 @@ DROP INDEX IF EXISTS idx_autntxn_token_crdtimes_desc;
 -- Rollback: drop the index
 DROP INDEX IF EXISTS idx_autntxn_token_reqdtimes;
 
+ALTER TABLE anonymous_profile SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for api_key_data to default values
+ALTER TABLE api_key_data SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE auth_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for batch_job_execution to default values
+ALTER TABLE batch_job_execution SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for batch_job_execution_context to default values
+ALTER TABLE batch_job_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for batch_job_execution_params to default values
+ALTER TABLE batch_job_execution_params SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

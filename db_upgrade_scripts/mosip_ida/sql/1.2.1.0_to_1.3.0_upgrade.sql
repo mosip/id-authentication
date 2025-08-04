@@ -88,11 +88,18 @@ ALTER TABLE uin_auth_lock SET (
     autovacuum_analyze_threshold = 500
 );
 
-ALTER TABLE otp_transaction SET (
+ALTER TABLE anonymous_profile SET (
     autovacuum_vacuum_scale_factor = 0.05,
     autovacuum_vacuum_threshold = 500,
     autovacuum_analyze_scale_factor = 0.05,
     autovacuum_analyze_threshold = 500
+);
+
+ALTER TABLE api_key_data SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 50
 );
 
 ALTER TABLE ida.auth_transaction SET (
@@ -102,6 +109,30 @@ ALTER TABLE ida.auth_transaction SET (
     autovacuum_analyze_threshold = 5000
 );
 
+-- Optimize autovacuum for batch_job_execution to clean dead tuples
+ALTER TABLE batch_job_execution SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_job_execution_context to clean dead tuples
+ALTER TABLE batch_job_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
 DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
 CREATE INDEX idx_auth_transaction_refid_dtimes_isdeleted
 ON ida.auth_transaction (ref_id, request_dtimes, is_deleted);
+
+-- Optimize autovacuum for batch_job_execution_params to clean dead tuples
+ALTER TABLE batch_job_execution_params SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);

@@ -58,6 +58,13 @@ ON ida.auth_transaction (token_id, cr_dtimes DESC);
 CREATE INDEX idx_autntxn_token_reqdtimes
 ON ida.auth_transaction (token_id, request_dtimes);
 
+ALTER TABLE ida.auth_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.002,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.002,
+    autovacuum_analyze_threshold = 5000
+);
+
 
 --index section ends------
 COMMENT ON TABLE ida.auth_transaction IS 'Authentication Transaction : To track all authentication transactions steps / stages in the process flow.';
