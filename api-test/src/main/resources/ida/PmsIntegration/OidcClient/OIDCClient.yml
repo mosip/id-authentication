@@ -9,9 +9,9 @@ CreateOIDCClient:
       outputTemplate: ida/PmsIntegration/OidcClient/OIDCClientResult
       input: '{
         "name": "$RANDOMID$",
-        "policyId": "$ID:DefinePolicy_All_Valid_Smoke_sid_id$",
+        "policyId": "$POLICYID_FOR_DELEGATED$",
         "publicKey": "$OIDCJWKKEY3$",
-        "authPartnerId": "$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+        "authPartnerId": "$PARTNER_ID_FOR_DELEGATED$",
         "logoUri": "https://health-services.com/logo.png",
         "redirectUris": "$IDPREDIRECTURI$",
         "grantTypes": "authorization_code",

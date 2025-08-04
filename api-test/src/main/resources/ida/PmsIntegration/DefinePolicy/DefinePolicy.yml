@@ -10,7 +10,7 @@ definePolicy:
       input: '{
 	"desc": "$POLICYDESC$",
 	"name": "$POLICYNAME$",
-	"policyGroupName": "$ID:DefinePolicyGroup_Misp_Valid_Smoke_sid_name$",
+	"policyGroupName": "$ID:DefinePolicyGroup_All_Valid_Smoke_sid_name$",
 	"policyType": "Auth",
 	"version": "1.0",
 	"requesttime": "$TIMESTAMP$"
