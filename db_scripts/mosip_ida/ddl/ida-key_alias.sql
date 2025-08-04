@@ -17,6 +17,14 @@ CREATE TABLE ida.key_alias(
     CONSTRAINT pk_keymals_id PRIMARY KEY (id),
     CONSTRAINT uni_ident_const UNIQUE (uni_ident)
 );
+
+-- Optimize autovacuum for key_alias to clean dead tuples
+ALTER TABLE key_alias SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 5,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 5
+);
 COMMENT ON TABLE ida.key_alias IS 'Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.';
 COMMENT ON COLUMN ida.key_alias.id IS 'ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).';
 COMMENT ON COLUMN ida.key_alias.app_id IS 'Application ID: Application id for which the encryption key is generated';

@@ -17,6 +17,14 @@ CREATE TABLE ida.kyc_token_store(
     CONSTRAINT pk_key_id PRIMARY KEY (id),
     CONSTRAINT kyc_token_const UNIQUE (kyc_token)
 );
+
+-- Optimize autovacuum for kyc_token_store to clean dead tuples
+ALTER TABLE kyc_token_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 100,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 100
+);
 COMMENT ON TABLE ida.kyc_token_store IS 'Kyc Token Store: To store and maintain a token generate after successful authentication of resident for IdP.';
 COMMENT ON COLUMN ida.kyc_token_store.id IS 'ID: Kyc Token id is a unique identifier (UUID) used to map uniqueness to the kyc token .';
 COMMENT ON COLUMN ida.kyc_token_store.id_vid_hash IS 'IdVidHash: SHA 256 Hash value of the Id/VID.';

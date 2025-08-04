@@ -117,3 +117,129 @@ ALTER TABLE batch_job_execution_params SET (
     autovacuum_analyze_scale_factor = 0.1,
     autovacuum_analyze_threshold = 50
 );
+
+-- Rollback autovacuum settings for batch_job_instance to default values
+ALTER TABLE batch_job_instance SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for batch_step_execution to default values
+ALTER TABLE batch_step_execution SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for batch_step_execution_context to default values
+ALTER TABLE batch_step_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for ca_cert_store to default values
+ALTER TABLE ca_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for cred_subject_id_store to default values
+ALTER TABLE cred_subject_id_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for credential_event_store to default values
+ALTER TABLE credential_event_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for data_encrypt_keystore to default values
+ALTER TABLE data_encrypt_keystore SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for hotlist_cache to default values
+ALTER TABLE hotlist_cache SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE ident_binding_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE identity_cache SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for key_alias to default values
+ALTER TABLE key_alias SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for key_policy_def to default values
+ALTER TABLE key_policy_def SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for key_policy_def_h to default values
+ALTER TABLE key_policy_def_h SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for key_store to default values
+ALTER TABLE key_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for kyc_token_store to default values
+ALTER TABLE kyc_token_store SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Rollback autovacuum settings for misp_license_data to default values
+ALTER TABLE misp_license_data SET (
+    autovacuum_vacuum_scale_factor = 0.2,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

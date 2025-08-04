@@ -136,3 +136,123 @@ ALTER TABLE batch_job_execution_params SET (
     autovacuum_analyze_scale_factor = 0.05,
     autovacuum_analyze_threshold = 1000
 );
+
+-- Optimize autovacuum for batch_job_instance to clean dead tuples
+ALTER TABLE batch_job_instance SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_step_execution to clean dead tuples
+ALTER TABLE batch_step_execution SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 2000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 2000
+);
+
+-- Optimize autovacuum for batch_step_execution_context to clean dead tuples
+ALTER TABLE batch_step_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 5000
+);
+
+-- Optimize autovacuum for ca_cert_store to clean dead tuples
+ALTER TABLE ca_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for cred_subject_id_store to clean dead tuples
+ALTER TABLE cred_subject_id_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for credential_event_store to clean dead tuples
+ALTER TABLE credential_event_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for data_encrypt_keystore to clean dead tuples
+ALTER TABLE data_encrypt_keystore SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for hotlist_cache to clean dead tuples
+ALTER TABLE hotlist_cache SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 10,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 10
+);
+
+-- Optimize autovacuum for ident_binding_cert_store to clean dead tuples
+ALTER TABLE ident_binding_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 10,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 10
+);
+
+-- Optimize autovacuum for key_alias to clean dead tuples
+ALTER TABLE key_alias SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 5,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 5
+);
+
+-- Optimize autovacuum for key_policy_def to clean dead tuples
+ALTER TABLE key_policy_def SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for key_policy_def_h to clean dead tuples
+ALTER TABLE key_policy_def_h SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for key_store to clean dead tuples
+ALTER TABLE key_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for kyc_token_store to clean dead tuples
+ALTER TABLE kyc_token_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 100,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 100
+);
+
+-- Optimize autovacuum for misp_license_data to clean dead tuples
+ALTER TABLE misp_license_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

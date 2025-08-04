@@ -13,6 +13,14 @@ CREATE TABLE ida.key_policy_def(
     CONSTRAINT pk_keypdef_id PRIMARY KEY (app_id)
 
 );
+
+-- Optimize autovacuum for key_policy_def to clean dead tuples
+ALTER TABLE key_policy_def SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
 COMMENT ON TABLE ida.key_policy_def IS 'Key Policy Defination: Policy related to encryption key management is defined here. For eg. Expiry duration of a key generated.';
 COMMENT ON COLUMN ida.key_policy_def.app_id IS 'Application ID: Application id for which the key policy is defined';
 COMMENT ON COLUMN ida.key_policy_def.key_validity_duration IS 'Key Validity Duration: Duration for which key is valid';

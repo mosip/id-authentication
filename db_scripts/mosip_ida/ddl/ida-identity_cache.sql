@@ -29,6 +29,13 @@ CREATE TABLE ida.identity_cache(
 	CONSTRAINT pk_idcache_id PRIMARY KEY (id)
 
 );
+
+ALTER TABLE identity_cache SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_id ON ida.identity_cache (id);
