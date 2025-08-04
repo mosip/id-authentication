@@ -73,3 +73,35 @@ DROP INDEX IF EXISTS idx_autntxn_token_reqdtimes;
 -- Create composite index for countRequestDTime()
 CREATE INDEX idx_autntxn_token_reqdtimes
 ON ida.auth_transaction (token_id, request_dtimes);
+
+ALTER TABLE identity_cache SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
+
+ALTER TABLE uin_auth_lock SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
+
+ALTER TABLE otp_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
+
+ALTER TABLE ida.auth_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.002,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.002,
+    autovacuum_analyze_threshold = 5000
+);
+
+DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
+CREATE INDEX idx_auth_transaction_refid_dtimes_isdeleted
+ON ida.auth_transaction (ref_id, request_dtimes, is_deleted);
