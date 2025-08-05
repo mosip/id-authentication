@@ -49,27 +49,19 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
-	@Query(value = """
-   SELECT CASE WHEN EXISTS (
-       SELECT 1 FROM AutnTxn a
-       WHERE a.refId = :refId
-         AND a.requestDTtimes > :afterRequestTime
-   ) THEN COUNT(a) ELSE 0 END
-   """)
+	@Query("""
+            SELECT COUNT(a) FROM AutnTxn a
+            WHERE a.refId = :refId
+              AND a.requestDTimes > :afterRequestTime
+            """)
 	Long countByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
-
-
-	/**
-	 * ✅ Optimized version: uses EXISTS for faster performance
-	 * Keeps the same method name for backward compatibility.
-	 */
-	@Query(value = """
-           SELECT CASE WHEN EXISTS (
-               SELECT 1 FROM AutnTxn a
-               WHERE a.entityId = :entityId
-                 AND a.requestDTtimes > :afterRequestTime
-           ) THEN 1 ELSE 0 END
-           """)
-	Long countByEntityIdAndRequestDTtimesAfter(String entityId, LocalDateTime afterRequestTime);
+	
+	@Query("""
+            SELECT COUNT(a) FROM AutnTxn a
+            WHERE a.entityId = :entityId
+              AND a.requestDTimes > :afterRequestTime
+            """)
+	Long countByEntityIdAndRequestDTtimesAfter(@Param("entityId") String entityId,
+											   @Param("afterRequestTime") LocalDateTime afterRequestTime);
 
 }
