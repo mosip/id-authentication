@@ -39,6 +39,12 @@ CREATE INDEX idx_cred_evt_pending
 DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
 CREATE INDEX idx_hotlistcache_hash_type 
   ON ida.hotlist_cache (id_hash, id_type);
+  
+  CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_idhash_idtype
+  ON ida.hotlist_cache (id_hash, id_type);
+  CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_active
+  ON ida.hotlist_cache (id_hash, id_type, status)
+  WHERE status = 'Blocked';
 
 -- 4. otp_transaction: for findFirstByRefIdAndStatusCodeInOrderByGeneratedDtimesDesc
 DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;

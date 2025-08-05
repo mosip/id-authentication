@@ -8,8 +8,12 @@ CREATE TABLE ida.hotlist_cache (
 );
 
 CREATE INDEX ind_hc_idhsh_etp ON ida.hotlist_cache (id_hash, expiry_timestamp);
-CREATE INDEX idx_hotlistcache_hash_type 
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_idhash_idtype
 ON ida.hotlist_cache (id_hash, id_type);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_active
+ON ida.hotlist_cache (id_hash, id_type, status)
+WHERE status = 'Blocked';
 
 -- Optimize autovacuum for hotlist_cache to clean dead tuples
 ALTER TABLE hotlist_cache SET (

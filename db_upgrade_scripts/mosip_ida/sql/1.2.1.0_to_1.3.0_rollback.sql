@@ -53,7 +53,9 @@ DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
 DROP INDEX IF EXISTS idx_cred_evt_pending;
 
 -- 3. hotlist_cache
-DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
+DROP INDEX IF EXISTS idx_hotlist_idhash_idtype;
+
+DROP INDEX IF EXISTS idx_hotlist_active;
 
 -- 4. otp_transaction
 DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
