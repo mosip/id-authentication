@@ -63,14 +63,17 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
             """)
 	Long countByEntityIdAndRequestDTimesAfter(@Param("entityId") String entityId,
 											  @Param("afterRequestTime") LocalDateTime afterRequestTime);
-	
+
 	@Query(value = """
-    SELECT CASE WHEN EXISTS (
-        SELECT 1 FROM autn_txn a
-        WHERE a.refId = :refId
+    SELECT CASE WHEN COUNT(1) >= :requestCountForFlooding
+           THEN TRUE ELSE FALSE END
+    FROM (
+        SELECT 1
+        FROM auth_transaction a
+        WHERE a.ref_id = :refId
           AND a.request_dtimes > :afterRequestTime
         LIMIT :requestCountForFlooding
-    ) THEN 1 ELSE 0 END
+    ) AS sub
 """, nativeQuery = true)
 	boolean hasFloodingByRefId(@Param("refId") String refId,
 							   @Param("afterRequestTime") LocalDateTime afterRequestTime,
