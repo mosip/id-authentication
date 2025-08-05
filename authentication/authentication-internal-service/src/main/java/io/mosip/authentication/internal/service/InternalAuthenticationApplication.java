@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.*;
 import io.mosip.authentication.common.service.util.*;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
@@ -94,7 +95,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
+import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -138,6 +139,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
 		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class
+		, SubjectAlternativeNamesHelper.class, PDFGenerator.class
 })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*",
 		"io.mosip.kernel.core.logger.config",
