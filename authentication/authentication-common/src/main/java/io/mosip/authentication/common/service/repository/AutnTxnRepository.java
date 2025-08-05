@@ -63,26 +63,26 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
             """)
 	Long countByEntityIdAndRequestDTimesAfter(@Param("entityId") String entityId,
 											  @Param("afterRequestTime") LocalDateTime afterRequestTime);
-
-	@Query("""
+	
+	@Query(value = """
     SELECT CASE WHEN EXISTS (
-        SELECT 1 FROM AutnTxn a
+        SELECT 1 FROM autn_txn a
         WHERE a.refId = :refId
-          AND a.requestDTimes > :afterRequestTime
-        FETCH FIRST :requestCountForFlooding ROWS ONLY
-    ) THEN true ELSE false END
-""")
+          AND a.request_dtimes > :afterRequestTime
+        LIMIT :requestCountForFlooding
+    ) THEN 1 ELSE 0 END
+""", nativeQuery = true)
 	boolean hasFloodingByRefId(@Param("refId") String refId,
 							   @Param("afterRequestTime") LocalDateTime afterRequestTime,
 							   @Param("requestCountForFlooding") long requestCountForFlooding);
-	@Query("""
+	@Query(value = """
     SELECT CASE WHEN EXISTS (
-        SELECT 1 FROM AutnTxn a
-        WHERE a.entityId = :entityId
-          AND a.requestDTimes > :afterRequestTime
-        FETCH FIRST :requestCountForFlooding ROWS ONLY
-    ) THEN true ELSE false END
-""")
+        SELECT 1 FROM autn_txn a
+        WHERE a.entity_id = :entityId
+          AND a.request_dtimes > :afterRequestTime
+        LIMIT :requestCountForFlooding
+    ) THEN 1 ELSE 0 END
+""", nativeQuery = true)
 	boolean hasFloodingByEntityId(@Param("entityId") String entityId,
 								  @Param("afterRequestTime") LocalDateTime afterRequestTime,
 								  @Param("requestCountForFlooding") long requestCountForFlooding);
