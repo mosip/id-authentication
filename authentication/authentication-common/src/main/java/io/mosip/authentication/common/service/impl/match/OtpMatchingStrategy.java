@@ -132,5 +132,6 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 	 */
 	private static void logInfo(String message) {
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, TYPE, message);
+		System.out.println(message); // For demonstration purposes
 	}
 }

@@ -56,16 +56,16 @@ public class RequireOtpNotFrozenHelper {
      */
     public void requireOtpNotFrozen(OtpTransaction otpEntity, boolean saveEntity) throws IdAuthenticationBusinessException {
         if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.FROZEN)) {
-            logger.info("OTP is frozen. Checking if the frozen time is over.");
+            System.out.println("OTP is frozen. Checking if the frozen time is over.");
             
             if(!isAfterFrozenDuration(otpEntity)) {
-                logger.info("OTP is frozen. Frozen time is not over yet. Throwing exception.");
+                System.out.println("OTP is frozen. Frozen time is not over yet. Throwing exception.");
                 throw createOTPFrozenException();
             }
-            logger.info("OTP Frozen wait time is over. Allowing further.");
+            System.out.println("OTP Frozen wait time is over. Allowing further.");
             otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);
             if(saveEntity) {
-                logger.info("Updating OTP status to UNFROZEN in the database.");
+                System.out.println("Updating OTP status to UNFROZEN in the database.");
                 otpRepo.save(otpEntity);
             }
         }
