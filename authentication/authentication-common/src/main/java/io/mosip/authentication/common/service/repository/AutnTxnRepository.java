@@ -32,7 +32,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	public List<AutnTxn> findByTxnId(@Param("txnId") String txnId, Pageable pagaeable,
 			@Param("authtypecode") String authtypecode);
 
-	@Query(value = "Select new AutnTxn( requestTrnId, requestDTtimes, authTypeCode, statusCode, statusComment, refId, refIdType, entityName, requestSignature, responseSignature ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
+	@Query(value = "Select new AutnTxn( requestTrnId, requestDTimes, authTypeCode, statusCode, statusComment, refId, refIdType, entityName, requestSignature, responseSignature ) from AutnTxn where token=:token ORDER BY crDTimes DESC")
 	public List<AutnTxn> findByToken(@Param("token") String token, Pageable pagaeable);
 
 	/**
@@ -44,8 +44,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param token               the token
 	 * @return the int
 	 */
-	@Query("Select count(1) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
-			+ "requestDTtimes >= :oneMinuteBeforeTime and token=:token")
+	@Query("Select count(1) from AutnTxn  where requestDTimes <= :otpRequestDTime and "
+			+ "requestDTimes >= :oneMinuteBeforeTime and token=:token")
 	public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
 			@Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
@@ -54,15 +54,15 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
             WHERE a.refId = :refId
               AND a.requestDTimes > :afterRequestTime
             """)
-	Long countByRefIdAndRequestDTtimesAfter(String refId, LocalDateTime afterRequestTime);
+	Long countByRefIdAndRequestDTimesAfter(String refId, LocalDateTime afterRequestTime);
 	
 	@Query("""
             SELECT COUNT(a) FROM AutnTxn a
             WHERE a.entityId = :entityId
               AND a.requestDTimes > :afterRequestTime
             """)
-	Long countByEntityIdAndRequestDTtimesAfter(@Param("entityId") String entityId,
-											   @Param("afterRequestTime") LocalDateTime afterRequestTime);
+	Long countByEntityIdAndRequestDTimesAfter(@Param("entityId") String entityId,
+											  @Param("afterRequestTime") LocalDateTime afterRequestTime);
 
 	@Query("""
     SELECT CASE WHEN EXISTS (

@@ -75,10 +75,10 @@ public class IdAuthFraudAnalysisEventManagerTest {
         lenient().when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
         lenient().when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
         lenient().when(eventData.getPartnerId()).thenReturn("PartnerId");
-        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 

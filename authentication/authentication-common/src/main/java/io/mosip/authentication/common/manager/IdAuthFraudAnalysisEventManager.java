@@ -98,7 +98,7 @@ public class IdAuthFraudAnalysisEventManager {
 			// If flooding is detected, we can get the count for logging purposes
 			// This is optional, but useful for debugging or logging
 			// It can be removed if not needed
-			Long requestCount = authtxnRepo.countByRefIdAndRequestDTtimesAfter(
+			Long requestCount = authtxnRepo.countByRefIdAndRequestDTimesAfter(
 					eventData.getIndividualIdHash(),
 					eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff)
 			);
@@ -116,7 +116,7 @@ public class IdAuthFraudAnalysisEventManager {
 				requestCountForFlooding
 		);
 		if (hasFlooding) {
-			Long requestCount = authtxnRepo.countByEntityIdAndRequestDTtimesAfter(
+			Long requestCount = authtxnRepo.countByEntityIdAndRequestDTimesAfter(
 					eventData.getPartnerId(),
 					eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff)
 			);
