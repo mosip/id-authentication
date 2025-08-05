@@ -30,7 +30,7 @@ import java.util.concurrent.ForkJoinPool;
 public class CredentialStoreTasklet implements Tasklet {
 
     @Value("${ida.batch.credential.store.thread.count:10}")
-    private int threadCount;
+    int threadCount;
 
     /** The logger. */
     private static Logger LOGGER = IdaLogger.getLogger(CredentialStoreTasklet.class);
