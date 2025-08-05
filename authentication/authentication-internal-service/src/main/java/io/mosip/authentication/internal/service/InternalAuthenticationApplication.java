@@ -95,6 +95,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 
 /**
  * Spring-boot class for ID Authentication Application.
