@@ -75,28 +75,36 @@ public class ValidateOtpHelper {
     public boolean validateOtp(String pinValue, String otpKey, String individualId) throws IdAuthenticationBusinessException {
         String refIdHash = securityManager.hash(individualId);
         Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
-
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                "validateOtp", "OTP validation started for individualId: {}", individualId);
         if (otpEntityOpt.isEmpty()) {
+            logger.info("otpEntityOpt is empty for individualId: {}", individualId);
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
         }
 
         OtpTransaction otpEntity = otpEntityOpt.get();
+        logger.info("otpEntity is present for individualId: {}", individualId);
         requireOtpNotFrozen.requireOtpNotFrozen(otpEntity, true);
-
+        
         if(otpEntity.getStatusCode().equals(IdAuthCommonConstants.UNFROZEN)) {
+            logger.info("OTP is unfrozen. Proceeding with validation.");
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_REQUIRED);
         }
 
         // At this point it should be active status alone.
         // Increment the validation attempt count.
         int attemptCount = otpEntity.getValidationRetryCount() == null ? 1 : otpEntity.getValidationRetryCount() + 1;
+        logger.info("Incremented validation attempt count to: {}", attemptCount);
 
         String otpHash = getOtpHash(pinValue, otpKey);
+        logger.info("Generated OTP hash for validation: {}", otpHash);
         if (otpEntity.getOtpHash().equals(otpHash)) {
+            logger.info("OTP hash matches for individualId: {}", individualId);
             otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
             otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
             otpRepo.save(otpEntity);
             if (!otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+                logger.info("OTP has expired for individualId: {}", individualId);
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
                 throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
@@ -104,8 +112,11 @@ public class ValidateOtpHelper {
             return true;
         } else {
             //Set the incremented validation attempt count
+            logger.info("OTP hash does not match for individualId: {}", individualId);
             otpEntity.setValidationRetryCount(attemptCount);
+            logger.info("Validation attempt count for individualId {} is now: {}", individualId, attemptCount);
             if (attemptCount >= numberOfValidationAttemptsAllowed) {
+                logger.info("Validation attempt count exceeded for individualId: {}", individualId);
                 otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
                 otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
                 otpRepo.save(otpEntity);
@@ -113,6 +124,7 @@ public class ValidateOtpHelper {
             }
             otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
             otpRepo.save(otpEntity);
+            logger.info("OTP validation failed for individualId: {}. Attempt count: {}", individualId, attemptCount);
             return false;
         }
     }
