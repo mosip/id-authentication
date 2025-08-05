@@ -1,8 +1,8 @@
 package io.mosip.authentication.otp.service;
 
 import io.mosip.authentication.common.service.config.*;
-import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
+import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
@@ -86,7 +86,6 @@ import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import org.springframework.web.client.RestTemplate;
-import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -117,7 +116,7 @@ import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 		HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class,
 		 PublisherClientImpl.class, RestTemplateHelper.class,
-		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class, TrailingSlashRedirectFilter.class, SubjectAlternativeNamesHelper.class, PDFGenerator.class})
+		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class, TrailingSlashRedirectFilter.class, SubjectAlternativeNamesHelper.class, PDFGeneratorImpl.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))
