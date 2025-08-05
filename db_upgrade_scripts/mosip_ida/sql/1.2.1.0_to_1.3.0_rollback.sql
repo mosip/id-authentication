@@ -274,3 +274,5 @@ ALTER TABLE uin_hash_salt SET (
     autovacuum_analyze_scale_factor = 0.1,
     autovacuum_analyze_threshold = 50
 );
+
+DROP INDEX IF EXISTS idx_autn_txn_refid_time_desc;

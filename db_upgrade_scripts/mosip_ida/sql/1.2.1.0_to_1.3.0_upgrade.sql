@@ -331,3 +331,5 @@ ALTER TABLE uin_hash_salt SET (
     autovacuum_analyze_threshold = 50
 );
 
+CREATE INDEX idx_autn_txn_refid_time_desc
+ON ida.auth_transaction (ref_id, request_dtimes DESC);
