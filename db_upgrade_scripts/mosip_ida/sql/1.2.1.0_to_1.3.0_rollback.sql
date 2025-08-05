@@ -58,10 +58,8 @@ DROP INDEX IF EXISTS idx_hotlistcache_hash_type;
 -- 4. otp_transaction
 DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
 
-/* ============================================================
-   Rollback for idx_autntxn_entityid_dtimes
-   ============================================================ */
-DROP INDEX IF EXISTS idx_autntxn_entityid_dtimes;
+
+DROP INDEX IF EXISTS idx_auth_txn_entityid_request_dtimes;
 
 -- Rollback: Drop the index
 DROP INDEX IF EXISTS idx_autntxn_reqtrnid_authtype_crdtimes_desc;

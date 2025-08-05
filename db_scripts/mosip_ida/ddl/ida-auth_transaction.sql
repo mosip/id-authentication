@@ -48,8 +48,10 @@ CREATE TABLE ida.auth_transaction(
 CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id,cr_dtimes, auth_type_code);
 CREATE INDEX idx_autntxn_refid_dtimes 
 ON ida.auth_transaction (ref_id, request_dtimes);
-CREATE INDEX idx_autntxn_entityid_dtimes 
-ON auth_transaction (requested_entity_id, request_dtimes);
+
+CREATE INDEX CONCURRENTLY idx_auth_txn_entityid_request_dtimes
+ON ida.auth_transaction (requested_entity_id, request_dtimes DESC);
+
 -- Create index to support paginated filtered query
 CREATE INDEX idx_autntxn_reqtrnid_authtype_crdtimes_desc
 ON ida.auth_transaction (request_trn_id, auth_type_code, cr_dtimes DESC);

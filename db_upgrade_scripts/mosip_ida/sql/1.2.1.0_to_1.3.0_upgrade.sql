@@ -46,11 +46,10 @@ CREATE INDEX idx_otp_txn_ref_status_gen
   ON ida.otp_transaction (ref_id, status_code, generated_dtimes DESC);
   
   -- drop first (so script is idempotent if re‑run)
-  DROP INDEX IF EXISTS idx_autntxn_entityid_dtimes;
+ DROP INDEX IF EXISTS idx_auth_txn_entityid_request_dtimes;
   
-  -- create composite index
-  CREATE INDEX idx_autntxn_entityid_dtimes
-    ON ida.auth_transaction (requested_entity_id, request_dtimes);
+CREATE INDEX CONCURRENTLY idx_auth_txn_entityid_request_dtimes
+ON ida.auth_transaction (requested_entity_id, request_dtimes DESC);
     
     
 -- Drop if exists for safety
