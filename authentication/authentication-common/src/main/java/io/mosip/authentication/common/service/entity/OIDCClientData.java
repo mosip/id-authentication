@@ -3,13 +3,7 @@ package io.mosip.authentication.common.service.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -50,7 +44,7 @@ public class OIDCClientData {
 	@Column(name = "partner_id")
 	private String partnerId;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "partner_id", referencedColumnName = "partner_id", insertable = false, updatable = false)
 	private PartnerData partnerData;
 	
