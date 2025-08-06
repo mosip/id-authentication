@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -28,7 +27,7 @@ import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The builder to build {@code AutnTxn} instance.
- * 
+ *
  * @author Loganathan Sekar
  *
  */
@@ -124,7 +123,7 @@ public class AuthTransactionBuilder {
 		this.token = token;
 		return this;
 	}
-	
+
 	/**
 	 * Gets the token.
 	 *
@@ -144,7 +143,7 @@ public class AuthTransactionBuilder {
 		requestTypes.add(requestType);
 		return this;
 	}
-	
+
 	/**
 	 * With auth type code.
 	 *
@@ -175,7 +174,7 @@ public class AuthTransactionBuilder {
 		this.isStatus = isStatus;
 		return this;
 	}
-	
+
 	/**
 	 * With status comment.
 	 *
@@ -208,11 +207,11 @@ public class AuthTransactionBuilder {
 		this.isInternal = isInternal;
 		return this;
 	}
-	
+
 	public BaseRequestDTO getRequestDTO() {
 		return requestDTO;
 	}
-	
+
 	/**
 	 * Gets the request types.
 	 *
@@ -234,24 +233,21 @@ public class AuthTransactionBuilder {
 	 *                                           exception
 	 */
 	public AutnTxn build(EnvUtil env, IdaUinHashSaltRepo uinHashSaltRepo,
-			IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
+						 IdAuthSecurityManager securityManager) throws IdAuthenticationBusinessException {
 		try {
-			String idvId;
-			String reqTime;
-			String idvIdType;
-			String txnID;
-			if (requestDTO != null) {
-				idvId = requestDTO.getIndividualId();
-				reqTime = requestDTO.getRequestTime();
-				idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
-				txnID = requestDTO.getTransactionID();
-			} else {
+			if (requestDTO == null) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
 						"Missing arguments to build for AutnTxn", "authRequestDTO");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
+			String idvId = requestDTO.getIndividualId();
+			String txnID = requestDTO.getTransactionID();
+			String idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
+			String reqTime = requestDTO.getRequestTime();
+
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
+
 			AutnTxn autnTxn = new AutnTxn();
 			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
@@ -260,6 +256,7 @@ public class AuthTransactionBuilder {
 			autnTxn.setId(id);
 			autnTxn.setCrBy(EnvUtil.getAppId());
 			autnTxn.setAuthTknId(authTokenId);
+			LocalDateTime now = DateUtils.getUTCCurrentDateTime();
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
 			try {
@@ -270,43 +267,31 @@ public class AuthTransactionBuilder {
 						"Invalid Request Time - setting to current date time");
 			}
 			autnTxn.setRequestDTimes(strUTCDate);
-			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
+			autnTxn.setResponseDTimes(now);
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
-			
+
 			if (!requestTypes.isEmpty()) {
-				String authTypeCodes = requestTypes.stream()
-						.sorted(KYC_AUTH_COMPARATOR) // Put KYC-AUTH in the beginning if available
-						.map(RequestType::getRequestType)
-						.collect(Collectors.joining(REQ_TYPE_DELIM));
-				autnTxn.setAuthTypeCode(authTypeCodes);
-	
-				String requestTypeMessages = requestTypes.stream()
-						.sorted(KYC_AUTH_COMPARATOR) // Put KYC-AUTH message in the beginning if available
-						.map(RequestType::getMessage)
-						.collect(Collectors.joining(REQ_TYPE_MSG_DELIM));
-				String comment = isStatus ? requestTypeMessages + " Success" : requestTypeMessages + " Failed";
+				autnTxn.setAuthTypeCode(joinRequestTypes(requestTypes, REQ_TYPE_DELIM, false));
+				String comment = joinRequestTypes(requestTypes, REQ_TYPE_MSG_DELIM, true)
+						+ (isStatus ? " Success" : " Failed");
 				autnTxn.setStatusComment(comment);
 			} else {
-				if(authTypeCode != null) {
-					autnTxn.setAuthTypeCode(authTypeCode);
-				} else {
-					autnTxn.setAuthTypeCode(IdAuthCommonConstants.UNKNOWN);
-				}
+				autnTxn.setAuthTypeCode(authTypeCode != null ? authTypeCode : IdAuthCommonConstants.UNKNOWN);
 			}
 			//Overwrite the generated status comment if specified explicitly
 			if(this.statusComment != null) {
 				autnTxn.setStatusComment(statusComment);
 			}
-			
+
 			if(autnTxn.getStatusComment() == null) {
 				autnTxn.setStatusComment(IdAuthCommonConstants.UNKNOWN);
 			}
-			
+
 			if(autnTxn.getToken() == null) {
 				autnTxn.setToken(IdAuthCommonConstants.UNKNOWN);
 			}
-			
+
 			// Will remove this column after discussion.
 			autnTxn.setLangCode(IdAuthCommonConstants.NA);
 
@@ -335,6 +320,38 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
+	 * Joins the values of a given set of {@link RequestType} objects into a single
+	 * string using the provided delimiter.
+	 * <p>
+	 * The set is sorted using {@code KYC_AUTH_COMPARATOR}, which ensures that
+	 * request types related to KYC authentication (EKYC-AUTH) are prioritized at the beginning of the list.
+	 * The method allows joining either the request type codes or their descriptive messages
+	 * based on the {@code useMessage} flag.
+	 * <p>
+	 * If the input set is empty, the method returns {@link IdAuthCommonConstants#UNKNOWN}.
+	 *
+	 * <h3>Performance:</h3>
+	 * This method uses a {@link StringBuilder} to efficiently construct the
+	 * resulting string while avoiding unnecessary string concatenations.
+	 *
+	 * @param types       the set of {@link RequestType} objects to join; must not be {@code null}.
+	 * @param delimiter   the string delimiter to insert between request type values.
+	 * @param useMessage  if {@code true}, the request type messages are used; otherwise, the request type codes are used.
+	 * @return a concatenated string of request type values or {@code UNKNOWN} if the set is empty.
+	 */
+	private String joinRequestTypes(Set<RequestType> types, String delimiter, boolean useMessage) {
+		if (types.isEmpty()) return IdAuthCommonConstants.UNKNOWN;
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (RequestType rt : types.stream().sorted(KYC_AUTH_COMPARATOR).toList()) {
+			if (!first) sb.append(delimiter);
+			sb.append(useMessage ? rt.getMessage() : rt.getRequestType());
+			first = false;
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Creates UUID.
 	 *
 	 * @param token the token
@@ -352,7 +369,7 @@ public class AuthTransactionBuilder {
 	 */
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -360,5 +377,4 @@ public class AuthTransactionBuilder {
 		return "AuthTransactionBuilder [requestDTO=" + requestDTO + ", token=" + token + ", requestType="
 				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
 	}
-
 }
