@@ -1,10 +1,14 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import static org.junit.Assert.assertEquals;
 
-import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
-import io.mosip.authentication.common.service.entity.AuthtypeLock;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.junit.Assert;
@@ -61,8 +65,6 @@ import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-
-import static org.junit.Assert.*;
 
 /**
  * Test class for OTPServiceImpl.
