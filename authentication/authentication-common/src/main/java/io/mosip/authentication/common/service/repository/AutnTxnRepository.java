@@ -84,7 +84,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
     FROM (
         SELECT 1
         FROM auth_transaction a
-        WHERE a.entity_id = :entityId
+        WHERE a.entityId = :entityId
           AND a.request_dtimes > :afterRequestTime
         LIMIT :requestCountForFlooding
     ) AS sub
