@@ -91,7 +91,7 @@
 		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-<!--		commons version-->
+		<!-- Kernel components -->
 		<kernel.parent.version>1.2.2-SNAPSHOT</kernel.parent.version>
 		<kernel-core.version>1.2.2-SNAPSHOT</kernel-core.version>
 		<kernel-idgenerator-tokenid.version>1.2.2-SNAPSHOT</kernel-idgenerator-tokenid.version>
@@ -100,12 +100,12 @@
 		<kernel-templatemanager-velocity.version>1.2.2-SNAPSHOT</kernel-templatemanager-velocity.version>
 		<kernel-logger-logback.version>1.2.2-SNAPSHOT</kernel-logger-logback.version>
 		<kernel-dataaccess-hibernate.version>1.2.2-SNAPSHOT</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.2.2-SNAPSHOT</kernel-cbeffutil-api.version>
 		<kernel-templatemanager-velocity.version>1.2.2-SNAPSHOT</kernel-templatemanager-velocity.version>
 		<kernel-websubclient-api.version>1.2.2-SNAPSHOT</kernel-websubclient-api.version>
 		<kernel-bom.version>1.2.2-SNAPSHOT</kernel-bom.version>
 		
-		<!-- Kernel components -->
+		<!-- other components -->
+		<kernel-cbeffutil-api.version>1.2.2-SNAPSHOT</kernel-cbeffutil-api.version>
 		<kernel-keymanager-service.version>1.2.2-SNAPSHOT</kernel-keymanager-service.version>
 		<kernel-auth-adapter.version>1.2.1-SNAPSHOT</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>1.3.0-SNAPSHOT</kernel-biometrics-api.version>
