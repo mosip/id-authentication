@@ -54,7 +54,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
             WHERE a.refId = :refId
               AND a.requestDTimes > :afterRequestTime
             """)
-	Long countByRefIdAndRequestDTimesAfter(String refId, LocalDateTime afterRequestTime);
+	Long countByRefIdAndRequestDTimesAfter(@Param("refId") String refId, @Param("afterRequestTime") LocalDateTime afterRequestTime);
 	
 	@Query("""
             SELECT COUNT(a) FROM AutnTxn a
