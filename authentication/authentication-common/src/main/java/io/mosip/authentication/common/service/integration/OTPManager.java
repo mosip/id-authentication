@@ -111,7 +111,13 @@ public class OTPManager {
         String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
                 + EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
                 + EnvUtil.getKeySplitter() + otp).getBytes());
-
+        System.out.println("-------------------------------");
+        System.out.println("i am inside sendOtp");
+        System.out.println("otp: " + otp);
+        System.out.println("otpRequestDTO.getIndividualId(): " + otpRequestDTO.getIndividualId());
+        System.out.println("otpRequestDTO.getTransactionID(): " + otpRequestDTO.getTransactionID());
+        System.out.println("otpHash: " + otpHash);
+       
         OtpTransaction otpTxn;
         if (otpEntityOpt.isPresent()
                 && (otpTxn = otpEntityOpt.get()).getStatusCode().equals(IdAuthCommonConstants.ACTIVE_STATUS)) {
@@ -122,6 +128,7 @@ public class OTPManager {
             otpTxn.setValidationRetryCount(0);
             otpTxn.setExpiryDtimes(otpGenerationTime.plusSeconds(EnvUtil.getOtpExpiryTime()));
             otpRepo.save(otpTxn);
+            System.out.println("Active OTP found for individualId: " + otpRequestDTO.getIndividualId() + ", updating OTP details.");
         } else {
             OtpTransaction txn = new OtpTransaction();
             txn.setId(UUID.randomUUID().toString());
@@ -134,8 +141,9 @@ public class OTPManager {
                     EnvUtil.getOtpExpiryTime()));
             txn.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
             otpRepo.save(txn);
+            System.out.println("No active OTP found for individualId: " + otpRequestDTO.getIndividualId() + ", creating new OTP transaction.");
         }
-
+        System.out.println("-------------------------------");
         String notificationProperty = null;
         notificationProperty = otpRequestDTO
                 .getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
