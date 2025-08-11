@@ -78,8 +78,11 @@ public class BioAuthServiceImpl implements BioAuthService {
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, bioIdentity);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);
+            logger.info("Match inputs and outputs constructed successfully");
+            logger.info("listMatchInputs: {}, listMatchOutputs: {}", listMatchInputs, listMatchOutputs);
 			// Using OR condition on the match output for Bio auth.
 			boolean bioMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
+            logger.info("Bio matched status: {}", bioMatched);
 			return AuthStatusInfoBuilder.buildStatusInfo(bioMatched, listMatchInputs, listMatchOutputs,
 					BioAuthType.values(), idMappingConfig);
 		}

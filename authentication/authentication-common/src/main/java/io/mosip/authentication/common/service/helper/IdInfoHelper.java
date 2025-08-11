@@ -128,6 +128,7 @@ public class IdInfoHelper {
 			if (matchOutput != null) {
 				matchOutputList.add(matchOutput);
 			}
+            mosipLogger.info("matchOutput {}", matchOutput);
 		}
 		return matchOutputList;
 	}

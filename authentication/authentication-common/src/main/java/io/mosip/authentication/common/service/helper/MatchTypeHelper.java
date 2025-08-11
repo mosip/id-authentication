@@ -62,50 +62,89 @@ public class MatchTypeHelper {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    public MatchOutput matchType(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idEntity,
-            String uin, MatchInput input, EntityValueFetcher entityValueFetcher, String partnerId)
-            throws IdAuthenticationBusinessException {
+    public MatchOutput matchType(
+            AuthRequestDTO authRequestDTO,
+            Map<String, List<IdentityInfoDTO>> idEntity,
+            String uin,
+            MatchInput input,
+            EntityValueFetcher entityValueFetcher,
+            String partnerId
+    ) throws IdAuthenticationBusinessException {
+
+        mosipLogger.info("matchType() called with authRequestDTO: {}", authRequestDTO);
+        mosipLogger.info("matchType() received idEntity: {}", idEntity);
+        mosipLogger.info("matchType() received uin: {}", uin);
+        mosipLogger.info("matchType() received input: {}", input);
+        mosipLogger.info("matchType() received entityValueFetcher: {}", entityValueFetcher);
+        mosipLogger.info("matchType() received partnerId: {}", partnerId);
+
         String matchStrategyTypeStr = input.getMatchStrategyType();
+        mosipLogger.info("Initial matchStrategyTypeStr from input: {}", matchStrategyTypeStr);
+
         if (matchStrategyTypeStr == null) {
             matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
+            mosipLogger.info("matchStrategyTypeStr was null, defaulting to: {}", matchStrategyTypeStr);
         }
 
-        Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType
-                .getMatchStrategyType(matchStrategyTypeStr);
+        Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType.getMatchStrategyType(matchStrategyTypeStr);
+        mosipLogger.info("Resolved matchStrategyType Optional: {}", matchStrategyType);
+
         if (matchStrategyType.isPresent()) {
             MatchingStrategyType strategyType = matchStrategyType.get();
+            mosipLogger.info("Using MatchingStrategyType: {}", strategyType);
+
             MatchType matchType = input.getMatchType();
+            mosipLogger.info("MatchType from input: {}", matchType);
+
             Optional<MatchingStrategy> matchingStrategy = matchType.getAllowedMatchingStrategy(strategyType);
+            mosipLogger.info("Allowed MatchingStrategy for {}: {}", strategyType, matchingStrategy);
+
             if (matchingStrategy.isPresent()) {
                 MatchingStrategy strategy = matchingStrategy.get();
-                Map<String, String> reqInfo = null;
-                reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
+                mosipLogger.info("Selected MatchingStrategy: {}", strategy);
+
+                Map<String, String> reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
+                mosipLogger.info("Request info from getAuthReqestInfo: {}", reqInfo);
+
                 String idName = input.getIdName();
-                if (null == reqInfo || reqInfo.isEmpty()) {
+                mosipLogger.info("ID Name from input: {}", idName);
+
+                if (reqInfo == null || reqInfo.isEmpty()) {
+                    mosipLogger.info("reqInfo is empty, fetching from idInfoFetcher.getIdentityRequestInfo()");
                     reqInfo = idInfoFetcher.getIdentityRequestInfo(matchType, idName, authRequestDTO.getRequest(),
                             input.getLanguage());
+                    mosipLogger.info("Request info from idInfoFetcher: {}", reqInfo);
                 }
-                if (null != reqInfo && reqInfo.size() > 0) {
 
+                if (reqInfo != null && !reqInfo.isEmpty()) {
                     Map<String, Object> matchProperties = input.getMatchProperties();
+                    mosipLogger.info("Match properties from input: {}", matchProperties);
 
                     Map<String, String> entityInfo = getEntityInfo(idEntity, uin, authRequestDTO, input,
                             entityValueFetcher, matchType, strategy, idName, partnerId);
+                    mosipLogger.info("Entity info: {}", entityInfo);
 
                     int mtOut = strategy.match(reqInfo, entityInfo, matchProperties);
+                    mosipLogger.info("Match score (mtOut): {}", mtOut);
+
                     boolean matchOutput = mtOut >= input.getMatchValue();
-                    return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
+                    mosipLogger.info("Match output boolean: {} (threshold: {})", matchOutput, input.getMatchValue());
+
+                    MatchOutput result = new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), matchType,
                             input.getLanguage(), idName);
+                    mosipLogger.info("Returning MatchOutput: {}", result);
+
+                    return result;
                 }
             } else {
-                // FIXME Log that matching strategy is not allowed for the match type.
-                mosipLogger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
-                        " is not allowed for - ", matchType + " MatchType");
+                mosipLogger.warn("Matching strategy {} is not allowed for MatchType {}", strategyType, matchType);
             }
-
         }
+
+        mosipLogger.info("Returning null from matchType()");
         return null;
     }
+
 
     /**
      * Construct match type.
