@@ -143,109 +143,132 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * authenticateApplicant(io.mosip.authentication.core.dto.indauth.
 	 * AuthRequestDTO, boolean, java.lang.String)
 	 */
-	@Override
-	public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isExternalAuth, String partnerId,
-			String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata) throws IdAuthenticationBusinessException {
+    @Override
+    public AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequestDTO, boolean isExternalAuth, String partnerId,
+                                                  String partnerApiKey, boolean markVidConsumed, ObjectWithMetadata requestWrapperMetadata)
+            throws IdAuthenticationBusinessException {
 
-		String idvid = authRequestDTO.getIndividualId();
-		String idvidHash = securityManager.hash(idvid);
-		String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
-		logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
-				idvIdType + "-" + idvidHash);
+        String idvid = authRequestDTO.getIndividualId();
+        logger.info("Individual ID (idvid): {}", idvid);
 
-		Set<String> filterAttributes = new HashSet<>();
-		filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
-		filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
-		
-		if(authRequestDTO instanceof EkycAuthRequestDTO) {
-			EkycAuthRequestDTO kycAuthRequestDTO = (EkycAuthRequestDTO) authRequestDTO;
-			// In case of ekyc request and photo also needed we need to add face to get it
-			// filtered
-			if(IdInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
-				filterAttributes.add(CbeffDocType.FACE.getType().value());
-			}
-			
-			addKycPolicyAttributes(filterAttributes, kycAuthRequestDTO);
-		}
+        String idvidHash = securityManager.hash(idvid);
+        logger.info("Hashed Individual ID (idvidHash): {}", idvidHash);
 
-		if(authRequestDTO instanceof KycAuthRequestDTO) {
-			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
-			// In case of kyc-auth request and password auth is requested
-			if(AuthTypeUtil.isPassword(kycAuthRequestDTO)) {
-				filterAttributes.add(IdaIdMapping.PASSWORD.getIdname());
-			}
-		}
-		
-		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),
-				markVidConsumed, filterAttributes);
+        String idvIdType = IdType.getIDTypeStrOrDefault(authRequestDTO.getIndividualIdType());
+        logger.info("Individual ID Type (idvIdType): {}", idvIdType);
 
-		String token = idService.getToken(idResDTO);
+        logger.debug(IdAuthCommonConstants.SESSION_ID, "AuthFacedImpl", "authenticateIndividual: ",
+                idvIdType + "-" + idvidHash);
 
-		AuthResponseDTO authResponseDTO;
-		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
-		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String authTokenId = null;
-		Boolean authTokenRequired = EnvUtil.getAuthTokenRequired();
+        Set<String> filterAttributes = new HashSet<>();
+        filterAttributes.addAll(idInfoHelper.buildDemoAttributeFilters(authRequestDTO));
+        filterAttributes.addAll(idInfoHelper.buildBioFilters(authRequestDTO));
+        logger.info("Filter Attributes after initial population: {}", filterAttributes);
 
-		AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata()
-				.get(AuthTransactionBuilder.class.getSimpleName());
-		authTxnBuilder.withToken(token);
+        if (authRequestDTO instanceof EkycAuthRequestDTO) {
+            EkycAuthRequestDTO kycAuthRequestDTO = (EkycAuthRequestDTO) authRequestDTO;
+            if (IdInfoHelper.isKycAttributeHasPhoto(kycAuthRequestDTO)) {
+                filterAttributes.add(CbeffDocType.FACE.getType().value());
+            }
+            addKycPolicyAttributes(filterAttributes, kycAuthRequestDTO);
+            logger.info("Filter Attributes after EkycAuthRequestDTO processing: {}", filterAttributes);
+        }
 
-		String transactionID = authRequestDTO.getTransactionID();
-		try {
-			idInfo = IdInfoFetcher.getIdInfo(idResDTO);
-			authResponseBuilder.setTxnID(transactionID);
-			authTokenId = authTokenRequired && isExternalAuth ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
-					: null;
+        if (authRequestDTO instanceof KycAuthRequestDTO) {
+            KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+            if (AuthTypeUtil.isPassword(kycAuthRequestDTO)) {
+                filterAttributes.add(IdaIdMapping.PASSWORD.getIdname());
+            }
+            logger.info("Filter Attributes after KycAuthRequestDTO processing: {}", filterAttributes);
+        }
 
-			LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
-			properties.put(IdAuthCommonConstants.TOKEN, token);
-			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
+        Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid,
+                idInfoHelper.isBiometricDataNeeded(authRequestDTO), markVidConsumed, filterAttributes);
+        logger.info("ID Response DTO (idResDTO): {}", idResDTO);
 
-			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isExternalAuth, authTokenId,
-					partnerId, authTxnBuilder, idvidHash);
-			authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
-		} catch (IdAuthenticationBusinessException e) {
-			throw e;
-		} finally {
-			// Set response token
-			if (authTokenRequired) {
-				authResponseDTO = authResponseBuilder.build(authTokenId);
-			} else {
-				authResponseDTO = authResponseBuilder.build(null);
-			}
-			
-			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWrapperMetadata, authResponseDTO);
-			if(authResponseDTO.getTransactionID() == null && transactionID != null) {
-				authResponseDTO.setTransactionID(transactionID);
-			}
+        String token = idService.getToken(idResDTO);
+        logger.info("Generated Token: {}", token);
 
-			boolean authStatus = authResponseDTO.getResponse().isAuthStatus();
-			authTxnBuilder.withStatus(authStatus);
-			authTxnBuilder.withAuthToken(authTokenId);
+        AuthResponseDTO authResponseDTO;
+        AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 
-			// This is sent back for the consumption by the caller for example
-			// KYCFacadeImpl, Base IDA Filter.
-			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
-			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
-			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.STATUS, authStatus);
-			requestWrapperMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authResponseDTO.getErrors());
+        Map<String, List<IdentityInfoDTO>> idInfo = null;
+        String authTokenId = null;
+        Boolean authTokenRequired = EnvUtil.getAuthTokenRequired();
+        logger.info("Auth Token Required: {}", authTokenRequired);
 
-			authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
+        AuthTransactionBuilder authTxnBuilder = (AuthTransactionBuilder) authRequestDTO.getMetadata()
+                .get(AuthTransactionBuilder.class.getSimpleName());
+        authTxnBuilder.withToken(token);
+        logger.info("Auth Transaction Builder initialized with token");
 
-			logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
-					AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
-		}
+        String transactionID = authRequestDTO.getTransactionID();
+        logger.info("Transaction ID: {}", transactionID);
 
-		if (idInfo != null && idvid != null) {
-			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isExternalAuth);
-		}
+        try {
+            idInfo = IdInfoFetcher.getIdInfo(idResDTO);
+            logger.info("ID Info fetched: {}", idInfo);
 
-		return authResponseDTO;
+            authResponseBuilder.setTxnID(transactionID);
 
-	}
+            authTokenId = authTokenRequired && isExternalAuth
+                    ? getToken(authRequestDTO, partnerId, partnerApiKey, idvid, token)
+                    : null;
+            logger.info("Auth Token ID: {}", authTokenId);
 
-	private void addKycPolicyAttributes(Set<String> filterAttributes, EkycAuthRequestDTO kycAuthRequestDTO)
+            LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
+            properties.put(IdAuthCommonConstants.TOKEN, token);
+            logger.info("Auth Properties: {}", properties);
+
+            authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
+
+            List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isExternalAuth,
+                    authTokenId, partnerId, authTxnBuilder, idvidHash);
+            logger.info("Auth Status List: {}", authStatusList);
+
+            authStatusList.stream().filter(Objects::nonNull).forEach(authResponseBuilder::addAuthStatusInfo);
+
+        } catch (IdAuthenticationBusinessException e) {
+            throw e;
+        } finally {
+            if (authTokenRequired) {
+                authResponseDTO = authResponseBuilder.build(authTokenId);
+            } else {
+                authResponseDTO = authResponseBuilder.build(null);
+            }
+
+            IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWrapperMetadata, authResponseDTO);
+            if (authResponseDTO.getTransactionID() == null && transactionID != null) {
+                authResponseDTO.setTransactionID(transactionID);
+            }
+
+            boolean authStatus = authResponseDTO.getResponse().isAuthStatus();
+            logger.info("Final Auth Status: {}", authStatus);
+
+            authTxnBuilder.withStatus(authStatus);
+            authTxnBuilder.withAuthToken(authTokenId);
+
+            requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, idResDTO);
+            requestWrapperMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, idInfo);
+            requestWrapperMetadata.putMetadata(IdAuthCommonConstants.STATUS, authStatus);
+            requestWrapperMetadata.putMetadata(IdAuthCommonConstants.ERRORS, authResponseDTO.getErrors());
+
+            authTransactionHelper.setAuthTransactionEntityMetadata(requestWrapperMetadata, authTxnBuilder);
+
+            logger.info(IdAuthCommonConstants.SESSION_ID, EnvUtil.getAppId(),
+                    AUTH_FACADE, "authenticateApplicant status : " + authResponseDTO.getResponse().isAuthStatus());
+        }
+
+        if (idInfo != null && idvid != null) {
+            notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isExternalAuth);
+            logger.info("Auth notification sent for IDVID: {}", idvid);
+        }
+
+        return authResponseDTO;
+    }
+
+
+    private void addKycPolicyAttributes(Set<String> filterAttributes, EkycAuthRequestDTO kycAuthRequestDTO)
 			throws IdAuthenticationBusinessException {
 		List<String> allowedKycAttributes = kycAuthRequestDTO.getAllowedKycAttributes();
 		if(allowedKycAttributes != null && !allowedKycAttributes.isEmpty()) {
