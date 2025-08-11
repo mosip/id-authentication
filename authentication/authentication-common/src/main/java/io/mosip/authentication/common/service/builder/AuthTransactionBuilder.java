@@ -374,7 +374,6 @@ public class AuthTransactionBuilder {
 	 */
 	@Override
 	public String toString() {
-		return "AuthTransactionBuilder [requestDTO=" + requestDTO + ", token=" + token + ", requestType="
-				+ requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
+		return "AuthTransactionBuilder [requestDTO=";
 	}
 }

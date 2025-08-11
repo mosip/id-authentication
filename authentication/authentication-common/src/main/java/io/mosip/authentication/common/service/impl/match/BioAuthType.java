@@ -270,8 +270,8 @@ public enum BioAuthType implements AuthType {
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
 	
 	protected Map<String, Object> getSingleMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
-		log.info("Getting single match properties for authRequestDTO: {}, idMapping: {}, idInfoFetcher: {}", 
-                authRequestDTO, idMapping, idInfoFetcher);
+		log.info("Getting single match properties for, idMapping: {}, idInfoFetcher: {}", 
+                 idMapping, idInfoFetcher);
         return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
 				.getMatchFunction(this));
 	}
