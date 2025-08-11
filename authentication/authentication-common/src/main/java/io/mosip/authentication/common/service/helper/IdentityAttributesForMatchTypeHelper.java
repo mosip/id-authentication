@@ -41,35 +41,68 @@ public class IdentityAttributesForMatchTypeHelper {
      */
     public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
             throws IdAuthenticationBusinessException {
+
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                "getIdMappingValue", "Method called with idMapping=" + idMapping + ", matchType=" + matchType);
+
         String type = matchType.getCategory().getType();
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                "getIdMappingValue", "Resolved category type=" + type);
+
         List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                "getIdMappingValue", "Fetched mappings=" + mappings);
+
         if (mappings != null && !mappings.isEmpty()) {
             List<String> fullMapping = new ArrayList<>();
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                    "getIdMappingValue", "Processing " + mappings.size() + " mapping entries.");
+
             for (String mappingStr : mappings) {
+                mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                        "getIdMappingValue", "Processing mappingStr=" + mappingStr);
+
                 if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
-                    Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr, IdaIdMapping.values(), idMappingConfig);
+                    Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(
+                            mappingStr, IdaIdMapping.values(), idMappingConfig);
+                    mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                            "getIdMappingValue", "Found internal mapping for '" + mappingStr + "' = " + mappingInternal);
+
                     if (mappingInternal.isPresent() && !idMapping.equals(mappingInternal.get())) {
+                        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                                "getIdMappingValue", "Recursively fetching internal mapping for '" + mappingStr + "'");
                         List<String> internalMapping = getIdMappingValue(mappingInternal.get(), matchType);
+                        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                                "getIdMappingValue", "Fetched internal mapping values=" + internalMapping);
                         fullMapping.addAll(internalMapping);
                     } else {
+                        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                                "getIdMappingValue", "Adding mappingStr to final list: " + mappingStr);
                         fullMapping.add(mappingStr);
                     }
                 } else {
                     mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                            IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+                            IdAuthCommonConstants.VALIDATE,
+                            "IdMapping config is Invalid for Type -" + type + ", null or empty mapping string found.");
                     throw new IdAuthenticationBusinessException(
                             IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
                             IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
                 }
             }
+
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+                    "getIdMappingValue", "Final fullMapping list=" + fullMapping);
             return fullMapping;
+
         } else {
             mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                    IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
-            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+                    IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type + ", mappings list is null or empty.");
+            throw new IdAuthenticationBusinessException(
+                    IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
                     IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
         }
     }
+
 
     /**
      * Gets the property names for match type.
@@ -79,28 +112,81 @@ public class IdentityAttributesForMatchTypeHelper {
      * @return the property names for match type
      */
     public List<String> getIdentityAttributesForMatchType(MatchType matchType, String idName) {
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                this.getClass().getSimpleName(),
+                "getIdentityAttributesForMatchType",
+                "Method called with matchType=" + matchType + ", idName=" + idName);
+
         String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                this.getClass().getSimpleName(),
+                "getIdentityAttributesForMatchType",
+                "Resolved propertyName=" + propertyName);
+
         List<String> propertyNames;
+
         if (!matchType.isDynamic()) {
-            if(matchType.getIdMapping().getIdname().equals(propertyName)) {
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                    this.getClass().getSimpleName(),
+                    "getIdentityAttributesForMatchType",
+                    "MatchType is static (non-dynamic).");
+
+            if (matchType.getIdMapping().getIdname().equals(propertyName)) {
+                mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                        this.getClass().getSimpleName(),
+                        "getIdentityAttributesForMatchType",
+                        "propertyName matches IdMapping idname, fetching IdMapping values.");
                 try {
                     propertyNames = getIdMappingValue(matchType.getIdMapping(), matchType);
+                    mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                            this.getClass().getSimpleName(),
+                            "getIdentityAttributesForMatchType",
+                            "Fetched propertyNames from IdMapping=" + propertyNames);
                 } catch (IdAuthenticationBusinessException e) {
-                    mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                            IdAuthCommonConstants.VALIDATE, "Ignoring : IdMapping config is Invalid for Type -" + matchType);
+                    mosipLogger.debug(IdAuthCommonConstants.SESSION_ID,
+                            this.getClass().getSimpleName(),
+                            IdAuthCommonConstants.VALIDATE,
+                            "Ignoring: IdMapping config is invalid for Type - " + matchType);
                     propertyNames = List.of();
+                    mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                            this.getClass().getSimpleName(),
+                            "getIdentityAttributesForMatchType",
+                            "Set propertyNames to empty list due to exception.");
                 }
             } else {
                 propertyNames = List.of();
+                mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                        this.getClass().getSimpleName(),
+                        "getIdentityAttributesForMatchType",
+                        "propertyName does not match IdMapping idname, returning empty list.");
             }
-
         } else {
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                    this.getClass().getSimpleName(),
+                    "getIdentityAttributesForMatchType",
+                    "MatchType is dynamic.");
+
             if (idMappingConfig.getDynamicAttributes().containsKey(propertyName)) {
                 propertyNames = idMappingConfig.getDynamicAttributes().get(propertyName);
+                mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                        this.getClass().getSimpleName(),
+                        "getIdentityAttributesForMatchType",
+                        "Dynamic attributes found for propertyName=" + propertyName + ", values=" + propertyNames);
             } else {
                 propertyNames = List.of(idName);
+                mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                        this.getClass().getSimpleName(),
+                        "getIdentityAttributesForMatchType",
+                        "No dynamic attributes found for propertyName=" + propertyName + ", defaulting to [" + idName + "]");
             }
         }
+
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                this.getClass().getSimpleName(),
+                "getIdentityAttributesForMatchType",
+                "Returning propertyNames=" + propertyNames);
+
         return propertyNames;
     }
+
 }

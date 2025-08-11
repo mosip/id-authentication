@@ -2,11 +2,14 @@ package io.mosip.authentication.common.service.util;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
+import io.mosip.authentication.common.service.helper.MatchTypeHelper;
 import io.mosip.authentication.common.service.helper.SeparatorHelper;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +47,9 @@ public class EntityInfoUtil {
     @Autowired
     private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
+    /** The mosip logger. */
+    private static Logger logger = IdaLogger.getLogger(EntityInfoUtil.class);
+
     /**
      * Gets the entity info map.
      *
@@ -54,15 +60,44 @@ public class EntityInfoUtil {
      * @return the entity info map
      * @throws IdAuthenticationBusinessException the id authentication business exception
      */
-    public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
-            String language, String idName) throws IdAuthenticationBusinessException {
-        List<String> propertyNames = identityAttributesForMatchTypeHelper.getIdentityAttributesForMatchType(matchType, idName);
-        Map<String, String> identityValuesMapWithLang = getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
-        Map<String, String> identityValuesMapWithoutLang = getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
-        Map<String, String> mergedMap = mergeNonNullValues(identityValuesMapWithLang, identityValuesMapWithoutLang);
+    public Map<String, String> getIdEntityInfoMap(
+            MatchType matchType,
+            Map<String, List<IdentityInfoDTO>> identityInfos,
+            String language,
+            String idName
+    ) throws IdAuthenticationBusinessException {
+
+        logger.info("getIdEntityInfoMap() called with:");
+        logger.info("  matchType: {}", matchType);
+        logger.info("  identityInfos: {}", identityInfos);
+        logger.info("  language: {}", language);
+        logger.info("  idName: {}", idName);
+
+        List<String> propertyNames = identityAttributesForMatchTypeHelper
+                .getIdentityAttributesForMatchType(matchType, idName);
+        logger.info("Property names for matchType {} and idName {}: {}", matchType, idName, propertyNames);
+
+        Map<String, String> identityValuesMapWithLang =
+                getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
+        logger.info("Identity values map (with language='{}'): {}", language, identityValuesMapWithLang);
+
+        Map<String, String> identityValuesMapWithoutLang =
+                getIdentityValuesMap(matchType, propertyNames, null, identityInfos);
+        logger.info("Identity values map (without language): {}", identityValuesMapWithoutLang);
+
+        Map<String, String> mergedMap =
+                mergeNonNullValues(identityValuesMapWithLang, identityValuesMapWithoutLang);
+        logger.info("Merged identity values map: {}", mergedMap);
+
         Map<String, Object> props = Map.of(IdInfoFetcher.class.getSimpleName(), idInfoFetcher);
-        return matchType.getEntityInfoMapper().apply(mergedMap, props);
+        logger.info("Props for EntityInfoMapper: {}", props);
+
+        Map<String, String> finalMappedValues = matchType.getEntityInfoMapper().apply(mergedMap, props);
+        logger.info("Final mapped values: {}", finalMappedValues);
+
+        return finalMappedValues;
     }
+
 
     /**
      * Gets the entity info map.
@@ -88,25 +123,64 @@ public class EntityInfoUtil {
      * @return the identity values map
      * @throws IdAuthenticationBusinessException the id authentication business exception
      */
-    private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
-                                                     String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
-        Map<String, Map.Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity,
-                idInfoFetcher);
+    private Map<String, String> getIdentityValuesMap(
+            MatchType matchType,
+            List<String> propertyNames,
+            String languageCode,
+            Map<String, List<IdentityInfoDTO>> idEntity
+    ) throws IdAuthenticationBusinessException {
+
+        logger.info("getIdentityValuesMap() called with:");
+        logger.info("  matchType: {}", matchType);
+        logger.info("  propertyNames: {}", propertyNames);
+        logger.info("  languageCode: {}", languageCode);
+        logger.info("  idEntity: {}", idEntity);
+
+        // Step 1: Map the idEntity according to matchType
+        Map<String, Map.Entry<String, List<IdentityInfoDTO>>> mappedIdEntity =
+                matchType.mapEntityInfo(idEntity, idInfoFetcher);
+        logger.info("Mapped idEntity: {}", mappedIdEntity);
+
+        // Step 2: Define keyMapper
         Function<? super String, ? extends String> keyMapper = propName -> {
             String key = mappedIdEntity.get(propName).getKey();
             if (languageCode != null) {
                 key = key + LANG_CODE_SEPARATOR + languageCode;
             }
+            logger.info("Generated key for property '{}': {}", propName, key);
             return key;
         };
-        Function<? super String, ? extends String> valueMapper = propName -> getIdentityValueFromMap(propName,
-                languageCode, mappedIdEntity, matchType).findAny().orElse("");
 
-        return propertyNames.stream()
-                .filter(propName -> mappedIdEntity.containsKey(propName))
-                .collect(
-                        Collectors.toMap(keyMapper, valueMapper, (p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
+        // Step 3: Define valueMapper
+        Function<? super String, ? extends String> valueMapper = propName -> {
+            String value = getIdentityValueFromMap(propName, languageCode, mappedIdEntity, matchType)
+                    .findAny()
+                    .orElse("");
+            logger.info("Fetched value for property '{}': {}", propName, value);
+            return value;
+        };
+
+        // Step 4: Build and return the result map
+        Map<String, String> resultMap = propertyNames.stream()
+                .filter(propName -> {
+                    boolean contains = mappedIdEntity.containsKey(propName);
+                    logger.info("Property '{}' present in mappedIdEntity: {}", propName, contains);
+                    return contains;
+                })
+                .collect(Collectors.toMap(
+                        keyMapper,
+                        valueMapper,
+                        (p1, p2) -> {
+                            logger.warn("Duplicate key encountered. Keeping: '{}', Ignoring: '{}'", p1, p2);
+                            return p1;
+                        },
+                        LinkedHashMap::new
+                ));
+
+        logger.info("Final identity values map: {}", resultMap);
+        return resultMap;
     }
+
 
     /**
      * Merge non null values.
