@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ import io.mosip.kernel.biometrics.spi.CbeffUtil;
  * @author Dinesh Karuppiah.T
  * @author Nagarjuna
  */
+@Slf4j
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
 
@@ -480,6 +482,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		final TriFunctionWithBusinessException<Map<String, String>, Map<String, String>, Map<String, Object>, Double> defaultFunc = (
 				arg1, arg2, arg3) -> (double) 0;
 		if (authType instanceof BioAuthType) {
+            log.info("Using BioMatcherUtil for matching with authType: {}", authType.getType());
 			return bioMatcherUtil::match;
 		}
 		if (authType instanceof KeyBindedTokenAuthType) {

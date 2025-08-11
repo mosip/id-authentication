@@ -74,6 +74,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 //			if (isAuth) {
 //				verifyBiometricDevice(authRequestDTO.getRequest().getBiometrics());
 //			}
+            logger.info("bioIdentity is not null or empty, proceeding with authentication");
 			List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO, bioIdentity);
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO, bioIdentity,
 					partnerId);

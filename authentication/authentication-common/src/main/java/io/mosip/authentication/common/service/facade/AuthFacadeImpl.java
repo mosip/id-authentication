@@ -218,7 +218,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
             LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
             properties.put(IdAuthCommonConstants.TOKEN, token);
-            logger.info("Auth Properties: {}", properties);
 
             authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
 
@@ -331,15 +330,16 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		IdType idType = IdType.getIDTypeOrDefault(authRequestDTO.getIndividualIdType());
-
+        
 		processOTPAuth(authRequestDTO, token, isAuth, authStatusList, idType, authTokenId, partnerId, authTxnBuilder, idvidHash);
-
+        logger.info("idType : {} processOTPAuth ", idType);
 		if (!isMatchFailed(authStatusList)) {
 			processDemoAuth(authRequestDTO, idInfo, token, isAuth, authStatusList, idType, authTokenId, partnerId,
 					authTxnBuilder, idvidHash);
 		}
 
 		if (!isMatchFailed(authStatusList)) {
+            logger.info("idType : {} processBioAuth ", idType);
 			processBioAuth(authRequestDTO, idInfo, token, isAuth, authStatusList, idType, authTokenId, partnerId,
 					authTxnBuilder, idvidHash);
 		}
@@ -383,6 +383,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (AuthTypeUtil.isBio(authRequestDTO)) {
 			AuthStatusInfo bioValidationStatus;
 			try {
+                logger.info("bioAuthService.authenticate ", idType);
 				bioValidationStatus = bioAuthService.authenticate(authRequestDTO, token, idInfo, partnerId, isAuth);
 				authStatusList.add(bioValidationStatus);
 				statusInfo = bioValidationStatus;

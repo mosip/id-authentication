@@ -9,6 +9,7 @@ import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
@@ -27,6 +28,7 @@ import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessExc
  * @author Dinesh Karuppiah.T
  */
 
+@Slf4j
 public enum BioAuthType implements AuthType {
 
 	//TODO to be removed
@@ -268,7 +270,9 @@ public enum BioAuthType implements AuthType {
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
 	
 	protected Map<String, Object> getSingleMatchProperties(AuthRequestDTO authRequestDTO, IdaIdMapping idMapping, IdInfoFetcher idInfoFetcher) {
-		return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
+		log.info("Getting single match properties for authRequestDTO: {}, idMapping: {}, idInfoFetcher: {}", 
+                authRequestDTO, idMapping, idInfoFetcher);
+        return getMatchProperties(authRequestDTO, idMapping, idInfoFetcher, idInfoFetcher
 				.getMatchFunction(this));
 	}
 	

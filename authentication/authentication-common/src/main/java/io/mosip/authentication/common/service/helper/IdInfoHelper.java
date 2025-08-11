@@ -120,8 +120,10 @@ public class IdInfoHelper {
 	public List<MatchOutput> matchIdentityData(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs, String partnerId)
 			throws IdAuthenticationBusinessException {
+        mosipLogger.info("listMatchInputs {}", listMatchInputs);
 		List<MatchOutput> matchOutputList = new ArrayList<>();
 		for (MatchInput matchInput : listMatchInputs) {
+            mosipLogger.info("getMatchType {} getAuthType {}", matchInput.getMatchType(), matchInput.getAuthType());
 			MatchOutput matchOutput = matchTypeHelper.matchType(authRequestDTO, identityEntity, matchInput, partnerId);
 			if (matchOutput != null) {
 				matchOutputList.add(matchOutput);

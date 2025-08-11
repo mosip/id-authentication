@@ -3,6 +3,9 @@ package io.mosip.authentication.common.service.validator;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.authentication.common.service.util.BioMatcherUtil;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,8 @@ public class AuthFiltersValidator {
 	/** The mosip auth filter factory. */
 	@Autowired
 	private MosipAuthFilterFactory mosipAuthFilterFactory;
+
+    private static Logger logger = IdaLogger.getLogger(AuthFiltersValidator.class);
 	
 	/**
 	 * Validate auth filters.
@@ -38,6 +43,8 @@ public class AuthFiltersValidator {
 			           Map<String, List<IdentityInfoDTO>> identityData,
 			           Map<String, Object> properties) throws IdAuthenticationFilterException {
 		List<IMosipAuthFilter> enabledAuthFilters = mosipAuthFilterFactory.getEnabledAuthFilters();
+        logger.info(enabledAuthFilters.size() + " authentication filters are enabled for validation");
+        
 		for (IMosipAuthFilter authFilter : enabledAuthFilters) {
 			// This will run auth filter validate one by one and any exception thrown from
 			// one filter will skip the execution of the rest.
