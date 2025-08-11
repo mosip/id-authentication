@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,6 @@ import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -27,7 +28,6 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Builder class to match Inputs.
@@ -38,7 +38,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public class MatchInputBuilder {
 
 	/**
-	 * The mosip logger.
+	 * The mosip mosipLogger.
 	 */
 	private static Logger mosipLogger = IdaLogger.getLogger(MatchInputBuilder.class);
 
@@ -68,45 +68,84 @@ public class MatchInputBuilder {
 	 * @param demoEntity     the demo entity
 	 * @return the list
 	 */
-	public List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes, MatchType[] matchTypes,
-											Map<String, List<IdentityInfoDTO>> demoEntity) {
-		List<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
-		List<MatchInput> result = new ArrayList<>(matchTypes.length * 3); // pre-allocate
+    public List<MatchInput> buildMatchInput(
+            AuthRequestDTO authRequestDTO,
+            AuthType[] authTypes,
+            MatchType[] matchTypes,
+            Map<String, List<IdentityInfoDTO>> demoEntity) {
 
-		for (MatchType matchType : matchTypes) {
-			if (matchType.isDynamic()) {
-				var demographics = authRequestDTO.getRequest().getDemographics();
-				if (demographics != null && demographics.getMetadata() != null) {
-					for (Entry<String, Object> entry : demographics.getMetadata().entrySet()) {
-						String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO, languages)
-								.orElse(entry.getKey());
+        mosipLogger.info("Received authRequestDTO: {}", authRequestDTO);
+        mosipLogger.info("Received authTypes: {}", Arrays.toString(authTypes));
+        mosipLogger.info("Received matchTypes: {}", Arrays.toString(matchTypes));
+        mosipLogger.info("Received demoEntity: {}", demoEntity);
 
-						if (matchType.isMultiLanguage(propName, demoEntity, idInfoFetcher.getMappingConfig())) {
-							validateDynamicAttributeLanguage(propName, matchType, authRequestDTO, languages);
-							for (String language : languages) {
-								addMatchInput(authRequestDTO, authTypes, matchType, result, language);
-							}
-						} else {
-							addMatchInput(authRequestDTO, authTypes, matchType, result, null);
-						}
-					}
-				}
-			} else {
-				if (matchType.isMultiLanguage()) {
-					for (String language : languages) {
-						addMatchInput(authRequestDTO, authTypes, matchType, result, language);
-					}
-				} else {
-					addMatchInput(authRequestDTO, authTypes, matchType, result, null);
-				}
-			}
-		}
+        List<String> languages = idInfoFetcher.getSystemSupportedLanguageCodes();
+        mosipLogger.info("System supported languages: {}", languages);
 
-		// Avoid duplicate MatchInputs manually instead of stream distinct()
-		return removeDuplicates(result);
-	}
+        List<MatchInput> result = new ArrayList<>(matchTypes.length * 3); // pre-allocate
+        mosipLogger.info("Initialized result list with capacity: {}", matchTypes.length * 3);
 
-	/**
+        for (MatchType matchType : matchTypes) {
+            mosipLogger.info("Processing matchType: {}", matchType);
+
+            if (matchType.isDynamic()) {
+                mosipLogger.info("MatchType {} is dynamic", matchType);
+
+                var demographics = authRequestDTO.getRequest().getDemographics();
+                mosipLogger.info("Retrieved demographics: {}", demographics);
+
+                if (demographics != null && demographics.getMetadata() != null) {
+                    mosipLogger.info("Demographics metadata: {}", demographics.getMetadata());
+
+                    for (Entry<String, Object> entry : demographics.getMetadata().entrySet()) {
+                        mosipLogger.info("Processing metadata entry: key={}, value={}", entry.getKey(), entry.getValue());
+
+                        String propName = getMappedPropertyName(entry.getKey(), matchType, authRequestDTO, languages)
+                                .orElse(entry.getKey());
+                        mosipLogger.info("Resolved property name: {}", propName);
+
+                        if (matchType.isMultiLanguage(propName, demoEntity, idInfoFetcher.getMappingConfig())) {
+                            mosipLogger.info("Property {} is multi-language for matchType {}", propName, matchType);
+
+                            validateDynamicAttributeLanguage(propName, matchType, authRequestDTO, languages);
+                            mosipLogger.info("Validated dynamic attribute language for property {}", propName);
+
+                            for (String language : languages) {
+                                mosipLogger.info("Adding match input for language: {}", language);
+                                addMatchInput(authRequestDTO, authTypes, matchType, result, language);
+                            }
+                        } else {
+                            mosipLogger.info("Property {} is single-language for matchType {}", propName, matchType);
+                            addMatchInput(authRequestDTO, authTypes, matchType, result, null);
+                        }
+                    }
+                }
+            } else {
+                mosipLogger.info("MatchType {} is static", matchType);
+
+                if (matchType.isMultiLanguage()) {
+                    mosipLogger.info("MatchType {} supports multi-language", matchType);
+                    for (String language : languages) {
+                        mosipLogger.info("Adding match input for language: {}", language);
+                        addMatchInput(authRequestDTO, authTypes, matchType, result, language);
+                    }
+                } else {
+                    mosipLogger.info("MatchType {} supports single-language", matchType);
+                    addMatchInput(authRequestDTO, authTypes, matchType, result, null);
+                }
+            }
+        }
+
+        mosipLogger.info("Result list before removing duplicates: {}", result);
+
+        List<MatchInput> dedupedResult = removeDuplicates(result);
+        mosipLogger.info("Final deduplicated MatchInput list: {}", dedupedResult);
+
+        return dedupedResult;
+    }
+
+
+    /**
 	 * Removes duplicate {@link MatchInput} objects from the given list while preserving
 	 * the original insertion order.
 	 *
