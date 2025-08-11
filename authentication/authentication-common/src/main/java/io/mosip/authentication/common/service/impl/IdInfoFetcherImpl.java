@@ -1,15 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,6 +10,8 @@ import java.util.stream.Stream;
 import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -99,6 +94,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	@Autowired
 	private ValidateOtpHelper validateOtpHelper;
+
+    private static Logger logger = IdaLogger.getLogger(IdInfoFetcherImpl.class);
 
 	/**
 	 * Gets the demo normalizer.
@@ -267,27 +264,53 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 * java.util.Map, io.mosip.authentication.core.spi.bioauth.CbeffDocType,
 	 * io.mosip.authentication.core.spi.indauth.match.MatchType)
 	 */
-	@Override
-	public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(Map<String, List<IdentityInfoDTO>> idEntity,
-			CbeffDocType[] types, MatchType matchType) throws IdAuthenticationBusinessException {
-		Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
-		for (CbeffDocType type : types) {
-			List<String> identityBioAttributes = getBioAttributeNames(type, matchType, idEntity);
-			for (String bioAttribute : identityBioAttributes) {
-				Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
-				if (identityValue.isPresent()) {
-					cbeffValuesForTypes.putAll(getCbeffValuesForCbeffDocType(type, matchType, identityValue.get()));
-				} else {
-					throw new IdAuthenticationBusinessException(
-							IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(), String.format(
-									IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
-				}				
-			}
-		}
-		return cbeffValuesForTypes;
-	}
-	
-	/**
+    @Override
+    public Map<String, Entry<String, List<IdentityInfoDTO>>> getCbeffValues(
+            Map<String, List<IdentityInfoDTO>> idEntity,
+            CbeffDocType[] types,
+            MatchType matchType) throws IdAuthenticationBusinessException {
+
+        logger.info("Received idEntity: {}", idEntity);
+        logger.info("Received types: {}", Arrays.toString(types));
+        logger.info("Received matchType: {}", matchType);
+
+        Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValuesForTypes = new HashMap<>();
+        logger.info("Initialized cbeffValuesForTypes: {}", cbeffValuesForTypes);
+
+        for (CbeffDocType type : types) {
+            logger.info("Processing CbeffDocType: {}", type);
+
+            List<String> identityBioAttributes = getBioAttributeNames(type, matchType, idEntity);
+            logger.info("Identity Bio Attributes for {}: {}", type, identityBioAttributes);
+
+            for (String bioAttribute : identityBioAttributes) {
+                logger.info("Processing Bio Attribute: {}", bioAttribute);
+
+                Optional<String> identityValue = getIdentityValue(bioAttribute, null, idEntity).findAny();
+                logger.info("Identity Value for {}: {}", bioAttribute, identityValue);
+
+                if (identityValue.isPresent()) {
+                    Map<String, Entry<String, List<IdentityInfoDTO>>> cbeffValues =
+                            getCbeffValuesForCbeffDocType(type, matchType, identityValue.get());
+                    logger.info("CBEFF Values for type {} and value {}: {}", type, identityValue.get(), cbeffValues);
+
+                    cbeffValuesForTypes.putAll(cbeffValues);
+                    logger.info("Updated cbeffValuesForTypes: {}", cbeffValuesForTypes);
+                } else {
+                    logger.error("Biometric data missing for type: {}", type.getName());
+                    throw new IdAuthenticationBusinessException(
+                            IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
+                            String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), type.getName()));
+                }
+            }
+        }
+
+        logger.info("Final cbeffValuesForTypes: {}", cbeffValuesForTypes);
+        return cbeffValuesForTypes;
+    }
+
+
+    /**
 	 * 
 	 * @param type
 	 * @param matchType
