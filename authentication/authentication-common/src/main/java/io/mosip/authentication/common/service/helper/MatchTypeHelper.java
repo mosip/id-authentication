@@ -162,63 +162,95 @@ public class MatchTypeHelper {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    private Map<String, String> getEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
-                                              String uin,
-                                              AuthRequestDTO req,
-                                              MatchInput input,
-                                              EntityValueFetcher entityValueFetcher,
-                                              MatchType matchType,
-                                              MatchingStrategy strategy,
-                                              String idName,
-                                              String partnerId)
-            throws IdAuthenticationBusinessException {
+    private Map<String, String> getEntityInfo(
+            Map<String, List<IdentityInfoDTO>> idEntity,
+            String uin,
+            AuthRequestDTO req,
+            MatchInput input,
+            EntityValueFetcher entityValueFetcher,
+            MatchType matchType,
+            MatchingStrategy strategy,
+            String idName,
+            String partnerId
+    ) throws IdAuthenticationBusinessException {
+
+        mosipLogger.info("getEntityInfo() called with:");
+        mosipLogger.info("  idEntity: {}", idEntity);
+        mosipLogger.info("  uin: {}", uin);
+        mosipLogger.info("  req: {}", req);
+        mosipLogger.info("  input: {}", input);
+        mosipLogger.info("  entityValueFetcher: {}", entityValueFetcher);
+        mosipLogger.info("  matchType: {}", matchType);
+        mosipLogger.info("  strategy: {}", strategy);
+        mosipLogger.info("  idName: {}", idName);
+        mosipLogger.info("  partnerId: {}", partnerId);
 
         Map<String, String> entityInfo = null;
+
         if (matchType.hasRequestEntityInfo()) {
+            mosipLogger.info("matchType.hasRequestEntityInfo() is TRUE - fetching entity info from entityValueFetcher");
             entityInfo = entityValueFetcher.fetch(uin, req, partnerId);
         } else if (matchType.hasIdEntityInfo()) {
+            mosipLogger.info("matchType.hasIdEntityInfo() is TRUE - fetching entity info from entityInfoUtil");
             entityInfo = entityInfoUtil.getIdEntityInfoMap(matchType, idEntity, input.getLanguage(), idName);
         } else {
+            mosipLogger.info("matchType does not have request or ID entity info - using empty map");
             entityInfo = Collections.emptyMap();
         }
 
-        if (null == entityInfo || entityInfo.isEmpty()
-                || entityInfo.entrySet().stream().anyMatch(value -> value.getValue() == null
-                || value.getValue().isEmpty() || value.getValue().trim().length() == 0)) {
+        mosipLogger.info("Fetched entityInfo: {}", entityInfo);
+
+        boolean isEntityInfoInvalid = (entityInfo == null || entityInfo.isEmpty() ||
+                entityInfo.entrySet().stream().anyMatch(value -> value.getValue() == null
+                        || value.getValue().isEmpty()
+                        || value.getValue().trim().length() == 0));
+
+        mosipLogger.info("isEntityInfoInvalid: {}", isEntityInfoInvalid);
+
+        if (isEntityInfoInvalid) {
             switch (matchType.getCategory()) {
                 case BIO:
+                    mosipLogger.error("Biometric data missing for authType: {}", input.getAuthType().getType());
                     throw new IdAuthenticationBusinessException(
                             IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
                             String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(),
                                     input.getAuthType().getType()));
+
                 case DEMO:
-                    if(null == input.getLanguage())  {
+                    if (input.getLanguage() == null) {
+                        mosipLogger.error("Demographic data missing for idName: {}", idName);
                         throw new IdAuthenticationBusinessException(
                                 IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(),
                                 String.format(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorMessage(),
                                         idName));
-                    }
-                    else {
+                    } else {
+                        mosipLogger.error("Demographic data missing for idName: {} and language: {}", idName, input.getLanguage());
                         throw new IdAuthenticationBusinessException(
                                 IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorCode(),
                                 String.format(IdAuthenticationErrorConstants.DEMO_MISSING_LANG.getErrorMessage(),
                                         idName, input.getLanguage()));
                     }
+
                 case KBT:
+                    mosipLogger.error("Key Binding data missing for authType: {}", input.getAuthType().getType());
                     throw new IdAuthenticationBusinessException(
                             IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorCode(),
                             String.format(IdAuthenticationErrorConstants.KEY_BINDING_MISSING.getErrorMessage(),
                                     input.getAuthType().getType()));
 
                 case PWD:
+                    mosipLogger.error("Password data missing for authType: {}", input.getAuthType().getType());
                     throw new IdAuthenticationBusinessException(
                             IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorCode(),
                             String.format(IdAuthenticationErrorConstants.PASSWORD_MISSING.getErrorMessage(),
                                     input.getAuthType().getType()));
             }
         }
+
+        mosipLogger.info("Returning entityInfo: {}", entityInfo);
         return entityInfo;
     }
+
 
     /**
      * Get Authrequest Info.
