@@ -9,6 +9,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -134,6 +135,7 @@ public class EntityInfoUtil {
         logger.info("getIdentityValuesMap() called with:");
         logger.info("  matchType: {}", matchType);
         logger.info("  propertyNames: {}", propertyNames);
+//        FACE
         logger.info("  languageCode: {}", languageCode);
         logger.info("  idEntity: {}", idEntity);
 
@@ -148,6 +150,9 @@ public class EntityInfoUtil {
         // Step 3: Loop through each propertyName
         for (String propName : propertyNames) {
             logger.info("Checking property: {}", propName);
+            if(propName.equalsIgnoreCase("FACE")) {
+                propName = propName+ LANG_CODE_SEPARATOR + CbeffConstant.FORMAT_TYPE_FACE; // Ensure case sensitivity for FACE
+            }
 
             // Only proceed if this property exists in mappedIdEntity
             if (mappedIdEntity.containsKey(propName)) {
