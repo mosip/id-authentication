@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
+
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.LANG_CODE_SEPARATOR;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ISSUER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUDIENCE;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -49,6 +52,8 @@ import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
+import io.mosip.authentication.service.kyc.util.LocaleMappingUtil;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.biometrics.util.ConvertRequestDto;
 import io.mosip.biometrics.util.face.FaceDecoder;
@@ -94,12 +99,18 @@ public class KycServiceImpl implements KycService {
 	@Value("${ida.idp.consented.address.value.separator: }")
 	private String addressValueSeparator;
 	
-	@Value("${ida.kyc.send-face-as-cbeff-xml:false}")
+	@Value("${mosip.ida.kyc.send-face-as-cbeff-xml:false}")
 	private boolean sendFaceAsCbeffXml;
 
-	@Value("${ida.idp.jwe.response.type.constant:JWE}")
+	@Value("${mosip.ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
 
+	@Value("${mosip.ida.idp.add.issuer.response:true}")
+	private boolean addIssuerInResponse;
+
+	@Value("${mosip.ida.idp.issuer.uri:}")
+	private String issuerUri;
+	
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -126,8 +137,7 @@ public class KycServiceImpl implements KycService {
 	private CbeffUtil cbeffUtil;
 
 	@Autowired
-	private EntityInfoUtil entityInfoUtil;
-
+	private KycExchangeResponseDataHelper kycExchangeResponseDataHelper;
 	/**
 	 * Retrieve kyc info.
 	 *
@@ -162,7 +172,7 @@ public class KycServiceImpl implements KycService {
 					face = faceCbeff;
 				} else {
 					try {
-						face = getFaceBDB(faceCbeff);
+						face = kycExchangeResponseDataHelper.getEncodedFaceBDB(faceCbeff);
 					} catch (Exception e) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),
 								String.format(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorMessage(), CbeffDocType.FACE.getName()), e);
@@ -466,7 +476,7 @@ public class KycServiceImpl implements KycService {
 					
 		Map<String, Object> respMap = new HashMap<>();
 		Set<String> uniqueConsentedLocales = new HashSet<String>(consentedLocales);
-		Map<String, String> mappedConsentedLocales = localesMapping(uniqueConsentedLocales);
+		Map<String, String> mappedConsentedLocales = LocaleMappingUtil.localesMapping(uniqueConsentedLocales);
 
 		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
 		
@@ -479,20 +489,37 @@ public class KycServiceImpl implements KycService {
 			}
 			List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(attrib);
 			if (mappedConsentedLocales.size() > 0) {
-				addEntityForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
+				kycExchangeResponseDataHelper.addEntityDataForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
 			}
 		}
-
+		String partnerId = (String) kycExchangeRequestDTO.getMetadata().get("partnerId");
+		addIssuerInResponse(respMap, partnerId);
+		
 		try {
 			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
 			String respType = kycExchangeRequestDTO.getRespType();
 			if (Objects.nonNull(respType) && respType.equalsIgnoreCase(jweResponseType)){
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
+					"Requested Response Type is JWE. ");
 				String partnerCertData = (String) kycExchangeRequestDTO.getMetadata().get(IdAuthCommonConstants.PARTNER_CERTIFICATE);
 				return securityManager.jwtEncrypt(signedData, partnerCertData);
 			}
 			return signedData;
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
+	}
+
+	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+		if (addIssuerInResponse) {
+			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
+				respMap.put(ISSUER, issuerUri);
+			}
+			else {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
+					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+			}
+			respMap.put(AUDIENCE, partnerId);
 		}
 	}
 
@@ -506,7 +533,7 @@ public class KycServiceImpl implements KycService {
 					"Face Bio not found in DB. So not adding to response claims.");
 				return;
 			}
-			Map<String, String> faceEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				try {
 					String face = convertJP2ToJpeg(getFaceBDB(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())));

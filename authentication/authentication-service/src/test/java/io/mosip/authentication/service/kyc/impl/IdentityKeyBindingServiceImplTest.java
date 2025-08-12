@@ -57,8 +57,8 @@ public class IdentityKeyBindingServiceImplTest {
         Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("idVidHash");
         Mockito.when(bindingCertificateRepo.countPublicKeysByIdHash(Mockito.anyString(),Mockito.any())).thenReturn(1);
 
-        boolean flag=identityKeyBindingServiceImpl.isPublicKeyBinded("idVid", pubblicKeyMap);
-        Assert.assertTrue(flag);
+        boolean flag=identityKeyBindingServiceImpl.isPublicKeyBinded("idVid", pubblicKeyMap, "vid");
+        Assert.assertFalse(flag);
 
     }
 

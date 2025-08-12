@@ -67,6 +67,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 
 /**
@@ -143,7 +144,7 @@ public class KycServiceImplTest {
 
 
 	@Before
-	public void before() throws IdAuthenticationDaoException, IdAuthenticationBusinessException {
+	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
@@ -153,10 +154,14 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
 		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper2, "env", env);
+		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
+		ReflectionTestUtils.setField(kycServiceImpl2, "kycExchangeResponseDataHelper", new KycExchangeResponseDataHelper());
+
 		idInfo = getIdInfo("12232323121");
+
 	}
 
 	@Test
