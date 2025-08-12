@@ -949,10 +949,18 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		if (ageList != null) {
 			for (IdentityInfoDTO identityInfoDTO : ageList) {
 				try {
-					Integer.parseInt(identityInfoDTO.getValue());
+					int age = Integer.parseInt(identityInfoDTO.getValue());
+					if (age <= 0) {
+						mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+								IdAuthCommonConstants.VALIDATE, "Demographic data – Age is not valid");
+						errors.rejectValue(IdAuthCommonConstants.REQUEST,
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { "age" },
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					}
 				} catch (NumberFormatException e) {
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-							IdAuthCommonConstants.VALIDATE, "Demographic data – Age(pi) did not match");
+							IdAuthCommonConstants.VALIDATE, "Demographic data – Age is not valid");
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { "age" },

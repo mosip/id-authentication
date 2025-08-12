@@ -2,6 +2,7 @@ package io.mosip.authentication.service.kyc.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,7 +88,15 @@ public class ExchangeDataAttributesUtil {
 		return consentAttributes.stream()
 							    .filter(claim -> oidcClientAllowedUserClaims.contains(claim.toLowerCase()))
 								.collect(Collectors.toList());
-
 	}
-    
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getVerifiedClaimsList(List<Map<String, Object>> reqVerifiedClaims) {
+		
+		return reqVerifiedClaims == null ? List.of() : reqVerifiedClaims.stream()
+								.map(elem -> elem.get(IdAuthCommonConstants.CLAIMS))        
+								.filter(claim -> claim instanceof Map)           
+								.flatMap(claim -> ((Map<String, ?>) claim).keySet().stream()) 
+								.collect(Collectors.toList());   
+	}
 }
