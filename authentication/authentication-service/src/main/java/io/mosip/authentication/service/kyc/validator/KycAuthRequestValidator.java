@@ -57,8 +57,9 @@ public class KycAuthRequestValidator extends AuthRequestValidator {
 			BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(kycAuthRequestDTO,
 					errors.getObjectName());
 			super.validate(kycAuthRequestDTO, authErrors);
+			mosipLogger.info("----------ERROR---------------------"+authErrors);
 			errors.addAllErrors(authErrors);
-
+			mosipLogger.info("Error------------"+errors+"---------ERROR-----"+authErrors);
 			if (!errors.hasErrors()) {
 				validateConsentReq(kycAuthRequestDTO.isConsentObtained(), errors);
 			}

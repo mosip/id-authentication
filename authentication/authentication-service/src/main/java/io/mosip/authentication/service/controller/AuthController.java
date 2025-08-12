@@ -144,7 +144,7 @@ public class AuthController {
 			@ApiIgnore Errors errors, @PathVariable("MISP-LK") String mispLK, @PathVariable("Auth-Partner-ID") String partnerId,
 			@PathVariable("API-Key") String partnerApiKey, HttpServletRequest request)
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
-		
+		System.out.println("---------------AUTH API------------------");
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
 
@@ -157,10 +157,19 @@ public class AuthController {
 				String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
 						: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
 				authrequestdto.setIndividualIdType(idType);
+				mosipLogger.info("VALIDATE AUTHENTICATOR "+errors.toString());
 				authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
+				mosipLogger.info("VALIDATE Authentication"+errors.toString());
 				authRequestValidator.validateAge(authrequestdto, errors);
+				mosipLogger.info("VALIDATE AGE"+errors.toString());
 				if(!errors.hasErrors() && AuthTypeUtil.isBio(authrequestdto)) {
 					authRequestValidator.validateDeviceDetails(authrequestdto, errors);
+				}
+				mosipLogger.info("AFTER IF CONDITION ");
+				if (errors.hasErrors()) {
+					errors.getAllErrors().forEach(err -> {
+						mosipLogger.error("Validation error: " + err.getDefaultMessage()+"request"+authrequestdto);
+					});
 				}
 				DataValidationUtil.validate(errors);
 				AuthResponseDTO authResponsedto = authFacade.authenticateIndividual(authrequestdto, true, partnerId,

@@ -195,8 +195,10 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	private void checkFutureReqTime(String reqTime, Errors errors, String paramName, String fieldName, FunctionWithThrowable<Date, String, ParseException> dateTimeParser) {
 		Date reqDateAndTime = null;
+		mosipLogger.info("--------reqTime------------"+reqTime);
 		try {
 			reqDateAndTime = dateTimeParser.apply(reqTime);
+			mosipLogger.info("-------------after exception throw--------------");
 		} catch (ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
 					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
