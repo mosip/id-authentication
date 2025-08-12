@@ -64,7 +64,7 @@ public interface IdMapping {
 
         Optional<IdMapping> idMappingOpt = Stream.of(values)
                 .filter(m -> {
-                    boolean match = m.getIdname().equals(name);
+                    boolean match = m.getIdname().equalsIgnoreCase(name);
                     mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
                             "getIdMapping", "Checking value: " + m.getIdname() + " match=" + match);
 //                    Checking value: Face match=false
