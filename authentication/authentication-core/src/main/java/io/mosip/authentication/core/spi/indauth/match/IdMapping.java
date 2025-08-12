@@ -64,6 +64,9 @@ public interface IdMapping {
 
         Optional<IdMapping> idMappingOpt = Stream.of(values)
                 .filter(m -> {
+                    // added temporary fix to handle case insensitivity
+                    // This is to ensure that the idname comparison is case-insensitive
+                    // and matches the expected behavior of the system.
                     boolean match = m.getIdname().equalsIgnoreCase(name);
                     mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
                             "getIdMapping", "Checking value: " + m.getIdname() + " match=" + match);
