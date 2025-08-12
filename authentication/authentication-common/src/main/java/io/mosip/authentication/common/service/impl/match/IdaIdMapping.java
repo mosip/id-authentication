@@ -494,7 +494,6 @@ private String idname;
             mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
                     "getCbeffMappingForCbeffDocType", "Condition: FACE mapping");
             cbeffKey = BiometricType.name() + "__" + formatType;
-            cbeffKey = BiometricType.name();
 
         } else if (subType != null && singleSubType != null) { // for FINGER
             mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
