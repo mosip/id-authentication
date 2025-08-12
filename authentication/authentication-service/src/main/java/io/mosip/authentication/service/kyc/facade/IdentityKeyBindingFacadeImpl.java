@@ -113,7 +113,8 @@ public class IdentityKeyBindingFacadeImpl implements IdentityKeyBindingFacade {
 		idService.checkIdKeyBindingPermitted(idvid, idvIdType);
 
         boolean keyBinded = keyBindingService.isPublicKeyBinded(idvid, 
-                            ((IdentityKeyBindingRequestDTO) authRequest).getIdentityKeyBinding().getPublicKeyJWK());
+                            ((IdentityKeyBindingRequestDTO) authRequest).getIdentityKeyBinding().getPublicKeyJWK(),
+							idvIdType);
         if (keyBinded) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
 						"Public key already binded to an VID.");

@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

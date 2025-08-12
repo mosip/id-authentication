@@ -129,4 +129,6 @@ public class IDAMappingConfig implements MappingConfig {
 
 	/** The password. */
 	private List<String> password;
+
+	private List<String> verifiedAttributes;
 }

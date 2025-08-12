@@ -49,6 +49,7 @@ import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
@@ -174,6 +175,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			if(AuthTypeUtil.isPassword(kycAuthRequestDTO)) {
 				filterAttributes.add(IdaIdMapping.PASSWORD.getIdname());
 			}
+		}
+		if(authRequestDTO instanceof KycAuthRequestDTOV2) {
+			filterAttributes.add(IdaIdMapping.VERIFIEDATTRIBUTES.getIdname());
 		}
 		
 		Map<String, Object> idResDTO = idService.processIdType(idvIdType, idvid, idInfoHelper.isBiometricDataNeeded(authRequestDTO),

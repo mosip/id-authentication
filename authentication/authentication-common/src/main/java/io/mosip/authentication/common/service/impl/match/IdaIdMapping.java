@@ -185,6 +185,8 @@ public enum IdaIdMapping implements IdMapping {
 
 	PASSWORD("password", MappingConfig::getPassword),
 
+	VERIFIEDATTRIBUTES("verifiedAttributes", MappingConfig::getVerifiedAttributes),
+
 	/** The dynamic demographics ID Mapping. */
 	DYNAMIC("demographics") {
 		

@@ -31,7 +31,11 @@ public enum AuditModules {
 
 	KYC_AUTH("IDA-KAT", "KYC Authentication Request", "KYC Authenticator"),
 
+	KYC_AUTH_V2("IDA-KAT-V2", "KYC Authentication Request for V2", "KYC Authenticator V2"),
+
 	KYC_EXCHANGE("IDA-KEX", "KYC Exchange Request", "KYC Exchange"),
+
+	KYC_EXCHANGE_V2("IDA-KEX-V2", "KYC Exchange Request for V2", "KYC Exchange V2"),
 	
 	VCI_EXCHANGE("IDA-VCI", "VCI Exchange Request", "VCI Exchange"),
 
