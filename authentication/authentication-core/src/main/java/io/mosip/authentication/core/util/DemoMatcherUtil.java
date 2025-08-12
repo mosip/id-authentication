@@ -69,7 +69,13 @@ public class DemoMatcherUtil {
 			return 0;
 		}
 	}
-
+	public int doEqualToMatch(int reqInfo, int entityInfo) {
+		if (reqInfo == entityInfo) {
+			return EXACT_MATCH_VALUE;
+		} else {
+			return 0;
+		}
+	}
 	/**
 	 * Exact match for Date - checks refInfo date and entity info date are same.
 	 *
