@@ -4,11 +4,9 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -45,8 +43,22 @@ public interface IdMapping {
     public static Optional<IdMapping> getIdMapping(String name, IdMapping[] values, MappingConfig idMappingConfig) {
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
                 "getIdMapping", "Input name: " + name);
-        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
-                "getIdMapping", "Input values length: " + (values != null ? values.length : "null"));
+
+        if (values != null) {
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
+                    "getIdMapping", "Input values length: " + values.length);
+
+            // Log all values in the array
+            String allValues = Stream.of(values)
+                    .map(v -> "Idname=" + v.getIdname() + ", Type=" + v.getType() + ", SubType=" + v.getSubType())
+                    .collect(Collectors.joining(" | "));
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
+                    "getIdMapping", "All values: " + allValues);
+        } else {
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
+                    "getIdMapping", "Input values is null");
+        }
+
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
                 "getIdMapping", "Input idMappingConfig: " + idMappingConfig);
 
