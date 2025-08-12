@@ -32,7 +32,7 @@ public class PartnerPolicyResponseDTO {
 	
 	private LocalDateTime apiKeyExpiresOn;
 	
-	private LocalDateTime mispExpiresOn;
+	//private LocalDateTime mispExpiresOn;
 
 	private String mispPolicyId;
 
