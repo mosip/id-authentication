@@ -60,16 +60,19 @@ public class IdentityAttributesForMatchTypeHelper {
             List<String> fullMapping = new ArrayList<>();
             mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                     "getIdMappingValue", "Processing " + mappings.size() + " mapping entries.");
+//            Processing 1 mapping entries.
 
             for (String mappingStr : mappings) {
                 mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         "getIdMappingValue", "Processing mappingStr=" + mappingStr);
+//                Processing mappingStr=FACE__8
 
                 if (!Objects.isNull(mappingStr) && !mappingStr.isEmpty()) {
                     Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(
                             mappingStr, IdaIdMapping.values(), idMappingConfig);
                     mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                             "getIdMappingValue", "Found internal mapping for '" + mappingStr + "' = " + mappingInternal);
+//                    Found internal mapping for 'FACE__8' = Optional.empty
 
                     if (mappingInternal.isPresent() && !idMapping.equals(mappingInternal.get())) {
                         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
