@@ -67,6 +67,7 @@ public interface IdMapping {
                     boolean match = m.getIdname().equals(name);
                     mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdMapping.class.getSimpleName(),
                             "getIdMapping", "Checking value: " + m.getIdname() + " match=" + match);
+//                    Checking value: Face match=false
                     return match;
                 })
                 .findAny();
