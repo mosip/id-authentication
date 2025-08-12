@@ -116,6 +116,11 @@ public class MatcherUtilTest {
 		int value = demoMatcherUtil.doLessThanEqualToMatch(18, 20);
 		assertEquals(100, value);
 	}
+	@Test
+	public void TestvalidEqualToMatch() {
+		int value = demoMatcherUtil.doEqualToMatch(18, 20);
+		assertEquals(0, value);
+	}
 
 	/**
 	 * Assert do less than equal match not matched- for age
