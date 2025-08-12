@@ -76,6 +76,7 @@ public class EntityInfoUtil {
         List<String> propertyNames = identityAttributesForMatchTypeHelper
                 .getIdentityAttributesForMatchType(matchType, idName);
         logger.info("Property names for matchType {} and idName {}: {}", matchType, idName, propertyNames);
+//        Property names for matchType FACE and idName Face: [FACE]
 
         Map<String, String> identityValuesMapWithLang =
                 getIdentityValuesMap(matchType, propertyNames, language, identityInfos);
@@ -141,45 +142,44 @@ public class EntityInfoUtil {
                 matchType.mapEntityInfo(idEntity, idInfoFetcher);
         logger.info("Mapped idEntity: {}", mappedIdEntity);
 
-        // Step 2: Define keyMapper
-        Function<? super String, ? extends String> keyMapper = propName -> {
-            String key = mappedIdEntity.get(propName).getKey();
-            if (languageCode != null) {
-                key = key + LANG_CODE_SEPARATOR + languageCode;
+        // Step 2: Prepare the final map
+        Map<String, String> resultMap = new LinkedHashMap<>();
+
+        // Step 3: Loop through each propertyName
+        for (String propName : propertyNames) {
+            logger.info("Checking property: {}", propName);
+
+            // Only proceed if this property exists in mappedIdEntity
+            if (mappedIdEntity.containsKey(propName)) {
+                // Get the key
+                String key = mappedIdEntity.get(propName).getKey();
+                if (languageCode != null) {
+                    key = key + LANG_CODE_SEPARATOR + languageCode;
+                }
+                logger.info("Generated key: {}", key);
+
+                // Get the value
+                String value = getIdentityValueFromMap(
+                        propName, languageCode, mappedIdEntity, matchType
+                ).findAny().orElse("");
+                logger.info("Fetched value: {}", value);
+
+                // Add to result map
+                if (!resultMap.containsKey(key)) {
+                    resultMap.put(key, value);
+                } else {
+                    logger.warn("Duplicate key '{}' found. Keeping old value '{}', ignoring '{}'",
+                            key, resultMap.get(key), value);
+                }
+            } else {
+                logger.info("Property '{}' not found in mappedIdEntity", propName);
             }
-            logger.info("Generated key for property '{}': {}", propName, key);
-            return key;
-        };
-
-        // Step 3: Define valueMapper
-        Function<? super String, ? extends String> valueMapper = propName -> {
-            String value = getIdentityValueFromMap(propName, languageCode, mappedIdEntity, matchType)
-                    .findAny()
-                    .orElse("");
-            logger.info("Fetched value for property '{}': {}", propName, value);
-            return value;
-        };
-
-        // Step 4: Build and return the result map
-        Map<String, String> resultMap = propertyNames.stream()
-                .filter(propName -> {
-                    boolean contains = mappedIdEntity.containsKey(propName);
-                    logger.info("Property '{}' present in mappedIdEntity: {}", propName, contains);
-                    return contains;
-                })
-                .collect(Collectors.toMap(
-                        keyMapper,
-                        valueMapper,
-                        (p1, p2) -> {
-                            logger.warn("Duplicate key encountered. Keeping: '{}', Ignoring: '{}'", p1, p2);
-                            return p1;
-                        },
-                        LinkedHashMap::new
-                ));
+        }
 
         logger.info("Final identity values map: {}", resultMap);
         return resultMap;
     }
+
 
 
     /**
