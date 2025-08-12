@@ -3,24 +3,23 @@
  */
 package io.mosip.authentication.common.service.impl.match;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Mapping class for IDA.
@@ -28,7 +27,7 @@ import io.mosip.kernel.biometrics.entities.SingleAnySubtypeType;
  * @author Dinesh Karuppiah.T
  */
 public enum IdaIdMapping implements IdMapping {
-
+    
 // @formatter:off
 	/** The name. */
 //PI
@@ -198,6 +197,8 @@ public enum IdaIdMapping implements IdMapping {
 	
 	;
 
+    // ✅ logger here, after constants
+    private static final Logger mosipLogger = IdaLogger.getLogger(IdaIdMapping.class);
 
 // @formatter:on
 
@@ -341,19 +342,66 @@ private String idname;
 	 * @param matchType the match type
 	 * @return the cbeff mapping
 	 */
-	private static List<String> getCbeffMapping(MatchType matchType) {
-		if (matchType instanceof BioMatchType) {
-			BioMatchType bioMatchType = (BioMatchType) matchType;
-			 List<String> collection = Stream.of(bioMatchType.getCbeffDocTypes())
-					.flatMap(cbeffDocType -> getCbeffMapping(cbeffDocType.getType(), bioMatchType.getSubType(),
-							bioMatchType.getSingleAnySubtype(), bioMatchType).stream())
-					.collect(Collectors.toList());
-			return collection;
-		}
-		return Collections.emptyList();
-	}
+    private static List<String> getCbeffMapping(MatchType matchType) {
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping",
+                "Input matchType: " + matchType);
 
-	/**
+        if (matchType instanceof BioMatchType) {
+            BioMatchType bioMatchType = (BioMatchType) matchType;
+
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                    IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMapping",
+                    "bioMatchType: " + bioMatchType +
+                            ", subType=" + bioMatchType.getSubType() +
+                            ", singleAnySubtype=" + bioMatchType.getSingleAnySubtype());
+
+            CbeffDocType[] cbeffDocTypes = bioMatchType.getCbeffDocTypes();
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                    IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMapping",
+                    "CbeffDocTypes length=" + (cbeffDocTypes != null ? cbeffDocTypes.length : 0));
+
+            List<String> collection = Stream.of(cbeffDocTypes)
+                    .peek(cbeffDocType -> mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                            IdaIdMapping.class.getSimpleName(),
+                            "getCbeffMapping",
+                            "Processing cbeffDocType: " + cbeffDocType +
+                                    ", type=" + cbeffDocType.getType()))
+                    .flatMap(cbeffDocType -> {
+                        List<String> innerList = getCbeffMapping(
+                                cbeffDocType.getType(),
+                                bioMatchType.getSubType(),
+                                bioMatchType.getSingleAnySubtype(),
+                                bioMatchType
+                        );
+                        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                                IdaIdMapping.class.getSimpleName(),
+                                "getCbeffMapping",
+                                "Generated mappings from cbeffDocType " + cbeffDocType + " => " + innerList);
+                        return innerList.stream();
+                    })
+                    .collect(Collectors.toList());
+
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                    IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMapping",
+                    "Final collection: " + collection);
+
+            return collection;
+        }
+
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
+                IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping",
+                "matchType is NOT BioMatchType. Returning empty list.");
+        return Collections.emptyList();
+    }
+
+
+    /**
 	 * To get Cbeff mapping based on Single and SubType on Cbeff.
 	 *
 	 * @param BiometricType the single type
@@ -362,15 +410,42 @@ private String idname;
 	 * @param matchType the match type
 	 * @return the cbeff mapping
 	 */
-	private static List<String> getCbeffMapping(BiometricType BiometricType, SingleAnySubtypeType subType,
-			SingleAnySubtypeType singleSubType, BioMatchType matchType) {
-		List<String> collection = Stream.of(matchType.getCbeffDocTypes())
-						.map(cbeffDocType -> getCbeffMappingForCbeffDocType(BiometricType, subType, singleSubType, cbeffDocType))
-						.collect(Collectors.toList());
-		return collection;
-	}
+    private static List<String> getCbeffMapping(BiometricType BiometricType,
+                                                SingleAnySubtypeType subType,
+                                                SingleAnySubtypeType singleSubType,
+                                                BioMatchType matchType) {
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Input BiometricType: " + BiometricType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Input subType: " + subType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Input singleSubType: " + singleSubType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Input matchType: " + matchType);
 
-	/**
+        CbeffDocType[] cbeffDocTypes = matchType.getCbeffDocTypes();
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Retrieved cbeffDocTypes: " + Arrays.toString(cbeffDocTypes));
+
+        List<String> collection = Stream.of(cbeffDocTypes)
+                .map(cbeffDocType -> {
+                    mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                            "getCbeffMapping", "Processing cbeffDocType: " + cbeffDocType);
+                    String mapping = getCbeffMappingForCbeffDocType(BiometricType, subType, singleSubType, cbeffDocType);
+                    mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                            "getCbeffMapping", "Generated mapping: " + mapping);
+                    return mapping;
+                })
+                .collect(Collectors.toList());
+
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMapping", "Final collection: " + collection);
+
+        return collection;
+    }
+
+
+    /**
 	 * Gets the cbeff mapping for cbeff doc type.
 	 *
 	 * @param BiometricType the single type
@@ -379,22 +454,50 @@ private String idname;
 	 * @param cbeffDocType the cbeff doc type
 	 * @return the cbeff mapping for cbeff doc type
 	 */
-	private static String getCbeffMappingForCbeffDocType(BiometricType BiometricType, SingleAnySubtypeType subType,
-			SingleAnySubtypeType singleSubType, CbeffDocType cbeffDocType) {
-		String formatType = String.valueOf(cbeffDocType.getValue());
+    private static String getCbeffMappingForCbeffDocType(BiometricType BiometricType,
+                                                         SingleAnySubtypeType subType,
+                                                         SingleAnySubtypeType singleSubType,
+                                                         CbeffDocType cbeffDocType) {
 
-		String cbeffKey = null;
-		if (subType == null && singleSubType == null) {// for FACE
-			cbeffKey = BiometricType.name() + "__" + formatType;
-		} else if (subType != null && singleSubType != null) { // for FINGER
-			cbeffKey = BiometricType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
-		} else if (subType != null && singleSubType == null) {
-			cbeffKey = BiometricType.name() + "_" + subType.value() + "_" + formatType; // for IRIS
-		}
-		return cbeffKey;
-	}
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Input BiometricType: " + BiometricType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Input subType: " + subType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Input singleSubType: " + singleSubType);
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Input cbeffDocType: " + cbeffDocType);
 
-	/**
+        String formatType = String.valueOf(cbeffDocType.getValue());
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Extracted formatType: " + formatType);
+
+        String cbeffKey = null;
+
+        if (subType == null && singleSubType == null) { // for FACE
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMappingForCbeffDocType", "Condition: FACE mapping");
+            cbeffKey = BiometricType.name() + "__" + formatType;
+
+        } else if (subType != null && singleSubType != null) { // for FINGER
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMappingForCbeffDocType", "Condition: FINGER mapping");
+            cbeffKey = BiometricType.name() + "_" + subType.value() + " " + singleSubType.value() + "_" + formatType;
+
+        } else if (subType != null && singleSubType == null) { // for IRIS
+            mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                    "getCbeffMappingForCbeffDocType", "Condition: IRIS mapping");
+            cbeffKey = BiometricType.name() + "_" + subType.value() + "_" + formatType;
+        }
+
+        mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
+                "getCbeffMappingForCbeffDocType", "Final cbeffKey: " + cbeffKey);
+
+        return cbeffKey;
+    }
+
+
+    /**
 	 * Gets the mapping function.
 	 *
 	 * @return the mapping function

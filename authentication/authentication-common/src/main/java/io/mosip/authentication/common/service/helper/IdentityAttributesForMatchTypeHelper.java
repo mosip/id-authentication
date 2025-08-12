@@ -44,14 +44,17 @@ public class IdentityAttributesForMatchTypeHelper {
 
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                 "getIdMappingValue", "Method called with idMapping=" + idMapping + ", matchType=" + matchType);
+//        Method called with idMapping=FACE, matchType=FACE
 
         String type = matchType.getCategory().getType();
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                 "getIdMappingValue", "Resolved category type=" + type);
+//        Resolved category type=bio
 
         List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                 "getIdMappingValue", "Fetched mappings=" + mappings);
+//        Fetched mappings=[FACE__8]
 
         if (mappings != null && !mappings.isEmpty()) {
             List<String> fullMapping = new ArrayList<>();
@@ -116,12 +119,14 @@ public class IdentityAttributesForMatchTypeHelper {
                 this.getClass().getSimpleName(),
                 "getIdentityAttributesForMatchType",
                 "Method called with matchType=" + matchType + ", idName=" + idName);
+//        Method called with matchType=FACE, idName=Face
 
         String propertyName = idName != null ? idName : matchType.getIdMapping().getIdname();
         mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
                 this.getClass().getSimpleName(),
                 "getIdentityAttributesForMatchType",
                 "Resolved propertyName=" + propertyName);
+//        Resolved propertyName=Face
 
         List<String> propertyNames;
 
@@ -142,6 +147,7 @@ public class IdentityAttributesForMatchTypeHelper {
                             this.getClass().getSimpleName(),
                             "getIdentityAttributesForMatchType",
                             "Fetched propertyNames from IdMapping=" + propertyNames);
+//                    Fetched propertyNames from IdMapping=[FACE__8]
                 } catch (IdAuthenticationBusinessException e) {
                     mosipLogger.debug(IdAuthCommonConstants.SESSION_ID,
                             this.getClass().getSimpleName(),
