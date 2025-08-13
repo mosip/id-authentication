@@ -493,10 +493,8 @@ private String idname;
         if (subType == null && singleSubType == null) { // for FACE
             mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
                     "getCbeffMappingForCbeffDocType", "Condition: FACE mapping");
-//            cbeffKey = BiometricType.name() + "__" + formatType;
-            //temporary fix removing format type
-            cbeffKey = BiometricType.name();
-
+            cbeffKey = BiometricType.name() + "__" + formatType;
+            
         } else if (subType != null && singleSubType != null) { // for FINGER
             mosipLogger.info(IdAuthCommonConstants.SESSION_ID, IdaIdMapping.class.getSimpleName(),
                     "getCbeffMappingForCbeffDocType", "Condition: FINGER mapping");

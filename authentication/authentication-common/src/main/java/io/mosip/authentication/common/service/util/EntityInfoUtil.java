@@ -150,9 +150,6 @@ public class EntityInfoUtil {
         // Step 3: Loop through each propertyName
         for (String propName : propertyNames) {
             logger.info("Checking property: {}", propName);
-            if(propName.equalsIgnoreCase("FACE")) {
-                propName = propName+ LANG_CODE_SEPARATOR + CbeffConstant.FORMAT_TYPE_FACE; // Ensure case sensitivity for FACE
-            }
 
             // Only proceed if this property exists in mappedIdEntity
             if (mappedIdEntity.containsKey(propName)) {
