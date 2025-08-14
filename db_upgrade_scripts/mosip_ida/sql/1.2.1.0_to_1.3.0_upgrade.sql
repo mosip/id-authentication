@@ -172,3 +172,107 @@ ALTER TABLE identity_cache SET (
     autovacuum_analyze_scale_factor = 0.05,
     autovacuum_analyze_threshold = 500
 );
+
+-- Optimize autovacuum for key_alias to clean dead tuples
+ALTER TABLE key_alias SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 5,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 5
+);
+
+-- Optimize autovacuum for key_policy_def to clean dead tuples
+ALTER TABLE key_policy_def SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for key_policy_def_h to clean dead tuples
+ALTER TABLE key_policy_def_h SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for key_store to clean dead tuples
+ALTER TABLE key_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
+-- Optimize autovacuum for kyc_token_store to clean dead tuples
+ALTER TABLE kyc_token_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 100,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 100
+);
+
+-- Optimize autovacuum for misp_license_data to clean dead tuples
+ALTER TABLE misp_license_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for oidc_client_data to clean dead tuples
+ALTER TABLE oidc_client_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+CREATE INDEX idx_otp_txn_ref_status_gen 
+ON ida.otp_transaction (ref_id, status_code, generated_dtimes DESC);
+
+-- Optimize autovacuum for otp_transaction to clean dead tuples
+ALTER TABLE otp_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 100,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 100
+);
+
+-- Optimize autovacuum for partner_data to clean dead tuples
+ALTER TABLE partner_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for partner_mapping to clean dead tuples
+ALTER TABLE partner_mapping SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE policy_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE uin_auth_lock SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+ALTER TABLE uin_hash_salt SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
