@@ -19,3 +19,156 @@ CREATE INDEX IF NOT EXISTS idx_job_key ON BATCH_JOB_INSTANCE(JOB_KEY);
 
 --------ca_cert_store-upgrade-db script------------
 ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
+
+
+-- Optimize autovacuum for anonymous_profile to handle moderate updates
+ALTER TABLE anonymous_profile SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
+
+ALTER TABLE api_key_data SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 50
+);
+
+CREATE INDEX idx_autntxn_refid_dtimes 
+ON ida.auth_transaction (ref_id, request_dtimes);
+
+CREATE INDEX CONCURRENTLY idx_auth_txn_entityid_request_dtimes
+ON ida.auth_transaction (requested_entity_id, request_dtimes DESC);
+
+CREATE INDEX idx_autn_txn_refid_time_desc
+ON ida.auth_transaction (ref_id, request_dtimes DESC);
+
+-- Create index to support paginated filtered query
+CREATE INDEX idx_autntxn_reqtrnid_authtype_crdtimes_desc
+ON ida.auth_transaction (request_trn_id, auth_type_code, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_crdtimes_desc
+ON ida.auth_transaction (token_id, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_reqdtimes
+ON ida.auth_transaction (token_id, request_dtimes);
+
+ALTER TABLE ida.auth_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.002,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.002,
+    autovacuum_analyze_threshold = 5000
+);
+
+-- Optimize autovacuum for batch_job_execution to clean dead tuples
+ALTER TABLE batch_job_execution SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_job_execution_context to clean dead tuples
+ALTER TABLE batch_job_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_job_execution_params to clean dead tuples
+ALTER TABLE batch_job_execution_params SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_job_instance to clean dead tuples
+ALTER TABLE batch_job_instance SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for batch_step_execution to clean dead tuples
+ALTER TABLE batch_step_execution SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 2000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 2000
+);
+
+-- Optimize autovacuum for batch_step_execution_context to clean dead tuples
+ALTER TABLE batch_step_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 5000
+);
+
+-- Optimize autovacuum for ca_cert_store to clean dead tuples
+ALTER TABLE ca_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+-- Optimize autovacuum for cred_subject_id_store to clean dead tuples
+ALTER TABLE cred_subject_id_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+CREATE INDEX idx_cred_evt_pending
+ON credential_event_store (retry_count, cr_dtimes)
+WHERE status_code IN ('NEW', 'FAILED');
+
+-- Optimize autovacuum for credential_event_store to clean dead tuples
+ALTER TABLE credential_event_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
+-- Optimize autovacuum for data_encrypt_keystore to clean dead tuples
+ALTER TABLE data_encrypt_keystore SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_idhash_idtype
+ON ida.hotlist_cache (id_hash, id_type);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_active
+ON ida.hotlist_cache (id_hash, id_type, status)
+WHERE status = 'Blocked';
+
+-- Optimize autovacuum for hotlist_cache to clean dead tuples
+ALTER TABLE hotlist_cache SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 10,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 10
+);
+
+-- Optimize autovacuum for ident_binding_cert_store to clean dead tuples
+ALTER TABLE ident_binding_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 10,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 10
+);
+
+ALTER TABLE identity_cache SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
