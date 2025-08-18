@@ -5,14 +5,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -196,7 +190,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
                         .orElseThrow(() -> notFound(idType));
                 validateNotExpired(v.getExpiryTimestamp(), idType);
 
-                return buildResponseMap(hashedId, v.getToken(),
+                return buildResponseMap(id, hashedId, v.getToken(),
                         v.getDemographicData(), v.getBiometricData(),
                         filterAttributes);
             } else {
@@ -204,7 +198,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
                         .orElseThrow(() -> notFound(idType));
                 validateNotExpired(v.getExpiryTimestamp(), idType);
 
-                return buildResponseMap(hashedId, v.getToken(),
+                return buildResponseMap(id, hashedId, v.getToken(),
                         v.getDemographicData(), null,
                         filterAttributes);
             }
@@ -250,7 +244,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> buildResponseMap(
-            String hashedId, String token,
+            String id, String hashedId, String token,
             byte[] demoBytes, byte[] bioBytes,
             Set<String> filterAttributes) throws DataAccessException, IdAuthenticationBusinessException {
 
@@ -263,7 +257,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             demo = demo.entrySet().stream()
                     .filter(e -> filters.contains(e.getKey().toLowerCase()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            out.put(BIOMETRICS, decryptConfiguredAttributes(hashedId, demo));
+            out.put(BIOMETRICS, decryptConfiguredAttributes(id, demo));
         }
 
         if (bioBytes != null && !filters.isEmpty()) {
@@ -271,7 +265,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             bio = bio.entrySet().stream()
                     .filter(e -> filters.contains(e.getKey().toLowerCase()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            out.put(BIOMETRICS, decryptConfiguredAttributes(hashedId, bio));
+            out.put(BIOMETRICS, decryptConfiguredAttributes(id, bio));
         }
 
         out.put(TOKEN, token);
@@ -300,40 +294,50 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @throws IdAuthenticationBusinessException
      */
     private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-        List<String> zkUnEncryptedAttributes = getZkUnEncryptedAttributes()
-                .stream().map(String::toLowerCase).collect(Collectors.toList());
-        Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
-                .stream()
-                .collect(Collectors.partitioningBy(entry ->
-                                !zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
-                        Collectors.toMap(Entry::getKey, Entry::getValue)));
-        Map<String, String> dataToDecrypt = partitionedMap.get(true);
-        Map<String, String> plainData = partitionedMap.get(false);
-        Map<String, String> decryptedData = dataToDecrypt.isEmpty() ? Map.of()
-                : securityManager.zkDecrypt(id, dataToDecrypt);
-        Map<String, String> finalDataStr = new LinkedHashMap<>();
-        finalDataStr.putAll(plainData);
-        finalDataStr.putAll(decryptedData);
-        return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(),
-                entry -> {
-                    Object valObject = entry.getValue();
-                    if (valObject instanceof String) {
-                        String val = (String) valObject;
-                        if (val.trim().startsWith("[") || val.trim().startsWith("{")) {
-                            try {
-                                return mapper.readValue(val.getBytes(), Object.class);
-                            } catch (IOException e) {
-                                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                                        "decryptConfiguredAttributes", ExceptionUtils.getStackTrace(e));
-                                return val;
-                            }
-                        } else {
-                            return val;
-                        }
-                    } else {
-                        return valObject;
-                    }
-                }));
+        if (dataMap == null || dataMap.isEmpty()) return Collections.emptyMap();
+
+        // Build a Set<String> for O(1) lookups from the List<String> API
+        final Set<String> zkUnEncryptedAttributes = new HashSet<>(getZkUnEncryptedAttributes());
+
+        final Map<String, String> toDecrypt = new HashMap<>();
+        final Map<String, String> plain     = new HashMap<>();
+        for (Map.Entry<String, String> e : dataMap.entrySet()) {
+            final String key = e.getKey();
+            final String val = e.getValue();
+            if (key != null && zkUnEncryptedAttributes.contains(key.toLowerCase(Locale.ROOT))) {
+                plain.put(key, val);
+            } else {
+                toDecrypt.put(key, val);
+            }
+        }
+
+        final Map<String, String> decrypted = toDecrypt.isEmpty()
+                ? Collections.emptyMap()
+                : securityManager.zkDecrypt(id, toDecrypt);
+
+        final Map<String, Object> out = new LinkedHashMap<>(dataMap.size());
+        for (Map.Entry<String, String> e : dataMap.entrySet()) {
+            final String key = e.getKey();
+            final String raw = plain.containsKey(key) ? plain.get(key) : decrypted.get(key);
+            out.put(key, maybeParseJson(raw));
+        }
+        return out;
+    }
+
+    private Object maybeParseJson(String val) {
+        if (val == null) return null;
+        final String s = val.trim();
+        if (s.isEmpty()) return val;
+        final char c = s.charAt(0);
+        if (c == '{' || c == '[') {
+            try { return mapper.readValue(s, Object.class); }
+            catch (IOException e) {
+                logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(),
+                        "decryptConfiguredAttributes.maybeParseJson", ExceptionUtils.getStackTrace(e));
+                return val;
+            }
+        }
+        return val;
     }
 
     /**
@@ -341,9 +345,13 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @return
      */
     private List<String> getZkUnEncryptedAttributes() {
-        return Optional.ofNullable(zkUnEncryptedCredAttribs).stream()
-                .flatMap(str -> Stream.of(str.split(",")))
-                .filter(str -> !str.isEmpty())
+        if (zkUnEncryptedCredAttribs == null || zkUnEncryptedCredAttribs.isBlank()) {
+            return Collections.emptyList();
+        }
+        return Stream.of(zkUnEncryptedCredAttribs.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> s.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
     }
 
