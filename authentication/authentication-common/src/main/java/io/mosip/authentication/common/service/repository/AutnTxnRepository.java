@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This is a repository class for entity {@link AutnTxn}.
@@ -18,6 +20,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
  * @author Rakesh Roshan
  */
 @Repository
+@Transactional(readOnly = true)
 public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 
     /**
