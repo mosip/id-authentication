@@ -351,7 +351,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         return Stream.of(zkUnEncryptedCredAttribs.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(s -> s.toLowerCase(Locale.ROOT))
+//                .map(s -> s.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
     }
 
