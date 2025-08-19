@@ -298,6 +298,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
         // Build a Set<String> for O(1) lookups from the List<String> API
         final Set<String> zkUnEncryptedAttributes = new HashSet<>(getZkUnEncryptedAttributes());
+        System.out.println("zkUnEncryptedAttributes "+ zkUnEncryptedAttributes);
+        System.out.println("dataMap"+dataMap);
 
         final Map<String, String> toDecrypt = new HashMap<>();
         final Map<String, String> plain     = new HashMap<>();
