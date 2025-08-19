@@ -5,14 +5,8 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -184,87 +178,111 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      */
     @SuppressWarnings("unchecked")
     public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
-        String hashedId;
-        try {
-            hashedId = securityManager.hash(id);
-        } catch (IdAuthenticationBusinessException e) {
-            throw new IdAuthenticationBusinessException(
-                    IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
-                            idType.getType(), e));
-        }
+        final String hashedId = hashOrThrow(id, idType);
 
         try {
-            IdentityEntity entity = null;
-            if (!identityRepo.existsById(hashedId)) {
-                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-                        "Id not found in DB");
-                throw new IdAuthenticationBusinessException(
-                        IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-                        String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),
-                                idType.getType()));
-            }
-
             logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
                     "Generated HASHID >> " + hashedId);
 
+            // 1 query, projected & typed
             if (isBio) {
-                entity = identityRepo.getOne(hashedId);
+                final IdentityCacheRepository.FullIdentityView v = identityRepo.findFullViewById(hashedId)
+                        .orElseThrow(() -> notFound(idType));
+                validateNotExpired(v.getExpiryTimestamp(), idType);
+
+                return buildResponseMap(id, hashedId, v.getToken(),
+                        v.getDemographicData(), v.getBiometricData(),
+                        filterAttributes);
             } else {
-                Object[] data = identityRepo.findDemoDataById(hashedId).get(0);
-                entity = new IdentityEntity();
-                entity.setId(String.valueOf(data[0]));
-                entity.setDemographicData((byte[]) data[1]);
-                entity.setExpiryTimestamp(Objects.nonNull(data[2]) ? LocalDateTime.parse(String.valueOf(data[2])) : null);
-                entity.setTransactionLimit(Objects.nonNull(data[3]) ? Integer.parseInt(String.valueOf(data[3])) : null);
-                entity.setToken(String.valueOf(data[4]));
+                final IdentityCacheRepository.DemoIdentityView v = identityRepo.findDemoViewById(hashedId)
+                        .orElseThrow(() -> notFound(idType));
+                validateNotExpired(v.getExpiryTimestamp(), idType);
+
+                return buildResponseMap(id, hashedId, v.getToken(),
+                        v.getDemographicData(), null,
+                        filterAttributes);
             }
-
-            if (Objects.nonNull(entity.getExpiryTimestamp())
-                    && DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
-                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-                        idType.getType() + " expired/deactivated/revoked/blocked");
-                IdAuthenticationErrorConstants errorConstant;
-                if (idType == IdType.UIN) {
-                    errorConstant = IdAuthenticationErrorConstants.UIN_DEACTIVATED_BLOCKED;
-                } else {
-                    errorConstant = IdAuthenticationErrorConstants.VID_EXPIRED_DEACTIVATED_REVOKED;
-                }
-                throw new IdAuthenticationBusinessException(errorConstant);
-            }
-
-            Map<String, Object> responseMap = new LinkedHashMap<>();
-
-            Map<String, String> demoDataMap = mapper.readValue(entity.getDemographicData(), Map.class);
-            Set<String> filterAttributesInLowercase = filterAttributes.isEmpty() ? Set.of()
-                    : filterAttributes.stream().map(String::toLowerCase).collect(Collectors.toSet());
-
-            if (!filterAttributesInLowercase.isEmpty()) {
-                Map<String, String> demoDataMapPostFilter = demoDataMap.entrySet().stream()
-                        .filter(demo -> filterAttributesInLowercase.contains(demo.getKey().toLowerCase()))
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-                responseMap.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demoDataMapPostFilter));
-            }
-
-            if (entity.getBiometricData() != null) {
-                Map<String, String> bioDataMap = mapper.readValue(entity.getBiometricData(), Map.class);
-                if (!filterAttributesInLowercase.isEmpty()) {
-                    Map<String, String> bioDataMapPostFilter = bioDataMap.entrySet().stream()
-                            .filter(bio -> filterAttributesInLowercase.contains(bio.getKey().toLowerCase()))
-                            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-                    responseMap.put(BIOMETRICS, decryptConfiguredAttributes(id, bioDataMapPostFilter));
-                }
-            }
-            responseMap.put(TOKEN, entity.getToken());
-            responseMap.put(ID_HASH, hashedId);
-            logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
-                    "TOKEN in responseMap >> " + entity.getToken());
-            logger.info("Response Map >> " + responseMap);
-            return responseMap;
-        } catch (IOException | DataAccessException | TransactionException | JDBCConnectionException e) {
+        } catch (DataAccessException | TransactionException | JDBCConnectionException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
                     ExceptionUtils.getStackTrace(e));
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+        }
+    }
+
+    private String hashOrThrow(String id, IdType idType) throws IdAuthenticationBusinessException {
+        try { return securityManager.hash(id); }
+        catch (IdAuthenticationBusinessException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "hashOrThrow",
+                    "Hash not found in DB");
+
+            throw new IdAuthenticationBusinessException(
+                    IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), idType.getType(), e));
+        }
+    }
+
+    private IdAuthenticationBusinessException notFound(IdType idType) {
+        logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "notFound",
+                "Id not found in DB");
+
+        return new IdAuthenticationBusinessException(
+                IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+                String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(), idType.getType()));
+    }
+
+    private void validateNotExpired(LocalDateTime expiry, IdType idType) throws IdAuthenticationBusinessException {
+        if (expiry != null && DateUtils.before(expiry, DateUtils.getUTCCurrentDateTime())) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateNotExpired",
+                    idType.getType() + " expired/deactivated/revoked/blocked");
+
+            final var err = (idType == IdType.UIN)
+                    ? IdAuthenticationErrorConstants.UIN_DEACTIVATED_BLOCKED
+                    : IdAuthenticationErrorConstants.VID_EXPIRED_DEACTIVATED_REVOKED;
+            throw new IdAuthenticationBusinessException(err);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> buildResponseMap(
+            String id, String hashedId, String token,
+            byte[] demoBytes, byte[] bioBytes,
+            Set<String> filterAttributes) throws DataAccessException, IdAuthenticationBusinessException {
+
+        final Map<String, Object> out = new LinkedHashMap<>();
+        final Set<String> filters = (filterAttributes == null ? Set.<String>of()
+                : filterAttributes.stream().map(String::toLowerCase).collect(Collectors.toSet()));
+
+        if (demoBytes != null && !filters.isEmpty()) {
+            Map<String, String> demo = readJsonMap(demoBytes);              // typed mapping
+            demo = demo.entrySet().stream()
+                    .filter(e -> filters.contains(e.getKey().toLowerCase()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            out.put(BIOMETRICS, decryptConfiguredAttributes(id, demo));
+        }
+
+        if (bioBytes != null && !filters.isEmpty()) {
+            Map<String, String> bio = readJsonMap(bioBytes);
+            bio = bio.entrySet().stream()
+                    .filter(e -> filters.contains(e.getKey().toLowerCase()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            out.put(BIOMETRICS, decryptConfiguredAttributes(id, bio));
+        }
+
+        out.put(TOKEN, token);
+        out.put(ID_HASH, hashedId);
+
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildResponseMap",
+                "Response Map >> " + out);
+
+        return out;
+    }
+
+    private Map<String, String> readJsonMap(byte[] bytes) {
+        try { return mapper.readValue(bytes, Map.class); }
+        catch (IOException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(), "readJsonMap",
+                    ExceptionUtils.getStackTrace(e));
+            return Map.of();
         }
     }
 
@@ -276,40 +294,51 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @throws IdAuthenticationBusinessException
      */
     private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-        List<String> zkUnEncryptedAttributes = getZkUnEncryptedAttributes()
-                .stream().map(String::toLowerCase).collect(Collectors.toList());
-        Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
-                .stream()
-                .collect(Collectors.partitioningBy(entry ->
-                                !zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
-                        Collectors.toMap(Entry::getKey, Entry::getValue)));
-        Map<String, String> dataToDecrypt = partitionedMap.get(true);
-        Map<String, String> plainData = partitionedMap.get(false);
-        Map<String, String> decryptedData = dataToDecrypt.isEmpty() ? Map.of()
-                : securityManager.zkDecrypt(id, dataToDecrypt);
-        Map<String, String> finalDataStr = new LinkedHashMap<>();
-        finalDataStr.putAll(plainData);
-        finalDataStr.putAll(decryptedData);
-        return finalDataStr.entrySet().stream().collect(Collectors.toMap(entry -> (String) entry.getKey(),
-                entry -> {
-                    Object valObject = entry.getValue();
-                    if (valObject instanceof String) {
-                        String val = (String) valObject;
-                        if (val.trim().startsWith("[") || val.trim().startsWith("{")) {
-                            try {
-                                return mapper.readValue(val.getBytes(), Object.class);
-                            } catch (IOException e) {
-                                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                                        "decryptConfiguredAttributes", ExceptionUtils.getStackTrace(e));
-                                return val;
-                            }
-                        } else {
-                            return val;
-                        }
-                    } else {
-                        return valObject;
-                    }
-                }));
+        if (dataMap == null || dataMap.isEmpty()) return Collections.emptyMap();
+
+        // Build a Set<String> for O(1) lookups from the List<String> API
+        final Set<String> zkUnEncryptedAttributes = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        zkUnEncryptedAttributes.addAll(getZkUnEncryptedAttributes());
+
+        final Map<String, String> toDecrypt = new HashMap<>();
+        final Map<String, String> plain     = new HashMap<>();
+        for (Map.Entry<String, String> e : dataMap.entrySet()) {
+            final String key = e.getKey();
+            final String val = e.getValue();
+            if (key != null && zkUnEncryptedAttributes.contains(key)) {
+                plain.put(key, val);
+            } else {
+                toDecrypt.put(key, val);
+            }
+        }
+
+        final Map<String, String> decrypted = toDecrypt.isEmpty()
+                ? Collections.emptyMap()
+                : securityManager.zkDecrypt(id, toDecrypt);
+
+        final Map<String, Object> out = new LinkedHashMap<>(dataMap.size());
+        for (Map.Entry<String, String> e : dataMap.entrySet()) {
+            final String key = e.getKey();
+            final String raw = plain.containsKey(key) ? plain.get(key) : decrypted.get(key);
+            out.put(key, maybeParseJson(raw));
+        }
+        return out;
+    }
+
+    private Object maybeParseJson(String val) {
+        if (val == null) return null;
+        final String s = val.trim();
+        if (s.isEmpty()) return val;
+        final char c = s.charAt(0);
+        if (c == '{' || c == '[') {
+            try { return mapper.readValue(s, Object.class); }
+            catch (IOException e) {
+                logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(),
+                        "decryptConfiguredAttributes.maybeParseJson", ExceptionUtils.getStackTrace(e));
+                return val;
+            }
+        }
+        return val;
     }
 
     /**
@@ -317,9 +346,13 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @return
      */
     private List<String> getZkUnEncryptedAttributes() {
-        return Optional.ofNullable(zkUnEncryptedCredAttribs).stream()
-                .flatMap(str -> Stream.of(str.split(",")))
-                .filter(str -> !str.isEmpty())
+        if (zkUnEncryptedCredAttribs == null || zkUnEncryptedCredAttribs.isBlank()) {
+            return Collections.emptyList();
+        }
+        return Stream.of(zkUnEncryptedCredAttribs.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                //.map(s -> s.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
     }
 
