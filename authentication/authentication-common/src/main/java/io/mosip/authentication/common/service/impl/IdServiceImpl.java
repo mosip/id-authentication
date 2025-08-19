@@ -257,7 +257,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             demo = demo.entrySet().stream()
                     .filter(e -> filters.contains(e.getKey().toLowerCase()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            out.put(BIOMETRICS, decryptConfiguredAttributes(id, demo));
+            out.put(DEMOGRAPHICS, decryptConfiguredAttributes(id, demo));
         }
 
         if (bioBytes != null && !filters.isEmpty()) {
@@ -272,7 +272,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         out.put(ID_HASH, hashedId);
 
         logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildResponseMap",
-                "Response Map >> " + out);
+                "Successful ");
 
         return out;
     }
