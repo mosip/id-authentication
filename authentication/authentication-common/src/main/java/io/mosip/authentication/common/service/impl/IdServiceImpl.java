@@ -293,38 +293,59 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @return
      * @throws IdAuthenticationBusinessException
      */
-    private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
-        if (dataMap == null || dataMap.isEmpty()) return Collections.emptyMap();
+
+    private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap)
+            throws IdAuthenticationBusinessException {
+        if (dataMap == null || dataMap.isEmpty()) {
+            logger.info("decryptConfiguredAttributes called with id={} but dataMap is null or empty", id);
+            return Collections.emptyMap();
+        }
+
+        logger.info("decryptConfiguredAttributes invoked with id={} and dataMap={}", id, dataMap);
 
         // Build a Set<String> for O(1) lookups from the List<String> API
         final Set<String> zkUnEncryptedAttributes = new HashSet<>(getZkUnEncryptedAttributes());
-        System.out.println("zkUnEncryptedAttributes "+ zkUnEncryptedAttributes);
-        System.out.println("dataMap"+dataMap);
+        logger.info("zkUnEncryptedAttributes={}", zkUnEncryptedAttributes);
 
         final Map<String, String> toDecrypt = new HashMap<>();
         final Map<String, String> plain     = new HashMap<>();
+
         for (Map.Entry<String, String> e : dataMap.entrySet()) {
             final String key = e.getKey();
             final String val = e.getValue();
+            logger.info("Processing entry: key={} value={}", key, val);
+
             if (key != null && zkUnEncryptedAttributes.contains(key.toLowerCase(Locale.ROOT))) {
                 plain.put(key, val);
+                logger.info("Attribute '{}' is unencrypted, added to plain map", key);
             } else {
                 toDecrypt.put(key, val);
+                logger.info("Attribute '{}' marked for decryption, added to toDecrypt map", key);
             }
         }
+
+        logger.info("Plain attributes map={}", plain);
+        logger.info("Attributes to decrypt map={}", toDecrypt);
 
         final Map<String, String> decrypted = toDecrypt.isEmpty()
                 ? Collections.emptyMap()
                 : securityManager.zkDecrypt(id, toDecrypt);
 
+        logger.info("Decrypted attributes map={}", decrypted);
+
         final Map<String, Object> out = new LinkedHashMap<>(dataMap.size());
         for (Map.Entry<String, String> e : dataMap.entrySet()) {
             final String key = e.getKey();
             final String raw = plain.containsKey(key) ? plain.get(key) : decrypted.get(key);
-            out.put(key, maybeParseJson(raw));
+            Object parsed = maybeParseJson(raw);
+            out.put(key, parsed);
+            logger.info("Final output entry: key={} raw={} parsed={}", key, raw, parsed);
         }
+
+        logger.info("Final decryptedConfiguredAttributes output={}", out);
         return out;
     }
+
 
     private Object maybeParseJson(String val) {
         if (val == null) return null;
