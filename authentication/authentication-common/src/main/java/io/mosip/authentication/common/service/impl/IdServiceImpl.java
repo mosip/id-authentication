@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Arun Bose
  * @author Rakesh Roshan
  */
+@Slf4j
 @Service
 public class IdServiceImpl implements IdService<AutnTxn> {
 
@@ -303,9 +305,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
         logger.info("decryptConfiguredAttributes invoked with id={} and dataMap={}", id, dataMap);
 
-        // Build a Set<String> for O(1) lookups from the List<String> API
-        final Set<String> zkUnEncryptedAttributes = new HashSet<>(getZkUnEncryptedAttributes());
-        logger.info("zkUnEncryptedAttributes={}", zkUnEncryptedAttributes);
+        // Build a case-insensitive Set<String> for O(1) lookups
+        final Set<String> zkUnEncryptedAttributes = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        zkUnEncryptedAttributes.addAll(getZkUnEncryptedAttributes());
+        
+        logger.info("Unencrypted attributes from config: {}", zkUnEncryptedAttributes);
 
         final Map<String, String> toDecrypt = new HashMap<>();
         final Map<String, String> plain     = new HashMap<>();
@@ -315,7 +319,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             final String val = e.getValue();
             logger.info("Processing entry: key={} value={}", key, val);
 
-            if (key != null && zkUnEncryptedAttributes.contains(key.toLowerCase(Locale.ROOT))) {
+            if (key != null && zkUnEncryptedAttributes.contains(key)) {
                 plain.put(key, val);
                 logger.info("Attribute '{}' is unencrypted, added to plain map", key);
             } else {
