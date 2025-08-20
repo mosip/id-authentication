@@ -504,19 +504,17 @@ public class IdAuthSecurityManager {
      * @throws IdAuthenticationBusinessException the id authentication business exception
      */
     private X509Certificate getX509Certificate(String partnerCertificate) throws IdAuthenticationBusinessException {
-        return certificateCache.computeIfAbsent(partnerCertificate, cert -> {
+        if (!certificateCache.containsKey(partnerCertificate)) {
             try {
                 String certificate = trimBeginEnd(partnerCertificate);
-                return (X509Certificate) x509Factory().generateCertificate(
+                X509Certificate cert = (X509Certificate) x509Factory().generateCertificate(
                         new ByteArrayInputStream(CryptoUtil.decodeBase64(certificate)));
+                certificateCache.put(partnerCertificate, cert);
             } catch (CertificateException | IdAuthenticationBusinessException e) {
-                try {
-                    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-                } catch (IdAuthenticationBusinessException ex) {
-                    throw new RuntimeException(ex);
-                }
+                throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
             }
-        });
+        }
+        return certificateCache.get(partnerCertificate);
     }
 
     /**
