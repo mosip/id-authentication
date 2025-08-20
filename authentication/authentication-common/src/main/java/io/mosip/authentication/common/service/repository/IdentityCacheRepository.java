@@ -92,29 +92,19 @@ public interface IdentityCacheRepository extends BaseRepository<IdentityEntity, 
     """)
     Optional<FullIdentityView> findFullViewById(@Param("id") String id);
 
-    @Query("""
-        select i.expiryTimestamp as expiryTimestamp,
-               i.transactionLimit as transactionLimit
-          from IdentityEntity i
-         where i.id = :id
-    """)
-    Optional<IdKeyBindingView> findLimitAndExpiryById(@Param("id") String id);
-
-    /* =========================================
-     * Atomic VID consumption (temporary VIDs)
-     * ========================================= */
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = """
-        update ida.identity_cache
-           set transaction_limit = transaction_limit - 1
-         where id = :id and transaction_limit > 1
+    with dec as (
+      update ida.identity_cache
+         set transaction_limit = transaction_limit - 1
+       where id = :id
+         and transaction_limit > 1
+       returning 1
+    )
+    delete from ida.identity_cache
+     where id = :id
+       and transaction_limit = 1
+       and not exists (select 1 from dec)
     """, nativeQuery = true)
-    int decrementVidLimit(@Param("id") String id);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = """
-        delete from ida.identity_cache
-         where id = :id and transaction_limit = 1
-    """, nativeQuery = true)
-    int deleteVidIfLastUse(@Param("id") String id);
+    int consumeVidOnce(@Param("id") String id);
 }

@@ -51,10 +51,14 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
     private static final String DEMOGRAPHICS = "demographics";
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static Logger logger = IdaLogger.getLogger(IdServiceImpl.class);
 
-    /** The autntxnrepository. */
+    /**
+     * The autntxnrepository.
+     */
     @Autowired
     private AutnTxnRepository autntxnrepository;
 
@@ -70,7 +74,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     @Value("${" + IDA_ZERO_KNOWLEDGE_UNENCRYPTED_CREDENTIAL_ATTRIBUTES + ":#{null}" + "}")
     private String zkUnEncryptedCredAttribs;
 
-    @Value("${"+ IDA_AUTH_PARTNER_ID  +"}")
+    @Value("${" + IDA_AUTH_PARTNER_ID + "}")
     private String authPartherId;
 
     /*
@@ -103,7 +107,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      *
      * @param idvIdType idType
      * @param idvId     id-number
-     * @param isBio the is bio
+     * @param isBio     the is bio
      * @return map map
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
@@ -111,25 +115,35 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     @Override
     public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
             throws IdAuthenticationBusinessException {
-        Map<String, Object> idResDTO = null;
-        if (idvIdType.equals(IdType.UIN.getType()) || idvIdType.equals(IdType.HANDLE.getType())) {
-            try {
-                idResDTO = getIdByUin(idvId, isBio, filterAttributes);
-            } catch (IdAuthenticationBusinessException e) {
-                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-                throw e;
-            }
-        } else if(idvIdType.equals(IdType.VID.getType())) {
-            try {
-                idResDTO = getIdByVid(idvId, isBio, filterAttributes);
-            } catch (IdAuthenticationBusinessException e) {
-                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
-                throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
-            }
 
-            if(markVidConsumed) {
-                updateVIDstatus(idvId);
-            }
+        final IdType type = IdType.getIDTypeOrDefault(idvIdType); // write a small lookup if not present
+        if (type == null) {
+            return null;
+        }
+        Map<String, Object> idResDTO = null;
+        switch (type) {
+            case UIN:
+            case HANDLE:
+                idResDTO = getIdByUin(idvId, isBio, filterAttributes);
+                break;
+
+            case VID:
+                try {
+                    idResDTO = getIdByVid(idvId, isBio, filterAttributes);
+                } catch (IdAuthenticationBusinessException e) {
+                    logger.error(IdAuthCommonConstants.SESSION_ID,
+                            getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+                    throw new IdAuthenticationBusinessException(
+                            IdAuthenticationErrorConstants.INVALID_VID, e);
+                }
+                if (markVidConsumed) {
+                    updateVIDstatus(idvId); // see optimized version below
+                }
+                break;
+
+            default:
+                throw new IdAuthenticationBusinessException(
+                        IdAuthenticationErrorConstants.IDENTITYTYPE_NOT_ALLOWED);
         }
         return idResDTO;
     }
@@ -155,7 +169,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     public Map<String, Object> getDemoData(Map<String, Object> identity) {
         return Optional.ofNullable(identity.get("response"))
                 .filter(obj -> obj instanceof Map)
-                .map(obj -> ((Map<String, Object>)obj).get("identity"))
+                .map(obj -> ((Map<String, Object>) obj).get("identity"))
                 .filter(obj -> obj instanceof Map)
                 .map(obj -> (Map<String, Object>) obj)
                 .orElseGet(Collections::emptyMap);
@@ -168,13 +182,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     /**
      * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN.
      *
-     * @param id
-     *            the uin
-     * @param isBio
-     *            the is bio
+     * @param id    the uin
+     * @param isBio the is bio
      * @return the idenity
-     * @throws IdAuthenticationBusinessException
-     *             the id authentication business exception
+     * @throws IdAuthenticationBusinessException the id authentication business exception
      */
     @SuppressWarnings("unchecked")
     public Map<String, Object> getIdentity(String id, boolean isBio, IdType idType, Set<String> filterAttributes) throws IdAuthenticationBusinessException {
@@ -210,8 +221,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     }
 
     private String hashOrThrow(String id, IdType idType) throws IdAuthenticationBusinessException {
-        try { return securityManager.hash(id); }
-        catch (IdAuthenticationBusinessException e) {
+        try {
+            return securityManager.hash(id);
+        } catch (IdAuthenticationBusinessException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "hashOrThrow",
                     "Hash not found in DB");
 
@@ -272,14 +284,15 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         out.put(ID_HASH, hashedId);
 
         logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildResponseMap",
-                "Successful ");
+                "Response Map >> " + out);
 
         return out;
     }
 
     private Map<String, String> readJsonMap(byte[] bytes) {
-        try { return mapper.readValue(bytes, Map.class); }
-        catch (IOException e) {
+        try {
+            return mapper.readValue(bytes, Map.class);
+        } catch (IOException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(), "readJsonMap",
                     ExceptionUtils.getStackTrace(e));
             return Map.of();
@@ -288,6 +301,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
     /**
      * Decrypt the attributes as per configuration.
+     *
      * @param id
      * @param dataMap
      * @return
@@ -301,7 +315,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         zkUnEncryptedAttributes.addAll(getZkUnEncryptedAttributes());
 
         final Map<String, String> toDecrypt = new HashMap<>();
-        final Map<String, String> plain     = new HashMap<>();
+        final Map<String, String> plain = new HashMap<>();
         for (Map.Entry<String, String> e : dataMap.entrySet()) {
             final String key = e.getKey();
             final String val = e.getValue();
@@ -331,8 +345,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         if (s.isEmpty()) return val;
         final char c = s.charAt(0);
         if (c == '{' || c == '[') {
-            try { return mapper.readValue(s, Object.class); }
-            catch (IOException e) {
+            try {
+                return mapper.readValue(s, Object.class);
+            } catch (IOException e) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(),
                         "decryptConfiguredAttributes.maybeParseJson", ExceptionUtils.getStackTrace(e));
                 return val;
@@ -343,6 +358,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 
     /**
      * Get the list of attributes not to decrypt from config. Returns empty if no config is there
+     *
      * @return
      */
     private List<String> getZkUnEncryptedAttributes() {
@@ -359,36 +375,27 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     /**
      * Update VID dstatus.
      *
-     * @param vid
-     *            the vid
-     * @throws IdAuthenticationBusinessException
-     *             the id authentication business exception
+     * @param vid the vid
+     * @throws IdAuthenticationBusinessException the id authentication business exception
      */
     private void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
         try {
-            vid = securityManager.hash(vid);
-            // Assumption : If transactionLimit is null, id is considered as Perpetual VID
-            // If transactionLimit is nonNull, id is considered as Temporary VID
+            final String hashedVid = securityManager.hash(vid);
 
-            //get entity
-            Optional<IdentityEntity> entityOpt = identityRepo.findById(vid);
-            if(entityOpt.isPresent()) {
-                IdentityEntity entity =entityOpt.get();
-                Integer transactionLimit = entity.getTransactionLimit();
-                if (identityRepo.existsById(vid)
-                        && Objects.nonNull(transactionLimit)){
-                    int newTransactionLimit = transactionLimit-1;
-                    if (newTransactionLimit>0) {
-                        entity.setTransactionLimit(newTransactionLimit);
-                        identityRepo.save(entity);
-                    } else {
-                        identityRepo.deleteById(vid);
-                    }
-                }
-            }
+            // One DB call:
+            identityRepo.consumeVidOnce(hashedVid);
+            // Behavior:
+            //  - transaction_limit > 1  -> decremented by 1
+            //  - transaction_limit = 1  -> row deleted
+            //  - transaction_limit is null (perpetual) or id not found -> no-op
 
+        } catch (IdAuthenticationBusinessException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(), "updateVIDstatus",
+                    ExceptionUtils.getStackTrace(e));
+            // hashing failed (keep your original semantics if needed)
+            throw e;
         } catch (DataAccessException | TransactionException | JDBCConnectionException e) {
-            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+            logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(), "updateVIDstatus",
                     ExceptionUtils.getStackTrace(e));
             throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
@@ -414,10 +421,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
                     "Checking Id Key Binding Permitted or not. IdVidHash: " + idVidHash);
             // Assumption : If transactionLimit is null, id is considered as Perpetual VID
             // If transactionLimit is nonNull, id is considered as Temporary VID
-            // Duplicated identity data fetching from DB, because to avoid lot of if else conditions needs to be added in 
-            // above getIdentity method. Above getIdentity method also includes data decryption logic. 
+            // Duplicated identity data fetching from DB, because to avoid lot of if else conditions needs to be added in
+            // above getIdentity method. Above getIdentity method also includes data decryption logic.
             List<Object[]> entityObjList = identityRepo.findTransactionLimitById(idVidHash);
-            if(entityObjList.size() == 0) {
+            if (entityObjList.size() == 0) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
                         "Id not found in DB");
                 throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
