@@ -202,14 +202,14 @@ public class IdAuthSecurityManager {
     });
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final AtomicReference<CertificateFactory> CERT_FACTORY_REF = new AtomicReference<>();
-    private static CertificateFactory x509Factory() {
+    private static CertificateFactory x509Factory() throws IdAuthenticationBusinessException {
         CertificateFactory cf = CERT_FACTORY_REF.get();
         if (cf == null) {
             try {
                 cf = CertificateFactory.getInstance("X.509");
                 CERT_FACTORY_REF.compareAndSet(null, cf);
             } catch (CertificateException e) {
-                throw new IllegalStateException(e);
+                throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
             }
         }
         return CERT_FACTORY_REF.get();
@@ -509,7 +509,7 @@ public class IdAuthSecurityManager {
                 String certificate = trimBeginEnd(partnerCertificate);
                 return (X509Certificate) x509Factory().generateCertificate(
                         new ByteArrayInputStream(CryptoUtil.decodeBase64(certificate)));
-            } catch (CertificateException e) {
+            } catch (CertificateException | IdAuthenticationBusinessException e) {
                 try {
                     throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
                 } catch (IdAuthenticationBusinessException ex) {
