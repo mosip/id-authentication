@@ -88,10 +88,13 @@ public class KycExchangeRequestDTOV2 extends BaseRequestDTO implements ObjectWit
 		]
 	 * 
 	 */
-	List<Map<String, Object>> verifiedClaims;
+	List<Map<String, Object>> verifiedConsentedClaims;
 
 	/*
 	 * User consented unverified claims list. 
 	 */
 	Map<String, Object> unVerifiedConsentedClaims;
+
+	/** The Variable to hold value of response type */
+	private String respType;
 }

@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.mosip.authentication.core.indauth.dto.*;
 
