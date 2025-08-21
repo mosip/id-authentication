@@ -21,6 +21,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.helper.SeparatorHelper;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
+import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
+import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
 import org.junit.Test;
@@ -158,7 +162,7 @@ public class KycServiceImplTest {
 			deleteBootStrapFile();
 			prepareMap(idInfo);
 			List<String> allowedKycList = limitedList();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo);
@@ -176,7 +180,7 @@ public class KycServiceImplTest {
 			List<String> allowedKycList = limitedList();
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(allowedKycList, langCodes, idInfo1);
@@ -211,7 +215,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo1);
@@ -228,7 +232,7 @@ public class KycServiceImplTest {
 			prepareMap(idInfo);
 			Map<String, List<IdentityInfoDTO>> idInfo1 = idInfo;
 			idInfo1.remove("face");
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, langCodes, null);
@@ -242,7 +246,7 @@ public class KycServiceImplTest {
 	public void validUIN1() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(entityInfo());
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -256,7 +260,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutFace() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -279,7 +283,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutFace2() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("fra");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(limitedList(), langCodes, idInfo);
@@ -293,7 +297,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutAttributes() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			Set<String> langCodes = new HashSet<>();
 			langCodes.add("ara");
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(Collections.emptyList(), langCodes, idInfo);
@@ -307,7 +311,7 @@ public class KycServiceImplTest {
 	public void validUINWithoutAttributes2() {
 		try {
 			deleteBootStrapFile();
-			Mockito.when(idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
+			Mockito.when(entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null)).thenReturn(null);
 			EKycResponseDTO k = kycServiceImpl.retrieveKycInfo(null, null, idInfo);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
@@ -760,16 +764,15 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -794,16 +797,15 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -818,12 +820,11 @@ public class KycServiceImplTest {
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
 		kycExchangeRequestDTO.setRespType("JWE");
-		Map<String, Object> metadata = Map.of("PARTNER_CERTIFICATE", "DUMMY-X509-CERTIFICATE");
+		Map<String, Object> metadata = new HashMap<>();
+		metadata.put("PARTNER_CERTIFICATE", "DUMMY-X509-CERTIFICATE");
+		metadata.put("partnerId", "DUMMY-PARTNER-ID");
 		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		ReflectionTestUtils.setField(kycServiceImpl2, "jweResponseType", "JWE");
 		
@@ -831,7 +832,7 @@ public class KycServiceImplTest {
 		String dummyTokenData = "dummyJWTTokenData";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(dummyTokenData); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		Mockito.when(securityManager.jwtEncrypt(Mockito.anyString(), Mockito.anyString())).thenReturn(resKycToken);
 		
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
@@ -846,7 +847,8 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of();		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
-		
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
@@ -861,10 +863,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
@@ -883,16 +884,15 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -906,16 +906,15 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -929,16 +928,15 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedFaceAttributeName", "picture");
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		Map<String, String> faceMap = prepareFaceData(idInfo);
-		Mockito.when(idInfoHelper.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
+		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
@@ -952,9 +950,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = Arrays.asList("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[] {"street_address","locality"});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper2);
 		
 		String resKycToken = "responseJWTToken";
@@ -972,10 +970,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
@@ -995,10 +992,9 @@ public class KycServiceImplTest {
 		List<String> consentedLocales = List.of("ara", "fre");		
 		String idVid = "12232323121";
 		KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
+		Map<String, Object> metadata = Map.of("partnerId", "DUMMY-PARTNER-ID");
+		kycExchangeRequestDTO.setMetadata(metadata);
 		ReflectionTestUtils.setField(kycServiceImpl2, "consentedIndividualAttributeName", "individual_id");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedAddressAttributeName", "address");
-		ReflectionTestUtils.setField(kycServiceImpl2, "consentedNameAttributeName", "name");
-		ReflectionTestUtils.setField(kycServiceImpl2, "addressSubsetAttributes", new String[]{});
 		ReflectionTestUtils.setField(kycServiceImpl2, "idInfoHelper", idInfoHelper);
 
 		String resKycToken = "responseJWTToken";
