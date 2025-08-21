@@ -498,7 +498,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			verifiedClaimsSpecs.add(trustFrameworkSpec);
 			if (reqVerificationMap.containsKey(VERIFIED_ATTRIB_TIME)) {
 				Map<String, Long> maxAgeTimeMap = (Map<String, Long>) reqVerificationMap.get(VERIFIED_ATTRIB_TIME);
-				if (maxAgeTimeMap.containsKey(MAX_AGE)) {
+				if (maxAgeTimeMap != null && maxAgeTimeMap.containsKey(MAX_AGE)) {
 					long maxAgeTime = Long.parseLong(String.valueOf(maxAgeTimeMap.get(MAX_AGE)));
 					MaxAgeTimeSpec maxAgeTimeSpec = new MaxAgeTimeSpec(maxAgeTime, reqVerificationMap.get(TRUST_FRAMEWORK));
 					verifiedClaimsSpecs.add(maxAgeTimeSpec);
