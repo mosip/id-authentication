@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,6 +73,9 @@ public class KycExchangeResponseDataHelper {
 
 	@Autowired
 	private CbeffUtil cbeffUtil;
+
+	@Autowired
+	private EntityInfoUtil entityInfoUtil;
 
 
     public void addEntityDataForLangCodes(Map<String, String> mappedConsentedLocales, Map<String, List<IdentityInfoDTO>> idInfo, 
@@ -158,7 +162,7 @@ public class KycExchangeResponseDataHelper {
 			return;
 		}
 
-		Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+		Map<String, String> faceEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 		if (Objects.isNull(faceEntityInfoMap)) {
 			return;
 		}

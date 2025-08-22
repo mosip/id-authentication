@@ -13,6 +13,8 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFI
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ADDRESS_FORMATTED;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.ISSUER;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.AUDIENCE;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
@@ -87,6 +89,15 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	@Value("${mosip.ida.oidc4ida.ignore.standard.claims.list}")
 	private String[] ignoreClaims;
 
+	@Value("${mosip.ida.idp.add.issuer.response:true}")
+	private boolean addIssuerInResponse;
+
+	@Value("${mosip.ida.idp.issuer.uri:}")
+	private String issuerUri;
+
+	@Value("${mosip.ida.idp.no.language.attribute.list:phone}")
+	private String[] noLangAttributeList;
+
 	/** The env. */
 	@Autowired
 	EnvUtil env;
@@ -109,7 +120,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	private KycExchangeResponseDataHelper kycExchangeResponseDataHelper;
 
 	@Override
-	public String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId) 
+	public String buildVerifiedClaimsMetadata(String verifiedClaimsData, String oidcClientId, Set<String> idInfoAttributes)
 			throws IdAuthenticationBusinessException {
 		Optional<OIDCClientData> oidcClientData = oidcClientDataRepo.findByClientId(oidcClientId);
 		if(oidcClientData.isEmpty()) {
@@ -124,15 +135,23 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMetadata", "No Verified Claims data found for the id.");
 			Map<String, Object> verifiedClaimsMap = new HashMap<>(); 
-			oidcClientAllowedVerifiedClaims.stream()
-			  							   .forEach(claim -> verifiedClaimsMap.put(claim, NULL_CONST));
+			oidcClientAllowedVerifiedClaims.stream().forEach(claim -> {
+				try {
+					List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(claim);
+					if (idSchemaAttribute.stream().anyMatch(idInfoAttributes::contains)) {
+						verifiedClaimsMap.put(claim, NULL_CONST);
+					}
+				} catch (IdAuthenticationBusinessException e) {
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildVerifiedClaimsMetadata",
+							"Error getting identity attributes for claim: " + claim, e);
+				}
+			});
 			return convertMapToJsonString(verifiedClaimsMap);
 		}
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
 					"buildVerifiedClaimsMetadata", "Verified Claims data found for the id.");
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-					"buildVerifiedClaimsMetadata", "Verified Claims metadata in DB: " + verifiedClaimsData);
+
 		List<Map<String, Object>> verifiedClaimsList = null;
 		try {
 			verifiedClaimsList = mapper.readValue(verifiedClaimsData, 
@@ -143,13 +162,25 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		}
 		Map<String, Object> verifiedClaimsMap = buildVerifiedClaimsMap(verifiedClaimsList, oidcClientAllowedVerifiedClaims);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-				"buildVerifiedClaimsMetadata", "Verified Claims Map: " + verifiedClaimsMap);
+				"buildVerifiedClaimsMetadata", "Verified Claims Map built successfully");
 
 		oidcClientAllowedVerifiedClaims.stream().filter(claim -> !verifiedClaimsMap.keySet().contains(claim))
 												.forEach(claim -> verifiedClaimsMap.put(claim, NULL_CONST)); 
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-				"buildVerifiedClaimsMetadata", "Verified Claims: " + verifiedClaimsMap.keySet());
-		return convertMapToJsonString(verifiedClaimsMap);							
+				"buildVerifiedClaimsMetadata", "Verified Claims Map built successfully");
+		Map<String, Object> verClaimsMap = new HashMap<>();
+		verifiedClaimsMap.keySet().stream().forEach(claim -> {
+			try {
+				List<String> idSchemaAttribute = idInfoHelper.getIdentityAttributesForIdName(claim);
+				if (idSchemaAttribute.stream().anyMatch(idInfoAttributes::contains)) {
+					verClaimsMap.put(claim, verifiedClaimsMap.get(claim));
+				}
+			} catch (IdAuthenticationBusinessException e) {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildVerifiedClaimsMetadata",
+						"Error getting identity attributes for claim: " + claim, e);
+			}
+		});
+		return convertMapToJsonString(verClaimsMap);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -164,9 +195,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		
 		Map<String, String> idAttribsMap = getIdAttribsMap(oidcClientAllowedVerifiedClaims);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-				"buildVerifiedClaimsMap", "ID Attribs Map: " + idAttribsMap);
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-				"buildVerifiedClaimsMap", "OIDC Client Allowed Verified Claims: " + oidcClientAllowedVerifiedClaims);
+				"buildVerifiedClaimsMap", "Building Verified Claims Map");
 		try {
 			verifiedClaimsList.stream()
 				.forEach(verifiedClaim -> {
@@ -203,7 +232,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 
 	private String convertMapToJsonString(Map<String, Object> verifiedClaimsMap) {
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
-				"convertMapToJsonString", "Verified Claims Map: " + verifiedClaimsMap);
+				"convertMapToJsonString", "Verified Claims Map converting to JSON string");
 		try {
 			return mapper.writeValueAsString(verifiedClaimsMap);	
 		} catch (JsonProcessingException exp) {
@@ -231,6 +260,8 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 
 		Map<String, Object> respMap = new HashMap<>();
 		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
+		String partnerId = (String) kycExchangeRequestDTOV2.getMetadata().get("partnerId");
+		addIssuerInResponse(respMap, partnerId);
 		addUnverifiedConsentedClaims(respMap, unverifiedConsentClaims, mappedConsentedShortLocales, idInfo, idVid);
 		
 		if (respMap.containsValue(null)) {
@@ -272,6 +303,10 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 						// "identityDataMap" contains identity data for the claim		
 						// Eg: "name" -> "John Smith Jr", "name#en" -> "John Smith Jr", "name#fr" -> "Jean Smithe Jr"
 						Map<String, ?> identityDataMap = getIdentityDataForClaim(claim, idInfo, uniqueConsentedLocales);
+						mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+											"buildKycExchangeResponseV2",
+												"Processing claim in Scenario 2. identityDataMap: " + identityDataMap.size());
+
 						List<VerifiedClaimsSpec<?,?>> verificationRequestSpecs = getVerificationRequestSpecs(reqVerificationMap);
 						List<VerifiedClaimsAttributes> verifiedClaimsAttributes = getVerifiedClaimsAttributes(claim, verifiedClaimsDBAttributesMap);		
 						Map<String, Object> respVerificationMap = new HashMap<>();
@@ -604,24 +639,32 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 											"processAddressSubsetAttribute",
 												"Processing Address Subset Attribute. Claim:" + claim);
+
 		Map<String, Map<String, String>> addressDataMap = new HashMap<>();
 		Map<String, Map<String, String>> languageSpecificMaps = new HashMap<>();
 		Map<String, String> defaultAddressMap = new HashMap<>();
 
 		for (String addressSubsetAttribute : addressSubsetAttributes) {
 			List<String> idSchemaAttributes = idInfoHelper.getIdentityAttributesForIdName(addressSubsetAttribute);
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+			"processAddressSubsetAttribute",
+				"Processing Address Subset Attribute. SubsetAttribute:" + addressSubsetAttribute);
 
 			availableLanguages.forEach(language -> {
 				String addressSubsetAttribData = idSchemaAttributes.stream()
 					.map(idAttr -> idInfo.get(idAttr))
 					.filter(Objects::nonNull)
-					.map(idInfoList -> idInfoList.stream()
-						.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
-						.map(IdentityInfoDTO::getValue)
-						.findFirst()
-						.orElse(""))
+					.map(idInfoList -> {
+						// The issue may be that we're finding first value after filtering language
+						// Instead, we should filter the whole list first by language, then find first value
+						List<IdentityInfoDTO> filteredByLanguage = idInfoList.stream()
+							.filter(info -> language.equals(info.getLanguage()) || info.getLanguage() == null)
+							.collect(Collectors.toList());
+						return filteredByLanguage.isEmpty() ? "" : filteredByLanguage.get(0).getValue();
+					})
 					.filter(value -> !value.isEmpty())
 					.collect(Collectors.joining(" "));
+
 
 				if (!addressSubsetAttribData.isEmpty()) {
 					String shortLangCode = language.substring(0, 2).toLowerCase();
@@ -648,6 +691,9 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		if (!defaultAddressMap.isEmpty()) {
 			addressDataMap.put(claim, defaultAddressMap);
 		}
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+						"processAddressSubsetAttribute",
+							"Processing Address Subset Attribute. addressDataMap:" + addressDataMap.size());
 		return addressDataMap;
 	}
 
@@ -665,13 +711,24 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 			Map<String, Object> verifiedClaimsRespMap = new HashMap<>();
 			// Add language specific claims if multiple locales exist
 			Set<String> matchedLocales = getMatchedLocales(identityDataMap, mappedConsentedShortLocales);
-
+			List<String> noLangAttributeList = Arrays.asList(this.noLangAttributeList);
+			// to handle the case where claim is phone number
+			if (identityDataMap.size() == 0 || (!noLangAttributeList.contains(claim) && matchedLocales.size() == 0)) {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					"addVerifiedClaimsToResponse",
+						"Identity Data Map or Matched Locales is empty. Identity Data Map: "
+						+ identityDataMap.size() + ", Matched Locales: " + matchedLocales);
+				return;
+			}
 			// If available locales are more than 1, add claims for both en and ar locales
 			addClaimsToVerifiedClaimsResp(matchedLocales, claim, identityDataMap, verifiedClaimsRespMap);
 
 			verifiedClaimsRespMap.put(VERIFICATION, respVerificationMap);
 			verifiedClaimsRespLst.add(verifiedClaimsRespMap);
 		}
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+											"addVerifiedClaimsToResponse",
+												"Verified Claims Response List: " + verifiedClaimsRespLst.size());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -750,6 +807,19 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		else {
 			existingClaimsMap.put(claim, identityDataMap.get(claim));
 			verifiedClaimsResp.put(CLAIMS, existingClaimsMap);
+		}
+	}
+
+	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+		if (addIssuerInResponse) {
+			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
+				respMap.put(ISSUER, issuerUri);
+			}
+			else {
+				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
+					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+			}
+			respMap.put(AUDIENCE, partnerId);
 		}
 	}
 }
