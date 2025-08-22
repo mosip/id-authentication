@@ -8,6 +8,7 @@ import java.util.Set;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 
 /**

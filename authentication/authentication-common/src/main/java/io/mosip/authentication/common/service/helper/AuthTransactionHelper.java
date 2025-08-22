@@ -36,6 +36,7 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityKeyBindingRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.VciExchangeRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -273,8 +274,11 @@ public class AuthTransactionHelper {
 			VciExchangeRequestDTO vciExchangeRequestDTO = (VciExchangeRequestDTO) requestDTO;
 			authTransactionBuilder.withRequest(vciExchangeRequestDTO);
 			authTransactionBuilder.addRequestType(RequestType.VCI_EXCHANGE_REQUEST);
+		} else if(requestDTO instanceof KycExchangeRequestDTOV2) {
+			KycExchangeRequestDTOV2 kycExcRequestDTOV2 = (KycExchangeRequestDTOV2) requestDTO;
+			authTransactionBuilder.withRequest(kycExcRequestDTOV2);
+			authTransactionBuilder.addRequestType(RequestType.KYC_EXCHANGE_REQUEST_V2);
 		}
-
 		
 		return authTransactionBuilder;
 	}

@@ -383,6 +383,8 @@ public final class IdAuthCommonConstants {
 
 	public static final String  KYC_EXCHANGE_SUCCESS = "KycExchange status : true";
 
+	public static final String  KYC_EXCHANGE_SUCCESS_V2 = "KycExchange status V2 : true";
+
 	public static final boolean KYC_AUTH_CONSUME_VID_DEFAULT = false;
 
 	public static final boolean KYC_EXCHANGE_CONSUME_VID_DEFAULT = true;
@@ -468,6 +470,36 @@ public final class IdAuthCommonConstants {
 	public static final String POLICY_DATA = "policy_data";
 
 	public static final String MISP_LIC_DATA = "misp_lic_data";
+
+	public static final String VERIFIED_CLAIMS_ATTRIBS = "verifiedAttributes";
+
+	public static final String NULL_CONST = "null";
+
+	public static final String COMMA_STRING = ",";
+
+	public static final String CLAIMS = "claims";
+
+	public static final String VERIFICATION = "verification";
+
+	public static final String TRUST_FRAMEWORK = "trust_framework";
+
+	public static final String VERIFICATION_VALUE = "value";
+
+	public static final String VERIFICATION_VALUES = "values";
+
+	public static final String VERIFIED_ATTRIB_TIME = "time";
+
+	public static final String VERIFIED_CLAIMS = "verified_claims";
+
+	public static final String VERIFICATION_PROCESS = "verification_process";
+
+	public static final String MAX_AGE = "max_age";
+
+	public static final String MATCHED_TRUST_FRAMEWORKS = "matched_trust_frameworks";
+
+	public static final String ISSUER = "iss";
+
+	public static final String AUDIENCE = "aud";
 
 	private IdAuthCommonConstants() {
 	}

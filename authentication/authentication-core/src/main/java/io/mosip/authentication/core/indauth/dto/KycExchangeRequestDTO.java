@@ -3,7 +3,7 @@ package io.mosip.authentication.core.indauth.dto;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import lombok.Data;
