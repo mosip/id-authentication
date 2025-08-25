@@ -115,8 +115,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 			logger.error("Error saving anonymous profile. %s", ExceptionUtils.getStackTrace(e));
 		}
 		
-		authAnonymousProfileRepository.save(authAnonymousProfileEntity);
-		authAnonymousProfileRepository.flush();
+		authAnonymousProfileRepository.saveAndFlush(authAnonymousProfileEntity);
 	}
 
 	private AnonymousAuthenticationProfile createAnonymousProfile(Map<String, Object> requestBody,
