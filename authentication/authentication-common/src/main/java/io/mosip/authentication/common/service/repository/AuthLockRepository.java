@@ -17,31 +17,23 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface AuthLockRepository extends BaseRepository<AuthtypeLock, Integer> {
 
-	@Query(value = "select " + 
-			"        t.auth_type_code, " + 
-			"        t.status_code,  " + 
-			"        t.unlock_expiry_datetime  " + 
-			"    from " + 
-			"        ida.uin_auth_lock t  " + 
-			"    inner join " + 
-			"        ( " + 
-			"            select " + 
-			"                auth_type_code, " + 
-			"                MAX(cr_dtimes) as crd " + 
-			"            from " + 
-			"                ida.uin_auth_lock      " + 
-			"            where " + 
-			"                token_id = :token_id " + 
-			"            group by " + 
-			"                token_id, " + 
-			"                auth_type_code  " + 
-			"        ) tm  " + 
-			"            on t.auth_type_code = tm.auth_type_code  " + 
-			"            and t.cr_dtimes = tm.crd  " + 
-			"    where " + 
-			"        t.token_id = :token_id", 
-			nativeQuery = true)
-	public List<Object[]> findByToken(@Param("token_id") String tokenId);
+    @Query(value =
+            "SELECT " +
+                    "    t.auth_type_code, " +
+                    "    t.status_code, " +
+                    "    t.unlock_expiry_datetime " +
+                    "FROM (" +
+                    "    SELECT " +
+                    "        auth_type_code, " +
+                    "        status_code, " +
+                    "        unlock_expiry_datetime, " +
+                    "        ROW_NUMBER() OVER (PARTITION BY token_id, auth_type_code ORDER BY cr_dtimes DESC) as rn " +
+                    "    FROM ida.uin_auth_lock " +
+                    "    WHERE token_id = :token_id " +
+                    ") t " +
+                    "WHERE t.rn = 1",
+            nativeQuery = true)
+    public List<Object[]> findByToken(@Param("token_id") String tokenId);
 	
 	public List<AuthtypeLock> findByTokenAndAuthtypecode(String tokenId, String authtypecode);
 
