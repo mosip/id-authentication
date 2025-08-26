@@ -1,8 +1,5 @@
 package io.mosip.authentication.internal.service.validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +47,8 @@ import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Prem Kumar
  *
@@ -86,6 +85,8 @@ public class InternalAuthRequestValidatorTest {
 
 	@Mock
 	private MasterDataManager masterDataManager;
+
+	private final InternalAuthRequestValidator validator1 = new InternalAuthRequestValidator();
 
 	@Mock
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
@@ -532,4 +533,26 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@Test
+	public void testValidateDigitalIdTimestamp() {
+		DigitalId digitalId = new DigitalId();
+		Errors errors = Mockito.mock(Errors.class);
+		internalAuthRequestValidator.validateDigitalIdTimestamp(digitalId, errors, "format");
+	}
+
+	@Test
+	public void testNullCheckDigitalIdAndTimestamp() {
+		DigitalId digitalId = new DigitalId();
+		Errors errors = Mockito.mock(Errors.class);
+		boolean result = internalAuthRequestValidator.nullCheckDigitalIdAndTimestamp(digitalId, errors, "field");
+		assertFalse(result);
+	}
+
+	@Test
+	public void testValidateSuccessiveDigitalIdTimestamp() {
+		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
+		Errors errors = Mockito.mock(Errors.class);
+		BioIdentityInfoDTO bio = new BioIdentityInfoDTO();
+		internalAuthRequestValidator.validateSuccessiveDigitalIdTimestamp(biometrics, errors, 0, bio, 60L);
+	}
 }

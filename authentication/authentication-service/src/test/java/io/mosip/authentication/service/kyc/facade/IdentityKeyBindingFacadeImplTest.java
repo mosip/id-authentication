@@ -108,7 +108,6 @@ public class IdentityKeyBindingFacadeImplTest {
         String idHash = "idHash";
         Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 
-        // Use reflection to access the private method
         java.lang.reflect.Method method = IdentityKeyBindingFacadeImpl.class.getDeclaredMethod(
                 "doProcessIdKeyBinding",
                 IdentityKeyBindingRequestDTO.class,
@@ -121,14 +120,12 @@ public class IdentityKeyBindingFacadeImplTest {
         );
         method.setAccessible(true);
 
-        // Act
         @SuppressWarnings("unchecked")
         Map.Entry<IdentityKeyBindingResponseDto, Boolean> result =
                 (Map.Entry<IdentityKeyBindingResponseDto, Boolean>) method.invoke(
                         facade, req, authResp, partnerId, oidcClientId, token, idHash, idInfo
                 );
 
-        // Assert
         assertNotNull(result);
         assertNotNull(result.getKey());
         assertTrue(result.getValue()); // Because isAuthStatus() returns true

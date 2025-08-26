@@ -1,5 +1,6 @@
 package io.mosip.authentication.internal.service.validator;
 
+import io.mosip.authentication.common.service.websub.dto.EventModel;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -8,12 +9,17 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import static org.junit.jupiter.api.Assertions.*;
+
 @Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class CredentialIssueEventValidatorTest {
-	
+
 //	/** The uin validator. */
 //	@Mock
 //	private UinValidatorImpl uinValidator;
@@ -364,4 +370,29 @@ public class CredentialIssueEventValidatorTest {
 //		result = testSubject.supports(clazz);
 //		assertTrue(!result);
 //	}
+
+    private final CredentialIssueEventValidator validator = new CredentialIssueEventValidator();
+
+    @Test
+    void supports_OtherClass_shouldReturnFalse() {
+        assertFalse(validator.supports(String.class));
+    }
+
+    @Test
+    void validate_targetNotInstance_shouldNotThrow() {
+        Errors errors = new BeanPropertyBindingResult("target", "target");
+        assertDoesNotThrow(() -> validator.validate("NotEventModel", errors));
+        assertFalse(errors.hasErrors());
+    }
+
+    @Test
+    void validate_EventModel_withErrors_shouldSkipValidation() {
+        EventModel eventModel = new EventModel();
+        Errors errors = new BeanPropertyBindingResult(eventModel, "eventModel");
+        errors.reject("existing.error");
+        validator.validate(eventModel, errors);
+        assertTrue(errors.hasErrors());
+        // Should only have the existing error, not EVENT_FIELD error.
+        assertNull(errors.getFieldError("event"));
+    }
 }

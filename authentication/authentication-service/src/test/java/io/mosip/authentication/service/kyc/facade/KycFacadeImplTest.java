@@ -924,10 +924,8 @@ public class KycFacadeImplTest {
 	}
 
 	@Test
-	public void testDoProcessKycAuth_Success() throws Exception {
-		// Arrange
+	public void testDoProcessKycAuthSuccess() throws Exception {
 		KycFacadeImpl kycFacade = new KycFacadeImpl();
-		// Inject dependencies as needed using ReflectionTestUtils or constructor
 
 		AuthRequestDTO kycAuthRequestDTO = new AuthRequestDTO();
 		kycAuthRequestDTO.setRequestTime("2024-06-01T10:00:00");
@@ -944,17 +942,14 @@ public class KycFacadeImplTest {
 		String oidcClientId = "oidc-1";
 		String idHash = "id-hash-1";
 
-		// Mock kycService
 		KycService kycService = mock(KycService.class);
 		when(kycService.generateAndSaveKycToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
 				.thenReturn("kyc-token-123");
 		ReflectionTestUtils.setField(kycFacade, "kycService", kycService);
 
-		// Act
 		Map.Entry<KycAuthResponseDTO, Boolean> result = ReflectionTestUtils.invokeMethod(
 				kycFacade, "doProcessKycAuth", kycAuthRequestDTO, authResponseDTO, partnerId, oidcClientId, idHash);
 
-		// Assert
 		assertNotNull(result);
 		assertTrue(result.getValue());
 		assertNotNull(result.getKey());
@@ -962,10 +957,9 @@ public class KycFacadeImplTest {
 	}
 
 	@Test
-	public void testProcessKycAuth_Success() throws Exception {
+	public void testProcessKycAuthSuccess() throws Exception {
 		KycFacadeImpl kycFacade = new KycFacadeImpl();
 
-		// Mock dependencies
 		KycService kycService = mock(KycService.class);
 		IdService idService = mock(IdService.class);
 		TokenIdManager tokenIdManager = mock(TokenIdManager.class);
@@ -975,7 +969,6 @@ public class KycFacadeImplTest {
 		PartnerService partnerService = mock(PartnerService.class);
 		IdAuthFraudAnalysisEventManager fraudEventManager = mock(IdAuthFraudAnalysisEventManager.class);
 
-		// Inject mocks
 		ReflectionTestUtils.setField(kycFacade, "kycService", kycService);
 		ReflectionTestUtils.setField(kycFacade, "idService", idService);
 		ReflectionTestUtils.setField(kycFacade, "tokenIdManager", tokenIdManager);
@@ -985,7 +978,5 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "partnerService", partnerService);
 		ReflectionTestUtils.setField(kycFacade, "fraudEventManager", fraudEventManager);
 
-		// Prepare test data and mocks as before...
-		// (rest of your test code)
 	}
 }
