@@ -3,8 +3,9 @@ package io.mosip.authentication.internal.service;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.*;
 import io.mosip.authentication.common.service.util.*;
+import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
@@ -138,7 +139,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		RestTemplateHelper.class, LanguageUtil.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
-		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class
+		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class, SubjectAlternativeNamesHelper.class
 })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*",
 		"io.mosip.kernel.core.logger.config",

@@ -13,6 +13,15 @@ CREATE TABLE ida.key_policy_def_h(
     del_dtimes timestamp,
     CONSTRAINT pk_keypdefh_id PRIMARY KEY (app_id,eff_dtimes)
 );
+
+-- Optimize autovacuum for key_policy_def_h to clean dead tuples
+ALTER TABLE key_policy_def_h SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
 COMMENT ON TABLE ida.key_policy_def_h IS 'Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.';
 COMMENT ON COLUMN ida.key_policy_def_h.app_id IS 'Application ID: Application id for which the key policy is defined';
 COMMENT ON COLUMN ida.key_policy_def_h.eff_dtimes IS 'Effective Date Timestamp : This to track master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ';

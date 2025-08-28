@@ -27,6 +27,15 @@ CREATE TABLE ida.key_store(
 	CONSTRAINT pk_keystr_id PRIMARY KEY (id)
 
 );
+
+-- Optimize autovacuum for key_store to clean dead tuples
+ALTER TABLE key_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 2,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 2
+);
+
 -- ddl-end --
 COMMENT ON TABLE ida.key_store IS 'Key Store: In MOSIP, data related to an individual in stored in encrypted form. This table is to manage all the keys(private and public keys) used. ';
 -- ddl-end --

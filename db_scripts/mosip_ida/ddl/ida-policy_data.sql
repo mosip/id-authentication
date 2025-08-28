@@ -17,3 +17,10 @@ CREATE TABLE ida.policy_data (
 );
 
 CREATE INDEX ind_pl_pid ON ida.policy_data (policy_id);
+
+ALTER TABLE policy_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

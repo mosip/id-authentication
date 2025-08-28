@@ -33,3 +33,10 @@ CREATE TABLE ida.misp_license_data (
 CREATE INDEX ind_mld_lk ON ida.misp_license_data (license_key);
 --index section ends------
 
+-- Optimize autovacuum for misp_license_data to clean dead tuples
+ALTER TABLE misp_license_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

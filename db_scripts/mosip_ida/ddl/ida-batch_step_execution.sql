@@ -28,3 +28,11 @@ STEP_EXECUTION_ID BIGINT  NOT NULL PRIMARY KEY ,
 WITH (
     OIDS = FALSE
 );
+
+-- Optimize autovacuum for batch_step_execution to clean dead tuples
+ALTER TABLE batch_step_execution SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 2000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 2000
+);
