@@ -24,6 +24,15 @@ CREATE TABLE ida.anonymous_profile(
 	del_dtimes timestamp,
 	CONSTRAINT pk_profile PRIMARY KEY (id)
 );
+
+-- Optimize autovacuum for anonymous_profile to handle moderate updates
+ALTER TABLE anonymous_profile SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
+
 -- ddl-end --
 COMMENT ON TABLE ida.anonymous_profile IS 'anonymous_profile: Anonymous profiling information for reporting purpose.';
 -- ddl-end --

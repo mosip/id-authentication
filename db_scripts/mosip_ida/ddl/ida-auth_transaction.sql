@@ -46,6 +46,31 @@ CREATE TABLE ida.auth_transaction(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_reqtrnid_dtimes_tknid ON ida.auth_transaction (request_trn_id, request_dtimes, token_id,cr_dtimes, auth_type_code);
+
+CREATE INDEX idx_autntxn_refid_dtimes 
+ON ida.auth_transaction (ref_id, request_dtimes);
+
+CREATE INDEX CONCURRENTLY idx_auth_txn_entityid_request_dtimes
+ON ida.auth_transaction (requested_entity_id, request_dtimes DESC);
+
+CREATE INDEX idx_autn_txn_refid_time_desc
+ON ida.auth_transaction (ref_id, request_dtimes DESC);
+
+-- Create index to support paginated filtered query
+CREATE INDEX idx_autntxn_reqtrnid_authtype_crdtimes_desc
+ON ida.auth_transaction (request_trn_id, auth_type_code, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_crdtimes_desc
+ON ida.auth_transaction (token_id, cr_dtimes DESC);
+CREATE INDEX idx_autntxn_token_reqdtimes
+ON ida.auth_transaction (token_id, request_dtimes);
+
+ALTER TABLE ida.auth_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.002,
+    autovacuum_vacuum_threshold = 5000,
+    autovacuum_analyze_scale_factor = 0.002,
+    autovacuum_analyze_threshold = 5000
+);
+
 --index section ends------
 COMMENT ON TABLE ida.auth_transaction IS 'Authentication Transaction : To track all authentication transactions steps / stages in the process flow.';
 -- ddl-end --

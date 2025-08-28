@@ -37,6 +37,15 @@ CREATE TABLE ida.ca_cert_store(
 	CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
 
 );
+
+-- Optimize autovacuum for ca_cert_store to clean dead tuples
+ALTER TABLE ca_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
 -- ddl-end --
 COMMENT ON TABLE ida.ca_cert_store IS 'Certificate Authority Certificate Store: Store details of all the certificate provided by certificate authority which will be used by MOSIP';
 -- ddl-end --
