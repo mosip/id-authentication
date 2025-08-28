@@ -292,14 +292,14 @@ public class AuthAnonymousProfileServiceImplTest {
 	public void test_storeAnonymouseProfileToDB() {
 		AnonymousAuthenticationProfile anonymouseProfile = Mockito.mock(AnonymousAuthenticationProfile.class);
 		ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "storeAnonymousProfile", anonymouseProfile);
-		verify(authAnonymousProfileRepository, times(1)).saveAndFlush(Mockito.any());
+		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
 	}
 	
 	@Test
 	public void test_storeAnonymouseProfile() {
 		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 		verify(authAnonymousEventPublisher, times(1)).publishEvent(Mockito.any());
-		verify(authAnonymousProfileRepository, times(1)).saveAndFlush(Mockito.any());
+		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
 	}
 	
 
