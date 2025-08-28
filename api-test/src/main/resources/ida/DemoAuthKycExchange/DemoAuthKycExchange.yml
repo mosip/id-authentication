@@ -1,0 +1,553 @@
+DemoAuthKycExchange:
+  auth_DemoAuthKycExchange_DemoAuth_DOB_Valid_Smoke_UIN:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_01
+      description: Demo auth kyc exchange using valid dob and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_UIN_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_DOB_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_02
+      description: Demo auth kyc exchange using valid dob with valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_VID_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_03
+      description: Demo auth kyc exchange using dob with infant UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_Email_Valid_Smoke_Pos_VID:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_04
+      description: Demo auth kyc exchange using email with valid VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Pos_VID_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_Email_Valid_Smoke_Poss_VID:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_05
+      description: Demo auth kyc exchange with email using valid VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Poss_VID_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_gender_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_06
+      description: Demo auth kyc exchange using valid gender and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_gender_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_gender_Valid_Smoke_Pos_VID:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_07
+      description: Demo auth kyc exchange using valid gender and valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_08
+      description: Demo auth kyc exchange using valid dob and valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_Name_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_09
+      description: Demo auth kyc exchange using valid name and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Name_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name1_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_10
+      description: Demo auth kyc exchange using valid name and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name1_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_11
+      description: Demo auth kyc exchange using valid name with title and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_12
+      description: Demo auth kyc exchange using valid name with title and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name4_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_13
+      description: Demo auth kyc exchange using name and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name4_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_14
+      description: Demo auth kyc exchange using name with title and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_15
+      description: Demo auth kyc exchange using valid name with title and UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_16
+      description: Demo auth kyc exchange using name with title and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_Name_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_17
+      description: Demo auth kyc exchange using valid name and valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Name_Valid_Smoke_VID_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_age_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_18
+      description: Demo auth kyc exchange using valid age and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_age_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_age_Valid_Smoke_VID_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_19
+      description: Demo auth kyc exchange using valid age and valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_age_Valid_Smoke_VID_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_20
+      description: Demo auth kyc exchange using valid phone number and valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_21
+      description: Demo auth kyc exchange using dob with drafted UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_with_phone:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_22
+      description: Demo auth kyc exchange using valid phone and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_with_phone_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_DemoAuthKycExchange_DemoAuth_with_firstName:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_23
+      description: Demo auth kyc exchange using first name and valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegatedValid_DemoAuth_with_firstName_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
