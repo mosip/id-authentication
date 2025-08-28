@@ -35,6 +35,13 @@ CREATE TABLE ida.uin_auth_lock(
 CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);
 --index section ends------
 
+ALTER TABLE uin_auth_lock SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
 COMMENT ON TABLE ida.uin_auth_lock IS 'UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ';
 -- ddl-end --
 COMMENT ON COLUMN ida.uin_auth_lock.token_id IS 'Token ID: ID generated with reference to UIN/VID.';

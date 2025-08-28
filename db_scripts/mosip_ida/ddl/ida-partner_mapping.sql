@@ -30,3 +30,11 @@ CREATE TABLE ida.partner_mapping (
 --index section starts----
 CREATE INDEX ind_pm_pid ON ida.partner_mapping (partner_id);
 --index section ends------
+
+-- Optimize autovacuum for partner_mapping to clean dead tuples
+ALTER TABLE partner_mapping SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
