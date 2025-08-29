@@ -218,12 +218,10 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	@AfterClass(alwaysRun = true)
 	public void waittime() {
 		try {
-			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
-					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
-				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
-				Thread.sleep(delayTime);
-			}
+			logger.info("waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTime")
+					+ " mili secs VID Generation In RESIDENT SERVICES");
+			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTime")));
+
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
 			Thread.currentThread().interrupt();
