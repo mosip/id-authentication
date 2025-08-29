@@ -218,9 +218,9 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	@AfterClass(alwaysRun = true)
 	public void waittime() {
 		try {
-			logger.info("waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTime")
+			logger.info("waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")
 					+ " mili secs VID Generation In RESIDENT SERVICES");
-			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTime")));
+			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")));
 
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
