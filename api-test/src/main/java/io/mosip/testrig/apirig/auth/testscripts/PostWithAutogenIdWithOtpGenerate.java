@@ -123,10 +123,11 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 		otpReqJson.remove("sendOtpEndPoint");
 
 		Response otpResponse = null;
-		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int maxLoopCount = IdAuthConfigManager.getproperty("uinGenMaxLoopCount").isEmpty() ? 20
+				: Integer.parseInt(IdAuthConfigManager.getproperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			  {
+			{
 				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
 						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
 						GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());

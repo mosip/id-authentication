@@ -194,10 +194,10 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 	public void waittime() {
 
 		try {
-			if (BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet")) {
-				logger.info("waiting for " + properties.getProperty("Delaytime")
+			if (BaseTestCase.currentModule.equals("auth")) {
+				logger.info("waiting for " + IdAuthConfigManager.getproperty("delayTime")
 						+ " mili secs after UIN Generation In IDREPO");
-				Thread.sleep(Long.parseLong(properties.getProperty("Delaytime")));
+				Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("delayTime")));
 			}
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
