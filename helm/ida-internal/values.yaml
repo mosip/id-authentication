@@ -46,8 +46,8 @@ service:
   externalTrafficPolicy: Cluster
 image:
   registry: docker.io
-  repository: mosipid/authentication-internal-service
-  tag: 1.2.1.1-beta.1
+  repository: mosipqa/authentication-internal-service
+  tag: 1.2.1.x
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
