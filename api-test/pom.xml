@@ -8,7 +8,7 @@
 	<name>apitest-auth</name>
 	<description>Parent project of MOSIP Id Authentication apitests</description>
 	<url>https://github.com/mosip/id-authentication</url>
-	<version>1.2.1.2-SNAPSHOT</version>
+	<version>1.2.1.2-beta.1</version>
 
 	<licenses>
 		<license>
@@ -72,7 +72,7 @@
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<git.commit.id.plugin.version>3.0.1</git.commit.id.plugin.version>
-		<fileName>apitest-auth-1.2.1.2-SNAPSHOT-jar-with-dependencies</fileName>
+		<fileName>apitest-auth-1.2.1.2-beta.1-jar-with-dependencies</fileName>
 	</properties>
 
 	<dependencies>
