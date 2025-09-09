@@ -321,6 +321,17 @@
         	</exclusions>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -337,6 +348,9 @@
                             <goal>build-info</goal>
                             <goal>repackage</goal>
                         </goals>
+                        <configuration>
+                            <attach>false</attach>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -380,8 +394,20 @@
                             <maxAttempts>180</maxAttempts>
                         </configuration>
                         <executions>
+                            <!-- Build info and repackage -->
+                            <execution>
+                                <id>build-info-repackage</id>
+                                <goals>
+                                    <goal>build-info</goal>
+                                    <goal>repackage</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>false</attach>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>pre-integration-test</id>
+                                <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>start</goal>
                                 </goals>
@@ -400,14 +426,9 @@
                             </execution>
                             <execution>
                                 <id>post-integration-test</id>
+                                <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>stop</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <goals>
-                                    <goal>build-info</goal>
-                                    <goal>repackage</goal>
                                 </goals>
                             </execution>
                         </executions>
