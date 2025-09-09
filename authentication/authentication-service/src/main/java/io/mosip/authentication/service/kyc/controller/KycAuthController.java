@@ -191,9 +191,7 @@ public class KycAuthController {
 				if(AuthTypeUtil.isBio(ekycAuthRequestDTO)) {
 					kycReqValidator.validateDeviceDetails(ekycAuthRequestDTO, errors);
 				}
-                mosipLogger.info("Error : "+errors.getObjectName());
 				DataValidationUtil.validate(errors);
-                mosipLogger.info("Data validation completed"+errors.getObjectName());
 				boolean externalAuthRequest = true;
 				AuthResponseDTO authResponseDTO = kycFacade.authenticateIndividual(ekycAuthRequestDTO, externalAuthRequest, 
 														partnerId, partnerApiKey, requestWrapperWithMetadata);

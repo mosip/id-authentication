@@ -5,8 +5,6 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 
-import java.util.logging.Logger;
-
 /**
  * The Class DataValidationUtil - Checks for errors in the error object
  * and throws {@link IDDataValidationException}, if any error is present.
@@ -14,8 +12,6 @@ import java.util.logging.Logger;
  * @author Manoj SP
  */
 public final class DataValidationUtil {
-
-    private final static Logger logger = Logger.getLogger(DataValidationUtil.class.getName());
 
 	/**
 	 * Instantiates a new data validation util.
@@ -37,14 +33,10 @@ public final class DataValidationUtil {
 			errors.getAllErrors()
 					.forEach(error -> {
 						String errorCode = error.getCode();
-                        logger.info("Validation Error Code: " + errorCode);
 						String errorMessage = error.getDefaultMessage();
-                        logger.info("Validation Error Message: " + errorMessage);
 						String actionMesgsage = IdAuthenticationErrorConstants.getActionMessageForErrorCode(error.getCode()).orElse(null);
-                        logger.info("Validation Action Message: " + actionMesgsage);
 						Object[] args = error.getArguments();
 						exception.addInfo(errorCode, errorMessage, actionMesgsage, args);
-                        logger.info("EXCEPTION OCCURED : "+exception);
 					});
 			throw exception;
 		}
