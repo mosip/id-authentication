@@ -21,7 +21,6 @@ import io.mosip.authentication.internal.service.batch.CredentialStoreTasklet;
 public class DataProcessingBatchConfigTest {
 
     @Test
-    @Ignore
     public void testBeansCreated() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(DataProcessingBatchConfig.class);
