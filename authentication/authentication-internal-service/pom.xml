@@ -255,8 +255,18 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-	
-	<build>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -272,6 +282,9 @@
 							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
+                        <configuration>
+                            <attach>false</attach>
+                        </configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -313,50 +326,57 @@
 			</dependencies>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring.boot.version}</version>
-						<configuration>
-							<executable>true</executable>
-							<layout>ZIP</layout>
-							<wait>1000</wait>
-							<maxAttempts>180</maxAttempts>
-						</configuration>
-						<executions>
-							<execution>
-								<id>pre-integration-test</id>
-								<goals>
-									<goal>start</goal>
-								</goals>
-								<configuration>
-									<folders>
-										<folder>src/test/resources</folder>
-									</folders>
-									<profiles>
-										<profile>openapi-profile</profile>
-									</profiles>
-									<arguments>
-										<argument>--server.port=8090</argument>
-										<argument>--server.servlet.context-path=/app/generic</argument>
-									</arguments>
-								</configuration>
-							</execution>
-							<execution>
-								<id>post-integration-test</id>
-								<goals>
-									<goal>stop</goal>
-								</goals>
-							</execution>
-							<execution>
-								<goals>
-									<goal>build-info</goal>
-									<goal>repackage</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>${spring.boot.version}</version>
+                        <configuration>
+                            <executable>true</executable>
+                            <layout>ZIP</layout>
+                            <wait>1000</wait>
+                            <maxAttempts>180</maxAttempts>
+                        </configuration>
+                        <executions>
+                            <!-- Build info and repackage -->
+                            <execution>
+                                <id>build-info-repackage</id>
+                                <goals>
+                                    <goal>build-info</goal>
+                                    <goal>repackage</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>false</attach>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>pre-integration-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+                                    <folders>
+                                        <folder>src/test/resources</folder>
+                                    </folders>
+                                    <profiles>
+                                        <profile>openapi-profile</profile>
+                                    </profiles>
+                                    <arguments>
+                                        <argument>--server.port=8090</argument>
+                                        <argument>--server.servlet.context-path=/app/generic</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>post-integration-test</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
 						<groupId>org.springdoc</groupId>
 						<artifactId>springdoc-openapi-maven-plugin</artifactId>
 						<version>0.2</version>

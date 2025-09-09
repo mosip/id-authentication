@@ -217,9 +217,7 @@
 		<aspectjweaver.version>1.8.12</aspectjweaver.version>
 		<micrometer.core.version>1.4.2</micrometer.core.version>
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
-	</properties>
-
-		
+       <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -370,16 +368,16 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-<distributionManagement>
-		<snapshotRepository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository> 
-                 <repository>
-                        <id>ossrh</id>
-                        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository> 
-        </distributionManagement> 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
         <build>
           <plugins>
             <plugin>
