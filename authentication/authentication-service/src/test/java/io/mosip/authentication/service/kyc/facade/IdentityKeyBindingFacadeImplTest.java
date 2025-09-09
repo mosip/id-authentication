@@ -82,7 +82,6 @@ public class IdentityKeyBindingFacadeImplTest {
         );
         method.setAccessible(true);
 
-        @SuppressWarnings("unchecked")
         Map.Entry<IdentityKeyBindingResponseDto, Boolean> result =
                 (Map.Entry<IdentityKeyBindingResponseDto, Boolean>) method.invoke(
                         facade, req, authResp, partnerId, oidcClientId, token, idHash, idInfo
@@ -93,7 +92,7 @@ public class IdentityKeyBindingFacadeImplTest {
 
     @Test
     void testDoProcessIdKeyBinding() throws Exception {
-        // Arrange
+
         IdentityKeyBindingRequestDTO req = mock(IdentityKeyBindingRequestDTO.class);
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
         ResponseDTO respDTO = mock(ResponseDTO.class);
@@ -120,7 +119,6 @@ public class IdentityKeyBindingFacadeImplTest {
         );
         method.setAccessible(true);
 
-        @SuppressWarnings("unchecked")
         Map.Entry<IdentityKeyBindingResponseDto, Boolean> result =
                 (Map.Entry<IdentityKeyBindingResponseDto, Boolean>) method.invoke(
                         facade, req, authResp, partnerId, oidcClientId, token, idHash, idInfo
@@ -128,7 +126,7 @@ public class IdentityKeyBindingFacadeImplTest {
 
         assertNotNull(result);
         assertNotNull(result.getKey());
-        assertTrue(result.getValue()); // Because isAuthStatus() returns true
+        assertTrue(result.getValue());
         IdentityKeyBindingResponseDto dto = result.getKey();
         assertNotNull(dto.getResponse());
         assertEquals("token", dto.getResponse().getAuthToken());
