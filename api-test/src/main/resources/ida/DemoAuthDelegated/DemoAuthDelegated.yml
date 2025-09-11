@@ -22,603 +22,603 @@ DemoAuthDelegated:
     }
     }'
       output: '{
-  "authStatus": "true"
+  "kycStatus": "true"
 }'
-  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_VID_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_02
-      description: Demo auth kyc delegated using valid dob with valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "1970/07/08",
-"key": "dob",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_03
-      description: Demo auth kyc delegated using dob with infant UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "2023/09/28",
-"key": "dob",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Pos_VID_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_04
-      description: Demo auth kyc delegated using email with valid VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
-"key": "emailId",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Poss_VID_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_05
-      description: Demo auth kyc delegated with email using valid VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
-"key": "emailId",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_gender_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_06
-      description: Demo auth kyc delegated using valid gender and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "gender": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "MLE"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptGender"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_07
-      description: Demo auth kyc delegated using valid gender and valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "gender": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "MLE"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptGender"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_08
-      description: Demo auth kyc delegated using valid dob and valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "1970/07/08",
-"key": "dob",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_Name_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_09
-      description: Demo auth kyc delegated using valid name and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FULLNAMEeng"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name1_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_10
-      description: Demo auth kyc delegated using valid name and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_11
-      description: Demo auth kyc delegated using valid name with title and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "eng",
-      "value": "Miss-TitleFromServer Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_12
-      description: Demo auth kyc delegated using valid name with title and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "eng",
-      "value": "Mr-TitleFromServer Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name4_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_13
-      description: Demo auth kyc delegated using name and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_14
-      description: Demo auth kyc delegated using name with title and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "eng",
-      "value": "Miss-TitleFromServer. Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_15
-      description: Demo auth kyc delegated using valid name with title and UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "eng",
-      "value": "Miss-TitleFromServer. Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_16
-      description: Demo auth kyc delegated using name with title and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "eng",
-      "value": "Miss-TitleFromServer. Lisa.GN"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_Name_Valid_Smoke_VID_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_17
-      description: Demo auth kyc delegated using valid name and valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FULLNAMEeng"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_age_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_18
-      description: Demo auth kyc delegated using valid age and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "51",
-"key": "age",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_age_Valid_Smoke_VID_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_19
-      description: Demo auth kyc delegated using valid age and valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "41",
-"key": "age",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_20
-      description: Demo auth kyc delegated using valid phone number and valid perpetual VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
-"key": "phoneNumber",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_21
-      description: Demo auth kyc delegated using dob with drafted UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "1992/04/15",
-"key": "dob",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-        "authStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_with_phone_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_22
-      description: Demo auth kyc delegated using valid phone and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
-"key": "phone",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-        "authStatus": "true"
-}'
-  auth_DemoAuthDelegatedValid_DemoAuth_with_firstName_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_23
-      description: Demo auth kyc delegated using first name and valid UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
-        "transactionId": "1234567890",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FULLNAMEeng"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
+#  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_VID_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_02
+#      description: Demo auth kyc delegated using valid dob with valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "1970/07/08",
+#"key": "dob",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_03
+#      description: Demo auth kyc delegated using dob with infant UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "2023/09/28",
+#"key": "dob",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Pos_VID_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_04
+#      description: Demo auth kyc delegated using email with valid VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+#"key": "emailId",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Poss_VID_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_05
+#      description: Demo auth kyc delegated with email using valid VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+#"key": "emailId",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_gender_Valid_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_06
+#      description: Demo auth kyc delegated using valid gender and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "gender": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "MLE"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptGender"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_07
+#      description: Demo auth kyc delegated using valid gender and valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "gender": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "MLE"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptGender"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_08
+#      description: Demo auth kyc delegated using valid dob and valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "1970/07/08",
+#"key": "dob",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_Name_Valid_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_09
+#      description: Demo auth kyc delegated using valid name and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "TEST_FULLNAMEeng"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name1_Valid_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_10
+#      description: Demo auth kyc delegated using valid name and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_11
+#      description: Demo auth kyc delegated using valid name with title and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "eng",
+#      "value": "Miss-TitleFromServer Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_12
+#      description: Demo auth kyc delegated using valid name with title and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "eng",
+#      "value": "Mr-TitleFromServer Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name4_Valid_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_13
+#      description: Demo auth kyc delegated using name and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_14
+#      description: Demo auth kyc delegated using name with title and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "eng",
+#      "value": "Miss-TitleFromServer. Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_15
+#      description: Demo auth kyc delegated using valid name with title and UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "eng",
+#      "value": "Miss-TitleFromServer. Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_16
+#      description: Demo auth kyc delegated using name with title and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "eng",
+#      "value": "Miss-TitleFromServer. Lisa.GN"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_Name_Valid_Smoke_VID_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_17
+#      description: Demo auth kyc delegated using valid name and valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "TEST_FULLNAMEeng"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_age_Valid_uin_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_18
+#      description: Demo auth kyc delegated using valid age and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "51",
+#"key": "age",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_age_Valid_Smoke_VID_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_19
+#      description: Demo auth kyc delegated using valid age and valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "41",
+#"key": "age",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_20
+#      description: Demo auth kyc delegated using valid phone number and valid perpetual VID
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "VID",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
+#"key": "phoneNumber",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Pos_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_21
+#      description: Demo auth kyc delegated using dob with drafted UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "1992/04/15",
+#"key": "dob",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#        "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegated_DemoAuth_with_phone_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_22
+#      description: Demo auth kyc delegated using valid phone and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+#"key": "phone",
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+#    }
+#    }'
+#      output: '{
+#        "authStatus": "true"
+#}'
+#  auth_DemoAuthDelegatedValid_DemoAuth_with_firstName_Sid:
+#      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+#      uniqueIdentifier: TC_IDA_DemoAuthDelegated_23
+#      description: Demo auth kyc delegated using first name and valid UIN
+#      role: resident
+#      restMethod: post
+#      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+#      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+#      input: '{
+#        "requestTime": "$TIMESTAMP$",
+#        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+#        "transactionId": "1234567890",
+#        "individualIdType": "UIN",
+#        "bio": false,
+#        "demo": true,
+#        "otp": false,
+#        "identityRequest":{
+#    "name": [
+#    {
+#      "language": "$PRIMARYLANG$",
+#      "value": "TEST_FULLNAMEeng"
+#    }
+#  ],
+#    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
+#    }
+#    }'
+#      output: '{
+#  "authStatus": "true"
+#}'

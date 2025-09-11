@@ -1925,7 +1925,7 @@ AddIdentity:
 
    auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_01
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_01
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -1955,7 +1955,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_02
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_02
       description: create UIN with valid parameters for delegated auth
       role: idrepo
       restMethod: post
@@ -1985,7 +1985,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_03
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_03
       description: create UIN with valid parameters for delegated iris auth
       role: idrepo
       restMethod: post
@@ -2015,7 +2015,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_04
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_04
       description: create UIN with valid parameters for delegated iris auth
       role: idrepo
       restMethod: post
@@ -2045,7 +2045,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_05
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_05
       description: create UIN with valid parameters for delegated right iris auth
       role: idrepo
       restMethod: post
@@ -2075,7 +2075,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_06
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_06
       description: create UIN with valid parameters for delegated right iris auth
       role: idrepo
       restMethod: post
@@ -2105,7 +2105,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDelegated_Infant_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_07
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_07
       description: create Infant UIN with valid parameters for delegate
       role: idrepo
       restMethod: post
@@ -2135,7 +2135,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDelegated_differentIdType_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_08
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_08
       description: create  UIN with valid parameters for delegate
       role: idrepo
       restMethod: post
@@ -2165,7 +2165,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDemoDelegated_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_09
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_09
       description: create  UIN with valid parameters for demo auth delegate
       role: idrepo
       restMethod: post
@@ -2181,6 +2181,36 @@ AddIdentity:
   "dateOfBirth": "1990/09/28",
   "postalCode": "14022",
   "email": "auth_AddIdentity_withValidParameters_forDemoDelegated_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forOtpDelegated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_10
+      description: create  UIN with valid parameters for demo auth delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1990/09/28",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_forOtpDelegated_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",

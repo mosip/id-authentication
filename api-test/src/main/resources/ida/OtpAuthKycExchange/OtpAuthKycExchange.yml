@@ -1,0 +1,145 @@
+OtpAuthKycExchange:
+  auth_OtpAuthKycExchange_OtpAuth_With_Valid_UIN_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_01
+      description: Otp auth kyc exchange with valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_OtpAuthKycExchange_OtpAuth_With_Valid_VID_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_02
+      description: Demo auth kyc exchange using valid dob with valid perpetual VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_OtpAuthKycExchange_OtpAuth_With_Optional_individualIdType_VID:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_03
+      description: OTP auth kyc exchange with optional individualIdType using VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Optional_individualIdType_VID_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_OtpAuthKycExchange_OtpAuth_With_Missing_Optional_Field_individualIdType_VID:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_04
+      description: Otp auth kyc exchange with missing optional field individualIdType using VID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_OtpAuthKycExchange_OtpAuth_With_locked_email_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_05
+      description: Otp auth kyc exchange with locked email using valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_locked_email_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
+  auth_OtpAuthKycExchange_OtpAuth_With_locked_phone_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_06
+      description: Otp auth kyc exchange with locked phone using valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_locked_phone_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'
