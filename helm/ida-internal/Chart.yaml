@@ -2,7 +2,7 @@ apiVersion: v2
 name: ida-internal
 description: A Helm chart for MOSIP IDA module
 type: application
-version: 12.1.0-develop
+version: 12.2.0-develop
 appVersion: ""
 dependencies:
   - name: common
