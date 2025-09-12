@@ -50,13 +50,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-006"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_03
@@ -79,14 +79,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptInvalid"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-001"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_04
@@ -109,14 +108,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptInvalid"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-001"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_05
@@ -139,14 +137,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptInvalid"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-006"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_InValid_uin_Dateofbirth:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_06
@@ -169,13 +166,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_InValid_Dateofbirth_with_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_07
@@ -198,13 +195,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_Email_Invalid_Past_Timestamp_VID_Neg_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_08
@@ -227,14 +224,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_Email_Invalid_Future_Timestamp_VID_Neg_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_09
@@ -257,14 +253,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_Email_InValid_uin_Email:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_10
@@ -287,13 +282,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_Email_InValid_Email_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_11
@@ -316,13 +311,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_InValid_Gender_Invalid_RS:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_12
@@ -355,13 +350,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGenderRS"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-003"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_Valid_Gender_Invalid_RS:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_13
@@ -394,13 +389,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGenderRS"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-003"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_InValid_Gender_valid_RS:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_14
@@ -433,13 +428,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGenderRS"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-003"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_InValid_Gender_valid_RS_with_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_15
@@ -472,13 +467,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGenderRS"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-003"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_InValid_Lang_Valid_Gender:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_16
@@ -505,13 +500,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGender"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_gender_InValid_LangCode_with_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_17
@@ -538,13 +536,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGender"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_InValid_gender_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_18
@@ -571,13 +572,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGender"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_InValid_uin_gender:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_19
@@ -604,13 +608,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGender"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_InValid_Name_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_20
@@ -637,13 +644,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptName"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_invalid_age_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_21
@@ -666,13 +673,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_age_InValid_uin:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_22
@@ -695,13 +702,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_PhoneNumber_InValid_uin_PhoneNumber:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_23
@@ -724,13 +731,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_PhoneNumber_InValid_PhoneNumber_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_24
@@ -753,42 +760,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-  auth_DemoAuthDelegatedNeg_PhoneNumber_with_TVID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_25
-      description: Demo auth kyc delegated using valid phone number and temporary VID
-      role: resident
-      restMethod: post
-      inputTemplate: ida/DemoAuthDelegatedNeg/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegatedNeg/error
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
-"key": "phoneNumber",
-    "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
-    }
-    }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_InValid_individualId_VID:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_26
@@ -811,13 +789,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-004"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Missing_individualId:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_27
@@ -840,13 +818,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Blank_individualId:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_28
@@ -869,13 +847,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Invalid_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_29
@@ -898,13 +876,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Blank_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_30
@@ -927,13 +905,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Unlock_Valid_Smoke_UIN_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_31
@@ -944,7 +922,7 @@ DemoAuthDelegatedNeg:
       outputTemplate: ida/DemoAuthDelegatedNeg/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -956,14 +934,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Lock_Permanent_Valid_UIN_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_32
@@ -986,14 +963,14 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-  auth_DemoAuthDelegatedNeg_revoke_vid_Pos:
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedNeg_revoke_vid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_33
       description: Demo auth kyc delegated using revoked VID
@@ -1015,13 +992,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_dummy_partnerkey_uin_Pos:
       endPoint: /idauthentication/v1/kyc-auth/delegated/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_34
@@ -1044,14 +1021,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
-
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Unlock_AllValid_UIN_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_35
@@ -1074,13 +1053,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_DOB_Lock_Permanent_AllValid_UIN_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_36
@@ -1103,13 +1082,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-019"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_Deactivated_UIN:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_37
@@ -1132,13 +1111,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_valid_gender_invalid_individualIdType:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_38
@@ -1165,13 +1144,16 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncryptGender"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        },
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_zero_age_value_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_39
@@ -1194,13 +1176,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_negative_age_value_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_40
@@ -1223,13 +1205,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_age_greater_than_calculated_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_41
@@ -1252,13 +1234,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_age_below_calculated_value_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_42
@@ -1281,13 +1263,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
   auth_DemoAuthDelegatedNeg_with_wrongPartnerKeyUrl_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/Z0kPjifb7xsv8oEsv0B5YDZqChr7TuBtToVbgARGkO8Jy6U0/auth_pid17424601504/959765
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_43
@@ -1310,10 +1292,13 @@ DemoAuthDelegatedNeg:
     "identityRequestTemplate": "ida/DemoAuthDelegatedNeg/DemoIdentityEncrypt"
     }
     }'
-	      output: '{
-	      "errors": [
-	        {
-	          "errorCode": "IDA-MLC-009"
-	        }
-	      ]
-	}'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-001"
+        }
+      ]
+}'
