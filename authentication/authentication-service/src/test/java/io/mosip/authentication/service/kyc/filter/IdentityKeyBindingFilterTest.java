@@ -28,7 +28,7 @@ import java.util.Map;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
 public class IdentityKeyBindingFilterTest {
-    // Spy so we can override isAllowedAuthType for test
+
     IdentityKeyBindingFilter filterSpy = Mockito.spy(new IdentityKeyBindingFilter());
 
     @Test
@@ -40,18 +40,14 @@ public class IdentityKeyBindingFilterTest {
     public void testInvokeProtectedIsAllowedAuthType() throws Exception {
         IdentityKeyBindingFilter filter = new IdentityKeyBindingFilter();
 
-        // Get method from superclass IdAuthFilter where it is declared
         Method method = IdAuthFilter.class.getDeclaredMethod("isAllowedAuthType", String.class, List.class);
         method.setAccessible(true);
 
-        // Prepare test parameters
         String authType = "keybinding";
         List<AuthPolicy> authPolicies = Collections.emptyList();
 
-        // Invoke the protected method on subclass instance
         boolean allowed = (boolean) method.invoke(filter, authType, authPolicies);
 
-        // Make assertions (expected depends on your isAllowedAuthType implementation)
         Assert.assertFalse(allowed);
     }
 
@@ -71,7 +67,7 @@ public class IdentityKeyBindingFilterTest {
         IdentityKeyBindingFilter filter = new IdentityKeyBindingFilter() {
             @Override
             protected boolean isAllowedAuthType(String authType, List<AuthPolicy> authPolicies) {
-                return false; // force fail branch
+                return false;
             }
         };
         filter.checkAllowedAuthTypeBasedOnPolicy(Map.of(), Collections.emptyList());
@@ -79,7 +75,7 @@ public class IdentityKeyBindingFilterTest {
 
     @Test
     public void testCheckMandatoryAuthTypeBasedOnPolicy_NoOp() throws Exception {
-        filterSpy.checkMandatoryAuthTypeBasedOnPolicy(Map.of(), Collections.emptyList()); // just ensure no exception
+        filterSpy.checkMandatoryAuthTypeBasedOnPolicy(Map.of(), Collections.emptyList());
     }
 
     @Test
@@ -105,13 +101,13 @@ public class IdentityKeyBindingFilterTest {
     public void testCheckMispPolicyAllowed_Allowed() throws Exception {
         MispPolicyDTO dto = new MispPolicyDTO();
         dto.setAllowKeyBindingDelegation(true);
-        filterSpy.checkMispPolicyAllowed(dto); // should not throw
+        filterSpy.checkMispPolicyAllowed(dto);
     }
 
     @Test(expected = IdAuthenticationAppException.class)
     public void testCheckMispPolicyAllowed_NotAllowed() throws Exception {
         MispPolicyDTO dto = new MispPolicyDTO();
-        dto.setAllowKeyBindingDelegation(false); // triggers exception
+        dto.setAllowKeyBindingDelegation(false);
         filterSpy.checkMispPolicyAllowed(dto);
     }
 }
