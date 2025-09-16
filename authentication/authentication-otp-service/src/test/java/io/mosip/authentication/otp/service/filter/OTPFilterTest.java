@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 public class OTPFilterTest {
 
-    // Subclass to expose protected methods
     static class TestableOTPFilter extends OTPFilter {
         @Override
         public void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)

@@ -3,7 +3,9 @@ package io.mosip.authentication.service.kyc.validator;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.indauth.dto.IdentityKeyBindingDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityKeyBindingRequestDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import org.junit.Assert;
@@ -26,7 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;

@@ -25,7 +25,11 @@ import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,9 +42,16 @@ import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import org.junit.Before;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.indauth.dto.IdType;
@@ -178,7 +189,7 @@ public class VciFacadeImplTest {
 
         Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("1234567890");
         Mockito.when(tokenValidationHelper.findAndValidateIssuedToken("12345678901234567890123456789012","12345","12345","1234567890")).thenReturn(kycTokenData);
-        Mockito.when(partnerService.getPolicyForPartner(Mockito.anyString(),Mockito.anyString(),Mockito.anyMap())).thenReturn(Optional.of(partnerPolicyResponseDTO));
+        Mockito.when(partnerService.getPolicyForPartner(Mockito.anyString(),Mockito.anyString(), anyMap())).thenReturn(Optional.of(partnerPolicyResponseDTO));
         Mockito.when(idService.getToken(Mockito.any())).thenReturn("token");
         Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(),Mockito.anyString())).thenReturn("1234567890");
 
@@ -186,7 +197,7 @@ public class VciFacadeImplTest {
         PartnerDTO partnerDTO= new PartnerDTO();
         partnerDTO.setPartnerId("12345");
         partnerDTO.setPartnerName("relyingPartyId");
-        Mockito.when(partnerService.getPartner(Mockito.anyString(),Mockito.anyMap())).thenReturn(Optional.of(partnerDTO));
+        Mockito.when(partnerService.getPartner(Mockito.anyString(), anyMap())).thenReturn(Optional.of(partnerDTO));
         try{
             vciFacadeImpl.processVciExchange(vciExchangeRequestDTO,"1234567890","12345",metaData,new TestObjectWithMetadata());
         }catch (Exception e){

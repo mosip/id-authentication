@@ -47,7 +47,8 @@ import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Prem Kumar

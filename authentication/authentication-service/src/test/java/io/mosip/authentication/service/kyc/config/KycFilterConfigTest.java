@@ -1,6 +1,10 @@
 package io.mosip.authentication.service.kyc.config;
 
-import io.mosip.authentication.service.kyc.filter.*;
+import io.mosip.authentication.service.kyc.filter.IdentityKeyBindingFilter;
+import io.mosip.authentication.service.kyc.filter.KycAuthFilter;
+import io.mosip.authentication.service.kyc.filter.KycAuthenticationFilter;
+import io.mosip.authentication.service.kyc.filter.KycExchangeFilter;
+import io.mosip.authentication.service.kyc.filter.VciExchangeFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,9 @@
  */
 package io.mosip.authentication.service.kyc.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
@@ -19,7 +21,23 @@ import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEven
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
-import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.DataDTO;
+import io.mosip.authentication.core.indauth.dto.DigitalId;
+import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.service.kyc.validator.KycExchangeRequestValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Before;

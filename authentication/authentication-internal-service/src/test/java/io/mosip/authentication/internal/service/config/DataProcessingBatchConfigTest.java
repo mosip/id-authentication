@@ -1,10 +1,10 @@
 package io.mosip.authentication.internal.service.config;
 
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;

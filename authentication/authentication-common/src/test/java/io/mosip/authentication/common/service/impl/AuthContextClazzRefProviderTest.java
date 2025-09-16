@@ -7,15 +7,10 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 import java.util.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -29,6 +24,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
@@ -37,7 +39,6 @@ public class AuthContextClazzRefProviderTest {
     @Mock
     private RestTemplate restTemplate;
 
-    // real object mapper
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
@@ -48,15 +49,13 @@ public class AuthContextClazzRefProviderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        // inject real objectMapper
         ReflectionTestUtils.setField(provider, "objectMapper", objectMapper);
-        // set private field
         ReflectionTestUtils.setField(provider, "amracrMappingUri", mockUri);
     }
 
     @Test
     public void testInitSuccess() throws Exception {
-        // valid JSON that matches structure
+
         String mockJson = """
                 {
                   "acr_amr": {
@@ -88,7 +87,6 @@ public class AuthContextClazzRefProviderTest {
 
     @Test
     public void testInitFailure_InvalidJson() {
-        // invalid JSON so that ObjectMapper throws exception
         String badJson = "{ invalid-json }";
         when(restTemplate.getForObject(mockUri, String.class)).thenReturn(badJson);
 
@@ -103,7 +101,6 @@ public class AuthContextClazzRefProviderTest {
 
     @Test
     public void testGetterBeforeInit() {
-        // no init called yet
         assertNull(provider.getAuthMethodsRefValues());
     }
 }

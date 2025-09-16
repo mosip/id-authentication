@@ -56,9 +56,13 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.springframework.beans.factory.BeanCreationException;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
@@ -156,10 +160,10 @@ public class AuthControllerTest {
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
 		Optional<PartnerDTO> partner = Optional.empty();
-		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
-		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+		when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
 				.thenReturn(AuthTransactionBuilder.newInstance());
-		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
+		when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
@@ -173,12 +177,12 @@ public class AuthControllerTest {
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Optional<PartnerDTO> partner = Optional.empty();
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
-		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
-		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+		when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
 				.thenReturn(authTransactionBuilder);
-		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any()))
+		when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
+		when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
@@ -190,7 +194,7 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
+		when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
 	}

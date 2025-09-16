@@ -2,7 +2,6 @@ package io.mosip.authentication.internal.service.config;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +12,14 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 
 
 @RunWith(SpringRunner.class)
@@ -53,12 +60,10 @@ public class BatchJobSchedulerConfigTest {
         batchJobSchedulerConfig.scheduleCredentialStoreJob();
 
         verify(jobLauncher, times(1)).run(eq(credentialStoreJob), any(JobParameters.class));
-        // Just ensure no exception propagated - logging happens internally
     }
 
     @Test
     public void testRetriggerMissingCredentialsJob_Enabled() throws Exception {
-        // Enable retrigger flag via reflection since it's private and @Value-injected
         java.lang.reflect.Field field = BatchJobSchedulerConfig.class.getDeclaredField("enableMissingCredentialRetrigger");
         field.setAccessible(true);
         field.set(batchJobSchedulerConfig, true);
@@ -94,6 +99,5 @@ public class BatchJobSchedulerConfigTest {
         batchJobSchedulerConfig.retriggerMissingCredentialsJob();
 
         verify(jobLauncher, times(1)).run(eq(retriggerMissingCredentials), any(JobParameters.class));
-        // Logging is internal; test only verifies no exceptions thrown
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
@@ -27,7 +28,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @WebMvcTest
@@ -58,8 +61,7 @@ public class CredentialStoreTaskletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        // Set thread count manually since @Value is not injected in test
-        tasklet.threadCount = 4;
+        ReflectionTestUtils.setField(tasklet, "threadCount", 4);
         tasklet.init();
     }
     @Test

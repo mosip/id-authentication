@@ -5,7 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class MasterDataUpdateEventControllerTest {
 
@@ -16,7 +17,6 @@ class MasterDataUpdateEventControllerTest {
     void setUp() {
         masterDataCacheUpdateService = Mockito.mock(MasterDataCacheUpdateService.class);
         controller = new MasterDataUpdateEventController();
-        // Inject mock via reflection since field is @Autowired
         try {
             var field = MasterDataUpdateEventController.class.getDeclaredField("masterDataCacheUpdateService");
             field.setAccessible(true);

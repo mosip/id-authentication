@@ -5,9 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CustomEnvEndpointTest {
 
@@ -42,7 +48,6 @@ public class CustomEnvEndpointTest {
         Object obj = new Object();  // not primitive or simple wrapper
         Object result = customEnvEndpoint.stringifyIfNecessary(obj);
 
-        // Should keep object intact
         assertSame(obj, result);
     }
 

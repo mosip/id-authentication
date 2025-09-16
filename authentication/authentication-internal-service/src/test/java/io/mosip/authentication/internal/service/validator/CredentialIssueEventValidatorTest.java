@@ -12,7 +12,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Ignore
 @RunWith(SpringRunner.class)
@@ -392,7 +396,6 @@ public class CredentialIssueEventValidatorTest {
         errors.reject("existing.error");
         validator.validate(eventModel, errors);
         assertTrue(errors.hasErrors());
-        // Should only have the existing error, not EVENT_FIELD error.
         assertNull(errors.getFieldError("event"));
     }
 }
