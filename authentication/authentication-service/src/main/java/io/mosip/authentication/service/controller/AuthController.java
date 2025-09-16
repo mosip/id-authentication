@@ -3,6 +3,7 @@ package io.mosip.authentication.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.mosip.authentication.core.indauth.dto.IdType;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -156,6 +157,10 @@ public class AuthController {
 			try {
 				String idType = Objects.nonNull(authrequestdto.getIndividualIdType()) ? authrequestdto.getIndividualIdType()
 						: idTypeUtil.getIdType(authrequestdto.getIndividualId()).getType();
+                if (IdType.HANDLE.getType().equalsIgnoreCase(idType)
+                        && authrequestdto.getIndividualId() != null) {
+                    authrequestdto.setIndividualId(authrequestdto.getIndividualId().toLowerCase());
+                }
 				authrequestdto.setIndividualIdType(idType);
 				authRequestValidator.validateIdvId(authrequestdto.getIndividualId(), idType, errors);
 				authRequestValidator.validateAge(authrequestdto, errors);
