@@ -90,6 +90,7 @@ public class DemoAuthSimplePostForAutoGenId extends IdAuthenticationUtil impleme
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
 	 * @throws NoSuchAlgorithmException
+	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)

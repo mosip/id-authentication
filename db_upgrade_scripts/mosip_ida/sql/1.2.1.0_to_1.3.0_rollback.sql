@@ -37,9 +37,222 @@ ALTER TABLE BATCH_JOB_EXECUTION ADD COLUMN JOB_CONFIGURATION_LOCATION VARCHAR(25
 -- Drop the indices if they were created
 DROP INDEX IF EXISTS idx_job_name;
 DROP INDEX IF EXISTS idx_job_key;
-DROP INDEX IF EXISTS idx_partner_mapping_apikey;
 
----------------------------------------------------------------------------------------------------
--- ca_cert_store db roll back script
----------------------------------------------------------------------------------------------------
+----------ca_cert_store-rollback- db script-------------
 ALTER TABLE IF EXISTS ida.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
+
+-- Rollback autovacuum settings to defaults
+ALTER TABLE anonymous_profile RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE api_key_data RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE ida.auth_transaction RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_job_execution RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_job_execution_context RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_job_execution_params RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_job_instance RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_step_execution RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE batch_step_execution_context RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE ca_cert_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE cred_subject_id_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE credential_event_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE data_encrypt_keystore RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE hotlist_cache RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE ident_binding_cert_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE identity_cache RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE key_alias RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE key_policy_def RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE key_policy_def_h RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE key_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE kyc_token_store RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE misp_license_data RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE oidc_client_data RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE otp_transaction RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE partner_data RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE partner_mapping RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE policy_data RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE uin_auth_lock RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+ALTER TABLE uin_hash_salt RESET (
+    autovacuum_vacuum_scale_factor,
+    autovacuum_vacuum_threshold,
+    autovacuum_analyze_scale_factor,
+    autovacuum_analyze_threshold
+);
+
+-- Drop indexes created in upgrade
+DROP INDEX IF EXISTS idx_autntxn_refid_dtimes;
+DROP INDEX CONCURRENTLY IF EXISTS idx_auth_txn_entityid_request_dtimes;
+DROP INDEX IF EXISTS idx_autn_txn_refid_time_desc;
+DROP INDEX IF EXISTS idx_autntxn_reqtrnid_authtype_crdtimes_desc;
+DROP INDEX IF EXISTS idx_autntxn_token_crdtimes_desc;
+DROP INDEX IF EXISTS idx_autntxn_token_reqdtimes;
+DROP INDEX IF EXISTS idx_cred_evt_pending;
+DROP INDEX CONCURRENTLY IF EXISTS idx_hotlist_idhash_idtype;
+DROP INDEX CONCURRENTLY IF EXISTS idx_hotlist_active;
+DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;

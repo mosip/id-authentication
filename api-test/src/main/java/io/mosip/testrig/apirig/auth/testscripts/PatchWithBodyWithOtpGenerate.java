@@ -73,6 +73,7 @@ public class PatchWithBodyWithOtpGenerate extends IdAuthenticationUtil implement
 	 * @param testcaseName
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
+	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {

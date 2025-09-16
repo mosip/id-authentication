@@ -87,6 +87,7 @@ public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 	 * @param testcaseName
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
+	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {

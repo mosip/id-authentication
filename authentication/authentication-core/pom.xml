@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.3.1-SNAPSHOT</version>
 	</parent>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.3.1-SNAPSHOT</version>
 
 	<artifactId>authentication-core</artifactId>
 	<packaging>jar</packaging>
@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-demographics-api</artifactId>
-			<version>${kernel-demoapi.version}</version>
+			<version>${kernel-demographics-api.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>

@@ -81,6 +81,7 @@ public class SimplePostForAutoGenId extends IdAuthenticationUtil implements ITes
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
 	 * @throws NoSuchAlgorithmException
+	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)

@@ -293,7 +293,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		AnonymousAuthenticationProfile anonymouseProfile = Mockito.mock(AnonymousAuthenticationProfile.class);
 		ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "storeAnonymousProfile", anonymouseProfile);
 		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
-		verify(authAnonymousProfileRepository, times(1)).flush();
 	}
 	
 	@Test
@@ -301,7 +300,6 @@ public class AuthAnonymousProfileServiceImplTest {
 		anonymousProfileServiceImpl.storeAnonymousProfile(requestBody, requestMetadata, responseMetadata, true, null);
 		verify(authAnonymousEventPublisher, times(1)).publishEvent(Mockito.any());
 		verify(authAnonymousProfileRepository, times(1)).save(Mockito.any());
-		verify(authAnonymousProfileRepository, times(1)).flush();
 	}
 	
 

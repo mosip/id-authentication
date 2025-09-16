@@ -2,6 +2,27 @@ modules:
   auth:
     enabled: true
     image:
-      repository: mosipqa/apitest-auth
-      tag: develop
+      repository: mosipid/apitest-auth
+      tag: 1.3.0-beta.2
       pullPolicy: Always
+
+  prereg:
+    enabled: false
+
+  idrepo:
+    enabled: false
+
+  masterdata:
+    enabled: false
+
+  partner:
+    enabled: false
+
+  pms:
+    enabled: false
+
+  esignet:
+    enabled: false
+
+  mimoto:
+    enabled: false
