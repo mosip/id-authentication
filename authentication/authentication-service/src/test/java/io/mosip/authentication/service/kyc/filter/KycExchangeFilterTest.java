@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
-import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +18,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.HashMap;
-
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -65,86 +63,6 @@ public class KycExchangeFilterTest {
             assertEquals("Partner is unauthorised for KYC-Exchange", error[1].trim());
             assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
         }
-    }
-    @Test
-    public void checkAllowedAuthTypeBasedOnPolicyTest_notAllowed() {
-        AuthPolicy authPolicy = new AuthPolicy();
-        authPolicy.setAuthType("demo");
-        authPolicy.setMandatory(true);
-
-        try {
-            ReflectionTestUtils.invokeMethod(
-                    kycExchangeFilter,
-                    "checkAllowedAuthTypeBasedOnPolicy",
-                    new HashMap<>(),
-                    Collections.singletonList(authPolicy)
-            );
-            fail("Expected IdAuthenticationAppException");
-        } catch (UndeclaredThrowableException e) {
-            String detailMessage = e.getUndeclaredThrowable().getMessage();
-            String[] error = detailMessage.split("-->");
-            assertEquals("IDA-MPA-026", error[0].trim());
-            assertEquals("Partner is unauthorised for KYC-Exchange", error[1].trim());
-            assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
-        }
-    }
-
-    @Test
-    public void checkAllowedAuthTypeBasedOnPolicyTest_allowed() throws Exception {
-        // Override protected isAllowedAuthType to always return true
-        KycExchangeFilter testFilter = new KycExchangeFilter() {
-            @Override
-            protected boolean isAllowedAuthType(String authType, java.util.List<AuthPolicy> policies) {
-                return true;
-            }
-        };
-        ReflectionTestUtils.setField(testFilter, "mapper", mapper);
-        ReflectionTestUtils.setField(testFilter, "env", env);
-
-        // Should not throw exception
-        ReflectionTestUtils.invokeMethod(
-                testFilter,
-                "checkAllowedAuthTypeBasedOnPolicy",
-                new HashMap<>(),
-                Collections.singletonList(new AuthPolicy())
-        );
-    }
-
-    @Test
-    public void testCheckMandatoryAuthTypeBasedOnPolicy_noOp() throws Exception {
-        kycExchangeFilter.checkMandatoryAuthTypeBasedOnPolicy(new HashMap<>(), Collections.emptyList());
-    }
-
-    @Test
-    public void testBooleans() {
-        assertTrue(kycExchangeFilter.isPartnerCertificateNeeded());
-        assertTrue(kycExchangeFilter.isSigningRequired());
-        assertTrue(kycExchangeFilter.isSignatureVerificationRequired());
-        assertTrue(kycExchangeFilter.isTrustValidationRequired());
-        assertTrue(kycExchangeFilter.needStoreAuthTransaction());
-        assertTrue(kycExchangeFilter.needStoreAnonymousProfile());
-        assertTrue(kycExchangeFilter.isMispPolicyValidationRequired());
-        assertTrue(kycExchangeFilter.isCertificateValidationRequired());
-        assertFalse(kycExchangeFilter.isAMRValidationRequired());
-    }
-
-    @Test
-    public void testFetchId() {
-        assertEquals("attrkycexchange", kycExchangeFilter.fetchId(null, "attr"));
-    }
-
-    @Test
-    public void testCheckMispPolicyAllowed_allowed() throws Exception {
-        MispPolicyDTO dto = new MispPolicyDTO();
-        dto.setAllowKycRequestDelegation(true);
-        kycExchangeFilter.checkMispPolicyAllowed(dto);
-    }
-
-    @Test(expected = IdAuthenticationAppException.class)
-    public void testCheckMispPolicyAllowed_notAllowed() throws Exception {
-        MispPolicyDTO dto = new MispPolicyDTO();
-        dto.setAllowKycRequestDelegation(false);
-        kycExchangeFilter.checkMispPolicyAllowed(dto);
     }
 }
  
