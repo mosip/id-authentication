@@ -33,6 +33,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The class validates the UIN and VID.
@@ -378,6 +379,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @param vid the vid
      * @throws IdAuthenticationBusinessException the id authentication business exception
      */
+    @Transactional
     private void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
         try {
             final String hashedVid = securityManager.hash(vid);
