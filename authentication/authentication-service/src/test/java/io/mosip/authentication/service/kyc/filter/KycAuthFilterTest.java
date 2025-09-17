@@ -1,12 +1,18 @@
 package io.mosip.authentication.service.kyc.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
+import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -16,9 +22,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,4 +64,46 @@ public class KycAuthFilterTest {
         }
     }
 
+
+    private KycAuthFilter filter;
+
+    @Before
+    public void setup() {
+        filter = Mockito.spy(new KycAuthFilter());
+        ReflectionTestUtils.setField(filter, "mapper", mapper);
+        ReflectionTestUtils.setField(filter, "env", env);
+    }
+
+    @Test
+    public void testBooleans() {
+        assertTrue(filter.isPartnerCertificateNeeded());
+        assertTrue(filter.isSigningRequired());
+        assertTrue(filter.isSignatureVerificationRequired());
+        assertTrue(filter.isTrustValidationRequired());
+        assertTrue(filter.needStoreAuthTransaction());
+        assertTrue(filter.needStoreAnonymousProfile());
+        assertTrue(filter.isMispPolicyValidationRequired());
+        assertTrue(filter.isCertificateValidationRequired());
+        assertTrue(filter.isAMRValidationRequired());
+    }
+
+    @Test
+    public void testFetchId() {
+        assertEquals("attrkycauth",
+                filter.fetchId(null, "attr"));
+    }
+
+    @Test
+    public void testCheckMispPolicyAllowed_allowed() throws Exception {
+        MispPolicyDTO dto = new MispPolicyDTO();
+        dto.setAllowKycRequestDelegation(true); // should not throw
+        filter.checkMispPolicyAllowed(dto);
+    }
+
+    @Test(expected = IdAuthenticationAppException.class)
+    public void testCheckMispPolicyAllowed_notAllowed() throws Exception {
+        MispPolicyDTO dto = new MispPolicyDTO();
+        dto.setAllowKycRequestDelegation(false); // should throw
+        filter.checkMispPolicyAllowed(dto);
+    }
 }

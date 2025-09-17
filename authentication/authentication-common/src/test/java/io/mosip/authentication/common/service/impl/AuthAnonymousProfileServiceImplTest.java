@@ -90,8 +90,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "locationProfileAttribName","locationHierarchyForProfiling");
 		ReflectionTestUtils.setField(anonymousProfileServiceImpl, "dateOfBirthPattern", "yyyy/MM/dd");
 	}
-	
-	@Ignore
+
 	@Test
 	public void createAnonymousProfileWith_YourOfBirthTest() throws IdAuthenticationBusinessException  {
 		requestBody = new HashMap<>();
@@ -116,8 +115,7 @@ public class AuthAnonymousProfileServiceImplTest {
 			requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(anonymousProfile.getYearOfBirth(), "1993");
 	}
-	
-	@Ignore
+
 	@Test
 	public void createAnonymousProfileWith_PreferredLangTest() throws IdAuthenticationBusinessException  {
 		requestBody = new HashMap<>();
@@ -140,8 +138,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("eng"), anonymousProfile.getPreferredLanguages());
 	}
-	
-	@Ignore
+
 	@Test
 	public void createAnonymousProfileWith_GenderTest() throws IdAuthenticationBusinessException  {
 		requestBody = new HashMap<>();
@@ -164,8 +161,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody,requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals("Female", anonymousProfile.getGender());
 	}
-	
-	@Ignore
+
 	@Test
 	public void createAnonymousProfileWith_LocationTest() throws IdAuthenticationBusinessException  {
 		requestBody = new HashMap<>();
@@ -193,8 +189,7 @@ public class AuthAnonymousProfileServiceImplTest {
 		AnonymousAuthenticationProfile anonymousProfile = ReflectionTestUtils.invokeMethod(anonymousProfileServiceImpl, "createAnonymousProfile",requestBody, requestMetadata, responseMetadata, true, errorCodes);
 		assertEquals(List.of("zone1", "123456"), anonymousProfile.getLocation());
 	}
-	
-	@Ignore
+
 	@Test
 	public void createAnonymousProfileWith_BiometricInfoTest() throws IdAuthenticationBusinessException, IOException {
 		requestBody = new HashMap<>();

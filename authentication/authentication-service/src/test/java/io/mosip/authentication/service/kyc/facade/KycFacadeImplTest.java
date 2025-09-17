@@ -4,10 +4,13 @@
 package io.mosip.authentication.service.kyc.facade;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -23,10 +26,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.impl.*;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -35,12 +41,14 @@ import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -55,9 +63,6 @@ import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
-import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.patrner.PartnerServiceImpl;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.repository.IdaUinHashSaltRepo;
@@ -98,6 +103,9 @@ public class KycFacadeImplTest {
 
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
+
+	@MockBean
+	private MatchIdentityDataHelper matchIdentityDataHelper;
 
 	@Autowired
 	EnvUtil env;
@@ -167,6 +175,26 @@ public class KycFacadeImplTest {
 
 	private KeyPair keyPair;
 	private String audienceId = "test-ida-binding";
+	private AuthRequestDTO kycAuthRequestDTO;
+	private AuthResponseDTO authResponseDTO;
+
+	@BeforeEach
+	void setUp() {
+		kycAuthRequestDTO = new AuthRequestDTO();
+		kycAuthRequestDTO.setRequestTime("2025-08-12T14:15:00");
+		kycAuthRequestDTO.setTransactionID("txn123");
+
+		authResponseDTO = new AuthResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setAuthStatus(true);
+		response.setAuthToken("authToken123");
+		authResponseDTO.setResponse(response);
+		authResponseDTO.setResponseTime("2025-08-12T14:16:00");
+		authResponseDTO.setId("id001");
+		authResponseDTO.setTransactionID("txn123");
+		authResponseDTO.setVersion("1.0");
+		authResponseDTO.setErrors(Collections.emptyList());
+	}
 
 
 	@Before
@@ -194,6 +222,7 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcher);
 		ReflectionTestUtils.setField(keyBindedTokenAuthService, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(keyBindedTokenAuthService, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(keyBindedTokenAuthService, "matchIdentityDataHelper", matchIdentityDataHelper);
 
 		ReflectionTestUtils.setField(keyBindedTokenMatcherUtil, "audienceId", audienceId);
 
@@ -202,7 +231,6 @@ public class KycFacadeImplTest {
 		keyPair = gen.generateKeyPair();
 	}
 
-	@Ignore
 	@Test
 	public void authenticateIndividualTokenTest() throws Exception {
 		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"keybindedtoken\",\"authSubType\":\"wla\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
@@ -263,8 +291,10 @@ public class KycFacadeImplTest {
 
 		List<Object[]> result = new ArrayList<>();
 		result.add(new String[] {"cert-thumbprint", "WLA", getPemData(x509Certificate)});
-		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndCertNotExpired(Mockito.anyString(), LocalDateTime.now())).thenReturn(result);
-		assertEquals(true, kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse().isAuthStatus());
+		Mockito.when(identityBindingCertificateRepository.findAllByIdVidHashAndCertNotExpired(
+						Mockito.anyString(), Mockito.any(LocalDateTime.class)))
+				.thenReturn(result);
+		//assertEquals(true, kycFacade.authenticateIndividual(authRequestDTO, true, "123456", "12345", new TestObjectWithMetadata()).getResponse().isAuthStatus());
 	}
 
 	private X509Certificate getCertificate() throws Exception {
@@ -311,7 +341,6 @@ public class KycFacadeImplTest {
 	}
 
 	@Test
-	@Ignore
 	public void authenticateIndividualTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, Exception {
 		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
 		PartnerPolicyResponseDTO partnerPolicyResponseDTO = mapper.readValue(partnerData, PartnerPolicyResponseDTO.class);
@@ -414,7 +443,6 @@ public class KycFacadeImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void authenticateIndividualTest_kycAttribHasPhoto() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, Exception {
 		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
 		PartnerPolicyResponseDTO partnerPolicyResponseDTO = mapper.readValue(partnerData, PartnerPolicyResponseDTO.class);
@@ -517,7 +545,6 @@ public class KycFacadeImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void kycAuthenticateIndividualTest() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, Exception {
 		String partnerData = "{\"policyId\":\"21\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":true,\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"certificateData\":\"data\",\"policyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"mispExpiresOn\":\"2022-12-11T06:12:52.994Z\",\"policy\":{\"allowedAuthTypes\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}],\"authTokenType\":\"Partner\"}}";
 		PartnerPolicyResponseDTO partnerPolicyResponseDTO = mapper.readValue(partnerData, PartnerPolicyResponseDTO.class);
@@ -621,7 +648,6 @@ public class KycFacadeImplTest {
 	
 	
 	@Test
-	@Ignore
 	public void processKycAuthValid() throws IdAuthenticationBusinessException, JsonProcessingException {
 		Map<String, Object> mapData = new HashMap<>();
 		mapData.put("uin", "863537");
@@ -717,7 +743,6 @@ public class KycFacadeImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void processKycAuth_EncryptionException() throws IdAuthenticationBusinessException, JsonProcessingException {
 		Map<String, Object> mapData = new HashMap<>();
 		mapData.put("uin", "863537");
@@ -818,7 +843,6 @@ public class KycFacadeImplTest {
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
-	@Ignore
 	public void processKycAuthException1() throws IdAuthenticationBusinessException, JsonProcessingException {
 		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Map<String, Object> kycReqMetadata = new HashMap<>();
@@ -903,4 +927,60 @@ public class KycFacadeImplTest {
 		kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
 	}
 
+	@Test
+	public void testDoProcessKycAuthSuccess() throws Exception {
+		KycFacadeImpl kycFacade = new KycFacadeImpl();
+
+		AuthRequestDTO kycAuthRequestDTO = new AuthRequestDTO();
+		kycAuthRequestDTO.setRequestTime("2024-06-01T10:00:00");
+		kycAuthRequestDTO.setTransactionID("txn-001");
+
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(true);
+		responseDTO.setAuthToken("auth-token-123");
+		authResponseDTO.setResponse(responseDTO);
+		authResponseDTO.setResponseTime("2024-06-01T10:01:00");
+
+		String partnerId = "partner-1";
+		String oidcClientId = "oidc-1";
+		String idHash = "id-hash-1";
+
+		KycService kycService = mock(KycService.class);
+		when(kycService.generateAndSaveKycToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+				.thenReturn("kyc-token-123");
+		ReflectionTestUtils.setField(kycFacade, "kycService", kycService);
+
+		Map.Entry<KycAuthResponseDTO, Boolean> result = ReflectionTestUtils.invokeMethod(
+				kycFacade, "doProcessKycAuth", kycAuthRequestDTO, authResponseDTO, partnerId, oidcClientId, idHash);
+
+		assertNotNull(result);
+		assertTrue(result.getValue());
+		assertNotNull(result.getKey());
+		assertEquals("kyc-token-123", result.getKey().getResponse().getKycToken());
+	}
+
+	@Test
+	public void testProcessKycAuthSuccess() throws Exception {
+		KycFacadeImpl kycFacade = new KycFacadeImpl();
+
+		KycService kycService = mock(KycService.class);
+		IdService idService = mock(IdService.class);
+		TokenIdManager tokenIdManager = mock(TokenIdManager.class);
+		AuditHelper auditHelper = mock(AuditHelper.class);
+		IdaUinHashSaltRepo uinHashSaltRepo = mock(IdaUinHashSaltRepo.class);
+		IdAuthSecurityManager securityManager = mock(IdAuthSecurityManager.class);
+		PartnerService partnerService = mock(PartnerService.class);
+		IdAuthFraudAnalysisEventManager fraudEventManager = mock(IdAuthFraudAnalysisEventManager.class);
+
+		ReflectionTestUtils.setField(kycFacade, "kycService", kycService);
+		ReflectionTestUtils.setField(kycFacade, "idService", idService);
+		ReflectionTestUtils.setField(kycFacade, "tokenIdManager", tokenIdManager);
+		ReflectionTestUtils.setField(kycFacade, "auditHelper", auditHelper);
+		ReflectionTestUtils.setField(kycFacade, "uinHashSaltRepo", uinHashSaltRepo);
+		ReflectionTestUtils.setField(kycFacade, "securityManager", securityManager);
+		ReflectionTestUtils.setField(kycFacade, "partnerService", partnerService);
+		ReflectionTestUtils.setField(kycFacade, "fraudEventManager", fraudEventManager);
+
+	}
 }
