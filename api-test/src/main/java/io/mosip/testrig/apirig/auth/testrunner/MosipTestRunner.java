@@ -44,6 +44,7 @@ import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.mosip.testrig.apirig.utils.Watchdog;
 
 /**
  * Class to initiate mosip api test execution
@@ -65,10 +66,11 @@ public class MosipTestRunner {
 	 * @param arg
 	 */
 	public static void main(String[] arg) {
+		Watchdog watchdog = null;
 
 		try {
 			LOGGER.info("** ------------- API Test Rig Run Started --------------------------------------------- **");
-			
+
 			BaseTestCase.setRunContext(getRunType(), jarUrl);
 			ExtractResource.removeOldMosipTestTestResource();
 			if (getRunType().equalsIgnoreCase("JAR")) {
@@ -78,6 +80,15 @@ public class MosipTestRunner {
 			}
 			AdminTestUtil.init();
 			IdAuthConfigManager.init();
+
+			// Read timeout from properties, fallback to 120 if not set which is 2 hours
+			// with buffer timing
+			String timeoutStr = IdAuthConfigManager.getproperty("watchdogTimeoutMinutes");
+			long timeoutMinutes = timeoutStr.isEmpty() ? 120 : Long.parseLong(timeoutStr);
+
+			watchdog = new Watchdog(timeoutMinutes * 60 * 1000L);
+			watchdog.start();
+
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
@@ -87,7 +98,7 @@ public class MosipTestRunner {
 			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
-			
+
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
@@ -117,15 +128,20 @@ public class MosipTestRunner {
 			else
 				startTestRunner();
 		} catch (Exception e) {
-			LOGGER.error("Exception " + e.getMessage());
+			LOGGER.error("Exception occurred while running API Test Rig", e);
 		}
-		
+
 		KeycloakUserManager.removeUser();
 		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
-		
+
 		HealthChecker.bTerminate = true;
+
+		// Stop watchdog since task completed successfully
+		if (watchdog != null) {
+			watchdog.stop();
+		}
 
 		System.exit(0);
 

@@ -123,10 +123,11 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 		otpReqJson.remove("sendOtpEndPoint");
 
 		Response otpResponse = null;
-		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int maxLoopCount = IdAuthConfigManager.getproperty("uinGenMaxLoopCount").isEmpty() ? 20
+				: Integer.parseInt(IdAuthConfigManager.getproperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			  {
+			{
 				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
 						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
 						GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
@@ -217,12 +218,10 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	@AfterClass(alwaysRun = true)
 	public void waittime() {
 		try {
-			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
-					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
-				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
-				Thread.sleep(delayTime);
-			}
+			logger.info("waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")
+					+ " mili secs VID Generation In RESIDENT SERVICES");
+			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")));
+
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
 			Thread.currentThread().interrupt();

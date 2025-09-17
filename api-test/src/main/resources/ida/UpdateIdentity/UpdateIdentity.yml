@@ -85,7 +85,7 @@ UpdateIdentity:
       input: '{
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
-      "email": "auth_AddIdentity_ValidParamms_smoke_Pos@mosip.net",
+      "email": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
       "status": "ACTIVATED",
       "dateOfBirth": "1980/08/10",
       "requesttime": "$TIMESTAMP$",
