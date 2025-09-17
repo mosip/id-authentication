@@ -215,36 +215,6 @@ DemoAuthDelegated:
       output: '{
   "kycStatus": "true"
 }'
-  auth_DemoAuthDelegated_DemoAuth_Name_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_09
-      description: Demo auth kyc delegated using valid name and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_name_Pos_UIN$",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FULLNAMEeng"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "kycStatus": "true"
-}'
   auth_DemoAuthDelegated_DemoAuth_same_Name1_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_10
@@ -480,32 +450,6 @@ DemoAuthDelegated:
     }
   ],
     "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
-    }
-    }'
-      output: '{
-  "kycStatus": "true"
-}'
-  auth_DemoAuthDelegated_DemoAuth_age_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_18
-      description: Demo auth kyc delegated using valid age and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "51",
-"key": "age",
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
     }
     }'
       output: '{

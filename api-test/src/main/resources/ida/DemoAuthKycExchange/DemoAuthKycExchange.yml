@@ -191,30 +191,6 @@ DemoAuthKycExchange:
       output: '{
   
 }'
-  auth_DemoAuthKycExchange_DemoAuth_Name_Valid_uin_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_09
-      description: Demo auth kyc exchange using valid name and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
-      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_name_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "id": "mosip.identity.kycexchange",
-        "version": "1.0",
-        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Name_Valid_uin_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
-        "locales": [{localesValue: "eng"}],
-        "respType": "JWE"
-    }'
-      output: '{
-  
-}'
   auth_DemoAuthKycExchange_DemoAuth_same_Name1_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthKycExchange_10
@@ -400,30 +376,6 @@ DemoAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Name_Valid_Smoke_VID_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
-        "locales": [{localesValue: "eng"}],
-        "respType": "JWE"
-    }'
-      output: '{
-  
-}'
-  auth_DemoAuthKycExchange_DemoAuth_age_Valid_uin_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_18
-      description: Demo auth kyc exchange using valid age and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
-      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "id": "mosip.identity.kycexchange",
-        "version": "1.0",
-        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_age_Valid_uin_Smoke_Pos_Sid_kycToken$",
         "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
