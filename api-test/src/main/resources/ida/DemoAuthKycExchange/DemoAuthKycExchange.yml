@@ -202,7 +202,7 @@ DemoAuthKycExchange:
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_name_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -520,30 +520,6 @@ DemoAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:DemoAuthDelegated_DemoAuth_with_phone_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
-        "locales": [{localesValue: "eng"}],
-        "respType": "JWE"
-    }'
-      output: '{
-  
-}'
-  auth_DemoAuthKycExchange_DemoAuth_with_firstName:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_23
-      description: Demo auth kyc exchange using first name and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
-      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
-        "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "id": "mosip.identity.kycexchange",
-        "version": "1.0",
-        "kycToken": "$ID:DemoAuthDelegatedValid_DemoAuth_with_firstName_Sid_kycToken$",
         "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"

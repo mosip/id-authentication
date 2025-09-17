@@ -226,7 +226,7 @@ DemoAuthDelegated:
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_name_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -607,39 +607,9 @@ DemoAuthDelegated:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+    "value": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_PHONE$",
 "key": "phone",
     "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "kycStatus": "true"
-}'
-  auth_DemoAuthDelegatedValid_DemoAuth_with_firstName_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegated_23
-      description: Demo auth kyc delegated using first name and valid UIN
-      role: resident
-      restMethod: post
-      checkErrorsOnlyInResponse: true
-      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
-      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "name": [
-    {
-      "language": "$PRIMARYLANG$",
-      "value": "TEST_FULLNAMEeng"
-    }
-  ],
-    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncryptName"
     }
     }'
       output: '{

@@ -1151,7 +1151,7 @@ DemoAuthDelegatedNeg:
         },
         {
           "errorCode": "IDA-MLC-006"
-        },
+        }
       ]
 }'
   auth_DemoAuthDelegatedNeg_with_zero_age_value_Neg:
