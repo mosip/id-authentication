@@ -8,13 +8,13 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
-<!--	<test name="BioAuth">-->
-<!--		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BioAuth">
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 	<test name="BioAuthKYCDelegated">
 		<parameter name="ymlFile"
 			value="ida/BioAuthDelegated/BioAuthDelegated.yml" />
@@ -40,55 +40,55 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
-<!--	<test name="BioAuthDelegatedV2">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<parameter name="idKeyName" value="kycToken" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
-<!--	<test name="BioAuthKycExchangeV2">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthKycExchangeV2/BioAuthKycExchangeV2.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BioAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+	<test name="BioAuthKycExchangeV2">
+		<parameter name="ymlFile"
+			value="ida/BioAuthKycExchangeV2/BioAuthKycExchangeV2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
 
-<!--	<test name="EkycBio">-->
-<!--		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="EkycBio">
+		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="EkycOtp">-->
-<!--		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="EkycOtp">
+		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 
-<!--	<test name="MultiFactorAuth">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="MultiFactorAuth">
+		<parameter name="ymlFile"
+			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
+		</classes>
+	</test>
 
-<!--	<test name="OtpAuth">-->
-<!--		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="OtpAuth">
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 	<test name="OtpAuthDelegated">
 		<parameter name="ymlFile"
 			value="ida/OtpAuthDelegated/OtpAuthDelegated.yml" />
@@ -114,82 +114,82 @@
 		</classes>
 	</test>
 
-<!--	<test name="AuthTransaction">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/AuthTransaction/AuthTransaction.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="AuthTransaction">
+		<parameter name="ymlFile"
+			value="ida/AuthTransaction/AuthTransaction.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
 
-<!--	<test name="UpdateIdentity">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/UpdateIdentity/UpdateIdentity.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="UpdateIdentity">
+		<parameter name="ymlFile"
+			value="ida/UpdateIdentity/UpdateIdentity.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+		</classes>
+	</test>
 
-<!--	<test name="BlockHotlist">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BlockHotlist">
+		<parameter name="ymlFile"
+			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
 
-<!--	<test name="LockUINVIDTestcasesDEMOAuth">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/HotlistTestcases/HotlistTestcases.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="LockUINVIDTestcasesDEMOAuth">
+		<parameter name="ymlFile"
+			value="ida/HotlistTestcases/HotlistTestcases.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="LockUINVIDTestcasesEKYCDEMO">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/HotlistTestcases/HotlistTestcasesKyc.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="LockUINVIDTestcasesEKYCDEMO">
+		<parameter name="ymlFile"
+			value="ida/HotlistTestcases/HotlistTestcasesKyc.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="LockUINVIDTestcasesAUTHEKYCBIO">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthHotListLock/BioAuth.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="LockUINVIDTestcasesAUTHEKYCBIO">
+		<parameter name="ymlFile"
+			value="ida/BioAuthHotListLock/BioAuth.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="AuthUnLock">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/AuthUnLock/createAuthUnLock.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="AuthUnLock">
+		<parameter name="ymlFile"
+			value="ida/AuthUnLock/createAuthUnLock.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
+		</classes>
+	</test>
 
-<!--	<test name="UnBlockHotlist">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPI.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="UnBlockHotlist">
+		<parameter name="ymlFile"
+			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPI.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
 
-<!--	<test name="DemoAuth">-->
-<!--		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="DemoAuth">
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
 	
 	<test name="DemoAuthKYCDelegated">
 		<parameter name="ymlFile"
@@ -219,79 +219,79 @@
 		</classes>
 	</test>
 
-<!--	<test name="EkycDemo">-->
-<!--		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="EkycDemo">
+		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="BlockPartnerId">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BlockHotlistAPI/BlockPartnerId.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BlockPartnerId">
+		<parameter name="ymlFile"
+			value="ida/BlockHotlistAPI/BlockPartnerId.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
 
-<!--	<test name="HotlistTestcasesPartnerId">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/HotlistTestcases/HotlistTestcasesPartnerId.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="HotlistTestcasesPartnerId">
+		<parameter name="ymlFile"
+			value="ida/HotlistTestcases/HotlistTestcasesPartnerId.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="BioAuthHotListPartner">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthHotListPartner/BioAuth.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BioAuthHotListPartner">
+		<parameter name="ymlFile"
+			value="ida/BioAuthHotListPartner/BioAuth.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 
-<!--	<test name="HotlistTestcasesOtpAuth">-->
-<!--		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="HotlistTestcasesOtpAuth">
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 
-<!--	<test name="UnBlockPartnerId">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPIForPartnerId.yml" />-->
-<!--		<classes>-->
-<!--			<class-->
-<!--				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="UnBlockPartnerId">
+		<parameter name="ymlFile"
+			value="ida/UnBlockHotlistAPI/UnBlockHotlistAPIForPartnerId.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
 
-<!--	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
+		<parameter name="ymlFile"
+			value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 
-<!--	<test name="SendOTP">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/SendOTP/createSendOTP.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="SendOTP">
+		<parameter name="ymlFile"
+			value="ida/SendOTP/createSendOTP.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
 
-<!--	<test name="BlockHotlistStatus">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BlockHotlistStatus">
+		<parameter name="ymlFile"
+			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
 
 
 </suite>
