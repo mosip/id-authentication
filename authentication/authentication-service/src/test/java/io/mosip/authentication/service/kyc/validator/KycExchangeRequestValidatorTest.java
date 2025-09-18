@@ -3,6 +3,7 @@ package io.mosip.authentication.service.kyc.validator;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,12 +22,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
@@ -110,5 +114,38 @@ public class KycExchangeRequestValidatorTest {
         kycExchangeRequestValidator.validate(request, errors);
         Assert.assertTrue(errors.hasErrors());
         Assert.assertEquals("IDA-MLC-009", errors.getFieldError().getCode());
+    }
+
+    @Test
+    public void testPrivate_validateKycToken_Directly() throws Exception {
+        Method m = KycExchangeRequestValidator.class.getDeclaredMethod(
+                "validateKycToken",
+                String.class, Errors.class, String.class
+        );
+        m.setAccessible(true);
+
+        Errors errors = new BeanPropertyBindingResult(
+                new KycExchangeRequestDTO(),
+                "kycExchangeRequestDTO"
+        );
+
+        m.invoke(kycExchangeRequestValidator, "   ", errors, IdAuthCommonConstants.KYC_TOKEN);
+        assertTrue(errors.hasFieldErrors(IdAuthCommonConstants.KYC_TOKEN));
+    }
+
+
+    @Test
+    public void tesvalidateConsentObtainedList() throws Exception {
+        Method method = KycExchangeRequestValidator.class.getDeclaredMethod(
+                "validateConsentObtainedList", List.class, Errors.class, String.class);
+        method.setAccessible(true);
+
+        Errors errors1 = new BeanPropertyBindingResult(new KycExchangeRequestDTO(), "kycExchangeRequestDTO");
+        method.invoke(kycExchangeRequestValidator, null, errors1, "consentObtained");
+        assertTrue(errors1.hasFieldErrors("consentObtained"));
+
+        Errors errors2 = new BeanPropertyBindingResult(new KycExchangeRequestDTO(), "kycExchangeRequestDTO");
+        method.invoke(kycExchangeRequestValidator, new ArrayList<>(), errors2, "consentObtained");
+        assertTrue(errors2.hasFieldErrors("consentObtained"));
     }
 }
