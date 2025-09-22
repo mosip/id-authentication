@@ -133,9 +133,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 
-			if(markVidConsumed) {
-				updateVIDstatus(idvId);
-			}
+//			if(markVidConsumed) {
+//				updateVIDstatus(idvId);
+//			}
 		}
 		return idResDTO;
 	}

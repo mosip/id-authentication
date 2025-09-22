@@ -244,23 +244,23 @@ public class IdServiceImplTest {
 		idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void processIdTypeExceptionTest3() throws IdAuthenticationBusinessException, IOException {
-		String idvId = "12";
-		Boolean isBio = true;
-		Boolean markVidConsumed = true;
-		Set<String> filterAttributes = new HashSet<String>();
-		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
-		entityOpt.get().setTransactionLimit(0);
-		Mockito.when(securityManager.hash(idvId)).thenReturn("11");
-		Mockito.when(identityRepo.existsById("11")).thenReturn(true);
-		Mockito.when(identityRepo.findById("11")).thenReturn(entityOpt);
-		IdServiceImpl idServiceSpy = Mockito.spy(idServiceImpl);
-		Mockito.doReturn(null).when(idServiceSpy).getIdByVid(idvId, isBio, filterAttributes);
-		String idvIdType = "VID";
-		Mockito.doThrow(JDBCConnectionException.class).when(identityRepo).deleteById("11");
-		idServiceSpy.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
-	}
+//	@Test(expected = IdAuthenticationBusinessException.class)
+//	public void processIdTypeExceptionTest3() throws IdAuthenticationBusinessException, IOException {
+//		String idvId = "12";
+//		Boolean isBio = true;
+//		Boolean markVidConsumed = true;
+//		Set<String> filterAttributes = new HashSet<String>();
+//		Optional<IdentityEntity> entityOpt = Optional.of(getEntity());
+//		entityOpt.get().setTransactionLimit(0);
+//		Mockito.when(securityManager.hash(idvId)).thenReturn("11");
+//		Mockito.when(identityRepo.existsById("11")).thenReturn(true);
+//		Mockito.when(identityRepo.findById("11")).thenReturn(entityOpt);
+//		IdServiceImpl idServiceSpy = Mockito.spy(idServiceImpl);
+//		Mockito.doReturn(null).when(idServiceSpy).getIdByVid(idvId, isBio, filterAttributes);
+//		String idvIdType = "VID";
+//		Mockito.doThrow(JDBCConnectionException.class).when(identityRepo).deleteById("11");
+//		idServiceSpy.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+//	}
 
 	@Test
 	public void saveAutnTxnTest() throws IdAuthenticationBusinessException {

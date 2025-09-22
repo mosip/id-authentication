@@ -19,8 +19,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import io.mosip.authentication.common.service.entity.IdentityEntity;
+import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
+import io.mosip.authentication.core.constant.*;
 import io.mosip.authentication.core.spi.indauth.service.KeyBindedTokenAuthService;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthResponseBuilder;
@@ -36,10 +42,6 @@ import io.mosip.authentication.common.service.util.AuthTypeUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.IdaRequestResponsConsumerUtil;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
-import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -64,6 +66,7 @@ import io.mosip.authentication.core.spi.indauth.service.PasswordAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.kernel.core.logger.spi.Logger;
+import org.springframework.transaction.TransactionException;
 
 /**
  * This class provides the implementation of AuthFacade, provides the
@@ -135,6 +138,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	private PasswordAuthService passwordAuthService;
+
+	@Autowired
+	private IdentityCacheRepository identityRepo;
 	
 	/*
 	 * (non-Javadoc)
@@ -239,10 +245,45 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		if (idInfo != null && idvid != null) {
 			notificationService.sendAuthNotification(authRequestDTO, idvid, authResponseDTO, idInfo, isExternalAuth);
+
+			// Update and potentially delete VID *after* OTP has been validated and notification sent
+			if (markVidConsumed && IdType.VID.getType().equalsIgnoreCase(idvIdType)) {
+				updateVIDstatus(idvid);  // <-- Safe to do this now
+			}
 		}
 
 		return authResponseDTO;
 
+	}
+
+	private void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
+		try {
+			vid = securityManager.hash(vid);
+			// Assumption : If transactionLimit is null, id is considered as Perpetual VID
+			// If transactionLimit is nonNull, id is considered as Temporary VID
+
+			//get entity
+			Optional<IdentityEntity> entityOpt = identityRepo.findById(vid);
+			if(entityOpt.isPresent()) {
+				IdentityEntity entity =entityOpt.get();
+				Integer transactionLimit = entity.getTransactionLimit();
+				if (identityRepo.existsById(vid)
+						&& Objects.nonNull(transactionLimit)){
+					int newTransactionLimit = transactionLimit-1;
+					if (newTransactionLimit>0) {
+						entity.setTransactionLimit(newTransactionLimit);
+						identityRepo.save(entity);
+					} else {
+						identityRepo.deleteById(vid);
+					}
+				}
+			}
+
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+					ExceptionUtils.getStackTrace(e));
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+		}
 	}
 
 	private void addKycPolicyAttributes(Set<String> filterAttributes, EkycAuthRequestDTO kycAuthRequestDTO)
