@@ -10,9 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Level;
@@ -27,7 +25,6 @@ import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
-import io.mosip.testrig.apirig.report.EmailableReport;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
@@ -37,6 +34,7 @@ import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -96,7 +94,7 @@ public class MosipTestRunner {
 			KeycloakUserManager.closeKeycloakInstance();
 			AdminTestUtil.getRequiredField();
 
-			List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
+			BaseTestCase.getLanguageList();
 			AdminTestUtil.getLocationData();
 
 			String partnerKeyURL = "";
@@ -114,6 +112,14 @@ public class MosipTestRunner {
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
 
 			BiometricDataProvider.generateBiometricTestData("Registration");
+			
+			String testCasesToExecuteString = IdAuthConfigManager.getproperty("testCasesToExecute");
+
+			DependencyResolver.loadDependencies(
+					getGlobalResourcePath() + "/" + "config/testCaseInterDependency.json");
+			if (!testCasesToExecuteString.isBlank()) {
+				IdAuthenticationUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+			}
 
 			if (partnerKeyURL.isEmpty() || ekycPartnerKeyURL.isEmpty())
 				LOGGER.error("partnerKeyURL is null");
@@ -123,12 +129,20 @@ public class MosipTestRunner {
 			LOGGER.error("Exception " + e.getMessage());
 		}
 		
+		IdAuthenticationUtil.dbCleanUp();
 		KeycloakUserManager.removeUser();
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.partnerId);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.ekycPartnerId);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.deviceOrganizationName);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.ftmOrganizationName);
 		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
 		
 		HealthChecker.bTerminate = true;
+		
+		// Used for generating the test case interdependency JSON file
+		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 
 		System.exit(0);
 
@@ -147,16 +161,9 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = "auth";
 		BaseTestCase.certsForModule = "IDA";
-		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
-				ConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
-				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
 
-		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
-				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
+		IdAuthenticationUtil.dbCleanUp();
+
 		AuthTestsUtil.initiateAuthTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();

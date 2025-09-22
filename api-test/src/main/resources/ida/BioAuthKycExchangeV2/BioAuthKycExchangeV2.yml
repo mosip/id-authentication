@@ -1,0 +1,24 @@
+BioAuthKycExchangeV2:
+  auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_01
+      description: Biometric face auth KYC Exchange V2 with valid UIN
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2
+      outputTemplate: ida/BioAuthKycExchangeV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  
+}'

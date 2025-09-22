@@ -39,7 +39,7 @@
         <repository>
             <id>ossrh</id>
             <name>CentralRepository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://central.sonatype.com/repositories/snapshots</url>
             <layout>default</layout>
             <snapshots>
             <enabled>true</enabled>
@@ -59,15 +59,15 @@
 			<url>https://repo.danubetech.com/repository/maven-public/</url>
 		  </repository>
     </repositories>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
 
@@ -80,7 +80,6 @@
 		<module>authentication-service</module>
 		<module>authentication-internal-service</module>
 		<module>authentication-otp-service</module>
-		<module>esignet-integration-impl</module>
 	</modules>
 
 	<properties>
@@ -117,7 +116,6 @@
 		<kernel-bom.version>1.3.0-SNAPSHOT</kernel-bom.version>
 		<biosdk-client.version>1.3.0-SNAPSHOT</biosdk-client.version>
 		<demosdk.version>1.2.1-SNAPSHOT</demosdk.version>
-		<esignet-integration-api.version>1.2.1-SNAPSHOT</esignet-integration-api.version>
 		<esignet-core.version>1.2.1-SNAPSHOT</esignet-core.version>
 
 		<!-- Maven Plugins -->
@@ -129,6 +127,7 @@
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
@@ -303,14 +302,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central.publishing.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>ossrh</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
 			</plugin>
 			<plugin>

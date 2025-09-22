@@ -27,8 +27,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -63,8 +61,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -99,8 +95,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -135,8 +129,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -171,8 +163,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -207,8 +197,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -243,8 +231,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -279,8 +265,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -315,8 +299,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -351,8 +333,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -387,8 +367,6 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
@@ -423,8 +401,40 @@ GenerateVID:
     }
     }'
       output: '{
-  "vid": "$IGNORE$",
-  "message": "$IGNORE$",
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+   auth_GenerateVID_for_EkycDemo_Dob_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_10
+      description: generate Vid ekyc demo for dob
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.vid",
+        "version": "v1",
+        "vidType": "Perpetual",
+        "otp": "$ID:AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",

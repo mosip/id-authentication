@@ -12,5 +12,5 @@ RetrieveVIDByUIN:
       "UIN":"$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$"
       }'
       output: '{
-      "vidType": "$IGNORE$"
+      "vidType": "PERPETUAL"
 }'

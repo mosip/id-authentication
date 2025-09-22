@@ -197,9 +197,9 @@ public abstract class IdAuthValidator implements Validator {
 		Date reqDateAndTime = null;
 		try {
 			reqDateAndTime = dateTimeParser.apply(reqTime);
-		} catch (ParseException e) {
+		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE,
-					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
+					"DateTimeParseException : Invalid DateTime\n" + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(fieldName, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { paramName },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

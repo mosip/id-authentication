@@ -1763,8 +1763,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1809,8 +1808,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1891,8 +1889,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -1937,8 +1934,7 @@ BioAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ]
 }'
@@ -2250,11 +2246,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_Draft_uin_Smoke_Pos:
@@ -2415,11 +2407,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_With_empty_DateTime:
@@ -2461,11 +2449,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Without_DateTime:
@@ -2507,11 +2491,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_Invalid_ENV:
@@ -2553,11 +2533,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_missing_ENV:
@@ -2599,11 +2575,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_Empty_ENV:
@@ -2645,11 +2617,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_Empty_space_ENV:
@@ -2691,11 +2659,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_Without_ENV:
@@ -2736,11 +2700,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_With_space_in_domain:
@@ -2783,11 +2743,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_Without_Empty_domain:
@@ -2815,7 +2771,6 @@ BioAuth:
           "deviceProviderID": "1873299273",
           "env": "Staging",
           "deviceServiceID": "",
-          "domainUri": "$IGNORE$",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",
@@ -2830,11 +2785,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_Biometric_Face_Without_domain:
@@ -2877,11 +2828,7 @@ BioAuth:
     }
     }'
       output: '{
-    "errors": [
-        {
-          "errorCode": "$IGNORE$"
-        }
-      ],
+    "errors": [],
         "authStatus": false
 }'
   auth_BioAuth_RightIris_Lock_uin_audit_Valid_Smoke:

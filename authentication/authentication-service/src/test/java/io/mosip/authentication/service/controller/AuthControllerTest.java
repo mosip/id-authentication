@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
+import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEventingPublisher;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -25,6 +26,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -54,6 +56,18 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.springframework.beans.factory.BeanCreationException;
+import io.mosip.authentication.core.dto.ObjectWithMetadata;
+import io.mosip.authentication.core.exception.IDDataValidationException;
+
 
 /**
  * This code tests the AuthController
@@ -109,6 +123,9 @@ public class AuthControllerTest {
 	@Mock
 	private PartnerService partnerService;
 
+	@Mock
+	private AuthenticationErrorEventingPublisher authenticationErrorEventingPublisher;
+
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(EkycAuthRequestDTO.class, "kycAuthReqDTO");
 
@@ -122,7 +139,8 @@ public class AuthControllerTest {
 		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authFacade);
 		ReflectionTestUtils.setField(authFacade, "env", env);
-
+		ReflectionTestUtils.setField(authController, "authenticationErrorEventingPublisher",
+				authenticationErrorEventingPublisher);
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
 	}
@@ -142,10 +160,10 @@ public class AuthControllerTest {
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, "identity data");
 		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, "identity info");
 		Optional<PartnerDTO> partner = Optional.empty();
-		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
-		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+		when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
 				.thenReturn(AuthTransactionBuilder.newInstance());
-		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
+		when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED));
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
@@ -159,12 +177,12 @@ public class AuthControllerTest {
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Optional<PartnerDTO> partner = Optional.empty();
 		AuthTransactionBuilder authTransactionBuilder = AuthTransactionBuilder.newInstance();
-		Mockito.when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
-		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
+		when(partnerService.getPartner("partnerId", authReqDTO.getMetadata())).thenReturn(partner);
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(authReqDTO, !true, partner))
 				.thenReturn(authTransactionBuilder);
-		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any()))
+		when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException( IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		Mockito.when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
+		when(authFacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
@@ -176,7 +194,7 @@ public class AuthControllerTest {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
-		Mockito.when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
+		when(authFacade.authenticateIndividual(authReqDTO, true, "123456", "12345", true, new TestObjectWithMetadata())).thenReturn(new AuthResponseDTO());
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
 	}
@@ -247,6 +265,56 @@ public class AuthControllerTest {
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 		return authRequestDTO;
+	}
+
+	@Test(expected = BeanCreationException.class)
+	public void initWhenEventingEnabledAndPublisherNullThrows() {
+		ReflectionTestUtils.setField(authController, "isEventingEnabled", true);
+		ReflectionTestUtils.setField(authController, "authenticationErrorEventingPublisher", null);
+		authController.init();
+	}
+
+	@Test
+	public void authenticateIndividualWhenRequestNotObjectWithMetadataThrowsBusiness()
+			throws Exception {
+		AuthRequestDTO dto = new AuthRequestDTO();
+		dto.setIndividualIdType(IdType.UIN.getType());
+
+		try {
+			authController.authenticateIndividual(dto, error, "mispLK", "partnerId", "apiKey",
+					new MockHttpServletRequest());
+			fail("Expected IdAuthenticationBusinessException");
+		} catch (IdAuthenticationBusinessException e) {
+			assertEquals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), e.getErrorCode());
+		}
+	}
+
+	@Test
+	public void authenticateIndividualBusinessExceptionOtherCodeNoPublish() throws Exception {
+		AuthRequestDTO dto = new AuthRequestDTO();
+		dto.setIndividualIdType(IdType.UIN.getType());
+
+		ReflectionTestUtils.setField(authController, "isEventingEnabled", true);
+		ReflectionTestUtils.setField(authController, "authenticationErrorEventingPublisher", authenticationErrorEventingPublisher);
+
+		when(partnerService.getPartner(anyString(), anyMap())).thenReturn(Optional.of(new PartnerDTO()));
+
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(eq(dto), eq(false), any()))
+				.thenReturn(AuthTransactionBuilder.newInstance());
+		when(authTransactionHelper.createUnableToProcessException(any(), any(), any()))
+				.thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+
+		when(authFacade.authenticateIndividual(eq(dto), eq(true), anyString(), anyString(),
+				eq(IdAuthCommonConstants.CONSUME_VID_DEFAULT), any()))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
+
+		try {
+			authController.authenticateIndividual(dto, error, "mispLK", "partnerId", "apiKey", requestWithMetadata);
+			fail("Expected IdAuthenticationAppException to be thrown via helper");
+		} catch (IdAuthenticationAppException expected) {
+			verify(authenticationErrorEventingPublisher, never())
+					.notify(any(), anyString(), any(), any(), any());
+		}
 	}
 
 	/*

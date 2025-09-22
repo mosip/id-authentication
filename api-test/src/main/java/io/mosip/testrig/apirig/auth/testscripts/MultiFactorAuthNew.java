@@ -27,13 +27,13 @@ import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.BioDataUtility;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.restassured.response.Response;
 
 public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
@@ -73,7 +73,7 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 	}
 	
 	@Test(dataProvider = "testcaselist")
-	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException {
+	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
 		
@@ -99,7 +99,7 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 		String otpChannel="";
-		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null, otpIdentyEnryptRequestPath = null;
+		String otpRequest = null, sendOtpReqTemplate = null, sendOtpEndPoint = null; 
 		if(req.has("otpChannel")) {
 			 otpChannel = req.get("otpChannel").toString();
 		}

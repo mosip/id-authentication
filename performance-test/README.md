@@ -49,6 +49,8 @@
 
 **Note - Before creating certificates we need to assign default role as AUTH_PARTNER in the keycloak for the environment we are using so that all new users with the same partner id which we will create will automatically have the desired role which it needs**
 
+**Note - Please make sure to create new keycloak user manually and assigning it to Partner Admin Access role**
+
 ### Procedure to install and execute auth-demo-service in the local machine
 
 * The following link provides installation of auth-demo-service 

@@ -2556,8 +2556,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2617,8 +2616,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2800,8 +2798,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2861,8 +2858,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -3019,8 +3015,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3210,8 +3205,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3271,8 +3265,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3332,8 +3325,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3393,8 +3385,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3454,8 +3445,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3515,8 +3505,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3576,8 +3565,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3637,8 +3625,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3698,8 +3685,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3759,8 +3745,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
