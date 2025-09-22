@@ -339,7 +339,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 				BDBInfo bdbInfo = bir.getBdbInfo();
 				String modality = bdbInfo.getType().get(0).toString();
 				if (modality.equalsIgnoreCase("face")) {
-					return modality + "_" + bdbInfo.getFormat().getType();
+					return modality + "__" + bdbInfo.getFormat().getType();
 				}
 				return modality + "_" + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? "" : bdbInfo.getSubtype().get(0))
 						+ (bdbInfo.getSubtype() != null && bdbInfo.getSubtype().size() > 1 ? " " + bdbInfo.getSubtype().get(1) : "")
