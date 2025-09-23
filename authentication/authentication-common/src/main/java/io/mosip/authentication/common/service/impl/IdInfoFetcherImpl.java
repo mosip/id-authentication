@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,9 +63,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-
-    /** The Constant LOGGER. */
-    private Logger LOGGER = Logger.getLogger(IdInfoFetcherImpl.class.getName());
 	
 	/**  The OTPManager. */
 	@Autowired
@@ -341,27 +337,11 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			List<BIR> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(biometricCbeff.getBytes(), type.getName());
 			Function<? super BIR, ? extends String> keyFunction = bir -> {
 				BDBInfo bdbInfo = bir.getBdbInfo();
-				String modality = bdbInfo.getType().get(0).toString();
-
-                if (modality.equalsIgnoreCase("face")) {
-                    String faceKey = modality + "__" + bdbInfo.getFormat().getType();
-                    LOGGER.info("FACE key generated: {} " +faceKey);
-                    return faceKey;
-                } else if (modality.equalsIgnoreCase("iris")) {
-                    String irisKey = modality + "_"
-                            + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? ""
-                            : bdbInfo.getSubtype().get(0))
-                            + (bdbInfo.getSubtype() != null && bdbInfo.getSubtype().size() > 1
-                            ? " " + bdbInfo.getSubtype().get(1)
-                            : "")
-                            + "_" + bdbInfo.getFormat().getType();
-                    LOGGER.info("IRIS key generated: {}"+irisKey);
-                    return irisKey;
-                }
-				return modality + "_" + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? "" : bdbInfo.getSubtype().get(0))
-						+ (bdbInfo.getSubtype() != null && bdbInfo.getSubtype().size() > 1 ? " " + bdbInfo.getSubtype().get(1) : "")
-						+ "_" + bdbInfo.getFormat().getType();
-			};
+                return bdbInfo.getType().get(0).toString() + "_"
+                        + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty()? "" : bdbInfo.getSubtype().get(0))
+                        + (bdbInfo.getSubtype().size() > 1 ?  " "  + bdbInfo.getSubtype().get(1) : "") + "_"
+                        + bdbInfo.getFormat().getType();
+            };
 			if(birDataFromXMLType.size() == 1) {
 				//This is the segmented cbeff
 				//This is the most possible case
