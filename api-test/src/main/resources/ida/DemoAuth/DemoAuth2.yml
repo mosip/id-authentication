@@ -1604,7 +1604,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_revoke_vid_Pos:
+  auth_DemoAuth_revoke_vid_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_57
       description: Demo auth using revoked VID
