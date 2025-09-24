@@ -33,7 +33,6 @@ import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
-import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
@@ -45,6 +44,7 @@ import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.mosip.testrig.apirig.utils.Watchdog;
 
 /**
  * Class to initiate mosip api test execution
@@ -66,10 +66,11 @@ public class MosipTestRunner {
 	 * @param arg
 	 */
 	public static void main(String[] arg) {
+		Watchdog watchdog = null;
 
 		try {
 			LOGGER.info("** ------------- API Test Rig Run Started --------------------------------------------- **");
-			
+
 			BaseTestCase.setRunContext(getRunType(), jarUrl);
 			ExtractResource.removeOldMosipTestTestResource();
 			if (getRunType().equalsIgnoreCase("JAR")) {
@@ -79,6 +80,15 @@ public class MosipTestRunner {
 			}
 			AdminTestUtil.init();
 			IdAuthConfigManager.init();
+
+			// Read timeout from properties, fallback to 120 if not set which is 2 hours
+			// with buffer timing
+			String timeoutStr = IdAuthConfigManager.getproperty("watchdogTimeoutMinutes");
+			long timeoutMinutes = timeoutStr.isEmpty() ? 120 : Long.parseLong(timeoutStr);
+
+			watchdog = new Watchdog(timeoutMinutes * 60 * 1000L);
+			watchdog.start();
+
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
@@ -88,7 +98,7 @@ public class MosipTestRunner {
 			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
-			
+
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
@@ -143,6 +153,11 @@ public class MosipTestRunner {
 		
 		// Used for generating the test case interdependency JSON file
 		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
+
+		// Stop watchdog since task completed successfully
+		if (watchdog != null) {
+			watchdog.stop();
+		}
 
 		System.exit(0);
 
