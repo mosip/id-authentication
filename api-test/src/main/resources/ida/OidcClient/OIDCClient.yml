@@ -1,0 +1,22 @@
+CreateOIDCClient:
+   auth_CreateOIDCClient_Misp_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/oidc/client
+      uniqueIdentifier: TC_PMS_CreateOIDCClient_01
+      description: Create OIDC client Misp valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/OidcClient/OIDCClient
+      outputTemplate: ida/PmsIntegration/OidcClient/OIDCClientResult
+      input: '{
+        "name": "$RANDOMID$",
+        "policyId": "$POLICYID_FOR_DELEGATED$",
+        "publicKey": "$OIDCJWKKEY3$",
+        "authPartnerId": "$PARTNER_ID_FOR_DELEGATED$",
+        "logoUri": "https://health-services.com/logo.png",
+        "redirectUris": "$IDPREDIRECTURI$",
+        "grantTypes": "authorization_code",
+        "clientAuthMethods": "private_key_jwt"
+}'
+      output: '{
+        "status": "ACTIVE"
+}'
