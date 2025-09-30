@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * This is a repository class for entity {@link AutnTxn}.
@@ -47,11 +48,13 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
      * @param token               the token
      * @return the int
      */
+    @Cacheable(value = "authCounts", key = "{#token, #otpRequestDTime, #oneMinuteBeforeTime}")
     @Query("Select count(1) from AutnTxn  where requestDTimes <= :otpRequestDTime and "
             + "requestDTimes >= :oneMinuteBeforeTime and token=:token")
     public int countRequestDTime(@Param("otpRequestDTime") LocalDateTime otpRequestDTime,
                                  @Param("oneMinuteBeforeTime") LocalDateTime oneMinuteBeforeTime, @Param("token") String token);
 
+    @Cacheable(value = "authCounts", key = "{#refId, #afterRequestTime}")
     @Query("""
             SELECT COUNT(a) FROM AutnTxn a
             WHERE a.refId = :refId
@@ -59,6 +62,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
             """)
     Long countByRefIdAndRequestDTimesAfter(@Param("refId") String refId, @Param("afterRequestTime") LocalDateTime afterRequestTime);
 
+    @Cacheable(value = "authCounts", key = "{#entityId, #afterRequestTime}")
     @Query("""
             SELECT COUNT(a) FROM AutnTxn a
             WHERE a.entityId = :entityId
