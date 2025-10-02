@@ -158,6 +158,10 @@ public class OTPController {
 						: idTypeUtil.getIdType(otpRequestDto.getIndividualId()).getType();
 				logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 						"IdType...."+ idType);
+
+                if (IdType.HANDLE.getType().equalsIgnoreCase(idType) && otpRequestDto.getIndividualId() != null) {
+                    otpRequestDto.setIndividualId(otpRequestDto.getIndividualId().toLowerCase());
+                }
 				otpRequestDto.setIndividualIdType(idType);
 				String idvidHash = securityManager.hash(otpRequestDto.getIndividualId());
 				otpRequestValidator.validateIdvId(otpRequestDto.getIndividualId(), idType, errors, IdAuthCommonConstants.IDV_ID);
