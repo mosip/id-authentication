@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class OTPManager {
+
+    private static Logger LOGGER = IdaLogger.getLogger(OTPManager.class);
+
 
     /** The Constant QUERIED_STATUS_CODES. */
     private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
@@ -98,19 +102,52 @@ public class OTPManager {
     public boolean sendOtp(OtpRequestDTO otpRequestDTO, String idvid, String idvidType, Map<String, String> valueMap, List<String> templateLanguages)
             throws IdAuthenticationBusinessException {
 
-        String refIdHash = securityManager.hash(idvid);
-        Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
+        final String txnId  = (otpRequestDTO != null && otpRequestDTO.getTransactionID() != null)
+                ? otpRequestDTO.getTransactionID() : "NA";
+        final String flowId = "OTP-MGR";
+        final long tStart   = System.nanoTime();
+        long t0             = tStart;
 
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] START (channels=%s)", flowId, txnId, otpRequestDTO.getOtpChannel()));
+
+        String refIdHash = securityManager.hash(idvid);
+        long tA = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=securityManager.hash -> %s", flowId, txnId, ms(tA - t0)));
+        t0 = tA;
+
+        Optional<OtpTransaction> otpEntityOpt = otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(refIdHash, QUERIED_STATUS_CODES);
+        long tB = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=otpRepo.findLatestActiveOrFrozen -> %s (present=%s)",
+                        flowId, txnId, ms(tB - t0), otpEntityOpt.isPresent()));
+        t0 = tB;
         if(otpEntityOpt.isPresent()) {
             OtpTransaction otpEntity = otpEntityOpt.get();
             requireOtpNotFrozenHelper.requireOtpNotFrozen(otpEntity, false);
         }
 
+        long tC = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=requireOtpNotFrozen -> %s", flowId, txnId, ms(tC - t0)));
+        t0 = tC;
+
         String otp = generateOTP(otpRequestDTO.getIndividualId());
+        long tD = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=generateOTP(REST) -> %s", flowId, txnId, ms(tD - t0)));
+        t0 = tD;
+
         LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
         String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
                 + EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
                 + EnvUtil.getKeySplitter() + otp).getBytes());
+
+        long tE = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=buildOtpHash -> %s", flowId, txnId, ms(tE - t0)));
+        t0 = tE;
 
         OtpTransaction otpTxn;
         if (otpEntityOpt.isPresent()
@@ -136,15 +173,38 @@ public class OTPManager {
             otpRepo.save(txn);
         }
 
+        long tF = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=otpRepo.save(upsert) -> %s", flowId, txnId, ms(tF - t0)));
+        t0 = tF;
+
         String notificationProperty = null;
         notificationProperty = otpRequestDTO
                 .getOtpChannel().stream().map(channel -> NotificationType.getNotificationTypeForChannel(channel)
                         .stream().map(NotificationType::getName).collect(Collectors.joining()))
                 .collect(Collectors.joining("|"));
 
+        long tG = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=buildNotificationProperty -> %s", flowId, txnId, ms(tG - t0)));
+        t0 = tG;
+
         notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty, otpGenerationTime);
 
+        long tH = System.nanoTime();
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] step=notificationService.sendOTPNotification -> %s",
+                        flowId, txnId, ms(tH - t0)));
+
+        long total = System.nanoTime() - tStart;
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                String.format("[%s|%s] END success total=%s", flowId, txnId, ms(total)));
+
         return true;
+    }
+
+    private static String ms(long nanos) {
+        return String.format("%.3f ms", nanos / 1_000_000.0);
     }
 
     /**
