@@ -71,7 +71,7 @@ public class DataShareManagerTest {
 	}
 
 	@Test
-	public void testDownloadObject_jsonStr() throws Exception {
+	public void testDownloadObject_jsonStr() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -87,7 +87,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test
-	public void testDownloadObject_jsonStrWithErrorsEmpty() throws Exception {
+	public void testDownloadObject_jsonStrWithErrorsEmpty() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -103,7 +103,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test(expected = IdAuthUncheckedException.class)
-	public void testDownloadObject_jsonStrWithErrorsNonEmpty() throws Exception {
+	public void testDownloadObject_jsonStrWithErrorsNonEmpty() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -119,7 +119,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test
-	public void testDownloadObject_ObjectResponse() throws Exception {
+	public void testDownloadObject_ObjectResponse() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<Map> clazz = Map.class;
@@ -136,7 +136,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test
-	public void testDownloadObject_NonjsonStr() throws Exception {
+	public void testDownloadObject_NonjsonStr() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -152,7 +152,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test
-	public void testDownloadObject_NonjsonStr_decryptionRequired() throws Exception {
+	public void testDownloadObject_NonjsonStr_decryptionRequired() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -171,7 +171,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test
-	public void testDownloadObject_objectResponse_decryptionRequired() throws Exception {
+	public void testDownloadObject_objectResponse_decryptionRequired() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<Map> clazz = Map.class;
@@ -191,7 +191,7 @@ public class DataShareManagerTest {
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
-	public void testDownloadObject_objectResponse_decryptionRequired_parseException() throws Exception {
+	public void testDownloadObject_objectResponse_decryptionRequired_parseException() throws Throwable {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<Map> clazz = Map.class;

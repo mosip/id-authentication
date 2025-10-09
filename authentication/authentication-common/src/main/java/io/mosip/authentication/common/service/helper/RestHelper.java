@@ -96,42 +96,11 @@ public class RestHelper {
      * @return the response object or null in case of exception
      * @throws RestServiceException the rest service exception
      */
-    @SuppressWarnings("unchecked")
-    @WithRetry
-    public <T> T requestSync(@Valid RestRequestDTO request) throws Throwable {
-        Object response;
+    public <T> T requestSync(RestRequestDTO request) throws RestServiceException {
         try {
-            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-                    request.getUri());
-            if (request.getTimeout() != null) {
-                response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-            } else {
-                response = request(request).block();
-            }
-            if(!String.class.equals(request.getResponseType())) {
-                checkErrorResponse(response, request.getResponseType());
-                if(RestUtil.containsError(response.toString(), mapper)) {
-                    mosipLogger.debug("Error in response %s", response.toString());
-                }
-            }
-            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-                    "Received valid response");
-            return (T) response;
-        } catch (WebClientResponseException e) {
-            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-                    THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
-                            + " \n Response Body : \n" + e.getResponseBodyAsString());
-            throw handleStatusError(e, request.getResponseType());
-        } catch (RuntimeException e) {
-            if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
-                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-                        THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + ExceptionUtils.getStackTrace(e));
-                throw new IdRepoRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
-            } else {
-                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
-                        THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
-                throw new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
-            }
+            return (T) requestAsync(request).block();
+        } catch (Exception e) {
+            throw new RestServiceException(UNKNOWN_ERROR, e);
         }
     }
 

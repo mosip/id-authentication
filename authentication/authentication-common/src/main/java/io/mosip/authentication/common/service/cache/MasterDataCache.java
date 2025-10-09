@@ -55,9 +55,9 @@ public class MasterDataCache {
 	@Cacheable(cacheNames = MASTERDATA_TITLES)
 	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
 		try {
-			return restHelper
-					.requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
-		} catch (IDDataValidationException | RestServiceException e) {
+			return (Map<String, Object>) restHelper
+					.requestAsync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
+		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -79,8 +79,8 @@ public class MasterDataCache {
 			RestRequestDTO request = restFactory
 					.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class);
 			request.setUri(request.getUri().replace("{code}", template));
-			return restHelper.requestSync(request);
-		} catch (IDDataValidationException | RestServiceException e) {
+			return (Map<String, Object>) restHelper.requestAsync(request);
+		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);

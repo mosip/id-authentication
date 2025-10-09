@@ -360,8 +360,10 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 
 				} catch (RestServiceException | IDDataValidationException e) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-				}
-			} else {
+				} catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()

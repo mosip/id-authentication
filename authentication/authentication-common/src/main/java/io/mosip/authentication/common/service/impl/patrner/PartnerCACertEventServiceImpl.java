@@ -91,8 +91,10 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 			logger.error("Error occured while downloading certificate from datashare : \n {}",
 					ExceptionUtils.getStackTrace(e));
 			throw e;
-		}
-	}
+		} catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	@Override
 	public void evictCACertCache(EventModel eventModel) throws RestServiceException, IdAuthenticationBusinessException {

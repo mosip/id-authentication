@@ -228,7 +228,10 @@ public class OTPManager {
             logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
                     "[OTP-MGR|" + uin + "] Starting API call for OTP generation");
 
-            ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
+            ResponseWrapper<Map<String, String>> response =
+                    (ResponseWrapper<Map<String, String>>) restHelper.requestAsync(restRequest).block();
+
+
 
             // Log end time and duration of API call
             long durationMs = (System.nanoTime() - startTime) / 1_000_000; // Convert nanoseconds to milliseconds
@@ -250,11 +253,6 @@ public class OTPManager {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
                     "Data validation failed: " + e.getMessage());
             throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-        } catch (RestServiceException e) {
-            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-                    IdAuthenticationErrorConstants.SERVER_ERROR.getErrorCode(),
-                    IdAuthenticationErrorConstants.SERVER_ERROR.getErrorMessage());
-            throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
         }
     }
 
