@@ -51,7 +51,7 @@ public class DataShareManager {
 	private boolean thumbprintValidationRequired;
 
 	@SuppressWarnings("unchecked")
-	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequired) throws  RestServiceException, IdAuthenticationBusinessException {
+	public <R> R downloadObject(String dataShareUrl, Class<R> clazz, boolean decryptionRequired) throws Throwable {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 
