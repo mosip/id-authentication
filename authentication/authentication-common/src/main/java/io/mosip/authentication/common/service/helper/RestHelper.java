@@ -85,6 +85,12 @@ public class RestHelper {
                 .build();
     }
 
+    @SuppressWarnings("unchecked")
+    @WithRetry
+    public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
+        return (T) requestAsync(request);
+    }
+
     /**
      * Request to send/receive HTTP requests and return the response asynchronously.
      *
