@@ -1,15 +1,6 @@
 ##### JIRA number;testcase 
 #MOSIP-12456------test_case_name
-MOSIP-37285------auth_BioAuth_With_Deactivated_UIN
-MOSIP-37285------auth_EkycBio_Face_With_Deactivated_uin
-MOSIP-41019------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
-MOSIP-37285------auth_EkycOtp_Auth_With_deactivate_UIN_Smoke
 MOSIP-41020------auth_BlockHotlistAPI_when_expiry_time_old_incorrect
-MOSIP-37285------auth_DemoAuth_with_Deactivated_UIN
-MOSIP-32753------auth_DemoAuth_with_age_below_calculated_value_Neg
-MOSIP-32753------auth_DemoAuth_with_negative_age_value_Neg
-MOSIP-32753------auth_DemoAuth_with_zero_age_value_Neg
-MOSIP-37285------auth_EkycDemo_Auth_With_Deactivated_UIN
 MOSIP-41021------auth_SendOTP_toBlockedVID_Neg
 MOSIP-41021------auth_SendOTP_to_DeactivatedUIN_Neg
 MOSIP-41021------auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg
