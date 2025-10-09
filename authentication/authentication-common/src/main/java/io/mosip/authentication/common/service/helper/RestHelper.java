@@ -1,5 +1,7 @@
 package io.mosip.authentication.common.service.helper;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CLIENT_ERROR;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CONNECTION_TIMED_OUT;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.SERVER_ERROR;
@@ -10,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -85,10 +88,51 @@ public class RestHelper {
                 .build();
     }
 
+    /**
+     * Request to send/receive HTTP requests and return the response synchronously.
+     *
+     * @param         <T> the generic type
+     * @param request the request
+     * @return the response object or null in case of exception
+     * @throws RestServiceException the rest service exception
+     */
     @SuppressWarnings("unchecked")
     @WithRetry
-    public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
-        return (T) requestAsync(request);
+    public <T> T requestSync(@Valid RestRequestDTO request) throws Throwable {
+        Object response;
+        try {
+            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    request.getUri());
+            if (request.getTimeout() != null) {
+                response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
+            } else {
+                response = request(request).block();
+            }
+            if(!String.class.equals(request.getResponseType())) {
+                checkErrorResponse(response, request.getResponseType());
+                if(RestUtil.containsError(response.toString(), mapper)) {
+                    mosipLogger.debug("Error in response %s", response.toString());
+                }
+            }
+            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    "Received valid response");
+            return (T) response;
+        } catch (WebClientResponseException e) {
+            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
+                            + " \n Response Body : \n" + e.getResponseBodyAsString());
+            throw handleStatusError(e, request.getResponseType());
+        } catch (RuntimeException e) {
+            if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                        THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + ExceptionUtils.getStackTrace(e));
+                throw new IdRepoRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
+            } else {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+                        THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
+                throw new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
+            }
+        }
     }
 
     /**

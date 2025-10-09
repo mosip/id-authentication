@@ -61,8 +61,10 @@ public class MasterDataCache {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
+		} catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 	
 	/**
 	 * Gets the master data template.
@@ -82,8 +84,10 @@ public class MasterDataCache {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
 					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
+		} catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 	
 	/**
 	 * Clear master data template cache.
