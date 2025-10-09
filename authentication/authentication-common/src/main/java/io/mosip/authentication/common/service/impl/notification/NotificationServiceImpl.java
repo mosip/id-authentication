@@ -16,8 +16,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -57,304 +60,367 @@ import reactor.util.function.Tuples;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-	/** The Constant AUTH_TYPE. */
-	private static final String AUTH_TYPE = "authType";
-	/** The Constant NAME. */
-	private static final String NAME = "name";
-	/** The Constant TIME. */
-	private static final String TIME = "time";
-	/** The Constant DATE. */
-	private static final String DATE = "date";
+    /**
+     * The Constant AUTH_TYPE.
+     */
+    private static final String AUTH_TYPE = "authType";
+    /**
+     * The Constant NAME.
+     */
+    private static final String NAME = "name";
+    /**
+     * The Constant TIME.
+     */
+    private static final String TIME = "time";
+    /**
+     * The Constant DATE.
+     */
+    private static final String DATE = "date";
 
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
+    @Autowired
+    private IdInfoFetcher idInfoFetcher;
 
-	/** ID Template manager */
-	@Autowired
-	private IdTemplateManager idTemplateManager;
+    /**
+     * ID Template manager
+     */
+    @Autowired
+    private IdTemplateManager idTemplateManager;
 
-	@Autowired
-	private NotificationManager notificationManager;
-	
-	@Autowired
-	@Qualifier("NotificationLangComparator")
-	private LanguageComparator languageComparator;
+    @Autowired
+    private NotificationManager notificationManager;
 
-	@Autowired
-	private EntityInfoUtil entityInfoUtil;
+    @Autowired
+    @Qualifier("NotificationLangComparator")
+    private LanguageComparator languageComparator;
 
-	@Autowired
-	private LanguageUtil languageUtil;
+    @Autowired
+    private EntityInfoUtil entityInfoUtil;
 
-	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
+    @Autowired
+    private LanguageUtil languageUtil;
 
-		Map<String, Object> values = new HashMap<>();
-		List<String> templateLanguages = getTemplateLanguages(idInfo);
-		
-		for (String lang : templateLanguages) {
-			values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
-		}
-		Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
-		values.put(DATE, dateAndTime.getT1());
-		values.put(TIME, dateAndTime.getT2());
-		String maskedUin = "";
-		String charCount = EnvUtil.getUinMaskingCharCount();
-		if (charCount != null && !charCount.isEmpty()) {
-			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
-		}
-		values.put("idvid", maskedUin);
-		String idvidType = authRequestDTO.getIndividualIdType();
-		values.put("idvidType", idvidType);
+    private static Logger logger = IdaLogger.getLogger(NotificationServiceImpl.class);
 
-		// TODO add for all auth types
-		String authTypeStr = Stream
-				.of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
-						Stream.<AuthType>of(PinAuthType.values()), Stream.<AuthType>of(PasswordAuthType.values()), 
-						Stream.<AuthType>of(KeyBindedTokenAuthType.values()))
-				.flatMap(Function.identity())
-				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
-				.peek(System.out::println)
-				.map(authType -> authType.getDisplayName(authRequestDTO, idInfoFetcher)).distinct().collect(Collectors.joining(","));
-		values.put(AUTH_TYPE, authTypeStr);
-		if (authResponseDTO.getResponse().isAuthStatus()) {
-			values.put(IdAuthCommonConstants.STATUS, "Passed");
-		} else {
-			values.put(IdAuthCommonConstants.STATUS, "Failed");
-		}
+    public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO,
+                                     Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
-		String phoneNumber = null;
-		String email = null;
-		phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-		email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
-		String notificationType = null;
-		if (isAuth) {
-			notificationType = EnvUtil.getNotificationType();
-		} else {
-			// For internal auth no notification is done
-			notificationType = NotificationType.NONE.getName();
-		}
+        Map<String, Object> values = new HashMap<>();
+        List<String> templateLanguages = getTemplateLanguages(idInfo);
 
-		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
-	}
+        for (String lang : templateLanguages) {
+            values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
+        }
+        Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
+        values.put(DATE, dateAndTime.getT1());
+        values.put(TIME, dateAndTime.getT2());
+        String maskedUin = "";
+        String charCount = EnvUtil.getUinMaskingCharCount();
+        if (charCount != null && !charCount.isEmpty()) {
+            maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
+        }
+        values.put("idvid", maskedUin);
+        String idvidType = authRequestDTO.getIndividualIdType();
+        values.put("idvidType", idvidType);
 
-	public void sendOTPNotification(String idvid, String idvidType, Map<String, String> valueMap,
-			List<String> templateLanguages, String otp, String notificationProperty, LocalDateTime otpGenerationTime)
-			throws IdAuthenticationBusinessException {
-		Map<String, Object> otpTemplateValues = getOtpTemplateValues(idvid, idvidType, valueMap, otpGenerationTime);
-		otpTemplateValues.put("otp", otp);
-		this.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
-				valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
-				templateLanguages);
-	}
+        // TODO add for all auth types
+        String authTypeStr = Stream
+                .of(Stream.<AuthType>of(DemoAuthType.values()), Stream.<AuthType>of(BioAuthType.values()),
+                        Stream.<AuthType>of(PinAuthType.values()), Stream.<AuthType>of(PasswordAuthType.values()),
+                        Stream.<AuthType>of(KeyBindedTokenAuthType.values()))
+                .flatMap(Function.identity())
+                .filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher))
+                .peek(System.out::println)
+                .map(authType -> authType.getDisplayName(authRequestDTO, idInfoFetcher)).distinct().collect(Collectors.joining(","));
+        values.put(AUTH_TYPE, authTypeStr);
+        if (authResponseDTO.getResponse().isAuthStatus()) {
+            values.put(IdAuthCommonConstants.STATUS, "Passed");
+        } else {
+            values.put(IdAuthCommonConstants.STATUS, "Failed");
+        }
 
-	/*
-	 * Send Otp Notification
-	 * 
-	 */
-	private Map<String, Object> getOtpTemplateValues(String idvid, String idvidType, Map<String, String> valueMap,
-			LocalDateTime otpGenerationTime) {
+        String phoneNumber = null;
+        String email = null;
+        phoneNumber = entityInfoUtil.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+        email = entityInfoUtil.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
+        String notificationType = null;
+        if (isAuth) {
+            notificationType = EnvUtil.getNotificationType();
+        } else {
+            // For internal auth no notification is done
+            notificationType = NotificationType.NONE.getName();
+        }
 
-		Tuple2<String, String> dateAndTime = getDateAndTime(otpGenerationTime);
-		String date = dateAndTime.getT1();
-		String time = dateAndTime.getT2();
+        sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType, templateLanguages);
+    }
 
-		String maskedUin = null;
-		Map<String, Object> values = new HashMap<>();
-		String charCount = EnvUtil.getUinMaskingCharCount();
-		if (charCount != null) {
-			maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
-		}
-		values.put("idvid", maskedUin);
-		values.put("idvidType", idvidType);
-		Integer timeInSeconds = EnvUtil.getOtpExpiryTime();
-		int timeInMinutes = (timeInSeconds % 3600) / 60;
-		values.put("validTime", String.valueOf(timeInMinutes));
-		values.put(DATE, date);
-		values.put(TIME, time);
-		values.putAll(valueMap);
-		values.remove(IdAuthCommonConstants.PHONE_NUMBER);
-		values.remove(IdAuthCommonConstants.EMAIL);
-		return values;
-	}
+    public void sendOTPNotification(String idvid, String idvidType, Map<String, String> valueMap,
+                                    List<String> templateLanguages, String otp, String notificationProperty, LocalDateTime otpGenerationTime)
+            throws IdAuthenticationBusinessException {
+        Map<String, Object> otpTemplateValues = getOtpTemplateValues(idvid, idvidType, valueMap, otpGenerationTime);
+        otpTemplateValues.put("otp", otp);
+        this.sendNotification(otpTemplateValues, valueMap.get(IdAuthCommonConstants.EMAIL),
+                valueMap.get(IdAuthCommonConstants.PHONE_NUMBER), SenderType.OTP, notificationProperty,
+                templateLanguages);
+    }
 
-	/**
-	 * Gets the date and time.
-	 *
-	 * @param requestTime the request time
-	 * @param pattern     the pattern
-	 * @return the date and time
-	 */
-	private Tuple2<String, String> getDateAndTime(LocalDateTime timestamp) {
-		ZonedDateTime dateTime = ZonedDateTime.of(timestamp, ZoneId.of("UTC")).withZoneSameInstant(getZone());
-		String date = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationDateFormat()));
-		String time = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationTimeFormat()));
-		return Tuples.of(date, time);
-	}
+    /*
+     * Send Otp Notification
+     *
+     */
+    private Map<String, Object> getOtpTemplateValues(String idvid, String idvidType, Map<String, String> valueMap,
+                                                     LocalDateTime otpGenerationTime) {
 
-	private ZoneId getZone() {
-		return ZoneId.of(EnvUtil.getNotificationTimeZone());
-	}
+        Tuple2<String, String> dateAndTime = getDateAndTime(otpGenerationTime);
+        String date = dateAndTime.getT1();
+        String time = dateAndTime.getT2();
 
-	/**
-	 * Method to Send Notification to the Individual via SMS / E-Mail
-	 * 
-	 * @param notificationtype     - specifies notification type
-	 * @param values               - list of values to send notification
-	 * @param emailId              - sender E-Mail ID
-	 * @param phoneNumber          - sender Phone Number
-	 * @param sender               - to specify the sender type
-	 * @param notificationProperty
-	 * @throws IdAuthenticationBusinessException
-	 */
+        String maskedUin = null;
+        Map<String, Object> values = new HashMap<>();
+        String charCount = EnvUtil.getUinMaskingCharCount();
+        if (charCount != null) {
+            maskedUin = MaskUtil.generateMaskValue(idvid, Integer.parseInt(charCount));
+        }
+        values.put("idvid", maskedUin);
+        values.put("idvidType", idvidType);
+        Integer timeInSeconds = EnvUtil.getOtpExpiryTime();
+        int timeInMinutes = (timeInSeconds % 3600) / 60;
+        values.put("validTime", String.valueOf(timeInMinutes));
+        values.put(DATE, date);
+        values.put(TIME, time);
+        values.putAll(valueMap);
+        values.remove(IdAuthCommonConstants.PHONE_NUMBER);
+        values.remove(IdAuthCommonConstants.EMAIL);
+        return values;
+    }
 
-	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
-			String notificationProperty, List<String> templateLanguages) throws IdAuthenticationBusinessException {
-		String notificationtypeconfig = notificationProperty;
-		String notificationMobileNo = phoneNumber;
-		Set<NotificationType> notificationtype = new HashSet<>();
+    /**
+     * Gets the date and time.
+     *
+     * @param requestTime the request time
+     * @param pattern     the pattern
+     * @return the date and time
+     */
+    private Tuple2<String, String> getDateAndTime(LocalDateTime timestamp) {
+        ZonedDateTime dateTime = ZonedDateTime.of(timestamp, ZoneId.of("UTC")).withZoneSameInstant(getZone());
+        String date = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationDateFormat()));
+        String time = dateTime.format(DateTimeFormatter.ofPattern(EnvUtil.getNotificationTimeFormat()));
+        return Tuples.of(date, time);
+    }
 
-		if (isNotNullorEmpty(notificationtypeconfig)
-				&& !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
-			if (notificationtypeconfig.contains("|")) {
-				String value[] = notificationtypeconfig.split("\\|");
-				for (int i = 0; i < 2; i++) {
-					String nvalue = "";
-					nvalue = value[i];
-					processNotification(emailId, notificationMobileNo, notificationtype, nvalue);
-				}
-			} else {
-				processNotification(emailId, notificationMobileNo, notificationtype, notificationtypeconfig);
-			}
+    private ZoneId getZone() {
+        return ZoneId.of(EnvUtil.getNotificationTimeZone());
+    }
 
-		}
+    /**
+     * Method to Send Notification to the Individual via SMS / E-Mail
+     *
+     * @param notificationtype     - specifies notification type
+     * @param values               - list of values to send notification
+     * @param emailId              - sender E-Mail ID
+     * @param phoneNumber          - sender Phone Number
+     * @param sender               - to specify the sender type
+     * @param notificationProperty
+     * @throws IdAuthenticationBusinessException
+     */
 
-		if (notificationtype.contains(NotificationType.SMS)) {
-			invokeSmsNotification(values, sender, notificationMobileNo, templateLanguages);
+    public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
+                                 String notificationProperty, List<String> templateLanguages)
+            throws IdAuthenticationBusinessException {
 
-		}
-		if (notificationtype.contains(NotificationType.EMAIL)) {
-			invokeEmailNotification(values, emailId, sender, templateLanguages);
+        long start = System.currentTimeMillis();
+        logger.info("sendNotification() started");
 
-		}
+        String notificationtypeconfig = notificationProperty;
+        String notificationMobileNo = phoneNumber;
+        Set<NotificationType> notificationtype = new HashSet<>();
 
-	}
+        long processStart = System.currentTimeMillis();
 
-	/**
-	 * Reads notification type from property and set the notification type
-	 * 
-	 * @param emailId                - email id of Individual
-	 * @param phoneNumber            - Phone Number of Individual
-	 * @param notificationtype       - Notification type
-	 * @param notificationtypeconfig - Notification type from the configuration
-	 */
+        if (isNotNullorEmpty(notificationtypeconfig)
+                && !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
 
-	private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
-			String notificationtypeconfig) {
-		String type = notificationtypeconfig;
-		if (type.equalsIgnoreCase(NotificationType.SMS.getName())) {
-			if (isNotNullorEmpty(phoneNumber)) {
-				notificationtype.add(NotificationType.SMS);
-			} else {
-				if (isNotNullorEmpty(emailId)) {
-					notificationtype.add(NotificationType.EMAIL);
-				}
-			}
-		}
+            if (notificationtypeconfig.contains("|")) {
+                String[] value = notificationtypeconfig.split("\\|");
+                for (int i = 0; i < value.length; i++) {
+                    long innerStart = System.currentTimeMillis();
 
-		if (type.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
-			if (isNotNullorEmpty(emailId)) {
-				notificationtype.add(NotificationType.EMAIL);
-			} else {
-				if (isNotNullorEmpty(phoneNumber)) {
-					notificationtype.add(NotificationType.SMS);
-				}
-			}
-		}
-	}
+                    String nvalue = value[i];
+                    processNotification(emailId, notificationMobileNo, notificationtype, nvalue);
 
-	private boolean isNotNullorEmpty(String value) {
-		return value != null && !value.isEmpty() && value.trim().length() > 0;
-	}
+                    logger.info("processNotification() for '{}' took {} ms", nvalue,
+                            (System.currentTimeMillis() - innerStart));
+                }
+            } else {
+                long innerStart = System.currentTimeMillis();
 
-	/**
-	 * To apply Templates for Email or SMS Notifications
-	 * 
-	 * @param values       - content for Template
-	 * @param templateName - Template name to fetch
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	private String applyTemplate(Map<String, Object> values, String templateName, List<String> templateLanguages)
-			throws IdAuthenticationBusinessException {
-		try {
-			Objects.requireNonNull(templateName);
-			return idTemplateManager.applyTemplate(templateName, values, templateLanguages);
-		} catch (IOException e) {
-			// FIXME change the error code
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
+                processNotification(emailId, notificationMobileNo, notificationtype, notificationtypeconfig);
 
-	/**
-	 * Sms notification.
-	 *
-	 * @param values               the values
-	 * @param sender               the sender
-	 * @param contentTemplate      the content template
-	 * @param notificationMobileNo the notification mobile no
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo, List<String> templateLanguages)
-			throws IdAuthenticationBusinessException {
-		String authSmsTemplate = EnvUtil.getAuthSmsTemplate();
-		String otpSmsTemplate = EnvUtil.getOtpSmsTemplate();
-		String contentTemplate = "";
-		if (sender == SenderType.AUTH && authSmsTemplate != null) {
-			contentTemplate = authSmsTemplate;
-		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
-			contentTemplate = otpSmsTemplate;
-		}
+                logger.info("processNotification() for '{}' took {} ms",
+                        notificationtypeconfig, (System.currentTimeMillis() - innerStart));
+            }
+        }
 
-		String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
-		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
-	}
+        logger.info("Processing notification types took {} ms", (System.currentTimeMillis() - processStart));
 
-	/**
-	 * Email notification.
-	 *
-	 * @param values          the values
-	 * @param emailId         the email id
-	 * @param sender          the sender
-	 * @param contentTemplate the content template
-	 * @param subjectTemplate the subject template
-	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 */
-	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender, List<String> templateLanguages)
-			throws IdAuthenticationBusinessException {
-		String otpContentTemaplate = EnvUtil.getOtpContentTemplate();
-		String authEmailSubjectTemplate = EnvUtil.getAuthEmailSubjectTemplate();
-		String authEmailContentTemplate = EnvUtil.getAuthEmailContentTemplate();
-		String otpSubjectTemplate = EnvUtil.getOtpSubjectTemplate();
+        if (notificationtype.contains(NotificationType.SMS)) {
+            long smsStart = System.currentTimeMillis();
+            invokeSmsNotification(values, sender, notificationMobileNo, templateLanguages);
+            logger.info("invokeSmsNotification() took {} ms", (System.currentTimeMillis() - smsStart));
+        }
 
-		String contentTemplate = "";
-		String subjectTemplate = "";
-		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
-			subjectTemplate = authEmailSubjectTemplate;
-			contentTemplate = authEmailContentTemplate;
-		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
-			subjectTemplate = otpSubjectTemplate;
-			contentTemplate = otpContentTemaplate;
-		}
+        if (notificationtype.contains(NotificationType.EMAIL)) {
+            long emailStart = System.currentTimeMillis();
+            invokeEmailNotification(values, emailId, sender, templateLanguages);
+            logger.info("invokeEmailNotification() took {} ms", (System.currentTimeMillis() - emailStart));
+        }
 
-		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
-		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
-		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
-	}
-	
-	/**
+        logger.info("sendNotification() total execution time = {} ms",
+                (System.currentTimeMillis() - start));
+    }
+
+
+    /**
+     * Reads notification type from property and set the notification type
+     *
+     * @param emailId                - email id of Individual
+     * @param phoneNumber            - Phone Number of Individual
+     * @param notificationtype       - Notification type
+     * @param notificationtypeconfig - Notification type from the configuration
+     */
+
+    private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
+                                     String notificationtypeconfig) {
+        String type = notificationtypeconfig;
+        if (type.equalsIgnoreCase(NotificationType.SMS.getName())) {
+            if (isNotNullorEmpty(phoneNumber)) {
+                notificationtype.add(NotificationType.SMS);
+            } else {
+                if (isNotNullorEmpty(emailId)) {
+                    notificationtype.add(NotificationType.EMAIL);
+                }
+            }
+        }
+
+        if (type.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
+            if (isNotNullorEmpty(emailId)) {
+                notificationtype.add(NotificationType.EMAIL);
+            } else {
+                if (isNotNullorEmpty(phoneNumber)) {
+                    notificationtype.add(NotificationType.SMS);
+                }
+            }
+        }
+    }
+
+    private boolean isNotNullorEmpty(String value) {
+        return value != null && !value.isEmpty() && value.trim().length() > 0;
+    }
+
+    /**
+     * To apply Templates for Email or SMS Notifications
+     *
+     * @param values       - content for Template
+     * @param templateName - Template name to fetch
+     * @return
+     * @throws IdAuthenticationBusinessException
+     */
+    private String applyTemplate(Map<String, Object> values, String templateName, List<String> templateLanguages)
+            throws IdAuthenticationBusinessException {
+        try {
+            Objects.requireNonNull(templateName);
+            return idTemplateManager.applyTemplate(templateName, values, templateLanguages);
+        } catch (IOException e) {
+            // FIXME change the error code
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+        }
+    }
+
+    /**
+     * Sms notification.
+     *
+     * @param values               the values
+     * @param sender               the sender
+     * @param contentTemplate      the content template
+     * @param notificationMobileNo the notification mobile no
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
+    private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String notificationMobileNo, List<String> templateLanguages)
+            throws IdAuthenticationBusinessException {
+        String authSmsTemplate = EnvUtil.getAuthSmsTemplate();
+        String otpSmsTemplate = EnvUtil.getOtpSmsTemplate();
+        String contentTemplate = "";
+        if (sender == SenderType.AUTH && authSmsTemplate != null) {
+            contentTemplate = authSmsTemplate;
+        } else if (sender == SenderType.OTP && otpSmsTemplate != null) {
+            contentTemplate = otpSmsTemplate;
+        }
+
+        String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
+        notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
+    }
+
+    /**
+     * Email notification.
+     *
+     * @param values          the values
+     * @param emailId         the email id
+     * @param sender          the sender
+     * @param contentTemplate the content template
+     * @param subjectTemplate the subject template
+     * @throws IdAuthenticationBusinessException the id authentication business
+     *                                           exception
+     */
+    private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender,
+                                         List<String> templateLanguages)
+            throws IdAuthenticationBusinessException {
+
+        long start = System.currentTimeMillis();
+        logger.info("invokeEmailNotification() started for emailId: {}", emailId);
+
+        long templateFetchStart = System.currentTimeMillis();
+
+        String otpContentTemplate = EnvUtil.getOtpContentTemplate();
+        String authEmailSubjectTemplate = EnvUtil.getAuthEmailSubjectTemplate();
+        String authEmailContentTemplate = EnvUtil.getAuthEmailContentTemplate();
+        String otpSubjectTemplate = EnvUtil.getOtpSubjectTemplate();
+
+        logger.info("Template fetching took {} ms", (System.currentTimeMillis() - templateFetchStart));
+
+        long templateSelectionStart = System.currentTimeMillis();
+
+        String contentTemplate = "";
+        String subjectTemplate = "";
+        if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
+            subjectTemplate = authEmailSubjectTemplate;
+            contentTemplate = authEmailContentTemplate;
+        } else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemplate != null) {
+            subjectTemplate = otpSubjectTemplate;
+            contentTemplate = otpContentTemplate;
+        }
+
+        logger.info("Template selection took {} ms", (System.currentTimeMillis() - templateSelectionStart));
+
+        long applyTemplateStart = System.currentTimeMillis();
+
+        String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
+        String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
+
+        logger.info("applyTemplate() for subject/content took {} ms",
+                (System.currentTimeMillis() - applyTemplateStart));
+
+        long sendEmailStart = System.currentTimeMillis();
+
+        notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
+
+        logger.info("sendEmailNotification() took {} ms", (System.currentTimeMillis() - sendEmailStart));
+
+        logger.info("invokeEmailNotification() total execution time = {} ms",
+                (System.currentTimeMillis() - start));
+    }
+
+
+    /**
 	 * This method gets the template languages in following order.
 	 * 1. Gets user preferred languages if not
 	 * 2. Gets default template languages from configuration if not
