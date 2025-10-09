@@ -222,20 +222,33 @@ public class OTPManager {
             reqWrapper.setRequest(otpGenerateRequestDto);
             RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
                     reqWrapper, ResponseWrapper.class);
+
+            // Log start time of API call
+            long startTime = System.nanoTime();
+            logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+                    "[OTP-MGR|" + uin + "] Starting API call for OTP generation");
+
             ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
-            if ( response!=null && response.getResponse()!=null && response.getResponse().get("status")!=null && response.getResponse().get("status").equals(USER_BLOCKED)) {
+
+            // Log end time and duration of API call
+            long durationMs = (System.nanoTime() - startTime) / 1_000_000; // Convert nanoseconds to milliseconds
+            logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
+                    "[OTP-MGR|" + uin + "] API call completed in " + durationMs + " ms");
+
+            if (response != null && response.getResponse() != null && response.getResponse().get("status") != null
+                    && response.getResponse().get("status").equals(USER_BLOCKED)) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);
                 throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE);
             }
-            if(response == null || response.getResponse() == null) {
+            if (response == null || response.getResponse() == null) {
                 throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
             }
             return response.getResponse().get("otp");
 
         } catch (IDDataValidationException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
-                    e.getMessage());
+                    "Data validation failed: " + e.getMessage());
             throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         } catch (RestServiceException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
