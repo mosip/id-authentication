@@ -16,7 +16,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -212,108 +211,96 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     /**
-     * Method to Send Notification to the Individual via SMS / E-Mail
+     * Sends notifications (SMS and/or Email) based on the specified notification configuration.
+     * <p>
+     * This method processes a notification request by determining the types of notifications (SMS, Email)
+     * to send based on the provided {@code notificationProperty}. It supports single or multiple notification
+     * types specified in the {@code notificationProperty} string, which may contain pipe-separated values
+     * (e.g., "SMS|EMAIL"). The method validates the notification configuration, processes the notification
+     * types, and invokes the appropriate notification methods ({@code invokeSmsNotification} or
+     * {@code invokeEmailNotification}) based on the resolved notification types. It handles the case where
+     * no notifications are configured by checking against {@code NotificationType.NONE}.
+     * </p>
      *
-     * @param notificationtype     - specifies notification type
-     * @param values               - list of values to send notification
-     * @param emailId              - sender E-Mail ID
-     * @param phoneNumber          - sender Phone Number
-     * @param sender               - to specify the sender type
-     * @param notificationProperty
-     * @throws IdAuthenticationBusinessException
+     * @param values              A map containing key-value pairs with data required to populate notification
+     *                            templates (e.g., user details, OTP, or other dynamic content). Must not be null.
+     * @param emailId             The recipient's email address for email notifications. May be null or empty
+     *                            if email notification is not required.
+     * @param phoneNumber         The recipient's phone number for SMS notifications. May be null or empty
+     *                            if SMS notification is not required.
+     * @param sender              The type of sender initiating the notification (e.g., SYSTEM, ADMIN), as defined
+     *                            by the {@code SenderType} enum. Must not be null.
+     * @param notificationProperty A string specifying the notification types to be sent. Supports single type
+     *                            (e.g., "SMS", "EMAIL") or multiple types separated by a pipe (e.g., "SMS|EMAIL").
+     *                            Compared against {@code NotificationType.NONE.getName()} to skip notifications.
+     *                            Must not be null or empty unless intentionally set to "NONE".
+     * @param templateLanguages   A list of language codes (e.g., ["en", "fr"]) used to select notification
+     *                            templates for multilingual support. Must not be null or empty.
+     * @throws IdAuthenticationBusinessException If there is an error during notification processing, such as
+     *                                          invalid configuration, failure to send notifications, or issues
+     *                                          with template resolution. Wraps underlying exceptions for consistent
+     *                                          error handling.
+     * @see NotificationType
+     * @see SenderType
+     * @see IdAuthenticationBusinessException
      */
-
     public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
                                  String notificationProperty, List<String> templateLanguages)
             throws IdAuthenticationBusinessException {
+        Set<NotificationType> notificationType = new HashSet<>();
 
-        long start = System.currentTimeMillis();
-        logger.info("sendNotification() started");
-
-        String notificationtypeconfig = notificationProperty;
-        String notificationMobileNo = phoneNumber;
-        Set<NotificationType> notificationtype = new HashSet<>();
-
-        long processStart = System.currentTimeMillis();
-
-        if (isNotNullorEmpty(notificationtypeconfig)
-                && !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
-
-            if (notificationtypeconfig.contains("|")) {
-                String[] value = notificationtypeconfig.split("\\|");
-                for (int i = 0; i < value.length; i++) {
-                    long innerStart = System.currentTimeMillis();
-
-                    String nvalue = value[i];
-                    processNotification(emailId, notificationMobileNo, notificationtype, nvalue);
-
-                    logger.info("processNotification() for '{}' took {} ms", nvalue,
-                            (System.currentTimeMillis() - innerStart));
+        if (isNotNullOrEmpty(notificationProperty)
+                && !notificationProperty.equalsIgnoreCase(NotificationType.NONE.getName())) {
+            if (notificationProperty.contains("|")) {
+                String[] value = notificationProperty.split("\\|");
+                for (int i = 0; i < 2; i++) {
+                    processNotification(emailId, phoneNumber, notificationType, value[i]);
                 }
             } else {
-                long innerStart = System.currentTimeMillis();
-
-                processNotification(emailId, notificationMobileNo, notificationtype, notificationtypeconfig);
-
-                logger.info("processNotification() for '{}' took {} ms",
-                        notificationtypeconfig, (System.currentTimeMillis() - innerStart));
+                processNotification(emailId, phoneNumber, notificationType, notificationProperty);
             }
         }
-
-        logger.info("Processing notification types took {} ms", (System.currentTimeMillis() - processStart));
-
-        if (notificationtype.contains(NotificationType.SMS)) {
-            long smsStart = System.currentTimeMillis();
-            invokeSmsNotification(values, sender, notificationMobileNo, templateLanguages);
-            logger.info("invokeSmsNotification() took {} ms", (System.currentTimeMillis() - smsStart));
+        if (notificationType.contains(NotificationType.SMS)) {
+            invokeSmsNotification(values, sender, phoneNumber, templateLanguages);
         }
-
-        if (notificationtype.contains(NotificationType.EMAIL)) {
-            long emailStart = System.currentTimeMillis();
+        if (notificationType.contains(NotificationType.EMAIL)) {
             invokeEmailNotification(values, emailId, sender, templateLanguages);
-            logger.info("invokeEmailNotification() took {} ms", (System.currentTimeMillis() - emailStart));
         }
-
-        logger.info("sendNotification() total execution time = {} ms",
-                (System.currentTimeMillis() - start));
     }
-
 
     /**
      * Reads notification type from property and set the notification type
      *
      * @param emailId                - email id of Individual
      * @param phoneNumber            - Phone Number of Individual
-     * @param notificationtype       - Notification type
-     * @param notificationtypeconfig - Notification type from the configuration
+     * @param notificationType       - Notification type
+     * @param notificationTypeConfig - Notification type from the configuration
      */
-
-    private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
-                                     String notificationtypeconfig) {
-        String type = notificationtypeconfig;
-        if (type.equalsIgnoreCase(NotificationType.SMS.getName())) {
-            if (isNotNullorEmpty(phoneNumber)) {
-                notificationtype.add(NotificationType.SMS);
+    private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationType,
+                                     String notificationTypeConfig) {
+        if (notificationTypeConfig.equalsIgnoreCase(NotificationType.SMS.getName())) {
+            if (isNotNullOrEmpty(phoneNumber)) {
+                notificationType.add(NotificationType.SMS);
             } else {
-                if (isNotNullorEmpty(emailId)) {
-                    notificationtype.add(NotificationType.EMAIL);
+                if (isNotNullOrEmpty(emailId)) {
+                    notificationType.add(NotificationType.EMAIL);
                 }
             }
         }
 
-        if (type.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
-            if (isNotNullorEmpty(emailId)) {
-                notificationtype.add(NotificationType.EMAIL);
+        if (notificationTypeConfig.equalsIgnoreCase(NotificationType.EMAIL.getName())) {
+            if (isNotNullOrEmpty(emailId)) {
+                notificationType.add(NotificationType.EMAIL);
             } else {
-                if (isNotNullorEmpty(phoneNumber)) {
-                    notificationtype.add(NotificationType.SMS);
+                if (isNotNullOrEmpty(phoneNumber)) {
+                    notificationType.add(NotificationType.SMS);
                 }
             }
         }
     }
 
-    private boolean isNotNullorEmpty(String value) {
-        return value != null && !value.isEmpty() && value.trim().length() > 0;
+    private boolean isNotNullOrEmpty(String value) {
+        return value != null && !value.isEmpty() && !value.trim().isEmpty();
     }
 
     /**
