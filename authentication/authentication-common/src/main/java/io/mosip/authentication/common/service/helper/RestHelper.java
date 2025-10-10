@@ -1,7 +1,5 @@
 package io.mosip.authentication.common.service.helper;
 
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.METHOD_REQUEST_SYNC;
-import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQUEST_SYNC_RUNTIME_EXCEPTION;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CLIENT_ERROR;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.CONNECTION_TIMED_OUT;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.SERVER_ERROR;
@@ -55,11 +53,13 @@ public class RestHelper {
     private static final String CHECK_ERROR_RESPONSE = "checkErrorResponse";
     private static final String UNKNOWN_ERROR_LOG = "- UNKNOWN_ERROR - ";
     private static final String ERRORS = "errors";
+    private static final String METHOD_REQUEST_SYNC = "requestSync";
     private static final String METHOD_REQUEST_ASYNC = "requestAsync";
     private static final String PREFIX_REQUEST = "Request : ";
     private static final String CLASS_REST_HELPER = "RestHelper";
     private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
     private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
+    private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
 
     private static Logger mosipLogger = IdRepoLogger.getLogger(io.mosip.idrepository.core.helper.RestHelper.class);
 
@@ -91,16 +91,47 @@ public class RestHelper {
     /**
      * Request to send/receive HTTP requests and return the response synchronously.
      *
-     * @param         <T> the generic type
+     * @param <T> the generic type
      * @param request the request
      * @return the response object or null in case of exception
      * @throws RestServiceException the rest service exception
      */
-    public <T> T requestSync(RestRequestDTO request) throws RestServiceException {
+    @SuppressWarnings("unchecked")
+    @WithRetry
+    public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
+        Object response;
         try {
-            return (T) requestAsync(request).block();
-        } catch (Exception e) {
-            throw new RestServiceException(UNKNOWN_ERROR, e);
+            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    request.getUri());
+            if (request.getTimeout() != null) {
+                response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
+            } else {
+                response = request(request).block();
+            }
+            if (!String.class.equals(request.getResponseType())) {
+                checkErrorResponseSync(response, request.getResponseType());
+                if (RestUtil.containsError(response.toString(), mapper)) {
+                    mosipLogger.debug("Error in response %s", response.toString());
+                }
+            }
+            mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    "Received valid response");
+            return (T) response;
+        } catch (WebClientResponseException e) {
+            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                    THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
+                            + " \n Response Body : \n" + e.getResponseBodyAsString());
+            throw handleStatusErrorSync(e, request.getResponseType());
+        } catch (RuntimeException e) {
+            if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+                        THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + ExceptionUtils.getStackTrace(e));
+                throw new IdRepoRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
+            } else {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+                        THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
+                throw new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
+            }
         }
     }
 
@@ -189,7 +220,38 @@ public class RestHelper {
     }
 
     /**
-     * Check error response.
+     * Check error response (synchronous).
+     *
+     * @param response     the response
+     * @param responseType the response type
+     * @throws RestServiceException the rest service exception
+     */
+    private void checkErrorResponseSync(Object response, Class<?> responseType) throws RestServiceException {
+        try {
+            if (Objects.nonNull(response)) {
+                ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
+                if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
+                        && responseNode.get(ERRORS).size() > 0) {
+                    mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, CHECK_ERROR_RESPONSE,
+                            THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG
+                                    + responseNode.get(ERRORS).toString());
+                    throw new RestServiceException(CLIENT_ERROR, responseNode.toString(),
+                            mapper.readValue(responseNode.toString().getBytes(StandardCharsets.UTF_8), responseType));
+                }
+            } else {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, CHECK_ERROR_RESPONSE,
+                        THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + "Response is null");
+                throw new RestServiceException(CLIENT_ERROR);
+            }
+        } catch (IOException e) {
+            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, CHECK_ERROR_RESPONSE,
+                    THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + e.getMessage());
+            throw new RestServiceException(UNKNOWN_ERROR, e);
+        }
+    }
+
+    /**
+     * Check error response (reactive).
      *
      * @param response     the response
      * @param responseType the response type
@@ -216,7 +278,63 @@ public class RestHelper {
     }
 
     /**
-     * Handle 4XX/5XX status error. Retry is triggered using {@code IdRepoRetryException}.
+     * Handle 4XX/5XX status error (synchronous).
+     * Retry is triggered using {@code IdRepoRetryException}.
+     * Retry is done for 401 and 5xx status codes.
+     *
+     * @param e            the response
+     * @param responseType the response type
+     * @return the RestServiceException
+     * @throws RestServiceException
+     */
+    private RestServiceException handleStatusErrorSync(WebClientResponseException e, Class<?> responseType)
+            throws RestServiceException {
+        try {
+            String responseBodyAsString = e.getResponseBodyAsString(StandardCharsets.UTF_8);
+            Object responseBody = null;
+            try {
+                responseBody = mapper.readValue(responseBodyAsString.getBytes(StandardCharsets.UTF_8), responseType);
+            } catch (IOException ex) {
+                mosipLogger.warn(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+                        "Failed to parse response body: " + ex.getMessage());
+            }
+
+            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER,
+                    "request failed with status code :" + e.getRawStatusCode(), "\n\n" + responseBodyAsString);
+
+            if (e.getStatusCode().is4xxClientError()) {
+                if (e.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+                    List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
+                    throw new AuthenticationException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(),
+                            e.getRawStatusCode());
+                } else if (e.getRawStatusCode() == HttpStatus.FORBIDDEN.value()) {
+                    List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
+                    throw new IdRepoRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
+                            errorList.get(0).getMessage(), e.getRawStatusCode()));
+                } else {
+                    mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+                            "Status error - returning RestServiceException - CLIENT_ERROR ");
+                    throw new RestServiceException(CLIENT_ERROR, responseBodyAsString, responseBody);
+                }
+            } else if (e.getStatusCode().is5xxServerError()) {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+                        "Status error - returning RestServiceException - SERVER_ERROR");
+                throw new IdRepoRetryException(new RestServiceException(SERVER_ERROR, responseBodyAsString, responseBody));
+            } else {
+                mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+                        "Status error - returning RestServiceException - UNKNOWN_ERROR");
+                throw new RestServiceException(UNKNOWN_ERROR, responseBodyAsString, responseBody);
+            }
+        } catch (Exception ex) {
+            mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+                    ex.getMessage());
+            return new RestServiceException(UNKNOWN_ERROR, ex);
+        }
+    }
+
+    /**
+     * Handle 4XX/5XX status error (reactive).
+     * Retry is triggered using {@code IdRepoRetryException}.
      * Retry is done for 401 and 5xx status codes.
      *
      * @param e            the response
