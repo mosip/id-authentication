@@ -357,7 +357,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
-        notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
+        notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate).subscribe();
     }
 
     /**
@@ -410,9 +410,9 @@ public class NotificationServiceImpl implements NotificationService {
                 (System.currentTimeMillis() - applyTemplateStart));
 
         long sendEmailStart = System.currentTimeMillis();
-
-        notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
-
+        
+        notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent).subscribe();
+        
         logger.info("sendEmailNotification() took {} ms", (System.currentTimeMillis() - sendEmailStart));
 
         logger.info("invokeEmailNotification() total execution time = {} ms",
