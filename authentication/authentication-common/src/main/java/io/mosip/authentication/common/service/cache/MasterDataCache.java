@@ -71,19 +71,17 @@ public class MasterDataCache {
 	 * @return the master data template
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable(cacheNames = MASTERDATA_TEMPLATES)
-	public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
-		try {
-			RestRequestDTO request = restFactory
-					.buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class);
-			request.setUri(request.getUri().replace("{code}", template));
-			return (Map<String, Object>) restHelper.requestAsync(request);
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (Throwable e) {
-            throw new RuntimeException(e);
+    @Cacheable(cacheNames = MASTERDATA_TEMPLATES)
+    public Map<String, Object> getMasterDataTemplate(String template) throws IdAuthenticationBusinessException {
+        try {
+            RestRequestDTO request = restFactory
+                    .buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class);
+            request.setUri(request.getUri().replace("{code}", template));
+            return restHelper.requestSync(request);
+        } catch (IDDataValidationException | RestServiceException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
+                    e.getErrorText());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
     }
 	
