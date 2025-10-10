@@ -52,17 +52,15 @@ public class MasterDataCache {
 	 * @return the master data titles
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable(cacheNames = MASTERDATA_TITLES)
-	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
-		try {
-			return (Map<String, Object>) restHelper
-					.requestAsync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (Throwable e) {
-            throw new RuntimeException(e);
+    @Cacheable(cacheNames = MASTERDATA_TITLES)
+    public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
+        try {
+            return restHelper
+                    .requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
+        } catch (IDDataValidationException | RestServiceException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
+                    e.getErrorText());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
     }
 	
