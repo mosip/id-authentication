@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.cache;
 
 import java.util.Map;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -19,6 +20,7 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
+import reactor.core.publisher.Mono;
 
 /**
  * The Class MasterDataCache.
@@ -52,17 +54,20 @@ public class MasterDataCache {
 	 * @return the master data titles
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Cacheable(cacheNames = MASTERDATA_TITLES)
-	public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
-		try {
-			return (Map<String, Object>) restHelper
-					.requestAsync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
-		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
-					e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		} catch (Throwable e) {
-            throw new RuntimeException(e);
+    @Cacheable(cacheNames = MASTERDATA_TITLES)
+    public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
+        try {
+            Mono<Map<String, Object>> mono = restHelper
+                    .requestAsync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
+            return mono.block(); // Blocks until Mono completes and returns Map
+        } catch (IDDataValidationException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
+                    e.getErrorText());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+        } catch (Throwable e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "UNABLE_TO_PROCESS",
+                    ExceptionUtils.getStackTrace(e));
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
     }
 	
