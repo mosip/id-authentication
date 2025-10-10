@@ -35,6 +35,7 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -69,6 +70,7 @@ import reactor.core.publisher.Mono;
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
+@TestPropertySource(properties = "mosip.ida.otp.notification.request.mode=1")
 public class NotificationServiceImplTest {
 
 	@InjectMocks
