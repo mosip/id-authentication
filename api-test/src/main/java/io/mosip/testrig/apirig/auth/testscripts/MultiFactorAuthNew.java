@@ -84,12 +84,12 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 			
 		{
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", partnerKeyUrl));
-			PartnerRegistration.appendEkycOrRp = "rp-";
+			PartnerRegistration.appendEkycOrRp.set("rp-");
 		}
 		if(testCaseDTO.getEndPoint().contains("$ekycPartnerKeyURL$"))
 		{
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ekycPartnerKeyURL$", ekycPartnerKeyURL));
-			PartnerRegistration.appendEkycOrRp = "ekyc-";
+			PartnerRegistration.appendEkycOrRp.set("ekyc-");
 		}
 		if (testCaseDTO.getEndPoint().contains("$UpdatedPartnerKeyURL$")) {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
