@@ -334,12 +334,12 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			Function<? super BIR, ? extends String> keyFunction = bir -> {
 				BDBInfo bdbInfo = bir.getBdbInfo();
 				String modality = bdbInfo.getType().get(0).toString();
-				if (modality.equalsIgnoreCase("face")) {
-					return modality + "_" + bdbInfo.getFormat().getType();
-				}
-				return modality + "_" + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? "" : bdbInfo.getSubtype().get(0))
-						+ (bdbInfo.getSubtype() != null && bdbInfo.getSubtype().size() > 1 ? " " + bdbInfo.getSubtype().get(1) : "")
-				+ "_" + bdbInfo.getFormat().getType();
+                if (modality.equalsIgnoreCase("face")) {
+                    return modality + "__" + bdbInfo.getFormat().getType();
+                }
+                return modality + "_" + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? "" : bdbInfo.getSubtype().get(0))
+                        + (bdbInfo.getSubtype().size() > 1 ? " " + bdbInfo.getSubtype().get(1) : "")
+                        + "_" + bdbInfo.getFormat().getType();
 			};
 			if(birDataFromXMLType.size() == 1) {
 				//This is the segmented cbeff
