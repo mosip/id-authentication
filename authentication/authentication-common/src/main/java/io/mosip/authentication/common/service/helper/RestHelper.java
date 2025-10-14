@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 import jakarta.annotation.PostConstruct;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -76,7 +77,8 @@ public class RestHelper {
     private static final Logger mosipLogger =
             IdRepoLogger.getLogger(RestHelper.class);
 
-    private final ObjectMapper mapper;
+    @Autowired
+    private ObjectMapper mapper;
     private WebClient webClient;
 
     @Value("${webclient.buffer.max-in-memory-size:10485760}") // 10 MB default
@@ -88,9 +90,8 @@ public class RestHelper {
     @Value("${webclient.response-timeout-seconds:5}")
     private int responseTimeoutSeconds;
 
-    public RestHelper(WebClient webClient, ObjectMapper mapper) {
+    public RestHelper(WebClient webClient) {
         this.webClient = webClient;
-        this.mapper = mapper;
     }
 
     @PostConstruct
