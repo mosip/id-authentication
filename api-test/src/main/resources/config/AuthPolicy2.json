@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
       "allowedAuthTypes": 	[
 				{
 					"authSubType": "IRIS",
@@ -71,6 +72,45 @@
 					"mandatory": false
 				}
 			],
+=======
+      "allowedAuthTypes": [
+        {
+          "authSubType": "IRIS",
+          "authType": "bio",
+          "mandatory": false
+        },
+        {
+          "authSubType": "FINGER",
+          "authType": "bio",
+          "mandatory": false
+        },
+        {
+          "authSubType": "FACE",
+          "authType": "bio",
+          "mandatory": false
+        },
+        {
+          "authSubType": "",
+          "authType": "otp",
+          "mandatory": false
+        },
+        {
+           "authSubType": "",
+           "authType": "otp-request",
+           "mandatory": false
+        },       
+        {
+          "authSubType": "",
+          "authType": "kyc",
+          "mandatory": false
+        },
+        {
+          "authSubType": "",
+          "authType": "demo",
+          "mandatory": false
+        }         
+      ],
+>>>>>>> upstream/release-1.2.1.x
       "kycLanguages": [
                 "ara",
 				"eng"
