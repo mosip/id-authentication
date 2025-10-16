@@ -136,7 +136,7 @@ public class MosipTestRunner {
 			else
 				startTestRunner();
 		} catch (Exception e) {
-			LOGGER.error("Exception occurred while running API Test Rig", e);
+			LOGGER.error("Exception " + e.getMessage());
 		}
 		
 		IdAuthenticationUtil.dbCleanUp();

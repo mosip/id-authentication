@@ -1,5 +1,5 @@
 BioAuth:
-  auth_BioAuth_Biometric_Face_With_blocked_UIN_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_67
       description: Biometric face auth with blocked UIN
@@ -39,7 +39,7 @@ BioAuth:
       output: '{
     "authStatus": "false"
 }'
-  auth_BioAuth_Biometric_Face_With_Locked_UIN_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_Locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_47
       description: Biometric face auth with locked UIN
@@ -79,7 +79,7 @@ BioAuth:
       output: '{
     "authStatus": "false"
 }'
-  auth_BioAuth_Biometric_Face_With_blocked_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_blocked_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_68
       description: Biometric face auth with blocked VID

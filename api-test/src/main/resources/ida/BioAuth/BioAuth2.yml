@@ -39,7 +39,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_Face_With_updated_edited_policy_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_updated_edited_policy_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_02
       description: Biometric face auth with updated edited policy using UIN
@@ -79,7 +79,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_Face_With_Infant_uin_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_Infant_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_03
       description: Biometric face auth with infant UIN
@@ -124,7 +124,7 @@ BioAuth:
       ],
   "authStatus": "false"
 }'
-  auth_BioAuth_Biometric_Face_With_Infant_locked_uin_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_Infant_locked_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_04
       description: Biometric face auth with infant locked UIN
@@ -134,7 +134,7 @@ BioAuth:
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": true,
@@ -249,7 +249,7 @@ BioAuth:
       output: '{
     "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_06
       description: Biometric LeftMiddleFinger auth with valid UIN
@@ -289,7 +289,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_07
       description: Biometric LeftIndexFinger auth with valid UIN
@@ -329,7 +329,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_08
       description: Biometric auth with LeftLittleFinger using valid UIN
@@ -369,7 +369,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightIndexFinger_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightIndexFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_09
       description: Biometric auth with RightIndexFinger using valid UIN
@@ -409,7 +409,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightRingFinger_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightRingFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_10
       description: Biometric auth with RightRingFinger using valid UIN
@@ -449,7 +449,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightMiddleFinger_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightMiddleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_11
       description: Biometric auth with RightMiddleFinger using valid UIN
@@ -489,7 +489,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_12
       description: Bio auth with RightLittleFinger using valid UIN
@@ -529,7 +529,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftThumb_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftThumb_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_13
       description: Bio auth with LeftThumb using valid UIN
@@ -569,7 +569,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightThumb_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightThumb_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_14
       description: Bio auth with RightThumb using valid UIN
@@ -649,7 +649,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftIris_With_uin_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftIris_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_16
       description: Bio auth with LeftIris using valid UIN
@@ -731,7 +731,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_Face_With_Revoked_VID_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_Revoked_VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_18
       description: Bio auth wwith Face with revoked VID
@@ -818,7 +818,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftMiddleFingerr_With_VID_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftMiddleFingerr_With_VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_20
       description: Bio auth with LeftMiddleFinger using valid VID
@@ -859,7 +859,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_21
       description: Bio auth with LeftIndexFinger using valid VID
@@ -899,7 +899,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_22
       description: Bio auth with LeftLittleFinger using valid VID
@@ -939,7 +939,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_RightIndexFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_23
       description: Bio auth with RightIndexFinger using valid VID
@@ -979,7 +979,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_RightRingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_24
       description: Bio auth with RightRingFinger using valid VID
@@ -1019,7 +1019,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_25
       description: Bio auth with RightMiddleFinger using valid VID
@@ -1059,7 +1059,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightLittleFinger_With_VID_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_RightLittleFinger_With_VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_26
       description: Bio auth with RightLittleFinger using valid VID
@@ -1099,7 +1099,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftThumb_With_VID_Valid_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftThumb_With_VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_27
       description: Bio auth with LeftThumb using valid VID
@@ -1139,7 +1139,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_RightThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_28
       description: Bio auth with RightThumb using valid VID
@@ -1219,7 +1219,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
+  auth_BioAuth_Biometric_LeftIris_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_30
       description: Bio auth with LeftIris using valid VID
@@ -1938,7 +1938,7 @@ BioAuth:
     }
   ]
 }'
-  auth_BioAuth_Biometric_Face_Unlock_With_Valid_uin_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_Unlock_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_46
       description: Bio auth with unlocked face with valid UIN
@@ -2120,7 +2120,7 @@ BioAuth:
       ],
         "authStatus": false
 }'
-  auth_BioAuth_Biometric_Face_Unlock_With_AllValid_uin_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_Unlock_With_AllValid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_50
       description: Bio auth with face unlocked UIN
@@ -2161,7 +2161,7 @@ BioAuth:
       output: '{
   "authStatus": "true"
 }'
-  auth_BioAuth_Biometric_Face_Lock_Permanent_uin_Valid_Smoke:
+  auth_BioAuth_Biometric_Face_Lock_Permanent_uin_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_51
       description: Bio auth with permanently locked UIN
@@ -2249,7 +2249,7 @@ BioAuth:
     "errors": [],
         "authStatus": false
 }'
-  auth_BioAuth_Biometric_Face_With_Draft_uin_Smoke_Pos:
+  auth_BioAuth_Biometric_Face_With_Draft_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_53
       description: Bio auth with drafted UIN
@@ -2831,7 +2831,7 @@ BioAuth:
     "errors": [],
         "authStatus": false
 }'
-  auth_BioAuth_RightIris_Lock_uin_audit_Valid_Smoke:
+  auth_BioAuth_RightIris_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_66
       description: Bio iris auth with locked bio-iris auth type
@@ -2841,7 +2841,7 @@ BioAuth:
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": true,
@@ -2877,7 +2877,7 @@ BioAuth:
       ],
         "authStatus": false
 }'
-  auth_BioAuth_LeftIris_Lock_uin_audit_Valid_Smoke:
+  auth_BioAuth_LeftIris_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_67
       description: Bio iris auth with locked bio-iris auth type
@@ -2887,7 +2887,7 @@ BioAuth:
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": true,
@@ -2923,7 +2923,7 @@ BioAuth:
       ],
         "authStatus": false
 }'
-  auth_BioAuth_Face_Lock_uin_audit_Valid_Smoke:
+  auth_BioAuth_Face_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_68
       description: Bio Face auth with locked bio-Face auth type
@@ -2933,7 +2933,7 @@ BioAuth:
       outputTemplate: ida/BioAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": true,

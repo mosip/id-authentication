@@ -9,7 +9,7 @@ DemoAuth:
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,

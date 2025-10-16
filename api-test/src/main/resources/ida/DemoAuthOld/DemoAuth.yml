@@ -374,7 +374,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -402,7 +402,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -430,7 +430,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -458,7 +458,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -486,7 +486,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -514,7 +514,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -542,7 +542,7 @@ DemoAuth:
       outputTemplate: ida/DemoAuth/demoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
