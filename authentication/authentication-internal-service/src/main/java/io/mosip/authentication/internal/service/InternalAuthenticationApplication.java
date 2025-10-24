@@ -139,7 +139,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		RestTemplateHelper.class, LanguageUtil.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, IdentityAttributesForMatchTypeHelper.class, WebSubClientConfig.class, SubscriberClientImpl.class
-		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class, SubjectAlternativeNamesHelper.class
+		, ECKeyPairGenRequestValidator.class, WebSubPublisherClientConfig.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class
 })
 @ComponentScan(basePackages = { "io.mosip.authentication.internal.service.*",
 		"io.mosip.kernel.core.logger.config",
