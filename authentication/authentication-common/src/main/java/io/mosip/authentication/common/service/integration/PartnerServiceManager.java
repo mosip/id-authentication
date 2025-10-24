@@ -403,8 +403,16 @@ public class PartnerServiceManager {
 	public void updatePartnerData(EventModel eventModel) {
 		PartnerData partnerEventData = mapper.convertValue(eventModel.getEvent().getData().get(PARTNER_DATA), PartnerData.class);
 		Optional<PartnerData> partnerDataOptional = partnerDataRepo.findById(partnerEventData.getPartnerId());
+        logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "updatePartnerData",
+                "Updating partner data. Partner Id: " + partnerEventData.getPartnerId());
+        logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "updatePartnerData",
+                "Updating partner data. Partner Id name: " + partnerEventData.getPartnerName());
+        logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "updatePartnerData",
+                "Updating partner data. Partner Id status: " + partnerEventData.getPartnerStatus());
 		if (partnerDataOptional.isPresent()) {
 			PartnerData partnerData = partnerDataOptional.get();
+            logger.info(IdAuthCommonConstants.IDA, this.getClass().getSimpleName(), "updatePartnerData",
+                    "Found Partner in DB: " + partnerData.getPartnerId());
 			partnerData.setPartnerId(partnerEventData.getPartnerId());
 			partnerData.setPartnerName(partnerEventData.getPartnerName());
 			partnerData.setCertificateData(partnerEventData.getCertificateData());
