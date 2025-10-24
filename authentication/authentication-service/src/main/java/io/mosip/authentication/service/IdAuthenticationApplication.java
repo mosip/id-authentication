@@ -119,7 +119,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		PDFGeneratorImpl.class, RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
 , TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
-		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class})
+		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config","io.mosip.authentication.common.service.util",
 		"io.mosip.kernel.websub.api.config",
