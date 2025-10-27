@@ -280,6 +280,7 @@ public class IdAuthSecurityManager {
             CryptomanagerRequestDto request = new CryptomanagerRequestDto();
             request.setApplicationId(EnvUtil.getAppId());
             request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+            System.out.println("dataToDecrypt "+dataToDecrypt);
             request.setData(dataToDecrypt);
             request.setReferenceId(refId);
             request.setAad(aad);
