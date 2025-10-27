@@ -285,6 +285,7 @@ public class IdAuthSecurityManager {
             request.setAad(aad);
             request.setSalt(saltToDecrypt);
             //request.setPrependThumbprint(isThumbprintEnabled);
+            System.out.println("input request "+ request);
             return CryptoUtil.decodeBase64Url(cryptomanagerService.decrypt(request).getData());
         } catch (NoUniqueAliasException e) {
             // TODO: check whether PUBLICKEY_EXPIRED to be thrown for NoUniqueAliasException
