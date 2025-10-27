@@ -55,8 +55,10 @@ public class DataShareManager {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 
-        String responseStr = restHelper.requestSync(request);
-		if (responseStr == null) {
+        request.setResponseType(String.class);
+        String responseStr = restHelper.<String>requestAsync(request).block();
+
+        if (responseStr == null) {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
