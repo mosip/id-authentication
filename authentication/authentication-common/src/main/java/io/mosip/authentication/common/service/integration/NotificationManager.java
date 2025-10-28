@@ -82,6 +82,8 @@ public class NotificationManager {
                     RestRequestFactory.createRequest(smsRequestDto),
                     String.class);
 
+            System.out.println("RestRequestDTo- "+ restRequestDTO);
+
             return restHelper.requestAsync(restRequestDTO)
                     .then() // Convert Mono<String> to Mono<Void> since we don't need the response
                     .onErrorMap(e -> {

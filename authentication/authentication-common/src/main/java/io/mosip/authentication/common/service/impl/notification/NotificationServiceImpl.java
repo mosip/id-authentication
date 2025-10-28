@@ -26,6 +26,7 @@ import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -34,6 +35,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import reactor.core.scheduler.Schedulers;
 
 /***
  * Service class to notify users via SMS or Email notification.
@@ -86,6 +89,12 @@ public class NotificationServiceImpl implements NotificationService {
     private int requestMode;
 
     private static final Logger logger = IdaLogger.getLogger(NotificationServiceImpl.class);
+
+    @Value("${mosip.ida.email.timeout:15}")
+    private long emailTimeout;
+
+    @Value("${mosip.ida.sms.timeout:15}")
+    private long smsTimeout;
 
     public void sendAuthNotification(AuthRequestDTO authRequestDTO, String idvid, AuthResponseDTO authResponseDTO, Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
@@ -315,6 +324,16 @@ public class NotificationServiceImpl implements NotificationService {
         } else {
             notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate).subscribe();
         }
+        if (requestMode == 0) {
+            // offload blocking to elastic thread pool
+            notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate)
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .block(Duration.ofSeconds(smsTimeout));
+        } else {
+            notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate)
+                    .doOnError(e -> logger.error("SMS send failed", e))
+                    .subscribe();
+        }
     }
 
     /**
@@ -346,9 +365,14 @@ public class NotificationServiceImpl implements NotificationService {
         String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
 
         if (requestMode == 0) {
-            notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent).block();
+            // offload blocking to elastic thread pool
+            notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent)
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .block(Duration.ofSeconds(emailTimeout));
         } else {
-            notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent).subscribe();
+            notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent)
+                    .doOnError(e -> logger.error("Email send failed", e))
+                    .subscribe();
         }
     }
 
