@@ -146,7 +146,7 @@ public class NotificationServiceImplTest {
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(Supplier);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
@@ -195,7 +195,7 @@ public class NotificationServiceImplTest {
 		authResponseDTO.setResponse(res);
 		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(Supplier);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));

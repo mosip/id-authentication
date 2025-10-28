@@ -125,7 +125,7 @@ public class NotificationManagerTest {
 	public void testInValidSendNotificationPhone() throws IdAuthenticationBusinessException, RestServiceException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.SMS);
-        Mockito.when(restHelper.requestSync(Mockito.any()))
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR));
 		notificationManager.sendSmsNotification("1234567890", "test");
 	}

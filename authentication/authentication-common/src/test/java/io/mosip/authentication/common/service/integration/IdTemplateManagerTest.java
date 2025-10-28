@@ -248,7 +248,7 @@ public class IdTemplateManagerTest {
 		valuemap.put("templates", finalList);
 		Map<String, Map<String, List<Map<String, Object>>>> finalMap = new HashMap<>();
 		finalMap.put("response", valuemap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(finalMap);
 	}
 
 	private RestRequestDTO getRestRequestDTO() {
