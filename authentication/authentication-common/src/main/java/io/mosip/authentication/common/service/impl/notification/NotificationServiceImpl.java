@@ -325,10 +325,11 @@ public class NotificationServiceImpl implements NotificationService {
             notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate).subscribe();
         }
         if (requestMode == 0) {
+            Duration timeout = Duration.ofSeconds(smsTimeout > 0 ? smsTimeout : 10);
             // offload blocking to elastic thread pool
             notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate)
                     .subscribeOn(Schedulers.boundedElastic())
-                    .block(Duration.ofSeconds(smsTimeout));
+                    .block(timeout);
         } else {
             notificationManager.sendSmsNotificationAsync(notificationMobileNo, smsTemplate)
                     .doOnError(e -> logger.error("SMS send failed", e))
@@ -363,12 +364,12 @@ public class NotificationServiceImpl implements NotificationService {
 
         String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
         String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
-
         if (requestMode == 0) {
+            Duration timeout = Duration.ofSeconds(emailTimeout > 0 ? emailTimeout : 10);
             // offload blocking to elastic thread pool
             notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent)
                     .subscribeOn(Schedulers.boundedElastic())
-                    .block(Duration.ofSeconds(emailTimeout));
+                    .block(timeout);
         } else {
             notificationManager.sendEmailNotificationAsync(emailId, mailSubject, mailContent)
                     .doOnError(e -> logger.error("Email send failed", e))
