@@ -6,7 +6,6 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +19,6 @@ import org.springframework.transaction.TransactionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -33,7 +31,6 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The class validates the UIN and VID.
@@ -114,7 +111,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      *                                           exception
      */
     @Override
-    @Transactional
     public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
             throws IdAuthenticationBusinessException {
 

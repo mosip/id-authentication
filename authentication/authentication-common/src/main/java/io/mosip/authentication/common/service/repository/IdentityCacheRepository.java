@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface IdentityCacheRepository extends BaseRepository<IdentityEntity, String> {
@@ -92,6 +93,7 @@ public interface IdentityCacheRepository extends BaseRepository<IdentityEntity, 
     """)
     Optional<FullIdentityView> findFullViewById(@Param("id") String id);
 
+    @Transactional
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = """
     with dec as (
