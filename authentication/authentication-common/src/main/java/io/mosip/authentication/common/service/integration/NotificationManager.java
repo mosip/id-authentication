@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -82,7 +83,7 @@ public class NotificationManager {
                     RestRequestFactory.createRequest(smsRequestDto),
                     String.class);
 
-            return restHelper.requestAsync(restRequestDTO)
+            return restHelper.requestAsync(restRequestDTO, MediaType.APPLICATION_JSON)
                     .then() // Convert Mono<String> to Mono<Void> since we don't need the response
                     .onErrorMap(e -> {
                         if (e instanceof IDDataValidationException || e instanceof RestServiceException) {
@@ -153,7 +154,7 @@ public class NotificationManager {
 
             System.out.println("RestRequestDTo- "+ restRequestDTO);
 
-            return restHelper.requestAsync(restRequestDTO)
+            return restHelper.requestAsync(restRequestDTO, MediaType.MULTIPART_FORM_DATA)
                     .then() // Convert Mono<String> to Mono<Void> since we don't need the response
                     .onErrorMap(e -> {
                         if (e instanceof IDDataValidationException || e instanceof RestServiceException) {

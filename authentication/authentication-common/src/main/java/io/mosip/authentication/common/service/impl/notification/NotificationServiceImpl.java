@@ -364,6 +364,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
         String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
+        
         if (requestMode == 0) {
             Duration timeout = Duration.ofSeconds(emailTimeout > 0 ? emailTimeout : 10);
             // offload blocking to elastic thread pool

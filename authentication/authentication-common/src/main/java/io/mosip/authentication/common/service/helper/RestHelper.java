@@ -119,7 +119,7 @@ public class RestHelper {
      */
     @SuppressWarnings("unchecked")
     @WithRetry
-    public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
+    public <T> T requestSync(@Valid RestRequestDTO request, MediaType mediaType) throws RestServiceException {
         Object response;
         Class<?> responseType = (request.getResponseType() == null) ? String.class : request.getResponseType();
 
@@ -127,7 +127,7 @@ public class RestHelper {
             mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
                     request.getUri());
 
-            Mono<?> mono = request(request, responseType);
+            Mono<?> mono = request(request, responseType, mediaType);
             if (request.getTimeout() != null) {
                 response = mono.timeout(Duration.ofSeconds(request.getTimeout())).block();
             } else {
@@ -171,7 +171,7 @@ public class RestHelper {
      */
     @WithRetry
     @SuppressWarnings("unchecked")
-    public <T> Mono<T> requestAsync(@Valid RestRequestDTO request) {
+    public <T> Mono<T> requestAsync(@Valid RestRequestDTO request, MediaType mediaType) {
         Class<?> responseType = (request.getResponseType() == null) ? String.class : request.getResponseType();
 
         // Log request metadata
@@ -182,7 +182,7 @@ public class RestHelper {
                         ", Headers: " + request.getHeaders());
 
         // Actual async request flow
-        return request(request, responseType)
+        return request(request, responseType, mediaType)
                 .doOnNext(response -> mosipLogger.info(
                         IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                         "Response received for URI: " + request.getUri() +
@@ -234,7 +234,7 @@ public class RestHelper {
     /**
      * Method to send/receive HTTP requests and return the response as Mono.
      */
-    private Mono<?> request(RestRequestDTO request, Class<?> responseType) {
+    private Mono<?> request(RestRequestDTO request, Class<?> responseType, MediaType mediaType) {
         String uri = buildUri(request);
 
         RequestBodySpec spec = webClient.method(request.getHttpMethod()).uri(uri);
@@ -246,7 +246,7 @@ public class RestHelper {
         ResponseSpec exchange;
         if (request.getRequestBody() != null) {
             // Set JSON content-type when a body is present (adjust if you support other media types)
-            spec = spec.contentType(MediaType.APPLICATION_JSON);
+            spec = spec.contentType(mediaType);
             exchange = spec.bodyValue(request.getRequestBody()).retrieve();
         } else {
             exchange = spec.retrieve();

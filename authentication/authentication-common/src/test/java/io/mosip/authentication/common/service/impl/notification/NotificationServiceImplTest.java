@@ -287,7 +287,7 @@ public class NotificationServiceImplTest {
         Mockito.when(notificationManager.sendSmsNotificationAsync(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Mono.empty());
         // Optionally, mock RestHelper.requestAsync if NotificationManager uses it
-        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class)))
+        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class), Mockito.any()))
                 .thenReturn(Mono.just("SMS Sent Successfully"));
         // Invoke the private method
         ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.OTP,
@@ -305,7 +305,7 @@ public class NotificationServiceImplTest {
         Mockito.when(notificationManager.sendSmsNotificationAsync(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Mono.empty());
         // Optionally, mock RestHelper.requestAsync if NotificationManager uses it
-        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class)))
+        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class), Mockito.any()))
                 .thenReturn(Mono.just("SMS Sent Successfully"));
 		SenderType senderType = null;
 		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, senderType,
@@ -321,7 +321,7 @@ public class NotificationServiceImplTest {
         Mockito.when(notificationManager.sendSmsNotificationAsync(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Mono.empty());
         // Optionally, mock RestHelper.requestAsync if NotificationManager uses it
-        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class)))
+        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class), Mockito.any()))
                 .thenReturn(Mono.just("SMS Sent Successfully"));
 		Map<String, Object> values = new HashMap<>();
 		SenderType senderType = null;
@@ -346,7 +346,7 @@ public class NotificationServiceImplTest {
         Mockito.when(notificationManager.sendSmsNotificationAsync(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Mono.empty());
         // Optionally, mock RestHelper.requestAsync if NotificationManager uses it
-        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class)))
+        Mockito.when(restHelper.requestAsync(Mockito.any(RestRequestDTO.class), Mockito.any()))
                 .thenReturn(Mono.just("SMS Sent Successfully"));
 		values.put("uin", "123456677890");
 		ReflectionTestUtils.invokeMethod(notificationService, "sendNotification", values, "abc@test.com", "1234567890",

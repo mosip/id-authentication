@@ -21,6 +21,6 @@ public class TestController {
 
 	@PostMapping(value = "/requestASync")
 	public Object requestASync(@RequestBody RestRequestDTO request) throws RestServiceException {
-		return restHelper.requestAsync(request);
+		return restHelper.requestAsync(request, MediaType.APPLICATION_JSON);
 	}
 }
