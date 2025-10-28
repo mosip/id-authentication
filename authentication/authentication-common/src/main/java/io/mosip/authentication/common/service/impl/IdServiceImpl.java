@@ -33,6 +33,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The class validates the UIN and VID.
@@ -113,6 +114,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      *                                           exception
      */
     @Override
+    @Transactional
     public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio, boolean markVidConsumed, Set<String> filterAttributes)
             throws IdAuthenticationBusinessException {
 
