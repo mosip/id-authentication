@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
@@ -56,7 +57,7 @@ public class MasterDataCache {
     public Map<String, Object> getMasterDataTitles() throws IdAuthenticationBusinessException {
         try {
             return restHelper
-                    .requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class));
+                    .requestSync(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class), MediaType.APPLICATION_JSON);
         } catch (IDDataValidationException | RestServiceException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
                     e.getErrorText());
@@ -77,7 +78,7 @@ public class MasterDataCache {
             RestRequestDTO request = restFactory
                     .buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class);
             request.setUri(request.getUri().replace("{code}", template));
-            return restHelper.requestSync(request);
+            return restHelper.requestSync(request, MediaType.APPLICATION_JSON);
         } catch (IDDataValidationException | RestServiceException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
                     e.getErrorText());
