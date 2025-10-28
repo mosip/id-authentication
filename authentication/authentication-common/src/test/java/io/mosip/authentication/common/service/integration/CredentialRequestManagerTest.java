@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -160,7 +161,7 @@ public class CredentialRequestManagerTest {
                 RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class)).thenReturn(request);
         Map<String, String> pathVariables = Map.of("requestId", requestId);
         request.setPathVariables(pathVariables);
-        Mockito.doThrow(RestServiceException.class).when(restHelper).requestSync(request, Mockito.any());
+        Mockito.doThrow(RestServiceException.class).when(restHelper).requestSync(request, MediaType.APPLICATION_JSON);
         credentialRequestManager.retriggerCredentialIssuance(requestId);
     }
 
