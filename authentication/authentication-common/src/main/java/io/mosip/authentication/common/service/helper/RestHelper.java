@@ -174,10 +174,20 @@ public class RestHelper {
     public <T> Mono<T> requestAsync(@Valid RestRequestDTO request) {
         Class<?> responseType = (request.getResponseType() == null) ? String.class : request.getResponseType();
 
+        // Log request metadata
         mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-                PREFIX_REQUEST + request.getUri());
+                "Initiating async REST call to URI: " + request.getUri());
+        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                "Request Method: " + request.getRequestBody() +
+                        ", Headers: " + request.getHeaders());
 
+        // Actual async request flow
         return request(request, responseType)
+                .doOnNext(response -> mosipLogger.info(
+                        IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                        "Response received for URI: " + request.getUri() +
+                                ", Type: " + responseType.getSimpleName() +
+                                ", Response: " + response))
                 .flatMap(response -> {
                     if (!String.class.equals(responseType)) {
                         return checkErrorResponse(response, responseType).then(Mono.just(response));
@@ -185,17 +195,24 @@ public class RestHelper {
                     return Mono.just(response);
                 })
                 .map(response -> (T) response)
-                .onErrorMap(WebClientResponseException.class, e -> handleStatusError(e, responseType))
+                .onErrorMap(WebClientResponseException.class, e -> {
+                    mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                            "HTTP Error for URI: " + request.getUri() +
+                                    ", Status: " + e.getStatusCode() +
+                                    ", Response Body: " + e.getResponseBodyAsString(), e);
+                    return handleStatusError(e, responseType);
+                })
                 .onErrorMap(e -> {
                     Throwable cause = e.getCause();
                     if (cause instanceof TimeoutException) {
-                        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-                                THROWING_REST_SERVICE_EXCEPTION + " - CONNECTION_TIMED_OUT - \n "
-                                        + ExceptionUtils.getStackTrace(e));
+                        mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                                "Timeout while calling URI: " + request.getUri() +
+                                        "\nException: " + ExceptionUtils.getStackTrace(e));
                         return new IdRepoRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
                     }
-                    mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
-                            THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
+                    mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                            "Unknown error during REST call to URI: " + request.getUri() +
+                                    "\nException: " + ExceptionUtils.getStackTrace(e));
                     return new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
                 });
     }
