@@ -174,7 +174,7 @@ public class RestHelper {
     public <T> Mono<T> requestAsync(@Valid RestRequestDTO request) {
         Class<?> responseType = (request.getResponseType() == null) ? String.class : request.getResponseType();
 
-        mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                 PREFIX_REQUEST + request.getUri());
 
         return request(request, responseType)
@@ -189,12 +189,12 @@ public class RestHelper {
                 .onErrorMap(e -> {
                     Throwable cause = e.getCause();
                     if (cause instanceof TimeoutException) {
-                        mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                                 THROWING_REST_SERVICE_EXCEPTION + " - CONNECTION_TIMED_OUT - \n "
                                         + ExceptionUtils.getStackTrace(e));
                         return new IdRepoRetryException(new RestServiceException(CONNECTION_TIMED_OUT, e));
                     }
-                    mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+                    mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                             THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
                     return new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
                 });
