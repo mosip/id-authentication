@@ -26,8 +26,8 @@ public interface HotlistCacheRepository extends BaseRepository<HotlistCache, Str
      * Fetch a hotlist record by IdHash and IdType.
      * Cached to reduce DB hits for frequently requested values.
      */
-    @Cacheable(value = "hotlistCache", key = "#idHash + ':' + #idType", unless = "#result == null")
-    @QueryHints(@QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_READ_ONLY, value = "true"))
+//    @Cacheable(value = "hotlistCache", key = "#idHash + ':' + #idType", unless = "#result == null")
+//    @QueryHints(@QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_READ_ONLY, value = "true"))
     @Query("SELECT h FROM HotlistCache h WHERE h.idHash = :idHash AND h.idType = :idType")
     Optional<HotlistCache> findByIdHashAndIdType(@Param("idHash") String idHash, @Param("idType") String idType);
     
