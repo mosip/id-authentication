@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.match;
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.ComparePasswordFunction;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -35,6 +36,10 @@ public enum PasswordAuthType implements AuthType {
         if(authRequestDTO instanceof KycAuthRequestDTO) {
             KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
             return Objects.nonNull(kycAuthRequestDTO.getRequest().getPassword());
+        }
+        else if(authRequestDTO instanceof KycAuthRequestDTOV2) {
+            KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authRequestDTO;
+            return Objects.nonNull(kycAuthRequestDTOV2.getRequest().getPassword());
         }
         return false;
     }
