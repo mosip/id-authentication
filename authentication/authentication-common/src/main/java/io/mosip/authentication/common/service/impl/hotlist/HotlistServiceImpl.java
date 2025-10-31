@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.HotlistCache;
@@ -55,6 +56,7 @@ public class HotlistServiceImpl implements HotlistService {
 	private HotlistCacheRepository hotlistCacheRepo;
 
 	@Override
+    @CacheEvict(value = "hotlistCache", key = "#id + ':' + #idType")
 	public void updateHotlist(String id, String idType, String status, LocalDateTime expiryTimestamp)
 			throws IdAuthenticationBusinessException {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
@@ -74,6 +76,7 @@ public class HotlistServiceImpl implements HotlistService {
 	}
 
 	@Override
+    @CacheEvict(value = "hotlistCache", key = "#id + ':' + #idType")
 	public void unblock(String id, String idType) throws IdAuthenticationBusinessException {
 		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
 		if (hotlistData.isPresent()) {
