@@ -11,7 +11,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.HotlistCache;
@@ -54,6 +56,17 @@ public class HotlistServiceImpl implements HotlistService {
 
 	@Autowired
 	private HotlistCacheRepository hotlistCacheRepo;
+
+    @CacheEvict(value = "hotlistCache", allEntries = true)
+    public void clearHotlistCache() {
+        // No-op — Spring handles eviction
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void initCacheOnStartup() {
+        clearHotlistCache();
+        System.out.println(">>> HOTLIST CACHE CLEARED ON STARTUP <<<");
+    }
 
 	@Override
     @CacheEvict(value = "hotlistCache", key = "#id + ':' + #idType")
