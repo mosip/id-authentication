@@ -15,14 +15,15 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.AddIdentity" />
 		</classes>
 	</test>
-	
+
 	<test name="OIDCClient">
 		<parameter name="ymlFile"
-			value="ida/PmsIntegration/OidcClient/OIDCClient.yml" />
-			<parameter name="idKeyName"	value="clientId" />
-			<parameter name="prerequisite" value="Yes" />
+			value="ida/OidcClient/OIDCClient.yml" />
+		<parameter name="idKeyName" value="clientId" />
+		<parameter name="prerequisite" value="Yes" />
 		<classes>
-			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 

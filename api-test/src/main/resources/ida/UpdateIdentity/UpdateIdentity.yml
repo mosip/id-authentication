@@ -51,9 +51,9 @@ UpdateIdentity:
       output: '{
     "status": "ACTIVATED"
 }'
-  Auth_UpdateIdentity_updateName_Positive_valid_smoke:
+  Auth_UpdateIdentity_updateName_Positive_valid:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      uniqueIdentifier: TC_IDA_UpdateIdentity_03
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
@@ -73,7 +73,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_updateDOB_ValidParam_smoke_Pos_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      uniqueIdentifier: TC_IDA_UpdateIdentity_04
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
@@ -91,9 +91,9 @@ UpdateIdentity:
       output: '{
     "status": "ACTIVATED"
 }'
-  Auth_UpdateIdentity_DEACTIVATED_and_auth_smoke_Pos_all_valid_smoke:
+  Auth_UpdateIdentity_DEACTIVATED_and_auth_Pos_all_valid:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_UpdateIdentity_03
+      uniqueIdentifier: TC_IDA_UpdateIdentity_05
       description: update DOB and Deactivate UIN
       role: idrepo
       restMethod: patch
@@ -111,9 +111,9 @@ UpdateIdentity:
       output: '{
     "status": "DEACTIVATED"
 }'
-  Auth_UpdateIdentity_DEACTIVATED_Positive_TRE_all_valid_smoke:
+  Auth_UpdateIdentity_DEACTIVATED_Positive_TRE_all_valid:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_UpdateIdentity_03
+      uniqueIdentifier: TC_IDA_UpdateIdentity_06
       description: update DOB and Deactivate UIN
       role: idrepo
       restMethod: patch
@@ -133,7 +133,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_ACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_UpdateIdentity_01
+      uniqueIdentifier: TC_IDA_UpdateIdentity_07
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch
@@ -153,7 +153,7 @@ UpdateIdentity:
 }'
   Auth_UpdateIdentity_ACTIVATED_auditLog_valid_smoke:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_04
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_08
       description: update DOB and Activate UIN
       role: idrepo
       restMethod: patch

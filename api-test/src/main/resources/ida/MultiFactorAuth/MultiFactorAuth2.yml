@@ -54,7 +54,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_edited_updated_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_edited_updated_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_02
       description: Multifactor auth with demo,otp and bio using updated UIN
@@ -109,7 +109,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_draft_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_draft_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_04
       description: Multifactor auth with demo,otp and bio using drafted UIN
@@ -451,7 +451,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_11
       description: Multifactor auth with demo,otp and bio ring finger with valid UIN
@@ -749,7 +749,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_16
       description: Multifactor auth with demo,otp and bio ring finger using valid VID
@@ -804,7 +804,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_17
       description: Multifactor auth with demo,otp and bio left middle finger using valid UIN
@@ -981,7 +981,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_20
       description: Multifactor auth with demo,otp and bio left middle finger using valid VID
@@ -1036,7 +1036,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_21
       description: Multifactor auth with demo,otp and bio left index finger using valid UIN
@@ -1091,7 +1091,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_22
       description: Multifactor auth with demo,otp and bio left index finger using valid VID
@@ -1146,7 +1146,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_23
       description: Multifactor auth with demo,otp and bio left little finger using valid UIN
@@ -1201,7 +1201,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_24
       description: Multifactor auth with demo,otp and bio left little finger using valid VID
@@ -1256,7 +1256,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_25
       description: Multifactor auth with demo,otp and bio right index finger using valid UIN
@@ -1311,7 +1311,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_26
       description: Multifactor auth with demo,otp and bio right index finger using valid VID
@@ -1366,7 +1366,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightRingFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_27
       description: Multifactor auth with demo,otp and bio right ring finger using valid UIN
@@ -1421,7 +1421,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_28
       description: Multifactor auth with demo,otp and bio right ring finger using valid VID
@@ -1476,7 +1476,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_29
       description: Multifactor auth with demo,otp and bio right middle finger using valid UIN
@@ -1531,7 +1531,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_30
       description: Multifactor auth with demo,otp and bio right middle finger using valid VID
@@ -1586,7 +1586,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_31
       description: Multifactor auth with demo,otp and bio right little finger using valid UIN
@@ -1641,7 +1641,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_32
       description: Multifactor auth with demo,otp and bio right little finger using valid VID
@@ -1696,7 +1696,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftThumb_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_33
       description: Multifactor auth with demo,otp and bio left thumb using valid UIN
@@ -1751,7 +1751,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_34
       description: Multifactor auth with demo,otp and bio left thumb using valid VID
@@ -1806,7 +1806,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_35
       description: Multifactor auth with demo,otp and bio right thumb using valid UIN
@@ -1861,7 +1861,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_36
       description: Multifactor auth with demo,otp and bio right thumb using valid VID
@@ -1916,7 +1916,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIris_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIris_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_37
       description: Multifactor auth with demo,otp and bio right iris using valid UIN
@@ -1971,7 +1971,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_38
       description: Multifactor auth with demo,otp and bio right iris using valid VID
@@ -2026,7 +2026,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIris_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIris_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_39
       description: Multifactor auth with demo,otp and bio left iris using valid UIN
@@ -2081,7 +2081,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_40
       description: Multifactor auth with demo,otp and bio left iris using valid VID
@@ -3817,7 +3817,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_68
       description: MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin
@@ -3880,7 +3880,7 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/Sendotperror"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_69
       description: MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP

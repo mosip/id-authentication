@@ -76,17 +76,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Finger"}],
-        "otp": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_EMAIL$",
+        "otp": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -140,17 +140,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Iris"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -173,17 +173,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Face"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -206,17 +206,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Face"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -272,17 +272,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "otp-email"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -305,17 +305,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "otp-phone"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
@@ -338,17 +338,17 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{"auth": "otp-phone"}, {"auth": "otp-email"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
