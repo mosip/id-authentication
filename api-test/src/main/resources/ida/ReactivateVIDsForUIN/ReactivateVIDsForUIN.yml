@@ -5,6 +5,7 @@ ReactivateVIDs:
       description: Reactivate VID for UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08
       inputTemplate: ida/ReactivateVIDsForUIN/reactivateVIDsForUIN
       outputTemplate: ida/ReactivateVIDsForUIN/reactivateVIDsForUINResult
       input: '{

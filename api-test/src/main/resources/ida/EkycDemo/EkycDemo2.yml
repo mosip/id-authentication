@@ -84,6 +84,7 @@ EkycDemo:
       role: resident
       kycFields: ["name"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -188,6 +189,7 @@ EkycDemo:
       description: Ekyc demo auth using dob,past time stamp and with VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -214,6 +216,7 @@ EkycDemo:
       description: Ekyc demo auth using dob,future timestamp and with VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -240,6 +243,7 @@ EkycDemo:
       description: Ekyc demo auth using dob,empty timestamp and with VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -296,6 +300,7 @@ EkycDemo:
       description: Ekyc demo auth using invalid dob with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -353,6 +358,7 @@ EkycDemo:
       role: resident
       kycFields: ["dob"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -408,6 +414,7 @@ EkycDemo:
       description: Ekyc demo auth using invalid email with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -438,6 +445,7 @@ EkycDemo:
       description: Ekyc demo auth with revoked VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -499,6 +507,7 @@ EkycDemo:
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06 
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -528,6 +537,7 @@ EkycDemo:
       description: Ekyc demo auth using invalid gender with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -657,6 +667,7 @@ EkycDemo:
       role: resident
       kycFields: ["dob"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -720,6 +731,7 @@ EkycDemo:
       description: Ekyc demo auth with invalid name with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1031,6 +1043,7 @@ EkycDemo:
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1086,6 +1099,7 @@ EkycDemo:
       description: Skyc demo auth with invalid age value with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1143,6 +1157,7 @@ EkycDemo:
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1198,6 +1213,7 @@ EkycDemo:
       description: Ekyc demo auth with invalid phone and valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1228,6 +1244,7 @@ EkycDemo:
       description: Ekyc demo auth with DOB,invalid transactionId and valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1253,6 +1270,7 @@ EkycDemo:
       description: Ekyc demo auth with dob,blank transactionId and with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1278,6 +1296,7 @@ EkycDemo:
       description: Ekyc demo auth without individualId type and with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1363,6 +1382,7 @@ EkycDemo:
       description: Ekyc demo auth with locked UIN,unlocked demo auth and with valid UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_04
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1393,6 +1413,7 @@ EkycDemo:
       description: Ekyc demo auth with permanently locked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1424,6 +1445,7 @@ EkycDemo:
       role: resident
       kycFields: ["gender"]
       restMethod: post
+      additionalDependencies: TC_IDA_UpdateIdentityForUin_01
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{

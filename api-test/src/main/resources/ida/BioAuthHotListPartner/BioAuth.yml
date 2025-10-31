@@ -1,10 +1,11 @@
 BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_Partner_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_77
+      uniqueIdentifier: TC_IDA_BioAuth_81
       description: Biometric face auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthHotListPartner/BioAuth
       outputTemplate: ida/BioAuthHotListPartner/error
       input: '{
@@ -41,10 +42,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_With_BLocked_partner_vid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_78
+      uniqueIdentifier: TC_IDA_BioAuth_82
       description: Biometric face auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15,TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuthHotListPartner/BioAuth
       outputTemplate: ida/BioAuthHotListPartner/error
       input: '{
@@ -81,10 +83,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_RingFinger_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_79
+      uniqueIdentifier: TC_IDA_BioAuth_83
       description: Biometric RingFinger auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthHotListPartner/BioAuth
       outputTemplate: ida/BioAuthHotListPartner/error
       input: '{
@@ -121,10 +124,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_80
+      uniqueIdentifier: TC_IDA_BioAuth_84
       description: Biometric LeftIndexFinger auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthHotListPartner/BioAuth
       outputTemplate: ida/BioAuthHotListPartner/error
       input: '{
@@ -161,10 +165,11 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_IRIS_With_blocked_partner:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_81
+      uniqueIdentifier: TC_IDA_BioAuth_85
       description: Biometric IRIS auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthHotListPartner/BioAuth
       outputTemplate: ida/BioAuthHotListPartner/error
       input: '{
@@ -201,10 +206,11 @@ BioAuth:
 }'
   auth_EkycBio_Face_With_blocked_partner:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_82
+      uniqueIdentifier: TC_IDA_BioAuth_86
       description: Ekyc face auth with blocked partner
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthHotListPartner/EkycBio
       outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
@@ -241,10 +247,11 @@ BioAuth:
 }'
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_74
+      uniqueIdentifier: TC_IDA_BioAuth_87
       description: Ekyc RingFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_11
       inputTemplate: ida/BioAuthHotListPartner/EkycBio
       outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
@@ -281,10 +288,11 @@ BioAuth:
 }'
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_75
+      uniqueIdentifier: TC_IDA_BioAuth_88
       description: Ekyc LeftMiddleFinger auth with blocked deviceProviderId
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_11
       inputTemplate: ida/BioAuthHotListPartner/EkycBio
       outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{
@@ -321,10 +329,11 @@ BioAuth:
 }'
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_BioAuth_76
+      uniqueIdentifier: TC_IDA_BioAuth_89
       description: Ekyc RIGHTIRIS auth with blocked deviceProviderId
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_11
       inputTemplate: ida/BioAuthHotListPartner/EkycBio
       outputTemplate: ida/BioAuthHotListPartner/EkycBioResult
       input: '{

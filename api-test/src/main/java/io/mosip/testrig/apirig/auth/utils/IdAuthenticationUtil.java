@@ -48,6 +48,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				&& testCasesInRunScope.contains(testCaseDTO.getUniqueIdentifier()) == false) {
 			throw new SkipException(GlobalConstants.NOT_IN_RUN_SCOPE_MESSAGE);
 		}
+		
+		// Handle extra workflow dependencies
+		if (testCaseDTO != null && testCaseDTO.getAdditionalDependencies() != null
+				&& AdminTestUtil.generateDependency == true) {
+			addAdditionalDependencies(testCaseDTO);
+		}
 
 		if (MosipTestRunner.skipAll == true) {
 			throw new SkipException(GlobalConstants.PRE_REQUISITE_FAILED_MESSAGE);

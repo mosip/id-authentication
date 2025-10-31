@@ -21,6 +21,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DemoAuth_21 
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -36,6 +37,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DemoAuth_19 
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -51,6 +53,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -66,6 +69,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_DependentModule_IdRepo_02,TC_IDA_DeactivateVIDs_01
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionError
       input: '{
@@ -85,6 +89,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -175,6 +180,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_03,TC_IDA_dependentTC_AuthTransaction_BioAuth_66,TC_IDA_dependentTC_AuthTransaction_BioAuth_67
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -190,6 +196,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_04,TC_IDA_dependentTC_AuthTransaction_BioAuth_68
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -205,6 +212,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_05
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -250,6 +258,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_10
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -265,6 +274,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_08
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -280,6 +290,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_10,TC_IDA_DependentTc_AuthTransaction_RetrieveVIDByUIN_01
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -295,6 +306,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_RetrieveIdentity_01
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -310,6 +322,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_06
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -325,6 +338,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08,TC_IDA_DependentTc_AuthTransaction_DeactivateVIDs_02,TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -370,6 +384,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_49,TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
@@ -419,6 +434,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_60,TC_IDA_RevokeVID_02
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionError
       input: '{
