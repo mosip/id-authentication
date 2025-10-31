@@ -7,10 +7,5 @@ MOSIP-41021------auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg
 MOSIP-41021------auth_SendOTP_to_blocked_uin_Neg
 MOSIP-41021------auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg
 MOSIP-41021------auth_SendOTP_to_onlyLockedphone_valid_uin_Neg
-#MOSIP-37285------auth_BioAuth_With_Deactivated_UIN
-#MOSIP-37285------auth_EkycBio_Face_With_Deactivated_uin
-#MOSIP-37285------auth_EkycOtp_Auth_With_deactivate_UIN_Smoke
-#MOSIP-37285------auth_DemoAuth_with_Deactivated_UIN
-#MOSIP-37285------auth_EkycDemo_Auth_With_Deactivated_UIN
 MOSIP-43456------auth_DemoAuth_with_age_below_calculated_value_Neg
 MOSIP-43456------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
