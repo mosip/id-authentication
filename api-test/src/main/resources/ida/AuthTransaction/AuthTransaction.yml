@@ -14,7 +14,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_Invalid_Gender_smoke_demoAuth_UIN:
+   auth_AuthTransaction_Invalid_Gender_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_02
       description: AuthTransaction with invalid gender using valid UIN
@@ -29,7 +29,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_valid_Gender_smoke_demoAuth_UIN:
+   auth_AuthTransaction_valid_Gender_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_03
       description: AuthTransaction with valid gender using valid UIN
@@ -78,7 +78,7 @@ AuthTransaction:
     }
   ]
 }'
-   auth_AuthTransaction_allValid_smoke_VID3:
+   auth_AuthTransaction_allValid_VID3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_06
       description: AuthTransaction with valid perpetual VID
@@ -93,7 +93,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "VID"
 }'
-   auth_AuthTransaction_allValid_smoke_UIN2:
+   auth_AuthTransaction_allValid_UIN2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_07
       description: AuthTransaction with valid infant UIN
@@ -108,7 +108,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_allValid_smoke_UIN3:
+   auth_AuthTransaction_allValid_UIN3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
@@ -123,7 +123,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_allValid_smoke_UIN4:
+   auth_AuthTransaction_allValid_UIN4:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
@@ -138,7 +138,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_allValid_smoke_UIN5:
+   auth_AuthTransaction_allValid_UIN5:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
       description: AuthTransaction with valid UIN
@@ -153,7 +153,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_allValid_smoke_UIN6:
+   auth_AuthTransaction_allValid_UIN6:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_08
       description: AuthTransaction with valid UIN
@@ -168,7 +168,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_locked_BioIris_audit_smoke_UIN:
+   auth_AuthTransaction_locked_BioIris_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_09
       description: AuthTransaction with UIN after iris auth with locked auth type
@@ -178,12 +178,12 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$"
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$"
 }'
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_locked_Face_audit_smoke_UIN:
+   auth_AuthTransaction_locked_Face_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_10
       description: AuthTransaction with UIN after face auth with locked auth type
@@ -193,12 +193,12 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$"
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$"
 }'
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_locked_Demo_audit_smoke_UIN:
+   auth_AuthTransaction_locked_Demo_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_11
       description: AuthTransaction with UIN after demo auth with locked auth type
@@ -208,12 +208,12 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$"
+      "individualId":"$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_UIN$"
 }'
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_EkyAuth1_audit_smoke_UIN:
+   auth_AuthTransaction_EkyAuth1_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_12
       description: AuthTransaction with UIN after performing ekyc auth
@@ -223,12 +223,12 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos_UIN$"
+      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_Pos_UIN$"
 }'
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_EkyAuth2_audit_smoke_UIN:
+   auth_AuthTransaction_EkyAuth2_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_13
       description: AuthTransaction with UIN after performing ekyc auth
@@ -238,12 +238,12 @@ AuthTransaction:
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
-      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos_UIN$"
+      "individualId":"$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_Pos_UIN$"
 }'
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_addIdentity_createVid_audit_smoke_UIN:
+   auth_AuthTransaction_addIdentity_createVid_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_14
       description: AuthTransaction with VID after creating vid
@@ -258,7 +258,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_addIdentity_updateIdentity_audit_smoke_UIN:
+   auth_AuthTransaction_addIdentity_updateIdentity_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_15
       description: AuthTransaction with UIN post updating identity
@@ -273,7 +273,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_createVid_retrieveVidbyUIN_audit_smoke_UIN:
+   auth_AuthTransaction_createVid_retrieveVidbyUIN_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_16
       description: AuthTransaction with UIN after retrieving Vid by UIN
@@ -288,7 +288,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_createVid_retrieveIdentity_audit_smoke_UIN:
+   auth_AuthTransaction_createVid_retrieveIdentity_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_17
       description: AuthTransaction with UIN after retrieving identity
@@ -303,7 +303,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_createVid_retrieveAuthTypeStatus_audit_smoke_UIN:
+   auth_AuthTransaction_createVid_retrieveAuthTypeStatus_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_18
       description: AuthTransaction with UIN after retrieving auth type status
@@ -318,7 +318,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_vid_deactivate_reactivate_audit_smoke_UIN:
+   auth_AuthTransaction_vid_deactivate_reactivate_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_19
       description: AuthTransaction with reactivated valid UIN
@@ -333,7 +333,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_draft_demoAuth_audit_smoke_UIN:
+   auth_AuthTransaction_draft_demoAuth_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_20
       description: AuthTransaction with drafted UIN
@@ -348,7 +348,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_draft_audit_smoke_UIN:
+   auth_AuthTransaction_draft_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_21
       description: AuthTransaction with drafted UIN
@@ -363,7 +363,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_regenerateVID_audit_smoke_VID:
+   auth_AuthTransaction_regenerateVID_audit_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_22
       description: AuthTransaction with regenerated valid perpetual VID
@@ -378,7 +378,7 @@ AuthTransaction:
       output: '{
         "referenceIdType": "VID"
 }'
-   auth_AuthTransaction_UnusedUIN_DemoAuth_audit_smoke_UIN:
+   auth_AuthTransaction_UnusedUIN_DemoAuth_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_23
       description: AuthTransaction with UIN after performing demo auth with unused UIN

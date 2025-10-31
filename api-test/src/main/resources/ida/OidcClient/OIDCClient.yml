@@ -5,8 +5,8 @@ CreateOIDCClient:
       description: Create OIDC client Misp valid details
       role: partner
       restMethod: post
-      inputTemplate: ida/PmsIntegration/OidcClient/OIDCClient
-      outputTemplate: ida/PmsIntegration/OidcClient/OIDCClientResult
+      inputTemplate: ida/OidcClient/OIDCClient
+      outputTemplate: ida/OidcClient/OIDCClientResult
       input: '{
         "name": "$RANDOMID$",
         "policyId": "$POLICYID_FOR_DELEGATED$",

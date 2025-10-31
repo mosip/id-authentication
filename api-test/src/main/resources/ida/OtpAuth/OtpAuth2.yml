@@ -35,7 +35,7 @@ OtpAuth:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_OTP_Auth_With_Valid_UIN_with_edited_updated_policy_Smoke_Pos:
+  auth_OTP_Auth_With_Valid_UIN_with_edited_updated_policy_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_02
       description: Otp auth with valid using UIN with edited updated policy
@@ -69,7 +69,7 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OTP_Auth_With_Infant_UIN_Smoke_Pos:
+  auth_OTP_Auth_With_Infant_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_03
       description: Otp auth with Infant using UIN 
@@ -103,7 +103,7 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OTP_Auth_With_Infant_locked_UIN_Smoke_Pos:
+  auth_OTP_Auth_With_Infant_locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_04
       description: Otp auth with Infant locked UIN
@@ -113,9 +113,9 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-        "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -124,7 +124,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
@@ -375,7 +375,7 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OTP_Auth_With_revoke_VID_Smoke_Pos:
+  auth_OTP_Auth_With_revoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_12
       description: Otp auth with revoked VID
@@ -1077,7 +1077,7 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OTP_Auth_With_locked_email_Smoke_Pos:
+  auth_OTP_Auth_With_locked_email_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_30
       description: Otp auth with locked email using valid UIN
@@ -1087,9 +1087,9 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -1098,7 +1098,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
@@ -1111,7 +1111,7 @@ OtpAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OTP_Auth_With_locked_phone_Smoke_Pos:
+  auth_OTP_Auth_With_locked_phone_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_31
       description: Otp auth with locked phone using valid UIN
@@ -1121,9 +1121,9 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -1132,7 +1132,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",

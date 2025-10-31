@@ -8,7 +8,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -35,7 +35,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -62,7 +62,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -89,7 +89,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -116,7 +116,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -143,7 +143,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -170,7 +170,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -197,7 +197,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -224,7 +224,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -251,7 +251,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -278,7 +278,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -305,7 +305,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -332,7 +332,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/bioInternalAuthResult
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -710,7 +710,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "1@@@##$$0",
       "individualIdType": "UIN",
         "bio": true,
@@ -743,7 +743,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "",
       "individualIdType": "UIN",
         "bio": true,
@@ -776,7 +776,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "@@###ERDD",
         "bio": true,
@@ -809,7 +809,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "",
         "bio": true,
@@ -842,7 +842,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "$REMOVE$",
         "bio": true,
@@ -875,7 +875,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -908,7 +908,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -941,7 +941,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -974,7 +974,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -1007,7 +1007,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -1040,7 +1040,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -1073,7 +1073,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -1106,7 +1106,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,
@@ -1139,7 +1139,7 @@ BioInternalAuth:
       outputTemplate: ida/BioInternalAuth/error
       input: '{
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_UIN_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_UIN_UIN$",
     "transactionId": "$TRANSACTIONID$",
       "individualIdType": "UIN",
         "bio": true,

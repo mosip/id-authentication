@@ -84,7 +84,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -99,7 +99,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_updated_edited_policy_VID_Pos:
+  auth_DemoAuth_DOB_Valid_with_updated_edited_policy_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_05
       description: Demo auth using valid dob with perpetual VID
@@ -124,7 +124,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_VID_invalid_transaction_Pos:
+  auth_DemoAuth_DOB_Valid_VID_invalid_transaction_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_06
       description: Demo auth using valid dob with invalid transactionId
@@ -175,7 +175,7 @@ DemoAuthNew:
   "authStatus": "true"
 }'
 
-  auth_DemoAuth_DOB_Valid_Smoke_Infant_Uin_which_locked_for_demo_Pos:
+  auth_DemoAuth_DOB_Valid_Infant_Uin_which_locked_for_demo_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_08
       description: Demo auth using valid dob and locked infant UIN 
@@ -185,7 +185,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -329,7 +329,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_Email_Valid_Smoke_Pos_VID:
+  auth_DemoAuth_Email_Valid_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_14
       description: Demo auth using email with valid VID
@@ -407,7 +407,7 @@ DemoAuthNew:
         "authStatus": "false"
 }'
 
-  auth_DemoAuth_Email_Valid_Smoke_Poss_VID:
+  auth_DemoAuth_Email_Valid_Poss_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_14
       description: Demo auth with email using valid VID
@@ -482,7 +482,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_gender_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_gender_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_19
       description: Demo auth using valid gender and valid UIN
@@ -744,7 +744,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_VID:
+  auth_DemoAuth_gender_Valid_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_27
       description: Demo auth using valid gender and valid perpetual VID
@@ -773,7 +773,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB:
+  auth_DemoAuth_gender_Valid_Pos_VID_with_RS_DOB:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_04
       description: Demo auth using valid dob and valid perpetual VID
@@ -798,7 +798,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_Temp_VID_with_RS_DOB:
+  auth_DemoAuth_gender_Valid_Pos_Temp_VID_with_RS_DOB:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_28
       description: Demo auth using valid dob and valid temporary VID
@@ -910,7 +910,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_Name_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_Name_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_32
       description: Demo auth using valid name and valid UIN
@@ -939,7 +939,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name1_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name1_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_33
       description: Demo auth using valid name and valid UIN
@@ -949,7 +949,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -968,7 +968,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_34
       description: Demo auth using valid name with title and valid UIN
@@ -978,7 +978,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -997,7 +997,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_35
       description: Demo auth using valid name with title and valid UIN
@@ -1007,7 +1007,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1026,7 +1026,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name4_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name4_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_36
       description: Demo auth using name and valid UIN
@@ -1036,7 +1036,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1055,7 +1055,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_37
       description: Demo auth using name with title and valid UIN
@@ -1065,7 +1065,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1084,7 +1084,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_38
       description: Demo auth using valid name with title and UIN
@@ -1094,7 +1094,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1113,7 +1113,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_39
       description: Demo auth using name with title and valid UIN
@@ -1123,7 +1123,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1142,7 +1142,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_Name_Valid_Smoke_VID_Pos:
+  auth_DemoAuth_Name_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_40
       description: Demo auth using valid name and valid perpetual VID
@@ -1228,7 +1228,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_age_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_age_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_42
       description: Demo auth using valid age and valid UIN
@@ -1253,7 +1253,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_age_Valid_Smoke_VID_Pos:
+  auth_DemoAuth_age_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_43
       description: Demo auth using valid age and valid perpetual VID
@@ -1328,7 +1328,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos:
+  auth_DemoAuth_PhoneNumber_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_46
       description: Demo auth using valid phone number and valid perpetual VID
@@ -1403,7 +1403,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_PhoneNumber__with_Valid_TVID_Smoke_Pos:
+  auth_DemoAuth_PhoneNumber__with_Valid_TVID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_49
       description: Demo auth using valid phone number and valid temporary VID
@@ -1553,7 +1553,7 @@ DemoAuthNew:
       output: '{
       "authStatus": "false"
 }'
-  auth_DemoAuth_DOB_Unlock_Valid_Smoke_UIN_Neg:
+  auth_DemoAuth_DOB_Unlock_Valid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_55
       description: Demo auth using valid dob and with locked UIN
@@ -1730,7 +1730,7 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Neg:
+  auth_DemoAuth_DOB_Valid_with_Draft_audit_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_62
       description: Demo auth using dob with drafted UIN
@@ -1839,7 +1839,7 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_invalid_certs:
+  auth_DemoAuth_DOB_Valid_with_invalid_certs:
       endPoint: /idauthentication/v1/auth/dhdhdh464744
       uniqueIdentifier: TC_IDA_DemoAuth_65
       description: Demo auth using valid dob and invalid certs
@@ -2055,7 +2055,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_fordemo_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_fordemo_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
