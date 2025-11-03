@@ -92,7 +92,9 @@ public class PartnerCACertEventServiceImpl implements PartnerCACertEventService 
 					ExceptionUtils.getStackTrace(e));
 			throw e;
 		} catch (Throwable e) {
-            throw new RuntimeException(e);
+            logger.error("Error occured while downloading certificate from datashare : \n {}",
+                    e.getMessage());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
     }
 
