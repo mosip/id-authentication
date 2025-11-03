@@ -175,15 +175,15 @@ public class RestHelper {
         Class<?> responseType = (request.getResponseType() == null) ? String.class : request.getResponseType();
 
         // Log request metadata
-        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+        mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                 "Initiating async REST call to URI: " + request.getUri());
-        mosipLogger.info(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
+        mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                 "Request Method: " + request.getRequestBody() +
                         ", Headers: " + request.getHeaders());
 
         // Actual async request flow
         return request(request, responseType, mediaType)
-                .doOnNext(response -> mosipLogger.info(
+                .doOnNext(response -> mosipLogger.debug(
                         IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC,
                         "Response received for URI: " + request.getUri() +
                                 ", Type: " + responseType.getSimpleName() +
