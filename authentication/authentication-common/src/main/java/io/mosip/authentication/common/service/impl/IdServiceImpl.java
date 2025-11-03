@@ -190,7 +190,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         final String hashedId = hashOrThrow(id, idType);
 
         try {
-            logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
+            logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
                     "Generated HASHID >> " + hashedId);
 
             // 1 query, projected & typed
@@ -281,7 +281,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         out.put(TOKEN, token);
         out.put(ID_HASH, hashedId);
 
-        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildResponseMap",
+        logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildResponseMap",
                 "Response Map >> " + out);
 
         return out;
@@ -415,7 +415,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     public void checkIdKeyBindingPermitted(String idvId, String idvIdType) throws IdAuthenticationBusinessException {
         try {
             String idVidHash = securityManager.hash(idvId);
-            logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
+            logger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
                     "Checking Id Key Binding Permitted or not. IdVidHash: " + idVidHash);
             // Assumption : If transactionLimit is null, id is considered as Perpetual VID
             // If transactionLimit is nonNull, id is considered as Temporary VID
