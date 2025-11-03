@@ -40,7 +40,6 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 
 	public List<AuthtypeLock> getAuthTypeList(String token) throws IdAuthenticationBusinessException {
 		List<AuthtypeLock> authTypeLockList;
-        System.out.println("token:- "+token);
 		List<Object[]> authTypeLockObjectsList = authLockRepository.findByToken(token);
 		authTypeLockList = authTypeLockObjectsList.stream()
 				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1], Objects.nonNull(obj[2]) ? ((Timestamp) obj[2]).toLocalDateTime() : null))

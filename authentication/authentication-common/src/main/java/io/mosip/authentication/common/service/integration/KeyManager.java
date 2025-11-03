@@ -198,7 +198,6 @@ public class KeyManager {
         }
 
         try {
-            System.out.println("data in keymanger line 200 "+ Arrays.toString(data));
             byte[] decryptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
                     isThumbprintEnabled);
             if (Boolean.TRUE.equals(encode)) {
@@ -318,7 +317,6 @@ public class KeyManager {
         }
 
         try {
-            System.out.println("data at line 321 "+data);
             return securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt, isThumbprintEnabled);
         } catch (IdAuthenticationBusinessException e) {
             // Mirror original logging and error mapping for parity

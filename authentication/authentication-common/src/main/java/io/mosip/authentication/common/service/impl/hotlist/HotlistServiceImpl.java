@@ -98,52 +98,23 @@ public class HotlistServiceImpl implements HotlistService {
 	 */
     @Override
     public HotlistDTO getHotlistStatus(String id, String idType) {
-        System.out.println("---- Entered getHotlistStatus ----");
-        System.out.println("Input ID Hash: " + id);
-        System.out.println("Input ID Type: " + idType);
-
         HotlistDTO dto = new HotlistDTO();
         Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
-
-        System.out.println("hotlistData.isPresent(): " + hotlistData.isPresent());
-
         if (hotlistData.isPresent()) {
             HotlistCache hotlistCache = hotlistData.get();
-            System.out.println("HotlistCache found:");
-            System.out.println(" - StartDTimes: " + hotlistCache.getStartDTimes());
-            System.out.println(" - ExpiryDTimes: " + hotlistCache.getExpiryDTimes());
-            System.out.println(" - Status: " + hotlistCache.getStatus());
-
             dto.setStartDTimes(hotlistCache.getStartDTimes());
-
-            if (Objects.nonNull(hotlistCache.getExpiryDTimes())) {
-                System.out.println("ExpiryDTimes is not null");
-                boolean isAfterNow = hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime());
-                System.out.println("ExpiryDTimes.isAfter(current UTC): " + isAfterNow);
-
-                if (isAfterNow) {
-                    if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED)) {
-                        System.out.println("Hotlist is currently BLOCKED -> Setting status as UNBLOCKED");
-                        dto.setStatus(HotlistStatus.UNBLOCKED);
-                    } else {
-                        System.out.println("Hotlist is currently UNBLOCKED -> Setting status as BLOCKED");
-                        dto.setStatus(HotlistStatus.BLOCKED);
-                    }
-                } else {
-                    System.out.println("ExpiryDTimes is before or equal to current time -> keeping same status");
-                    dto.setStatus(hotlistCache.getStatus());
-                }
+            if (Objects.nonNull(hotlistCache.getExpiryDTimes())
+                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+                if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
+                    dto.setStatus(HotlistStatus.UNBLOCKED);
+                else
+                    dto.setStatus(HotlistStatus.BLOCKED);
             } else {
-                System.out.println("ExpiryDTimes is null -> setting same status");
                 dto.setStatus(hotlistCache.getStatus());
             }
         } else {
-            System.out.println("No record found -> defaulting to UNBLOCKED");
             dto.setStatus(HotlistStatus.UNBLOCKED);
         }
-
-        System.out.println("Final DTO -> StartDTimes: " + dto.getStartDTimes() + ", Status: " + dto.getStatus());
-        System.out.println("---- Exiting getHotlistStatus ----");
         return dto;
     }
 

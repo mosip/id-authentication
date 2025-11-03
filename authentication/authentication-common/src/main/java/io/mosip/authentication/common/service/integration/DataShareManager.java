@@ -67,8 +67,6 @@ public class DataShareManager {
 		if (errorOpt.isEmpty()) {
 			R result;
 			if (decryptionRequired) {
-				// Decrypt data
-                System.out.println("responseStr "+responseStr);
 				byte[] dataBytes = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null,
 						thumbprintValidationRequired);
 				if (clazz.equals(String.class)) {

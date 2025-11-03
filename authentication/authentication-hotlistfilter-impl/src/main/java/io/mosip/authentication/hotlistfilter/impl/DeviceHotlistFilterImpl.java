@@ -64,51 +64,22 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 	 */
     private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics) throws IdAuthenticationFilterException {
         if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-
-            System.out.println("Total biometrics received: " + biometrics.size());
-
             OptionalInt indexOpt = IntStream.range(0, biometrics.size()).filter(index -> {
-                BioIdentityInfoDTO bioInfo = biometrics.get(index);
-
-                // Extract Digital ID details
-                String serialNo = bioInfo.getData().getDigitalId().getSerialNo();
-                String make = bioInfo.getData().getDigitalId().getMake();
-                String model = bioInfo.getData().getDigitalId().getModel();
-
-                System.out.println("Checking biometric index: " + index);
-                System.out.println("Serial No: " + serialNo);
-                System.out.println("Make: " + make);
-                System.out.println("Model: " + model);
-
-                String concatData = serialNo.concat(make).concat(model);
-                System.out.println("Concatenated data: " + concatData);
-
-                String hash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(concatData.getBytes());
-                System.out.println("Generated hash: " + hash);
-
-                HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(hash, HotlistIdTypes.DEVICE);
-
-                System.out.println("Hotlist status for index " + index + ": " + hotlistStatus.getStatus());
-
+                HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
+                        IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
+                                .getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
+                                .concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
+                        HotlistIdTypes.DEVICE);
                 return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
             }).findAny();
-
-            if (indexOpt.isPresent()) {
-                System.out.println("Blocked device found at index: " + indexOpt.getAsInt());
-                throw new IdAuthenticationFilterException(
-                        IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+            if(indexOpt.isPresent()) {
+                throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
                         String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-                                String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE))
-                );
-            } else {
-                System.out.println("No blocked devices found.");
+                                String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE)));
             }
-        } else {
-            System.out.println("Biometrics list is null or empty.");
         }
     }
-
-
+    
     /**
 	 * Validate hotlisted ids.
 	 *
@@ -117,40 +88,9 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 	 * @throws IdAuthenticationFilterException 
 	 */
     private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
-        System.out.println("---- validateHotlistedIds() called ----");
-
-        if (authRequestDto == null) {
-            System.out.println("AuthRequestDTO is null!");
-            return;
+        if (AuthTypeUtil.isBio(authRequestDto)) {
+            isDevicesHotlisted(authRequestDto.getRequest().getBiometrics());
         }
-
-        System.out.println("AuthRequestDTO received: " + authRequestDto);
-        System.out.println("Checking if authentication type is biometric...");
-
-        boolean isBio = AuthTypeUtil.isBio(authRequestDto);
-        System.out.println("Is Bio Authentication: " + isBio);
-
-        if (isBio) {
-            if (authRequestDto.getRequest() == null) {
-                System.out.println("AuthRequestDTO.getRequest() is null!");
-                return;
-            }
-
-            List<BioIdentityInfoDTO> biometrics = authRequestDto.getRequest().getBiometrics();
-            System.out.println("Biometrics data retrieved: " + biometrics);
-
-            if (biometrics == null || biometrics.isEmpty()) {
-                System.out.println("No biometrics found in request.");
-            } else {
-                System.out.println("Calling isDevicesHotlisted() with " + biometrics.size() + " biometric entries...");
-                isDevicesHotlisted(biometrics);
-            }
-        } else {
-            System.out.println("Request is not biometric type. Skipping device hotlist check.");
-        }
-
-        System.out.println("---- validateHotlistedIds() completed ----");
     }
-
 
 }

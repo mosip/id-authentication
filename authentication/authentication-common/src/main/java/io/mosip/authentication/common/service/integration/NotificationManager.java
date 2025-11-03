@@ -152,8 +152,6 @@ public class NotificationManager {
                     mailRequestDto,
                     String.class);
 
-            System.out.println("RestRequestDTo- "+ restRequestDTO);
-
             return restHelper.requestAsync(restRequestDTO, MediaType.MULTIPART_FORM_DATA)
                     .then() // Convert Mono<String> to Mono<Void> since we don't need the response
                     .onErrorMap(e -> {
