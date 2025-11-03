@@ -21,8 +21,8 @@
 * Start JMeter by running the jmeter.bat file for Windows or jmeter file for Unix. 
 * Validate the scripts for one user.
 * Execute a dry run for 10 min.
+* Use MOSIP_TPS_Thread_setting_calculator.xlsx to calculate the thread settings required for your target load.
 * Execute performance run with various loads in order to achieve targeted NFR's.
-* Threadgroups are configured to 100 user load run.
 
 ### Setup points for Execution
 
@@ -107,34 +107,15 @@
 		
 ### Designing the workload model for performance test execution
 
-* Calculation of number of users depending on Transactions per second (TPS) provided by client
+* The script is preconfigured for 100 tps within our test environement. Performance may vary based on hardware and infreastructure settings.
 
-* The script and the below calculation is preconfigured as per 100 tps, if you are testing for other tps, the below values needs to be adjusted.
+* If you are testing for different tps or with different hardware settings, adjustment needs to made to thread group settings within the script.
 
-* Applying little's law
-	* Users = TPS * (SLA of transaction + think time + pacing)
-	* TPS --> Transaction per second.
-	
-* For the realistic approach we can keep (Think time + Pacing) = 1 second for API testing
-	* Calculating number of users for 10 TPS
-		* Users= 100 X (SLA of transaction + 1)
-		       = 100 X (1 + 1)
-			   = 200
-			   
-### Usage of Constant Throughput timer to control Hits/sec from JMeter
+* `MOSIP_TPS_Thread_setting_calculator-packet_credential_processing.xlsx` applies Little's law to recommend required thread settings inputs.
 
-* In order to control hits/ minute in JMeter, it is better to use Timer called Constant Throughput Timer.  This is calculated explicitly for each thread group based on the scenario's weightage
+### Support files required for this test execution:
 
-* If we are performing load test with 10TPS as hits / sec in one thread group. Then we need to provide value hits / minute as in Constant Throughput Timer
-	* Value = 10 X 60
-			= 600
-
-* Dropdown option in Constant Throughput Timer
-	* Calculate Throughput based on as = All active threads in current thread group
-		* If we are performing load test with 10TPS as hits / sec in one thread group. Then we need to provide value hits / minute as in Constant Throughput Timer
-	 			Value = 10 X 60
-					  = 600
-		  
-	* Calculate Throughput based on as = this thread
-		* If we are performing scalability testing we need to calculate throughput for 10 TPS as 
-          Value = (10 * 60 )/(Number of users)
+1. add_identity_request_details.csv - This support file contains sample list of data that is used to create new identities. 
+2. biometrics_data.txt - This support file contains sample excrypted bio data
+3. center_machine_id_values.csv - This support file contains center and machine ids available in master database.
+4. face_data.txt - This support file contains sample excrypted face data that is used prepare and verify bio-authentication.
