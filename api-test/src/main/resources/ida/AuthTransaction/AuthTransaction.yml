@@ -180,7 +180,7 @@ AuthTransaction:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
-      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_03,TC_IDA_dependentTC_AuthTransaction_BioAuth_66,TC_IDA_dependentTC_AuthTransaction_BioAuth_67
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_03,TC_IDA_dependentTC_AuthTransaction_BioAuth_67
       inputTemplate: ida/AuthTransaction/authTransaction
       outputTemplate: ida/AuthTransaction/authTransactionResult
       input: '{
