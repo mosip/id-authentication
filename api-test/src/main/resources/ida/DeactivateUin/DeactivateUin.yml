@@ -22,6 +22,7 @@ DeactivateUINs:
       description: deactivate VID which is generated from UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{
@@ -39,6 +40,7 @@ DeactivateUINs:
       description: deactivate VID which is generated from UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_GenerateVID_06
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{

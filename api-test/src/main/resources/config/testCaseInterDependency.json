@@ -7,69 +7,149 @@
     "TC_IDA_EkycBio_53": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_54": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_50": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_37": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_37": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycBio_38": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_39": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_39": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycBio_33": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_34": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_35": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_34": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_35": [
+        "TC_DependentModule_IdRepo_24",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
+    ],
     "TC_IDA_EkycBio_36": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_30": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_31": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_48": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_49": ["TC_DependentModule_IdRepo_32"],
+    "TC_IDA_dependentTC_AuthTransaction_BioAuth_70": [
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_04",
+        "TC_IDA_dependentTC_AuthTransaction_41"
+    ],
+    "TC_IDA_EkycBio_31": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_48": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_49": [
+        "TC_DependentModule_IdRepo_32",
+        "TC_IDA_UpdateIdentityForUin_01"
+    ],
     "TC_IDA_EkycBio_44": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_45": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_45": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycBio_46": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_47": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_dependentTC_AuthTransaction_DemoAuth_72": ["auth_GetUnusedUIN_All_Valid_Smoke_sid"],
-    "TC_IDA_OtpAuth_Unblock_01": ["TC_DependentModule_IdRepo_07"],
+    "TC_IDA_OtpAuth_Unblock_01": [
+        "TC_DependentModule_IdRepo_07",
+        "TC_IDA_HotlistAPI_Unblock_08",
+        "TC_IDA_HotlistAPI_15"
+    ],
     "TC_IDA_EkycBio_40": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_41": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_UpdateIdentity_06": [
+        "TC_DependentModule_IdRepo_01",
+        "TC_DependentModule_IdRepo_12"
+    ],
+    "TC_IDA_EkycBio_41": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_UpdateIdentity_05": [
+        "TC_DependentModule_IdRepo_01",
+        "TC_DependentModule_IdRepo_23"
+    ],
     "TC_IDA_EkycBio_42": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_43": ["TC_DependentModule_IdRepo_09"],
+    "TC_IDA_UpdateIdentity_07": [
+        "TC_DependentModule_IdRepo_01",
+        "TC_DependentModule_IdRepo_12"
+    ],
     "TC_IDA_UpdateIdentity_02": [
         "TC_DependentModule_IdRepo_09",
         "TC_DependentModule_IdRepo_01"
     ],
-    "TC_IDA_UpdateIdentity_01": [
-        "TC_DependentModule_IdRepo_13",
-        "TC_DependentModule_IdRepo_06",
-        "TC_DependentModule_IdRepo_01",
-        "TC_DependentModule_IdRepo_12"
-    ],
+    "TC_IDA_UpdateIdentity_01": ["TC_DependentModule_IdRepo_01"],
+    "TC_IDA_UpdateIdentity_04": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_UpdateIdentity_03": [
-        "TC_DependentModule_IdRepo_01",
-        "TC_DependentModule_IdRepo_23",
-        "TC_DependentModule_IdRepo_12"
+        "TC_DependentModule_IdRepo_13",
+        "TC_DependentModule_IdRepo_01"
     ],
     "TC_IDA_EkycBio_15": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_16": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_17": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_18": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_17": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_18": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycBio_11": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_12": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_13": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_14": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_19": ["TC_IDA_GenerateVID_01"],
-    "Dependent_Idrepo_uploadCACert_01": ["Dependent_Idrepo_createPartnerSelfRegistration_01"],
-    "Dependent_Idrepo_uploadCACert_03": ["Dependent_Idrepo_createPartnerSelfRegistration_02"],
-    "Dependent_Idrepo_uploadCACert_02": ["Dependent_Idrepo_createPartnerSelfRegistration_01"],
-    "Dependent_Idrepo_uploadCACert_04": ["Dependent_Idrepo_createPartnerSelfRegistration_02"],
+    "TC_IDA_EkycBio_19": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycBio_10": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_EkycBio_26": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_27": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_dependentTC_AuthTransaction_BioAuth_67": ["TC_IDA_dependentTC_AuthTransaction_40"],
-    "TC_IDA_EkycBio_28": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_dependentTC_AuthTransaction_BioAuth_66": ["TC_IDA_dependentTC_AuthTransaction_40"],
-    "TC_IDA_EkycBio_29": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_22": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_dependentTC_AuthTransaction_BioAuth_68": ["TC_IDA_dependentTC_AuthTransaction_41"],
-    "TC_IDA_EkycBio_23": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_24": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_25": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_26": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_27": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_dependentTC_AuthTransaction_BioAuth_67": [
+        "TC_IDA_dependentTC_AuthTransaction_40",
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_03"
+    ],
+    "TC_IDA_EkycBio_28": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_29": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_22": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_dependentTC_AuthTransaction_BioAuth_68": [
+        "TC_IDA_dependentTC_AuthTransaction_40",
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_03"
+    ],
+    "TC_IDA_EkycBio_23": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_24": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycBio_25": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycOtp_09": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01": ["TC_IDA_dependentTC_AuthTransaction_48"],
+    "TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01": [
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_08",
+        "TC_IDA_dependentTC_AuthTransaction_48"
+    ],
     "TC_IDA_EkycOtp_07": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycOtp_08": [
         "TC_IDA_GenerateVID_01",
@@ -85,15 +165,20 @@
     "TC_IDA_DependentTc_AuthTransaction_RetrieveAuthTypeStatus_01": ["TC_IDA_dependentTC_AuthTransaction_47"],
     "TC_IDA_EkycOtp_01": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycOtp_02": ["TC_DependentModule_IdRepo_09"],
-    "Dependent_Idrepo_GenerateApiKey_01": [
-        "Dependent_Idrepo_createPartnerSelfRegistration_01",
-        "Dependent_Idrepo_definePolicy_01"
+    "TC_IDA_EkycBio_20": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_EkycBio_20": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycBio_21": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycBio_21": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_MultiFactorAuth_70": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_71": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BlockHotlistStatus_01": ["TC_DependentModule_IdRepo_58"],
+    "TC_IDA_BlockHotlistStatus_01": [
+        "TC_DependentModule_IdRepo_58",
+        "TC_IDA_HotlistAPI_14"
+    ],
     "TC_IDA_EkycOtp_18": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycOtp_19": [
         "TC_IDA_GenerateVID_01",
@@ -115,15 +200,21 @@
     ],
     "TC_IDA_EkycOtp_13": [
         "TC_DependentModule_IdRepo_24",
-        "TC_IDA_GenerateVID_01"
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
     ],
     "TC_IDA_EkycOtp_10": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
     "TC_IDA_EkycOtp_11": ["TC_DependentModule_IdRepo_09"],
-    "TC_IDA_SendOTP_10": ["TC_IDA_GenerateVID_08"],
-    "TC_IDA_DemoAuth_blockedVID_02": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_SendOTP_10": ["TC_IDA_GenerateVID_11"],
+    "TC_IDA_DemoAuth_blockedVID_03": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_08",
+        "TC_IDA_HotlistAPI_07"
+    ],
     "TC_IDA_EkycBio_04": ["TC_IDA_GetDraft_01"],
     "TC_IDA_EkycBio_05": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_06": ["TC_DependentModule_IdRepo_09"],
@@ -158,7 +249,7 @@
     "TC_IDA_EkycOtp_22": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycOtp_20": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_SendOTP_01": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_SendOTP_02": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_SendOTP_02": ["TC_IDA_GenerateVID_03"],
     "TC_IDA_SendOTP_03": ["TC_DependentModule_IdRepo_32"],
     "TC_IDA_SendOTP_04": [],
     "TC_IDA_SendOTP_05": ["TC_DependentModule_IdRepo_51"],
@@ -167,38 +258,78 @@
     "TC_IDA_SendOTP_08": ["TC_DependentModule_IdRepo_55"],
     "TC_IDA_SendOTP_09": ["TC_DependentModule_IdRepo_56"],
     "TC_IDA_CreateDraftVID_01": ["TC_IDA_GetDraft_01"],
-    "TC_IDA_DependentTc_AuthTransaction_RetrieveVIDByUIN_01": ["TC_IDA_dependentTC_AuthTransaction_45"],
-    "TC_IDA_EkycDemo_16": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DependentTc_AuthTransaction_RetrieveVIDByUIN_01": [
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_10",
+        "TC_IDA_dependentTC_AuthTransaction_45"
+    ],
+    "TC_IDA_EkycDemo_16": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_17": [
         "TC_DependentModule_IdRepo_24",
-        "TC_IDA_GenerateVID_01"
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
     ],
     "TC_IDA_EkycDemo_18": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_EkycDemo_19": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_19": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "auth_DemoAuth_InValid_uin_name": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_EkycDemo_10": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_OtpAuth_blockedPartnerId_01": ["TC_IDA_HotlistAPI_15"],
+    "TC_IDA_EkycDemo_10": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_11": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_EkycDemo_12": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_12": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_13": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_EkycDemo_14": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_14": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_15": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01": ["TC_IDA_DependentTc_AuthTransaction_GenerateVID_05"],
+    "TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01": [
+        "TC_IDA_dependentTC_AuthTransaction_49",
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_09"
+    ],
     "TC_IDA_EkycDemo_27": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_28": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_29": ["TC_DependentModule_IdRepo_31"],
-    "TC_IDA_EkycDemo_20": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_20": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_21": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_22": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_23": ["TC_DependentModule_IdRepo_04"],
-    "TC_IDA_EkycDemo_24": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_24": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_25": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_EkycDemo_26": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_26": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_40": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_OtpAuth_blockedMisp_02": ["TC_DependentModule_IdRepo_07"],
-    "TC_IDA_EkycDemo_38": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_OtpAuth_blockedMisp_02": [
+        "TC_DependentModule_IdRepo_07",
+        "TC_IDA_HotlistAPI_17",
+        "TC_IDA_HotlistAPI_16",
+        "TC_IDA_HotlistAPI_Unblock_09"
+    ],
+    "TC_IDA_EkycDemo_38": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_39": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_EkycDemo_30": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_31": ["TC_DependentModule_IdRepo_31"],
@@ -206,120 +337,276 @@
     "TC_IDA_EkycDemo_33": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_34": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_EkycDemo_35": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_EkycDemo_36": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_36": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_37": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DependentTc_AuthTransaction_EkycDemo_53": ["TC_IDA_dependentTC_AuthTransaction_44"],
     "TC_IDA_DependentTc_AuthTransaction_EkycDemo_52": ["TC_IDA_dependentTC_AuthTransaction_43"],
-    "TC_IDA_EkycDemo_50": ["TC_DependentModule_IdRepo_32"],
+    "TC_IDA_EkycDemo_50": [
+        "TC_DependentModule_IdRepo_32",
+        "TC_IDA_UpdateIdentityForUin_01"
+    ],
     "TC_IDA_EkycDemo_51": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_DemoAuth_blockedPartnerId_02": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_blockedPartnerId_01": ["TC_DependentModule_IdRepo_22"],
-    "TC_IDA_EkycDemo_49": ["TC_DependentModule_IdRepo_17"],
-    "auth_BioAuth_Biometric_RightIris_With_MANDATORY_iris_in_policy": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_EkycDemo_41": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_EkycDemo_42": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycDemo_43": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycDemo_44": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycDemo_45": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_blockedUIN_01": [
-        "TC_DependentModule_IdRepo_18",
+    "TC_IDA_DemoAuth_blockedPartnerId_02": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
+    "TC_IDA_DemoAuth_blockedPartnerId_01": [
+        "TC_IDA_HotlistAPI_15",
+        "TC_DependentModule_IdRepo_22"
+    ],
+    "TC_IDA_EkycDemo_49": [
+        "TC_IDA_AuthInternalLock_06",
+        "TC_DependentModule_IdRepo_17"
+    ],
+    "TC_IDA_DemoAuth_blockedUIN_02": [
+        "TC_IDA_AuthLock_01",
         "TC_DependentModule_IdRepo_19"
     ],
-    "TC_IDA_EkycDemo_48": ["TC_DependentModule_IdRepo_15"],
-    "Dependent_Idrepo_createPublishPolicy_02": [
-        "Dependent_Idrepo_definePolicyGroup_02",
-        "Dependent_Idrepo_definePolicy_02"
+    "auth_BioAuth_Biometric_RightIris_With_MANDATORY_iris_in_policy": ["TC_DependentModule_IdRepo_06"],
+    "TC_IDA_EkycDemo_41": ["TC_DependentModule_IdRepo_01"],
+    "TC_IDA_EkycDemo_42": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
     ],
-    "Dependent_Idrepo_createPublishPolicy_01": [
-        "Dependent_Idrepo_definePolicyGroup_02",
-        "Dependent_Idrepo_definePolicy_01"
+    "TC_IDA_EkycDemo_43": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
     ],
-    "Dependent_Idrepo_createPartnerSelfRegistration_02": ["Dependent_Idrepo_definePolicyGroup_02"],
-    "Dependent_Idrepo_createPartnerSelfRegistration_01": ["Dependent_Idrepo_definePolicyGroup_02"],
+    "TC_IDA_EkycDemo_44": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycDemo_45": [
+        "TC_IDA_GenerateVID_13",
+        "TC_DependentModule_IdRepo_62"
+    ],
+    "TC_IDA_DemoAuth_blockedUIN_01": [
+        "TC_DependentModule_IdRepo_18",
+        "TC_IDA_HotlistAPI_06",
+        "TC_IDA_HotlistAPI_01"
+    ],
+    "TC_IDA_EkycDemo_48": [
+        "TC_DependentModule_IdRepo_15",
+        "TC_IDA_AuthInternalLock_04"
+    ],
+    "TC_IDA_BioAuth_88": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_89": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_dependentTC_AuthTransaction_AuthLock_03": ["TC_IDA_dependentTC_AuthTransaction_40"],
+    "TC_IDA_BioAuth_86": [
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
     "TC_IDA_dependentTC_AuthTransaction_AuthLock_04": ["TC_IDA_dependentTC_AuthTransaction_41"],
+    "TC_IDA_BioAuth_87": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_dependentTC_AuthTransaction_AuthLock_05": ["TC_IDA_dependentTC_AuthTransaction_42"],
+    "TC_IDA_BioAuth_84": [
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
     "TC_IDA_dependentTC_AuthTransaction_AuthLock_06": ["TC_IDA_dependentTC_AuthTransaction_47"],
-    "TC_IDA_BioAuth_82": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_80": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_81": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_DependentTc_DeactivateVIDs_03": ["TC_DependentModule_IdRepo_50"],
+    "TC_IDA_BioAuth_85": [
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
+    "TC_IDA_BioAuth_82": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
+    "TC_IDA_BioAuth_83": [
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_15"
+    ],
+    "TC_IDA_BioAuth_80": [
+        "TC_IDA_AuthLock_01",
+        "TC_DependentModule_IdRepo_19"
+    ],
+    "TC_IDA_BioAuth_81": [
+        "TC_IDA_HotlistAPI_15",
+        "TC_DependentModule_IdRepo_01"
+    ],
+    "TC_IDA_DependentTc_DeactivateVIDs_03": [
+        "TC_DependentModule_IdRepo_50",
+        "TC_IDA_GenerateVID_06"
+    ],
     "TC_IDA_EkycDemo_05": ["TC_DependentModule_IdRepo_21"],
     "TC_IDA_EkycDemo_06": ["TC_DependentModule_IdRepo_21"],
     "TC_IDA_EkycDemo_07": ["TC_DependentModule_IdRepo_21"],
-    "TC_IDA_EkycDemo_08": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycDemo_09": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_08": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_EkycDemo_09": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_EkycDemo_01": ["TC_DependentModule_IdRepo_21"],
     "TC_IDA_EkycDemo_02": ["TC_DependentModule_IdRepo_21"],
     "TC_IDA_EkycDemo_03": ["TC_IDA_GetDraft_01"],
-    "TC_IDA_EkycDemo_04": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_04": [
+        "TC_IDA_GenerateVID_13",
+        "TC_DependentModule_IdRepo_62"
+    ],
+    "TC_IDA_AuthInternalLock_10": ["TC_DependentModule_IdRepo_29"],
     "TC_IDA_BioAuth_59": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_57": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_58": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_BioAuth_55": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_BioAuth_56": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_53": ["TC_DependentModule_IdRepo_06"],
-    "Dependent_Idrepo_definePolicy_02": ["Dependent_Idrepo_definePolicyGroup_02"],
     "TC_IDA_BioAuth_54": ["TC_DependentModule_IdRepo_14"],
-    "Dependent_Idrepo_definePolicy_01": ["Dependent_Idrepo_definePolicyGroup_02"],
-    "TC_IDA_BioAuth_51": ["TC_DependentModule_IdRepo_28"],
-    "TC_IDA_BioAuth_52": ["TC_DependentModule_IdRepo_32"],
-    "TC_IDA_BioAuth_50": ["TC_DependentModule_IdRepo_26"],
+    "TC_IDA_BioAuth_51": [
+        "TC_IDA_AuthInternalLock_09",
+        "TC_DependentModule_IdRepo_28"
+    ],
+    "TC_IDA_BioAuth_52": [
+        "TC_DependentModule_IdRepo_32",
+        "TC_IDA_UpdateIdentityForUin_01"
+    ],
+    "TC_IDA_BioAuth_50": [
+        "TC_IDA_AuthInternalLock_07",
+        "TC_DependentModule_IdRepo_26"
+    ],
     "TC_IDA_AuthUnlock_": ["TC_DependentModule_IdRepo_15"],
-    "TC_IDA_DemoAuth_04": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_04": [
+        "TC_IDA_GenerateVID_13",
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_DependentModule_IdRepo_62"
+    ],
     "TC_IDA_DemoAuth_01": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_BioAuth_48": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_HotlistAPI_Unblock_01": ["TC_DependentModule_IdRepo_18"],
     "TC_IDA_BioAuth_49": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_46": ["TC_DependentModule_IdRepo_14"],
-    "TC_IDA_HotlistAPI_Unblock_03": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_BioAuth_46": [
+        "TC_DependentModule_IdRepo_14",
+        "TC_IDA_AuthInternalLock_01"
+    ],
+    "TC_IDA_HotlistAPI_Unblock_03": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_BioAuth_47": [
         "TC_DependentModule_IdRepo_16",
-        "TC_DependentModule_IdRepo_19"
+        "TC_IDA_AuthInternalLock_05"
     ],
     "TC_IDA_HotlistAPI_Unblock_02": ["TC_DependentModule_IdRepo_18"],
-    "TC_IDA_BioAuth_44": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_BioAuth_44": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_Unblock_05": [
+        "TC_IDA_HotlistAPI_10",
+        "TC_IDA_HotlistAPI_09"
+    ],
     "TC_IDA_BioAuth_45": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_HotlistAPI_Unblock_04": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_42": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_HotlistAPI_Unblock_04": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_42": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_Unblock_07": ["TC_IDA_HotlistAPI_11"],
+    "TC_IDA_HotlistAPI_Unblock_06": [
+        "TC_IDA_HotlistAPI_10",
+        "TC_IDA_HotlistAPI_09"
+    ],
     "TC_IDA_BioAuth_40": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_DemoAuth_09": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_41": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_09": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_Unblock_09": [
+        "TC_IDA_HotlistAPI_17",
+        "TC_IDA_HotlistAPI_16"
+    ],
+    "TC_IDA_BioAuth_41": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_Unblock_08": ["TC_IDA_HotlistAPI_15"],
     "TC_IDA_DemoAuth_07": ["TC_DependentModule_IdRepo_04"],
     "TC_IDA_DemoAuth_08": ["TC_DependentModule_IdRepo_05"],
-    "TC_IDA_DemoAuth_05": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_06": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_EkycDemo_blockedUIN_01": ["TC_DependentModule_IdRepo_19"],
-    "TC_IDA_BioAuth_79": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_77": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_BioAuth_78": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_75": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_76": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_73": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_74": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_71": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_72": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_70": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_AuthInternalLock_06": ["TC_DependentModule_IdRepo_27"],
-    "TC_IDA_AuthInternalLock_05": [
-        "TC_DependentModule_IdRepo_29",
-        "TC_DependentModule_IdRepo_17"
+    "TC_IDA_DemoAuth_05": [
+        "TC_IDA_GenerateVID_13",
+        "TC_DependentModule_IdRepo_62"
     ],
-    "TC_IDA_AuthInternalLock_04": [
-        "TC_DependentModule_IdRepo_16",
-        "TC_DependentModule_IdRepo_26",
-        "TC_DependentModule_IdRepo_28"
+    "TC_IDA_DemoAuth_06": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthInternalLock_03": ["TC_DependentModule_IdRepo_15"],
+    "TC_IDA_EkycDemo_blockedUIN_01": [
+        "TC_IDA_AuthLock_01",
+        "TC_DependentModule_IdRepo_19"
+    ],
+    "TC_IDA_BioAuth_79": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_77": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_78": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_75": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_76": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_73": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_74": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_71": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_08",
+        "TC_IDA_HotlistAPI_07"
+    ],
+    "TC_IDA_BioAuth_72": [
+        "TC_IDA_HotlistAPI_11",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_AuthInternalLock_09": ["TC_DependentModule_IdRepo_28"],
+    "TC_IDA_AuthInternalLock_08": ["TC_DependentModule_IdRepo_27"],
+    "TC_IDA_AuthInternalLock_07": ["TC_DependentModule_IdRepo_26"],
+    "TC_IDA_AuthInternalLock_06": ["TC_DependentModule_IdRepo_17"],
+    "TC_IDA_AuthInternalLock_05": ["TC_DependentModule_IdRepo_16"],
+    "TC_IDA_AuthInternalLock_04": ["TC_DependentModule_IdRepo_15"],
+    "TC_IDA_AuthInternalLock_03": ["TC_DependentModule_IdRepo_34"],
     "TC_IDA_AuthInternalLock_02": ["TC_DependentModule_IdRepo_05"],
-    "TC_IDA_AuthInternalLock_01": [
-        "TC_DependentModule_IdRepo_14",
-        "TC_DependentModule_IdRepo_34"
+    "TC_IDA_AuthInternalLock_01": ["TC_DependentModule_IdRepo_14"],
+    "TC_IDA_BioAuth_69": [
+        "TC_DependentModule_IdRepo_18",
+        "TC_IDA_HotlistAPI_06",
+        "TC_IDA_HotlistAPI_01"
     ],
-    "TC_IDA_BioAuth_68": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_69": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_66": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_67": ["TC_DependentModule_IdRepo_18"],
     "TC_IDA_BioAuth_62": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_BioAuth_60": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_BioAuth_61": ["TC_DependentModule_IdRepo_14"],
@@ -329,106 +616,192 @@
     "TC_IDA_DemoAuth_35": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_DemoAuth_32": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_33": ["TC_DependentModule_IdRepo_31"],
-    "Dependent_Idrepo_GenerateMispLK_01": ["Dependent_Idrepo_createPartnerSelfRegistration_02"],
+    "TC_IDA_DemoAuth_30": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_08": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_09": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_17": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_18": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_BioAuth_17": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_18": [
+        "TC_DependentModule_IdRepo_24",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
+    ],
     "TC_IDA_BioAuth_15": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_16": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_13": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_14": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_11": ["TC_DependentModule_IdRepo_06"],
+    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_10": ["TC_IDA_dependentTC_AuthTransaction_45"],
     "TC_IDA_BioAuth_12": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_10": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_DemoAuth_38": ["TC_DependentModule_IdRepo_31"],
-    "Dependent_Idrepo_updatePartnerCertificate_01": [],
     "TC_IDA_DemoAuth_39": ["TC_DependentModule_IdRepo_31"],
     "TC_IDA_DemoAuth_47": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_48": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_48": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_45": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_46": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_DemoAuth_43": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_44": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_41": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_43": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DemoAuth_44": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DemoAuth_41": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_42": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_40": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DependentTc_AuthTransaction_DeactivateVIDs_02": ["TC_IDA_dependentTC_AuthTransaction_48"],
+    "TC_IDA_DemoAuth_40": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DependentTc_AuthTransaction_DeactivateVIDs_02": [
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_08",
+        "TC_IDA_dependentTC_AuthTransaction_48"
+    ],
     "TC_IDA_BioAuth_06": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_07": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_04": ["TC_DependentModule_IdRepo_05"],
+    "TC_IDA_BioAuth_04": [
+        "TC_DependentModule_IdRepo_05",
+        "TC_IDA_AuthInternalLock_02"
+    ],
     "TC_IDA_BioAuth_05": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_BioAuth_02": ["TC_DependentModule_IdRepo_14"],
+    "TC_IDA_BioAuth_02": [
+        "TC_DependentModule_IdRepo_14",
+        "TC_IDA_AuthInternalLock_01"
+    ],
     "TC_IDA_BioAuth_03": ["TC_DependentModule_IdRepo_04"],
     "TC_IDA_AuthUnlock_01": ["TC_DependentModule_IdRepo_19"],
     "TC_IDA_BioAuth_01": ["TC_DependentModule_IdRepo_14"],
     "TC_IDA_DemoAuth_49": [
-        "TC_IDA_GenerateVID_02",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_GenerateVID_05"
+    ],
+    "TC_IDA_DemoAuth_14": [
+        "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_DemoAuth_14": ["TC_IDA_GenerateVID_01"],
     "TC_IDA_DemoAuth_15": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "Dependent_Idrepo_RequestAPIKeyForAuthPartner_01": [
-        "Dependent_Idrepo_createPartnerSelfRegistration_01",
-        "Dependent_Idrepo_definePolicy_01"
-    ],
     "TC_IDA_DemoAuth_12": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_13": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_10": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_11": ["TC_IDA_GenerateVID_01"],
-    "Dependent_Idrepo_RequestAPIKeyForAuthPartner_02": [
-        "Dependent_Idrepo_createPartnerSelfRegistration_02",
-        "Dependent_Idrepo_definePolicy_02"
+    "TC_IDA_DemoAuth_13": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DemoAuth_10": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DemoAuth_11": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
     ],
     "TC_IDA_BioAuth_39": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_37": ["TC_DependentModule_IdRepo_06"],
+    "TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_08": [
+        "TC_IDA_dependentTC_AuthTransaction_46",
+        "TC_DependentModule_IdRepo_01"
+    ],
     "TC_IDA_BioAuth_38": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_35": ["TC_IDA_GenerateVID_01"],
     "TC_IDA_BioAuth_36": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_33": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_04": [
-        "TC_IDA_dependentTC_AuthTransaction_46",
-        "TC_DependentModule_IdRepo_01"
-    ],
     "TC_IDA_BioAuth_34": ["TC_IDA_GenerateVID_01"],
     "TC_IDA_BioAuth_31": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_BioAuth_32": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_30": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_18": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_BioAuth_30": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DemoAuth_18": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_19": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_16": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
     "TC_IDA_DemoAuth_17": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_25": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_25": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_23": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_24": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_24": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_21": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_22": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_BioAuth_19": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_28": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_29": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_26": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_27": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_24": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_25": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_22": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_BioAuth_23": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_04": ["TC_IDA_dependentTC_AuthTransaction_48"],
-    "TC_IDA_BioAuth_20": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_05": ["TC_IDA_dependentTC_AuthTransaction_49"],
-    "TC_IDA_BioAuth_21": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_03": ["TC_IDA_dependentTC_AuthTransaction_59"],
-    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_06": ["TC_IDA_dependentTC_AuthTransaction_45"],
-    "TC_IDA_DemoAuth_27": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_DemoAuth_28": ["TC_IDA_GenerateVID_02"],
+    "TC_IDA_BioAuth_19": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_28": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_29": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_26": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_27": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_24": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_25": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_22": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_23": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_20": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_BioAuth_21": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_08": ["TC_IDA_dependentTC_AuthTransaction_48"],
+    "TC_IDA_DemoAuth_29": ["TC_DependentModule_IdRepo_06"],
+    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_09": ["TC_IDA_dependentTC_AuthTransaction_49"],
+    "TC_IDA_DemoAuth_27": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_DependentTc_AuthTransaction_GenerateVID_07": ["TC_IDA_dependentTC_AuthTransaction_59"],
+    "TC_IDA_DemoAuth_28": [
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_GenerateVID_05"
+    ],
     "TC_IDA_AuthLock_02": ["TC_DependentModule_IdRepo_20"],
     "TC_IDA_AuthLock_01": [
         "TC_DependentModule_IdRepo_19",
@@ -441,13 +814,24 @@
     "TC_IDA_AuthLock_08": ["TC_DependentModule_IdRepo_52"],
     "TC_IDA_AuthLock_07": ["TC_DependentModule_IdRepo_51"],
     "TC_IDA_MultiFactorAuth_48": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_AuthTransaction_19": ["TC_IDA_dependentTC_AuthTransaction_48"],
+    "TC_IDA_AuthTransaction_19": [
+        "TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01",
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_08",
+        "TC_IDA_DependentTc_AuthTransaction_DeactivateVIDs_02",
+        "TC_IDA_dependentTC_AuthTransaction_48"
+    ],
     "TC_IDA_MultiFactorAuth_49": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_17": ["TC_IDA_dependentTC_AuthTransaction_45"],
-    "TC_IDA_AuthTransaction_18": ["TC_IDA_dependentTC_AuthTransaction_47"],
+    "TC_IDA_AuthTransaction_17": [
+        "TC_IDA_DependentTc_AuthTransaction_RetrieveIdentity_01",
+        "TC_IDA_dependentTC_AuthTransaction_45"
+    ],
+    "TC_IDA_AuthTransaction_18": [
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_06",
+        "TC_IDA_dependentTC_AuthTransaction_47"
+    ],
     "TC_IDA_MultiFactorAuth_44": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_45": [
         "TC_IDA_GenerateVID_01",
@@ -465,7 +849,10 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_11": ["TC_IDA_dependentTC_AuthTransaction_42"],
+    "TC_IDA_AuthTransaction_11": [
+        "TC_IDA_dependentTC_AuthTransaction_42",
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_05"
+    ],
     "TC_IDA_MultiFactorAuth_41": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
@@ -476,32 +863,58 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_10": ["TC_IDA_dependentTC_AuthTransaction_41"],
-    "TC_IDA_AuthTransaction_15": ["TC_IDA_dependentTC_AuthTransaction_46"],
-    "TC_IDA_AuthTransaction_16": ["TC_IDA_dependentTC_AuthTransaction_45"],
-    "TC_IDA_AuthTransaction_13": ["TC_IDA_dependentTC_AuthTransaction_44"],
-    "TC_IDA_AuthTransaction_14": ["TC_IDA_dependentTC_AuthTransaction_45"],
-    "Dependent_Idrepo_ApproveAPIKey_02": [],
-    "Dependent_Idrepo_ApproveAPIKey_01": ["Dependent_Idrepo_RequestAPIKeyForAuthPartner_01"],
-    "TC_IDA_HotlistAPI_06": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_HotlistAPI_05": ["TC_DependentModule_IdRepo_18"],
-    "TC_IDA_HotlistAPI_07": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_HotlistAPI_02": ["TC_DependentModule_IdRepo_25"],
-    "TC_IDA_HotlistAPI_01": [
-        "TC_DependentModule_IdRepo_18",
-        "TC_DependentModule_IdRepo_33"
+    "TC_IDA_AuthTransaction_10": [
+        "TC_IDA_dependentTC_AuthTransaction_BioAuth_68",
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_04",
+        "TC_IDA_dependentTC_AuthTransaction_41"
     ],
-    "TC_IDA_HotlistAPI_04": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_HotlistAPI_03": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_AuthTransaction_15": ["TC_IDA_dependentTC_AuthTransaction_46"],
+    "TC_IDA_AuthTransaction_16": [
+        "TC_IDA_DependentTc_AuthTransaction_RetrieveVIDByUIN_01",
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_10",
+        "TC_IDA_dependentTC_AuthTransaction_45"
+    ],
+    "TC_IDA_AuthTransaction_13": ["TC_IDA_dependentTC_AuthTransaction_44"],
+    "TC_IDA_AuthTransaction_14": [
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_10",
+        "TC_IDA_dependentTC_AuthTransaction_45"
+    ],
+    "TC_IDA_HotlistAPI_06": ["TC_DependentModule_IdRepo_18"],
+    "TC_IDA_HotlistAPI_05": [
+        "TC_DependentModule_IdRepo_25",
+        "TC_IDA_GenerateVID_04"
+    ],
+    "TC_IDA_HotlistAPI_08": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_07": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_HotlistAPI_02": ["TC_DependentModule_IdRepo_33"],
+    "TC_IDA_HotlistAPI_01": ["TC_DependentModule_IdRepo_18"],
+    "TC_IDA_HotlistAPI_04": [
+        "TC_DependentModule_IdRepo_25",
+        "TC_IDA_GenerateVID_04"
+    ],
+    "TC_IDA_HotlistAPI_03": ["TC_DependentModule_IdRepo_25"],
     "TC_IDA_MultiFactorAuth_37": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_AuthTransaction_08": ["TC_IDA_dependentTC_AuthTransaction_59"],
     "TC_IDA_MultiFactorAuth_38": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_09": ["TC_IDA_dependentTC_AuthTransaction_40"],
+    "TC_IDA_AuthTransaction_09": [
+        "TC_IDA_dependentTC_AuthTransaction_BioAuth_67",
+        "TC_IDA_dependentTC_AuthTransaction_40",
+        "TC_IDA_dependentTC_AuthTransaction_AuthLock_03"
+    ],
     "TC_IDA_MultiFactorAuth_39": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_AuthTransaction_06": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_AuthTransaction_06": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_AuthTransaction_07": ["TC_DependentModule_IdRepo_04"],
     "TC_IDA_MultiFactorAuth_33": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_34": [
@@ -527,24 +940,34 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_04": ["TC_IDA_GenerateVID_01"],
-    "TC_IDA_AuthTransaction_05": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_AuthTransaction_04": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
+    "TC_IDA_AuthTransaction_05": [
+        "TC_IDA_GenerateVID_02",
+        "TC_DependentModule_IdRepo_02",
+        "TC_IDA_DeactivateVIDs_01"
+    ],
     "TC_IDA_AuthTransaction_02": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_AuthTransaction_03": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_58": ["TC_DependentModule_IdRepo_17"],
     "TC_IDA_DemoAuth_59": ["TC_DependentModule_IdRepo_27"],
-    "TC_IDA_HotlistAPI_11": ["TC_IDA_GenerateVID_08"],
     "TC_IDA_DemoAuth_56": ["TC_DependentModule_IdRepo_17"],
-    "TC_IDA_HotlistAPI_10": ["TC_DependentModule_IdRepo_56"],
-    "TC_IDA_DemoAuth_57": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_57": [
+        "TC_DependentModule_IdRepo_24",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
+    ],
     "TC_IDA_DemoAuth_54": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_55": ["TC_DependentModule_IdRepo_15"],
     "TC_IDA_DemoAuth_53": ["TC_DependentModule_IdRepo_01"],
-    "TC_PMS_CreateOIDCClient_01": [
-        "Dependent_Idrepo_createPartnerSelfRegistration_01",
-        "Dependent_Idrepo_definePolicy_01"
+    "TC_IDA_HotlistAPI_13": [
+        "TC_DependentModule_IdRepo_57",
+        "TC_IDA_GenerateVID_11"
     ],
-    "TC_IDA_HotlistAPI_12": ["TC_DependentModule_IdRepo_58"],
+    "TC_IDA_HotlistAPI_12": ["TC_DependentModule_IdRepo_56"],
+    "TC_IDA_HotlistAPI_14": ["TC_DependentModule_IdRepo_58"],
     "TC_IDA_MultiFactorAuth_66": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_67": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_68": ["TC_DependentModule_IdRepo_06"],
@@ -567,15 +990,22 @@
     "TC_IDA_DemoAuth_69": ["TC_DependentModule_IdRepo_36"],
     "TC_IDA_DemoAuth_68": ["TC_DependentModule_IdRepo_35"],
     "TC_IDA_DemoAuth_65": ["TC_DependentModule_IdRepo_01"],
-    "TC_IDA_DemoAuth_66": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_DemoAuth_66": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06"
+    ],
     "TC_IDA_DemoAuth_63": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_64": ["TC_DependentModule_IdRepo_01"],
     "TC_IDA_DemoAuth_61": ["TC_DependentModule_IdRepo_32"],
     "TC_IDA_DemoAuth_62": ["TC_IDA_GetDraft_01"],
     "TC_IDA_DemoAuth_60": ["TC_DependentModule_IdRepo_29"],
+    "TC_IDA_RevokeVID_01": [
+        "TC_DependentModule_IdRepo_24",
+        "TC_IDA_GenerateVID_03"
+    ],
     "TC_IDA_RevokeVID_02": [
-        "TC_IDA_dependentTC_AuthTransaction_60",
-        "TC_IDA_GenerateVID_09"
+        "TC_IDA_GenerateVID_12",
+        "TC_IDA_dependentTC_AuthTransaction_60"
     ],
     "TC_IDA_MultiFactorAuth_59": [
         "TC_IDA_GenerateVID_01",
@@ -595,7 +1025,11 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_AuthTransaction_22": ["TC_IDA_DependentTc_AuthTransaction_GenerateVID_05"],
+    "TC_IDA_AuthTransaction_22": [
+        "TC_IDA_dependentTC_AuthTransaction_49",
+        "TC_IDA_RegenerateVid_DependentTc_AuthTransaction_01",
+        "TC_IDA_DependentTc_AuthTransaction_GenerateVID_09"
+    ],
     "TC_IDA_MultiFactorAuth_52": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_AuthTransaction_23": ["auth_GetUnusedUIN_All_Valid_Smoke_sid"],
     "TC_IDA_MultiFactorAuth_53": ["TC_DependentModule_IdRepo_06"],
@@ -604,12 +1038,21 @@
     "TC_IDA_AuthTransaction_21": ["TC_IDA_dependentTC_AuthTransaction_GetDraft_02"],
     "TC_IDA_AuthTransaction_24": ["TC_IDA_dependentTC_AuthTransaction_59"],
     "TC_IDA_MultiFactorAuth_50": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_AuthTransaction_25": ["TC_IDA_GenerateVID_09"],
+    "TC_IDA_AuthTransaction_25": [
+        "TC_IDA_GenerateVID_12",
+        "TC_IDA_dependentTC_AuthTransaction_60",
+        "TC_IDA_RevokeVID_02"
+    ],
     "TC_IDA_OtpAuth_17": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_EkycDemo_blockedVID_02": ["TC_IDA_GenerateVID_01"],
+    "TC_IDA_EkycDemo_blockedVID_02": [
+        "TC_IDA_GenerateVID_01",
+        "TC_DependentModule_IdRepo_06",
+        "TC_IDA_HotlistAPI_08",
+        "TC_IDA_HotlistAPI_07"
+    ],
     "TC_IDA_OtpAuth_16": ["TC_DependentModule_IdRepo_07"],
     "TC_IDA_DeactivateVIDs_01": ["TC_DependentModule_IdRepo_02"],
     "TC_IDA_OtpAuth_15": [
@@ -622,30 +1065,27 @@
         "TC_DependentModule_IdRepo_06"
     ],
     "TC_IDA_OtpAuth_18": ["TC_DependentModule_IdRepo_07"],
-    "TC_IDA_GenerateVID_08": ["TC_DependentModule_IdRepo_57"],
-    "TC_IDA_GenerateVID_09": ["TC_IDA_dependentTC_AuthTransaction_60"],
+    "TC_IDA_GenerateVID_06": ["TC_DependentModule_IdRepo_50"],
     "TC_IDA_OtpAuth_13": ["TC_DependentModule_IdRepo_07"],
     "TC_IDA_GenerateVID_07": ["TC_DependentModule_IdRepo_54"],
     "TC_IDA_OtpAuth_12": [
         "TC_DependentModule_IdRepo_24",
-        "TC_IDA_GenerateVID_01"
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
     ],
+    "TC_IDA_GenerateVID_04": ["TC_DependentModule_IdRepo_25"],
     "TC_IDA_OtpAuth_11": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
+    "TC_IDA_GenerateVID_05": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_OtpAuth_10": ["TC_DependentModule_IdRepo_07"],
-    "TC_IDA_GenerateVID_02": ["TC_DependentModule_IdRepo_06"],
+    "TC_IDA_GenerateVID_02": ["TC_DependentModule_IdRepo_02"],
     "TC_IDA_MultiFactorAuth_04": ["TC_IDA_GetDraft_01"],
+    "TC_IDA_GenerateVID_03": ["TC_DependentModule_IdRepo_24"],
     "TC_IDA_MultiFactorAuth_05": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_06": ["TC_DependentModule_IdRepo_06"],
-    "TC_IDA_GenerateVID_01": [
-        "TC_DependentModule_IdRepo_25",
-        "TC_DependentModule_IdRepo_02",
-        "TC_DependentModule_IdRepo_24",
-        "TC_DependentModule_IdRepo_06",
-        "TC_DependentModule_IdRepo_50"
-    ],
+    "TC_IDA_GenerateVID_01": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_07": [
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
@@ -657,7 +1097,10 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "TC_IDA_OtpAuth_04": ["TC_DependentModule_IdRepo_05"],
+    "TC_IDA_OtpAuth_04": [
+        "TC_DependentModule_IdRepo_05",
+        "TC_IDA_AuthInternalLock_02"
+    ],
     "TC_IDA_OtpAuth_03": ["TC_DependentModule_IdRepo_04"],
     "TC_IDA_OtpAuth_09": [
         "TC_IDA_GenerateVID_01",
@@ -668,13 +1111,25 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
+    "TC_IDA_GenerateVID_17": ["TC_DependentModule_Delegated_IdRepo_08"],
     "TC_IDA_OtpAuth_02": ["TC_DependentModule_IdRepo_07"],
     "TC_IDA_OtpAuth_01": ["TC_DependentModule_IdRepo_07"],
+    "TC_IDA_GenerateVID_16": ["TC_DependentModule_Delegated_IdRepo_04"],
+    "TC_IDA_GenerateVID_13": ["TC_DependentModule_IdRepo_62"],
+    "TC_IDA_GenerateVID_14": ["TC_DependentModule_Delegated_IdRepo_02"],
+    "TC_IDA_GenerateVID_11": ["TC_DependentModule_IdRepo_57"],
+    "TC_IDA_GenerateVID_12": ["TC_IDA_dependentTC_AuthTransaction_60"],
     "TC_IDA_UpdateIdentityForUin_04": ["TC_DependentModule_IdRepo_55"],
     "TC_IDA_UpdateIdentityForUin_02": ["TC_DependentModule_IdRepo_54"],
     "TC_IDA_UpdateIdentityForUin_03": ["TC_DependentModule_IdRepo_55"],
-    "TC_IDA_OtpAuth_31": ["TC_DependentModule_IdRepo_52"],
-    "TC_IDA_OtpAuth_30": ["TC_DependentModule_IdRepo_51"],
+    "TC_IDA_OtpAuth_31": [
+        "TC_DependentModule_IdRepo_52",
+        "TC_IDA_AuthLock_08"
+    ],
+    "TC_IDA_OtpAuth_30": [
+        "TC_DependentModule_IdRepo_51",
+        "TC_IDA_AuthLock_07"
+    ],
     "TC_IDA_MultiFactorAuth_19": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_26": [
         "TC_IDA_GenerateVID_01",
@@ -736,7 +1191,6 @@
         "TC_DependentModule_IdRepo_06"
     ],
     "TC_IDA_MultiFactorAuth_17": ["TC_DependentModule_IdRepo_06"],
-    "Dependent_Idrepo_uploadPartnerCert_02": ["Dependent_Idrepo_createPartnerSelfRegistration_02"],
     "TC_IDA_MultiFactorAuth_18": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_11": ["TC_DependentModule_IdRepo_06"],
     "TC_IDA_MultiFactorAuth_12": ["TC_DependentModule_IdRepo_06"],
@@ -749,6 +1203,5 @@
         "TC_IDA_GenerateVID_01",
         "TC_DependentModule_IdRepo_06"
     ],
-    "Dependent_Idrepo_uploadPartnerCert_01": ["Dependent_Idrepo_createPartnerSelfRegistration_01"],
     "TC_IDA_UpdateIdentityForUin_01": ["TC_DependentModule_IdRepo_32"]
 }

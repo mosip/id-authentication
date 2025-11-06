@@ -80,6 +80,7 @@ DemoAuthNew:
       description: Demo auth using valid dob with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -105,6 +106,7 @@ DemoAuthNew:
       description: Demo auth using valid dob with perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -130,6 +132,7 @@ DemoAuthNew:
       description: Demo auth using valid dob with invalid transactionId
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -207,6 +210,7 @@ DemoAuthNew:
       description: Demo auth using valid dob,valid VID and past timestamp 
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -233,6 +237,7 @@ DemoAuthNew:
       description: Demo auth using valid dob,valid VID and future timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -259,6 +264,7 @@ DemoAuthNew:
       description: Demo auth using valid dob,valid VID and empty timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -310,6 +316,7 @@ DemoAuthNew:
       description: Demo auth using invalid dob and valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -335,6 +342,7 @@ DemoAuthNew:
       description: Demo auth using email with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -361,6 +369,7 @@ DemoAuthNew:
       description: Demo auth using email with valid VID and past timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -387,6 +396,7 @@ DemoAuthNew:
       description: Demo auth with email using valid VID and future timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -413,6 +423,7 @@ DemoAuthNew:
       description: Demo auth with email using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -463,6 +474,7 @@ DemoAuthNew:
       description: Demo auth with invalid email using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -651,6 +663,7 @@ DemoAuthNew:
       description: Demo auth using invalid gender,valid residence status and valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -686,6 +699,7 @@ DemoAuthNew:
       description: Demo auth using valid gender,valid residence status and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -750,6 +764,7 @@ DemoAuthNew:
       description: Demo auth using valid gender and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -779,6 +794,7 @@ DemoAuthNew:
       description: Demo auth using valid dob and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -804,6 +820,7 @@ DemoAuthNew:
       description: Demo auth using valid dob and valid temporary VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -829,6 +846,7 @@ DemoAuthNew:
       description: Demo auth using invalid gender language code and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -858,6 +876,7 @@ DemoAuthNew:
       description: Demo auth using invalid gender and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1148,6 +1167,7 @@ DemoAuthNew:
       description: Demo auth using valid name and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1205,6 +1225,7 @@ DemoAuthNew:
       description: Demo auth using invalid name and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1259,6 +1280,7 @@ DemoAuthNew:
       description: Demo auth using valid age and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1284,6 +1306,7 @@ DemoAuthNew:
       description: Demo auth using invalid age and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1334,6 +1357,7 @@ DemoAuthNew:
       description: Demo auth using valid phone number and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1384,6 +1408,7 @@ DemoAuthNew:
       description: Demo auth using invalid phone number and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1409,6 +1434,7 @@ DemoAuthNew:
       description: Demo auth using valid phone number and valid temporary VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1610,6 +1636,7 @@ DemoAuthNew:
       description: Demo auth using revoked VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1871,6 +1898,7 @@ DemoAuthNew:
       description: Demo auth using valid dob,invalid certs and invalid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       allowedErrorCodes: Internal Server Error
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error

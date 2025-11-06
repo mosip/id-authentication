@@ -110,6 +110,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_02
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -144,6 +145,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -212,6 +214,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -280,6 +283,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -348,6 +352,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -382,6 +387,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
@@ -686,6 +692,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -754,6 +761,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -822,6 +830,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -856,6 +865,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
@@ -895,6 +905,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -1084,6 +1095,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_IDA_AuthLock_07
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
@@ -1118,6 +1130,7 @@ OtpAuth:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_IDA_AuthLock_08
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{

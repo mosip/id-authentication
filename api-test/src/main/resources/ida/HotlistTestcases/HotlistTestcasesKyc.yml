@@ -5,6 +5,7 @@ EkycDemo:
       description: perform Ekyc Demo auth with blocked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthLock_01
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/error
       input: '{
@@ -36,6 +37,7 @@ EkycDemo:
       description: perform Ekyc Demo auth with blocked VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06,TC_IDA_HotlistAPI_07,TC_IDA_HotlistAPI_08
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/error
       input: '{

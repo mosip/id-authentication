@@ -56,6 +56,7 @@ HotlistAPI:
       description: block VID when id type is incorrect without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_25
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -73,6 +74,7 @@ HotlistAPI:
       description: block VID when expiry time and id type are incorrect
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_25 
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/error
       input: '{
@@ -111,6 +113,7 @@ HotlistAPI:
       description: block VID without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -128,6 +131,7 @@ HotlistAPI:
       description: block VID with expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -213,6 +217,7 @@ HotlistAPI:
       description: block VID to send otp
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_57
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{

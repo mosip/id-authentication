@@ -45,6 +45,7 @@ BioAuth:
       description: Biometric face auth with updated edited policy using UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_01
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -130,6 +131,7 @@ BioAuth:
       description: Biometric face auth with infant locked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_02
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -696,6 +698,7 @@ BioAuth:
       description: Bio auth with Face using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -737,6 +740,7 @@ BioAuth:
       description: Bio auth wwith Face with revoked VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -783,6 +787,7 @@ BioAuth:
       description: Bio auth with RingFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -824,6 +829,7 @@ BioAuth:
       description: Bio auth with LeftMiddleFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -865,6 +871,7 @@ BioAuth:
       description: Bio auth with LeftIndexFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -905,6 +912,7 @@ BioAuth:
       description: Bio auth with LeftLittleFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -945,6 +953,7 @@ BioAuth:
       description: Bio auth with RightIndexFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -985,6 +994,7 @@ BioAuth:
       description: Bio auth with RightRingFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1025,6 +1035,7 @@ BioAuth:
       description: Bio auth with RightMiddleFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1065,6 +1076,7 @@ BioAuth:
       description: Bio auth with RightLittleFinger using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1105,6 +1117,7 @@ BioAuth:
       description: Bio auth with LeftThumb using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1145,6 +1158,7 @@ BioAuth:
       description: Bio auth with RightThumb using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1185,6 +1199,7 @@ BioAuth:
       description: Bio auth with RightIris using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1225,6 +1240,7 @@ BioAuth:
       description: Bio auth with LeftIris using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1728,6 +1744,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -1773,6 +1790,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -1818,6 +1836,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -1854,6 +1873,7 @@ BioAuth:
       description: Bio auth with invalid bioType and invalid bioValue using valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -1944,6 +1964,7 @@ BioAuth:
       description: Bio auth with unlocked face with valid UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_01
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -1985,6 +2006,7 @@ BioAuth:
       description: Bio auth using permanetly locked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_05
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -2126,6 +2148,7 @@ BioAuth:
       description: Bio auth with face unlocked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_07
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/BioAuthResult
       input: '{
@@ -2167,6 +2190,7 @@ BioAuth:
       description: Bio auth with permanently locked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_09
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -2213,6 +2237,7 @@ BioAuth:
       description: Bio auth with deactivated UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_UpdateIdentityForUin_01
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -2833,10 +2858,11 @@ BioAuth:
 }'
   auth_BioAuth_RightIris_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_66
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_67
       description: Bio iris auth with locked bio-iris auth type
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_03
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -2879,10 +2905,11 @@ BioAuth:
 }'
   auth_BioAuth_LeftIris_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_67
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_68
       description: Bio iris auth with locked bio-iris auth type
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_03
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{
@@ -2925,10 +2952,11 @@ BioAuth:
 }'
   auth_BioAuth_Face_Lock_uin_audit_Valid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_68
+      uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_BioAuth_70
       description: Bio Face auth with locked bio-Face auth type
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_AuthLock_04
       inputTemplate: ida/BioAuth/BioAuth
       outputTemplate: ida/BioAuth/error
       input: '{

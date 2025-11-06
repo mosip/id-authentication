@@ -680,6 +680,7 @@ EkycBio:
       description: Ekyc bio auth with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -721,6 +722,7 @@ EkycBio:
       description: Ekyc bio auth using ring finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -762,6 +764,7 @@ EkycBio:
       description: Ekyc bio auth using left middle finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -803,6 +806,7 @@ EkycBio:
       description: Ekyc bio auth using left index finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -844,6 +848,7 @@ EkycBio:
       description: Ekyc bio auth using left little finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -885,6 +890,7 @@ EkycBio:
       description: Ekyc bio auth using right index finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -926,6 +932,7 @@ EkycBio:
       description: Ekyc bio auth using right ring finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -967,6 +974,7 @@ EkycBio:
       description: Ekyc bio auth using right middle finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1008,6 +1016,7 @@ EkycBio:
       description: Ekyc bio auth using right little finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1049,6 +1058,7 @@ EkycBio:
       description: Ekyc bio auth using left thumb with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1090,6 +1100,7 @@ EkycBio:
       description: Ekyc bio auth using right thumb with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1131,6 +1142,7 @@ EkycBio:
       description: Ekyc bio auth using right iris with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1172,6 +1184,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1259,6 +1272,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with invalid transactionId and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1350,6 +1364,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank transactionId and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1396,6 +1411,7 @@ EkycBio:
       description: Ekyc bio auth with revoked perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1486,6 +1502,7 @@ EkycBio:
       description: Ekyc bio auth using invalid bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1578,6 +1595,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1670,6 +1688,7 @@ EkycBio:
       description: Ekyc bio auth with blank bio type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1755,7 +1774,7 @@ EkycBio:
     }
   ]
 }'
-  auth_EkycBio_Invalid_bioType_VID:
+  auth_EkycBio_Invalid_bioType:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_43
       description: Ekyc bio auth with invalid bio type with valid perpetual VID
@@ -1851,6 +1870,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with finger bio value and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1935,7 +1955,7 @@ EkycBio:
     }
   ]
 }'
-  auth_EkycBio_Finger_With_IRIS_Invalid_VID:
+  auth_EkycBio_Finger_With_IRIS_Invalid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_47
       description: Ekyc bio auth using finger with iris value and with valid perpetual VID
@@ -1986,6 +2006,7 @@ EkycBio:
       description: Ekyc bio auth using finger with dummy partnerkey and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -2035,6 +2056,7 @@ EkycBio:
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_IDA_UpdateIdentityForUin_01
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -2378,7 +2400,7 @@ EkycBio:
 }'
   auth_EkycBio_Face_With_Valid_With_space_in_domain:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-      uniqueIdentifier: TC_IDA_EkycBio_38
+      uniqueIdentifier: TC_IDA_EkycBio_59
       description: Ekyc bio auth using face with space in bioSubtype
       role: resident
       kycFields: ["gender"]
