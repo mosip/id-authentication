@@ -5,6 +5,7 @@ DemoAuth:
       description: perform Demo auth with blocked partner id
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{
@@ -35,6 +36,7 @@ DemoAuth:
       description: perform Demo auth with VID with blocked partner id
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15,TC_DependentModule_IdRepo_06
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{

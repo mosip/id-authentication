@@ -1925,7 +1925,7 @@ AddIdentity:
 
    auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_01
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_01
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -1955,7 +1955,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_02
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_02
       description: create UIN with valid parameters for delegated auth
       role: idrepo
       restMethod: post
@@ -1985,7 +1985,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_03
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_03
       description: create UIN with valid parameters for delegated iris auth
       role: idrepo
       restMethod: post
@@ -2015,7 +2015,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_04
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_04
       description: create UIN with valid parameters for delegated iris auth
       role: idrepo
       restMethod: post
@@ -2045,7 +2045,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_05
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_05
       description: create UIN with valid parameters for delegated right iris auth
       role: idrepo
       restMethod: post
@@ -2075,7 +2075,7 @@ AddIdentity:
 }'
    auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_06
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_06
       description: create UIN with valid parameters for delegated right iris auth
       role: idrepo
       restMethod: post
@@ -2105,7 +2105,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDelegated_Infant_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_07
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_07
       description: create Infant UIN with valid parameters for delegate
       role: idrepo
       restMethod: post
@@ -2135,7 +2135,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDelegated_differentIdType_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_08
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_08
       description: create  UIN with valid parameters for delegate
       role: idrepo
       restMethod: post
@@ -2165,7 +2165,7 @@ AddIdentity:
 }'
    auth_AddIdentity_withValidParameters_forDemoDelegated_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_09
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_09
       description: create  UIN with valid parameters for demo auth delegate
       role: idrepo
       restMethod: post

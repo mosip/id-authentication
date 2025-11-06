@@ -5,6 +5,7 @@ RegenerateVid:
       description: Regenerate VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_dependentTC_AuthTransaction_49
       inputTemplate: ida/RegenerateVid/regenerateVid
       outputTemplate: ida/errorRegenerate
       input: '{

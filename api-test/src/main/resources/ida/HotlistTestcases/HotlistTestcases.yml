@@ -5,6 +5,7 @@ DemoAuth:
       description: perform Demo auth with blocked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_01,TC_IDA_HotlistAPI_06
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/error
       input: '{
@@ -32,10 +33,11 @@ DemoAuth:
 }'
   auth_DemoAuth_Locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_01
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_02
       description: perform Demo auth with locked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthLock_01
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/error
       input: '{
@@ -63,10 +65,11 @@ DemoAuth:
 }'
   auth_DemoAuth_blocked_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_DemoAuth_blockedVID_02
+      uniqueIdentifier: TC_IDA_DemoAuth_blockedVID_03
       description: perform Demo auth with blocked VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06,TC_IDA_HotlistAPI_07,TC_IDA_HotlistAPI_08
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/error
       input: '{
