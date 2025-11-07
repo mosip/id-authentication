@@ -6,7 +6,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -43,7 +43,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -80,7 +80,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "2022-05-19T06:29:44.809Z",
@@ -117,7 +117,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "2022-05-19T06:29:44.809Z",
@@ -154,7 +154,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "2052-05-19T06:29:44.809Z",
@@ -191,7 +191,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
     "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "2052-05-19T06:29:44.809Z",
@@ -228,7 +228,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "",
@@ -265,7 +265,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "",
@@ -302,7 +302,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -339,7 +339,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -379,7 +379,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -417,7 +417,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -455,7 +455,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -493,7 +493,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -531,7 +531,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -568,7 +568,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -605,7 +605,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -642,7 +642,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -679,7 +679,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -716,7 +716,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -754,7 +754,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "26363633",
         "requestTime": "$TIMESTAMP$",
@@ -792,7 +792,7 @@ OtpAuthDelegatedNegNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
-      outputTemplate: ida/OtpAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "otpChannel": "263@#$63633",
         "requestTime": "$TIMESTAMP$",

@@ -535,7 +535,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -563,7 +563,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -591,7 +591,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
@@ -619,7 +619,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_test_hotlist_Perpetual_sid_vid$",
@@ -647,7 +647,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_differentIdType_sid_vid$",

@@ -6,7 +6,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDelegated_Infant_smoke_Pos_UIN$",
@@ -50,7 +50,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
@@ -95,7 +95,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -140,7 +140,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -185,7 +185,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -230,7 +230,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -277,7 +277,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -322,7 +322,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -367,7 +367,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -412,7 +412,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -457,7 +457,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -502,7 +502,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -547,7 +547,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -591,7 +591,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -635,7 +635,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -679,7 +679,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -723,7 +723,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos_UIN$",
@@ -768,7 +768,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
@@ -813,7 +813,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -861,7 +861,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos_UIN$",
@@ -906,7 +906,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
@@ -951,7 +951,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
@@ -995,7 +995,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -1040,7 +1040,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -1085,7 +1085,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
@@ -1133,7 +1133,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
@@ -1181,7 +1181,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
@@ -1229,7 +1229,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
@@ -1277,7 +1277,7 @@ BioAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegatedNeg/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos_UIN$",
