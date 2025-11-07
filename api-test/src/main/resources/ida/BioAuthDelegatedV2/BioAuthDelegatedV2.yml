@@ -9,7 +9,7 @@ BioAuthDelegatedV2:
       outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "claimsMetadataRequired": true,

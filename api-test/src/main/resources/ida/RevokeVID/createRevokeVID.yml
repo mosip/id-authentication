@@ -33,7 +33,7 @@ RevokeVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_RevokeVID_all_valid_smoke:
+   auth_RevokeVID_all_valid_auditLog_smoke:
       endPoint: /resident/v1/vid/$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$
       uniqueIdentifier: TC_IDA_RevokeVID_02
       description: revoke given VID to check for audit

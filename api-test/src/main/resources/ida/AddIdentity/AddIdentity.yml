@@ -29,7 +29,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos:
+   auth_AddIdentity_withValidParameters_used_for_vid_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_02
       description: create UIN with valid parameters
@@ -46,7 +46,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos@mosip.net",
+  "email": "auth_AddIdentity_withValidParameters_used_for_vid_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -59,7 +59,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_new_uin_smoke_Pos:
+   auth_AddIdentity_withValidParameters_new_uin_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_03
       description: create UIN with valid parameters
@@ -119,7 +119,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos:
+   auth_AddIdentity_withValidParameters_with_Infant_which_locked_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_05
       description: create Infant UIN with valid parameters
@@ -209,7 +209,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_UIN_smoke:
+   auth_AddIdentity_UIN:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_08
       description: create UIN with valid parameters
@@ -226,7 +226,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_UIN_smoke@mosip.net",
+  "email": "auth_AddIdentity_UIN@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -269,7 +269,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_InternalOTP_smoke:
+   auth_AddIdentity_InternalOTP:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_10
       description: create UIN for Internal OTP Authentication
@@ -286,7 +286,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_InternalOTP_smoke@mosip.net",
+  "email": "auth_AddIdentity_InternalOTP@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -299,7 +299,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_EKYCOTP_PRE_smoke:
+   auth_AddIdentity_EKYCOTP_PRE:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_11
       description: create UIN for Ekyc OTP Authentication
@@ -316,7 +316,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_EKYCOTP_PRE_smoke@mosip.net",
+  "email": "auth_AddIdentity_EKYCOTP_PRE@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -569,7 +569,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke:
+   auth_AddIdentity_Positive_LockUIN_For_bio_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_20
       description: create UIN and use for Biometric Lock
@@ -586,7 +586,7 @@ AddIdentity:
   "UIN": "$UIN$",    
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke@mosip.net",
+  "email": "auth_AddIdentity_Positive_LockUIN_For_bio_valid@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -629,7 +629,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_EKYCUIN_valid_smoke:
+   auth_AddIdentity_Positive_EKYCUIN_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_22
       description: create UIN and use for Ekyc Authentication
@@ -646,7 +646,7 @@ AddIdentity:
   "UIN": "$UIN$", 
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_EKYCUIN_valid_smoke@mosip.net",
+  "email": "auth_AddIdentity_Positive_EKYCUIN_valid@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -871,7 +871,7 @@ AddIdentity:
   "status":"ACTIVATED"
 }'
 
-   auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos:
+   auth_AddIdentity_Valid_Parameters_Auth_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_30
       description: create UIN for Authentication
@@ -888,7 +888,7 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos@mosip.net",
+  "email": "auth_AddIdentity_Valid_Parameters_Auth_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -901,7 +901,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_demoauth_name_smoke:
+   auth_AddIdentity_Positive_demoauth_name:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_31
       description: create UIN and use for Demo Authentication
@@ -919,7 +919,7 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
+  "email": "auth_AddIdentity_Positive_demoauth_name@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -981,7 +981,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
+  "email": "auth_AddIdentity_Positive_demoauth_name@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -1069,7 +1069,7 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
+  "email": "auth_AddIdentity_Positive_demoauth_name@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
@@ -1232,7 +1232,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_40
       description: create UIN to lock and perform auth to check audit log
@@ -1262,7 +1262,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_Face_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_41
       description: create UIN to lock and perform auth to check audit log
@@ -1292,7 +1292,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_42
       description: create UIN to lock and perform auth to check audit log
@@ -1322,7 +1322,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_ekycAuth_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_43
       description: create UIN to perform ekyc auth to check audit log
@@ -1352,7 +1352,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_ekycAuth_fail_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_44
       description: create UIN to perform ekyc auth to check audit log
@@ -1562,7 +1562,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_51
       description: create UIN to lock otp-email and to perform otp auth
@@ -1592,7 +1592,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_phone_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_phone_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_52
       description: create UIN to lock otp-phone and to perform otp auth
@@ -1622,7 +1622,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_53
       description: create UIN to lock otp-phone and email and to perform otp auth
@@ -1862,7 +1862,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_fordemo_smoke_Pos:
+   auth_AddIdentity_ValidParameters_fordemo_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_61
       description: create UIN for demo auth
@@ -1923,9 +1923,9 @@ AddIdentity:
   "status":"ACTIVATED"
 }'
 
-   auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos:
+   auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_01
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_01
       description: create UIN with valid parameters
       role: idrepo
       restMethod: post
@@ -1940,7 +1940,247 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos@mosip.net",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_VID_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_02
+      description: create UIN with valid parameters for delegated auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_face_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_03
+      description: create UIN with valid parameters for delegated iris auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_iris_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_04
+      description: create UIN with valid parameters for delegated iris auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_leftIris_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_05
+      description: create UIN with valid parameters for delegated right iris auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Rightiris_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_VID_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_06
+      description: create UIN with valid parameters for delegated right iris auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Rightiris_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDelegated_Infant_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_07
+      description: create Infant UIN with valid parameters for delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2023/09/28",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_delegated_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDelegated_differentIdType_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_08
+      description: create  UIN with valid parameters for delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/09/28",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_delegated_differentIdType_smoke_Pos@mosip.net",
+  "phone": "7019858531",
+  "mobileno": "7019858531",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDemoDelegated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_09
+      description: create  UIN with valid parameters for demo auth delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1990/09/28",
+  "postalCode": "14022",
+  "email": "auth_AddIdentity_withValidParameters_forDemoDelegated_smoke_Pos@mosip.net",
   "phone": "7019858531",
   "mobileno": "7019858531",
   "referenceIdentityNumber": "6789545678878",
