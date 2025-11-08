@@ -13,7 +13,7 @@ import io.mosip.authentication.common.service.repository.AuthLockRepository;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Class AuthtypeStatusImpl - implementation of

@@ -33,7 +33,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.

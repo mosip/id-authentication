@@ -23,7 +23,7 @@ import io.mosip.authentication.core.spi.authtype.status.service.UpdateAuthtypeSt
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.idrepository.core.dto.AuthtypeStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Class UpdateAuthtypeStatusServiceImpl.

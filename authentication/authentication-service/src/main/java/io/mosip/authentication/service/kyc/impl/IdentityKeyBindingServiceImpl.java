@@ -33,7 +33,7 @@ import io.mosip.authentication.core.spi.indauth.service.IdentityKeyBindingServic
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.keymanager.model.CertificateParameters;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.authentication.common.service.util.EnvUtil;
 
 /**
