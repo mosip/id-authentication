@@ -78,7 +78,7 @@ public class DemoMatcherUtil {
 	 * @return 100 when the refInfo and entityInfo dates are matched
 	 */
 	public int doExactMatch(Date reqInfo, Date entityInfo) {
-		if (DateUtils.isSameInstant(reqInfo, entityInfo)) {
+		if (DateUtils2.isSameInstant(reqInfo, entityInfo)) {
 			return EXACT_MATCH_VALUE;
 		} else {
 			return 0;
