@@ -377,7 +377,7 @@ public class IdServiceImplTest {
 
     private IdentityEntity getEntity() {
         IdentityEntity entity = new IdentityEntity();
-        LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
+        LocalDateTime time = DateUtils2.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
         entity.setExpiryTimestamp(time);
 
         byte[] bioData = {};

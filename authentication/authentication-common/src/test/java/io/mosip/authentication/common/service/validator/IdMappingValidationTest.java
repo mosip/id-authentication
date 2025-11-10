@@ -239,7 +239,7 @@ public class IdMappingValidationTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioValue("face img");
 		dataDTO.setBioSubType("Thumb");
@@ -266,7 +266,7 @@ public class IdMappingValidationTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		BioIdentityInfoDTO irisValue = new BioIdentityInfoDTO();
 		dataDTO.setBioValue("iris img");
@@ -295,7 +295,7 @@ public class IdMappingValidationTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("Thumb");
@@ -314,7 +314,7 @@ public class IdMappingValidationTest {
 		digitalId1.setType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
-		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId1.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTO1.setDigitalId(digitalId1);
 		dataDTO1.setBioValue("finger");
 		dataDTO1.setBioSubType("Left Thumb");
@@ -340,7 +340,7 @@ public class IdMappingValidationTest {
 		digitalId2.setType("1");
 		digitalId2.setDeviceProvider("1");
 		digitalId2.setDeviceProviderId("1");
-		digitalId2.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId2.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTOFace.setDigitalId(digitalId2);
 		dataDTOFace.setBioValue("face img");
 		dataDTOFace.setBioType("FACE");

@@ -84,7 +84,7 @@ public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitial
 		CredentialStatusUpdateEvent credentialStatusUpdateEvent = new CredentialStatusUpdateEvent();
 		credentialStatusUpdateEvent.setStatus(status);
 		credentialStatusUpdateEvent.setRequestId(requestId);
-		credentialStatusUpdateEvent.setTimestamp(DateUtils.formatToISOString(updatedTimestamp));
+		credentialStatusUpdateEvent.setTimestamp(DateUtils2.formatToISOString(updatedTimestamp));
 		return credentialStatusUpdateEvent;
 	}
 	

@@ -54,7 +54,7 @@ public class HotlistScheduledCleanupJob {
 		try {
 			mosipLogger.info(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
 					"INITIATED CLEANUP OF EXPIRED IDs");
-			hotlistRepo.findByExpiryDTimesLessThanAndStatus(DateUtils.getUTCCurrentDateTime(), HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
+			hotlistRepo.findByExpiryDTimesLessThanAndStatus(DateUtils2.getUTCCurrentDateTime(), HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
 			mosipLogger.warn(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));

@@ -172,7 +172,7 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 			effectiveDTimes = maxCredentialPullWindowTime;
 		}
 		
-		return DateUtils.formatToISOString(effectiveDTimes);
+		return DateUtils2.formatToISOString(effectiveDTimes);
 		
 	}
 

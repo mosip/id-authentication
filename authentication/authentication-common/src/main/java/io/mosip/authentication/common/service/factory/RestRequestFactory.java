@@ -254,7 +254,7 @@ public class RestRequestFactory {
     	RequestWrapper<T> request = new RequestWrapper<>();
     	request.setRequest(t);
     	request.setId("ida");
-    	request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+    	request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
     	return request;
     }
 }

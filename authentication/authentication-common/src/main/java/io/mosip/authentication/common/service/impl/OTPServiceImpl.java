@@ -335,8 +335,8 @@ public class OTPServiceImpl implements OTPService {
  		boolean isOtpFlooded = false;
 		LocalDateTime reqTime;
 		try {
-			String strUTCDate = DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(requestTime, EnvUtil.getDateTimePattern()));
+			String strUTCDate = DateUtils2.getUTCTimeFromDate(
+					DateUtils2.parseToDate(requestTime, EnvUtil.getDateTimePattern()));
 			reqTime = LocalDateTime.parse(strUTCDate,
 					DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern()));
 

@@ -707,7 +707,7 @@ public class BaseIDAFilterTest {
 		Mockito.when(requestWrapper.getServletPath()).thenReturn("/vid/zxd");
 		Mockito.when(keyManager.signResponse(Mockito.anyString())).thenReturn("signature");
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper,
-				DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
+				DateUtils2.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
 	@Test
@@ -1261,7 +1261,7 @@ public class BaseIDAFilterTest {
 		Mockito.when(requestWrapper.getServletPath()).thenReturn("/vid/zxd");
 		Mockito.when(keyManager.signResponse(Mockito.anyString())).thenThrow(new IdAuthenticationAppException());
 		ReflectionTestUtils.invokeMethod(baseIDAFilter, "sendErrorResponse", respserv, responseWrapper, requestWrapper,
-				DateUtils.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
+				DateUtils2.getUTCCurrentDateTime(), idex, mapper.readValue(req.getBytes(), Map.class));
 	}
 
 	@Test

@@ -59,7 +59,7 @@ public class AuthTransactionBuilderTest {
 		transactionBuilder.addRequestType(RequestType.OTP_AUTH);
 		transactionBuilder.addRequestType(RequestType.EKYC_AUTH_REQUEST);
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
-		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		requestDTO.setRequestTime(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
 		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		
@@ -78,7 +78,7 @@ public class AuthTransactionBuilderTest {
 		transactionBuilder.addRequestType(RequestType.IRIS_AUTH);
 		transactionBuilder.addRequestType(RequestType.FINGER_AUTH);
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
-		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		requestDTO.setRequestTime(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
 		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		
@@ -95,7 +95,7 @@ public class AuthTransactionBuilderTest {
 		transactionBuilder.addRequestType(RequestType.IRIS_AUTH);
 		transactionBuilder.addRequestType(RequestType.FINGER_AUTH);
 		AuthRequestDTO requestDTO = new AuthRequestDTO();
-		requestDTO.setRequestTime(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		requestDTO.setRequestTime(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		transactionBuilder.withRequest(requestDTO);
 		EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		

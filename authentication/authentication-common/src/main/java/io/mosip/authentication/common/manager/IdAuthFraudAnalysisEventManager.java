@@ -63,7 +63,7 @@ public class IdAuthFraudAnalysisEventManager {
 						.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
 				String txnId = (String) request.get(TRANSACTION_ID);
 				String partnerId = pathSegments.get(4);
-				LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
+				LocalDateTime requestTime = DateUtils2.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
 				authType = getAuthType(pathSegments, authType, request);
 				IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType,
 						requestTime, "N", errorMessage);

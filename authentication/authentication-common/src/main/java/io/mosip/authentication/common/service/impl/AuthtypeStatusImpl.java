@@ -78,7 +78,7 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		}
 		boolean isLocked = authtypeLock.getStatuscode().equalsIgnoreCase(Boolean.TRUE.toString());
 		boolean isAuthTypeUnlockedTemporarily = isLocked && Objects.nonNull(authtypeLock.getUnlockExpiryDTtimes())
-				&& authtypeLock.getUnlockExpiryDTtimes().isAfter(DateUtils.getUTCCurrentDateTime());
+				&& authtypeLock.getUnlockExpiryDTtimes().isAfter(DateUtils2.getUTCCurrentDateTime());
 		authtypeStatus.setLocked(isAuthTypeUnlockedTemporarily ? false : isLocked);
 		return authtypeStatus;
 	}

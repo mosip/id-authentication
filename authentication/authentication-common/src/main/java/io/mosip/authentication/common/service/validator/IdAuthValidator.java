@@ -207,7 +207,7 @@ public abstract class IdAuthValidator implements Validator {
 
 		Date plusAdjustmentTime = getCurrentTimePlusAdjutsmentTime();
 
-		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, plusAdjustmentTime)) {
+		if (reqDateAndTime != null && DateUtils2.after(reqDateAndTime, plusAdjustmentTime)) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
 			Long reqDateMaxTimeLong = EnvUtil.getAuthRequestReceivedTimeAllowedInSeconds();
 			String message;
@@ -477,7 +477,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @throws ParseException the parse exception
 	 */
 	protected Date requestTimeParser(String reqTime) throws ParseException {
-		return DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern());
+		return DateUtils2.parseToDate(reqTime, EnvUtil.getDateTimePattern());
 	}
 
 }

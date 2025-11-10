@@ -157,7 +157,7 @@ public class WebSubHelper {
 		eventModel.setEvent(event);
 		logger.debug("Event- "+event);
 		eventModel.setPublisher(PUBLISHER_IDA);
-		eventModel.setPublishedOn(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		eventModel.setPublishedOn(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		eventModel.setTopic(topic);
 		logger.debug("EventModel- "+eventModel);
 		return eventModel;
@@ -171,7 +171,7 @@ public class WebSubHelper {
 	 */
 	public  io.mosip.kernel.core.websub.model.EventModel createEventModel(String topic) {
 		io.mosip.kernel.core.websub.model.Event event = new io.mosip.kernel.core.websub.model.Event();
-		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		String dateTime = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
 		event.setTimestamp(dateTime);
 		String eventId = UUID.randomUUID().toString();
 		event.setId(eventId);
@@ -179,7 +179,7 @@ public class WebSubHelper {
 		io.mosip.kernel.core.websub.model.EventModel eventModel = new io.mosip.kernel.core.websub.model.EventModel();
 		eventModel.setEvent(event);
 		eventModel.setPublisher(PUBLISHER_IDA);
-		eventModel.setPublishedOn(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		eventModel.setPublishedOn(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		eventModel.setTopic(topic);
 		return eventModel;
 	}

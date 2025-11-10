@@ -58,7 +58,7 @@ public enum DemoMatchType implements MatchType {
 				Optional<String> valueOpt = entityInfoMap.values().stream().findFirst();
 				if (valueOpt.isPresent()) {
 					String value = valueOpt.get();
-					int age = Period.between(DateUtils.parseToDate(value, getDatePattern(props)).toInstant()
+					int age = Period.between(DateUtils2.parseToDate(value, getDatePattern(props)).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 
 					Map<String, String> map = new LinkedHashMap<>();

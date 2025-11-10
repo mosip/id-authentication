@@ -71,7 +71,7 @@ public class AuditRequestFactory {
 	request.setEventId(event.getEventId());
 	request.setEventName(event.getEventName());
 	request.setEventType(event.getEventType());
-	request.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+	request.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
 	request.setHostName(hostName);
 	request.setHostIp(hostAddress);
 	request.setApplicationId(EnvUtil.getAppId());

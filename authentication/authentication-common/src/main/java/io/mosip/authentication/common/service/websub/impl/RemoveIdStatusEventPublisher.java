@@ -85,7 +85,7 @@ public class RemoveIdStatusEventPublisher extends BaseWebSubEventsInitializer {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put(ID_HASH, idHash);
 		removeIdStatusEvent.setData(dataMap);
-		removeIdStatusEvent.setTimestamp(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		removeIdStatusEvent.setTimestamp(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		return removeIdStatusEvent;
 	}
 

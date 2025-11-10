@@ -361,7 +361,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return the object
 	 */
 	private static Object frameErrorResponse(String requestReceived, String type, List<AuthError> errors) {
-		String responseTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		String responseTime = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
 		switch (requestReceived) {
 		case "kyc":
 			EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();

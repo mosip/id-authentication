@@ -115,7 +115,7 @@ public class BioMatcherUtil {
 							logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "record birs list is not null");
 							Map<String, String> flags = new HashMap<>();
 							flags.put("uniqueRefID", UUID.randomUUID().toString());
-							flags.put("timestamp", DateUtils.getUTCCurrentDateTimeString());
+							flags.put("timestamp", DateUtils2.getUTCCurrentDateTimeString());
 							res =  bioProvider.verify(sample, record, modality, flags);
 							logger.debug(IdAuthCommonConstants.SESSION_ID, "IDA", "matchFunction", "match response : " + res + " for " + modality);
 							if(!res) {

@@ -269,7 +269,7 @@ public class VciServiceImpl implements VciService {
 		credSubjectIdStore.setCsidKeyHash(keyHash);
 		credSubjectIdStore.setCsidStatus(VCStatus.ACTIVE.getStatus()); 
 		credSubjectIdStore.setCreatedBy(EnvUtil.getAppId());
-		credSubjectIdStore.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		credSubjectIdStore.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
 		csidStoreRepo.saveAndFlush(credSubjectIdStore);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addCredSubjectId",
 					"Credential subject Id details Saved.");
@@ -321,8 +321,8 @@ public class VciServiceImpl implements VciService {
 
 			// vc issuance date
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern());
-			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(EnvUtil.getDateTimePattern()), format);
-			verCredJsonObject.put(IdAuthCommonConstants.VC_ISSUANCE_DATE, DateUtils.formatToISOString(localdatetime));
+			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils2.getUTCCurrentDateTimeString(EnvUtil.getDateTimePattern()), format);
+			verCredJsonObject.put(IdAuthCommonConstants.VC_ISSUANCE_DATE, DateUtils2.formatToISOString(localdatetime));
 
 			// vc credentialSubject
 			verCredJsonObject.put(IdAuthCommonConstants.CREDENTIALSUBJECT, credSubjectMap);

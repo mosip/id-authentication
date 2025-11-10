@@ -167,7 +167,7 @@ public class KeyBindedTokenMatcherUtil {
     private boolean isIatWithinAllowedTime(Date issuedDateTime) {
         LocalDateTime currentTime = LocalDateTime.now();
         
-        LocalDateTime issuedLDT = DateUtils.parseDateToLocalDateTime(issuedDateTime);
+        LocalDateTime issuedLDT = DateUtils2.parseDateToLocalDateTime(issuedDateTime);
 		long diffSeconds = ChronoUnit.SECONDS.between(issuedLDT, currentTime);
         
 		if (issuedDateTime != null && diffSeconds >= 0 && diffSeconds <= iatAdjSeconds) {

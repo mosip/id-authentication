@@ -74,7 +74,7 @@ public class RequireOtpNotFrozenHelper {
      * @return true, if is after frozen duration
      */
     private boolean isAfterFrozenDuration(OtpTransaction otpEntity) {
-        return DateUtils.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
+        return DateUtils2.getUTCCurrentDateTime().isAfter(otpEntity.getUpdDTimes().plus(otpFrozenTimeMinutes, ChronoUnit.MINUTES));
     }
 
 }

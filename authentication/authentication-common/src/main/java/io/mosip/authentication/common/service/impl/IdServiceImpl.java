@@ -241,7 +241,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     }
 
     private void validateNotExpired(LocalDateTime expiry, IdType idType) throws IdAuthenticationBusinessException {
-        if (expiry != null && DateUtils.before(expiry, DateUtils.getUTCCurrentDateTime())) {
+        if (expiry != null && DateUtils2.before(expiry, DateUtils2.getUTCCurrentDateTime())) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateNotExpired",
                     idType.getType() + " expired/deactivated/revoked/blocked");
 
@@ -433,7 +433,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             LocalDateTime expiryTimestamp = Objects.nonNull(entityObjs[1]) ? LocalDateTime.parse(String.valueOf(entityObjs[1])) : null;
 
             if (Objects.nonNull(expiryTimestamp)
-                    && DateUtils.before(expiryTimestamp, DateUtils.getUTCCurrentDateTime())) {
+                    && DateUtils2.before(expiryTimestamp, DateUtils2.getUTCCurrentDateTime())) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
                         idvIdType + " expired/deactivated/revoked/blocked");
                 IdAuthenticationErrorConstants errorConstant;

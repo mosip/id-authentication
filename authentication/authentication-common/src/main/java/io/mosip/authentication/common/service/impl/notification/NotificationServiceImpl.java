@@ -104,7 +104,7 @@ public class NotificationServiceImpl implements NotificationService {
         for (String lang : templateLanguages) {
             values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
         }
-        Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
+        Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils2.parseToLocalDateTime(authResponseDTO.getResponseTime()));
         values.put(DATE, dateAndTime.getT1());
         values.put(TIME, dateAndTime.getT2());
         String maskedUin = "";

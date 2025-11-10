@@ -129,7 +129,7 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 
 		// Log the request time
-		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime requestTime = DateUtils2.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				IdAuthCommonConstants.REQUEST + " started at: " + requestTime);
 
@@ -585,7 +585,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected boolean isDate(String date) {
 		try {
-			DateUtils.parseToDate(date, EnvUtil.getDateTimePattern());
+			DateUtils2.parseToDate(date, EnvUtil.getDateTimePattern());
 			return true;
 		} catch (ParseException e) {
 			mosipLogger.warn("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));

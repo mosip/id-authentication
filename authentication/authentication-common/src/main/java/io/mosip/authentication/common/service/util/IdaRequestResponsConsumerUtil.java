@@ -162,17 +162,17 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 		} else {
 			zone = ZoneOffset.UTC;
 		}
-		resTime = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
+		resTime = DateUtils2.formatDate(DateUtils2.parseToDate(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()),
 				dateTimePattern, TimeZone.getTimeZone(ZoneOffset.UTC)),
 				dateTimePattern, TimeZone.getTimeZone(zone));
 		return resTime;
 	}
 
 	public static LocalDateTime convertStringDateTimeToLDT(String stringDateTime) {
-		LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime strUTCDate = DateUtils2.getUTCCurrentDateTime();
 		try {
-			strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(stringDateTime, EnvUtil.getDateTimePattern())));
+			strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
+					DateUtils2.parseToDate(stringDateTime, EnvUtil.getDateTimePattern())));
 		} catch (ParseException e) {
 			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, IdaRequestResponsConsumerUtil.class.getClass().getName(), e.getMessage(),
 					"Invalid  DateTime - setting to current date time");

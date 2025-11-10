@@ -304,7 +304,7 @@ public class InternalAuthRequestValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioValue("finger");
 		dataDTO.setBioSubType("Left Thumb");
@@ -324,7 +324,7 @@ public class InternalAuthRequestValidatorTest {
 		digitalId1.setType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
-		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId1.setDateTime(DateUtils2.getCurrentDateTimeString());
 		irisData.setDigitalId(digitalId1);
 		irisData.setBioValue("iris img");
 		irisData.setBioSubType("Left");
@@ -343,7 +343,7 @@ public class InternalAuthRequestValidatorTest {
 		digitalId2.setType("1");
 		digitalId2.setDeviceProvider("1");
 		digitalId2.setDeviceProviderId("1");
-		digitalId2.setDateTime(DateUtils.getCurrentDateTimeString());
+		digitalId2.setDateTime(DateUtils2.getCurrentDateTimeString());
 		faceData.setDigitalId(digitalId2);
 		faceData.setBioValue("face img");
 		faceData.setBioType("FACE");

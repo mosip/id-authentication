@@ -156,8 +156,8 @@ public class InternalAuthTxnController {
 	}
 
 	private String getResponseTime() {
-		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
+		return DateUtils2.formatDate(
+				DateUtils2.parseToDate(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()),
 						EnvUtil.getDateTimePattern(),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				EnvUtil.getDateTimePattern(),

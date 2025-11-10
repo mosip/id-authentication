@@ -71,7 +71,7 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setEventId(action.name());
 			auditRequest.setEventName(action.name());
 			auditRequest.setEventType(status.name());
-			auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+			auditRequest.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
 			auditRequest.setHostName("localhost");
 			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
@@ -91,7 +91,7 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 
 			request.setRequest(auditRequest);
 			request.setId("ida");
-			request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+			request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 
 			String requestBody = objectMapper.writeValueAsString(request);
 			RequestEntity requestEntity = RequestEntity

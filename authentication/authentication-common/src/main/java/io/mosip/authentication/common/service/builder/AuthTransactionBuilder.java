@@ -254,12 +254,12 @@ public class AuthTransactionBuilder {
 			autnTxn.setId(id);
 			autnTxn.setCrBy(EnvUtil.getAppId());
 			autnTxn.setAuthTknId(authTokenId);
-            LocalDateTime now = DateUtils.getUTCCurrentDateTime();
-			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
+            LocalDateTime now = DateUtils2.getUTCCurrentDateTime();
+			autnTxn.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			LocalDateTime strUTCDate = DateUtils2.getUTCCurrentDateTime();
 			try {
-				strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
-						DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
+				strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
+						DateUtils2.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
 			} catch (ParseException e) {
 				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
 						"Invalid Request Time - setting to current date time");

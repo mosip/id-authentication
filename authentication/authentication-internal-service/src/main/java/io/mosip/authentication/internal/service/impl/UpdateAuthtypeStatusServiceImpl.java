@@ -87,13 +87,13 @@ public class UpdateAuthtypeStatusServiceImpl implements UpdateAuthtypeStatusServ
 			authType = authType + "-" + authtypeStatus.getAuthSubType();
 		}
 		authtypeLock.setAuthtypecode(authType);
-		LocalDateTime currentDtime = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime currentDtime = DateUtils2.getUTCCurrentDateTime();
 		authtypeLock.setLockrequestDTtimes(currentDtime);
 		authtypeLock.setLockstartDTtimes(currentDtime);
 		if (Objects.nonNull(authtypeStatus.getMetadata())
 				&& authtypeStatus.getMetadata().containsKey(UNLOCK_EXP_TIMESTAMP)) {
 			authtypeLock.setUnlockExpiryDTtimes(
-					DateUtils.parseToLocalDateTime((String) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP)));
+					DateUtils2.parseToLocalDateTime((String) authtypeStatus.getMetadata().get(UNLOCK_EXP_TIMESTAMP)));
 		}
 		authtypeLock.setStatuscode(Boolean.toString(authtypeStatus.getLocked()));
 		authtypeLock.setCreatedBy(EnvUtil.getAppId());

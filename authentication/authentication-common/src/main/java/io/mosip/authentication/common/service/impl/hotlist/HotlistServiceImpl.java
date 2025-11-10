@@ -104,7 +104,7 @@ public class HotlistServiceImpl implements HotlistService {
             HotlistCache hotlistCache = hotlistData.get();
             dto.setStartDTimes(hotlistCache.getStartDTimes());
             if (Objects.nonNull(hotlistCache.getExpiryDTimes())
-                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
+                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils2.getUTCCurrentDateTime())) {
                 if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
                     dto.setStatus(HotlistStatus.UNBLOCKED);
                 else
@@ -136,7 +136,7 @@ public class HotlistServiceImpl implements HotlistService {
 					unblock(id, idType);
 				} else {
 					updateHotlist(id, idType, status,
-							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
+							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils2.parseToLocalDateTime(expiryTimestamp)
 									: null);
 				}
 			}
