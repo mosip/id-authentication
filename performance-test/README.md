@@ -15,7 +15,7 @@
 * Open source Tools used,
     01. [Apache JMeter 5.3](https://jmeter.apache.org/)
     02. [authentication-demo-service](https://github.com/mosip/mosip-functional-tests/blob/develop/authentication-demo-service/README.md) 
-    03. [Java 11](https://www.oracle.com/java/technologies/downloads/#java21)
+    03. [Java 11](https://jdk.java.net/archive/)
 
 ### How to run performance scripts using Apache JMeter tool
 * Download Apache JMeter from https://jmeter.apache.org/download_jmeter.cgi
