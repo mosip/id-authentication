@@ -122,8 +122,8 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		logger.info(identityRequest);
 		String encryptedIdentityReq = null;
 		try {
-			encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identityRequest,
-					getResourcePath() + props.getProperty("bioValueEncryptionTemplate"), testCaseName, isInternal);
+            encryptedIdentityReq = bioDataUtil.constractBioIdentityRequest(identityRequest,
+                    getResourcePath() + props.getProperty("bioValueEncryptionTemplate"), testCaseName, isInternal);
             System.out.println("encryptedIdentityReq = " + encryptedIdentityReq);
         } catch (Exception e) {
 			e.printStackTrace();
