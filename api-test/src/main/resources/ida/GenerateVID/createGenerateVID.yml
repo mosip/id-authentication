@@ -1,14 +1,14 @@
 GenerateVID:
-  auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_01
-    description: generate Perpetual VID for Authentication
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_01
+      description: generate Perpetual VID for Authentication
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -26,7 +26,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -35,16 +35,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_for deactivate_vid_testing_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_01
-    description: generate Perpetual VID to deactivate and to perform Authentication
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_for deactivate_vid_testing_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_01
+      description: generate Perpetual VID to deactivate and to perform Authentication
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -62,7 +62,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -71,16 +71,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_01
-    description: generate Perpetual VID to Revoke
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_01
+      description: generate Perpetual VID to Revoke
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -98,7 +98,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -107,16 +107,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_to_test_hotlist_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_01
-    description: generate Perpetual VID to test Hotlist api
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_to_test_hotlist_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_01
+      description: generate Perpetual VID to test Hotlist api
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_for_hotlist_id_service_Pos_UIN$",
         "individualIdType": "UIN",
@@ -134,7 +134,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -143,16 +143,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_02
-    description: generate Temporary VID for Authentication
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_02
+      description: generate Temporary VID for Authentication
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -170,7 +170,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -179,16 +179,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_All_Valid_Smoke_deactivate_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_01
-    description: generate Perpetual VID to Deactivate
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_All_Valid_Smoke_deactivate_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_01
+      description: generate Perpetual VID to Deactivate
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_genrateVid_toDeactivate_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -206,7 +206,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -215,16 +215,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_auditLog_Valid_Smoke_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_03
-    description: generate Perpetual VID to check audit
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_auditLog_Valid_Smoke_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_03
+      description: generate Perpetual VID to check audit
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -242,7 +242,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -251,16 +251,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_toDeactiavteAndReactivate_auditLog_Valid_Smoke_Perpetual_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_04
-    description: generate Perpetual VID to deactivate and reactivate to check audit log
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_toDeactiavteAndReactivate_auditLog_Valid_Smoke_Perpetual_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_04
+      description: generate Perpetual VID to deactivate and reactivate to check audit log
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -278,7 +278,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -287,16 +287,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_05
-    description: generate Vid to check audit logs
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_05
+      description: generate Vid to check audit logs
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_toRegenrateVid_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -314,7 +314,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -323,16 +323,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_toCreateVid_auditLog_Valid_Smoke_VID_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_06
-    description: generate Vid to check audit logs
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_toCreateVid_auditLog_Valid_Smoke_VID_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_06
+      description: generate Vid to check audit logs
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -350,7 +350,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -359,16 +359,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_toBlock_sendOTP_Smoke_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_08
-    description: generate Vid to block and to send otp
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_toBlock_sendOTP_Smoke_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_08
+      description: generate Vid to block and to send otp
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_toBlockVID_SendOtp_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -386,7 +386,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
@@ -395,16 +395,16 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_GenerateVID_torevoke_audit_Smoke_sid:
-    endPoint: /resident/v1/vid
-    uniqueIdentifier: TC_IDA_GenerateVID_09
-    description: generate Vid to revoke for audit log
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: post
-    inputTemplate: ida/GenerateVID/createGenerateVID
-    outputTemplate: ida/GenerateVID/createGenerateVIDResult
-    input: '{
+   auth_GenerateVID_torevoke_audit_Smoke_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_09
+      description: generate Vid to revoke for audit log
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -422,7 +422,7 @@ GenerateVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "vid": "$IGNORE$",
   "message": "$IGNORE$",
   "sendOtpResp":{
