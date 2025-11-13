@@ -1,14 +1,14 @@
 RevokeVID:
-  auth_RevokeVID_all_valid_smoke:
-    endPoint: /resident/v1/vid/$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$
-    uniqueIdentifier: TC_IDA_RevokeVID_01
-    description: revoke given VID
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: patch
-    inputTemplate: ida/RevokeVID/createRevokeVID
-    outputTemplate: ida/RevokeVID/createRevokeVIDResult
-    input: '{
+   auth_RevokeVID_all_valid_smoke:
+      endPoint: /resident/v1/vid/$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$
+      uniqueIdentifier: TC_IDA_RevokeVID_01
+      description: revoke given VID
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/RevokeVID/createRevokeVID
+      outputTemplate: ida/RevokeVID/createRevokeVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -26,7 +26,7 @@ RevokeVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
@@ -34,16 +34,16 @@ RevokeVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_RevokeVID_all_valid_smoke:
-    endPoint: /resident/v1/vid/$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$
-    uniqueIdentifier: TC_IDA_RevokeVID_02
-    description: revoke given VID to check for audit
-    role: resident
-    checkErrorsOnlyInResponse: true
-    restMethod: patch
-    inputTemplate: ida/RevokeVID/createRevokeVID
-    outputTemplate: ida/RevokeVID/createRevokeVIDResult
-    input: '{
+   auth_RevokeVID_all_valid_smoke:
+      endPoint: /resident/v1/vid/$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$
+      uniqueIdentifier: TC_IDA_RevokeVID_02
+      description: revoke given VID to check for audit
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/RevokeVID/createRevokeVID
+      outputTemplate: ida/RevokeVID/createRevokeVIDResult
+      input: '{
         "transactionID": "$TRANSACTIONID$",
         "individualId": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_UIN$",
         "individualIdType": "UIN",
@@ -61,7 +61,7 @@ RevokeVID:
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
-    output: '{
+      output: '{
   "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
