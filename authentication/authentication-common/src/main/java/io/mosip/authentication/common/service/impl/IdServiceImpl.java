@@ -135,7 +135,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
                             IdAuthenticationErrorConstants.INVALID_VID, e);
                 }
                 if (markVidConsumed) {
-                    updateVIDstatus(idvId); // see optimized version below
+                    updateVIDstatus(idvId);
                 }
                 break;
 
@@ -287,13 +287,13 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         return out;
     }
 
-    private Map<String, String> readJsonMap(byte[] bytes) {
+    private Map<String, String> readJsonMap(byte[] bytes) throws IdAuthenticationBusinessException {
         try {
             return mapper.readValue(bytes, Map.class);
         } catch (IOException e) {
             logger.error(IdAuthCommonConstants.SESSION_ID, getClass().getSimpleName(), "readJsonMap",
                     ExceptionUtils.getStackTrace(e));
-            return Map.of();
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
         }
     }
 
