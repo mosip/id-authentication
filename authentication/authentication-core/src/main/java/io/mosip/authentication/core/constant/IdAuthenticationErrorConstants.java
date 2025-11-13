@@ -156,8 +156,10 @@ public enum IdAuthenticationErrorConstants {
 
 
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
-
-	// Rest Helper Error Constants
+    MAIL_DATA_INVALID("IDA-IDV-002", "Invalid email notification data"),
+    MAIL_SERVICE_FAILED("IDA-IDV-003", "Mail service failed"),
+    
+    // Rest Helper Error Constants
 	INVALID_URI("IDA-RST-001", "URI should not be empty"),
 	INVALID_HTTP_METHOD("IDA-RST-002", "httpMethod is empty or invalid"),
 	INVALID_RETURN_TYPE("IDA-RST-003", "returnType is empty"),

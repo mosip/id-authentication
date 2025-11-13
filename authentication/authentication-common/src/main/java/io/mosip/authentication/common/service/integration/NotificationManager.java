@@ -20,6 +20,8 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import reactor.core.publisher.Mono;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.*;
+
 /**
  * The Class NotificationManager.
  *
@@ -125,10 +127,14 @@ public class NotificationManager {
             restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
                     mailRequestDto, String.class);
             restHelper.requestSync(restRequestDTO, MediaType.MULTIPART_FORM_DATA);
-        } catch (IDDataValidationException | RestServiceException e) {
-            // FIXME change error code
-            logger.error(IdAuthCommonConstants.SESSION_ID, "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
-            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+        } catch (IDDataValidationException e) {
+            // Input data invalid (email, subject, content)
+            logger.error(IdAuthCommonConstants.SESSION_ID, "Invalid email notification data", e.getErrorCode(), e.getErrorText());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MAIL_DATA_INVALID, e);
+        } catch (RestServiceException e) {
+            // Failure in calling mail notification service
+            logger.error(IdAuthCommonConstants.SESSION_ID, "Mail service failed", e.getErrorCode(), e.getErrorText());
+            throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MAIL_SERVICE_FAILED, e);
         }
     }
 
@@ -143,9 +149,9 @@ public class NotificationManager {
     public Mono<Void> sendEmailNotificationAsync(String emailId, String mailSubject, String mailContent) {
         try {
             MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();
-            mailRequestDto.add("mailContent", mailContent);
-            mailRequestDto.add("mailSubject", mailSubject);
-            mailRequestDto.add("mailTo", emailId);
+            mailRequestDto.add(MAIL_CONTENT, mailContent);
+            mailRequestDto.add(MAIL_SUBJECT, mailSubject);
+            mailRequestDto.add(MAIL_TO, emailId);
 
             RestRequestDTO restRequestDTO = restRequestFactory.buildRequest(
                     RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
