@@ -211,50 +211,54 @@ public class MatchInputBuilder {
 	 */
     private List<MatchInput> buildMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType,
                                              Map<String, String> infoFromAuthRequest, AuthType authType, String language) {
+        if (infoFromAuthRequest.isEmpty()) {
+            // For Identity
+            Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());
+            if (identityOpt.isPresent()) {
+                RequestDTO identity = identityOpt.get();
+                if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
+                    IdMapping idMapping = matchType.getIdMapping();
+                    if (IdaIdMapping.DYNAMIC.equals(idMapping)) {
+                        Map<String, List<String>> mappedDynamicAttributes = idInfoFetcher.getMappingConfig().getDynamicAttributes();
+                        List<MatchInput> matchInputs = new ArrayList<>();
 
-        // For Identity
-        Optional<RequestDTO> identityOpt = Optional.ofNullable(authRequestDTO.getRequest());
-        if (infoFromAuthRequest == null || infoFromAuthRequest.isEmpty()) {
-            RequestDTO identity = identityOpt.get();
-            if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)) {
-                IdMapping idMapping = matchType.getIdMapping();
-                if (IdaIdMapping.DYNAMIC.equals(idMapping)) {
-                    Map<String, List<String>> mappedDynamicAttributes = idInfoFetcher.getMappingConfig().getDynamicAttributes();
-                    List<MatchInput> matchInputs = new ArrayList<>();
+                        mappedDynamicAttributes.keySet().forEach(idName -> {
+                            if (!idInfoFetcher.getIdentityRequestInfo(matchType, idName, identity, language).isEmpty()) {
+                                MatchInput input = contstructMatchInput(authRequestDTO, idName, matchType, authType, language);
+                                if (input != null) matchInputs.add(input);
+                            }
+                        });
 
-                    mappedDynamicAttributes.keySet().forEach(idName -> {
-                        if (!idInfoFetcher.getIdentityRequestInfo(matchType, idName, identity, language).isEmpty()) {
-                            MatchInput input = contstructMatchInput(authRequestDTO, idName, matchType, authType, language);
-                            if (input != null) matchInputs.add(input);
+                        Map<String, Object> metadata = identity.getDemographics() != null ? identity.getDemographics().getMetadata() : null;
+                        if (metadata != null && !metadata.isEmpty()) {
+                            List<MatchInput> unmapped = getMatchInputsForUnmappedDynamicAttributes(
+                                    metadata,
+                                    mappedDynamicAttributes,
+                                    language,
+                                    authRequestDTO,
+                                    matchType,
+                                    authType,
+                                    identity
+                            );
+                            if (!unmapped.isEmpty()) {
+                                matchInputs.addAll(unmapped);
+                            }
                         }
-                    });
-
-                    Map<String, Object> metadata = identity.getDemographics() != null ? identity.getDemographics().getMetadata() : null;
-                    if (metadata != null && !metadata.isEmpty()) {
-                        List<MatchInput> unmapped = getMatchInputsForUnmappedDynamicAttributes(
-                                metadata,
-                                mappedDynamicAttributes,
-                                language,
-                                authRequestDTO,
-                                matchType,
-                                authType,
-                                identity
-                        );
-                        if (!unmapped.isEmpty()) {
-                            matchInputs.addAll(unmapped);
+                        return matchInputs;
+                    } else {
+                        if (!idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).isEmpty()) {
+                            MatchInput matchInput = contstructMatchInput(authRequestDTO, idMapping.getIdname(), matchType, authType, language);
+                            return matchInput != null ? Collections.singletonList(matchInput) : Collections.emptyList();
                         }
-                    }
-                    return matchInputs;
-                } else {
-                    if (!idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).isEmpty()) {
-                        MatchInput matchInput = contstructMatchInput(authRequestDTO, idMapping.getIdname(), matchType, authType, language);
-                        return matchInput != null ? Collections.singletonList(matchInput) : Collections.emptyList();
                     }
                 }
             }
-        } else if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher) && authType.isAuthTypeInfoAvailable(authRequestDTO)) {
-            MatchInput matchInput = contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, null);
-            return matchInput != null ? Collections.singletonList(matchInput) : Collections.emptyList();
+        } else {
+            // For non-identity
+            if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)
+                    && authType.isAuthTypeInfoAvailable(authRequestDTO)) {
+                return List.of(contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, null));
+            }
         }
         return Collections.emptyList();
     }
