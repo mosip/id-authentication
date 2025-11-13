@@ -200,7 +200,13 @@ public class IdAuthSecurityManager {
     private static final ThreadLocal<MessageDigest> SHA256_TL = ThreadLocal.withInitial(() -> {
         try { return MessageDigest.getInstance(HASH_ALGORITHM_NAME); } catch (NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
     });
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    public static final ThreadLocal<SecureRandom> THREAD_LOCAL_RANDOM =
+            ThreadLocal.withInitial(() -> {
+                SecureRandom sr = new SecureRandom();
+                sr.nextBytes(new byte[1]); // force seeding
+                return sr;
+            });
+
     private static final AtomicReference<CertificateFactory> CERT_FACTORY_REF = new AtomicReference<>();
     private static CertificateFactory x509Factory() throws IdAuthenticationBusinessException {
         CertificateFactory cf = CERT_FACTORY_REF.get();
@@ -362,12 +368,18 @@ public class IdAuthSecurityManager {
         byte[] nonce = new byte[ZKCryptoManagerConstants.GCM_NONCE_LENGTH];
         byte[] aad = new byte[ZKCryptoManagerConstants.GCM_AAD_LENGTH];
 
-        SECURE_RANDOM.nextBytes(nonce);
-        SECURE_RANDOM.nextBytes(aad);
+        SecureRandom random = THREAD_LOCAL_RANDOM.get(); // get thread-local SecureRandom
+        random.nextBytes(nonce);
+        random.nextBytes(aad);
+
         byte[] encryptedData = cryptoCore.symmetricEncrypt(key, dataToEncrypt, nonce, aad);
         String hash = IdAuthSecurityManager.generateHashAndDigestAsPlainText(encryptedData);
-        return new BigInteger(hash.getBytes(StandardCharsets.UTF_8)).toString().substring(0, tokenIDLength);
+
+        return new BigInteger(hash.getBytes(StandardCharsets.UTF_8))
+                .toString()
+                .substring(0, tokenIDLength);
     }
+
 
     /**
      * Sign.
