@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -146,7 +145,6 @@ public class IdTemplateManagerTest {
 //	}
 
 	@Test
-    @Ignore
 	public void TestfetchTemplate() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));
@@ -156,7 +154,6 @@ public class IdTemplateManagerTest {
 	}
 
 	@Test
-    @Ignore
 	public void TestfetchTemplate_LangSecondary() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));	
@@ -165,7 +162,6 @@ public class IdTemplateManagerTest {
 	}
 
 	@Test
-    @Ignore
 	public void TestInvalidLangtype() throws IdAuthenticationBusinessException, RestServiceException {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment.getEnvironment()));
@@ -174,7 +170,6 @@ public class IdTemplateManagerTest {
 	}
 
 	@Test
-    @Ignore
 	public void TestApplyTemplate() throws IOException, IdAuthenticationBusinessException, RestServiceException {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("uin", "1234567890");
