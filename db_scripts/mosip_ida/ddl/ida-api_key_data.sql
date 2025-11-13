@@ -31,3 +31,10 @@ CREATE TABLE ida.api_key_data (
 --index section starts----
 CREATE INDEX ind_akd_apkeyid ON ida.api_key_data (api_key_id);
 --index section ends------
+
+ALTER TABLE api_key_data SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 50
+);
