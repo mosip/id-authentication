@@ -305,7 +305,8 @@ public class IdServiceImpl implements IdService<AutnTxn> {
      * @return
      * @throws IdAuthenticationBusinessException
      */
-    private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap) throws IdAuthenticationBusinessException {
+    private Map<String, Object> decryptConfiguredAttributes(String id, Map<String, String> dataMap)
+            throws IdAuthenticationBusinessException {
         if (dataMap == null || dataMap.isEmpty()) return Collections.emptyMap();
 
         // Build a Set<String> for O(1) lookups from the List<String> API
@@ -331,17 +332,24 @@ public class IdServiceImpl implements IdService<AutnTxn> {
         final Map<String, Object> out = new LinkedHashMap<>(dataMap.size());
         for (Map.Entry<String, String> e : dataMap.entrySet()) {
             final String key = e.getKey();
-            final String raw = plain.containsKey(key) ? plain.get(key) : decrypted.get(key);
-            out.put(key, maybeParseJson(raw));
+            Object value = e.getValue(); // default to original value
+
+            if (plain.containsKey(key)) {
+                value = maybeParseJson(plain.get(key));
+            } else if (decrypted.containsKey(key)) {
+                value = maybeParseJson(decrypted.get(key));
+            }
+
+            out.put(key, value);
         }
         return out;
     }
 
-    private Object maybeParseJson(String val) {
-        if (val == null) return null;
-        final String s = val.trim();
+    private Object maybeParseJson(Object val) {
+        if (!(val instanceof String)) return val; // Preserve non-string values
+        String s = ((String) val).trim();
         if (s.isEmpty()) return val;
-        final char c = s.charAt(0);
+        char c = s.charAt(0);
         if (c == '{' || c == '[') {
             try {
                 return mapper.readValue(s, Object.class);
