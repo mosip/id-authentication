@@ -680,6 +680,7 @@ public class IdAuthSecurityManager {
             // Need to get secret from HSM  
             byte[] tokenSecret = CryptoUtil.decodeBase64Url(kycTokenSecret);
             MessageDigest messageDigest = SHA256_TL.get();
+            messageDigest.reset();
             messageDigest.update(bytesToHash);
             messageDigest.update(tokenSecret);
             byte[] tokenHash = messageDigest.digest();
