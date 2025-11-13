@@ -33,6 +33,17 @@ CREATE TABLE ida.otp_transaction(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_refid ON ida.otp_transaction (ref_id,status_code);
+
+CREATE INDEX idx_otp_txn_ref_status_gen 
+ON ida.otp_transaction (ref_id, status_code, generated_dtimes DESC);
+
+-- Optimize autovacuum for otp_transaction to clean dead tuples
+ALTER TABLE otp_transaction SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 100,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 100
+);
 --index section ends------
 COMMENT ON TABLE ida.otp_transaction IS 'OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication module.';
 -- ddl-end --

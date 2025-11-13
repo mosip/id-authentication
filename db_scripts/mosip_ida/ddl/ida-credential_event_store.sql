@@ -36,6 +36,19 @@ CREATE TABLE ida.credential_event_store(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+
+CREATE INDEX idx_cred_evt_pending
+ON credential_event_store (retry_count, cr_dtimes)
+WHERE status_code IN ('NEW', 'FAILED');
+
+-- Optimize autovacuum for credential_event_store to clean dead tuples
+ALTER TABLE credential_event_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
 --index section ends------
 COMMENT ON TABLE ida.credential_event_store IS 'Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure';
 -- ddl-end --
