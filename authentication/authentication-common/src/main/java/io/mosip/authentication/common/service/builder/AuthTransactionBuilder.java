@@ -376,15 +376,8 @@ public class AuthTransactionBuilder {
 	 */
     @Override
     public String toString() {
-        return "AuthTransactionBuilder{" +
-                "token='" + token + '\'' +
-                ", requestType=" + requestTypes +
-                ", authTokenId='" + authTokenId + '\'' +
-                ", isStatus=" + isStatus +
-                // Avoid deep recursive object prints:
-                ", requestDTO.id=" + (requestDTO != null ? requestDTO.getId() : "null") +
-                '}';
+        return "AuthTransactionBuilder [requestDTO=" + requestDTO + ", token=" + token + ", requestType="
+                + requestTypes.toString() + ", authTokenId=" + authTokenId + ", isStatus=" + isStatus + "]";
     }
-
-
+    
 }
