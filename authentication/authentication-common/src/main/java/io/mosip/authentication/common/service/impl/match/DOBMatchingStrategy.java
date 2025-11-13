@@ -16,7 +16,7 @@ import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Enum DOBMatchingStrategy - used to compare and evaluate the DOB value
@@ -33,7 +33,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 			Date reqInfoDate;
 			String dateOfBirthFormat = getDateOfBirthFormat(props);
 			try {
-				reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateOfBirthFormat);
+				reqInfoDate = DateUtils2.parseToDate((String) reqInfo, dateOfBirthFormat);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER);
 				throw new IdAuthenticationBusinessException(
@@ -45,7 +45,7 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 			
 			Date entityInfoDate;
 			try {
-				entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateOfBirthFormat);
+				entityInfoDate = DateUtils2.parseToDate((String) entityInfo, dateOfBirthFormat);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);

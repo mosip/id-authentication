@@ -46,7 +46,7 @@ import io.mosip.kernel.core.keymanager.model.CertificateParameters;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.retry.WithRetry;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
 import io.mosip.kernel.cryptomanager.dto.Argon2GenerateHashRequestDto;
@@ -222,7 +222,7 @@ public class IdAuthSecurityManager {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 			request.setApplicationId(EnvUtil.getAppId());
-			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+			request.setTimeStamp(DateUtils2.getUTCCurrentDateTime());
 			request.setData(dataToEncrypt);
 			request.setReferenceId(refId);
 			request.setAad(aad);
@@ -258,7 +258,7 @@ public class IdAuthSecurityManager {
 		try {
 			CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 			request.setApplicationId(EnvUtil.getAppId());
-			request.setTimeStamp(DateUtils.getUTCCurrentDateTime());
+			request.setTimeStamp(DateUtils2.getUTCCurrentDateTime());
 			request.setData(dataToDecrypt);
 			request.setReferenceId(refId);
 			request.setAad(aad);
@@ -304,7 +304,7 @@ public class IdAuthSecurityManager {
 			randomKeyEntity.setId(indexInt);
 			randomKeyEntity.setKey(reEncryptedKey);
 			randomKeyEntity.setCrBy("IDA");
-			randomKeyEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+			randomKeyEntity.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
 			repo.save(randomKeyEntity);
 		}
 	}
@@ -691,7 +691,7 @@ public class IdAuthSecurityManager {
 	@WithRetry
 	public Entry<String, String> generateKeyBindingCertificate(PublicKey publicKey, CertificateParameters certParams) 
 				throws CertificateEncodingException {
-		String timestamp = DateUtils.getUTCCurrentDateTimeString();
+		String timestamp = DateUtils2.getUTCCurrentDateTimeString();
 		SignatureCertificate certificateResponse = keymanagerService.getSignatureCertificate(idKeyBindSignKeyAppId,
                                                         Optional.of(IdAuthCommonConstants.EMPTY), timestamp);
 		PrivateKey signPrivateKey = certificateResponse.getCertificateEntry().getPrivateKey();

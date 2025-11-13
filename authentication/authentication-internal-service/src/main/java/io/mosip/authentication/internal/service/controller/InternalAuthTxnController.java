@@ -42,7 +42,7 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -156,8 +156,8 @@ public class InternalAuthTxnController {
 	}
 
 	private String getResponseTime() {
-		return DateUtils.formatDate(
-				DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
+		return DateUtils2.formatDate(
+				DateUtils2.parseToDate(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()),
 						EnvUtil.getDateTimePattern(),
 						TimeZone.getTimeZone(ZoneOffset.UTC)),
 				EnvUtil.getDateTimePattern(),
