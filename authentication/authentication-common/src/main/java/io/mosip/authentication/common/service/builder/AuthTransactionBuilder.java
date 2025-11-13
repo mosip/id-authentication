@@ -57,8 +57,14 @@ public class AuthTransactionBuilder {
 	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
 
-	/** The Constant FAILED. */
-	private static final String FAILED = "N";
+	/** The Constant FAILED_STATUS. */
+	private static final String FAILED_STATUS = "N";
+
+    /** The Constant SUCCESS. */
+    private static final String SUCCESS = " Success";
+
+    /** The Constant FAILED. */
+    private static final String FAILED = " Failed";
 
 	/**
 	 * Below comparator puts the KYC-AUTH to the beginning in the list
@@ -245,7 +251,7 @@ public class AuthTransactionBuilder {
             String idvIdType = IdType.getIDTypeStrOrDefault(requestDTO.getIndividualIdType());
             String reqTime = requestDTO.getRequestTime();
             
-			String status = isStatus ? SUCCESS_STATUS : FAILED;
+			String status = isStatus ? SUCCESS_STATUS : FAILED_STATUS;
 			AutnTxn autnTxn = new AutnTxn();
 			autnTxn.setRefId(idvId == null ? null : IdAuthSecurityManager.generateHashAndDigestAsPlainText(idvId.getBytes()));
 			autnTxn.setRefIdType(idvIdType);
@@ -272,7 +278,7 @@ public class AuthTransactionBuilder {
 			if (!requestTypes.isEmpty()) {
                 autnTxn.setAuthTypeCode(joinRequestTypes(requestTypes, REQ_TYPE_DELIM, false));
                 String comment = joinRequestTypes(requestTypes, REQ_TYPE_MSG_DELIM, true)
-                        + (isStatus ? " Success" : " Failed");
+                        + (isStatus ? SUCCESS : FAILED);
                 autnTxn.setStatusComment(comment);
 			} else {
                 autnTxn.setAuthTypeCode(authTypeCode != null ? authTypeCode : IdAuthCommonConstants.UNKNOWN);
