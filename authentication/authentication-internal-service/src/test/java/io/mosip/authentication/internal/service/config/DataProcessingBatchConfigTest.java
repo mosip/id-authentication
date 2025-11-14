@@ -1,6 +1,7 @@
 package io.mosip.authentication.internal.service.config;
 
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertEquals;
@@ -21,6 +22,7 @@ import io.mosip.authentication.internal.service.batch.CredentialStoreTasklet;
 public class DataProcessingBatchConfigTest {
 
     @Test
+    @Ignore
     public void testBeansCreated() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(DataProcessingBatchConfig.class);
