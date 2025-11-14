@@ -92,7 +92,7 @@ public class BioAuthServiceImpl implements BioAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> bioIdentity) {
-		return matchInputBuilder.buildMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values(), bioIdentity);
+		return matchInputBuilder.buildMatchInputV2(authRequestDTO, BioAuthType.values(), BioMatchType.values(), bioIdentity);
 	}
 
 	/**

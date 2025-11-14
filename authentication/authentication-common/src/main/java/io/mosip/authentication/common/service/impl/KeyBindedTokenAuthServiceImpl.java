@@ -73,7 +73,7 @@ public class KeyBindedTokenAuthServiceImpl implements KeyBindedTokenAuthService 
 
     public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO,
                                                 Map<String, List<IdentityInfoDTO>> idInfo) {
-        return matchInputBuilder.buildMatchInput(authRequestDTO, KeyBindedTokenAuthType.values(), KeyBindedTokenMatchType.values(),
+        return matchInputBuilder.buildMatchInputV2(authRequestDTO, KeyBindedTokenAuthType.values(), KeyBindedTokenMatchType.values(),
                 idInfo);
     }
 

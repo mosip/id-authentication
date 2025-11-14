@@ -58,7 +58,7 @@ public class PasswordAuthServiceImpl implements PasswordAuthService {
 
     public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO,
                                                 Map<String, List<IdentityInfoDTO>> idInfo) {
-        return matchInputBuilder.buildMatchInput(authRequestDTO, PasswordAuthType.values(), PasswordMatchType.values(),
+        return matchInputBuilder.buildMatchInputV2(authRequestDTO, PasswordAuthType.values(), PasswordMatchType.values(),
                 idInfo);
     }
 

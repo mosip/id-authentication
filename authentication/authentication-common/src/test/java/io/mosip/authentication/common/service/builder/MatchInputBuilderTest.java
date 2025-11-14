@@ -105,7 +105,7 @@ public class MatchInputBuilderTest {
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
 		Mockito.when(idInfoFetcher.getAvailableDynamicAttributesNames(authRequestDto.getRequest())).thenReturn(set);
 		Mockito.when(idInfoFetcher.getIdentityRequestInfo(DemoMatchType.GENDER, request, "fra")).thenReturn(map);
-		assertEquals(1, matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity).size());
+		assertEquals(1, matchInputBuilder.buildMatchInputV2(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity).size());
 	}
 	
 	@Test
@@ -136,7 +136,7 @@ public class MatchInputBuilderTest {
 		languages.add("eng");
 		languages.add("fra");
 		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(languages);
-		matchInputBuilder.buildMatchInput(authRequestDto, BioAuthType.values(), BioMatchType.values(), demoEntity);
+		matchInputBuilder.buildMatchInputV2(authRequestDto, BioAuthType.values(), BioMatchType.values(), demoEntity);
 	}
 	
 	@Test
@@ -167,7 +167,7 @@ public class MatchInputBuilderTest {
 		languages.add("eng");
 		languages.add("fra");
 		Mockito.when(idInfoFetcher.getSystemSupportedLanguageCodes()).thenReturn(languages);
-		matchInputBuilder.buildMatchInput(authRequestDto, PinAuthType.values(), PinMatchType.values(), demoEntity);
+		matchInputBuilder.buildMatchInputV2(authRequestDto, PinAuthType.values(), PinMatchType.values(), demoEntity);
 	}
 	
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-DEA-002 --> Unsupported Language Code - fra for attribute residenceStatus
@@ -204,7 +204,7 @@ public class MatchInputBuilderTest {
 		Mockito.when(mappingConfig.getDynamicAttributes()).thenReturn(demoMetadata);
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
-		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+		matchInputBuilder.buildMatchInputV2(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
 	}
 	
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-MLC-006 --> Missing Input Parameter - residenceStatus: language
@@ -252,7 +252,7 @@ public class MatchInputBuilderTest {
 		Mockito.when(mappingConfig.getDynamicAttributes()).thenReturn(demoMetadata);
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity1);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
-		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+		matchInputBuilder.buildMatchInputV2(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
 	}
 
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-MLC-009 --> Invalid Input Parameter - residenceStatus: language
@@ -301,6 +301,6 @@ public class MatchInputBuilderTest {
 		Mockito.when(mappingConfig.getDynamicAttributes()).thenReturn(demoMetadata);
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity1);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
-		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+		matchInputBuilder.buildMatchInputV2(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
 	}
 }
