@@ -6,6 +6,7 @@ import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
+import io.mosip.kernel.signature.util.SignatureUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;

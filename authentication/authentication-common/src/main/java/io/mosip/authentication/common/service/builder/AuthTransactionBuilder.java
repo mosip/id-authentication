@@ -269,7 +269,7 @@ public class AuthTransactionBuilder {
 				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
 						"Invalid Request Time - setting to current date time");
 			}
-			autnTxn.setRequestDTtimes(strUTCDate);
+			autnTxn.setRequestDTimes(strUTCDate);
 			autnTxn.setResponseDTimes(DateUtils2.getUTCCurrentDateTime());
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
