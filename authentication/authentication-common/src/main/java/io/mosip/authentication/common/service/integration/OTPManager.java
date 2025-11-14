@@ -33,7 +33,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -45,6 +45,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class OTPManager {
+
+    private static Logger LOGGER = IdaLogger.getLogger(OTPManager.class);
+
 
     /** The Constant QUERIED_STATUS_CODES. */
     private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
@@ -107,7 +110,7 @@ public class OTPManager {
         }
 
         String otp = generateOTP(otpRequestDTO.getIndividualId());
-        LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
+        LocalDateTime otpGenerationTime = DateUtils2.getUTCCurrentDateTime();
         String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
                 + EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
                 + EnvUtil.getKeySplitter() + otp).getBytes());
@@ -147,6 +150,10 @@ public class OTPManager {
         return true;
     }
 
+    private static String ms(long nanos) {
+        return String.format("%.3f ms", nanos / 1_000_000.0);
+    }
+
     /**
      * Generate OTP.
      *
@@ -158,11 +165,11 @@ public class OTPManager {
         try {
             OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
             RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
-            reqWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+            reqWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
             reqWrapper.setRequest(otpGenerateRequestDto);
             RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
                     reqWrapper, ResponseWrapper.class);
-            ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
+            ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest, MediaType.APPLICATION_JSON);
             if ( response!=null && response.getResponse()!=null && response.getResponse().get("status")!=null && response.getResponse().get("status").equals(USER_BLOCKED)) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);

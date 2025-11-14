@@ -106,7 +106,7 @@ public class TokenValidationHelper {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "findAndValidateIssuedToken", 
 					"KYC Token expired.");
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.EXPIRED.getStatus());
-			kycTokenDataRepo.saveAndFlush(kycTokenData);
+			kycTokenDataRepo.save(kycTokenData);
 			throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.KYC_TOKEN_EXPIRED.getErrorCode(),
 						IdAuthenticationErrorConstants.KYC_TOKEN_EXPIRED.getErrorMessage());

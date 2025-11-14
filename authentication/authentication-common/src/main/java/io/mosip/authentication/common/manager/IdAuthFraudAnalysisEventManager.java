@@ -27,7 +27,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * @author Manoj SP
@@ -63,7 +63,7 @@ public class IdAuthFraudAnalysisEventManager {
 						.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
 				String txnId = (String) request.get(TRANSACTION_ID);
 				String partnerId = pathSegments.get(4);
-				LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
+				LocalDateTime requestTime = DateUtils2.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
 				authType = getAuthType(pathSegments, authType, request);
 				IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType,
 						requestTime, "N", errorMessage);
@@ -76,7 +76,7 @@ public class IdAuthFraudAnalysisEventManager {
 	public void analyseEvent(AutnTxn txn) {
 		if (EnvUtil.getIsFraudAnalysisEnabled()) {
 			IdAuthFraudAnalysisEventDTO eventData = createEventData(txn.getRefId(), txn.getRequestTrnId(),
-					txn.getEntityId(), txn.getAuthTypeCode(), txn.getRequestDTtimes(), txn.getStatusCode(),
+					txn.getEntityId(), txn.getAuthTypeCode(), txn.getRequestDTimes(), txn.getStatusCode(),
 					txn.getStatusComment());
 			publisher.publishEvent(eventData);
 			this.analyseRequestFlooding(eventData);
@@ -88,25 +88,43 @@ public class IdAuthFraudAnalysisEventManager {
 		requestFloodingBasedOnPartnerId(eventData);
 	}
 
-	private void requestFloodingBasedOnIdvId(IdAuthFraudAnalysisEventDTO eventData) {
-		Long requestCount = authtxnRepo.countByRefIdAndRequestDTtimesAfter(eventData.getIndividualIdHash(),
-				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requestCount >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
-					requestFloodingTimeDiff));
-			publisher.publishEvent(eventData);
-		}
-	}
+    private void requestFloodingBasedOnIdvId(IdAuthFraudAnalysisEventDTO eventData) {
+        boolean hasFlooding = authtxnRepo.hasFloodingByRefId(
+                eventData.getIndividualIdHash(),
+                eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff),
+                requestCountForFlooding
+        );
+        if( hasFlooding) {
+            // If flooding is detected, we can get the count for logging purposes
+            // This is optional, but useful for debugging or logging
+            // It can be removed if not needed
+            Long requestCount = authtxnRepo.countByRefIdAndRequestDTimesAfter(
+                    eventData.getIndividualIdHash(),
+                    eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff)
+            );
+            eventData.setComment(String.format("Multiple Request received with count : %s within seconds : %s",
+                    requestCount,
+                    requestFloodingTimeDiff));
+            publisher.publishEvent(eventData);
+        }
+    }
 
-	private void requestFloodingBasedOnPartnerId(IdAuthFraudAnalysisEventDTO eventData) {
-		Long requestCount = authtxnRepo.countByEntityIdAndRequestDTtimesAfter(eventData.getPartnerId(),
-				eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff));
-		if (requestCount >= requestCountForFlooding) {
-			eventData.setComment(String.format("Multple Request received with count : %s within seconds : %s", requestCount,
-					requestFloodingTimeDiff));
-			publisher.publishEvent(eventData);
-		}
-	}
+    private void requestFloodingBasedOnPartnerId(IdAuthFraudAnalysisEventDTO eventData) {
+        boolean hasFlooding = authtxnRepo.hasFloodingByEntityId(
+                eventData.getPartnerId(),
+                eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff),
+                requestCountForFlooding
+        );
+        if (hasFlooding) {
+            Long requestCount = authtxnRepo.countByEntityIdAndRequestDTimesAfter(
+                    eventData.getPartnerId(),
+                    eventData.getRequestTime().minusSeconds(requestFloodingTimeDiff)
+            );
+            eventData.setComment(String.format("Multiple Request received with count : %s within seconds : %s",
+                    requestCount, requestFloodingTimeDiff));
+            publisher.publishEvent(eventData);
+        }
+    }
 
 	private IdAuthFraudAnalysisEventDTO createEventData(String hash, String txnId, String partnerId, String authType,
 			LocalDateTime requestTime, String authStatus, String comment) {
