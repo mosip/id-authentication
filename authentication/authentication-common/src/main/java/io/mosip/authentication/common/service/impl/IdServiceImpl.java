@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,6 @@ import org.springframework.transaction.TransactionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;

@@ -8,7 +8,7 @@
 	<name>apitest-auth</name>
 	<description>Parent project of MOSIP Id Authentication apitests</description>
 	<url>https://github.com/mosip/id-authentication</url>
-	<version>1.3.0-beta.2</version>
+	<version>1.3.0-SNAPSHOT</version>
 
 	<licenses>
 		<license>

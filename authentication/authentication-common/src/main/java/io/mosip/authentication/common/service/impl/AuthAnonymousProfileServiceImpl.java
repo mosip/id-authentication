@@ -116,7 +116,6 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		}
 		
 		authAnonymousProfileRepository.save(authAnonymousProfileEntity);
-		authAnonymousProfileRepository.flush();
 	}
 
 	private AnonymousAuthenticationProfile createAnonymousProfile(Map<String, Object> requestBody,

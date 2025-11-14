@@ -1,5 +1,36 @@
 package io.mosip.authentication.common.service.impl.notification;
 
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
+import io.mosip.authentication.common.service.impl.match.PasswordAuthType;
+import io.mosip.authentication.common.service.impl.match.PinAuthType;
+import io.mosip.authentication.common.service.integration.IdTemplateManager;
+import io.mosip.authentication.common.service.integration.NotificationManager;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
+import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.common.service.util.LanguageUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.util.LanguageComparator;
+import io.mosip.authentication.core.util.MaskUtil;
+import io.mosip.kernel.core.util.DateUtils2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
+import io.mosip.authentication.core.indauth.dto.SenderType;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,43 +46,15 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import io.mosip.authentication.common.service.util.EntityInfoUtil;
-import io.mosip.authentication.common.service.util.LanguageUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
-import io.mosip.authentication.common.service.impl.match.DemoAuthType;
-import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
-import io.mosip.authentication.common.service.impl.match.PasswordAuthType;
-import io.mosip.authentication.common.service.impl.match.PinAuthType;
-import io.mosip.authentication.common.service.integration.IdTemplateManager;
-import io.mosip.authentication.common.service.integration.NotificationManager;
-import io.mosip.authentication.common.service.util.EnvUtil;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.NotificationType;
-import io.mosip.authentication.core.indauth.dto.SenderType;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
-import io.mosip.authentication.core.spi.notification.service.NotificationService;
-import io.mosip.authentication.core.util.LanguageComparator;
-import io.mosip.authentication.core.util.MaskUtil;
-import io.mosip.kernel.core.util.DateUtils2;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
+import reactor.core.scheduler.Schedulers;
 
 /***
- * 
  * Service class to notify users via SMS or Email notification.
- * 
+ *
  * @author Dinesh Karuppiah.T
  */
 @Service

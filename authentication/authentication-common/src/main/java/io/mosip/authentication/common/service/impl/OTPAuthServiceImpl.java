@@ -14,7 +14,6 @@ import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;

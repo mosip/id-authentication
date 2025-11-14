@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 import org.hibernate.exception.JDBCConnectionException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -387,37 +387,45 @@ public class IdServiceImplTest {
         List<String> unencrptedAttribs = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
         assertEquals(0, unencrptedAttribs.size());
     }
-    
+
     @Test
-    public void testDecryptConfiguredAttributesDemo() {
-    	String uin = "12312312";
-		Map<String, String> demoDataMap = new HashMap<String, String>();
-		demoDataMap.put("1", "11");
-		demoDataMap.put("2", "22");
-		demoDataMap.put("3", "33");
-		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,demoDataMap);
-		assertTrue(map.isEmpty());
+    public void testDecryptConfiguredAttributesDemo() throws IdAuthenticationBusinessException {
+        String uin = "12312312";
+        Map<String, String> demoDataMap = new HashMap<String, String>();
+        demoDataMap.put("1", "11");
+        demoDataMap.put("2", "22");
+        demoDataMap.put("3", "33");
+
+        // Mock zkDecrypt to return an empty map
+        Mockito.when(securityManager.zkDecrypt(Mockito.eq(uin), Mockito.anyMap()))
+                .thenAnswer(invocation -> invocation.getArgument(1));
+
+        Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,demoDataMap);
+        assertEquals(3, map.size());
+        assertEquals("11", map.get("1"));
+        assertEquals("22", map.get("2"));
+        assertEquals("33", map.get("3"));
     }
-    
-    
+
+
     @Test
     public void testDecryptConfiguredAttributesBio() throws IdAuthenticationBusinessException {
-    	String uin = "12312312";
-    	Map<String, String> dataMap = new HashMap<String, String>();
-		dataMap.put("1", "11");
-		dataMap.put("2", "22");
-		dataMap.put("3", "33");
-		List<String> list = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
-		List<String> zkUnEncryptedAttributes = list.stream().map(String::toLowerCase).collect(Collectors.toList());
-		Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
-				.stream()
-				.collect(Collectors.partitioningBy(entry -> 
-							!zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
-				Collectors.toMap(Entry::getKey, Entry::getValue)));
-		Map<String, String> dataToDecrypt = partitionedMap.get(true);
-		Mockito.when(securityManager.zkDecrypt(uin, dataToDecrypt)).thenReturn(dataToDecrypt);
-		Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,dataMap);
-		assertFalse(map.isEmpty());
+        String uin = "12312312";
+        Map<String, String> dataMap = new HashMap<String, String>();
+        dataMap.put("1", "11");
+        dataMap.put("2", "22");
+        dataMap.put("3", "33");
+        List<String> list = ReflectionTestUtils.invokeMethod(idServiceImpl, "getZkUnEncryptedAttributes");
+        List<String> zkUnEncryptedAttributes = list.stream().map(String::toLowerCase).collect(Collectors.toList());
+        Map<Boolean, Map<String, String>> partitionedMap = dataMap.entrySet()
+                .stream()
+                .collect(Collectors.partitioningBy(entry ->
+                                !zkUnEncryptedAttributes.contains(entry.getKey().toLowerCase()),
+                        Collectors.toMap(Entry::getKey, Entry::getValue)));
+        Map<String, String> dataToDecrypt = partitionedMap.get(true);
+        Mockito.when(securityManager.zkDecrypt(uin, dataToDecrypt)).thenReturn(dataToDecrypt);
+        Map<String, Object> map = ReflectionTestUtils.invokeMethod(idServiceImpl, "decryptConfiguredAttributes",uin,dataMap);
+        assertFalse(map.isEmpty());
     }
-    
+
 }

@@ -46,6 +46,9 @@ import io.mosip.kernel.core.util.DateUtils2;
 @Component
 public class OTPManager {
 
+    private static Logger LOGGER = IdaLogger.getLogger(OTPManager.class);
+
+
     /** The Constant QUERIED_STATUS_CODES. */
     private static final List<String> QUERIED_STATUS_CODES = List.of(IdAuthCommonConstants.ACTIVE_STATUS, IdAuthCommonConstants.FROZEN);
 
@@ -162,7 +165,7 @@ public class OTPManager {
             reqWrapper.setRequest(otpGenerateRequestDto);
             RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
                     reqWrapper, ResponseWrapper.class);
-            ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest);
+            ResponseWrapper<Map<String, String>> response = restHelper.requestSync(restRequest, MediaType.APPLICATION_JSON);
             if ( response!=null && response.getResponse()!=null && response.getResponse().get("status")!=null && response.getResponse().get("status").equals(USER_BLOCKED)) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), USER_BLOCKED);

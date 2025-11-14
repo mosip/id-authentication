@@ -62,35 +62,35 @@ public class DeviceHotlistFilterImpl implements IMosipAuthFilter {
 	 * @param errors     the errors
 	 * @throws IdAuthenticationFilterException 
 	 */
-	private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics) throws IdAuthenticationFilterException {
-		if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
-			OptionalInt indexOpt = IntStream.range(0, biometrics.size()).filter(index -> {
-				HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
-						IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
-								.getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
-								.concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
-						HotlistIdTypes.DEVICE);
-				return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
-			}).findAny();
-			if(indexOpt.isPresent()) {
-				throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
-									String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE)));
-			}
-		}
-	}
-
-	/**
+    private void isDevicesHotlisted(List<BioIdentityInfoDTO> biometrics) throws IdAuthenticationFilterException {
+        if (Objects.nonNull(biometrics) && !biometrics.isEmpty()) {
+            OptionalInt indexOpt = IntStream.range(0, biometrics.size()).filter(index -> {
+                HotlistDTO hotlistStatus = hotlistService.getHotlistStatus(
+                        IdAuthSecurityManager.generateHashAndDigestAsPlainText(biometrics.get(index).getData().getDigitalId()
+                                .getSerialNo().concat(biometrics.get(index).getData().getDigitalId().getMake())
+                                .concat(biometrics.get(index).getData().getDigitalId().getModel()).getBytes()),
+                        HotlistIdTypes.DEVICE);
+                return hotlistStatus.getStatus().contentEquals(HotlistStatus.BLOCKED);
+            }).findAny();
+            if(indexOpt.isPresent()) {
+                throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorCode(),
+                        String.format(IdAuthenticationErrorConstants.IDVID_DEACTIVATED_BLOCKED.getErrorMessage(),
+                                String.format(BIO_PATH, indexOpt.getAsInt(), HotlistIdTypes.DEVICE)));
+            }
+        }
+    }
+    
+    /**
 	 * Validate hotlisted ids.
 	 *
 	 * @param errors         the errors
 	 * @param authRequestDto the auth request dto
 	 * @throws IdAuthenticationFilterException 
 	 */
-	private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
-		if (AuthTypeUtil.isBio(authRequestDto)) {
-			isDevicesHotlisted(authRequestDto.getRequest().getBiometrics());
-		}
-	}
-	
+    private void validateHotlistedIds(AuthRequestDTO authRequestDto) throws IdAuthenticationFilterException {
+        if (AuthTypeUtil.isBio(authRequestDto)) {
+            isDevicesHotlisted(authRequestDto.getRequest().getBiometrics());
+        }
+    }
+
 }

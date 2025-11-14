@@ -87,104 +87,104 @@ import reactor.util.function.Tuples;
 @Component
 public class IdAuthSecurityManager {
 
-	private static final String HASH_ALGORITHM_NAME = "SHA-256";
-	
-	/** The Constant SALT_FOR_THE_GIVEN_ID. */
-	private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
+    private static final String HASH_ALGORITHM_NAME = "SHA-256";
 
-	/** The application id. */
-	@Value("${application.id}")
-	private String applicationId;
+    /** The Constant SALT_FOR_THE_GIVEN_ID. */
+    private static final String SALT_FOR_THE_GIVEN_ID = "Salt for the given ID";
 
-	/** The reference id. */
-	@Value("${identity-cache.reference.id}")
-	private String referenceId;
+    /** The application id. */
+    @Value("${application.id}")
+    private String applicationId;
 
-	/** The Constant ENCRYPT_DECRYPT_DATA. */
-	private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
+    /** The reference id. */
+    @Value("${identity-cache.reference.id}")
+    private String referenceId;
 
-	/** The Constant ID_AUTH_TRANSACTION_MANAGER. */
-	private static final String ID_AUTH_TRANSACTION_MANAGER = "IdAuthSecurityManager";
+    /** The Constant ENCRYPT_DECRYPT_DATA. */
+    private static final String ENCRYPT_DECRYPT_DATA = "encryptDecryptData";
 
-	/** The mosip logger. */
-	private Logger mosipLogger = IdaLogger.getLogger(IdAuthSecurityManager.class);
+    /** The Constant ID_AUTH_TRANSACTION_MANAGER. */
+    private static final String ID_AUTH_TRANSACTION_MANAGER = "IdAuthSecurityManager";
 
-	/** The cryptomanager service. */
-	@Autowired
-	private CryptomanagerService cryptomanagerService;
+    /** The mosip logger. */
+    private Logger mosipLogger = IdaLogger.getLogger(IdAuthSecurityManager.class);
 
-	/** The key manager. */
-	@Autowired
-	private SignatureService signatureService;
+    /** The cryptomanager service. */
+    @Autowired
+    private CryptomanagerService cryptomanagerService;
 
-	/** The sign applicationid. */
-	@Value("${mosip.sign.applicationid:KERNEL}")
-	private String signApplicationid;
+    /** The key manager. */
+    @Autowired
+    private SignatureService signatureService;
 
-	/** The sign refid. */
-	@Value("${mosip.sign.refid:SIGN}")
-	private String signRefid;
+    /** The sign applicationid. */
+    @Value("${mosip.sign.applicationid:KERNEL}")
+    private String signApplicationid;
 
-	/** The token ID length. */
-	@Value("${mosip.kernel.tokenid.length}")
-	private int tokenIDLength;
+    /** The sign refid. */
+    @Value("${mosip.sign.refid:SIGN}")
+    private String signRefid;
 
-	/** KeySplitter. */
-	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
-	private String keySplitter;
+    /** The token ID length. */
+    @Value("${mosip.kernel.tokenid.length}")
+    private int tokenIDLength;
 
-	/** The token ID length. */
-	@Value("${mosip.ida.kyc.token.secret}")
-	private String kycTokenSecret;
+    /** KeySplitter. */
+    @Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
+    private String keySplitter;
 
-	@Value("${mosip.ida.kyc.exchange.sign.include.certificate:false}")
-	private boolean includeCertificate;
+    /** The token ID length. */
+    @Value("${mosip.ida.kyc.token.secret}")
+    private String kycTokenSecret;
 
-	/** The sign applicationid. */
-	@Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KYC_EXCHANGE}")
-	private String kycExchSignApplicationId;
+    @Value("${mosip.ida.kyc.exchange.sign.include.certificate:false}")
+    private boolean includeCertificate;
 
-	@Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KEY_BINDING}")
-	private String idKeyBindSignKeyAppId;
+    /** The sign applicationid. */
+    @Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KYC_EXCHANGE}")
+    private String kycExchSignApplicationId;
 
-	@Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
+    @Value("${mosip.ida.kyc.exchange.sign.applicationid:IDA_KEY_BINDING}")
+    private String idKeyBindSignKeyAppId;
+
+    @Value("${mosip.kernel.certificate.sign.algorithm:SHA256withRSA}")
     private String signAlgorithm;
 
-	/** The sign applicationid. */
-	@Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
-	private String vciExchSignApplicationId;
+    /** The sign applicationid. */
+    @Value("${mosip.ida.vci.exchange.sign.applicationid:IDA_VCI_EXCHANGE}")
+    private String vciExchSignApplicationId;
 
-	/** The uin hash salt repo. */
-	@Autowired
-	private IdaUinHashSaltRepo uinHashSaltRepo;
+    /** The uin hash salt repo. */
+    @Autowired
+    private IdaUinHashSaltRepo uinHashSaltRepo;
 
-	/** The repo. */
-	@Autowired
-	private DataEncryptKeystoreRepository repo;
+    /** The repo. */
+    @Autowired
+    private DataEncryptKeystoreRepository repo;
 
-	/** The zk crypto manager service. */
-	@Autowired
-	private ZKCryptoManagerService zkCryptoManagerService;
+    /** The zk crypto manager service. */
+    @Autowired
+    private ZKCryptoManagerService zkCryptoManagerService;
 
-	/** The crypto core. */
-	@Autowired
-	private CryptoCore cryptoCore;
+    /** The crypto core. */
+    @Autowired
+    private CryptoCore cryptoCore;
 
-	/** The key generator. */
-	@Autowired
-	private KeyGenerator keyGenerator;
+    /** The key generator. */
+    @Autowired
+    private KeyGenerator keyGenerator;
 
-	/** The cryptomanager utils. */
-	@Autowired
-	private CryptomanagerUtils cryptomanagerUtils;
+    /** The cryptomanager utils. */
+    @Autowired
+    private CryptomanagerUtils cryptomanagerUtils;
 
-	@Autowired
+    @Autowired
     private KeymanagerService keymanagerService;
 
-	@Autowired
+    @Autowired
     private KeyStore keyStore;
 
-	@Autowired
+    @Autowired
     private KeymanagerUtil keymanagerUtil;
 	
 	@Value("${mosip.ida.idhash.legacy-salt-selection-enabled:false}")
@@ -609,14 +609,14 @@ public class IdAuthSecurityManager {
 	public static byte[] decodeHex(String hexData) throws DecoderException{
         return Hex.decodeHex(hexData);
     }
-	
-	/**
-	 * To hex.
-	 *
-	 * @param bytes the bytes
-	 * @return the string
-	 */
-	public static String toHex(byte[] bytes) {
+
+    /**
+     * To hex.
+     *
+     * @param bytes the bytes
+     * @return the string
+     */
+    public static String toHex(byte[] bytes) {
         return Hex.encodeHexString(bytes).toUpperCase();
     }
 	
@@ -701,28 +701,28 @@ public class IdAuthSecurityManager {
 		// and digital signature key usage
 		X509Certificate signedCert = CertificateUtility.generateX509Certificate(signPrivateKey, publicKey, certParams,
                 signerPrincipal, signAlgorithm, keyStore.getKeystoreProviderName(), false);
-		String certThumbprint = generateHashAndDigestAsPlainText(signedCert.getEncoded());
-		String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
+        String certThumbprint = generateHashAndDigestAsPlainText(signedCert.getEncoded());
+        String certificateData = keymanagerUtil.getPEMFormatedData(signedCert);
 
-		return new SimpleEntry<>(certThumbprint, certificateData);
-	}
+        return new SimpleEntry<>(certThumbprint, certificateData);
+    }
 
-	@WithRetry
-	public String jwtEncrypt(String dataToEncrypt, String certificateData) {
-		JWTEncryptRequestDto encryptRequestDto = new JWTEncryptRequestDto();
-		encryptRequestDto.setData(CryptoUtil.encodeBase64Url(dataToEncrypt.getBytes()));
-		encryptRequestDto.setX509Certificate(certificateData);
-		encryptRequestDto.setEnableDefCompression(true);
-		encryptRequestDto.setIncludeCertHash(true);
-		JWTCipherResponseDto cipherResponseDto = cryptomanagerService.jwtEncrypt(encryptRequestDto);
-		return cipherResponseDto.getData();
-	}
+    @WithRetry
+    public String jwtEncrypt(String dataToEncrypt, String certificateData) {
+        JWTEncryptRequestDto encryptRequestDto = new JWTEncryptRequestDto();
+        encryptRequestDto.setData(CryptoUtil.encodeBase64Url(dataToEncrypt.getBytes()));
+        encryptRequestDto.setX509Certificate(certificateData);
+        encryptRequestDto.setEnableDefCompression(true);
+        encryptRequestDto.setIncludeCertHash(true);
+        JWTCipherResponseDto cipherResponseDto = cryptomanagerService.jwtEncrypt(encryptRequestDto);
+        return cipherResponseDto.getData();
+    }
 
-	public String generateArgon2Hash(String anyString, String salt) {
-		Argon2GenerateHashRequestDto hashRequestDto = new Argon2GenerateHashRequestDto(); 
-		hashRequestDto.setInputData(anyString);
-		hashRequestDto.setSalt(salt);
-		Argon2GenerateHashResponseDto hashResponseDto = cryptomanagerService.generateArgon2Hash(hashRequestDto);
-		return hashResponseDto.getHashValue();
-	}
+    public String generateArgon2Hash(String anyString, String salt) {
+        Argon2GenerateHashRequestDto hashRequestDto = new Argon2GenerateHashRequestDto();
+        hashRequestDto.setInputData(anyString);
+        hashRequestDto.setSalt(salt);
+        Argon2GenerateHashResponseDto hashResponseDto = cryptomanagerService.generateArgon2Hash(hashRequestDto);
+        return hashResponseDto.getHashValue();
+    }
 }

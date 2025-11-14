@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -85,12 +86,12 @@ public class CredentialRequestManagerTest {
 
         Mockito.when(restRequestFactory.buildRequest(
                 RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class)).thenReturn(restRequestDTO);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex, effectivedtimes);
 
         //if data!=null
         res.put("data", null);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex, effectivedtimes);
     }
 
@@ -123,7 +124,7 @@ public class CredentialRequestManagerTest {
 
         Mockito.when(restRequestFactory.buildRequest(
                 RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class)).thenReturn(restRequestDTO);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex, effectivedtimes);
     }
@@ -143,7 +144,7 @@ public class CredentialRequestManagerTest {
 
         Mockito.when(restRequestFactory.buildRequest(
                 RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class)).thenReturn(restRequestDTO);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         credentialRequestManager.retriggerCredentialIssuance(requestId);
     }
 
@@ -160,7 +161,7 @@ public class CredentialRequestManagerTest {
                 RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class)).thenReturn(request);
         Map<String, String> pathVariables = Map.of("requestId", requestId);
         request.setPathVariables(pathVariables);
-        Mockito.doThrow(RestServiceException.class).when(restHelper).requestSync(request);
+        Mockito.doThrow(RestServiceException.class).when(restHelper).requestSync(request, MediaType.APPLICATION_JSON);
         credentialRequestManager.retriggerCredentialIssuance(requestId);
     }
 
