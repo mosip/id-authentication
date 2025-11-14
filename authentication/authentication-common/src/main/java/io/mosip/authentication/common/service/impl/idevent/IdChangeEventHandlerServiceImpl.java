@@ -24,7 +24,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -209,9 +209,9 @@ public class IdChangeEventHandlerServiceImpl implements IdChangeEventHandlerServ
 		if(identityEntityOpt.isPresent()) {
 			IdentityEntity identityEntity = identityEntityOpt.get();
 			identityEntity.setUpdBy(IDA);
-			identityEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
+			identityEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
 			
-			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
+			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils2.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);
 			identityEntity.setTransactionLimit(transactionLimit);
 			

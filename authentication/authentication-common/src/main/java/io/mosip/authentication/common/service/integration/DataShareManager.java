@@ -11,6 +11,7 @@ import io.mosip.idrepository.core.util.RestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,8 +56,10 @@ public class DataShareManager {
 		RestRequestDTO request = restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class);
 		request.setUri(dataShareUrl);
 
-		String responseStr = restHelper.requestSync(request);
-		if (responseStr == null) {
+        request.setResponseType(String.class);
+        String responseStr = restHelper.<String>requestAsync(request, MediaType.APPLICATION_JSON).block();
+
+        if (responseStr == null) {
 			throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 		Optional<Entry<String, Object>> errorOpt = RestUtil.getError(responseStr, mapper);
@@ -64,7 +67,6 @@ public class DataShareManager {
 		if (errorOpt.isEmpty()) {
 			R result;
 			if (decryptionRequired) {
-				// Decrypt data
 				byte[] dataBytes = securityManager.decrypt(responseStr, dataShareGetDecryptRefId, null, null,
 						thumbprintValidationRequired);
 				if (clazz.equals(String.class)) {

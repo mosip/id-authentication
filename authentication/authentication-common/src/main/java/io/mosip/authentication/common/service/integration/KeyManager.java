@@ -2,11 +2,10 @@ package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,261 +30,302 @@ import io.mosip.authentication.core.util.CryptoUtil;
 /**
  * The Class KeyManager is used to decipher the request and returning the
  * decipher request to the filter to do further authentication.
- * 
+ *
  * @author Sanjay Murali
  * @author Manoj SP
- * 
+ *
  */
 @Component
 public class KeyManager {
 
-	/** The Constant SESSION_KEY. */
-	private static final String SESSION_KEY = "requestSessionKey";
+    /** The Constant SESSION_KEY. */
+    private static final String SESSION_KEY = "requestSessionKey";
 
-	/** The app id. */
-	@Value("${" + IdAuthConfigKeyConstants.APPLICATION_ID + "}")
-	private String appId;
+    /** The app id. */
+    @Value("${" + IdAuthConfigKeyConstants.APPLICATION_ID + "}")
+    private String appId;
 
-	/** The partner id. */
-	@Value("${" + IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID + "}")
-	private String partnerId;
+    /** The partner id. */
+    @Value("${" + IdAuthConfigKeyConstants.PARTNER_REFERENCE_ID + "}")
+    private String partnerId;
 
-	/** The key splitter. */
-	@Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
-	private String keySplitter;
+    /** The key splitter. */
+    @Value("${" + IdAuthConfigKeyConstants.KEY_SPLITTER + "}")
+    private String keySplitter;
 
-	/** The security manager. */
-	@Autowired
-	private IdAuthSecurityManager securityManager;
-	
-	/** The logger. */
-	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
+    /** The security manager. */
+    @Autowired
+    private IdAuthSecurityManager securityManager;
 
-	/**
-	 * requestData method used to decipher the request block {@link RequestDTO}
-	 * present in AuthRequestDTO {@link AuthRequestDTO}.
-	 *
-	 * @param requestBody   the request body
-	 * @param mapper        the mapper
-	 * @param refId         the ref id
-	 * @param thumbprint the thumbprint
-	 * @param isThumbprintEnabled the is thumbprint enabled
-	 * @param dataValidator the data validator
-	 * @return the map
-	 * @throws IdAuthenticationAppException      the id authentication app exception
-	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
-			String thumbprint, Boolean isThumbprintEnabled,
-			ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
-			throws IdAuthenticationAppException {
-		Map<String, Object> request = null;
-		try {
-			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			byte[] encryptedSessionkey = CryptoUtil.decodeBase64Url((String) requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, thumbprint, encryptedSessionkey, encryptedRequest, refId,
-					isThumbprintEnabled, dataValidator);
-		} catch (IOException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
-					ExceptionUtils.getStackTrace(e));
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
-		}
-		return request;
-	}
+    /** The logger. */
+    private static Logger logger = IdaLogger.getLogger(KeyManager.class);
 
-	/**
-	 * decipherData method used to derypt data if session key is present.
-	 *
-	 * @param mapper              the mapper
-	 * @param thumbprint the thumbprint
-	 * @param encryptedSessionKey the encrypted session key
-	 * @param encryptedRequest    the encrypted request
-	 * @param refId               the ref id
-	 * @param isThumbprintEnabled the is thumbprint enabled
-	 * @param dataValidator the data validator
-	 * @return the map
-	 * @throws IdAuthenticationAppException      the id authentication app exception
-	 * @throws IOException                       Signals that an I/O exception has
-	 *                                           occurred.
-	 */
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint,
-			byte[] encryptedSessionKey, byte[] encryptedRequest, String refId, Boolean isThumbprintEnabled,
-			ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
-			throws IdAuthenticationAppException, IOException {
-		String decryptedAndDecodedData = kernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedRequest,
-				refId, isThumbprintEnabled);
+    /**
+     * requestData method used to decipher the request block {@link RequestDTO}
+     * present in AuthRequestDTO {@link AuthRequestDTO}.
+     *
+     * @param requestBody   the request body
+     * @param mapper        the mapper
+     * @param refId         the ref id
+     * @param thumbprint the thumbprint
+     * @param isThumbprintEnabled the is thumbprint enabled
+     * @param dataValidator the data validator
+     * @return the map
+     * @throws IdAuthenticationAppException      the id authentication app exception
+     */
+    public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId,
+                                           String thumbprint, Boolean isThumbprintEnabled,
+                                           ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
+            throws IdAuthenticationAppException {
+        Map<String, Object> request = null;
+        try {
+            byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
+            byte[] encryptedSessionkey = CryptoUtil.decodeBase64Url((String) requestBody.get(SESSION_KEY));
 
-		if (dataValidator != null) {
-			dataValidator.accept(decryptedAndDecodedData);
-		}
+            // Decrypt directly to bytes to avoid String allocation; validate on-demand.
+            final byte[] decryptedBytes = decryptToBytes(thumbprint, encryptedSessionkey, encryptedRequest, refId,
+                    null, null, isThumbprintEnabled);
 
-		return mapper.readValue(decryptedAndDecodedData, Map.class);
-	}
+            if (dataValidator != null) {
+                // Only construct String if a validator is present.
+                final String decryptedAndDecodedData = new String(decryptedBytes, StandardCharsets.UTF_8);
+                dataValidator.accept(decryptedAndDecodedData);
+            }
+            request = mapper.readValue(decryptedBytes, Map.class);
+        } catch (IOException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData",
+                    ExceptionUtils.getStackTrace(e));
+            throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+                    IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
+        }
+        return request;
+    }
 
-	/**
-	 * Kernel decrypt and decode.
-	 *
-	 * @param thumbprint the thumbprint
-	 * @param encryptedSessionKey the encrypted session key
-	 * @param encryptedData the encrypted data
-	 * @param refId the ref id
-	 * @param isThumbprintEnabled the is thumbprint enabled
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	public String kernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId, Boolean isThumbprintEnabled)
-			throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, false, isThumbprintEnabled);
-	}
+    /**
+     * decipherData method used to derypt data if session key is present.
+     *
+     * @param mapper              the mapper
+     * @param thumbprint the thumbprint
+     * @param encryptedSessionKey the encrypted session key
+     * @param encryptedRequest    the encrypted request
+     * @param refId               the ref id
+     * @param isThumbprintEnabled the is thumbprint enabled
+     * @param dataValidator the data validator
+     * @return the map
+     * @throws IdAuthenticationAppException      the id authentication app exception
+     * @throws IOException                       Signals that an I/O exception has
+     *                                           occurred.
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> decipherData(ObjectMapper mapper, String thumbprint,
+                                             byte[] encryptedSessionKey, byte[] encryptedRequest, String refId, Boolean isThumbprintEnabled,
+                                             ConsumerWithThrowable<String, IdAuthenticationAppException> dataValidator)
+            throws IdAuthenticationAppException, IOException {
+        final byte[] decryptedBytes = decryptToBytes(thumbprint, encryptedSessionKey, encryptedRequest, refId,
+                null, null, isThumbprintEnabled);
 
-	/**
-	 * Kernel decrypt.
-	 *
-	 * @param thumbprint the thumbprint
-	 * @param encryptedSessionKey the encrypted session key
-	 * @param encryptedData the encrypted data
-	 * @param refId the ref id
-	 * @param aad   the aad
-	 * @param salt  the salt
-	 * @param isThumbprintEnabled the is thumbprint enabled
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	public String kernelDecrypt(String thumbprint, byte[] encryptedSessionKey,
-			byte[] encryptedData, String refId, String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
-		return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, true, isThumbprintEnabled);
-	}
+        if (dataValidator != null) {
+            dataValidator.accept(new String(decryptedBytes, StandardCharsets.UTF_8));
+        }
 
-	/**
-	 * Internal kernel decrypt and decode.
-	 *
-	 * @param thumbprint the thumbprint
-	 * @param encryptedSessionKey the encrypted session key
-	 * @param encryptedData the encrypted data
-	 * @param refId  the ref id
-	 * @param aad    the aad
-	 * @param salt   the salt
-	 * @param decode the decode
-	 * @param isThumbprintEnabled the is thumbprint enabled
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private String internalKernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey,
-			byte[] encryptedData, String refId, String aad, String salt,
-			Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
-		String decryptedRequest = null;
-		byte[] data;
-		if (isThumbprintEnabled) {
-			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
-			byte[] bytesFromThumbprint = getBytesFromThumbprint(thumbprint);
-			// Compare the thumbprint bytes with starting bytes of data to check if it is already exists
-			boolean isThumbprintAlreadyExsists = data.length > bytesFromThumbprint.length 
-					&& Arrays.areEqual(bytesFromThumbprint, Arrays.copyOf(data, bytesFromThumbprint.length));
-			if(!isThumbprintAlreadyExsists) {
-				data = ArrayUtils.addAll(bytesFromThumbprint, data);
-			}
-		} else {
-			data = combineDataForDecryption(encryptedSessionKey, encryptedData);
-		}
-		try {
-			byte[] decryptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
-					isThumbprintEnabled);
-			if (encode) {
-				decryptedRequest = CryptoUtil.encodeBase64(decryptedIdentity);
-			} else {
-				decryptedRequest = new String(decryptedIdentity, StandardCharsets.UTF_8);
-			}
-		} catch (IdAuthenticationBusinessException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-					e.getErrorText());
-			if (e.getErrorCode().contentEquals(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED.getErrorCode())) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
-			} else {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
-			}
-		}
-		return decryptedRequest;
-	}
-	
-	/**
-	 * Gets the bytes from thumbprint.
-	 *
-	 * @param thumbprint the thumbprint
-	 * @return the bytes from thumbprint
-	 */
-	private byte[] getBytesFromThumbprint(String thumbprint) {
-		return IdAuthSecurityManager.getBytesFromThumbprint(thumbprint);
-	}
+        return mapper.readValue(decryptedBytes, Map.class);
+    }
 
-	/**
-	 * Combine data for decryption.
-	 *
-	 * @param encryptedSessionKey the encrypted session key
-	 * @param encryptedData the encrypted data
-	 * @return the string
-	 */
-	private byte[] combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
-		return CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
-	}
+    /**
+     * Kernel decrypt and decode.
+     *
+     * @param thumbprint the thumbprint
+     * @param encryptedSessionKey the encrypted session key
+     * @param encryptedData the encrypted data
+     * @param refId the ref id
+     * @param isThumbprintEnabled the is thumbprint enabled
+     * @return the string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    public String kernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId, Boolean isThumbprintEnabled)
+            throws IdAuthenticationAppException {
+        return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, null, null, false, isThumbprintEnabled);
+    }
 
-	/**
-	 * Encrypt data.
-	 *
-	 * @param responseBody the response body
-	 * @param mapper       the mapper
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	@SuppressWarnings("unchecked")
-	public String encryptData(Map<String, Object> responseBody, ObjectMapper mapper)
-			throws IdAuthenticationAppException {
-		Map<String, Object> identity = responseBody.get("identity") instanceof Map
-				? (Map<String, Object>) responseBody.get("identity")
-				: null;
-		if (Objects.nonNull(identity)) {
-			try {
-				String encodedData = CryptoUtil
-						.encodeBase64Url(toJsonString(identity, mapper).getBytes(StandardCharsets.UTF_8));
-				return CryptoUtil.encodeBase64Url(securityManager.encrypt(encodedData, partnerId, null, null));
-			} catch (IdAuthenticationBusinessException e) {
-				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
-						e.getErrorText());
-				if (e.getErrorCode().contentEquals(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED.getErrorCode())) {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
-				} else {
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Kernel decrypt.
+     *
+     * @param thumbprint the thumbprint
+     * @param encryptedSessionKey the encrypted session key
+     * @param encryptedData the encrypted data
+     * @param refId the ref id
+     * @param aad   the aad
+     * @param salt  the salt
+     * @param isThumbprintEnabled the is thumbprint enabled
+     * @return the string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    public String kernelDecrypt(String thumbprint, byte[] encryptedSessionKey,
+                                byte[] encryptedData, String refId, String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+        return internalKernelDecryptAndDecode(thumbprint, encryptedSessionKey, encryptedData, refId, aad, salt, true, isThumbprintEnabled);
+    }
 
-	/**
-	 * This method is used to convert the map to JSON format.
-	 *
-	 * @param map    the map
-	 * @param mapper the mapper
-	 * @return the string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
-		try {
-			return mapper.writerFor(Map.class).writeValueAsString(map);
-		} catch (JsonProcessingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
+    /**
+     * Internal kernel decrypt and decode.
+     *
+     * @param thumbprint the thumbprint
+     * @param encryptedSessionKey the encrypted session key
+     * @param encryptedData the encrypted data
+     * @param refId  the ref id
+     * @param aad    the aad
+     * @param salt   the salt
+     * @param encode to encode
+     * @param isThumbprintEnabled the is thumbprint enabled
+     * @return the string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    private String internalKernelDecryptAndDecode(String thumbprint, byte[] encryptedSessionKey,
+                                                  byte[] encryptedData, String refId, String aad, String salt,
+                                                  Boolean encode, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+        String decryptedRequest = null;
+        byte[] data = combineDataForDecryption(encryptedSessionKey, encryptedData);
+        if (Boolean.TRUE.equals(isThumbprintEnabled)) {
+            final byte[] tp = getBytesFromThumbprint(thumbprint);
+            final boolean startsWithThumbprint = data.length > tp.length &&
+                    java.util.Arrays.mismatch(tp, 0, tp.length, data, 0, tp.length) == -1;
 
-	/**
-	 * This method is used to digitally sign the response.
-	 *
-	 * @param data the response got after authentication which to be signed
-	 * @return the signed response string
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 */
-	public String signResponse(String data) throws IdAuthenticationAppException {
-		return securityManager.sign(data);
-	}
+            if (!startsWithThumbprint) {
+                final byte[] merged = new byte[tp.length + data.length];
+                System.arraycopy(tp, 0, merged, 0, tp.length);
+                System.arraycopy(data, 0, merged, tp.length, data.length);
+                data = merged;
+            }
+        }
 
+        try {
+            byte[] decryptedIdentity = securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt,
+                    isThumbprintEnabled);
+            if (Boolean.TRUE.equals(encode)) {
+                decryptedRequest = CryptoUtil.encodeBase64(decryptedIdentity);
+            } else {
+                decryptedRequest = new String(decryptedIdentity, StandardCharsets.UTF_8);
+            }
+        } catch (IdAuthenticationBusinessException e) {
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+                    e.getErrorText());
+            if (e.getErrorCode().contentEquals(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED.getErrorCode())) {
+                throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
+            } else {
+                throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+            }
+        }
+        return decryptedRequest;
+    }
+
+    /**
+     * Gets the bytes from thumbprint.
+     *
+     * @param thumbprint the thumbprint
+     * @return the bytes from thumbprint
+     */
+    private byte[] getBytesFromThumbprint(String thumbprint) {
+        return IdAuthSecurityManager.getBytesFromThumbprint(thumbprint);
+    }
+
+    /**
+     * Combine data for decryption.
+     *
+     * @param encryptedSessionKey the encrypted session key
+     * @param encryptedData the encrypted data
+     * @return the string
+     */
+    private byte[] combineDataForDecryption(byte[] encryptedSessionKey, byte[] encryptedData) {
+        return CryptoUtil.combineByteArray(encryptedData, encryptedSessionKey, keySplitter);
+    }
+
+    /**
+     * Encrypt data.
+     *
+     * @param responseBody the response body
+     * @param mapper       the mapper
+     * @return the string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    @SuppressWarnings("unchecked")
+    public String encryptData(Map<String, Object> responseBody, ObjectMapper mapper)
+            throws IdAuthenticationAppException {
+        Map<String, Object> identity = responseBody.get("identity") instanceof Map
+                ? (Map<String, Object>) responseBody.get("identity")
+                : null;
+        if (Objects.nonNull(identity)) {
+            try {
+                final byte[] jsonBytes = mapper.writeValueAsBytes(identity);
+                final String encodedData = CryptoUtil.encodeBase64Url(jsonBytes);
+                return CryptoUtil.encodeBase64Url(securityManager.encrypt(encodedData, partnerId, null, null));
+            } catch (IdAuthenticationBusinessException e) {
+                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+                        e.getErrorText());
+                if (e.getErrorCode().contentEquals(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED.getErrorCode())) {
+                    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
+                } else {
+                    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.FAILED_TO_ENCRYPT, e);
+                }
+            } catch (JsonProcessingException e) {
+                logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "encryptData",  ExceptionUtils.getStackTrace(e));
+                throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method is used to convert the map to JSON format.
+     *
+     * @param map    the map
+     * @param mapper the mapper
+     * @return the string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
+        try {
+            return mapper.writerFor(Map.class).writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+        }
+    }
+
+    /**
+     * This method is used to digitally sign the response.
+     *
+     * @param data the response got after authentication which to be signed
+     * @return the signed response string
+     * @throws IdAuthenticationAppException the id authentication app exception
+     */
+    public String signResponse(String data) throws IdAuthenticationAppException {
+        return securityManager.sign(data);
+    }
+
+    private byte[] decryptToBytes(String thumbprint, byte[] encryptedSessionKey, byte[] encryptedData, String refId,
+                                  String aad, String salt, Boolean isThumbprintEnabled) throws IdAuthenticationAppException {
+        byte[] data = combineDataForDecryption(encryptedSessionKey, encryptedData);
+
+        if (Boolean.TRUE.equals(isThumbprintEnabled)) {
+            final byte[] tp = getBytesFromThumbprint(thumbprint);
+            final boolean startsWithThumbprint = data.length > tp.length &&
+                    java.util.Arrays.mismatch(tp, 0, tp.length, data, 0, tp.length) == -1;
+            if (!startsWithThumbprint) {
+                final byte[] merged = new byte[tp.length + data.length];
+                System.arraycopy(tp, 0, merged, 0, tp.length);
+                System.arraycopy(data, 0, merged, tp.length, data.length);
+                data = merged;
+            }
+        }
+
+        try {
+            return securityManager.decrypt(CryptoUtil.encodeBase64Url(data), refId, aad, salt, isThumbprintEnabled);
+        } catch (IdAuthenticationBusinessException e) {
+            // Mirror original logging and error mapping for parity
+            logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
+                    e.getErrorText());
+            if (e.getErrorCode().contentEquals(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED.getErrorCode())) {
+                throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, e);
+            }
+            throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION, e);
+        }
+    }
 }
