@@ -37,7 +37,7 @@
 		<repository>
 			<id>ossrh-central</id>
 			<name>MavenCentralRepository</name>
-			<url>https://central.sonatype.com/repository/maven-snapshots</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 			<layout>default</layout>
 			<snapshots>
 				<enabled>true</enabled>
