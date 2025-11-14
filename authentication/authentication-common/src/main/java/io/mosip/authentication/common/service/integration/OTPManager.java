@@ -150,10 +150,6 @@ public class OTPManager {
         return true;
     }
 
-    private static String ms(long nanos) {
-        return String.format("%.3f ms", nanos / 1_000_000.0);
-    }
-
     /**
      * Generate OTP.
      *
