@@ -227,7 +227,7 @@ public class MatchInputBuilder {
                                 .stream()
                                 .filter(idName ->
                                         idInfoFetcher.getIdentityRequestInfo(matchType, idName, identity, language).size() > 0)
-                                .map(idName -> contstructMatchInputV2(authRequestDTO, idName, matchType, authType, language))
+                                .map(idName -> contstructMatchInput(authRequestDTO, idName, matchType, authType, language))
                                 .collect(Collectors.toList());
                         matchInputsForDynamicAttributes.addAll(matchInpuptsForMappedDynamicAttribute);
 
@@ -247,7 +247,7 @@ public class MatchInputBuilder {
                         return matchInputsForDynamicAttributes;
                     } else {
                         if(idInfoFetcher.getIdentityRequestInfo(matchType, identity, language).size() > 0) {
-                            MatchInput matchInput = contstructMatchInputV2(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, language);
+                            MatchInput matchInput = contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType, authType, language);
                             return matchInput == null ? List.of() : List.of(matchInput);
                         }
                     }
@@ -257,7 +257,7 @@ public class MatchInputBuilder {
             // For non-identity
             if (authType.isAuthTypeEnabled(authRequestDTO, idInfoFetcher)
                     && authType.isAuthTypeInfoAvailable(authRequestDTO)) {
-                return List.of(contstructMatchInputV2(authRequestDTO, matchType.getIdMapping().getIdname(), matchType , authType, null));
+                return List.of(contstructMatchInput(authRequestDTO, matchType.getIdMapping().getIdname(), matchType , authType, null));
             }
         }
         return List.of();
@@ -419,6 +419,7 @@ public class MatchInputBuilder {
             matchProperties.put(MAPPING_CONFIG, idInfoFetcher.getMappingConfig());
             return new MatchInput(authType, idName, matchType, matchingStrategy, matchValue, matchProperties, language);
         }
+    }
         
 	/**
 	 * Construct match input.
