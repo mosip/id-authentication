@@ -131,7 +131,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo) {
-		return matchInputBuilder.buildMatchInputV2(authRequestDTO, PinAuthType.values(), PinMatchType.values(), idInfo);
+		return matchInputBuilder.buildMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values(), idInfo);
 	}
 
 	//

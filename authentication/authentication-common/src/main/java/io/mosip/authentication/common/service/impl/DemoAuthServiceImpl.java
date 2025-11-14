@@ -88,7 +88,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo) {
-		return matchInputBuilder.buildMatchInputV2(authRequestDTO, DemoAuthType.values(), DemoMatchType.values(),
+		return matchInputBuilder.buildMatchInput(authRequestDTO, DemoAuthType.values(), DemoMatchType.values(),
 				idInfo);
 	}
 
