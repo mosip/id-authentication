@@ -24,7 +24,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The builder to build {@code AutnTxn} instance.
@@ -260,17 +260,17 @@ public class AuthTransactionBuilder {
 			autnTxn.setId(id);
 			autnTxn.setCrBy(EnvUtil.getAppId());
 			autnTxn.setAuthTknId(authTokenId);
-			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
+			autnTxn.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			LocalDateTime strUTCDate = DateUtils2.getUTCCurrentDateTime();
 			try {
-				strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
-						DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
+				strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
+						DateUtils2.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
 			} catch (ParseException e) {
 				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
 						"Invalid Request Time - setting to current date time");
 			}
 			autnTxn.setRequestDTtimes(strUTCDate);
-			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
+			autnTxn.setResponseDTimes(DateUtils2.getUTCCurrentDateTime());
 			autnTxn.setRequestTrnId(txnID);
 			autnTxn.setStatusCode(status);
 			

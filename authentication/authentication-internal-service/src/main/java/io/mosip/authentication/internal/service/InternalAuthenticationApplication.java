@@ -4,7 +4,7 @@ import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.integration.*;
 import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.WebSubClientConfig;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;

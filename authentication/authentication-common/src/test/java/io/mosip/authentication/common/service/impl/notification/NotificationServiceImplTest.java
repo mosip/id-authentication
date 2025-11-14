@@ -58,7 +58,7 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
@@ -132,7 +132,7 @@ public class NotificationServiceImplTest {
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
-		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		authResponseDTO.setResponseTime(DateUtils2.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
@@ -181,7 +181,7 @@ public class NotificationServiceImplTest {
 		res.setAuthStatus(Boolean.TRUE);
 		res.setAuthToken("234567890");
 		authResponseDTO.setResponse(res);
-		authResponseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		authResponseDTO.setResponseTime(DateUtils2.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		CompletableFuture<Object> Supplier = CompletableFuture.completedFuture("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
