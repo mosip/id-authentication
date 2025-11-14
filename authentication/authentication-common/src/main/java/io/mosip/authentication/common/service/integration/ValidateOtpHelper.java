@@ -9,7 +9,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -93,10 +93,10 @@ public class ValidateOtpHelper {
 
         String otpHash = getOtpHash(pinValue, otpKey);
         if (otpEntity.getOtpHash().equals(otpHash)) {
-            otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+            otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
             otpEntity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
             otpRepo.save(otpEntity);
-            if (!otpEntity.getExpiryDtimes().isAfter(DateUtils2.getUTCCurrentDateTime())) {
+            if (!otpEntity.getExpiryDtimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
                         IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), OTP_EXPIRED);
                 throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
@@ -107,11 +107,11 @@ public class ValidateOtpHelper {
             otpEntity.setValidationRetryCount(attemptCount);
             if (attemptCount >= numberOfValidationAttemptsAllowed) {
                 otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
-                otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+                otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
                 otpRepo.save(otpEntity);
                 throw createOTPFrozenException();
             }
-            otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+            otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
             otpRepo.save(otpEntity);
             return false;
         }

@@ -24,7 +24,7 @@ import io.mosip.esignet.api.util.Action;
 import io.mosip.esignet.api.util.ActionStatus;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @ConditionalOnProperty(value = "mosip.esignet.integration.audit-plugin", havingValue = "IdaAuditPluginImpl")
@@ -71,7 +71,7 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 			auditRequest.setEventId(action.name());
 			auditRequest.setEventName(action.name());
 			auditRequest.setEventType(status.name());
-			auditRequest.setActionTimeStamp(DateUtils2.getUTCCurrentDateTime());
+			auditRequest.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 			auditRequest.setHostName("localhost");
 			auditRequest.setHostIp("localhost");
 			auditRequest.setApplicationId(ESIGNET);
@@ -91,7 +91,7 @@ public class IdaAuditPluginImpl implements AuditPlugin {
 
 			request.setRequest(auditRequest);
 			request.setId("ida");
-			request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
+			request.setRequesttime(DateUtils.getUTCCurrentDateTime());
 
 			String requestBody = objectMapper.writeValueAsString(request);
 			RequestEntity requestEntity = RequestEntity

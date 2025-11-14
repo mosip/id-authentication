@@ -41,7 +41,7 @@ import io.mosip.authentication.core.partner.dto.OIDCClientDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
 
 /**
@@ -189,9 +189,9 @@ public class PartnerServiceManager {
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
 			}
-			if (partnerMapping.getPolicyData().getPolicyCommenceOn().isAfter(DateUtils2.getUTCCurrentDateTime())
+			if (partnerMapping.getPolicyData().getPolicyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
 					|| partnerMapping.getPolicyData().getPolicyExpiresOn()
-					.isBefore(DateUtils2.getUTCCurrentDateTime())) {
+					.isBefore(DateUtils.getUTCCurrentDateTime())) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorCode(),
 						IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_ACTIVE.getErrorMessage());
@@ -206,9 +206,9 @@ public class PartnerServiceManager {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorCode(),
 							IdAuthenticationErrorConstants.PARTNER_DEACTIVATED.getErrorMessage());
 				}
-				if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils2.getUTCCurrentDateTime())
+				if (partnerMapping.getApiKeyData().getApiKeyCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())
 						|| partnerMapping.getApiKeyData().getApiKeyExpiresOn()
-						.isBefore(DateUtils2.getUTCCurrentDateTime())) {
+						.isBefore(DateUtils.getUTCCurrentDateTime())) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorCode(),
 							IdAuthenticationErrorConstants.PARTNER_API_EXPIRED.getErrorMessage());
 				}
@@ -273,12 +273,12 @@ public class PartnerServiceManager {
 							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorCode(),
 							IdAuthenticationErrorConstants.LICENSEKEY_SUSPENDED.getErrorMessage());
 				}
-				if (mispLicenseData.getMispCommenceOn().isAfter(DateUtils2.getUTCCurrentDateTime())) {
+				if (mispLicenseData.getMispCommenceOn().isAfter(DateUtils.getUTCCurrentDateTime())) {
 					// TODO need to throw different exception for misp not active
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
 				}
-				if (mispLicenseData.getMispExpiresOn().isBefore(DateUtils2.getUTCCurrentDateTime())) {
+				if (mispLicenseData.getMispExpiresOn().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
 							IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage());
 				}
@@ -323,19 +323,19 @@ public class PartnerServiceManager {
 				PartnerData.class);
 		mapping.setPartnerId(partnerEventData.getPartnerId());
 		partnerEventData.setCreatedBy(getCreatedBy(eventModel));
-		partnerEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		ApiKeyData apiKeyEventData = mapper.convertValue(eventModel.getEvent().getData().get(API_KEY_DATA),
 				ApiKeyData.class);
 		mapping.setApiKeyId(apiKeyEventData.getApiKeyId());
 		apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
-		apiKeyEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		PolicyData policyEventData = mapper.convertValue(eventModel.getEvent().getData().get(POLICY_DATA),
 				PolicyData.class);
 		mapping.setPolicyId(policyEventData.getPolicyId());
 		policyEventData.setCreatedBy(getCreatedBy(eventModel));
-		policyEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		mapping.setCreatedBy(getCreatedBy(eventModel));
-		mapping.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		mapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		partnerDataRepo.save(partnerEventData);
 		apiKeyRepo.save(apiKeyEventData);
 		policyDataRepo.save(policyEventData);
@@ -386,11 +386,11 @@ public class PartnerServiceManager {
 			apiKeyData.setApiKeyExpiresOn(apiKeyEventData.getApiKeyExpiresOn());
 			apiKeyData.setApiKeyStatus(apiKeyEventData.getApiKeyStatus());
 			apiKeyData.setUpdatedBy(getCreatedBy(eventModel));
-			apiKeyData.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+			apiKeyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyData);
 		} else {
 			apiKeyEventData.setCreatedBy(getCreatedBy(eventModel));
-			apiKeyEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			apiKeyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			apiKeyRepo.save(apiKeyEventData);
 		}
 	}
@@ -410,11 +410,11 @@ public class PartnerServiceManager {
 			partnerData.setCertificateData(partnerEventData.getCertificateData());
 			partnerData.setPartnerStatus(partnerEventData.getPartnerStatus());
 			partnerData.setUpdatedBy(getCreatedBy(eventModel));
-			partnerData.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+			partnerData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerData);
 		} else {
 			partnerEventData.setCreatedBy(getCreatedBy(eventModel));
-			partnerEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			partnerEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerDataRepo.save(partnerEventData);
 		}
 	}
@@ -430,7 +430,7 @@ public class PartnerServiceManager {
 		if (policyDataOptional.isPresent()) {
 			PolicyData policyData = policyDataOptional.get();
 			policyData.setUpdatedBy(getCreatedBy(eventModel));
-			policyData.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+			policyData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			policyData.setPolicyId(policyEventData.getPolicyId());
 			policyData.setPolicy(policyEventData.getPolicy());
 			policyData.setPolicyName(policyEventData.getPolicyName());
@@ -441,7 +441,7 @@ public class PartnerServiceManager {
 			policyDataRepo.save(policyData);
 		} else {
 			policyEventData.setCreatedBy(getCreatedBy(eventModel));
-			policyEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			policyEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			policyDataRepo.save(policyEventData);
 		}
 	}
@@ -467,7 +467,7 @@ public class PartnerServiceManager {
 		if (mispLicenseDataOptional.isPresent()) {
 			MispLicenseData mispLicenseData = mispLicenseDataOptional.get();
 			mispLicenseData.setUpdatedBy(getCreatedBy(eventModel));
-			mispLicenseData.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+			mispLicenseData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicenseData.setMispId(mispLicenseEventData.getMispId());
 			mispLicenseData.setLicenseKey(mispLicenseEventData.getLicenseKey());
 			mispLicenseData.setMispCommenceOn(mispLicenseEventData.getMispCommenceOn());
@@ -477,7 +477,7 @@ public class PartnerServiceManager {
 			mispLicDataRepo.save(mispLicenseData);
 		} else {
 			mispLicenseEventData.setCreatedBy(getCreatedBy(eventModel));
-			mispLicenseEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			mispLicenseEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			mispLicDataRepo.save(mispLicenseEventData);
 		}
 	}
@@ -523,7 +523,7 @@ public class PartnerServiceManager {
 					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_ALREADY_EXIST.getErrorMessage());
 		} else {
 			oidcClientEventData.setCreatedBy(getCreatedBy(eventModel));
-			oidcClientEventData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			oidcClientEventData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			oidcClientEventData.setPartnerId(partnerData.getPartnerId());
 			oidcClientDataRepo.save(oidcClientEventData);
 		}
@@ -542,7 +542,7 @@ public class PartnerServiceManager {
 			partnerMapping.setPolicyId(policyId);
 			partnerMapping.setApiKeyId(oidcClientId);
 			partnerMapping.setCreatedBy(getCreatedBy(eventModel));
-			partnerMapping.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+			partnerMapping.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			partnerMappingRepo.save(partnerMapping);
 		}
 	}
@@ -579,7 +579,7 @@ public class PartnerServiceManager {
 					IdAuthenticationErrorConstants.OIDC_CLIENT_DATA_INVALID_PARTNER.getErrorMessage());
 			}
 			oidcClientData.setUpdatedBy(getCreatedBy(eventModel));
-			oidcClientData.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+			oidcClientData.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			oidcClientData.setClientName(oidcClientEventData.getClientName());
 			oidcClientData.setClientStatus(oidcClientEventData.getClientStatus());
 			oidcClientData.setUserClaims(oidcClientEventData.getUserClaims());

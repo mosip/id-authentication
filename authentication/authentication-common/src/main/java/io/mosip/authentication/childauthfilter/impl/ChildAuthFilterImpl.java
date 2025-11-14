@@ -7,7 +7,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
@@ -130,7 +130,7 @@ public class ChildAuthFilterImpl implements IMosipAuthFilter {
         }
 
         try {
-            return DateUtils2.parseDateToLocalDateTime(DateUtils2.parseToDate(dob, dateOfBirthPattern)).toLocalDate();
+            return DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(dob, dateOfBirthPattern)).toLocalDate();
         } catch (Exception e) {
             throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), "Request could not be processed. Unable to parse " + dateOfBirthAttributeName + " from DB.");
         }

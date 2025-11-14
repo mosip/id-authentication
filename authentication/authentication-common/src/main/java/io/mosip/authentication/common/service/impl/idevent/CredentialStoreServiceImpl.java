@@ -53,7 +53,7 @@ import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -203,7 +203,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		}
 		
 		LocalDateTime updateDtimes = credentialEventStore.getUpdDTimes();
-		if (DateUtils2.getUTCCurrentDateTime().isBefore(updateDtimes.plus(backoffIntervalMillis, ChronoUnit.MILLIS))) {
+		if (DateUtils.getUTCCurrentDateTime().isBefore(updateDtimes.plus(backoffIntervalMillis, ChronoUnit.MILLIS))) {
 			throw new RetryingBeforeRetryIntervalException();
 		}
 	}
@@ -220,7 +220,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess, boolean isRecoverableException,
 			String status) {
 		credentialEventStore.setUpdBy(IDA);
-		LocalDateTime updatedDTimes = DateUtils2.getUTCCurrentDateTime();
+		LocalDateTime updatedDTimes = DateUtils.getUTCCurrentDateTime();
 		credentialEventStore.setUpdDTimes(updatedDTimes);
 		String requestId = credentialEventStore.getCredentialTransactionId();
 
@@ -266,7 +266,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		status.ifPresent(credentialEventStore::setStatusCode);
 		
 		credentialEventStore.setUpdBy(IDA);
-		credentialEventStore.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+		credentialEventStore.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 		
 	}
 
@@ -293,11 +293,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	public void storeEventModel(EventModel eventModel) {
 		CredentialEventStore credentialEvent = new CredentialEventStore();
 		credentialEvent.setCrBy(IDA);
-		credentialEvent.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		credentialEvent.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		credentialEvent.setEventId(eventModel.getEvent().getId());
 		credentialEvent.setEventTopic(eventModel.getTopic());
 		credentialEvent.setCredentialTransactionId(eventModel.getEvent().getTransactionId());
-		credentialEvent.setPublishedOnDtimes(DateUtils2.convertUTCToLocalDateTime(eventModel.getPublishedOn()));
+		credentialEvent.setPublishedOnDtimes(DateUtils.convertUTCToLocalDateTime(eventModel.getPublishedOn()));
 		credentialEvent.setPublisher(eventModel.getPublisher());
 		credentialEvent.setStatusCode(CredentialStoreStatus.NEW.name());
 		credentialEvent.setRetryCount(0);
@@ -404,15 +404,15 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			if (identityEntityOpt.isPresent()) {
 				identityEntity = identityEntityOpt.get();
 				identityEntity.setUpdBy(IDA);
-				identityEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
+				identityEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
 			} else {
 				identityEntity = new IdentityEntity();
 				identityEntity.setCrBy(IDA);
-				identityEntity.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+				identityEntity.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 				identityEntity.setId(idHash);
 				identityEntity.setToken(token);
 			}
-			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils2.parseUTCToLocalDateTime(expiryTime);
+			LocalDateTime expiryTimestamp = expiryTime == null ? null : DateUtils.parseUTCToLocalDateTime(expiryTime);
 			identityEntity.setExpiryTimestamp(expiryTimestamp);
 			identityEntity.setTransactionLimit(transactionLimit);
 
@@ -467,7 +467,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			saltEntity.setId(saltModulo);
 			saltEntity.setSalt(salt);
 			saltEntity.setCreatedBy(IDA);
-			saltEntity.setCreatedDTimes(DateUtils2.getUTCCurrentDateTime());
+			saltEntity.setCreatedDTimes(DateUtils.getUTCCurrentDateTime());
 			uinHashSaltRepo.save(saltEntity);
 		}
 	}

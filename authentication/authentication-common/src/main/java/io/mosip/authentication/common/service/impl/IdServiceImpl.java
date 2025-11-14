@@ -30,7 +30,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -241,7 +241,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
     }
 
     private void validateNotExpired(LocalDateTime expiry, IdType idType) throws IdAuthenticationBusinessException {
-        if (expiry != null && DateUtils2.before(expiry, DateUtils2.getUTCCurrentDateTime())) {
+        if (expiry != null && DateUtils.before(expiry, DateUtils.getUTCCurrentDateTime())) {
             logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "validateNotExpired",
                     idType.getType() + " expired/deactivated/revoked/blocked");
 
@@ -441,7 +441,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
             LocalDateTime expiryTimestamp = Objects.nonNull(entityObjs[1]) ? LocalDateTime.parse(String.valueOf(entityObjs[1])) : null;
 
             if (Objects.nonNull(expiryTimestamp)
-                    && DateUtils2.before(expiryTimestamp, DateUtils2.getUTCCurrentDateTime())) {
+                    && DateUtils.before(expiryTimestamp, DateUtils.getUTCCurrentDateTime())) {
                 logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
                         idvIdType + " expired/deactivated/revoked/blocked");
                 IdAuthenticationErrorConstants errorConstant;

@@ -35,7 +35,7 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.exception.ParseException;
 
 /**
@@ -162,17 +162,17 @@ public class IdaRequestResponsConsumerUtil implements AuthTransactionStoreFuncti
 		} else {
 			zone = ZoneOffset.UTC;
 		}
-		resTime = DateUtils2.formatDate(DateUtils2.parseToDate(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()),
+		resTime = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()),
 				dateTimePattern, TimeZone.getTimeZone(ZoneOffset.UTC)),
 				dateTimePattern, TimeZone.getTimeZone(zone));
 		return resTime;
 	}
 
 	public static LocalDateTime convertStringDateTimeToLDT(String stringDateTime) {
-		LocalDateTime strUTCDate = DateUtils2.getUTCCurrentDateTime();
+		LocalDateTime strUTCDate = DateUtils.getUTCCurrentDateTime();
 		try {
-			strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
-					DateUtils2.parseToDate(stringDateTime, EnvUtil.getDateTimePattern())));
+			strUTCDate = DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(stringDateTime, EnvUtil.getDateTimePattern())));
 		} catch (ParseException e) {
 			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, IdaRequestResponsConsumerUtil.class.getClass().getName(), e.getMessage(),
 					"Invalid  DateTime - setting to current date time");

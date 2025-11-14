@@ -53,7 +53,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.util.IdValidationUtil;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 @RunWith(SpringRunner.class)
@@ -581,7 +581,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FACE");
 		dataDTO.setBioValue(
@@ -617,7 +617,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("UNKNOWN");
@@ -652,7 +652,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("Left IndexFinger");
@@ -691,7 +691,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("Right IndexFinger");
@@ -713,7 +713,7 @@ public class ValidatorTest {
 		digitalId1.setType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
-		digitalId1.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId1);
 		dataDTO1.setBioType("Finger");
 		dataDTO1.setBioSubType("UNKNOWN");
@@ -750,7 +750,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Right");
@@ -785,7 +785,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Right");
@@ -806,7 +806,7 @@ public class ValidatorTest {
 		digitalId1.setType("1");
 		digitalId1.setDeviceProvider("1");
 		digitalId1.setDeviceProviderId("1");
-		digitalId1.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId1.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO1.setDigitalId(digitalId1);
 		dataDTO1.setBioType("Iris");
 		dataDTO1.setBioSubType("Left");
@@ -864,7 +864,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("FACE");
 		dataDTO.setBioValue(
@@ -899,7 +899,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Finger");
 		dataDTO.setBioSubType("Left IndexFinger");
@@ -937,7 +937,7 @@ public class ValidatorTest {
 		digitalId.setType("1");
 		digitalId.setDeviceProvider("1");
 		digitalId.setDeviceProviderId("1");
-		digitalId.setDateTime(DateUtils2.getCurrentDateTimeString());
+		digitalId.setDateTime(DateUtils.getCurrentDateTimeString());
 		dataDTO.setDigitalId(digitalId);
 		dataDTO.setBioType("Iris");
 		dataDTO.setBioSubType("Left");

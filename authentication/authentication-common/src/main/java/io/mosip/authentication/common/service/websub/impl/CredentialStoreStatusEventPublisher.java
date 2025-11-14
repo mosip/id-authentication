@@ -14,7 +14,7 @@ import io.mosip.authentication.common.service.impl.idevent.CredentialStatusUpdat
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class CredentialStoreStatusEventPublisher.
@@ -84,7 +84,7 @@ public class CredentialStoreStatusEventPublisher extends BaseWebSubEventsInitial
 		CredentialStatusUpdateEvent credentialStatusUpdateEvent = new CredentialStatusUpdateEvent();
 		credentialStatusUpdateEvent.setStatus(status);
 		credentialStatusUpdateEvent.setRequestId(requestId);
-		credentialStatusUpdateEvent.setTimestamp(DateUtils2.formatToISOString(updatedTimestamp));
+		credentialStatusUpdateEvent.setTimestamp(DateUtils.formatToISOString(updatedTimestamp));
 		return credentialStatusUpdateEvent;
 	}
 	

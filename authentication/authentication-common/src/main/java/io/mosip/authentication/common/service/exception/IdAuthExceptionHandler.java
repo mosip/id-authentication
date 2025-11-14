@@ -55,7 +55,7 @@ import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -361,7 +361,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return the object
 	 */
 	private static Object frameErrorResponse(String requestReceived, String type, List<AuthError> errors) {
-		String responseTime = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
+		String responseTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
 		switch (requestReceived) {
 		case "kyc":
 			EKycAuthResponseDTO kycAuthResponseDTO = new EKycAuthResponseDTO();

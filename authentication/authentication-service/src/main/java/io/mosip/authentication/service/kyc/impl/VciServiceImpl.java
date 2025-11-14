@@ -69,7 +69,7 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -269,7 +269,7 @@ public class VciServiceImpl implements VciService {
 		credSubjectIdStore.setCsidKeyHash(keyHash);
 		credSubjectIdStore.setCsidStatus(VCStatus.ACTIVE.getStatus()); 
 		credSubjectIdStore.setCreatedBy(EnvUtil.getAppId());
-		credSubjectIdStore.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
+		credSubjectIdStore.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 		csidStoreRepo.saveAndFlush(credSubjectIdStore);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addCredSubjectId",
 					"Credential subject Id details Saved.");
@@ -321,8 +321,8 @@ public class VciServiceImpl implements VciService {
 
 			// vc issuance date
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern());
-			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils2.getUTCCurrentDateTimeString(EnvUtil.getDateTimePattern()), format);
-			verCredJsonObject.put(IdAuthCommonConstants.VC_ISSUANCE_DATE, DateUtils2.formatToISOString(localdatetime));
+			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(EnvUtil.getDateTimePattern()), format);
+			verCredJsonObject.put(IdAuthCommonConstants.VC_ISSUANCE_DATE, DateUtils.formatToISOString(localdatetime));
 
 			// vc credentialSubject
 			verCredJsonObject.put(IdAuthCommonConstants.CREDENTIALSUBJECT, credSubjectMap);

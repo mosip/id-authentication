@@ -17,7 +17,7 @@ import io.mosip.authentication.core.spi.notification.service.NotificationService
 import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,7 +104,7 @@ public class NotificationServiceImpl implements NotificationService {
         for (String lang : templateLanguages) {
             values.put(NAME + "_" + lang, entityInfoUtil.getEntityInfoAsString(DemoMatchType.NAME, lang, idInfo));
         }
-        Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils2.parseToLocalDateTime(authResponseDTO.getResponseTime()));
+        Tuple2<String, String> dateAndTime = getDateAndTime(DateUtils.parseToLocalDateTime(authResponseDTO.getResponseTime()));
         values.put(DATE, dateAndTime.getT1());
         values.put(TIME, dateAndTime.getT2());
         String maskedUin = "";

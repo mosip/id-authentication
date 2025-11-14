@@ -21,7 +21,7 @@ import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -104,7 +104,7 @@ public class HotlistServiceImpl implements HotlistService {
             HotlistCache hotlistCache = hotlistData.get();
             dto.setStartDTimes(hotlistCache.getStartDTimes());
             if (Objects.nonNull(hotlistCache.getExpiryDTimes())
-                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils2.getUTCCurrentDateTime())) {
+                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
                 if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
                     dto.setStatus(HotlistStatus.UNBLOCKED);
                 else
@@ -136,7 +136,7 @@ public class HotlistServiceImpl implements HotlistService {
 					unblock(id, idType);
 				} else {
 					updateHotlist(id, idType, status,
-							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils2.parseToLocalDateTime(expiryTimestamp)
+							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
 									: null);
 				}
 			}

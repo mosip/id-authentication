@@ -55,7 +55,7 @@ import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -129,7 +129,7 @@ public abstract class BaseIDAFilter implements Filter {
 		}
 
 		// Log the request time
-		LocalDateTime requestTime = DateUtils2.getUTCCurrentDateTime();
+		LocalDateTime requestTime = DateUtils.getUTCCurrentDateTime();
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
 				IdAuthCommonConstants.REQUEST + " started at: " + requestTime);
 
@@ -585,7 +585,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 */
 	protected boolean isDate(String date) {
 		try {
-			DateUtils2.parseToDate(date, EnvUtil.getDateTimePattern());
+			DateUtils.parseToDate(date, EnvUtil.getDateTimePattern());
 			return true;
 		} catch (ParseException e) {
 			mosipLogger.warn("sessionId", BASE_IDA_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));

@@ -10,7 +10,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils2;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class HotlistScheduledCleanupJob.
@@ -54,7 +54,7 @@ public class HotlistScheduledCleanupJob {
 		try {
 			mosipLogger.info(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupExpiredIds",
 					"INITIATED CLEANUP OF EXPIRED IDs");
-			hotlistRepo.findByExpiryDTimesLessThanAndStatus(DateUtils2.getUTCCurrentDateTime(), HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
+			hotlistRepo.findByExpiryDTimesLessThanAndStatus(DateUtils.getUTCCurrentDateTime(), HotlistStatus.UNBLOCKED).forEach(hotlistRepo::delete);
 		} catch (Exception e) {
 			mosipLogger.warn(securityManager.getUser(), "HotlistScheduledCleanupJob", "cleanupUnblockedIds",
 					"HOTLIST STATUS CLEANUP FAILED WITH EXCEPTION - " + ExceptionUtils.getStackTrace(e));
