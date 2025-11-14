@@ -27,7 +27,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * @author Manoj SP
@@ -63,7 +63,7 @@ public class IdAuthFraudAnalysisEventManager {
 						.generateHashAndDigestAsPlainText(((String) request.get(IDV_ID)).getBytes());
 				String txnId = (String) request.get(TRANSACTION_ID);
 				String partnerId = pathSegments.get(4);
-				LocalDateTime requestTime = DateUtils.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
+				LocalDateTime requestTime = DateUtils2.parseUTCToLocalDateTime((String) request.get(REQ_TIME));
 				authType = getAuthType(pathSegments, authType, request);
 				IdAuthFraudAnalysisEventDTO eventData = createEventData(idvIdHash, txnId, partnerId, authType,
 						requestTime, "N", errorMessage);

@@ -30,7 +30,7 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdServiceImplTest {
@@ -374,7 +374,7 @@ public class IdServiceImplTest {
 
 	private IdentityEntity getEntity() {
 		IdentityEntity entity = new IdentityEntity();
-		LocalDateTime time = DateUtils.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
+		LocalDateTime time = DateUtils2.getUTCCurrentDateTime().plus(10, ChronoUnit.MINUTES);
 		entity.setExpiryTimestamp(time);
 
 		byte[] bioData = {};
