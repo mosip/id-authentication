@@ -52,7 +52,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * 
@@ -106,7 +106,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 		String id = UUID.randomUUID().toString();
 		authAnonymousProfileEntity.setId(id);
 		authAnonymousProfileEntity.setCrBy(IDA);
-		LocalDateTime crDTimes = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime crDTimes = DateUtils2.getUTCCurrentDateTime();
 		authAnonymousProfileEntity.setCrDTimes(crDTimes);
 		
 		try {
@@ -220,8 +220,8 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private String getYear(String dob) {
-		Date date = DateUtils.parseToDate(dob, dateOfBirthPattern);
-		return String.valueOf(DateUtils.parseDateToLocalDateTime(date).getYear());
+		Date date = DateUtils2.parseToDate(dob, dateOfBirthPattern);
+		return String.valueOf(DateUtils2.parseDateToLocalDateTime(date).getYear());
 	}
 
 	private void setGender(AnonymousAuthenticationProfile ananymousProfile, Map<String, List<IdentityInfoDTO>> idInfo,
@@ -291,7 +291,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private void setDate(AnonymousAuthenticationProfile ananymousProfile) {
-		LocalDateTime requestDateTime = DateUtils.getUTCCurrentDateTime();
+		LocalDateTime requestDateTime = DateUtils2.getUTCCurrentDateTime();
 		ananymousProfile.setDate(requestDateTime.toLocalDate().toString());
 	}
 

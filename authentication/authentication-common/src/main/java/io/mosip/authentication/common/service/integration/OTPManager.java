@@ -33,7 +33,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -110,7 +110,7 @@ public class OTPManager {
         }
 
         String otp = generateOTP(otpRequestDTO.getIndividualId());
-        LocalDateTime otpGenerationTime = DateUtils.getUTCCurrentDateTime();
+        LocalDateTime otpGenerationTime = DateUtils2.getUTCCurrentDateTime();
         String otpHash = IdAuthSecurityManager.digestAsPlainText((otpRequestDTO.getIndividualId()
                 + EnvUtil.getKeySplitter() + otpRequestDTO.getTransactionID()
                 + EnvUtil.getKeySplitter() + otp).getBytes());
@@ -161,7 +161,7 @@ public class OTPManager {
         try {
             OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(uin);
             RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
-            reqWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+            reqWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
             reqWrapper.setRequest(otpGenerateRequestDto);
             RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
                     reqWrapper, ResponseWrapper.class);

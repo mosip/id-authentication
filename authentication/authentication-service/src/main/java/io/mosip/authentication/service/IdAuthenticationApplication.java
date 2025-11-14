@@ -5,7 +5,7 @@ import io.mosip.authentication.common.service.integration.*;
 import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
-import io.mosip.kernel.signature.util.SignatureUtil;
+import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -82,7 +82,6 @@ import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
 import io.mosip.kernel.tokenidgenerator.service.impl.TokenIDGeneratorServiceImpl;
 import io.mosip.kernel.zkcryptoservice.service.impl.ZKCryptoManagerServiceImpl;
 import io.mosip.kernel.keymanager.hsm.health.HSMHealthCheck;
-import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 
 

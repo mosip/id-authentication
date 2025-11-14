@@ -21,7 +21,7 @@ import io.mosip.authentication.core.hotlist.dto.HotlistDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -96,30 +96,29 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @see io.mosip.authentication.core.spi.hotlist.service.HotlistService#
 	 * getHotlistStatus(java.lang.String, java.lang.String)
 	 */
-    @Override
-    public HotlistDTO getHotlistStatus(String id, String idType) {
-        HotlistDTO dto = new HotlistDTO();
-        Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
-        if (hotlistData.isPresent()) {
-            HotlistCache hotlistCache = hotlistData.get();
-            dto.setStartDTimes(hotlistCache.getStartDTimes());
-            if (Objects.nonNull(hotlistCache.getExpiryDTimes())
-                    && hotlistCache.getExpiryDTimes().isAfter(DateUtils.getUTCCurrentDateTime())) {
-                if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
-                    dto.setStatus(HotlistStatus.UNBLOCKED);
-                else
-                    dto.setStatus(HotlistStatus.BLOCKED);
-            } else {
-                dto.setStatus(hotlistCache.getStatus());
-            }
-        } else {
-            dto.setStatus(HotlistStatus.UNBLOCKED);
-        }
-        return dto;
-    }
-
-
-    @SuppressWarnings("rawtypes")
+	@Override
+	public HotlistDTO getHotlistStatus(String id, String idType) {
+		HotlistDTO dto = new HotlistDTO();
+		Optional<HotlistCache> hotlistData = hotlistCacheRepo.findByIdHashAndIdType(id, idType);
+		if (hotlistData.isPresent()) {
+			HotlistCache hotlistCache = hotlistData.get();
+			dto.setStartDTimes(hotlistCache.getStartDTimes());
+			if (Objects.nonNull(hotlistCache.getExpiryDTimes())
+					&& hotlistCache.getExpiryDTimes().isAfter(DateUtils2.getUTCCurrentDateTime())) {
+				if (hotlistCache.getStatus().contentEquals(HotlistStatus.BLOCKED))
+					dto.setStatus(HotlistStatus.UNBLOCKED);
+				else
+					dto.setStatus(HotlistStatus.BLOCKED);
+			} else {
+				dto.setStatus(hotlistCache.getStatus());
+			}
+		} else {
+			dto.setStatus(HotlistStatus.UNBLOCKED);
+		}
+		return dto;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void handlingHotlistingEvent(EventModel eventModel) throws IdAuthenticationBusinessException {
 		Map<String, Object> eventData = eventModel.getEvent().getData();
@@ -136,7 +135,7 @@ public class HotlistServiceImpl implements HotlistService {
 					unblock(id, idType);
 				} else {
 					updateHotlist(id, idType, status,
-							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils.parseToLocalDateTime(expiryTimestamp)
+							StringUtils.isNotBlank(expiryTimestamp) ? DateUtils2.parseToLocalDateTime(expiryTimestamp)
 									: null);
 				}
 			}
