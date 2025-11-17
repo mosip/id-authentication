@@ -3,5 +3,5 @@ modules:
     enabled: true
     image:
       repository: mosipid/apitest-auth
-      tag: 1.2.1.2-beta.1
+      tag: 1.2.1.2
       pullPolicy: Always
