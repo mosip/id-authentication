@@ -2,7 +2,7 @@ apiVersion: v2
 name: ida-otp
 description: A Helm chart for MOSIP IDA module
 type: application
-version: 12.1.2
+version: 12.1.2-develop
 appVersion: ""
 dependencies:
   - name: common
