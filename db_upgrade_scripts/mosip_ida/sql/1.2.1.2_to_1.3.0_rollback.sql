@@ -1,7 +1,8 @@
 -- ------------------------------------------------------------------------------------------
 -- Rollback script for Migrating Spring batch version back from 5.0 as part of Java 21 Migration.
 -- ------------------------------------------------------------------------------------------
-
+-- Below script required to upgrade from 1.3.0-B2 to 1.3.0
+\c mosip_ida
 TRUNCATE TABLE batch_job_execution CASCADE;
 TRUNCATE TABLE batch_job_execution_context CASCADE;
 TRUNCATE TABLE batch_job_execution_params CASCADE;
