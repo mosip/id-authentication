@@ -81,3 +81,5 @@ COMMENT ON COLUMN ida.credential_event_store.is_deleted IS 'IS_Deleted : Flag to
 COMMENT ON COLUMN ida.credential_event_store.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
 
+CREATE INDEX IF NOT EXISTS cred_event_store_status_cr_dtimes ON ida.credential_event_store USING btree (status_code desc, retry_count, cr_dtimes) WHERE status_code in ('NEW','FAILED');
+
