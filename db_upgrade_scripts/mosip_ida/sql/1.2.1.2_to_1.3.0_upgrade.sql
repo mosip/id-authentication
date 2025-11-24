@@ -1,7 +1,6 @@
 -- ------------------------------------------------------------------------------------------
 -- Upgrade script for Migrating Spring batch version to 5.0 as part of Java 21 Migration.
 -- ------------------------------------------------------------------------------------------
--- Below script required to upgrade from 1.3.0-B2 to 1.3.0
 \c mosip_ida
 ALTER TABLE BATCH_STEP_EXECUTION ADD CREATE_TIME TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00';
 ALTER TABLE BATCH_STEP_EXECUTION ALTER COLUMN START_TIME DROP NOT NULL;
@@ -22,7 +21,7 @@ CREATE INDEX IF NOT EXISTS idx_job_key ON BATCH_JOB_INSTANCE(JOB_KEY);
 --------ca_cert_store-upgrade-db script------------
 ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
 
-
+-- Below script required to upgrade from 1.3.0-beta.2 to 1.3.0.
 -- Optimize autovacuum for anonymous_profile to handle moderate updates
 ALTER TABLE anonymous_profile SET (
     autovacuum_vacuum_scale_factor = 0.05,
@@ -278,7 +277,3 @@ ALTER TABLE uin_hash_salt SET (
     autovacuum_analyze_scale_factor = 0.1,
     autovacuum_analyze_threshold = 50
 );
-
--- Below script required to upgrade from 1.3.0-B1 to 1.3.0-B2
--- ca_cert_type column is added to the ca_cert_store table --
-ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
