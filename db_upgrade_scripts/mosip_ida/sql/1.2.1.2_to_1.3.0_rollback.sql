@@ -42,6 +42,7 @@ DROP INDEX IF EXISTS idx_job_key;
 ----------ca_cert_store-rollback- db script-------------
 ALTER TABLE IF EXISTS ida.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
 
+-- Below script required to rollback from 1.3.0-beta.2 to 1.3.0.
 -- Rollback autovacuum settings to defaults
 ALTER TABLE anonymous_profile RESET (
     autovacuum_vacuum_scale_factor,
