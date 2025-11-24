@@ -257,8 +257,3 @@ DROP INDEX IF EXISTS idx_cred_evt_pending;
 DROP INDEX CONCURRENTLY IF EXISTS idx_hotlist_idhash_idtype;
 DROP INDEX CONCURRENTLY IF EXISTS idx_hotlist_active;
 DROP INDEX IF EXISTS idx_otp_txn_ref_status_gen;
-
-
--- Below script required to rollback from 1.3.0-B2 to 1.3.0-B1
--- ca_cert_type column is removed/deleted from ca_cert_store table --
-ALTER TABLE IF EXISTS ida.ca_cert_store DROP COLUMN IF EXISTS ca_cert_type;
