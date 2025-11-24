@@ -21,7 +21,7 @@ CREATE INDEX IF NOT EXISTS idx_job_key ON BATCH_JOB_INSTANCE(JOB_KEY);
 --------ca_cert_store-upgrade-db script------------
 ALTER TABLE IF EXISTS ida.ca_cert_store ADD COLUMN ca_cert_type character varying(25);
 
-
+-- Below script required to upgrade from 1.3.0-beta.2 to 1.3.0.
 -- Optimize autovacuum for anonymous_profile to handle moderate updates
 ALTER TABLE anonymous_profile SET (
     autovacuum_vacuum_scale_factor = 0.05,
