@@ -41,7 +41,7 @@ ALTER TABLE api_key_data SET (
 CREATE INDEX idx_autntxn_refid_dtimes 
 ON ida.auth_transaction (ref_id, request_dtimes);
 
-CREATE INDEX CONCURRENTLY idx_auth_txn_entityid_request_dtimes
+CREATE INDEX idx_auth_txn_entityid_request_dtimes
 ON ida.auth_transaction (requested_entity_id, request_dtimes DESC);
 
 CREATE INDEX idx_autn_txn_refid_time_desc
@@ -146,9 +146,9 @@ ALTER TABLE data_encrypt_keystore SET (
     autovacuum_analyze_threshold = 50
 );
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_idhash_idtype
+CREATE INDEX IF NOT EXISTS idx_hotlist_idhash_idtype
 ON ida.hotlist_cache (id_hash, id_type);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_active
+CREATE INDEX IF NOT EXISTS idx_hotlist_active
 ON ida.hotlist_cache (id_hash, id_type, status)
 WHERE status = 'Blocked';
 
