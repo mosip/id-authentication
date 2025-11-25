@@ -183,7 +183,7 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
-
+	
 	<test name="SendOTP">
 		<parameter name="ymlFile"
 			value="ida/SendOTP/createSendOTP.yml" />

@@ -27,7 +27,6 @@ import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -81,7 +80,6 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	 * @throws AdminTestException
 	 * @throws InterruptedException
 	 * @throws NumberFormatException
-	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO)
@@ -108,7 +106,6 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 //			dev	  - t f
 		}
 
-		String inputJson = testCaseDTO.getInput().toString();
 		JSONObject req = new JSONObject(testCaseDTO.getInput());
 
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
@@ -126,10 +123,11 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 		otpReqJson.remove("sendOtpEndPoint");
 
 		Response otpResponse = null;
-		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int maxLoopCount = IdAuthConfigManager.getproperty("uinGenMaxLoopCount").isEmpty() ? 20
+				: Integer.parseInt(IdAuthConfigManager.getproperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			  {
+			{
 				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
 						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
 						GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
@@ -220,12 +218,10 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	@AfterClass(alwaysRun = true)
 	public void waittime() {
 		try {
-			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
-					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
-				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
-				Thread.sleep(delayTime);
-			}
+			logger.info("waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")
+					+ " mili secs VID Generation In RESIDENT SERVICES");
+			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")));
+
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
 			Thread.currentThread().interrupt();

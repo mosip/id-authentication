@@ -1,8 +1,8 @@
-# Id Authentication API Test Rig
+# ID Authentication API Test Rig
 
 ## Overview
 
-The **Id Authentication API Test Rig** is designed for the execution of module-wise automation API tests for the Id authentication services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the Id authentication API functionalities. The key focus is to validate the Bio auth, OTP auth, kyc, Auth lock, Auth unlock and related functionalities provided by the Id authentication module.
+The **ID Authentication API Test Rig** is designed for the execution of module-wise automation API tests for the ID authentication services. This test rig utilizes **Java REST Assured** and **TestNG** frameworks to automate testing of the ID authentication API functionalities. The key focus is to validate the Bio auth, OTP auth, kyc, Auth lock, Auth unlock and related functionalities provided by the ID authentication module.
 
 ---
 
@@ -15,7 +15,7 @@ The **Id Authentication API Test Rig** is designed for the execution of module-w
 
 ## Coverage
 
-This test rig covers only **external API endpoints** exposed by the Id authentication module.
+This test rig covers only **external API endpoints** exposed by the ID authentication module.
 
 ---
 
@@ -104,7 +104,7 @@ To execute the tests using Jar, use the following steps:
    ```
    java -jar -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.3.0-jar-with-dependencies.jar
    ```
-
+   
 # Using Eclipse IDE
 
 To execute the tests using Eclipse IDE, use the following steps:
@@ -138,19 +138,27 @@ To execute the tests using Eclipse IDE, use the following steps:
    - In the **Arguments** tab, add the necessary **VM arguments**:
      - **VM Arguments**:
     
-    ```bash
+    ```
     -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression
     ```
+
 ## 5. **Run the Configuration**
+
    - Once the configuration is set up, click **Run** to execute the test suite.
    - The tests will run, and the results will be shown in the **Console** tab of Eclipse.
+
    **Note**: You can also run in **Debug Mode** to troubleshoot issues by setting breakpoints in your code and choosing `Debug` instead of `Run`.
+
+
 ## 6. **View Test Results**
+
    - After the tests are executed, you can view the detailed results in the `api-test\testng-report` directory.
    - The report will have two sections:
        - One section for pre-requisite APIs test cases.
        - Another section for core test cases.
+
 ---
+
 ## Test Report Column Definitions
 This section describes the meaning of each column in the test report:
 - **Total (T)**
@@ -167,15 +175,23 @@ This section describes the meaning of each column in the test report:
   Indicates test cases that failed but are already acknowledged as known issues for the current release, typically linked with a bug or defect ID.
   
 ---
+
 ## Details of Arguments Used
+
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).
 - **env.endpoint**: The environment where the application under test is deployed. Replace `<base_env>` with the correct base URL for the environment (e.g., `https://api-internal.<env_name>.mosip.net`).
 - **env.testLevel**: Set this to `smoke` to run only smoke test cases, or `smokeAndRegression` to run both smoke and regression tests.
 - **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-auth-1.3.0-jar-with-dependencies.jar`.
+
 ### Build and Run Info
+
 To run the tests for both **Smoke** and **Regression**:
+
 1. Ensure the correct environment and test level parameters are set.
-2. Execute the tests as shown in the command above to validate Id authentication API functionalities.
+2. Execute the tests as shown in the command above to validate ID authentication API functionalities.
+
 ---
+
 ## License
+
 This project is licensed under the terms of the [Mozilla Public License 2.0](https://github.com/mosip/mosip-platform/blob/master/LICENSE)

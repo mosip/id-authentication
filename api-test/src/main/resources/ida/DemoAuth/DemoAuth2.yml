@@ -84,7 +84,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -109,7 +109,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -346,7 +346,7 @@ DemoAuthNew:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
     }
@@ -424,7 +424,7 @@ DemoAuthNew:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
+    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
     }
@@ -783,7 +783,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -1611,7 +1611,7 @@ DemoAuthNew:
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/error
+      outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",

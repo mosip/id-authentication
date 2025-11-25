@@ -11,9 +11,9 @@ RegenerateVid:
       "VID":"$ID:GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid_vid$"
       }'
       output: '{
-  "errors": [
-    {
-      "errorCode": "IDR-VID-003"
-    }
-  ]
+     "errors": [
+  {
+    "errorCode": "IDR-VID-003"
+  }
+]
 }'

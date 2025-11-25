@@ -1,0 +1,66 @@
+uploadCACert:
+   auth_UploadCACertificate_All_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadCACert_01
+      description: upload CACertificate with all valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificate
+      outputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificateResult
+      input: '{
+    "partnerId": "$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+    "certificateData": "$CACERT$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+    "status": "Upload Success."
+}'
+   auth_UploadCInterCertificate_All_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadCACert_02
+      description: upload CACertificate with all valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificate
+      outputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificateResult
+      input: '{
+    "partnerId": "$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+    "certificateData": "$INTERCERT$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+    "status": "Upload Success."
+}'
+
+   auth_UploadCACertificate_Misp_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadCACert_03
+      description: upload CACertificate Misp valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificate
+      outputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificateResult
+      input: '{
+    "partnerId": "$ID:PartnerSelfRegistration_Misp_Valid_Smoke_sid_partnerId$",
+    "certificateData": "$MISPCACERT$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+    "status": "Upload Success."
+}'
+   auth_UploadCInterCertificate_Misp_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/ca/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadCACert_04
+      description: upload CACertificate Misp valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificate
+      outputTemplate: ida/PmsIntegration/UploadCertificate/uploadCertificateResult
+      input: '{
+    "partnerId": "$ID:PartnerSelfRegistration_Misp_Valid_Smoke_sid_partnerId$",
+    "certificateData": "$MISPINTERCERT$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+    "status": "Upload Success."
+}'
