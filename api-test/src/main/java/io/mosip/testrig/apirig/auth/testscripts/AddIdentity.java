@@ -88,7 +88,6 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 	 * @param testcaseName
 	 * @throws AuthenticationTestException
 	 * @throws AdminTestException
-	 * @throws SecurityXSSException 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {
@@ -195,11 +194,9 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 	public void waittime() {
 
 		try {
-			if (BaseTestCase.currentModule.equals("auth") || BaseTestCase.currentModule.equals("esignet")) {
-				logger.info("waiting for " + properties.getProperty("Delaytime")
-						+ " mili secs after UIN Generation In IDREPO");
-				Thread.sleep(Long.parseLong(properties.getProperty("Delaytime")));
-			}
+			logger.info("waiting for " + IdAuthConfigManager.getproperty("uinGenerationProcessingDelayTimeInMilliSeconds")
+					+ " mili secs after UIN Generation In IDREPO");
+			Thread.sleep(Long.parseLong(IdAuthConfigManager.getproperty("uinGenerationProcessingDelayTimeInMilliSeconds")));
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
 			Thread.currentThread().interrupt();

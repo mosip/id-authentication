@@ -10,9 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Level;
@@ -27,7 +25,6 @@ import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
-import io.mosip.testrig.apirig.report.EmailableReport;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
@@ -69,13 +66,11 @@ public class MosipTestRunner {
 	 * @param arg
 	 */
 	public static void main(String[] arg) {
-		// Set execution elapse timeout to 1.5 hour
-		Watchdog watchdog = new Watchdog(90 * 60 * 1000L);
-		watchdog.start();
+		Watchdog watchdog = null;
 
 		try {
 			LOGGER.info("** ------------- API Test Rig Run Started --------------------------------------------- **");
-			
+
 			BaseTestCase.setRunContext(getRunType(), jarUrl);
 			ExtractResource.removeOldMosipTestTestResource();
 			if (getRunType().equalsIgnoreCase("JAR")) {
@@ -85,6 +80,15 @@ public class MosipTestRunner {
 			}
 			AdminTestUtil.init();
 			IdAuthConfigManager.init();
+
+			// Read timeout from properties, fallback to 120 if not set which is 2 hours
+			// with buffer timing
+			String timeoutStr = IdAuthConfigManager.getproperty("watchdogTimeoutMinutes");
+			long timeoutMinutes = timeoutStr.isEmpty() ? 120 : Long.parseLong(timeoutStr);
+
+			watchdog = new Watchdog(timeoutMinutes * 60 * 1000L);
+			watchdog.start();
+
 			suiteSetup(getRunType());
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
@@ -94,13 +98,13 @@ public class MosipTestRunner {
 			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
-			
+
 			KeycloakUserManager.removeUser();
 			KeycloakUserManager.createUsers();
 			KeycloakUserManager.closeKeycloakInstance();
 			AdminTestUtil.getRequiredField();
 
-			List<String> localLanguageList = new ArrayList<>(BaseTestCase.getLanguageList());
+			BaseTestCase.getLanguageList();
 			AdminTestUtil.getLocationData();
 
 			String partnerKeyURL = "";
@@ -124,18 +128,20 @@ public class MosipTestRunner {
 			else
 				startTestRunner();
 		} catch (Exception e) {
-			LOGGER.error("Exception " + e.getMessage());
+			LOGGER.error("Exception occurred while running API Test Rig", e);
 		}
-		
+
 		KeycloakUserManager.removeUser();
 		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
-		
+
 		HealthChecker.bTerminate = true;
 
 		// Stop watchdog since task completed successfully
-		watchdog.stop();
+		if (watchdog != null) {
+			watchdog.stop();
+		}
 
 		System.exit(0);
 
@@ -154,6 +160,8 @@ public class MosipTestRunner {
 		}
 		BaseTestCase.currentModule = "auth";
 		BaseTestCase.certsForModule = "IDA";
+		BaseTestCase.genMispPartnerName = BaseTestCase.currentModule + "_misp_" + IdAuthenticationUtil.randomString;
+		
 		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
 				ConfigManager.getKMDbSchema(),
 				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
