@@ -196,3 +196,23 @@ AuthInternalLock:
       output: '{
   "status": "Success"
 }'
+
+  auth_AuthInternal_Permanent_Lock_DemoAuthDelegate_Valid_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_07
+      description: lock Demo authType Permanently for UIN
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AuthInternalLock/authInternalLock
+      outputTemplate: ida/AuthInternalLock/authInternalLockResult
+      input: '{
+    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "authType": "Demo",
+    "authSubType": "",
+    "locked": true,
+    "unlockForSeconds": 0
+}'
+      output: '{
+  "status": "Success"
+}'

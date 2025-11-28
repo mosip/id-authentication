@@ -1,0 +1,14 @@
+{
+		"demographics": {
+			"name": [
+      {{#each name}}
+            {
+            "language": "{{language}}",
+            "value": "{{value}}"
+        }
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+			]
+		},
+		"timestamp": "{{timestamp}}"
+}
