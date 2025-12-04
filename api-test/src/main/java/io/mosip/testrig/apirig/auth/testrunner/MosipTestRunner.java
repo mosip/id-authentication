@@ -172,8 +172,8 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		BaseTestCase.currentModule = "auth";
-		BaseTestCase.certsForModule = "IDA";
+		BaseTestCase.currentModule = BaseTestCase.runContext + "auth";
+		BaseTestCase.certsForModule = BaseTestCase.runContext + "IDA";
 
 		IdAuthenticationUtil.dbCleanUp();
 
