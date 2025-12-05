@@ -14,6 +14,7 @@ ON ida.hotlist_cache (id_hash, id_type);
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_hotlist_active
 ON ida.hotlist_cache (id_hash, id_type, status)
 WHERE status = 'Blocked';
+CREATE INDEX IF NOT EXISTS idx_hotlistcache_hash_type ON ida.hotlist_cache USING btree (id_hash, id_type);
 
 -- Optimize autovacuum for hotlist_cache to clean dead tuples
 ALTER TABLE hotlist_cache SET (

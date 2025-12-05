@@ -49,3 +49,6 @@ COMMENT ON COLUMN ida.data_encrypt_keystore.upd_by IS 'Updated By : ID or name o
 -- ddl-end --
 COMMENT ON COLUMN ida.data_encrypt_keystore.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
 -- ddl-end --
+
+--PERFORMANCE INDEXES
+CREATE INDEX IF NOT EXISTS encrypt_id ON ida.data_encrypt_keystore USING btree (id);

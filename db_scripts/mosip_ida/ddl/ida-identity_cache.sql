@@ -32,6 +32,7 @@ CREATE TABLE ida.identity_cache(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_id ON ida.identity_cache (id);
+CREATE INDEX IF NOT EXISTS idx_identity_cache_cr_dtimes ON ida.identity_cache USING btree (cr_dtimes);
 --index section ends------
 
 ALTER TABLE identity_cache SET (
