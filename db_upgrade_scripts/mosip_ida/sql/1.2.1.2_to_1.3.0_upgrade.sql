@@ -157,7 +157,7 @@ CREATE INDEX IF NOT EXISTS encrypt_id ON ida.data_encrypt_keystore USING btree (
 CREATE INDEX IF NOT EXISTS idx_identity_cache_cr_dtimes ON ida.identity_cache USING btree (cr_dtimes);
 CREATE INDEX IF NOT EXISTS idx_is_deleted ON ida.otp_transaction USING btree (is_deleted);
 CREATE INDEX IF NOT EXISTS idx_refid_generated ON ida.otp_transaction USING btree (ref_id, generated_dtimes);
-CREATE INDEX IF NOT EXISTS idx_ual_token_auth_crd ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC)
+CREATE INDEX IF NOT EXISTS idx_ual_token_auth_crd ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC);
 CREATE INDEX IF NOT EXISTS idx_uin_auth_lock_token_auth_crd_desc ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC) INCLUDE (status_code, unlock_expiry_datetime);
 
 -- Optimize autovacuum for hotlist_cache to clean dead tuples
