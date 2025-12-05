@@ -33,7 +33,7 @@ CREATE TABLE ida.uin_auth_lock(
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_ual_id ON ida.uin_auth_lock (token_id);
-CREATE INDEX IF NOT EXISTS idx_ual_token_auth_crd ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC)
+CREATE INDEX IF NOT EXISTS idx_ual_token_auth_crd ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC);
 CREATE INDEX IF NOT EXISTS idx_uin_auth_lock_token_auth_crd_desc ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC) INCLUDE (status_code, unlock_expiry_datetime);
 --index section ends------
 
