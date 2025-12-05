@@ -8,3 +8,4 @@ MOSIP-41021------auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg
 MOSIP-41021------auth_SendOTP_to_onlyLockedphone_valid_uin_Neg
 MOSIP-43456------auth_DemoAuth_with_age_below_calculated_value_Neg
 MOSIP-43456------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
+MOSIP-43965------auth_SendOTP_to_DeactivatedUIN_Neg
