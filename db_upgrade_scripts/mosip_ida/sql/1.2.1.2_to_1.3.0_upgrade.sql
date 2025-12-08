@@ -150,6 +150,15 @@ ON ida.hotlist_cache (id_hash, id_type);
 CREATE INDEX IF NOT EXISTS idx_hotlist_active
 ON ida.hotlist_cache (id_hash, id_type, status)
 WHERE status = 'Blocked';
+CREATE INDEX IF NOT EXISTS idx_auth_txn_entityid_request_dtimes_cover ON ida.auth_transaction USING btree (requested_entity_id, request_dtimes) INCLUDE (id);
+CREATE INDEX IF NOT EXISTS idx_job_exec_instance ON ida.batch_job_execution USING btree (job_instance_id);
+CREATE INDEX IF NOT EXISTS idx_step_exec_jobid_stepname ON ida.batch_step_execution USING btree (job_execution_id, step_name);
+CREATE INDEX IF NOT EXISTS encrypt_id ON ida.data_encrypt_keystore USING btree (id);
+CREATE INDEX IF NOT EXISTS idx_identity_cache_cr_dtimes ON ida.identity_cache USING btree (cr_dtimes);
+CREATE INDEX IF NOT EXISTS idx_is_deleted ON ida.otp_transaction USING btree (is_deleted);
+CREATE INDEX IF NOT EXISTS idx_refid_generated ON ida.otp_transaction USING btree (ref_id, generated_dtimes);
+CREATE INDEX IF NOT EXISTS idx_ual_token_auth_crd ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC);
+CREATE INDEX IF NOT EXISTS idx_uin_auth_lock_token_auth_crd_desc ON ida.uin_auth_lock USING btree (token_id, auth_type_code, cr_dtimes DESC) INCLUDE (status_code, unlock_expiry_datetime);
 
 -- Optimize autovacuum for hotlist_cache to clean dead tuples
 ALTER TABLE hotlist_cache SET (

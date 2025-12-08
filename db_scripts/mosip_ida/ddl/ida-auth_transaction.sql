@@ -63,6 +63,7 @@ CREATE INDEX idx_autntxn_token_crdtimes_desc
 ON ida.auth_transaction (token_id, cr_dtimes DESC);
 CREATE INDEX idx_autntxn_token_reqdtimes
 ON ida.auth_transaction (token_id, request_dtimes);
+CREATE INDEX IF NOT EXISTS idx_auth_txn_entityid_request_dtimes_cover ON ida.auth_transaction USING btree (requested_entity_id, request_dtimes) INCLUDE (id);
 
 ALTER TABLE ida.auth_transaction SET (
     autovacuum_vacuum_scale_factor = 0.002,

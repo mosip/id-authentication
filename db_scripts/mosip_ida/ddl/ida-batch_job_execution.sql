@@ -27,3 +27,6 @@ ALTER TABLE batch_job_execution SET (
     autovacuum_analyze_scale_factor = 0.05,
     autovacuum_analyze_threshold = 1000
 );
+
+--PERFORMANCE INDEXES
+CREATE INDEX IF NOT EXISTS idx_job_exec_instance ON ida.batch_job_execution USING btree (job_instance_id);

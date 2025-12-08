@@ -36,3 +36,6 @@ ALTER TABLE batch_step_execution SET (
     autovacuum_analyze_scale_factor = 0.05,
     autovacuum_analyze_threshold = 2000
 );
+
+
+CREATE INDEX IF NOT EXISTS idx_step_exec_jobid_stepname ON ida.batch_step_execution USING btree (job_execution_id, step_name);
