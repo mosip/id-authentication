@@ -84,7 +84,6 @@ public class IdentityKeyBindingFacadeImplTest {
         }
     }
 
-    // Add these fields at the top of the class
     private Boolean originalAuthTokenRequired;
     private String originalDateTimePattern;
 
@@ -190,7 +189,7 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testSaveToTxnTable_TokenNull() throws Exception {
+    void testSaveToTxnTableTokenNull() throws Exception {
         AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
         BaseAuthResponseDTO baseResp = mock(BaseAuthResponseDTO.class);
@@ -207,7 +206,7 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testSaveToTxnTable_WithBaseAuthResponseAndAuthResponse_WithAutnTxn_NullAuthTypeCode() throws Exception {
+    void testSaveToTxnTableWithBaseAuthResponseAndAuthResponseWithAutnTxnNullAuthTypeCode() throws Exception {
         AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
         when(authRequest.getMetadata()).thenReturn(new HashMap<>());
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
@@ -239,7 +238,7 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testSaveToTxnTable_WithBaseAuthResponseAndAuthResponse_WithAutnTxn_NullStatusComment() throws Exception {
+    void testSaveToTxnTableWithBaseAuthResponseAndAuthResponseWithAutnTxnNullStatusComment() throws Exception {
         AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
         when(authRequest.getMetadata()).thenReturn(new HashMap<>());
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
@@ -271,7 +270,7 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testSaveToTxnTable_WithBaseAuthResponseAndAuthResponse_WithAutnTxn_ContainsEkycAuthRequest() throws Exception {
+    void testSaveToTxnTableWithBaseAuthResponseAndAuthResponseWithAutnTxnContainsEkycAuthRequest() throws Exception {
         AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
         when(authRequest.getMetadata()).thenReturn(new HashMap<>());
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
@@ -298,13 +297,12 @@ public class IdentityKeyBindingFacadeImplTest {
         
         AutnTxn updatedAutnTxn = (AutnTxn) metadata.get(AutnTxn.class.getSimpleName());
         assertNotNull(updatedAutnTxn);
-        // Should not be updated because authTypeCode already contains EKYC_AUTH_REQUEST
         assertEquals(RequestType.EKYC_AUTH_REQUEST.getRequestType(), updatedAutnTxn.getAuthTypeCode());
         assertEquals("Status comment", updatedAutnTxn.getStatusComment());
     }
 
     @Test
-    void testSaveToTxnTable_WithBaseAuthResponseAndAuthResponse_WithAutnTxn_BothNull() throws Exception {
+    void testSaveToTxnTableWithBaseAuthResponseAndAuthResponseWithAutnTxnBothNull() throws Exception {
         AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
         when(authRequest.getMetadata()).thenReturn(new HashMap<>());
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
@@ -364,7 +362,6 @@ public class IdentityKeyBindingFacadeImplTest {
                         String.class, String.class, String.class, String.class, Map.class);
         method.setAccessible(true);
 
-        // Test NULL REQUEST path (line ~165: if (identityKeyBindingRequestDTO != null))
         @SuppressWarnings("unchecked")
         Map.Entry<IdentityKeyBindingResponseDto, Boolean> result =
                 (Map.Entry<IdentityKeyBindingResponseDto, Boolean>) method.invoke(facade, null,
@@ -554,11 +551,9 @@ public class IdentityKeyBindingFacadeImplTest {
         assertNotNull(result.getResponse());
         assertTrue(result.getResponse().isBindingAuthStatus());
         assertEquals("certificateData", result.getResponse().getIdentityCertificate());
-        
-        // Verify all lines are covered:
+
         verify(idService).getToken(idResDTO);
-        verify(idService).getIdHash(idResDTO); // Line: idHash = idService.getIdHash(idResDTO);
-        // IdInfoFetcher.getIdInfo(idResDTO) is called internally (static method, covered by execution)
+        verify(idService).getIdHash(idResDTO);
         verify(keyBindingService).createAndSaveKeyBindingCertificate(any(), any(), eq("token123"), eq("partner1"));
         verify(tokenIdManager).generateTokenId("token123", "partner1"); // saveToTxnTable called
         verify(auditHelper).audit(eq(AuditModules.IDENTITY_KEY_BINDING), 

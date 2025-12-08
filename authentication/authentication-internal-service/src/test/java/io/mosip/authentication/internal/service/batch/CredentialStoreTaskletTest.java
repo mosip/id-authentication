@@ -6,7 +6,6 @@ import io.mosip.authentication.common.service.repository.IdentityCacheRepository
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -113,7 +112,7 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecute_withIdAuthenticationBusinessException_shouldContinue() throws Exception {
+    public void testExecuteWithIdAuthenticationBusinessExceptionShouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Collections.singletonList(event);
         
@@ -128,7 +127,7 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testInit_shouldCreateForkJoinPool() {
+    public void testInitShouldCreateForkJoinPool() {
         CredentialStoreTasklet newTasklet = new CredentialStoreTasklet();
         ReflectionTestUtils.setField(newTasklet, "threadCount", 5);
         ReflectionTestUtils.setField(newTasklet, "credentialEventRepo", credentialEventRepo);
@@ -141,7 +140,7 @@ public class CredentialStoreTaskletTest {
         assertNotNull(pool);
     }
     @Test
-    public void testExecute_withException_shouldContinue() throws Exception {
+    public void testExecuteWithExceptionShouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Collections.singletonList(event);
 
@@ -156,17 +155,15 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test(expected = InterruptedException.class)
-    public void testExecute_withInterruptedException_shouldThrow() throws Exception {
+    public void testExecuteWithInterruptedExceptionShouldThrow() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Collections.singletonList(event);
 
         when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
 
-        // Mock ForkJoinPool to throw InterruptedException
         ForkJoinPool mockPool = mock(ForkJoinPool.class);
         ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
 
-       // when(mockPool.submit(any(Runnable.class))).thenReturn(mockTask);
         when(mockTask.get()).thenThrow(new InterruptedException("Interrupted"));
 
         ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
@@ -175,17 +172,15 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecute_withExecutionException_shouldContinue() throws Exception {
+    public void testExecuteWithExecutionExceptionShouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Collections.singletonList(event);
 
         when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
 
-        // Mock ForkJoinPool to throw ExecutionException
         ForkJoinPool mockPool = mock(ForkJoinPool.class);
         ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
 
-        //when(mockPool.submit(any(Runnable.class))).thenReturn(mockTask);
         when(mockTask.get()).thenThrow(new ExecutionException(new RuntimeException("Execution error")));
 
         ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
@@ -197,7 +192,7 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecute_withMultipleEvents_shouldProcessAll() throws Exception {
+    public void testExecuteWithMultipleEventsShouldProcessAll() throws Exception {
         CredentialEventStore event1 = new CredentialEventStore();
         CredentialEventStore event2 = new CredentialEventStore();
         List<CredentialEventStore> events = Arrays.asList(event1, event2);

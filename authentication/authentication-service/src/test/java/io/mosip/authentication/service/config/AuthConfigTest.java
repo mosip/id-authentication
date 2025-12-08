@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.config;
 
-import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +44,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_IMG_IsInAllowedAuthType_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenFGRIMGIsInAllowedAuthTypeShouldReturnTrue() {
         String allowedAuthTypes = "bio-Finger,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(false);
@@ -56,7 +55,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_MIN_IsInAllowedAuthType_AndFMR_IsEnabled_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenFGRMINIsInAllowedAuthTypeAndFMRIsEnabledShouldReturnTrue() {
         String allowedAuthTypes = "bio-FMR,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -67,7 +66,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_MIN_IsInAllowedAuthType_ButFMR_IsDisabled_ShouldReturnFalse() {
+    public void testIsFingerAuthEnabledWhenFGRMINIsInAllowedAuthTypeButFMRIsDisabledShouldReturnFalse() {
         String allowedAuthTypes = "bio-FMR,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(false);
@@ -78,7 +77,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenNeitherFGR_IMG_NorFGR_MIN_IsInAllowedAuthType_ShouldReturnFalse() {
+    public void testIsFingerAuthEnabledWhenNeitherFGRIMGNorFGRMINIsInAllowedAuthTypeShouldReturnFalse() {
         String allowedAuthTypes = "bio-Iris,bio-FACE";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -89,7 +88,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenBothFGR_IMG_AndFGR_MIN_AreInAllowedAuthType_AndFMR_IsEnabled_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenBothFGRIMGAndFGRMINAreInAllowedAuthTypeAndFMRIsEnabledShouldReturnTrue() {
         String allowedAuthTypes = "bio-Finger,bio-FMR,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -100,7 +99,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenAllowedAuthType_IsEmpty_ShouldReturnFalse() {
+    public void testIsFingerAuthEnabledWhenAllowedAuthTypeIsEmptyShouldReturnFalse() {
         String allowedAuthTypes = "";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -111,7 +110,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFaceAuthEnabled_WhenFACE_IMG_IsInAllowedAuthType_ShouldReturnTrue() {
+    public void testIsFaceAuthEnabledWhenFACEIMGIsInAllowedAuthTypeShouldReturnTrue() {
         String allowedAuthTypes = "bio-FACE,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -121,7 +120,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFaceAuthEnabled_WhenFACE_IMG_IsNotInAllowedAuthType_ShouldReturnFalse() {
+    public void testIsFaceAuthEnabledWhenFACEIMGIsNotInAllowedAuthTypeShouldReturnFalse() {
         String allowedAuthTypes = "bio-Finger,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -131,7 +130,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFaceAuthEnabled_WhenAllowedAuthType_IsEmpty_ShouldReturnFalse() {
+    public void testIsFaceAuthEnabledWhenAllowedAuthTypeIsEmptyShouldReturnFalse() {
         String allowedAuthTypes = "";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -141,7 +140,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsIrisAuthEnabled_WhenIRIS_IMG_IsInAllowedAuthType_ShouldReturnTrue() {
+    public void testIsIrisAuthEnabledWhenIRISIMGIsInAllowedAuthTypeShouldReturnTrue() {
         String allowedAuthTypes = "bio-Iris,bio-Finger";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -151,7 +150,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsIrisAuthEnabled_WhenIRIS_IMG_IsNotInAllowedAuthType_ShouldReturnFalse() {
+    public void testIsIrisAuthEnabledWhenIRISIMGIsNotInAllowedAuthTypeShouldReturnFalse() {
         String allowedAuthTypes = "bio-Finger,bio-FACE";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -161,7 +160,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsIrisAuthEnabled_WhenAllowedAuthType_IsEmpty_ShouldReturnFalse() {
+    public void testIsIrisAuthEnabledWhenAllowedAuthTypeIsEmptyShouldReturnFalse() {
         String allowedAuthTypes = "";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -171,7 +170,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsIrisAuthEnabled_WhenIRIS_IMG_IsInAllowedAuthType_WithOtherTypes_ShouldReturnTrue() {
+    public void testIsIrisAuthEnabledWhenIRISIMGIsInAllowedAuthTypeWithOtherTypesShouldReturnTrue() {
         String allowedAuthTypes = "bio-Iris,bio-Finger,bio-FACE,bio-FMR";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -181,7 +180,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_IMG_IsInAllowedAuthType_WithNullFMR_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenFGRIMGIsInAllowedAuthTypeWithNullFMRShouldReturnTrue() {
         String allowedAuthTypes = "bio-Finger";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(null);
@@ -192,7 +191,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testAllAuthTypes_WhenAllAreEnabled_ShouldReturnTrue() {
+    public void testAllAuthTypesWhenAllAreEnabledShouldReturnTrue() {
         String allowedAuthTypes = "bio-Finger,bio-FMR,bio-FACE,bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -207,7 +206,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testAllAuthTypes_WhenNoneAreEnabled_ShouldReturnFalse() {
+    public void testAllAuthTypesWhenNoneAreEnabledShouldReturnFalse() {
         String allowedAuthTypes = "demo,otp";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(false);
@@ -222,7 +221,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_MIN_IsInAllowedAuthType_AndFMR_IsEnabled_ButFGR_IMG_IsNot_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenFGRMINIsInAllowedAuthTypeAndFMRIsEnabledButFGRIMGIsNotShouldReturnTrue() {
         String allowedAuthTypes = "bio-FMR";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(true);
@@ -233,19 +232,18 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsFingerAuthEnabled_WhenFGR_IMG_IsInAllowedAuthType_WithSpaces_ShouldReturnTrue() {
+    public void testIsFingerAuthEnabledWhenFGRIMGIsInAllowedAuthTypeWithSpacesShouldReturnTrue() {
         String allowedAuthTypes = "bio-Finger , bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
         EnvUtil.setIsFmrEnabled(false);
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        // Note: String.contains() will still find "bio-Finger" even with spaces
         assertTrue("Finger auth should be enabled when FGR_IMG is in allowed auth types even with spaces", result);
     }
 
     @Test
-    public void testIsFaceAuthEnabled_WhenFACE_IMG_IsInAllowedAuthType_WithSpaces_ShouldReturnTrue() {
+    public void testIsFaceAuthEnabledWhenFACEIMGIsInAllowedAuthTypeWithSpacesShouldReturnTrue() {
         String allowedAuthTypes = "bio-FACE , bio-Iris";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 
@@ -255,7 +253,7 @@ public class AuthConfigTest {
     }
 
     @Test
-    public void testIsIrisAuthEnabled_WhenIRIS_IMG_IsInAllowedAuthType_WithSpaces_ShouldReturnTrue() {
+    public void testIsIrisAuthEnabledWhenIRISIMGIsInAllowedAuthTypeWithSpacesShouldReturnTrue() {
         String allowedAuthTypes = "bio-Iris , bio-Finger";
         EnvUtil.setAllowedAuthType(allowedAuthTypes);
 

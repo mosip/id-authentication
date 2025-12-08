@@ -1,10 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
 
-import com.apicatalog.jsonld.document.JsonDocument;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import foundation.identity.jsonld.JsonLDException;
-import foundation.identity.jsonld.JsonLDObject;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer;
 import io.mosip.authentication.common.service.entity.CredSubjectIdStore;
@@ -16,7 +14,6 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.VCResponseDTO;
 import io.mosip.authentication.core.indauth.dto.VciCredentialsDefinitionRequestDTO;
 import io.mosip.authentication.core.indauth.dto.VciExchangeRequestDTO;
 import io.mosip.authentication.service.kyc.util.VCSchemaProviderUtil;
@@ -36,13 +33,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -75,16 +68,6 @@ public class VciServiceImplTest {
     @Mock
     VCSchemaProviderUtil vcSchemaProviderUtil;
 
-    private VciServiceImpl vciService;
-
-    @Before
-    public void setUp() {
-        vciService = new VciServiceImpl();
-    }
-
-    /**
-     * The demo helper.
-     */
     @Mock
     IdInfoHelper idInfoHelper;
 
@@ -380,7 +363,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void buildVC_Face_JP2ConversionFail() throws Exception {
+    public void buildVcFaceJP2ConversionFail() throws Exception {
 
         Set<String> allowedAttribute = Set.of("face");
 
@@ -408,7 +391,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void addCredSubjectIdTest_KeyAlreadyMapped_thenFail() throws Exception {
+    public void addCredSubjectIdTestKeyAlreadyMappedThenFail() throws Exception {
 
         // Prepare existing entry mapped to different id/vid and different token
         List<CredSubjectIdStore> credSubjectIdList = new ArrayList<>();
@@ -433,7 +416,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void addCredSubjectId_noExistingRecord_shouldAddNew() throws Exception {
+    public void addCredSubjectIdNoExistingRecordShouldAddNew() throws Exception {
         Mockito.when(csidStoreRepo.findAllByCsidKeyHash(anyString()))
                 .thenReturn(Collections.emptyList());
 
@@ -441,7 +424,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void addCredSubjectId_sameIdVidSameToken_shouldReturn() throws Exception {
+    public void addCredSubjectIdSameIdVidSameTokenShouldReturn() throws Exception {
         CredSubjectIdStore store = new CredSubjectIdStore();
         store.setIdVidHash("hash");
         store.setTokenId("token");
@@ -453,7 +436,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void addCredSubjectId_diffIdVidSameToken_shouldAddNew() throws Exception {
+    public void addCredSubjectIdDiffIdVidSameTokenShouldAddNew() throws Exception {
         CredSubjectIdStore store = new CredSubjectIdStore();
         store.setIdVidHash("oldHash");
         store.setTokenId("token");  // same token
@@ -465,7 +448,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void addCredSubjectId_diffIdVidDiffToken_shouldThrow() throws Exception {
+    public void addCredSubjectIdDiffIdVidDiffTokenShouldThrow() throws Exception {
         CredSubjectIdStore store = new CredSubjectIdStore();
         store.setIdVidHash("oldHash");
         store.setTokenId("oldToken");
@@ -485,8 +468,8 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void testInit_whenVcContextUrlMapIsNull_shouldInitializeDocumentLoader() throws Exception {
-        // vcContextUrlMap must be null
+    public void testInitWhenVcContextUrlMapIsNullShouldInitializeDocumentLoader() throws Exception {
+
         ReflectionTestUtils.setField(vciServiceImpl, "vcContextUrlMap", null);
 
         // invoke private init() using reflection
@@ -506,7 +489,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void testAddCredSubjectId_whenUnsupportedKeyType() throws Exception {
+    public void testAddCredSubjectIdWhenUnsupportedKeyType() throws Exception {
         // Arrange: create a JSON with unsupported key type
         JSONObject unsupportedKeyJwk = new JSONObject();
         unsupportedKeyJwk.put("kty", "unsupported"); // unsupported key type
@@ -529,12 +512,11 @@ public class VciServiceImplTest {
                 IdAuthenticationErrorConstants.KEY_TYPE_NOT_SUPPORT.getErrorMessage()
         ));
 
-        // Repo should not be called
         verify(csidStoreRepo, never()).findAllByCsidKeyHash(anyString());
     }
 
     @Test
-    public void testGetPublicKeyHash_whenInvalidKeySpec_thenThrowBusinessException() {
+    public void testGetPublicKeyHashWhenInvalidKeySpecThenThrowBusinessException() {
         JSONObject rsaJwk = new JSONObject();
         rsaJwk.put("kty", "RSA");
         rsaJwk.put("n", "invalid-modulus"); // invalid
@@ -556,7 +538,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void testBuildVerifiableCredentials_JwtVcJson_ShouldThrowException() {
+    public void testBuildVerifiableCredentialsJwtVcJsonShouldThrowException() {
         // Act & Assert
         IdAuthenticationBusinessException ex = assertThrows(
                 IdAuthenticationBusinessException.class,
@@ -569,7 +551,7 @@ public class VciServiceImplTest {
     }
 
     @Test
-    public void testBuildVerifiableCredentials_JwtVcJsonLd_ShouldThrowException() {
+    public void testBuildVerifiableCredentialsJwtVcJsonLdShouldThrowException() {
         // Act & Assert
         IdAuthenticationBusinessException ex = assertThrows(
                 IdAuthenticationBusinessException.class,
