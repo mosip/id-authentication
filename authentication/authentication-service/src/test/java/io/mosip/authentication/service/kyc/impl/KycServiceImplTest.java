@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1116,4 +1118,55 @@ public class KycServiceImplTest {
 		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAddAddressClaim() throws Exception {
+
+        // Prepare input
+        String[] addressAttributes = {"addressLine1", "city"};
+        Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+
+        IdentityInfoDTO addressLine1Dto = new IdentityInfoDTO();
+        addressLine1Dto.setLanguage("en");
+        addressLine1Dto.setValue("123 Main St");
+
+        IdentityInfoDTO cityDto = new IdentityInfoDTO();
+        cityDto.setLanguage("en");
+        cityDto.setValue("New York");
+
+        idInfo.put("addrLine1", List.of(addressLine1Dto));
+        idInfo.put("city", List.of(cityDto));
+
+        String consentedLocaleValue = "en";
+        Map<String, Object> respMap = new HashMap<>();
+        boolean addLocale = true;
+        String localeAppendValue = "_en";
+
+        // Mock helper
+        Mockito.when(idInfoHelper.getIdentityAttributesForIdName("addressLine1"))
+                .thenReturn(List.of("addrLine1"));
+        Mockito.when(idInfoHelper.getIdentityAttributesForIdName("city"))
+                .thenReturn(List.of("city"));
+
+        // Set the field consentedAddressAttributeName in the service
+        Field field = KycServiceImpl.class.getDeclaredField("consentedAddressAttributeName");
+        field.setAccessible(true);
+        field.set(kycServiceImpl, "consentedAddressAttributeName");
+
+        // Invoke private method
+        Method method = KycServiceImpl.class.getDeclaredMethod("addAddressClaim",
+                String[].class, Map.class, String.class, Map.class, boolean.class, String.class);
+        method.setAccessible(true);
+
+        method.invoke(kycServiceImpl, addressAttributes, idInfo, consentedLocaleValue, respMap, addLocale, localeAppendValue);
+
+        // Assertions
+        String respKey = "consentedAddressAttributeName_en"; // because addLocale = true
+        assertTrue("Response map should contain the expected key", respMap.containsKey(respKey));
+
+        Map<String, String> addressMap = (Map<String, String>) respMap.get(respKey);
+        assertEquals("123 Main St", addressMap.get("addressLine1_en"));
+        assertEquals("New York", addressMap.get("city_en"));
+    }
 }

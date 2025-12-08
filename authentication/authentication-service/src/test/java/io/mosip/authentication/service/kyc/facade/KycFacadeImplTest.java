@@ -3,14 +3,10 @@
  */
 package io.mosip.authentication.service.kyc.facade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,13 +22,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
+import io.mosip.authentication.common.service.entity.KycTokenData;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.impl.*;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
 import io.mosip.authentication.common.service.util.KeyBindedTokenMatcherUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.partner.dto.KYCAttributes;
+import io.mosip.authentication.core.partner.dto.PolicyDTO;
+import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
+import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -46,6 +48,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -106,6 +109,8 @@ public class KycFacadeImplTest {
 
 	@MockBean
 	private MatchIdentityDataHelper matchIdentityDataHelper;
+
+    private Map<String, Object> metadata;
 
 	@Autowired
 	EnvUtil env;
@@ -983,4 +988,15 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "fraudEventManager", fraudEventManager);
 
 	}
+
+    @Test
+    public void testProcessKycAuth_NullKycAuthRequestDTO() {
+        // Arrange - null request DTO
+        kycAuthRequestDTO = null;
+
+        // Act & Assert
+        assertThrows(NullPointerException.class, () ->
+                kycFacade.processKycAuth(null, authResponseDTO, "partner1", "oidcClient1", metadata)
+        );
+    }
 }

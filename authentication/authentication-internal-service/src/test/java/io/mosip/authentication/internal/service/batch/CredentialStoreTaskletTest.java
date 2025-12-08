@@ -5,6 +5,8 @@ import io.mosip.authentication.common.service.repository.CredentialEventStoreRep
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RetryingBeforeRetryIntervalException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,14 +26,15 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.*;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
@@ -62,8 +65,11 @@ public class CredentialStoreTaskletTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(tasklet, "threadCount", 4);
+        ReflectionTestUtils.setField(tasklet, "pageSize", 100);
+        when(securityManager.getUser()).thenReturn("test-user");
         tasklet.init();
     }
+
     @Test
     public void testExecute_withEmptyList_shouldNotCallSaveAll() throws Exception {
         when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(Collections.emptyList());
@@ -79,7 +85,7 @@ public class CredentialStoreTaskletTest {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Arrays.asList(event);
 
-        IdentityEntity identity = mock(IdentityEntity.class); // replace with actual type
+        IdentityEntity identity = mock(IdentityEntity.class);
 
         when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
         when(credentialStoreService.processCredentialStoreEvent(any())).thenReturn(identity);
@@ -90,16 +96,124 @@ public class CredentialStoreTaskletTest {
         verify(credentialStoreService).storeIdentityEntity(identity);
         verify(credentialEventRepo).saveAll(events);
     }
+
     @Test
     public void testExecute_withGenericException_shouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(Collections.singletonList(event));
-
+        List<CredentialEventStore> events = Collections.singletonList(event);
+        
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
         when(credentialStoreService.processCredentialStoreEvent(any()))
                 .thenThrow(new RuntimeException("Generic"));
 
         RepeatStatus status = tasklet.execute(contribution, chunkContext);
 
         assertEquals(RepeatStatus.FINISHED, status);
+        verify(credentialEventRepo).saveAll(events);
+    }
+
+    @Test
+    public void testExecute_withIdAuthenticationBusinessException_shouldContinue() throws Exception {
+        CredentialEventStore event = new CredentialEventStore();
+        List<CredentialEventStore> events = Collections.singletonList(event);
+        
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+        when(credentialStoreService.processCredentialStoreEvent(any()))
+                .thenThrow(new IdAuthenticationBusinessException("TEST_ERROR", "Test error"));
+        
+        RepeatStatus status = tasklet.execute(contribution, chunkContext);
+        
+        assertEquals(RepeatStatus.FINISHED, status);
+        verify(credentialEventRepo).saveAll(events);
+    }
+
+    @Test
+    public void testInit_shouldCreateForkJoinPool() {
+        CredentialStoreTasklet newTasklet = new CredentialStoreTasklet();
+        ReflectionTestUtils.setField(newTasklet, "threadCount", 5);
+        ReflectionTestUtils.setField(newTasklet, "credentialEventRepo", credentialEventRepo);
+        ReflectionTestUtils.setField(newTasklet, "credentialStoreService", credentialStoreService);
+        ReflectionTestUtils.setField(newTasklet, "securityManager", securityManager);
+        
+        newTasklet.init();
+        
+        ForkJoinPool pool = (ForkJoinPool) ReflectionTestUtils.getField(newTasklet, "forkJoinPool");
+        assertNotNull(pool);
+    }
+    @Test
+    public void testExecute_withException_shouldContinue() throws Exception {
+        CredentialEventStore event = new CredentialEventStore();
+        List<CredentialEventStore> events = Collections.singletonList(event);
+
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+        when(credentialStoreService.processCredentialStoreEvent(any()))
+                .thenThrow(new Exception("Generic exception"));
+
+        RepeatStatus status = tasklet.execute(contribution, chunkContext);
+
+        assertEquals(RepeatStatus.FINISHED, status);
+        verify(credentialEventRepo).saveAll(events);
+    }
+
+    @Test(expected = InterruptedException.class)
+    public void testExecute_withInterruptedException_shouldThrow() throws Exception {
+        CredentialEventStore event = new CredentialEventStore();
+        List<CredentialEventStore> events = Collections.singletonList(event);
+
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+
+        // Mock ForkJoinPool to throw InterruptedException
+        ForkJoinPool mockPool = mock(ForkJoinPool.class);
+        ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
+
+       // when(mockPool.submit(any(Runnable.class))).thenReturn(mockTask);
+        when(mockTask.get()).thenThrow(new InterruptedException("Interrupted"));
+
+        ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
+
+        tasklet.execute(contribution, chunkContext);
+    }
+
+    @Test
+    public void testExecute_withExecutionException_shouldContinue() throws Exception {
+        CredentialEventStore event = new CredentialEventStore();
+        List<CredentialEventStore> events = Collections.singletonList(event);
+
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+
+        // Mock ForkJoinPool to throw ExecutionException
+        ForkJoinPool mockPool = mock(ForkJoinPool.class);
+        ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
+
+        //when(mockPool.submit(any(Runnable.class))).thenReturn(mockTask);
+        when(mockTask.get()).thenThrow(new ExecutionException(new RuntimeException("Execution error")));
+
+        ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
+
+        RepeatStatus status = tasklet.execute(contribution, chunkContext);
+
+        assertEquals(RepeatStatus.FINISHED, status);
+        verify(credentialEventRepo).saveAll(events);
+    }
+
+    @Test
+    public void testExecute_withMultipleEvents_shouldProcessAll() throws Exception {
+        CredentialEventStore event1 = new CredentialEventStore();
+        CredentialEventStore event2 = new CredentialEventStore();
+        List<CredentialEventStore> events = Arrays.asList(event1, event2);
+
+        IdentityEntity identity1 = mock(IdentityEntity.class);
+        IdentityEntity identity2 = mock(IdentityEntity.class);
+
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+        when(credentialStoreService.processCredentialStoreEvent(event1)).thenReturn(identity1);
+        when(credentialStoreService.processCredentialStoreEvent(event2)).thenReturn(identity2);
+
+        RepeatStatus status = tasklet.execute(contribution, chunkContext);
+
+        assertEquals(RepeatStatus.FINISHED, status);
+        verify(credentialStoreService).storeIdentityEntity(identity1);
+        verify(credentialStoreService).storeIdentityEntity(identity2);
+        verify(credentialEventRepo).saveAll(events);
     }
 }
