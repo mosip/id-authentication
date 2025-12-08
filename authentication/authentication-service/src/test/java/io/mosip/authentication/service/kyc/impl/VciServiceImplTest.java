@@ -543,7 +543,7 @@ public class VciServiceImplTest {
         IdAuthenticationBusinessException ex = assertThrows(
                 IdAuthenticationBusinessException.class,
                 () -> vciServiceImpl.buildVerifiableCredentials(
-                        credSubjectId, "JWT_VC_JSON", idInfo, locale, Set.of("name"), vciExchangeRequestDTO, "psuToken"
+                        credSubjectId, "jwt_vc_json", idInfo, locale, Set.of("name"), vciExchangeRequestDTO, "psuToken"
                 )
         );
 
@@ -556,7 +556,7 @@ public class VciServiceImplTest {
         IdAuthenticationBusinessException ex = assertThrows(
                 IdAuthenticationBusinessException.class,
                 () -> vciServiceImpl.buildVerifiableCredentials(
-                        credSubjectId, "JWT_VC_JSON_LD", idInfo, locale, Set.of("name"), vciExchangeRequestDTO, "psuToken"
+                        credSubjectId, "jwt_vc_json_ld", idInfo, locale, Set.of("name"), vciExchangeRequestDTO, "psuToken"
                 )
         );
 
