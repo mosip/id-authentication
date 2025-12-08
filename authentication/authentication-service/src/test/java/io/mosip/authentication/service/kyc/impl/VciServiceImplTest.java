@@ -68,14 +68,12 @@ public class VciServiceImplTest {
     @Mock
     VCSchemaProviderUtil vcSchemaProviderUtil;
 
+    /** The demo helper. */
     @Mock
     IdInfoHelper idInfoHelper;
 
     @Mock
     CbeffUtil cbeffUtil;
-
-    @Mock
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
     VciServiceImpl vciServiceImpl;
@@ -97,7 +95,7 @@ public class VciServiceImplTest {
 
 
     @Before
-    public void beforeTest() {
+    public void beforeTest(){
 
         identityInfoDTO = new IdentityInfoDTO();
         identityInfoDTO.setLanguage("eng");
@@ -131,16 +129,16 @@ public class VciServiceImplTest {
     @Test
     public void addCredSubjectIdTestWithInvalidCredSubjectId_thenFail() throws IdAuthenticationBusinessException {
 
-        try {
-            vciServiceImpl.addCredSubjectId("12345:54321:MTIzNDU2Nzg5MA==", "hash", "123456789", "12");
-        } catch (IdAuthenticationBusinessException e) {
-            assertEquals("IDA-MLC-007", e.getErrorCode());
+        try{
+            vciServiceImpl.addCredSubjectId("12345:54321:MTIzNDU2Nzg5MA==","hash","123456789","12");
+        }catch (IdAuthenticationBusinessException e){
+            Assert.assertEquals("IDA-MLC-007",e.getErrorCode());
         }
     }
 
     @Test
     public void addCredSubjectIdTestWithValidDetailsAndWithoutSubIdList_thenPass() throws IdAuthenticationBusinessException {
-        vciServiceImpl.addCredSubjectId(credSubjectId, "hash", "123456789", "12");
+          vciServiceImpl.addCredSubjectId(credSubjectId,"hash","123456789","12");
 
     }
 
@@ -148,14 +146,14 @@ public class VciServiceImplTest {
     public void addCredSubjectIdTestWithValidDetailsWithSameVid_thenPass() throws IdAuthenticationBusinessException {
 
         List<CredSubjectIdStore> credSubjectIdList = new ArrayList<>();
-        CredSubjectIdStore credSubjectIdStore = new CredSubjectIdStore();
+        CredSubjectIdStore credSubjectIdStore=new CredSubjectIdStore();
         credSubjectIdStore.setCredSubjectId("12345");
         credSubjectIdStore.setId("12345");
         credSubjectIdStore.setIdVidHash("hash");
         credSubjectIdList.add(credSubjectIdStore);
         credSubjectIdStore.setTokenId("token");
-        Mockito.when(csidStoreRepo.findAllByCsidKeyHash(anyString())).thenReturn(credSubjectIdList);
-        vciServiceImpl.addCredSubjectId(credSubjectId, "hash", "token", "12");
+        Mockito.when(csidStoreRepo.findAllByCsidKeyHash(Mockito.anyString())).thenReturn(credSubjectIdList);
+        vciServiceImpl.addCredSubjectId(credSubjectId,"hash","token","12");
 
     }
 
@@ -163,14 +161,14 @@ public class VciServiceImplTest {
     public void addCredSubjectIdTestWithValidDetailsWithDiffSameVid_thenPass() throws IdAuthenticationBusinessException {
 
         List<CredSubjectIdStore> credSubjectIdList = new ArrayList<>();
-        CredSubjectIdStore credSubjectIdStore = new CredSubjectIdStore();
+        CredSubjectIdStore credSubjectIdStore=new CredSubjectIdStore();
         credSubjectIdStore.setCredSubjectId("12345");
         credSubjectIdStore.setId("12345");
         credSubjectIdStore.setIdVidHash("hash");
         credSubjectIdList.add(credSubjectIdStore);
         credSubjectIdStore.setTokenId("token");
-        Mockito.when(csidStoreRepo.findAllByCsidKeyHash(anyString())).thenReturn(credSubjectIdList);
-        vciServiceImpl.addCredSubjectId(credSubjectId, "hashe", "token", "12");
+        Mockito.when(csidStoreRepo.findAllByCsidKeyHash(Mockito.anyString())).thenReturn(credSubjectIdList);
+        vciServiceImpl.addCredSubjectId(credSubjectId,"hashe","token","12");
 
     }
 
@@ -180,9 +178,9 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "consentedIndividualAttributeName", "name");
         ReflectionTestUtils.setField(vciServiceImpl, "proofPurpose", "purpose");
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
-        ReflectionTestUtils.setField(vciServiceImpl, "verificationMethod", "verificationMethod");
-        ReflectionTestUtils.setField(vciServiceImpl, "confDocumentLoader", new ConfigurableDocumentLoader());
-        Set<String> allowedAttribute = new HashSet<>();
+        ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
+        ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
 
         VciCredentialsDefinitionRequestDTO vciCredentialsDefinitionRequestDTO = new VciCredentialsDefinitionRequestDTO();
@@ -194,58 +192,55 @@ public class VciServiceImplTest {
         EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
         // Create a mock of the LdProof.Builder class
-        LdProof.Builder builderMock = Mockito.mock(LdProof.Builder.class, "RETURNS_SELF");
+        LdProof.Builder builderMock = Mockito.mock(LdProof.Builder.class,"RETURNS_SELF");
 
         Mockito.when(builderMock.defaultContexts(Mockito.anyBoolean())).thenReturn(builderMock);
         Mockito.when(builderMock.defaultTypes(Mockito.anyBoolean())).thenReturn(builderMock);
-        Mockito.when(builderMock.type(anyString())).thenReturn(builderMock);
-        Mockito.when(builderMock.created(any())).thenReturn(builderMock);
+        Mockito.when(builderMock.type(Mockito.anyString())).thenReturn(builderMock);
+        Mockito.when(builderMock.created(Mockito.any())).thenReturn(builderMock);
         Mockito.when(builderMock.proofPurpose("purpose")).thenReturn(builderMock);
-        Mockito.when(builderMock.verificationMethod(any())).thenReturn(builderMock);
+        Mockito.when(builderMock.verificationMethod(Mockito.any())).thenReturn(builderMock);
 
 
         LdProof ldProofMock = Mockito.mock(LdProof.class);
         Mockito.when(builderMock.build()).thenReturn(ldProofMock);
 
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
-        Mockito.when(urdna2015Canonicalizer.canonicalize(any(), any())).thenReturn(new byte[4]);
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when(urdna2015Canonicalizer.canonicalize(Mockito.any(),Mockito.any())).thenReturn(new byte[4]);
 
-        try {
-            vciServiceImpl.buildVerifiableCredentials(credSubjectId, "ldp_vc", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "pusutokdn");
-        } catch (Exception e) {
-        }
+        try{
+            vciServiceImpl.buildVerifiableCredentials(credSubjectId,"ldp_vc" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
+        }catch (Exception e){}
 
     }
 
     @Test
     public void buildVerifiableCredentialswithjwt_vc_jsonTest() throws IdAuthenticationBusinessException {
 
-        Set<String> allowedAttribute = new HashSet<>();
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
 
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
 
-        try {
-            vciServiceImpl.buildVerifiableCredentials(credSubjectId, "jwt_vc_json", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "pusutokdn");
-        } catch (Exception e) {
-        }
+        try{
+            vciServiceImpl.buildVerifiableCredentials(credSubjectId,"jwt_vc_json" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
+        }catch (Exception e){}
 
     }
 
     @Test
     public void buildVerifiableCredentialswithjwt_vc_jsonldTest() throws IdAuthenticationBusinessException {
 
-        Set<String> allowedAttribute = new HashSet<>();
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("name");
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
 
-        try {
-            vciServiceImpl.buildVerifiableCredentials(credSubjectId, "jwt_vc_json-ld", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "pusutokdn");
-        } catch (Exception e) {
-        }
+        try{
+            vciServiceImpl.buildVerifiableCredentials(credSubjectId,"jwt_vc_json-ld" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
+        }catch (Exception e){}
 
     }
 
@@ -254,30 +249,29 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "consentedIndividualAttributeName", "name");
         ReflectionTestUtils.setField(vciServiceImpl, "proofPurpose", "purpose");
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
-        ReflectionTestUtils.setField(vciServiceImpl, "verificationMethod", "verificationMethod");
-        ReflectionTestUtils.setField(vciServiceImpl, "confDocumentLoader", new ConfigurableDocumentLoader());
+        ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
+        ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
 
-        Set<String> allowedAttribute = new HashSet<>();
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("face");
 
         EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
-        Mockito.when(urdna2015Canonicalizer.canonicalize(any(), any())).thenReturn(new byte[4]);
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when(urdna2015Canonicalizer.canonicalize(Mockito.any(),Mockito.any())).thenReturn(new byte[4]);
 
-        List<BIR> birDataFromXMLType = new ArrayList<>();
-        BIR bir = new BIR();
+        List<BIR> birDataFromXMLType =new ArrayList<>();
+        BIR bir=new BIR();
         bir.setBdb(new byte[4]);
         birDataFromXMLType.add(bir);
-        Mockito.when(cbeffUtil.getBIRDataFromXMLType(any(), anyString())).thenReturn(birDataFromXMLType);
-        Map<String, String> faceEntityInfoMap = new HashMap<>();
-        faceEntityInfoMap.put("Face", "face");
-        Mockito.when(entityInfoUtil.getIdEntityInfoMap(any(), Mockito.anyMap(), any())).thenReturn(faceEntityInfoMap);
-        try {
-            vciServiceImpl.buildVerifiableCredentials(credSubjectId, "ldp_vc", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "pusutokdn");
-        } catch (Exception e) {
-        }
+        Mockito.when(cbeffUtil.getBIRDataFromXMLType(Mockito.any(),Mockito.anyString())).thenReturn(birDataFromXMLType);
+        Map<String,String> faceEntityInfoMap = new HashMap<>();
+        faceEntityInfoMap.put("Face","face");
+        Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(),Mockito.anyMap(),Mockito.any())).thenReturn(faceEntityInfoMap);
+        try{
+            vciServiceImpl.buildVerifiableCredentials(credSubjectId,"ldp_vc" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
+        }catch (Exception e){}
 
     }
 
@@ -286,36 +280,35 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "consentedIndividualAttributeName", "name");
         ReflectionTestUtils.setField(vciServiceImpl, "proofPurpose", "purpose");
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
-        ReflectionTestUtils.setField(vciServiceImpl, "verificationMethod", "verificationMethod");
-        ReflectionTestUtils.setField(vciServiceImpl, "confDocumentLoader", new ConfigurableDocumentLoader());
-        IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+        ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
+        ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
+        IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
         identityInfoDTO.setLanguage("eng");
         identityInfoDTO.setValue("value");
-        List<IdentityInfoDTO> list = new ArrayList<>();
+        List<IdentityInfoDTO> list=new ArrayList<>();
         list.add(identityInfoDTO);
-        Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-        idInfo.put("info", list);
+        Map<String, List<IdentityInfoDTO>> idInfo =new HashMap<>();
+        idInfo.put("info",list);
 
-        List<String> locale = new ArrayList<>();
+        List<String> locale=new ArrayList<>();
         locale.add("eng");
 
-        Set<String> allowedAttribute = new HashSet<>();
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("id");
 
         EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
-        Mockito.when(urdna2015Canonicalizer.canonicalize(any(), any())).thenReturn(new byte[4]);
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when(urdna2015Canonicalizer.canonicalize(Mockito.any(),Mockito.any())).thenReturn(new byte[4]);
 
 
         List<String> idInfoHelperList = new ArrayList<>();
         idInfoHelperList.add("info");
-        Mockito.when(idInfoHelper.getIdentityAttributesForIdName(anyString())).thenReturn(idInfoHelperList);
-        try {
-            vciServiceImpl.buildVerifiableCredentials(credSubjectId, "ldp_vc", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "pusutokdn");
-        } catch (Exception e) {
-        }
+        Mockito.when(idInfoHelper.getIdentityAttributesForIdName(Mockito.anyString())).thenReturn(idInfoHelperList);
+        try{
+            vciServiceImpl.buildVerifiableCredentials(credSubjectId,"ldp_vc" ,idInfo, locale, allowedAttribute, vciExchangeRequestDTO,"pusutokdn");
+        }catch (Exception e){}
 
     }
 
@@ -325,31 +318,31 @@ public class VciServiceImplTest {
         ReflectionTestUtils.setField(vciServiceImpl, "consentedIndividualAttributeName", "name");
         ReflectionTestUtils.setField(vciServiceImpl, "proofPurpose", "purpose");
         ReflectionTestUtils.setField(vciServiceImpl, "proofType", "proofType");
-        ReflectionTestUtils.setField(vciServiceImpl, "verificationMethod", "verificationMethod");
-        ReflectionTestUtils.setField(vciServiceImpl, "confDocumentLoader", new ConfigurableDocumentLoader());
-        IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+        ReflectionTestUtils.setField(vciServiceImpl,"verificationMethod","verificationMethod");
+        ReflectionTestUtils.setField(vciServiceImpl,"confDocumentLoader",new ConfigurableDocumentLoader());
+        IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
         identityInfoDTO.setLanguage("eng");
         identityInfoDTO.setValue("value");
-        List<IdentityInfoDTO> list = new ArrayList<>();
+        List<IdentityInfoDTO> list=new ArrayList<>();
         list.add(identityInfoDTO);
-        identityInfoDTO = new IdentityInfoDTO();
+        identityInfoDTO=new IdentityInfoDTO();
         identityInfoDTO.setLanguage("hin");
         identityInfoDTO.setValue("value");
         list.add(identityInfoDTO);
-        Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
-        idInfo.put("info", list);
+        Map<String, List<IdentityInfoDTO>> idInfo =new HashMap<>();
+        idInfo.put("info",list);
 
-        List<String> locale = new ArrayList<>();
+        List<String> locale=new ArrayList<>();
         locale.add("eng");
 
-        Set<String> allowedAttribute = new HashSet<>();
+        Set<String> allowedAttribute =new HashSet<>();
         allowedAttribute.add("id");
 
         EnvUtil.setDateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
         vciExchangeRequestDTO.setCredentialsDefinition(vciCredentialsDefinitionRequestDTO);
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
-        Mockito.when(urdna2015Canonicalizer.canonicalize(any(), any())).thenReturn(new byte[4]);
+        Mockito.when( vcContextJsonld.get("context")).thenReturn(new Object());
+        Mockito.when(urdna2015Canonicalizer.canonicalize(Mockito.any(),Mockito.any())).thenReturn(new byte[4]);
 
 
         List<String> idInfoHelperList = new ArrayList<>();

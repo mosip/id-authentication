@@ -203,6 +203,7 @@ public class IdentityKeyBindingFacadeImplTest {
         method.setAccessible(true);
 
         method.invoke(facade, authRequest, true, "partner1", null, authResp, baseResp, metadata);
+        verify(tokenIdManager, never()).generateTokenId(anyString(), anyString());
     }
 
     @Test
@@ -469,28 +470,6 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testAuthenticateIndividualPublicKeyAlreadyBinded1() throws Exception {
-        AuthRequestDTO authRequest = mock(IdentityKeyBindingRequestDTO.class);
-        when(authRequest.getIndividualId()).thenReturn("1234");
-        when(authRequest.getIndividualIdType()).thenReturn(String.valueOf(IdType.UIN));
-
-        IdentityKeyBindingDTO keyBindingDTO = mock(IdentityKeyBindingDTO.class);
-        Map<String, Object> pubKeyMap = new HashMap<>();
-        pubKeyMap.put("kty", "RSA");
-        when(keyBindingDTO.getPublicKeyJWK()).thenReturn(pubKeyMap);
-        when(((IdentityKeyBindingRequestDTO) authRequest).getIdentityKeyBinding()).thenReturn(keyBindingDTO);
-
-        doNothing().when(idService).checkIdKeyBindingPermitted(anyString(), anyString());
-        when(keyBindingService.isPublicKeyBinded(anyString(), any())).thenReturn(true);
-
-        ObjectWithMetadata meta = mock(ObjectWithMetadata.class);
-
-        IdAuthenticationBusinessException ex = assertThrows(IdAuthenticationBusinessException.class, () ->
-                facade.authenticateIndividual(authRequest, "pid", "apiKey", meta));
-        assertEquals(IdAuthenticationErrorConstants.PUBLIC_KEY_BINDING_NOT_ALLOWED.getErrorCode(), ex.getErrorCode());
-    }
-
-    @Test
     void testDoProcessIdKeyBindingWithNullResponseDTO() throws Exception {
         IdentityKeyBindingRequestDTO req = mock(IdentityKeyBindingRequestDTO.class);
         AuthResponseDTO authResp = mock(AuthResponseDTO.class);
@@ -517,7 +496,7 @@ public class IdentityKeyBindingFacadeImplTest {
     }
 
     @Test
-    void testProcessIdentityKeyBindingSuccess_AllLinesCovered() throws Exception {
+    void testProcessIdentityKeyBindingSuccessAllLinesCovered() throws Exception {
         IdentityKeyBindingRequestDTO requestDTO = mock(IdentityKeyBindingRequestDTO.class);
         when(requestDTO.getTransactionID()).thenReturn("txn123");
         when(requestDTO.getIndividualIdType()).thenReturn("UIN");

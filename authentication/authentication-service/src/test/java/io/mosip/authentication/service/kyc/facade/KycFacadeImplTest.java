@@ -982,11 +982,18 @@ public class KycFacadeImplTest {
 	}
 
     @Test
-    public void testProcessKycAuthNullKycAuthRequestDTO() {
-        kycAuthRequestDTO = null;
+    public void testProcessKycAuthNullKycAuthRequestDTO() throws Exception {
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+        ResponseDTO response = new ResponseDTO();
+        response.setAuthStatus(true);
+        authResponseDTO.setResponse(response);
+        Map<String, Object> testMetadata = new HashMap<>();
 
-        assertThrows(NullPointerException.class, () ->
-                kycFacade.processKycAuth(null, authResponseDTO, "partner1", "oidcClient1", metadata)
-        );
+        try {
+            kycFacade.processKycAuth(null, authResponseDTO, "partner1", "oidcClient1", testMetadata);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException e) {
+
+        }
     }
 }
