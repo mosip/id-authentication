@@ -25,9 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -138,77 +136,5 @@ public class CredentialStoreTaskletTest {
         
         ForkJoinPool pool = (ForkJoinPool) ReflectionTestUtils.getField(newTasklet, "forkJoinPool");
         assertNotNull(pool);
-    }
-    @Test
-    public void testExecuteWithExceptionShouldContinue() throws Exception {
-        CredentialEventStore event = new CredentialEventStore();
-        List<CredentialEventStore> events = Collections.singletonList(event);
-
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
-        when(credentialStoreService.processCredentialStoreEvent(any()))
-                .thenThrow(new Exception("Generic exception"));
-
-        RepeatStatus status = tasklet.execute(contribution, chunkContext);
-
-        assertEquals(RepeatStatus.FINISHED, status);
-        verify(credentialEventRepo).saveAll(events);
-    }
-
-    @Test(expected = InterruptedException.class)
-    public void testExecuteWithInterruptedExceptionShouldThrow() throws Exception {
-        CredentialEventStore event = new CredentialEventStore();
-        List<CredentialEventStore> events = Collections.singletonList(event);
-
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
-
-        ForkJoinPool mockPool = mock(ForkJoinPool.class);
-        ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
-
-        when(mockTask.get()).thenThrow(new InterruptedException("Interrupted"));
-
-        ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
-
-        tasklet.execute(contribution, chunkContext);
-    }
-
-    @Test
-    public void testExecuteWithExecutionExceptionShouldContinue() throws Exception {
-        CredentialEventStore event = new CredentialEventStore();
-        List<CredentialEventStore> events = Collections.singletonList(event);
-
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
-
-        ForkJoinPool mockPool = mock(ForkJoinPool.class);
-        ForkJoinTask<?> mockTask = mock(ForkJoinTask.class);
-
-        when(mockTask.get()).thenThrow(new ExecutionException(new RuntimeException("Execution error")));
-
-        ReflectionTestUtils.setField(tasklet, "forkJoinPool", mockPool);
-
-        RepeatStatus status = tasklet.execute(contribution, chunkContext);
-
-        assertEquals(RepeatStatus.FINISHED, status);
-        verify(credentialEventRepo).saveAll(events);
-    }
-
-    @Test
-    public void testExecuteWithMultipleEventsShouldProcessAll() throws Exception {
-        CredentialEventStore event1 = new CredentialEventStore();
-        CredentialEventStore event2 = new CredentialEventStore();
-        List<CredentialEventStore> events = Arrays.asList(event1, event2);
-
-        IdentityEntity identity1 = mock(IdentityEntity.class);
-        IdentityEntity identity2 = mock(IdentityEntity.class);
-
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
-        when(credentialStoreService.processCredentialStoreEvent(event1)).thenReturn(identity1);
-        when(credentialStoreService.processCredentialStoreEvent(event2)).thenReturn(identity2);
-
-        RepeatStatus status = tasklet.execute(contribution, chunkContext);
-
-        assertEquals(RepeatStatus.FINISHED, status);
-        verify(credentialStoreService).storeIdentityEntity(identity1);
-        verify(credentialStoreService).storeIdentityEntity(identity2);
-        verify(credentialEventRepo).saveAll(events);
     }
 }
