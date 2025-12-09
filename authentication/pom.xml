@@ -146,7 +146,8 @@
 
 		<sourceafis.version>3.4.0</sourceafis.version>
 
-		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+		<sonar.test.exclusions>**/.gitignore,**/git.properties,src/test/resources_/**,**/test/resources_/**</sonar.test.exclusions>
+
 		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**/*.gitignore*,**/git.properties</sonar.exclusions>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/logger/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/verticle/**,**/spi/**,"**/proxy/**","**/entities/**","**/verifier/**"</sonar.coverage.exclusions>
