@@ -91,7 +91,7 @@
 		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
-    	<sonar.tests>src/test/java,src/test/resources</sonar.tests>
+    	<sonar.tests>src/test/java</sonar.tests>
     	<sonar.inclusions>**/*.java</sonar.inclusions>
     	<sonar.test.inclusions>**/*Test.java</sonar.test.inclusions>
 		<sonar.exclusions>**/*.md, **/*.properties, **/.gitignore, **/git.properties, **/*.txt</sonar.exclusions>
