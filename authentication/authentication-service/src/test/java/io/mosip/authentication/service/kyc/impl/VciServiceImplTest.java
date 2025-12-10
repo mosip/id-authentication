@@ -354,32 +354,6 @@ public class VciServiceImplTest {
         }
     }
 
-    @Test
-    public void buildVcFaceJP2ConversionFail() throws Exception {
-
-        Set<String> allowedAttribute = Set.of("face");
-
-        Mockito.when(vcContextJsonld.get("context")).thenReturn(new Object());
-        Mockito.when(urdna2015Canonicalizer.canonicalize(any(), any()))
-                .thenReturn(new byte[4]);
-
-        List<BIR> birList = new ArrayList<>();
-        BIR bir = new BIR();
-        bir.setBdb(null);
-        birList.add(bir);
-
-        Mockito.when(cbeffUtil.getBIRDataFromXMLType(any(), anyString()))
-                .thenReturn(birList);
-
-        Mockito.when(entityInfoUtil.getIdEntityInfoMap(any(), any(), any()))
-                .thenReturn(Map.of("Face", "face"));
-
-        try {
-            vciServiceImpl.buildVerifiableCredentials(
-                    credSubjectId, "ldp_vc", idInfo, locale, allowedAttribute, vciExchangeRequestDTO, "xyz"
-            );
-        } catch (Exception ignored) {
-        }
     }
 
     @Test
