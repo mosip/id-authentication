@@ -68,7 +68,7 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecute_withEmptyList_shouldNotCallSaveAll() throws Exception {
+    public void testExecuteWithEmptyListShouldNotCallSaveAll() throws Exception {
         when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(Collections.emptyList());
 
         RepeatStatus status = tasklet.execute(contribution, chunkContext);
@@ -95,7 +95,7 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecute_withGenericException_shouldContinue() throws Exception {
+    public void testExecuteWithGenericExceptionShouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
         List<CredentialEventStore> events = Collections.singletonList(event);
         
