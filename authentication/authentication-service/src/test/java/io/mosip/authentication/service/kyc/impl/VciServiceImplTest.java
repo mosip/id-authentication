@@ -354,8 +354,6 @@ public class VciServiceImplTest {
         }
     }
 
-    }
-
     @Test
     public void addCredSubjectIdTestKeyAlreadyMappedThenFail() throws Exception {
 
