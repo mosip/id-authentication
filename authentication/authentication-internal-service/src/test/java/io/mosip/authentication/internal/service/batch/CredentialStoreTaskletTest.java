@@ -136,5 +136,6 @@ public class CredentialStoreTaskletTest {
         
         ForkJoinPool pool = (ForkJoinPool) ReflectionTestUtils.getField(newTasklet, "forkJoinPool");
         assertNotNull(pool);
+        pool.shutdown();
     }
 }
