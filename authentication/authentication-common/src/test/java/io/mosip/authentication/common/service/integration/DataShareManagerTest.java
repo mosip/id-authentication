@@ -36,7 +36,6 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
-@Ignore
 public class DataShareManagerTest {
 	
 	@Mock
@@ -208,4 +207,17 @@ public class DataShareManagerTest {
 		when(securityManager.decrypt(Mockito.anyString(), Mockito.anyString(), isNull(), isNull(), Mockito.anyBoolean())).thenReturn(responseStr.getBytes());
 		testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 	}
+
+    @Test(expected = IdAuthUncheckedException.class)
+    public void testDownloadObjectResponseNull() throws Exception {
+        DataShareManager testSubject = getTestSubject();
+        String dataShareUrl = "";
+        Class<String> clazz = String.class;
+        boolean decryptionRequired = false;
+
+        // Mock restHelper to return null
+        when(restHelper.requestSync(any())).thenReturn(null);
+
+        testSubject.downloadObject(dataShareUrl, clazz, decryptionRequired);
+    }
 }
