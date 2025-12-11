@@ -44,10 +44,17 @@ public class EntityInfoUtilTest {
     @Mock
     private MatchType matchType;
 
+    private AutoCloseable mocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
     }
+
+    @After  
+    public void tearDown() throws Exception {  
+       mocks.close();  
+     } 
 
     @Test
     public void testGetIdEntityInfoMap_withLanguage() throws Exception {

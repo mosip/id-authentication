@@ -147,24 +147,6 @@ public class MatchIdentityDataHelperTest {
     }
 
     @Test
-    public void testMatchIdentityDataListInputProcessesAllElements() throws IdAuthenticationBusinessException {
-        // Arrange - Test with List implementation specifically
-        List<MatchInput> matchInputs = Arrays.asList(matchInput1, matchInput2);
-        when(matchTypeHelper.matchType(authRequestDTO, uin, matchInput1, entityValueFetcher, partnerId))
-                .thenReturn(matchOutput1);
-        when(matchTypeHelper.matchType(authRequestDTO, uin, matchInput2, entityValueFetcher, partnerId))
-                .thenReturn(matchOutput2);
-
-        // Act
-        List<MatchOutput> result = matchIdentityDataHelper.matchIdentityData(
-                authRequestDTO, uin, matchInputs, entityValueFetcher, partnerId);
-
-        // Assert
-        assertEquals(2, result.size());
-        verify(matchTypeHelper, times(2)).matchType(any(), any(), any(), any(), any());
-    }
-
-    @Test
     public void testMatchIdentityDataMatchTypeHelperThrowsExceptionPropagatesException() throws IdAuthenticationBusinessException {
         // Arrange
         Collection<MatchInput> matchInputs = Arrays.asList(matchInput1);

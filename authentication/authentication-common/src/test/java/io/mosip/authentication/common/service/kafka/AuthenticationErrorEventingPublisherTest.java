@@ -39,10 +39,11 @@ public class AuthenticationErrorEventingPublisherTest {
     private BaseRequestDTO requestDTO;
     private PartnerData partnerData;
     private PartnerDTO partnerDTO;
+    private AutoCloseable mocks;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         publisher = new AuthenticationErrorEventingPublisher();
 
         ReflectionTestUtils.setField(publisher, "kafkaTemplate", kafkaTemplate);
@@ -67,6 +68,11 @@ public class AuthenticationErrorEventingPublisherTest {
         when(securityManager.getUser()).thenReturn("test-user");
     }
 
+    @After  
+    public void tearDown() throws Exception {  
+    mocks.close();  
+    }
+
     @Test
     public void testNotifyWhenPartnerDataExists() throws Exception {
         when(partnerDataRepo.findByPartnerId("partner-123"))
@@ -86,9 +92,9 @@ public class AuthenticationErrorEventingPublisherTest {
         verify(kafkaTemplate, times(1)).send(eq("auth-error-topic"), captor.capture());
 
         EventModel eventSent = captor.getValue();
-        assert eventSent.getPublisher().equals("IDA");
-        assert eventSent.getEvent().getData().get("error_Code").equals("ERR-001");
-        assert eventSent.getEvent().getData().get("individualId").equals("ENCRYPTED-ID");
+        assertEquals("IDA", eventSent.getPublisher());  
+        assertEquals("ERR-001", eventSent.getEvent().getData().get("error_Code"));  
+        assertEquals("ENCRYPTED-ID", eventSent.getEvent().getData().get("individualId")); 
     }
 
     @Test
@@ -121,7 +127,7 @@ public class AuthenticationErrorEventingPublisherTest {
         verify(kafkaTemplate, times(1)).send(eq("auth-error-topic"), captor.capture());
         EventModel model = captor.getValue();
 
-        assert model.getEvent().getData().get("individualId") == null;
+        assertNull(model.getEvent().getData().get("individualId"));
     }
 }
 

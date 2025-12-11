@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;  
+import static org.junit.jupiter.api.Assertions.assertNotNull; 
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,8 +23,7 @@ class RemoveIdStatusEventPublisherTest {
     @Mock
     private WebSubHelper webSubHelper;
 
-    @Value("${mock-remove-topic:mock-remove-topic}")
-    private String removeTopic = "mock-remove-topic";
+    private final String removeTopic = "mock-remove-topic";
 
     @BeforeEach
     void setup() {
@@ -97,7 +98,7 @@ class RemoveIdStatusEventPublisherTest {
                 (RemoveIdStatusEvent) ReflectionTestUtils.invokeMethod(
                         publisher, "createRemoveIdStatusEvent", "ABC123");
 
-        assert event.getData().get("id_hash").equals("ABC123");
-        assert event.getTimestamp() != null;
+        assertEquals("ABC123", event.getData().get("id_hash"));
+        assertNotNull(event.getTimestamp());
     }
 }
