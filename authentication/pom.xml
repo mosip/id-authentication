@@ -90,6 +90,12 @@
 		<authentication-authtypelockfilter-impl.version>${authentication.parent.version}</authentication-authtypelockfilter-impl.version>
 		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
+    	<sonar.tests>src/test/java</sonar.tests>
+    	<sonar.inclusions>**/*.java</sonar.inclusions>
+    	<sonar.test.inclusions>**/*Test.java</sonar.test.inclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**,**/*.md, **/*.properties, **/.gitignore, **/git.properties, **/*.txt</sonar.exclusions>
+        <sonar.test.exclusions>src/test/resources/**,**/*.gitignore,**/git.properties</sonar.test.exclusions>
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.3.0-SNAPSHOT</kernel.parent.version>
@@ -453,13 +459,6 @@
 		<profiles>
 			<profile>
 				<id>sonar</id>
-				    <properties>
-        				<sonar.sources>src/main/java</sonar.sources>
-        				<sonar.tests>src/test/java</sonar.tests>
-        				<sonar.test.inclusions>src/test/java/**/*Test.java,src/test/java/**/*Tests.java</sonar.test.inclusions>
-        				<sonar.exclusions>**/*.gitignore,**/git.properties</sonar.exclusions>
-        				<sonar.test.exclusions>src/test/resources/**,**/*.gitignore,**/git.properties</sonar.test.exclusions>
-    				</properties>
 				<build>
 					<plugins>
 						<plugin>
