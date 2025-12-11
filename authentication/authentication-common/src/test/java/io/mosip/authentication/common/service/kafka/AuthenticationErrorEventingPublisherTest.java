@@ -9,6 +9,7 @@ import java.util.Optional;
 import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEventingPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
