@@ -23,6 +23,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.websub.model.EventModel;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AuthenticationErrorEventingPublisherTest {
 
