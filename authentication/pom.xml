@@ -350,7 +350,7 @@
 			<plugin>
 			    <groupId>org.jacoco</groupId>
 			    <artifactId>jacoco-maven-plugin</artifactId>
-			    <version>0.8.12</version> <!-- Supports Java 21 -->
+			    <version>${jacoco.maven.plugin.version}</version> <!-- Supports Java 21 -->
 			    <executions>
 			        <execution>
 			            <id>default-prepare-agent</id>
