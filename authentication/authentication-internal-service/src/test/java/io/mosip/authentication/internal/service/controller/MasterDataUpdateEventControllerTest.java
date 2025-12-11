@@ -45,17 +45,12 @@ public class MasterDataUpdateEventControllerTest {
 	
 	@Test
 	public void testHandleMasterdataTemplatesUpdateWithNullEvent() {
-		EventModel eventModel = null;
-		
-		doNothing().when(masterDataCacheUpdateService).updateTemplates(any());
-		
-		try {
-			masterDataUpdateEventController.handleMasterdataTemplatesUpdate(eventModel);
-			verify(masterDataCacheUpdateService, times(1)).updateTemplates(any());
-		} catch (Exception e) {
-			// Expected if null handling is strict
-			assertTrue("Should handle null gracefully", true);
-		}
+		 EventModel eventModel = null;
+
+        masterDataUpdateEventController.handleMasterdataTemplatesUpdate(eventModel);
+
+        // Controller should delegate even for null and not throw
+        verify(masterDataCacheUpdateService, times(1)).updateTemplates(null);
 	}
 	
 	@Test
