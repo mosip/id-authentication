@@ -1,8 +1,5 @@
 package io.mosip.authentication.service.kyc.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +30,8 @@ import io.mosip.authentication.common.service.repository.OIDCClientDataRepositor
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
+
+import static org.junit.Assert.*;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
@@ -133,5 +132,69 @@ public class ExchangeDataAttributesUtilTest {
         Mockito.when(oidcClientDataRepo.findByClientId(oidcClientId)).thenReturn(Optional.of(clientData));
         List<String> resAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, Collections.emptyList());
         assertEquals(exAttributes, resAttributes);
+    }
+
+    @Test
+    public void filterAllowedUserClaimsWithClientNotFoundTest() {
+        String oidcClientId = "nonExistentClientId";
+        List<String> consentAttributes = Arrays.asList("name", "gender");
+
+        Mockito.when(oidcClientDataRepo.findByClientId(oidcClientId)).thenReturn(Optional.empty());
+        List<String> resAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
+        assertEquals(Collections.emptyList(), resAttributes);
+    }
+
+    @Test
+    public void filterAllowedUserClaimsWithCaseInsensitiveMatchingTest() {
+        List<String> consentAttributes = Arrays.asList("NAME", "gender", "DOB");
+        String oidcClientId = "sampleOidcClientId";
+        OIDCClientData clientData = new OIDCClientData();
+        clientData.setUserClaims(new String [] {"name","gender","dob"});
+
+        Mockito.when(oidcClientDataRepo.findByClientId(oidcClientId)).thenReturn(Optional.of(clientData));
+        List<String> resAttributes = exchangeDataAttributesUtil.filterAllowedUserClaims(oidcClientId, consentAttributes);
+        // Should match case-insensitively
+        assertEquals(3, resAttributes.size());
+    }
+
+    @Test
+    public void mapConsentedAttributesToIdSchemaAttributesWithNullListTest() throws IdAuthenticationBusinessException {
+        Set<String> filterAttributes = new HashSet<>();
+        List<String> policyAttributes = Arrays.asList("name", "gender");
+        
+        ReflectionTestUtils.setField(exchangeDataAttributesUtil, "consentedIndividualIdAttributeName", "individual_id");
+        exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(null, filterAttributes, policyAttributes);
+        
+        assertTrue("Filter attributes should remain empty", filterAttributes.isEmpty());
+    }
+
+    @Test
+    public void mapConsentedAttributesToIdSchemaAttributesWithEmptyListTest() throws IdAuthenticationBusinessException {
+        List<String> emptyList = new ArrayList<>();
+        Set<String> filterAttributes = new HashSet<>();
+        List<String> policyAttributes = Arrays.asList("name", "gender");
+        
+        ReflectionTestUtils.setField(exchangeDataAttributesUtil, "consentedIndividualIdAttributeName", "individual_id");
+        exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(emptyList, filterAttributes, policyAttributes);
+        
+        assertTrue("Filter attributes should remain empty", filterAttributes.isEmpty());
+    }
+
+    @Test
+    public void filterByPolicyAllowedAttributesWithEmptyPolicyTest() {
+        List<String> emptyPolicyAttributes = Collections.emptyList();
+        Set<String> filterAttributes = Set.of("name", "gender", "dob");
+
+        Set<String> resFilterAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, emptyPolicyAttributes);
+        assertTrue("Should return empty set when policy is empty", resFilterAttributes.isEmpty());
+    }
+
+    @Test
+    public void filterByPolicyAllowedAttributesWithNoMatchingAttributesTest() {
+        List<String> policyAttributes = Arrays.asList("phone", "email");
+        Set<String> filterAttributes = Set.of("name", "gender", "dob");
+
+        Set<String> resFilterAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAttributes);
+        assertTrue("Should return empty set when no attributes match", resFilterAttributes.isEmpty());
     }
 }

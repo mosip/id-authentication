@@ -41,5 +41,43 @@ public class MaskUtilTest {
     public void testGenerateMaskValue2() {
 	assertNotEquals("XXXX34654512324", MaskUtil.generateMaskValue("123234654512324", 8));
     }
+    
+    @Test(expected = IdAuthenticationBusinessException.class)
+    public void testMaskEmailWithNull() throws IdAuthenticationBusinessException {
+	MaskUtil.maskEmail(null);
+    }
+    
+    @Test(expected = IdAuthenticationBusinessException.class)
+    public void testMaskEmailWithEmpty() throws IdAuthenticationBusinessException {
+	MaskUtil.maskEmail("");
+    }
+    
+    @Test(expected = IdAuthenticationBusinessException.class)
+    public void testMaskMobileWithNull() throws IdAuthenticationBusinessException {
+	MaskUtil.maskMobile(null);
+    }
+    
+    @Test(expected = IdAuthenticationBusinessException.class)
+    public void testMaskMobileWithEmpty() throws IdAuthenticationBusinessException {
+	MaskUtil.maskMobile("");
+    }
+    
+    @Test
+    public void testGenerateMaskValueWithMaskNoGreaterThanLength() {
+	String result = MaskUtil.generateMaskValue("123", 10);
+	assertEquals("XXX", result);
+    }
+    
+    @Test
+    public void testGenerateMaskValueWithZeroMaskNo() {
+	String result = MaskUtil.generateMaskValue("12345", 0);
+	assertEquals("12345", result);
+    }
+    
+    @Test
+    public void testMaskEmailWithShortEmail() throws IdAuthenticationBusinessException {
+	String result = MaskUtil.maskEmail("ab@mail.com");
+	assertNotNull(result);
+    }
 
 }
