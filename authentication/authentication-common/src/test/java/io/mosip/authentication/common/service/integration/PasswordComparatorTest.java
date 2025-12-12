@@ -28,7 +28,7 @@ public class PasswordComparatorTest {
      * Test successful password match
      */
     @Test
-    public void testMatchPassword_Success() throws Exception {
+    public void testMatchPasswordSuccess() throws Exception {
         String password = "test123";
         String salt = "xyz";
         String storedHash = "HASHED";
@@ -47,7 +47,7 @@ public class PasswordComparatorTest {
      * Test password mismatch
      */
     @Test
-    public void testMatchPassword_Fail() throws Exception {
+    public void testMatchPasswordFail() throws Exception {
         String password = "test123";
         String salt = "xyz";
 
@@ -64,7 +64,7 @@ public class PasswordComparatorTest {
      * must rethrow IdAuthenticationBusinessException
      */
     @Test(expected = IdAuthenticationBusinessException.class)
-    public void testMatchPassword_Exception() throws Exception {
+    public void testMatchPasswordException() throws Exception {
         String password = "test123";
         String salt = "xyz";
 

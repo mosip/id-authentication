@@ -55,12 +55,12 @@ public class PasswordAuthServiceImplTest {
     }
 
     @Test(expected = IdAuthenticationBusinessException.class)
-    public void testAuthenticate_IdInfoNull_ThrowsException() throws IdAuthenticationBusinessException {
+    public void testAuthenticateIdInfoNullThrowsException() throws IdAuthenticationBusinessException {
         service.authenticate(authRequestDTO, "IND123", null, partnerId);
     }
 
     @Test(expected = IdAuthenticationBusinessException.class)
-    public void testAuthenticate_IdInfoEmpty_ThrowsException() throws IdAuthenticationBusinessException {
+    public void testAuthenticateIdInfoEmptyThrowsException() throws IdAuthenticationBusinessException {
         service.authenticate(authRequestDTO, "IND123", new HashMap<>(), partnerId);
     }
 
@@ -74,7 +74,7 @@ public class PasswordAuthServiceImplTest {
     }
 
     @Test
-    public void testAuthenticate_Success() throws IdAuthenticationBusinessException {
+    public void testAuthenticateSuccess() throws IdAuthenticationBusinessException {
         // Mock MatchInputBuilder
         MatchInput mockInput = new MatchInput(); // create with proper constructor if needed
         when(matchInputBuilder.buildMatchInput(eq(authRequestDTO), any(), any(), eq(idInfo)))

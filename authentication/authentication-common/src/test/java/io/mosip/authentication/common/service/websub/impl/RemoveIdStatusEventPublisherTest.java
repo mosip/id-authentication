@@ -36,7 +36,7 @@ class RemoveIdStatusEventPublisherTest {
     //  TEST: doRegister → tryRegisterTopic() success
     // -------------------------------
     @Test
-    void testDoRegister_success() {
+    void testDoRegisterSuccess() {
         doNothing().when(webSubHelper).registerTopic("mock-remove-topic");
 
         publisher.doRegister();
@@ -48,7 +48,7 @@ class RemoveIdStatusEventPublisherTest {
     //  TEST: doRegister → tryRegisterTopic() exception path
     // -------------------------------
     @Test
-    void testDoRegister_exception() {
+    void testDoRegisterException() {
         doThrow(new RuntimeException("ERROR"))
                 .when(webSubHelper).registerTopic("mock-remove-topic");
 
