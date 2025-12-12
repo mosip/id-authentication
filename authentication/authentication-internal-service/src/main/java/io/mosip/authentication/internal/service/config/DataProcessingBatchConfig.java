@@ -106,13 +106,14 @@ public class DataProcessingBatchConfig {
 	@Qualifier("retriggerMissingCredentials")
 	@Scope("singleton")
 	public Job retriggerMissingCredentialJob(CredentialStoreJobExecutionListener listener, JobRepository jobRepository,
-								  PlatformTransactionManager platformTransactionManager) {
+								  PlatformTransactionManager platformTransactionManager) {logger.info("inside data processing batch cofig ");
 		return new JobBuilder("retriggerMissingCredentials", jobRepository)
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
 				.flow(validateWebSubInitialization(jobRepository, platformTransactionManager)) // check if web sub subscribed to proceed
                 .next(retriggerMissingCredentialsStep(jobRepository, platformTransactionManager)) // Then retrigger missing credentials
                 .end().build();
+	
 	}
 
 	/**
@@ -190,3 +191,4 @@ public class DataProcessingBatchConfig {
     }
 
 }
+
