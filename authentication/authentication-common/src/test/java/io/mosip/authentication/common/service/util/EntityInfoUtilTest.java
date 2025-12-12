@@ -58,7 +58,7 @@ public class EntityInfoUtilTest {
      } 
 
     @Test
-    public void testGetIdEntityInfoMap_withLanguage() throws Exception {
+    public void testGetIdEntityInfoMapWithLanguage() throws Exception {
         Map<String, List<IdentityInfoDTO>> idEntity = new HashMap<>();
         IdentityInfoDTO info = new IdentityInfoDTO();
         info.setValue("testValue");
@@ -173,7 +173,7 @@ public class EntityInfoUtilTest {
     }
 
     @Test
-    public void testGetEntityInfoAsString_noLang() throws Exception {
+    public void testGetEntityInfoAsStringNoLang() throws Exception {
         // Prepare test data
         Map<String, List<IdentityInfoDTO>> idEntity = new HashMap<>();
         IdentityInfoDTO info = new IdentityInfoDTO();
@@ -209,7 +209,7 @@ public class EntityInfoUtilTest {
     }
 
     @Test
-    public void testGetEntityInfoAsString_withLang() throws Exception {
+    public void testGetEntityInfoAsStringWithLang() throws Exception {
         // Prepare test data
         Map<String, List<IdentityInfoDTO>> idEntity = new HashMap<>();
         IdentityInfoDTO info = new IdentityInfoDTO();

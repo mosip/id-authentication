@@ -56,7 +56,7 @@ public class RequireOtpNotFrozenHelperTest {
      * OTP is frozen and frozen time is NOT over → must throw exception
      */
     @Test(expected = IdAuthenticationBusinessException.class)
-    public void testRequireOtpNotFrozen_FrozenAndTimeNotOver_ShouldThrow() throws Exception {
+    public void testRequireOtpNotFrozenFrozenAndTimeNotOverShouldThrow() throws Exception {
         otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime()); // updated just now
 
         helper.requireOtpNotFrozen(otpEntity, false);
@@ -66,7 +66,7 @@ public class RequireOtpNotFrozenHelperTest {
      * OTP frozen but frozen time IS over → should unfreeze and save
      */
     @Test
-    public void testRequireOtpNotFrozen_FrozenAndTimeOver_ShouldUnfreezeAndSave() throws Exception {
+    public void testRequireOtpNotFrozenFrozenAndTimeOverShouldUnfreezeAndSave() throws Exception {
         // Set updDTimes to 31 minutes ago → frozen time is over
         LocalDateTime oldTime = DateUtils.getUTCCurrentDateTime().minusMinutes(31);
         otpEntity.setUpdDTimes(oldTime);
@@ -81,7 +81,7 @@ public class RequireOtpNotFrozenHelperTest {
      * OTP is frozen and time over but saveEntity = false → should NOT save
      */
     @Test
-    public void testRequireOtpNotFrozen_TimeOverButNoSave() throws Exception {
+    public void testRequireOtpNotFrozenTimeOverButNoSave() throws Exception {
         LocalDateTime oldTime = DateUtils.getUTCCurrentDateTime().minusMinutes(40);
         otpEntity.setUpdDTimes(oldTime);
 
@@ -95,7 +95,7 @@ public class RequireOtpNotFrozenHelperTest {
      * OTP is NOT frozen → nothing should happen
      */
     @Test
-    public void testRequireOtpNotFrozen_NotFrozen_NoAction() throws Exception {
+    public void testRequireOtpNotFrozenNotFrozenNoAction() throws Exception {
         otpEntity.setStatusCode(IdAuthCommonConstants.UNFROZEN);
 
         helper.requireOtpNotFrozen(otpEntity, true);

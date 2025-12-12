@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class BatchJobConstantTest {
 
 	@Test
-	public void testDB_SCHEMA_NAME() {
+	public void testDbSchemaNAME() {
 		BatchJobConstant constant = BatchJobConstant.DB_SCHEMA_NAME;
 		String expectedValue = "mosip.id.authentication.internal-service.schemaName";
 		
@@ -15,7 +15,7 @@ public class BatchJobConstantTest {
 	}
 	
 	@Test
-	public void testDB_TABLE_NAME() {
+	public void testDbTableName() {
 		BatchJobConstant constant = BatchJobConstant.DB_TABLE_NAME;
 		String expectedValue = "mosip.id.authentication.internal-service.tableName";
 		

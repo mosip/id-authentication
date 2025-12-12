@@ -26,7 +26,7 @@ public class SeparatorHelperTest {
     }
 
     @Test
-    public void testGetSeparator_WhenPropertyExists() {
+    public void testGetSeparatorWhenPropertyExists() {
         String idName = "phone";
         String expectedSeparator = ":";
 
@@ -41,7 +41,7 @@ public class SeparatorHelperTest {
     }
 
     @Test
-    public void testGetSeparator_WhenPropertyMissing_UsesDefault() {
+    public void testGetSeparatorWhenPropertyMissingUsesDefault() {
         String idName = "email";
 
         when(env.getProperty(
