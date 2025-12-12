@@ -91,6 +91,7 @@ public class AuthTypeUtilTest {
 		List<RequestType> requestTypes = AuthTypeUtil.findAutRequestTypes(authRequest, mockEnv);
 		
 		assertNotNull("Request types should not be null", requestTypes);
+		assertTrue("Should contain OTP_AUTH", requestTypes.contains(RequestType.OTP_AUTH));
 	}
 	
 	@Test

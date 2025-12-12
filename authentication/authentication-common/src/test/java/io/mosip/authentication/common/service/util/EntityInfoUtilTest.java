@@ -43,19 +43,7 @@ public class EntityInfoUtilTest {
     private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
     @Mock
-    private MatchType matchType;
-
-    private AutoCloseable mocks;
-
-    @Before
-    public void setUp() {
-        mocks = MockitoAnnotations.openMocks(this);
-    }
-
-    @After  
-    public void tearDown() throws Exception {  
-       mocks.close();  
-     } 
+    private MatchType matchType; 
 
     @Test
     public void testGetIdEntityInfoMapWithLanguage() throws Exception {
@@ -77,8 +65,9 @@ public class EntityInfoUtilTest {
         Map<String, String> result = entityInfoUtil.getIdEntityInfoMap(matchType, idEntity, "en");
 
         assertNotNull(result);
+        assertEquals(1, result.size());
         assertTrue(result.containsKey("nameKey|en") || result.containsKey("nameKey"));
-        assertEquals("testValue", result.values().iterator().next());
+        assertTrue(result.containsValue("testValue"));
     }
     @Test
     public void testGetEntityInfoAsString() throws Exception {
@@ -113,7 +102,9 @@ public class EntityInfoUtilTest {
 
         // Assertions
         assertNotNull(map);
-        assertTrue(map.values().iterator().next().contains("value1"));
+        assertEquals(1, map.size());
+        assertTrue(map.containsKey("key1"));
+        assertTrue(map.get("key1").contains("value1"));
     }
 
     @Test
@@ -164,6 +155,7 @@ public class EntityInfoUtilTest {
         when(idInfoFetcher.checkLanguageType("en", "en")).thenReturn(true);
 
         // Invoke method
+        @SuppressWarnings("unchecked")
         Stream<String> resultStream = (Stream<String>) method.invoke(entityInfoUtil, "prop", "en", map, matchType);
         List<String> result = Arrays.asList(resultStream.toArray(String[]::new));
 

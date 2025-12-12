@@ -30,7 +30,7 @@ public class AuthTxnValidatorTest {
 
 	@Test
 	public void testValidateWithNullTarget() {
-		Errors errors = new BeanPropertyBindingResult(null, "autnTxnDto");
+		Errors errors = new BeanPropertyBindingResult(new AutnTxnRequestDto(), "autnTxnDto");
 		
 		authTxnValidator.validate(null, errors);
 		

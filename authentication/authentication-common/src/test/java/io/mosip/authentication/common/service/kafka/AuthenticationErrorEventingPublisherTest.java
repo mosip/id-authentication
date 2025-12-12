@@ -66,7 +66,6 @@ public class AuthenticationErrorEventingPublisherTest {
 
         partnerData = new PartnerData();
         partnerData.setCertificateData("CERTDATA");
-        ReflectionTestUtils.setField(publisher, "securityManager", securityManager);
 
         when(securityManager.getUser()).thenReturn("test-user");
     }
