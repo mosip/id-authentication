@@ -72,7 +72,9 @@ public class AuthenticationErrorEventingPublisherTest {
 
     @After  
     public void tearDown() throws Exception {  
+    if(mocks != null){
     mocks.close();  
+      }
     }
 
     @Test
