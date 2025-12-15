@@ -123,7 +123,7 @@ and Swagger documentation: API documentation is available [here](https://mosip.s
 
 ### Product Documentation
 
-To learn more about resident service from a functional perspective and use case scenarios, refer to our main documentation: [Click here](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication)
+To learn more about id-authentication service from a functional perspective and use case scenarios, refer to our main documentation: [Click here](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication)
 
 ## Testing
 
