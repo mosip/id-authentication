@@ -64,9 +64,6 @@ mvn clean install -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
 5. Verify Swagger is accessible at: http://localhost:8080/idauthentication/v1/swagger-ui/index.html?configUrl=/idauthentication/v1/v3/api-docs/swagger-config
 
-### Build
-Below command should be run in the parent project **authentication**
-`mvn clean install`
 
 ### Local Setup with Docker (Easy Setup for Demos)
 #### Option 1: Pull from Docker Hub
