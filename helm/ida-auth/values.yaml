@@ -46,8 +46,8 @@ service:
   externalTrafficPolicy: Cluster
 image:
   registry: docker.io
-  repository: mosipqa/authentication-service
-  tag: 1.3.x
+  repository: mosipid/authentication-service
+  tag: 1.3.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -122,7 +122,6 @@ additionalResources:
   ## Specify any JAVA_OPTS string here. These typically will be specified in conjunction with above resources
   ## Example: java_opts: "-Xms500M -Xmx500M"
   javaOpts: "-Xms2250M -Xmx3750M"
-
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
 ## Clamav container already runs as 'mosip' user, so we may not need to enable this
 containerSecurityContext:
@@ -192,7 +191,6 @@ podAnnotations: {}
 
 ## lifecycleHooks for the  container to automate configuration before or after startup.
 ##
-
 lifecycleHooks:
   preStop:
     exec:
@@ -200,10 +198,8 @@ lifecycleHooks:
         - sh
         - -c
         - sleep 30
-
 ## Termination grace perios : the maximum amount of time (in seconds) Kubernetes will wait for a container to gracefully shut down
 terminationGracePeriodSeconds: 60
-
 ## Custom Liveness probes for
 ##
 customLivenessProbe: {}
