@@ -7,7 +7,7 @@ if [ $# -ge 1 ] ; then
 fi
 
 NS=ida
-CHART_VERSION=1.3.0
+CHART_VERSION=1.3.5
 COPY_UTIL=../copy_cm_func.sh
 
 echo Create $NS namespace
