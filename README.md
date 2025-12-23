@@ -1,5 +1,5 @@
-[![Maven Package upon a push](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml/badge.svg?branch=release-1.3.x)](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&id=mosip_id-authentication&branch=release-1.3.x&metric=alert_status)](https://sonarcloud.io/dashboard?id=mosip_id-authentication&branch=develop-java21)
+[![Maven Package upon a push](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml/badge.svg?branch=master)](https://github.com/mosip/id-authentication/actions/workflows/push-trigger.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mosip_id-authentication&id=mosip_id-authentication&branch=master)](https://sonarcloud.io/dashboard?id=mosip_id-authentication&branch=master)
 
 # ID-Authentication 
 
