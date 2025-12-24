@@ -76,6 +76,27 @@ public class OTPFilterTest {
         assertFalse(((Map<?, ?>) result.get("g")).containsKey("e"));
     }
 
+    @Test
+    void testCheckAllowedAuthTypeBasedOnPolicy_allowsWhenOtpRequestPresent() throws Exception {
+        AuthPolicy policy = new AuthPolicy();
+        policy.setAuthType("otp-request");
+        policy.setAuthSubType("");
+        policy.setMandatory(true);
+
+        assertDoesNotThrow(() -> filter.checkAllowedAuthTypeBasedOnPolicy(new HashMap<>(), List.of(policy)));
+    }
+
+    @Test
+    void testCheckAllowedAuthTypeBasedOnPolicy_throwsWhenOtpRequestMissing() {
+        AuthPolicy policy = new AuthPolicy();
+        policy.setAuthType("something-else");
+        policy.setAuthSubType("");
+        policy.setMandatory(true);
+
+        Assertions.assertThrows(IdAuthenticationAppException.class,
+                () -> filter.checkAllowedAuthTypeBasedOnPolicy(new HashMap<>(), List.of(policy)));
+    }
+
     @org.junit.jupiter.api.Test
     void testCheckMandatoryAuthTypeBasedOnPolicy() {
         // Should do nothing and not throw
