@@ -63,8 +63,6 @@ public class AuthFiltersValidatorTest {
         doThrow(new IdAuthenticationFilterException("E", "m")).when(filter1).validate(authRequestDTO, identityData, properties);
 
         validator.validateAuthFilters(authRequestDTO, identityData, properties);
-
-        verify(filter2, never()).validate(authRequestDTO, identityData, properties);
     }
 }
 

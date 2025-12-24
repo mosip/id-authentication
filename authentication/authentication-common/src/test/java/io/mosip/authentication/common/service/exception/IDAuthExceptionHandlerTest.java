@@ -79,9 +79,6 @@ public class IDAuthExceptionHandlerTest {
 	@Mock
 	private HttpServletRequest servletRequest;
 
-    @InjectMocks
-    private IdAuthExceptionHandler exceptionHandler;
-
     @Mock
     private WebRequest webRequest;
 
@@ -499,7 +496,7 @@ public class IDAuthExceptionHandlerTest {
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
 
         Exception ex = new Exception("Test");
-        ResponseEntity<Object> response = exceptionHandler.handleAllExceptions(ex, webRequest);
+        ResponseEntity<Object> response = handler.handleAllExceptions(ex, webRequest);
         assertNotNull(response.getBody());
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -511,7 +508,7 @@ public class IDAuthExceptionHandlerTest {
         InvalidFormatException cause = InvalidFormatException.from(null, "eventType", null, null);
         HttpMessageConversionException ex = new HttpMessageConversionException("Test", cause);
 
-        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(ex, null, null, null, webRequest);
+        ResponseEntity<Object> response = handler.handleExceptionInternal(ex, null, null, null, webRequest);
         assertNotNull(response.getBody());
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -523,7 +520,7 @@ public class IDAuthExceptionHandlerTest {
         InvalidFormatException cause = InvalidFormatException.from(null, "expiryTimestamp", null, null);
         HttpMessageConversionException ex = new HttpMessageConversionException("Test", cause);
 
-        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(ex, null, null, null, webRequest);
+        ResponseEntity<Object> response = handler.handleExceptionInternal(ex, null, null, null, webRequest);
         assertNotNull(response.getBody());
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -532,7 +529,7 @@ public class IDAuthExceptionHandlerTest {
     @Test
     public void testHandleExceptionInternalServletException() {
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
-        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new ServletRequestBindingException("Test"), null, null, null, webRequest);
+        ResponseEntity<Object> response = handler.handleExceptionInternal(new ServletRequestBindingException("Test"), null, null, null, webRequest);
         assertNotNull(response.getBody());
     }
 
@@ -540,7 +537,7 @@ public class IDAuthExceptionHandlerTest {
     @Test
     public void testHandleExceptionInternalHttpMessageConversionException() {
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
-        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new HttpMessageConversionException("Test"), null, null, null, webRequest);
+        ResponseEntity<Object> response = handler.handleExceptionInternal(new HttpMessageConversionException("Test"), null, null, null, webRequest);
         assertNotNull(response.getBody());
     }
 
@@ -548,7 +545,7 @@ public class IDAuthExceptionHandlerTest {
     @Test
     public void testHandleExceptionInternalAsyncRequestTimeoutException() {
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
-        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new AsyncRequestTimeoutException(), null, null, null, webRequest);
+        ResponseEntity<Object> response = handler.handleExceptionInternal(new AsyncRequestTimeoutException(), null, null, null, webRequest);
         assertNotNull(response.getBody());
     }
 
