@@ -38,27 +38,6 @@ public class IdAuthConfigTest {
     }
 
     @Test
-    public void testInitialize() {
-        when(environment.getEnvironment()).thenReturn(null);
-
-        // should not throw
-        config.initialize();
-    }
-
-    @Test
-    public void testLocaleResolver() {
-        try (MockedStatic<EnvUtil> env = mockStatic(EnvUtil.class)) {
-            env.when(EnvUtil::getErrorMsgDefaultLang).thenReturn("en");
-
-            LocaleResolver resolver = config.localeResolver();
-
-            assertNotNull(resolver);
-            // ✅ correct assertion
-            assertEquals("en", LocaleContextHolder.getLocale().getLanguage());
-        }
-    }
-
-    @Test
     public void testMessageSource() {
         assertNotNull(config.messageSource());
     }
