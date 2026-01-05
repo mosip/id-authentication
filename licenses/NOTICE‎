@@ -1,0 +1,203 @@
+================================================================================
+COPYRIGHT NOTICES
+================================================================================
+
+This software incorporates components from the projects listed below. The
+original copyright notices have been preserved in accordance with the terms
+of their respective licenses.
+
+ALL licenses below REQUIRE copyright attribution notices to be preserved.
+
+--------------------------------------------------------------------------------
+APACHE LICENSE 2.0 COMPONENTS
+--------------------------------------------------------------------------------
+
+Spring Framework & Spring Boot
+  Copyright © 2002-2025 the original author or authors
+  Copyright © 2002-2025 Pivotal Software, Inc.
+  Copyright © 2002-2025 VMware, Inc. and its affiliates
+  Licensed under the Apache License, Version 2.0
+
+Spring Batch
+  Copyright © 2006-2025 Pivotal Software, Inc.
+  Copyright © 2006-2025 VMware, Inc. and its affiliates
+  Licensed under the Apache License, Version 2.0
+
+Spring Security
+  Copyright © 2004-2025 Pivotal Software, Inc.
+  Copyright © 2004-2025 VMware, Inc. and its affiliates
+  Licensed under the Apache License, Version 2.0
+
+Spring Kafka
+  Copyright © 2016-2025 Pivotal Software, Inc.
+  Copyright © 2016-2025 VMware, Inc. and its affiliates
+  Licensed under the Apache License, Version 2.0
+
+Micrometer (Core & Prometheus Registry)
+  Copyright © 2017-2025 VMware, Inc.
+  Licensed under the Apache License, Version 2.0
+
+Jackson (FasterXML)
+  Copyright © 2007-2025 Tatu Saloranta
+  Copyright © 2007-2025 FasterXML.com
+  Licensed under the Apache License, Version 2.0
+
+Apache Commons (Lang3, Codec)
+  Copyright © 2001-2025 The Apache Software Foundation
+  Licensed under the Apache License, Version 2.0
+
+Apache HttpComponents (HttpClient, HttpMime)
+  Copyright © 1999-2025 The Apache Software Foundation
+  Licensed under the Apache License, Version 2.0
+
+Hibernate Validator
+  Copyright © Red Hat, Inc. and individual contributors
+  Licensed under the Apache License, Version 2.0
+
+SpringDoc OpenAPI
+  Copyright © 2019-2025 springdoc.org
+  Licensed under the Apache License, Version 2.0
+
+TensorFlow Java
+  Copyright © The TensorFlow Authors
+  Licensed under the Apache License, Version 2.0
+
+OpenCV Java (org.openpnp:opencv) version 4.5.3-4
+  Copyright © 2000-2025 Intel Corporation, all rights reserved
+  Copyright © 2009-2016 NVIDIA Corporation, all rights reserved
+  Copyright © 2009-2011 Willow Garage Inc., all rights reserved
+  Licensed under the Apache License, Version 2.0
+  Note: OpenCV 4.5.0 and higher versions use Apache 2.0 License
+
+SourceAFIS for Java
+  Copyright © Robert Vazan
+  Licensed under the Apache License, Version 2.0
+
+Apache Maven Plugins (Compiler, Source, Jar, War, Surefire, GPG, Javadoc, 
+  Shade, Antrun)
+  Copyright © 2001-2025 The Apache Software Foundation
+  Licensed under the Apache License, Version 2.0
+
+Sonatype Central Publishing Maven Plugin
+  Copyright © 2022-2025 Sonatype, Inc.
+  Licensed under the Apache License, Version 2.0
+
+Spring Boot Maven Plugin
+  Copyright © 2012-2025 Pivotal Software, Inc.
+  Copyright © 2012-2025 VMware, Inc. and its affiliates
+  Licensed under the Apache License, Version 2.0
+
+JSON Simple
+  Copyright © 2006 Yidong Fang
+  Licensed under the Apache License, Version 2.0
+
+JSON Path
+  Copyright © 2011 JSONPath authors
+  Licensed under the Apache License, Version 2.0
+
+--------------------------------------------------------------------------------
+MIT LICENSE COMPONENTS
+--------------------------------------------------------------------------------
+
+Project Lombok
+  Copyright © 2009-2025 The Project Lombok Authors
+  Licensed under the MIT License
+
+Mockito
+  Copyright © 2007-2025 Mockito contributors
+  Licensed under the MIT License
+
+--------------------------------------------------------------------------------
+ECLIPSE PUBLIC LICENSE COMPONENTS
+--------------------------------------------------------------------------------
+
+JUnit 4 & JUnit Vintage Engine
+  Copyright © 2002-2025 JUnit
+  Copyright © 2015-2025 the original author or authors
+  Licensed under the Eclipse Public License 1.0
+
+JaCoCo Maven Plugin
+  Copyright © 2009-2025 Mountainminds GmbH & Co. KG and Contributors
+  Licensed under the Eclipse Public License 2.0
+
+--------------------------------------------------------------------------------
+BSD LICENSE COMPONENTS
+--------------------------------------------------------------------------------
+
+PostgreSQL JDBC Driver
+  Copyright © 1997-2025 PostgreSQL Global Development Group
+  Licensed under the BSD 2-Clause License
+
+--------------------------------------------------------------------------------
+GNU LESSER GENERAL PUBLIC LICENSE COMPONENTS
+--------------------------------------------------------------------------------
+
+git-commit-id-plugin
+  Copyright © 2010 Konrad Malawski <konrad.malawski@project13.pl>
+  Licensed under the GNU Lesser General Public License v3.0
+
+--------------------------------------------------------------------------------
+JSON LICENSE COMPONENTS (⚠️ NON-OSI APPROVED)
+--------------------------------------------------------------------------------
+
+JSON.org (org.json:json version 20180130)
+  Copyright © 2002 JSON.org
+  Licensed under the JSON License
+  ⚠️ WARNING: This license includes the clause "The Software shall be used 
+  for Good, not Evil" and is NOT OSI-approved. Consider upgrading to version
+  20220924+ (Public Domain) or migrating to an alternative (Jackson, Gson).
+
+--------------------------------------------------------------------------------
+MOZILLA PUBLIC LICENSE 2.0 COMPONENTS
+--------------------------------------------------------------------------------
+
+MOSIP Platform Components
+  Copyright © 2018-2025 International Institute of Information Technology, 
+    Bangalore (IIIT-B)
+  Components include: Kernel, ID Repository, Authentication Modules, 
+    Demographics & Biometrics APIs, WebSub Client, Template Manager, 
+    ID Generators, Key Manager, CBEFF Utilities, Data Access, e-Signet Core, 
+    e-Signet Integration API, biosdk-client, demosdk, biometrics-util, 
+    OpenID Bridge, and WebSub Client APIs
+  Licensed under the Mozilla Public License 2.0
+
+--------------------------------------------------------------------------------
+ADDITIONAL TESTING LIBRARIES
+--------------------------------------------------------------------------------
+
+PowerMock
+  Copyright © 2007-2025 PowerMock contributors
+  Licensed under the Apache License, Version 2.0
+
+ByteBuddy
+  Copyright © 2014-2025 Rafael Winterhalter
+  Licensed under the Apache License, Version 2.0
+
+Objenesis
+  Copyright © 2006-2025 Joe Walnes, Henri Tremblay, Leonardo Mesquita
+  Licensed under the Apache License, Version 2.0
+
+SpringDoc OpenAPI Maven Plugin
+  Copyright © 2019-2025 springdoc.org
+  Licensed under the Apache License, Version 2.0
+
+Linked Data Signatures Java (info.weboftrust:ld-signatures-java)
+  Copyright © Web of Trust Info
+  Licensed under the Apache License, Version 2.0
+
+--------------------------------------------------------------------------------
+
+For complete license texts, please refer to:
+  - Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
+  - MIT License: https://opensource.org/licenses/MIT
+  - Eclipse Public License 1.0: https://www.eclipse.org/legal/epl-v10.html
+  - Eclipse Public License 2.0: https://www.eclipse.org/legal/epl-2.0/
+  - BSD 2-Clause License: https://opensource.org/licenses/BSD-2-Clause
+  - GNU LGPL 3.0: https://www.gnu.org/licenses/lgpl-3.0.html
+  - JSON License: https://www.json.org/license.html
+  - Mozilla Public License 2.0: https://www.mozilla.org/en-US/MPL/2.0/
+
+Additional license information and project homepages are listed in the 
+THIRD-PARTY-NOTICES.txt file.
+
+================================================================================
