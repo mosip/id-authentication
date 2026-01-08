@@ -103,7 +103,7 @@ public class SimplePost extends IdAuthenticationUtil implements ITest {
 			
 		{
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", partnerKeyUrl));
-			PartnerRegistration.appendEkycOrRp = "rp-";
+			PartnerRegistration.appendEkycOrRp.set("rp-");
 		}
 		
 		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
