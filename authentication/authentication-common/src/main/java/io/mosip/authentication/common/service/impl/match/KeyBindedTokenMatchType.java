@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import io.mosip.authentication.core.indauth.dto.*;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.*;
 import org.springframework.util.CollectionUtils;
 
@@ -42,13 +46,24 @@ public enum KeyBindedTokenMatchType implements MatchType {
     public Function<AuthRequestDTO, Map<String, String>> getReqestInfoFunction() {
         return (AuthRequestDTO authRequestDto) -> {
             Map<String, String> map = new HashMap<>();
-            KycAuthRequestDTO kycAuthRequestDTO =  (KycAuthRequestDTO)authRequestDto;
-            if(kycAuthRequestDTO != null && !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens())) {
-                map.put("token", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken());
-                map.put("type", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType());
-                map.put("format", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat());
+            if (authRequestDto instanceof KycAuthRequestDTO) {
+                KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDto;
+                if (kycAuthRequestDTO != null && kycAuthRequestDTO.getRequest() != null
+                        && !CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens())) {
+                    map.put("token", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken());
+                    map.put("type", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType());
+                    map.put("format", kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat());
+                }
+            } else if (authRequestDto instanceof KycAuthRequestDTOV2) {
+                KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authRequestDto;
+                if (kycAuthRequestDTOV2 != null && kycAuthRequestDTOV2.getRequest() != null
+                        && !CollectionUtils.isEmpty(kycAuthRequestDTOV2.getRequest().getKeyBindedTokens())) {
+                    map.put("token", kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getToken());
+                    map.put("type", kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getType());
+                    map.put("format", kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getFormat());
+                }
             }
-            map.put("individualId", kycAuthRequestDTO.getIndividualId());
+            map.put("individualId", authRequestDto != null ? authRequestDto.getIndividualId() : null);
             return map;
         };
     }
