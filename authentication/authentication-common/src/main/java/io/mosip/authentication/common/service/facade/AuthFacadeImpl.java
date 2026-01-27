@@ -177,6 +177,10 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 		}
 		if(authRequestDTO instanceof KycAuthRequestDTOV2) {
+			// In case of kyc-auth-v2 request and password auth is requested
+			if (AuthTypeUtil.isPassword(authRequestDTO)) {
+				filterAttributes.add(IdaIdMapping.PASSWORD.getIdname());
+			}
 			filterAttributes.add(IdaIdMapping.VERIFIEDATTRIBUTES.getIdname());
 		}
 		

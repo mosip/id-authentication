@@ -15,6 +15,7 @@ import java.util.function.Function;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -25,9 +26,19 @@ public enum PasswordMatchType implements MatchType {
 
 	/** Primary password Match Type. */
 	PASSWORD(IdaIdMapping.PASSWORD, Category.PWD, setOf(PasswordMatchingStrategy.EXACT), authReq -> {
-        KycAuthRequestDTO kycAuthRequestDTO =  (KycAuthRequestDTO)authReq;
-		return (Objects.nonNull(kycAuthRequestDTO.getRequest())  && 
-				Objects.nonNull(kycAuthRequestDTO.getRequest().getPassword()))? kycAuthRequestDTO.getRequest().getPassword() : "";
+		if (authReq instanceof KycAuthRequestDTO) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authReq;
+			return (Objects.nonNull(kycAuthRequestDTO.getRequest()) && Objects.nonNull(kycAuthRequestDTO.getRequest().getPassword()))
+					? kycAuthRequestDTO.getRequest().getPassword()
+					: "";
+		}
+		if (authReq instanceof KycAuthRequestDTOV2) {
+			KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authReq;
+			return (Objects.nonNull(kycAuthRequestDTOV2.getRequest()) && Objects.nonNull(kycAuthRequestDTOV2.getRequest().getPassword()))
+					? kycAuthRequestDTOV2.getRequest().getPassword()
+					: "";
+		}
+		return "";
 	});
 
 	/** The allowed matching strategy. */
