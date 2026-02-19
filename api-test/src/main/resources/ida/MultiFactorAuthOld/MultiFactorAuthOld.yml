@@ -2169,7 +2169,7 @@ MultiFactorAuth:
 }'
   auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-	  description: Verify that multi-factor authentication succeeds using left iris biometric with a valid VID under smoke test conditions
+      description: Verify that multi-factor authentication succeeds using left iris biometric with a valid VID under smoke test conditions
       role: resident
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/multiFactorAuth

@@ -458,7 +458,7 @@ EkycDemo:
 }'
   auth_EkycDemo_Auth_With_InValid_name_With_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-	  description: Verify that eKYC demo authentication fails when an invalid name is provided along with a VID
+      description: Verify that eKYC demo authentication fails when an invalid name is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/ekycDemo
